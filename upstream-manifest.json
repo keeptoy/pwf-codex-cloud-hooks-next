@@ -1,0 +1,129 @@
+{
+  "schema_version": 3,
+  "upstream": "OthmanAdi/planning-with-files",
+  "release": "v3.8.2",
+  "commit": "b04ffd9c8f9f93919649d197e5d4ec1bfc06fa14",
+  "release_archive_url": "https://github.com/OthmanAdi/planning-with-files/archive/refs/tags/v3.8.2.zip",
+  "release_archive_sha256": "7dab03ae283da38d33b9d551c7ec621d1818b9f0f17cf9ced566d4accbfc6dd1",
+  "skill_version": "3.8.2",
+  "required_skill_files": {
+    "SKILL.md": "bfcdbbbf883bc0db95f84d095d58021fc1a6b97eeeab23cd373f6261779fb232",
+    "scripts/resolve-plan-dir.sh": "38a1c5effb35f9506e2e371ccabb6be6e4f4170acc18f1811f08d634f5f0e9bd",
+    "scripts/session-catchup.py": "6476fd9024d0cbb9bfb850119fd0beff7fb7cfab9c6683ce10e4cc8d830ce6de"
+  },
+  "historical_patched_skill_files": {
+    "SKILL.md": "bfcdbbbf883bc0db95f84d095d58021fc1a6b97eeeab23cd373f6261779fb232",
+    "scripts/resolve-plan-dir.sh": "38a1c5effb35f9506e2e371ccabb6be6e4f4170acc18f1811f08d634f5f0e9bd",
+    "scripts/session-catchup.py": "fc765590dc32b3949027de97e33dad6a049daf148719ba1822598a6c146461e2"
+  },
+  "compatibility_patches": {
+    "PWF_CODEX_CLOUD_COMPAT_PATCH": {
+      "target": "scripts/session-catchup.py",
+      "upstream_sha256": "6476fd9024d0cbb9bfb850119fd0beff7fb7cfab9c6683ce10e4cc8d830ce6de",
+      "patched_sha256": "fc765590dc32b3949027de97e33dad6a049daf148719ba1822598a6c146461e2",
+      "description": "Codex runtime, CODEX_HOME sessions, scoped planning state, and bounded Cloud-wrapped user context"
+    }
+  },
+  "managed_runtime": {
+    "schema_version": 1,
+    "package_root": "runtime/upstream",
+    "local_package_root": "runtime",
+    "contracts": {
+      "runtime_bundle": {
+        "path": "contracts/runtime-bundle-v1.json",
+        "sha256": "7c4857a1ef6ac6df4ce46f58453ab845e82003ce4bc0b13326ec5a2650fc909c"
+      },
+      "compatibility_overlays": {
+        "path": "contracts/compatibility-overlays-v1.json",
+        "sha256": "4b3e89ddfd7f32e3fa08a50c990bf8b4dbf407645e480864c9c296614299b7c9"
+      },
+      "adapter_runtime_request": {
+        "path": "contracts/adapter-runtime-request-v1.schema.json",
+        "sha256": "a86588e3c7d55cbbeddc74110403ba815ad8715735c149d77dd0c47996ee72d5"
+      },
+      "adapter_plan_context_request": {
+        "path": "contracts/adapter-plan-context-request-v1.schema.json",
+        "installed_path": "hooks/planning-with-files/contracts/adapter-plan-context-request-v1.schema.json",
+        "sha256": "c0c904451cf5042d621c8702d475af65b757ca5e45d74da50d9541a55b469262"
+      },
+      "plan_context_result": {
+        "path": "contracts/plan-context-result-v1.schema.json",
+        "installed_path": "hooks/planning-with-files/contracts/plan-context-result-v1.schema.json",
+        "sha256": "5d739740d82e01abf06c4b18b3a1eeb533a1f8e7513a24827b4bdcb36d484172"
+      },
+      "runtime_result": {
+        "path": "contracts/runtime-result-v1.schema.json",
+        "sha256": "1cb545d9487c8d0ef9f4ccd270a786d0dc998629813e81a2cc05463b23b62ed7"
+      },
+      "release_artifact": {
+        "path": "contracts/release-artifact-v1.json",
+        "sha256": "e35faf156b04d5d56ea51055250d788c9113cc6cf1be8f4fa5b2f0f30d3ac7d4"
+      }
+    },
+    "importer": {
+      "path": "tools/import_upstream_runtime.py",
+      "sha256": "c24d32a70774f0933f4cddcbbe5e781babae814e6242559ff37c8e5b104cc4f8"
+    },
+    "license_provenance": {
+      "spdx": "MIT",
+      "upstream_path": "LICENSE",
+      "upstream_sha256": "4f2e5ecfaa4e0833621cfe54c0bdc2f60f086c0925540d7bdc713517eafb3c84",
+      "notice_path": "THIRD_PARTY_NOTICES.md",
+      "notice_sha256": "ba31b6620593dd80561e6586908ffb8e5af07a2a069510bce04c00c49a27c53c"
+    },
+    "local_files": [
+      {
+        "id": "owned_catchup",
+        "package_path": "runtime/owned-catchup.py",
+        "mode": "0755",
+        "origin": "local_managed_runtime",
+        "sha256": "bb3a18b8144e63b17c33db4cccf81425f135647948e6f20f4c44c3e42ba71f85"
+      },
+      {
+        "id": "owned_plan",
+        "package_path": "runtime/owned-plan.py",
+        "mode": "0755",
+        "origin": "local_managed_runtime",
+        "sha256": "2be123e4b73ac72ed189ecffa816ceb6b4129f216093a16b2bba9c998353caef"
+      }
+    ],
+    "files": [
+      {
+        "id": "session_catchup",
+        "source_path": "skills/planning-with-files/scripts/session-catchup.py",
+        "package_path": "runtime/upstream/session-catchup.py",
+        "mode": "0755",
+        "origin": "upstream_with_managed_overlay",
+        "pristine_sha256": "6476fd9024d0cbb9bfb850119fd0beff7fb7cfab9c6683ce10e4cc8d830ce6de",
+        "managed_sha256": "fc765590dc32b3949027de97e33dad6a049daf148719ba1822598a6c146461e2"
+      },
+      {
+        "id": "resolve_plan_dir",
+        "source_path": "skills/planning-with-files/scripts/resolve-plan-dir.sh",
+        "package_path": "runtime/upstream/resolve-plan-dir.sh",
+        "mode": "0755",
+        "origin": "upstream_pristine",
+        "pristine_sha256": "38a1c5effb35f9506e2e371ccabb6be6e4f4170acc18f1811f08d634f5f0e9bd",
+        "managed_sha256": "38a1c5effb35f9506e2e371ccabb6be6e4f4170acc18f1811f08d634f5f0e9bd"
+      },
+      {
+        "id": "inject_plan",
+        "source_path": "skills/planning-with-files/scripts/inject-plan.sh",
+        "package_path": "runtime/upstream/inject-plan.sh",
+        "mode": "0755",
+        "origin": "upstream_pristine",
+        "pristine_sha256": "72c7904ec9a03f994d349ac1b9b3cfe484b417e738b25c0545d9ae11a2cc0364",
+        "managed_sha256": "72c7904ec9a03f994d349ac1b9b3cfe484b417e738b25c0545d9ae11a2cc0364"
+      },
+      {
+        "id": "ledger_summary",
+        "source_path": "skills/planning-with-files/scripts/ledger-summary.sh",
+        "package_path": "runtime/upstream/ledger-summary.sh",
+        "mode": "0755",
+        "origin": "upstream_pristine",
+        "pristine_sha256": "d4fe626a6bed95ce00a05bc4ffb2dbf70990f9a16e116607c0a21ad0679cf3b9",
+        "managed_sha256": "d4fe626a6bed95ce00a05bc4ffb2dbf70990f9a16e116607c0a21ad0679cf3b9"
+      }
+    ]
+  }
+}

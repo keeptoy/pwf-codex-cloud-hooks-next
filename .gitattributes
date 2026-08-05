@@ -1,0 +1,15 @@
+* text=auto eol=lf
+
+# Explicit binary families. They are not currently tracked, but declaring them
+# prevents future assets from being normalized as text on Windows.
+*.zip -text
+*.gz -text
+*.tgz -text
+*.png -text
+*.jpg -text
+*.jpeg -text
+*.gif -text
+*.ico -text
+*.pdf -text
+*.woff -text
+*.woff2 -text
