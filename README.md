@@ -21,7 +21,7 @@
 
 它不是通用 Skill 转换器。Host/runner/Driver 抽象要等第二个只读插件验证后才能泛化。
 
-## 当前已实现行为
+## 支持的运行行为
 
 Managed policy 只注册一个绝对路径 adapter，事件集固定为：
 
@@ -53,13 +53,14 @@ Managed policy 只注册一个绝对路径 adapter，事件集固定为：
 - 已安装且与 manifest 匹配的 pristine PWF v3.8.2 Skill；
 - production install 需要写入 `$CODEX_HOME` 和 Managed requirements 的权限。
 
-### 当前开发树
+### Development bootstrap 安全边界
 
-当前 bootstrap 使用 beta.3-dev successor URL，并把 ZIP SHA-256 固定为 64 个 `0`。这是有意的
-fail-closed 占位：在 M3/M4 完成并正式封板前，直接运行会报 placeholder 错误。
+当前源码 checkout 的 bootstrap 使用 beta.3-dev successor URL，并把 ZIP SHA-256 固定为 64 个
+`0`。这是有意的 fail-closed 占位：正式 Release 封板前，直接运行会报 placeholder 错误。
 
 不要把 development ZIP 或本地 bootstrap 当作 Release。需要生产回滚时使用不可变 beta.2 资产，
-并按 beta.2 hard-acceptance 文档复验。
+并按 beta.2 hard-acceptance 文档复验。迁移和 Release gate 的当前进度只在完整源码仓库的
+`ROADMAP.md` 与活动 task plan 中维护。
 
 ### Installer CLI
 
@@ -139,6 +140,32 @@ git diff --check
 
 Windows 中 POSIX/Linux-only case 必须诚实 SKIP；最终安全边界仍需 Linux/Cloud gate 全绿。
 
+### Git mode 与 LF 快速检查
+
+源码仓库中的四个 `runtime/upstream/*` 文件必须且仅它们保持 Git `100755`。Windows 能读取脚本，
+不代表 Git index 仍保存 Linux 可执行位。先运行：
+
+```bash
+git ls-files --stage runtime/upstream
+```
+
+若四行不是 `100755`，先确认 `git status --short` 没有待保护的用户改动，再只修复这四个路径：
+
+```bash
+git update-index --chmod=+x -- \
+  runtime/upstream/inject-plan.sh \
+  runtime/upstream/ledger-summary.sh \
+  runtime/upstream/resolve-plan-dir.sh \
+  runtime/upstream/session-catchup.py
+
+python3 tools/import_upstream_runtime.py check
+git diff --check
+```
+
+不要对整个目录批量设置 executable，也不要用 reset/checkout 覆盖用户改动。Windows CRLF、
+renormalize 和 fresh-clone 复验步骤见完整源码仓库的
+[`docs/git-file-modes.md`](docs/git-file-modes.md)。
+
 ## 构建 development ZIP
 
 Release allowlist 由 `contracts/release-artifact-v1.json` 唯一决定。构建器固定路径顺序、时间戳、
@@ -195,14 +222,14 @@ development ZIP 仍必须包含精确 22 entries，且不包含外部
 - 封板顺序固定：冻结 ZIP 输入 → 构建 ZIP/hash → 写入 bootstrap → 计算 bootstrap hash →
   发布 → 重新下载双资产复验。
 
-## 当前路线
+## 开发状态
 
-slim-repository M2 本地迁移和 M3 Discovery 已完成；development branch 尚未 push。M3 的 remote
-transport/no-live Cloud seal、disposable Cloud lifecycle 与证据关闭需要逐门授权，详见
-[`docs/beta3-dev-m3-cloud-equivalence.md`](docs/beta3-dev-m3-cloud-equivalence.md)。M4 cutover 和产品
-Phase 4 attestation/opt-in 均未开始，也不会因仓库迁移自动获得授权。
+README 不复制频繁变化的 migration、Cloud、Release 或 Product Phase 状态。在完整源码仓库中：
 
-详见 [`ROADMAP.md`](ROADMAP.md)。
+- [`ROADMAP.md`](ROADMAP.md) 是 programme、migration、Cloud 与 Release gate 的当前权威；
+- `.planning/.active_plan` 指向的 `task_plan.md` 是唯一 Next Step、授权与停止条件的当前权威。
+
+源码分支、文件名或 development ZIP 中出现版本号，不代表 Release 已成立。
 
 ## 许可证
 

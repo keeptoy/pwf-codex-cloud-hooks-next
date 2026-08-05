@@ -166,3 +166,26 @@
   Repeated the complete suite outside that restriction using the same temporary
   index. It passed 63/52/0/11 plus cached diff hygiene at exactly 60 paths, then
   removed the temporary index without staging the real worktree.
+
+## M3 pre-A README authority refinement
+
+- Maintainer checkpointed M3 Discovery locally as child commit `3ef29f5` and did
+  not push it, then authorized the final README/ROADMAP/task-plan refinement.
+- Renamed README runtime behavior to stable supported behavior and retained its
+  event/order/failure contract inside the distributable.
+- Replaced the copied M2/M3/M4 current-route block with stable ROADMAP/task-plan
+  navigation, while preserving the zero-hash development-bootstrap safety warning.
+- Added a short four-file `100755`/LF diagnosis and bounded repair entry to README;
+  retained the complete Windows/renormalize/fresh-clone procedure in the dedicated
+  Git mode document.
+- Updated AGENTS authority wording and made ROADMAP explicitly own changing
+  migration/Cloud/Release status. No production, contract, installer, test,
+  bootstrap, version, Release allowlist, push, Cloud, or live state changed.
+- Document UTF-8/fence/diff hygiene and stale README authority scans pass. Importer
+  remains healthy.
+- Rebuilt the changed packaged README twice. Both 22-entry development ZIPs are
+  byte-identical at 75,323 bytes / SHA-256
+  `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`;
+  no hash was written to the zero-hash bootstrap.
+- Full Windows suite after the refinement passes 63 registered / 52 pass / 0
+  fail / 11 honest POSIX skips. No test assertion was changed for this refinement.

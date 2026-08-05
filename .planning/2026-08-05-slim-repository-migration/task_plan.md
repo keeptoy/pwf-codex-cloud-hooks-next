@@ -8,22 +8,23 @@ immutable M1 audit oracle.
 
 ## Current Gate
 
-M3 Discovery Gate complete; checkpoint required before M3-A.
+M3 pre-A README authority refinement complete; checkpoint required before M3-A.
 
 ## Status
 
-M2-A, M2-B, and M2-C are complete. The successor has one parentless 59-path local
-root commit and remains unpushed. The maintainer checkpointed M2 and authorized
-M3 Discovery only, and that protocol is now frozen. Development-branch push,
-Cloud execution, disposable live installation, M4, and Product Phase 4 still
-require their explicit later gates.
+M2-A/B/C and M3 Discovery are complete. The successor has the immutable parentless
+59-path M2 root plus local M3 Discovery child commit `3ef29f5`; neither development
+commit has been pushed. The maintainer authorized a final README/ROADMAP/task-plan
+authority refinement before M3-A. Development-branch push, Cloud execution,
+disposable live installation, M4, and Product Phase 4 still require their explicit
+later gates.
 
 ## Next Step
 
-Checkpoint the M3 Discovery governance changes, then wait for explicit M3-A
-authorization to create/push the reviewed child commit and run the no-live Cloud
-seal. Do not begin M3-B disposable setup, create public `main`, publish, cut over,
-modify production behavior, or enter Product Phase 4.
+Checkpoint the completed README authority refinement, then wait for explicit M3-A
+authorization to push the reviewed development branch and run the no-live Cloud
+seal. Do not begin M3-B, create public `main`, publish, cut over, modify production
+behavior, or enter Product Phase 4.
 
 ## Invariants
 
@@ -73,6 +74,19 @@ modify production behavior, or enter Product Phase 4.
   root plus the M3 runbook. Only `tests/repository-boundary.test.js` changes in
   the test tree, solely to include that governance path; all safety tests remain
   byte-identical to M2.
+
+## M3 pre-A README Refinement Verification
+
+- README keeps stable supported runtime behavior and the zero-hash safety warning;
+  changing gate status is routed to ROADMAP and exact execution state to this plan.
+- README contains the bounded four-path Git mode/LF quick recovery; the complete
+  renormalize/fresh-clone procedure remains in `docs/git-file-modes.md`.
+- Importer and document structure/stale-authority checks: PASS.
+- Two independent development ZIP builds: 22 entries / 75,323 bytes / identical
+  SHA-256 `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`.
+- Full Windows suite: 63 registered / 52 pass / 0 fail / 11 honest POSIX skips.
+- The changed README is the only changed Release ZIP input; bootstrap remains
+  external, zero-hash, and unchanged.
 
 ## M2-B Verification
 

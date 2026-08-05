@@ -158,3 +158,18 @@
   would pass while the file remained untracked but fail after checkpoint, so the
   Discovery boundary now explicitly advances current HEAD to 60 paths and changes
   only `tests/repository-boundary.test.js` to admit that governance document.
+
+## M3 pre-A README authority refinement
+
+- `README.md` is a Release ZIP entry, while ROADMAP, planning, and the full Git
+  mode runbook are source-governance files excluded from the 22-entry artifact.
+- Stable supported Hook behavior belongs in the packaged README: an offline ZIP
+  user still needs to know events, ordering, and failure semantics. Renamed that
+  section from time-sensitive “current” wording rather than moving it out.
+- Migration/Cloud/Release gate state belongs only in ROADMAP, with exact Next Step
+  in the activity task plan. README now provides stable source-checkout navigation
+  instead of copying M2/M3/M4 status.
+- Git mode/LF recovery uses two layers: a concise README check and exact four-path
+  repair for discoverability, plus `docs/git-file-modes.md` for renormalization,
+  fresh-clone, and destructive-operation cautions. Copying the full runbook into
+  the packaged README would recreate the coupling this refinement removes.

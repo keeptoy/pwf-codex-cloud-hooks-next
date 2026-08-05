@@ -1,5 +1,8 @@
 # 路线图
 
+本文件是 migration、Cloud、Release 和后续 Product Phase 状态的唯一宏观权威；精确 Next Step、
+授权与停止条件仍由活动 `task_plan.md` 决定。README 不复制本文件的逐 gate 状态。
+
 > 当前回滚基线：published/accepted `v0.3.0-beta.2`。
 >
 > 当前开发身份：`0.3.0-beta.3-dev`，未发布。

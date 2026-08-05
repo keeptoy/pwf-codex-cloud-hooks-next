@@ -5,7 +5,7 @@
 
 ## 必读顺序
 
-1. 读 `README.md`：当前行为、安装、doctor/repair 和开发入口。
+1. 读 `README.md`：支持的稳定行为、安装、doctor/repair 和开发入口。
 2. 读 `ARCHITECTURE.md`：组件职责、Host contract、trusted graph 和失败语义。
 3. 读 `ROADMAP.md`：当前 migration/Product Phase、Cloud gate 和 Release 路线。
 4. 读 `.planning/.active_plan`，再读活动计划的 `task_plan.md`、`findings.md`、`progress.md`。
@@ -18,7 +18,7 @@
 
 | 文件 | 唯一回答的问题 |
 |---|---|
-| `README.md` | 当前怎么工作、安装、修复、测试和打包 |
+| `README.md` | 稳定支持行为，以及怎么安装、修复、测试和打包 |
 | `ARCHITECTURE.md` | 为什么这样设计，组件和信任边界是什么 |
 | `ROADMAP.md` | 后续 migration/Product Phase、Cloud 与 Release gate |
 | `BASELINE_PROVENANCE.md` | beta.2、M1、上游和 overlay 从哪里来、如何复现 |
@@ -35,7 +35,7 @@
 
 ## 文档同步
 
-- 用户行为、命令：README；必要时新增版本验收文档。
+- 稳定用户行为、命令：README；频繁变化的 gate/Next Step 不复制进 README。
 - 稳定架构、Cloud 事实、职责：ARCHITECTURE + findings。
 - migration/Product Phase、Cloud、Release、rollback：ROADMAP + task plan。
 - baseline/upstream/overlay/资产来源：BASELINE_PROVENANCE + machine contract。
