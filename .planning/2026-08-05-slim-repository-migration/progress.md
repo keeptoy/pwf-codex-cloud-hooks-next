@@ -126,3 +126,43 @@
   74,899 bytes / SHA-256
   `647e16852f818a84f4b5d4872a876d411cdbdfa7671f07b7614f35f12aae5e7d`.
   Recording this value changes only planning files outside the Release allowlist.
+
+## M3 Discovery — Cloud equivalence protocol
+
+- Maintainer checkpointed M2 and authorized the next step; interpreted it as M3
+  Discovery only, preserving separate authorization for push and disposable live
+  Cloud setup.
+- Recovered the clean parentless M2 root, clean unchanged M1 audit worktree,
+  successor authorities, immutable beta.2 A～F runbook, installer/bootstrap flow,
+  Release allowlist, and current 63-test boundary.
+- Froze `docs/beta3-dev-m3-cloud-equivalence.md` with M3-A no-live Linux/isolated
+  install seal, M3-B process-only local-ZIP setup and independent Fresh/Resume
+  prompts, M3-C evidence closure, failure classification, and exact stop rules.
+- Updated README/AGENTS/ROADMAP/handoff and this active plan to reflect Discovery
+  completion without claiming push, Cloud PASS, Release, cutover, or Phase 4.
+- One read-only Windows search used the Unix wildcard `tests/*.test.js` as a
+  literal path and failed with Win32 path error 123. Re-ran with `rg -g
+  '*.test.js' ... tests`; this was a command-shape error, not repository drift.
+- The first sandboxed full-suite run never entered test logic: Node could not
+  spawn any of its 14 file workers and reported 14 uniform `spawn EPERM` failures.
+  The first outside-sandbox approval run then timed out in the permission review;
+  one permitted retry completed at 63/52/0/11.
+- Importer/static checks and two deterministic builds pass. Updating packaged
+  README changes the development ZIP as expected to 22 entries / 74,958 bytes /
+  SHA-256 `c2f5410c2c53082955ab3a5f9dec64abbd229893796bb74455f622e3a252dcb1`;
+  the checkout bootstrap remains zero-hash and no Release value was written.
+- A local rehearsal of M3-A isolated install stopped before mutation because the
+  production installer correctly requires `/usr/bin/python3`, absent on Windows.
+  Recorded this as a platform limitation and retained the real check for Cloud.
+- Maintained-document UTF-8, fence, local-link and diff-hygiene checks pass. Bash
+  is unavailable locally, so executable Bash syntax remains an explicit M3-A
+  Cloud gate rather than a local claim.
+- Pre-checkpoint review caught that the untracked runbook was invisible to the
+  exact 59-path repository test. Advanced the successor current boundary to 60
+  paths and changed only the repository-governance allowlist test; M3-A now proves
+  every other test and all production/build inputs remain M2-root bytes.
+- The first focused run with a disposable alternate Git index was still inside
+  the process sandbox; its spawned `git ls-files` returned `status=null`/EPERM.
+  Repeated the complete suite outside that restriction using the same temporary
+  index. It passed 63/52/0/11 plus cached diff hygiene at exactly 60 paths, then
+  removed the temporary index without staging the real worktree.

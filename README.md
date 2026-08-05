@@ -197,9 +197,10 @@ development ZIP 仍必须包含精确 22 entries，且不包含外部
 
 ## 当前路线
 
-slim-repository M2 本地迁移已经完成，当前等待 checkpoint 与 M3 Cloud equivalence 的独立授权；
-development branch 尚未 push，M4 cutover 也未开始。产品 Phase 4 attestation/opt-in 仍未开始，
-不会因仓库迁移自动获得授权。
+slim-repository M2 本地迁移和 M3 Discovery 已完成；development branch 尚未 push。M3 的 remote
+transport/no-live Cloud seal、disposable Cloud lifecycle 与证据关闭需要逐门授权，详见
+[`docs/beta3-dev-m3-cloud-equivalence.md`](docs/beta3-dev-m3-cloud-equivalence.md)。M4 cutover 和产品
+Phase 4 attestation/opt-in 均未开始，也不会因仓库迁移自动获得授权。
 
 详见 [`ROADMAP.md`](ROADMAP.md)。
 

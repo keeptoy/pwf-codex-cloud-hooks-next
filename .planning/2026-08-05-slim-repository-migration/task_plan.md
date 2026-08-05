@@ -8,18 +8,22 @@ immutable M1 audit oracle.
 
 ## Current Gate
 
-M2 local closure complete; checkpoint required before M3.
+M3 Discovery Gate complete; checkpoint required before M3-A.
 
 ## Status
 
 M2-A, M2-B, and M2-C are complete. The successor has one parentless 59-path local
-root commit and remains unpushed. M3/M4 and Product Phase 4 are unauthorized.
+root commit and remains unpushed. The maintainer checkpointed M2 and authorized
+M3 Discovery only, and that protocol is now frozen. Development-branch push,
+Cloud execution, disposable live installation, M4, and Product Phase 4 still
+require their explicit later gates.
 
 ## Next Step
 
-Checkpoint the completed M2 local closure and wait for explicit M3 authorization.
-Do not push, create public `main`, run Cloud deployment, publish, cut over, or enter
-Product Phase 4 without their separate gates.
+Checkpoint the M3 Discovery governance changes, then wait for explicit M3-A
+authorization to create/push the reviewed child commit and run the no-live Cloud
+seal. Do not begin M3-B disposable setup, create public `main`, publish, cut over,
+modify production behavior, or enter Product Phase 4.
 
 ## Invariants
 
@@ -27,8 +31,11 @@ Product Phase 4 without their separate gates.
 - Production adapter, owned/upstream runtimes, installer, patcher, and Release
   builder retain their M1 bytes and Git modes. Schema comments and the importer
   bytecode-hygiene tool change are metadata/development-only and hash-pinned.
-- The slim branch remains local, parentless, committed once, and unpushed.
-- No Release, cutover, production activation, or Phase 4 work is authorized.
+- The M2 root commit remains parentless and immutable; M3 governance changes may
+  become a normal child commit only after review and must not rewrite that root.
+- The slim branch remains local and unpushed throughout Discovery.
+- No Cloud/live execution, Release, cutover, production activation, or Phase 4
+  work is authorized by Discovery.
 
 ## Gate Sequence
 
@@ -47,6 +54,25 @@ Product Phase 4 without their separate gates.
 - [x] Create and verify the single parentless 59-path root commit.
 - [x] Pass fresh Windows clone importer/static/full-suite/LF/mode validation.
 - [x] Close M2 locally and stop before M3/push.
+- [x] Receive the M2 checkpoint and authorization for M3 Discovery only.
+- [x] Freeze M3-A remote transport and no-live Cloud/Linux seal.
+- [x] Freeze M3-B disposable setup plus Fresh/UserPrompt/Resume hard acceptance.
+- [x] Freeze M3-C evidence closure and the M4 stop boundary.
+- [x] Stop for explicit authorization before creating an M3 child commit or push.
+
+## M3 Discovery Verification
+
+- Documentation UTF-8, Markdown fences, local links, and `git diff --check`: PASS.
+- Full Windows suite: 63 registered / 52 pass / 0 fail / 11 honest POSIX skips.
+- Importer, in-memory Python compilation, and Node syntax: PASS.
+- Two independent development ZIP builds: 22 entries / 74,958 bytes / identical
+  SHA-256 `c2f5410c2c53082955ab3a5f9dec64abbd229893796bb74455f622e3a252dcb1`.
+- Bash is unavailable on this host; M3-A freezes `bash -n` and the complete Linux
+  script as a Cloud requirement rather than reporting a local PASS.
+- The successor checkpoint target contains 60 paths: the immutable 59-path M2
+  root plus the M3 runbook. Only `tests/repository-boundary.test.js` changes in
+  the test tree, solely to include that governance path; all safety tests remain
+  byte-identical to M2.
 
 ## M2-B Verification
 

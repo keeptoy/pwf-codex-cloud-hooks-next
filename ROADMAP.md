@@ -13,8 +13,8 @@
 | Gate | 目标 | 状态 |
 |---|---|---|
 | M1 exact mirror | 证明新 remote/audit branch 与 beta.2 commit/tree/资产完全一致 | complete |
-| M2 slim transformation | 精简历史树，建立新 authority/identity/provenance 和 root commit | complete；等待 checkpoint |
-| M3 Cloud equivalence | development branch Fresh/Resume/doctor/ZIP/Linux suite | pending；未授权 |
+| M2 slim transformation | 精简历史树，建立新 authority/identity/provenance 和 root commit | complete；checkpoint 已收到 |
+| M3 Cloud equivalence | development branch Fresh/Resume/doctor/ZIP/Linux suite | Discovery complete；执行未授权 |
 | M4 cutover | 建立公开 `main`、交割、旧仓库导航和 rollback 演练 | pending；未授权 |
 
 M2 内部分为：
@@ -47,23 +47,22 @@ M2 内部分为：
 6. 验证 exact 59 paths、四个 `100755`、LF、clean；
 7. fresh Windows clone 重跑 importer/static/suite。
 
-M2-C 已按独立授权完成；development branch 仍未 push，M3 仍需另行授权。
+M2-C 已按独立授权完成并 checkpoint；development branch 仍未 push。
 
 ## 4. M3 Cloud equivalence
 
-M3 需要先授权 push development branch，不能推 M1 audit ref 之外的内容来绕过 checkpoint。Cloud gate
-至少包括：
+M3 Discovery 已冻结为三个后续独立子门：
 
-- Linux full suite 与实际 test count 解释；
-- importer/installer/doctor；
-- root/root 与 install-user/Hook-user；
-- Fresh startup/UserPrompt canary；
-- real planning update、长 wrapper 尾部 sentinel、Resume owned catch-up；
-- post-resume doctor 和 zero snapshot/cache residue；
-- development ZIP exact 22 entries 与 deterministic bytes；
-- production behavior 与 beta.2 等价。
+1. M3-A：只 push 审核过的同名 development branch，在 Fresh Cloud 执行 no-live Linux seal、
+   63/63 suite、隔离 install/doctor、mode/importer 和确定性 22-entry ZIP；
+2. M3-B：在一次性 Cloud setup 中从精确 checkout 本地构建 ZIP，通过进程级 `file://` URL/SHA
+   覆盖交给原 bootstrap，然后执行 Fresh startup/UserPrompt、real planning update、长尾 Resume
+   owned catch-up、post-resume doctor 和 zero snapshot residue；
+3. M3-C：保存原始证据并证明 closure descendant 只变化治理文件，随后停在 M4 Discovery 前。
 
-M3 不发布资产，也不创建 public `main`。
+完整协议与失败矩阵见 [`docs/beta3-dev-m3-cloud-equivalence.md`](docs/beta3-dev-m3-cloud-equivalence.md)。
+checkout bootstrap 始终保持 zero hash；M3 不发布资产、不创建 public `main`，也不把 development
+安装描述成 Release。
 
 ## 5. M4 cutover
 

@@ -130,3 +130,31 @@
   `647e16852f818a84f4b5d4872a876d411cdbdfa7671f07b7614f35f12aae5e7d`.
   Planning files are outside the Release allowlist, so recording this value does
   not alter the ZIP bytes.
+
+## M3 Discovery
+
+- M3 equivalence is behavioral and operational, not byte equality with beta.2:
+  successor documentation, package identity, and development ZIP bytes are
+  intentionally different while the trusted runtime behavior remains frozen.
+- A four-stop shape avoids conflating different authorities: Discovery; M3-A
+  remote transport plus no-live Cloud/Linux seal; M3-B disposable Managed Hook
+  setup plus Fresh/Resume; and M3-C evidence closure.
+- Development lifecycle testing can exercise the unmodified bootstrap without a
+  fake Release: build the deterministic ZIP from the accepted checkout, pass its
+  `file://` URL and SHA as process-only overrides, and leave the checked-in
+  bootstrap's 64-zero checksum unchanged and fail-closed.
+- M3-A records the exact tested HEAD and development ZIP SHA. M3-B must receive
+  those values from the external Cloud setup configuration, preventing a
+  self-referential commit/hash edit.
+- M2 root identity remains immutable. Later M3 governance/evidence is a normal
+  descendant; if closure changes anything outside the allowed governance files,
+  the behavioral gate must be rerun.
+- A direct Windows rehearsal of the isolated installer stopped at the intended
+  Linux production contract because `/usr/bin/python3` does not exist on Windows.
+  This is a platform limitation, not an installer or M3 script defect: M3-A runs
+  the same gate on Linux/Cloud, while the existing Windows installer tests replace
+  that frozen interpreter only inside their test copy.
+- Adding the M3 runbook creates one legitimate post-M2 path. The exact-tree test
+  would pass while the file remained untracked but fail after checkpoint, so the
+  Discovery boundary now explicitly advances current HEAD to 60 paths and changes
+  only `tests/repository-boundary.test.js` to admit that governance document.

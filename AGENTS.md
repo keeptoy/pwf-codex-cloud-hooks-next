@@ -25,6 +25,7 @@
 | `MAINTAINER_HANDOFF.md` | 新人如何接手、分类变更、验证、发布和回滚 |
 | 活动 `.planning/<slug>/task_plan.md` | 当前唯一 Next Step、授权、禁止事项和停止条件 |
 | 活动 `findings.md` / `progress.md` | 研究结论、实施和错误证据 |
+| `docs/beta3-dev-m3-cloud-equivalence.md` | M3 的 transport、no-live Cloud seal、disposable setup、Fresh/Resume 和停止门槛 |
 | `docs/v0.3.0-beta.2-cloud-hard-acceptance.md` | 不可变 beta.2 A～F 与资产验收证据 |
 | `docs/git-file-modes.md` | Windows/Linux mode、LF 检查与恢复 |
 
@@ -99,6 +100,7 @@ git diff --check
 
 ## 当前迁移边界
 
-M1 exact mirror 与 M2 slim transformation 已完成，本地分支只有一个 parentless 59-path root
-commit 且尚未 push。当前活动计划决定是否进入 M3；在 M3 Cloud equivalence 和 M4 cutover
-各自通过前，本仓库不是新的 production 权威。Product Phase 4 仍需迁移完成后的独立 Discovery Gate。
+M1 exact mirror 与 M2 slim transformation 已完成，本地分支只有一个 parentless 59-path M2 root
+commit 且尚未 push。M3 Discovery 已冻结验收协议，但 push、Cloud/no-live 执行和 disposable live
+setup 仍是三个后续授权边界。在 M3 Cloud equivalence 和 M4 cutover 各自通过前，本仓库不是新的
+production 权威。Product Phase 4 仍需迁移完成后的独立 Discovery Gate。
