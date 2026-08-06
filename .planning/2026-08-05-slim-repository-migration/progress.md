@@ -216,3 +216,20 @@
   exact 60 paths, zero product/build drift, the single allowed test drift, and
   `git diff --check`. Full Windows suite remains 63/52/0/11. No Release ZIP input
   or bootstrap byte changed.
+- Maintainer returned the complete repaired M3-A Cloud result. PASS: accepted HEAD
+  `39795283cd65f84547651d7bec816191fb5bfedf`; Linux 63/63/0/0; root/cross-user/
+  process-group; isolated install/doctor; adapter-only policy; 11 payload; two
+  deterministic 22-entry ZIPs at 75,323 bytes and SHA-256
+  `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`;
+  zero-hash bootstrap; empty stderr; clean workspace; terminal M3-A PASS.
+- Closed M3-A and stopped before M3-B. These evidence/governance edits must be
+  checkpointed locally without pushing the remote development branch away from
+  the accepted commit before M3-B consumes it.
+- A combined status search attempted to read archive paths while its working
+  directory was the successor and returned path-not-found after valid successor
+  matches. No file changed from the error; archive synchronization uses explicit
+  absolute paths instead of repeating that command shape.
+- M3-A closure validation passes: successor and archive UTF-8/fence/diff checks,
+  zero Release-allowlist overlap, and focused architecture/repository contracts
+  4/4. A final read-only remote query confirms the development branch still equals
+  accepted HEAD `39795283cd65f84547651d7bec816191fb5bfedf`.

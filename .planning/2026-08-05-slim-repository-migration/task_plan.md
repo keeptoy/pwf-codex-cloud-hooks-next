@@ -8,27 +8,25 @@ immutable M1 audit oracle.
 
 ## Current Gate
 
-M3-A governance repair locally validated; full no-live Cloud rerun required.
+M3-A complete; M3-B explicit authorization required.
 
 ## Status
 
-M2-A/B/C and M3 Discovery are complete. M3-A transport pushed reviewed commit
-`f54fb78633d22af5c8f0f225fc8c44ad046aa9c1` to the same-named remote development
-branch. The first no-live Cloud run passed identity, provenance, static, mode, and
-Linux 63/63 gates, then stopped in the runbook-only Managed Policy assertion because
-it read the actual two-level TOML handler structure as one level. The corrected
-governance descendant now validates the nested group/handler shape and passes local
-focused/full regression with zero product/Release-input drift. M3-A remains open
-until that exact descendant is pushed and the complete Fresh Cloud script passes
-from its first line. M3-B, M4, and Product Phase 4 remain unauthorized.
+M2-A/B/C, M3 Discovery, and M3-A are complete. The repaired accepted development
+commit is `39795283cd65f84547651d7bec816191fb5bfedf`; its complete Fresh Cloud rerun
+passes Linux 63/63, isolated install/doctor, adapter-only policy, 11 payload,
+deterministic 22-entry ZIP, zero-hash bootstrap, and clean workspace. Accepted ZIP
+SHA-256 is `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`.
+M3-B, M3-C, M4, and Product Phase 4 remain unauthorized.
 
 ## Next Step
 
-Checkpoint and non-force push the reviewed governance descendant to the same-named
-development branch, verify local/remote HEAD equality, then rerun the complete Fresh
-Cloud no-live seal from the new exact HEAD. Do not combine partial results from the
-first attempt. Do not begin M3-B, create public `main`, publish, cut over, modify
-production behavior, or enter Product Phase 4.
+Checkpoint this M3-A evidence locally without pushing the successor development
+branch, then wait for explicit maintainer authorization for M3-B. When authorized,
+M3-B must checkout exact accepted HEAD `39795283cd65f84547651d7bec816191fb5bfedf`
+and receive the accepted ZIP SHA only through process-level setup input. Do not
+begin M3-C, create public `main`, publish, cut over, modify production behavior, or
+enter Product Phase 4.
 
 ## Invariants
 
@@ -64,6 +62,9 @@ production behavior, or enter Product Phase 4.
 - [x] Freeze M3-B disposable setup plus Fresh/UserPrompt/Resume hard acceptance.
 - [x] Freeze M3-C evidence closure and the M4 stop boundary.
 - [x] Stop for explicit authorization before creating an M3 child commit or push.
+- [x] Pass M3-A transport, complete no-live Linux/Cloud seal, isolated doctor,
+  deterministic ZIP, zero-hash, and clean-workspace gates.
+- [ ] Receive explicit maintainer authorization before M3-B disposable setup.
 
 ## M3 Discovery Verification
 
@@ -105,6 +106,16 @@ production behavior, or enter Product Phase 4.
 - Relative to the immutable M2 root, product/build drift remains zero and the only
   test-tree drift remains `tests/repository-boundary.test.js`. No Release allowlist
   input or bootstrap byte changed.
+
+## M3-A Cloud Acceptance
+
+- Accepted HEAD: `39795283cd65f84547651d7bec816191fb5bfedf`.
+- Linux: 63/63/0/0; root/cross-user/process-group PASS.
+- Isolated install/doctor and adapter-only Managed Policy PASS; payload count 11.
+- Development ZIP: 22 entries / 75,323 bytes / SHA-256
+  `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`.
+- Bootstrap zero hash PASS; stderr empty; workspace clean; terminal M3-A PASS marker
+  observed. M3-A is complete and does not authorize M3-B.
 
 ## M2-B Verification
 

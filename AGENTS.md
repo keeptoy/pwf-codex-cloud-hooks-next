@@ -100,7 +100,8 @@ git diff --check
 
 ## 当前迁移边界
 
-M1 exact mirror 与 M2 slim transformation 已完成，本地分支只有一个 parentless 59-path M2 root
-commit 且尚未 push。M3 Discovery 已冻结验收协议，但 push、Cloud/no-live 执行和 disposable live
-setup 仍是三个后续授权边界。在 M3 Cloud equivalence 和 M4 cutover 各自通过前，本仓库不是新的
-production 权威。Product Phase 4 仍需迁移完成后的独立 Discovery Gate。
+M1 exact mirror、M2 slim transformation 和 M3-A no-live Cloud seal 已完成。M3-A 接受的远端
+development commit 与 ZIP SHA 是 M3-B 的固定外部输入；本地证据 checkpoint 不得在 M3-B 前移动
+该远端 branch。M3-B disposable lifecycle、M3-C evidence closure 和 M4 cutover 仍是独立授权边界。
+在 M3/M4 各自关闭前，本仓库不是新的 production 权威；Product Phase 4 仍需迁移完成后的独立
+Discovery Gate。

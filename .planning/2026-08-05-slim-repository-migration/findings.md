@@ -185,3 +185,14 @@
   This is currently classified as a runbook assertion defect, not production,
   installer, test, or platform failure; source confirmation and a regression are
   required before the rerun.
+
+## M3-A accepted evidence
+
+- The repaired descendant `39795283cd65f84547651d7bec816191fb5bfedf` completed
+  the script from line one with empty stderr and terminal M3-A PASS.
+- The exact development ZIP is 22 entries / 75,323 bytes / SHA-256
+  `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`.
+  This is a development input for M3-B, not a Release asset or bootstrap default.
+- The remote branch must remain on accepted HEAD until M3-B consumes it. M3-A
+  evidence updates therefore remain a local governance checkpoint and are not
+  pushed ahead of the tested commit.

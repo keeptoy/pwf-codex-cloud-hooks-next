@@ -1,6 +1,6 @@
 # beta.3-dev M3 Cloud equivalence
 
-> 状态：`M3-A IN PROGRESS / FULL CLOUD RERUN REQUIRED / M3-B NOT AUTHORIZED`
+> 状态：`M3-A PASS / M3-B AUTHORIZATION REQUIRED`
 >
 > 目标：证明 slim successor 的受控 development commit 在 Linux、隔离安装和真实 Codex Cloud
 > lifecycle 上与已验收 beta.2 production 行为等价。
@@ -45,7 +45,7 @@ beta.3-dev 的文档、仓库身份和 package version 本来就与 beta.2 不�
 | 子门 | 内容 | 外部状态变化 | 当前状态 |
 |---|---|---|---|
 | Discovery | 冻结本文、失败矩阵、运输和安装方式 | 无 | complete |
-| M3-A | push 精确 development commit；Fresh Cloud 跑 no-live Linux seal 和隔离安装 | 新 remote branch；不碰 `/opt/codex` | in progress；首次运行发现 runbook parser defect，完整重跑待执行 |
+| M3-A | push 精确 development commit；Fresh Cloud 跑 no-live Linux seal 和隔离安装 | 新 remote branch；不碰 `/opt/codex` | complete / PASS |
 | M3-B | 一次性 Cloud setup 用本地 development ZIP 安装；执行 Fresh/D/Resume/F | 只改变 disposable Cloud container | 未授权 |
 | M3-C | 记录原始证据、证明 closure 只有治理文件、关闭 M3 | governance commit；无 Release/cutover | 未授权 |
 
@@ -266,6 +266,25 @@ M3-A 必须保存完整 TAP 和末尾所有汇总。Cloud 应为 `63/63/0/0`；W
 不能替代它。`M3_ACCEPTED_HEAD` 与 `DEVELOPMENT_ZIP_SHA256` 是 M3-B 的外部输入，不写回 bootstrap。
 任何 runbook 或 checkout 修正都会产生新的候选 HEAD，必须从脚本第一行完整重跑；不得把前一次运行中
 已经通过的 63/63 与后一次从中途开始的结果拼接成 M3-A PASS。
+
+### 5.3 已接受的 M3-A 证据
+
+完整修复后重跑已通过，stderr 为空：
+
+| 字段 | 接受值 |
+|---|---|
+| `M3_ACCEPTED_HEAD` | `39795283cd65f84547651d7bec816191fb5bfedf` |
+| Linux suite | 63 tests / 63 pass / 0 fail / 0 skipped |
+| root/cross-user/process-group | PASS |
+| isolated install/doctor | PASS |
+| Managed Policy | adapter-only PASS |
+| installed runtime payload | 11 |
+| development ZIP | 22 entries / 75,323 bytes |
+| `DEVELOPMENT_ZIP_SHA256` | `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508` |
+| bootstrap/workspace | zero-hash PASS / clean YES |
+
+这两个完整 hash 是 M3-B setup 的固定外部输入。M3-A 证据治理更新可以先做本地 checkpoint，但在
+M3-B 使用精确 checkout 前不得 push 到同名 development branch；否则 branch HEAD 会离开已接受值。
 
 ## 6. M3-B：disposable Cloud setup
 
