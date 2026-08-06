@@ -22,6 +22,7 @@ const expectedPaths = [
   "contracts/plan-context-result-v1.schema.json",
   "contracts/release-artifact-v1.json", "contracts/runtime-bundle-v1.json",
   "contracts/runtime-result-v1.schema.json", "docs/beta3-dev-m3-cloud-equivalence.md",
+  "docs/beta3-dev-m4-cutover-plan.md",
   "docs/git-file-modes.md",
   "docs/v0.3.0-beta.2-cloud-hard-acceptance.md", "hooks/hook_adapter.py",
   "init-cloud-sandbox-v0.3.0.bash", "install.js", "package.json",
@@ -50,7 +51,7 @@ test("slim repository has the exact current allowlist and no archived path alias
   });
   assert.equal(result.status, 0, result.stderr);
   const actual = result.stdout.trim().split(/\r?\n/).filter(Boolean).map(value => value.replaceAll("\\", "/")).sort();
-  assert.equal(expectedPaths.length, 60);
+  assert.equal(expectedPaths.length, 61);
   assert.deepEqual(actual, expectedPaths);
   for (const forbidden of [
     "PROJECT_UNDERSTANDING.md", "work_plan.md", "黑盒验证.md", "snapshot-prototype/",
@@ -82,6 +83,7 @@ test("archived prototype and history remain outside runtime, Release, and adapte
   const adapter = read("hooks/hook_adapter.py");
   const installer = read("install.js");
   const m3Runbook = read("docs/beta3-dev-m3-cloud-equivalence.md");
+  const m4Runbook = read("docs/beta3-dev-m4-cutover-plan.md");
   for (const content of [runtime, release, adapter]) {
     assert.doesNotMatch(content, /snapshot-prototype|prototype_snapshot_runner/);
     assert.doesNotMatch(content, /docs\/phase-|\.planning\/2026-08-01/);
@@ -95,4 +97,8 @@ test("archived prototype and history remain outside runtime, Release, and adapte
   assert.match(m3Runbook, /event_groups = policy\["hooks"\]\[event\]/);
   assert.match(m3Runbook, /handlers = event_groups\[0\]\["hooks"\]/);
   assert.doesNotMatch(m3Runbook, /handlers\[0\]\["command"\]/);
+  assert.match(m4Runbook, /M4A_SUCCESSOR_AUTHORITY_CUTOVER=PASS/);
+  assert.match(m4Runbook, /M4B_ARCHIVE_PROVENANCE_HANDOFF=PASS/);
+  assert.match(m4Runbook, /M4C_CUTOVER_ROLLBACK_ACCEPTANCE=PASS/);
+  assert.match(m4Runbook, /M4 不发布 beta\.3/);
 });

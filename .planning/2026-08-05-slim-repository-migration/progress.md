@@ -341,3 +341,60 @@
 - The commit containing this record is the single local M3 governance closure.
   Candidate remains exactly seven existing governance paths with zero production,
   test, contract, bootstrap, or Release-input drift; no push or M4 action follows.
+
+## M4 Discovery
+
+- Maintainer explicitly authorized M4 Discovery. Recovered the successor entry
+  documents, architecture, roadmap, provenance, handoff, active planning, and clean
+  local branch before making any external change.
+- Updated the active plan to mark Discovery in progress and freeze its read-only
+  boundary. No push, ref move, public main, default-branch/repository-setting change,
+  Release, live Cloud action, production modification, or Product Phase 4 work has
+  occurred.
+- The first combined planning patch failed atomically because the expected findings
+  tail did not match the current file; it made no partial edit. A bounded tail read
+  followed by smaller file-level patches resolved the update without repeating the
+  failed approach.
+- Completed the first read-only topology pass. Local slim HEAD is `d9308763...`,
+  remote tested development is `39795283...`, audit is `bbad3703...`, there is no
+  local/remote `main` or tag, and the slim branch has no configured upstream.
+- GitHub connector metadata confirms the successor is public and its current
+  default branch is already `migration/slim-beta3-dev`; only development and audit
+  branches exist. No GitHub setting or ref was changed.
+- The first ruleset/Release metadata fallback could not run because `gh` is not
+  installed on this Windows host. A second attempt to open raw GitHub API URLs with
+  the web reader was rejected as unsafe before any request. Neither attempt changed
+  remote state; Discovery will use a different read-only transport and keep
+  unobserved protection settings explicit if that transport is unavailable.
+- A different read-only public GitHub API transport succeeded. It confirms zero
+  successor rulesets/Releases, old default `0.3.0-beta.2`, old immutable Releases,
+  and no archive state. Classic branch protection remains explicitly unobserved.
+- Scanned successor identity/bootstrap/Release inputs and the old repository's
+  README/branch state. The old README has no successor link; its local M3 handoff
+  commit is one ahead of remote. No file outside successor planning has been edited.
+- Read current GitHub default-branch, branch-rename, ruleset, and protected-branch
+  documentation. The evidence supports a create-main-then-switch route and warns
+  that branch rename does not redirect raw URLs or Git pull.
+- Inspected the exact repository-boundary test. A trailing Windows-incompatible
+  `rg` glob made the combined read command exit 1 after producing the needed output;
+  no file changed. Future searches will pass explicit paths instead of shell-style
+  `*.js` on PowerShell.
+- Added the dedicated M4 design/runbook and synchronized AGENTS, ROADMAP, handoff,
+  active planning, and the exact boundary test. The boundary is now 61 paths; only
+  the new governance document increases the count, and Release remains 22 entries.
+- The first Python fence check was invalid because PowerShell reduced three
+  backticks inside a double-quoted native argument to one. A native PowerShell
+  strict UTF-8/fence/local-link check replaced it and passes all 13 maintained docs.
+- Importer and Node syntax PASS. The first focused Node run hit the known Windows
+  sandbox `spawn EPERM`, classified as platform/sandbox limitation; the unchanged
+  tests reran outside that sandbox and pass 4/4. Cached diff check also passes.
+- Full Windows suite PASS at 63 registered / 52 pass / 0 fail / 11 honest POSIX
+  skips. Two independent development ZIP build/check runs remain exact at 22
+  entries / 75,323 bytes / accepted SHA-256 `82770964...`; temporary artifacts were
+  removed. M4 Discovery is design-complete and stops for checkpoint/M4-A authority.
+- Final successor candidate is exactly eight staged paths: seven governance entries
+  plus the repository-boundary test. It contains 61 tracked paths, has zero Release
+  allowlist overlap, no unstaged/untracked files, and passes cached diff checks.
+- The archive handoff candidate is exactly six staged governance documents; README
+  is intentionally unchanged until M4-B. No commit, push, remote mutation, Release,
+  live Cloud, production, or Product Phase 4 action followed Discovery.

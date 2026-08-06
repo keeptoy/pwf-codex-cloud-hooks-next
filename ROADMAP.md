@@ -18,7 +18,7 @@
 | M1 exact mirror | 证明新 remote/audit branch 与 beta.2 commit/tree/资产完全一致 | complete |
 | M2 slim transformation | 精简历史树，建立新 authority/identity/provenance 和 root commit | complete；checkpoint 已收到 |
 | M3 Cloud equivalence | development branch Fresh/Resume/doctor/ZIP/Linux suite | complete；local governance closure，not pushed |
-| M4 cutover | 建立公开 `main`、交割、旧仓库导航和 rollback 演练 | pending；未授权 |
+| M4 cutover | 建立公开 `main`、交割、旧仓库导航和 rollback 演练 | Discovery complete；checkpoint / M4-A authorization required |
 
 M2 内部分为：
 
@@ -83,15 +83,25 @@ remote/Release 边界不漂移，并通过 importer/static、4/4 focused contrac
 
 ## 5. M4 cutover
 
-只有 M3 PASS 后才能设计 M4。M4 至少处理：
+M4 Discovery 已完成，实施尚未授权。只读远端证据确认 successor 已是 public，当前 default 是
+`migration/slim-beta3-dev`，远端只有 development 和 audit 两个分支，没有 `main`、tag、Release 或
+repository ruleset；classic protection 仍需在实施前用 authenticated 设置面确认。
 
-- successor public `main` 的建立方式；
-- branch protection、default branch、repository description；
-- `MAINTAINER_HANDOFF.md` 的实际交割演练；
-- 旧仓库 README 指向 successor，同时保留 beta.2 Release/历史证据；
-- successor provenance 反向引用旧仓库 frozen commit/tag/assets；
-- 回到 beta.2 不依赖 successor 修复的 rollback 演练；
-- 新 pre-release identity 与最终双资产封板。
+冻结候选路线不是 rename/move 已验收 development ref，而是：
+
+1. 从本地 M3 治理后代的新 checkpoint 以 non-force exact refspec 创建 `main`；
+2. 验证 main SHA 与两个 evidence refs 后，再把 default 切到 `main` 并配置最小 integrity policy；
+3. 更新旧仓库入口和 successor provenance，但保持旧仓库 public/unarchived、beta.2 assets 不变；
+4. fresh default clone 执行 Linux/Cloud no-live seal，并独立下载验证 beta.2 rollback；
+5. 完成交割后仍停在产品 Phase 4 Discovery 授权门前。
+
+M4 分为 Discovery、M4-A successor authority、M4-B archive/provenance handoff、M4-C cutover/rollback
+acceptance 四轮，互不自动授权。M4 不发布 beta.3：正式非 `-dev` identity、ZIP/bootstrap hash 和
+发布后 Fresh/Resume 属于未来独立 Release gate。完整路线、mutation/failure matrix 和退出条件见
+[`docs/beta3-dev-m4-cutover-plan.md`](docs/beta3-dev-m4-cutover-plan.md)。
+
+本地 Discovery 验证保持 exact 61-path source boundary、63/52/0/11 Windows suite 和 M3 接受的
+22-entry ZIP 字节。唯一下一步是维护者 checkpoint 后单独授权 M4-A；当前不得 push 或修改 GitHub。
 
 ## 6. 产品 Phase 4～9
 

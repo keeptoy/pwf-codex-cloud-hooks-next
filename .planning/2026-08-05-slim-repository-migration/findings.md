@@ -233,3 +233,71 @@
   executable set, audit oracle, remote tested HEAD, and zero Release overlap all
   remain frozen; therefore a local closure commit is eligible only after final
   document/importer/focused/staged checks.
+
+## M4 Discovery opening
+
+- The maintainer explicitly authorized M4 Discovery after both local M3/archive
+  checkpoints were clean. This authorization is design-only: it does not authorize
+  push, public `main`, default-branch or repository-setting mutation, Release,
+  cutover, old-repository navigation edits, production behavior, or Product Phase 4.
+- M4 must distinguish Git object/ref operations from GitHub repository settings.
+  A local branch named `main` or a pushed ref does not itself prove the remote
+  default branch, branch protection, repository description, or archive navigation.
+- The accepted Cloud-tested remote HEAD `39795283...`, local governance closure
+  `d9308763...`, immutable M2 root, and M1 audit ref form separate identities. The
+  Discovery must decide which governance descendants become public without moving
+  either immutable oracle or claiming untested product bytes.
+- Local topology has no `main` or tag. Local slim HEAD is `d9308763...`; remote
+  development remains tested `39795283...`; the local branch has no upstream
+  configuration and is two governance commits ahead. The audit branch remains
+  `bbad3703...`; the complete ref set therefore has two intentionally unrelated
+  histories, not one root across all refs.
+- GitHub repository metadata is current and materially changes the old assumption:
+  `keeptoy/pwf-codex-cloud-hooks-next` is already public, and its default branch is
+  `migration/slim-beta3-dev`. The only remote branches are that development branch
+  and `audit/beta2-exact`; `main` does not exist. A cutover plan must therefore move
+  the default branch deliberately rather than treating its creation as sufficient.
+- Current GitHub merge settings allow merge commits, rebase, and squash; auto-merge
+  and update-branch are disabled. These are observed repository settings, not yet
+  proposed cutover policy. Branch/ruleset protection still requires separate
+  read-only evidence.
+- GitHub's public read API reports zero repository rulesets and zero successor
+  Releases. Classic branch protection cannot be inferred from an empty ruleset list
+  and remains unobserved because the available authenticated connector has no
+  protection-read action. M4 must treat protection as an explicit pre/post mutation
+  check, not claim it is absent.
+- The old repository is public, unarchived, and defaults to branch `0.3.0-beta.2`.
+  Its immutable Releases remain available through beta.2 and earlier versions; the
+  successor has none. This supports keeping the old repository active as the
+  rollback/archive source rather than renaming, deleting, or archiving it in M4.
+- The successor bootstrap already targets the successor Release URL but remains
+  beta.3-dev with a zero hash. Its ZIP allowlist excludes docs/planning, so M4
+  governance and navigation edits do not change development artifact bytes unless
+  README or another allowlisted entry changes. A real pre-release is therefore a
+  separate post-cutover Release gate, not a prerequisite for creating `main`.
+- The old README currently has no successor navigation link and still presents
+  Phase 4 as the next product step. Cutover needs a small archive banner/link update,
+  while retaining beta.2 installation, asset, and historical evidence in place.
+- The old local branch is one governance-only checkpoint ahead of its remote.
+  M4 must either publish that checkpoint before the navigation commit or combine
+  both in a reviewed old-repository push; silently leaving the M3 handoff local
+  would make the public archive contradict the successor's provenance narrative.
+- GitHub documents two technically valid default-branch routes: rename the current
+  default branch, or create a second branch and explicitly select it as default.
+  Rename provides web URL redirects and updates branch policies, but raw URLs and
+  Git pull do not redirect. Because M3 evidence intentionally names and freezes the
+  development ref, creating `main` from an exact descendant and then changing the
+  default branch is more transparent than renaming the evidence ref.
+- GitHub requires more than one branch before changing the default. Repository
+  rulesets can layer with classic protection and are readable by repository readers;
+  an active ruleset may prevent deletion and non-fast-forward updates. The successor
+  currently has no ruleset, so M4 should add a minimal `main` integrity policy only
+  after exact branch creation and before declaring cutover complete.
+- Adding a dedicated M4 design document increases the exact slim boundary from 60
+  to 61 paths. `tests/repository-boundary.test.js` is the sole test that must change:
+  add the new governance path and update the exact count. Release remains 22 entries
+  because the machine contract excludes all `docs/` and `tests/` paths.
+- Discovery verification confirms the boundary decision: focused contracts 4/4,
+  full Windows 63/52/0/11, strict 13-document validation, importer/static checks,
+  and two exact accepted ZIP builds all pass. The selected route can advance to an
+  authorization checkpoint without any production or Release-input exception.

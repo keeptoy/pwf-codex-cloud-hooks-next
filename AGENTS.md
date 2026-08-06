@@ -26,6 +26,7 @@
 | 活动 `.planning/<slug>/task_plan.md` | 当前唯一 Next Step、授权、禁止事项和停止条件 |
 | 活动 `findings.md` / `progress.md` | 研究结论、实施和错误证据 |
 | `docs/beta3-dev-m3-cloud-equivalence.md` | M3 的 transport、no-live Cloud seal、disposable setup、Fresh/Resume 和停止门槛 |
+| `docs/beta3-dev-m4-cutover-plan.md` | M4 的 public main、default/protection、旧仓库导航、rollback 和停止门槛 |
 | `docs/v0.3.0-beta.2-cloud-hard-acceptance.md` | 不可变 beta.2 A～F 与资产验收证据 |
 | `docs/git-file-modes.md` | Windows/Linux mode、LF 检查与恢复 |
 
@@ -101,7 +102,8 @@ git diff --check
 ## 当前迁移边界
 
 M1 exact mirror、M2 slim transformation 和 M3 Cloud equivalence 已完成；远端 development branch
-仍停在实际被测试的 `39795283...`，本地 M3 closure descendant 只含七个既有治理文件。M4 cutover
-尚未授权，本仓库仍不是新的 production 权威。只有维护者单独授权 M4 Discovery 后，才能设计
-public `main`、default branch、旧仓库导航和 rollback 演练；Product Phase 4 还需要迁移完成后的
-独立 Discovery Gate。
+仍停在实际被测试的 `39795283...`，本地 M3 closure descendant 只含七个既有治理文件。M4
+Discovery 已完成并等待 checkpoint/M4-A 授权；当前只冻结了 public `main`、default/protection、
+旧仓库导航和 rollback 的设计。push、
+远端 `main`、仓库设置、Release 和 cutover implementation 仍未授权。本仓库尚不是新的 production
+权威；Product Phase 4 还需要迁移完成后的独立 Discovery Gate。

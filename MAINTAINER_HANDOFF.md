@@ -17,8 +17,9 @@
 - 当前仓库迁移：M1/M2/M3 complete。实际测试 HEAD 为
   `39795283cd65f84547651d7bec816191fb5bfedf`，ZIP SHA-256 为
   `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`；M3-B setup、Fresh、
-  canonical、Resume 和 doctor 全部 PASS。M3 closure descendant 只含治理文件；M4 Discovery
-  尚未授权，远端 development branch 暂不移动。
+  canonical、Resume 和 doctor 全部 PASS。M3 closure descendant 只含治理文件。M4 Discovery
+  已完成设计并等待 checkpoint；M4-A push/main/default/protection、M4-B 旧仓库交割、M4-C rollback 验收
+  均未授权，远端 development branch 暂不移动。
 - M1 audit branch：`audit/beta2-exact`，不得移动或重写。
 - Product Phase 4：未开始、未授权。
 - 生产集成：只支持 PWF v3.8.2 的两个 Managed Hook events。
@@ -120,6 +121,13 @@ zero checksum 并 fail closed。
 9. 记录 immutable acceptance 文档和 rollback。
 
 不要重用 beta.2 asset name/hash，也不要用 moving branch/latest URL。
+
+## 9.1 M4 仓库切换
+
+M4 的当前权威是 `docs/beta3-dev-m4-cutover-plan.md`。默认路线保留 Cloud-tested development ref，
+从经审计治理后代新建 `main`，验证 SHA 后才切 default。旧仓库继续承载 beta.2 Release 和 rollback，
+不得 rename/archive/delete。每个远端 mutation 都要单独记录实际值并通过前一子门；Discovery 文档
+本身不授权执行这些动作。
 
 ## 10. 回滚
 

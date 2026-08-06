@@ -8,7 +8,7 @@ immutable M1 audit oracle.
 
 ## Current Gate
 
-M3 complete; M4 Discovery explicit authorization required.
+M4 Discovery complete; maintainer checkpoint and M4-A authorization required.
 
 ## Status
 
@@ -36,16 +36,24 @@ blockers, installer `0.3.0-beta.3-dev`, exact 11-file manifest inventory, and ze
 snapshot leftovers. M3-B is complete.
 M3-C closure proves the tested-commit descendant contains exactly seven existing
 governance paths, with root/tree/path/mode/audit/remote/Release boundaries intact.
-The commit containing this record is the single local M3 closure commit. M4 and
-Product Phase 4 remain unauthorized.
+The commit containing this record is the single local M3 closure commit. The
+maintainer has now explicitly authorized M4 Discovery only. Push, public `main`,
+default-branch mutation, Release, cutover implementation, old-repository navigation
+changes, and Product Phase 4 remain unauthorized until Discovery freezes a reviewed
+sub-gate and the maintainer separately authorizes it.
+Discovery now freezes the create-main-then-switch route, three implementation
+sub-gates, exact external mutations, failure recovery, rollback independence, and
+Release decoupling. Local Windows/document/ZIP verification passes; no external
+state changed.
 
 ## Next Step
 
-Stop with M3 closed and wait for explicit maintainer authorization for M4
-Discovery. Keep the closure commit local and keep remote
-`migration/slim-beta3-dev` on tested HEAD `39795283...`; do not push, create public
-`main`, change the default branch, publish, cut over, modify production behavior,
-or enter Product Phase 4.
+Review and checkpoint the M4 Discovery candidate, then wait for explicit M4-A
+authorization. M4-A alone may create exact remote `main`, verify its SHA, switch the
+successor default branch, and configure the reviewed integrity policy. Until that
+authorization, do not push, create remote `main`, change a default branch or
+repository setting, publish, edit live Cloud state, modify production behavior,
+update the old repository navigation, or enter Product Phase 4.
 
 ## Invariants
 
@@ -58,6 +66,9 @@ or enter Product Phase 4.
 - The slim branch remains local and unpushed throughout Discovery.
 - No Cloud/live execution, Release, cutover, production activation, or Phase 4
   work is authorized by Discovery.
+- M4 Discovery may update governance documents and add one dedicated design/runbook,
+  but it may not move local/remote refs, rewrite the M2 root or M1 audit oracle, or
+  turn a proposed external repository setting into an observed fact.
 
 ## Gate Sequence
 
@@ -97,6 +108,30 @@ or enter Product Phase 4.
   paths with root/path/mode/audit/remote/Release boundaries intact.
 - [x] Pass final document/importer/focused-test and staged-candidate checks.
 - [x] Create and verify one local M3 closure commit without push.
+- [x] Audit exact M4 local/remote topology, repository settings dependencies,
+  provenance/navigation/rollback requirements, and cutover route alternatives.
+- [x] Freeze M4 sub-gates, explicit external mutations, stop conditions, rollback,
+  Cloud/Release evidence, and the sole post-Discovery Next Step.
+- [x] Pass document/reference/boundary checks and stop for explicit M4-A authority.
+
+## M4 Discovery Verification
+
+- Current GitHub facts: successor is public/unarchived, default is
+  `migration/slim-beta3-dev`, remote branches are development/audit only, and
+  `main`, tags, Releases, and repository rulesets are absent. Classic protection
+  remains an explicit authenticated M4-A preflight observation.
+- Route: create exact `main` from an audited governance descendant, verify it, then
+  switch default; preserve tested development and audit refs; do not rename repos or
+  couple cutover with beta.3 Release.
+- Exact boundary: 61 tracked paths after one new M4 governance document; Release
+  contract remains 22 entries and excludes docs/tests/planning.
+- Importer and Node syntax PASS; strict UTF-8/fences/local links PASS for 13 docs;
+  focused architecture/repository contracts PASS 4/4; `git diff --check` PASS.
+- Full Windows suite: 63 registered / 52 pass / 0 fail / 11 honest POSIX skips.
+- Two ZIP builds/checks: 22 entries / 75,323 bytes / exact accepted SHA-256
+  `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`.
+- No push, remote ref/default/ruleset/description mutation, old-repository edit,
+  Release, live Cloud action, production change, or Product Phase 4 action occurred.
 
 ## M3-C Closure Audit
 
