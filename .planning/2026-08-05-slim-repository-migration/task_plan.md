@@ -8,7 +8,7 @@ immutable M1 audit oracle.
 
 ## Current Gate
 
-M4-A successor authority cutover complete; maintainer checkpoint and M4-B authorization required.
+M4-B archive/provenance handoff complete; maintainer checkpoint and M4-C authorization required.
 
 ## Status
 
@@ -36,26 +36,21 @@ blockers, installer `0.3.0-beta.3-dev`, exact 11-file manifest inventory, and ze
 snapshot leftovers. M3-B is complete.
 M3-C closure proves the tested-commit descendant contains exactly seven existing
 governance paths, with root/tree/path/mode/audit/remote/Release boundaries intact.
-The commit containing this record is the single local M3 closure commit. The
-maintainer has now explicitly authorized M4 Discovery only. Push, public `main`,
-default-branch mutation, Release, cutover implementation, old-repository navigation
-changes, and Product Phase 4 remain unauthorized until Discovery freezes a reviewed
-sub-gate and the maintainer separately authorizes it.
-Discovery froze the create-main-then-switch route, three implementation sub-gates,
-exact external mutations, failure recovery, rollback independence, and Release
-decoupling. Local Windows/document/ZIP verification passes. The maintainer has
-checkpointed both repositories and explicitly authorized M4-A only. The exact
-candidate for remote `main` is local successor commit
-`cc9bc878ddc7d70c25156dd053e2874758f0814a`; M4-B, M4-C, old-repository edits,
-Release, live Cloud, production behavior, and Product Phase 4 remain unauthorized.
+M4 Discovery then froze create-main-then-switch and preserved both evidence refs.
+M4-A created exact `main@cc9bc878ddc7d70c25156dd053e2874758f0814a`, made it
+the public default, activated minimum main/evidence integrity rulesets, and passed
+fresh default clone. M4-B now publishes exact cross-repository provenance and old
+archive/rollback navigation without successor README/Release-input drift or beta.2
+asset mutation. M4-C, Release/tag, live Cloud, production behavior, repository
+rename/archive/delete, and Product Phase 4 remain unauthorized.
 
 ## Next Step
 
-Review and checkpoint the local M4-A governance record, then wait for explicit
-M4-B authorization. M4-B alone may synchronize successor provenance/navigation
-and the old repository archive banner under the frozen handoff contract. Until
-that authorization, do not edit or push the old repository, publish, create tags,
-touch live Cloud, modify production behavior, or enter Product Phase 4.
+Review and checkpoint the published M4-B governance descendants, then wait for
+explicit M4-C authorization. M4-C alone may run the frozen no-live cutover,
+rollback-download, clean-clone, and handoff acceptance. Do not publish a Release/
+tag, touch live Cloud, modify production behavior, rename/archive either repository,
+or enter Product Phase 4.
 
 ## Invariants
 
@@ -124,6 +119,29 @@ touch live Cloud, modify production behavior, or enter Product Phase 4.
   policy through a controlled, observable GitHub interface.
 - [x] Verify a fresh no-branch clone selects exact `main`, record M4-A evidence,
   and stop before M4-B.
+- [x] Receive the M4-A local checkpoint and explicit M4-B authorization.
+- [x] Add exact old-repository/beta.2 asset links and observed main/default/policy
+  facts to successor provenance, roadmap, handoff, and planning without README or
+  Release-input drift.
+- [x] Add the old-repository archive/rollback banner and historical-authority state
+  while preserving beta.2 install instructions, source, tags, Releases, and default.
+- [x] Pass dual-repository document/boundary/Release-drift and remote-identity gates.
+- [x] Publish both governance descendants by normal fast-forward, verify GitHub
+  navigation/authority facts, and stop before M4-C.
+
+## M4-B Verification
+
+- Successor changed seven governance/provenance documents with zero README or
+  22-entry Release-input overlap; archive changed exactly six navigation documents.
+- Successor importer and repository boundary 3/3 PASS; deterministic ZIP remains
+  22 entries / 75,323 bytes / accepted SHA-256 `82770964...`.
+- All 13 changed Markdown files are strict UTF-8/LF with balanced fences and valid
+  local links; both worktrees pass `git diff --check` before commit.
+- Old beta.2 Release ID `365362981` and asset IDs `502341456` / `502341323` retain
+  exact sizes and SHA-256 digests; default remains `0.3.0-beta.2`, public/unarchived.
+- Both repositories publish by normal fast-forward only; no force, rename, archive,
+  tag/Release, live Cloud, production, or Product Phase 4 mutation is authorized.
+- `M4B_ARCHIVE_PROVENANCE_HANDOFF=PASS`; M4-C remains separately unauthorized.
 
 ## M4-A Verification
 

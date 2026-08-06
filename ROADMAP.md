@@ -83,9 +83,11 @@ remote/Release 边界不漂移，并通过 importer/static、4/4 focused contrac
 
 ## 5. M4 cutover
 
-M4 Discovery 已完成，实施尚未授权。只读远端证据确认 successor 已是 public，当前 default 是
-`migration/slim-beta3-dev`，远端只有 development 和 audit 两个分支，没有 `main`、tag、Release 或
-repository ruleset；classic protection 仍需在实施前用 authenticated 设置面确认。
+M4-A 与 M4-B archive/provenance handoff 已通过。successor 是 public、
+unarchived，default 已切为 exact `main@cc9bc878...`；Cloud-tested development
+`39795283...` 与 audit `bbad3703...` 未移动。`main-integrity` 和 `evidence-integrity` 两个
+active ruleset 分别保护 authority/evidence refs，规则只有 deletion 与 non-fast-forward；
+classic protection 不叠加。successor 仍无 tag 或 Release。
 
 冻结候选路线不是 rename/move 已验收 development ref，而是：
 
@@ -100,8 +102,9 @@ acceptance 四轮，互不自动授权。M4 不发布 beta.3：正式非 `-dev` 
 发布后 Fresh/Resume 属于未来独立 Release gate。完整路线、mutation/failure matrix 和退出条件见
 [`docs/beta3-dev-m4-cutover-plan.md`](docs/beta3-dev-m4-cutover-plan.md)。
 
-本地 Discovery 验证保持 exact 61-path source boundary、63/52/0/11 Windows suite 和 M3 接受的
-22-entry ZIP 字节。唯一下一步是维护者 checkpoint 后单独授权 M4-A；当前不得 push 或修改 GitHub。
+M4-A 的无分支 fresh clone 已得到 exact `main`、61 paths、四个 `100755` upstream runtime 和
+clean workspace。M4-B 已发布双向 provenance/navigation，保持 successor README/Release inputs、
+旧 beta.2 assets 与两个仓库名称/公开状态不变。当前停在 M4-C 单独授权前；M4 不发布 beta.3。
 
 ## 6. 产品 Phase 4～9
 

@@ -14,12 +14,13 @@
 
 - 产品 rollback：published/accepted `v0.3.0-beta.2`。
 - 当前开发身份：`0.3.0-beta.3-dev`，不可发布。
-- 当前仓库迁移：M1/M2/M3 complete。实际测试 HEAD 为
+- 当前仓库迁移：M1/M2/M3 和 M4-A complete。实际测试 HEAD 为
   `39795283cd65f84547651d7bec816191fb5bfedf`，ZIP SHA-256 为
   `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`；M3-B setup、Fresh、
-  canonical、Resume 和 doctor 全部 PASS。M3 closure descendant 只含治理文件。M4 Discovery
-  已完成设计并等待 checkpoint；M4-A push/main/default/protection、M4-B 旧仓库交割、M4-C rollback 验收
-  均未授权，远端 development branch 暂不移动。
+  canonical、Resume 和 doctor 全部 PASS。远端默认源码权威是
+  `main@cc9bc878ddc7d70c25156dd053e2874758f0814a`；development/audit evidence refs
+  未移动，两个 active integrity ruleset 只禁止 deletion 与 non-fast-forward。M4-B 双向
+  archive/provenance 交割已通过；M4-C rollback 验收仍未授权。
 - M1 audit branch：`audit/beta2-exact`，不得移动或重写。
 - Product Phase 4：未开始、未授权。
 - 生产集成：只支持 PWF v3.8.2 的两个 Managed Hook events。

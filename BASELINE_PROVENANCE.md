@@ -6,14 +6,14 @@
 
 | 项目 | 值 |
 |---|---|
-| 旧仓库 | `keeptoy/pwf-codex-cloud-hooks` |
-| Release | `v0.3.0-beta.2` |
-| source/audit commit | `bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b` |
+| 旧仓库 | [`keeptoy/pwf-codex-cloud-hooks`](https://github.com/keeptoy/pwf-codex-cloud-hooks) |
+| Release | [`v0.3.0-beta.2`](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/tag/v0.3.0-beta.2) |
+| source/audit commit | [`bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b`](https://github.com/keeptoy/pwf-codex-cloud-hooks/commit/bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b) |
 | source/audit tree | `ff49c3c6656386e94450ccb24437a1c2d1c50e95` |
-| ZIP | `pwf-codex-cloud-hooks-v0.3.0-beta.2.zip` |
+| ZIP | [`pwf-codex-cloud-hooks-v0.3.0-beta.2.zip`](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/download/v0.3.0-beta.2/pwf-codex-cloud-hooks-v0.3.0-beta.2.zip) |
 | ZIP entries / size | 22 / 84,572 bytes |
 | ZIP SHA-256 | `812cc9cdcafa93b5fcc47cc763fd743f11be77958b75eea1fa4cf0508dd391ab` |
-| bootstrap | `init-cloud-sandbox-v0.3.0.bash` |
+| bootstrap | [`init-cloud-sandbox-v0.3.0.bash`](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/download/v0.3.0-beta.2/init-cloud-sandbox-v0.3.0.bash) |
 | bootstrap size | 17,425 bytes |
 | bootstrap SHA-256 | `d572b77d920b34c34c7912ba364376ae3668216f00ce350251bd7c8b336abcd6` |
 
@@ -23,9 +23,9 @@
 
 ## 2. M1 exact-mirror 证据
 
-successor remote：`keeptoy/pwf-codex-cloud-hooks-next`。
+successor remote：[`keeptoy/pwf-codex-cloud-hooks-next`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next)。
 
-只读 audit branch：`audit/beta2-exact`，与上述 commit/tree 相同。M1 验收得到：
+只读 audit branch：[`audit/beta2-exact`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/tree/audit/beta2-exact)，与上述 commit/tree 相同。M1 验收得到：
 
 - Windows：69 registered / 51 PASS / 18 honest POSIX skips / 0 FAIL；
 - Fresh Cloud/Linux：69/69/0/0；
@@ -37,7 +37,18 @@ successor remote：`keeptoy/pwf-codex-cloud-hooks-next`。
 M1 只证明镜像等价。`audit/beta2-exact` 必须保持可读、clean、不移动，不能作为 slim development
 branch 重写。
 
-## 3. 上游来源
+## 3. 当前源码权威
+
+- 日常源码与后续治理入口：[`main`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/tree/main)；
+- M4-A authority commit：[`cc9bc878ddc7d70c25156dd053e2874758f0814a`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/cc9bc878ddc7d70c25156dd053e2874758f0814a)；
+- Cloud-tested evidence：[`39795283cd65f84547651d7bec816191fb5bfedf`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/39795283cd65f84547651d7bec816191fb5bfedf)；
+- `main-integrity` 与 `evidence-integrity` 均 active，只限制 deletion 与
+  non-fast-forward；classic protection 不叠加，未虚构 required CI。
+
+旧仓库默认分支会包含历史导航治理提交，因此它不是 beta.2 Release 字节的重建来源。需要复验
+beta.2 时必须使用上表冻结 commit、两个不可变 Release assets 与 SHA-256。
+
+## 4. 上游来源
 
 | 项目 | 值 |
 |---|---|
@@ -52,7 +63,7 @@ branch 重写。
 pristine/managed hashes 和 deferred candidates。`tools/import_upstream_runtime.py` 只接受该 allowlist，
 验证 archive、license、anchor、mode 和 destination inventory。
 
-## 4. Owned compatibility overlay
+## 5. Owned compatibility overlay
 
 只有 `runtime/upstream/session-catchup.py` 与 pristine upstream 不同。四项 overlay 顺序固定：
 
@@ -78,7 +89,7 @@ Overlay 只应用到 repository-owned copy；global Skill 保持 pristine。稳�
 `upstream-manifest.json.historical_patched_skill_files` 名称带有历史色彩，但当前 patcher 仍用它交叉
 校验 managed hash，因此在不修改 reproduction contract 前保留。它不是 global Skill mutation 许可。
 
-## 5. Cloud 事实边界
+## 6. Cloud 事实边界
 
 2026-08 的实测环境：
 
@@ -93,7 +104,7 @@ Overlay 只应用到 repository-owned copy；global Skill 保持 pristine。稳�
 这些是 fixtures 与验收绑定的平台观测，不声明 `/opt/codex` 永久不变。runtime 仍必须覆盖变量缺失、
 显式 Host input 和受控 fallback。
 
-## 6. Slim transformation 来源
+## 7. Slim transformation 来源
 
 M2 从 M1 audit tree 选择性构造 exact 59-path orphan skeleton：46 个原名保留路径、六个 Git-aware
 rename source 和七个新文档/planning entrypoints。历史 planning、Phase/Round docs 和 snapshot prototype
@@ -108,7 +119,7 @@ rename source 和七个新文档/planning entrypoints。历史 planning、Phase/
 Production runtime、schemas、installer 和 upstream scripts 在 M2-B 不改变行为。新的开发身份为
 `0.3.0-beta.3-dev`；bootstrap 使用 successor URL 和 64 个 `0` 的 checksum，明确不可发布。
 
-## 7. 验证来源链
+## 8. 验证来源链
 
 ```text
 pinned upstream archive + license

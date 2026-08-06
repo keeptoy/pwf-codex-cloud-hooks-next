@@ -432,3 +432,19 @@
 - `M4A_SUCCESSOR_AUTHORITY_CUTOVER=PASS`. No Release, tag, live Cloud,
   old-repository, production, or Product Phase 4 mutation occurred. Stopped for
   local checkpoint and explicit M4-B authorization.
+
+## M4-B
+
+- Maintainer checkpointed successor M4-A as `94cd28a3...`, did not push it, and
+  explicitly authorized the next gate. Recovered clean successor and archive
+  worktrees before editing.
+- Marked M4-B in progress with a hard stop before M4-C. No file, remote ref,
+  repository setting, Release/tag, live Cloud state, production byte, or Product
+  Phase 4 state has changed at this opening point.
+- M4-B prepublication seal PASS: successor importer/boundary 3/3, exact accepted
+  double ZIP, seven successor and six archive changed-document checks, zero
+  successor Release overlap, intentional archive README-only overlap, clean diffs,
+  exact remote refs/settings, and immutable beta.2 asset metadata.
+- Prepared normal fast-forward governance publication in archive-first/successor-
+  second order. `M4B_ARCHIVE_PROVENANCE_HANDOFF=PASS` is conditional only on those
+  exact normal pushes and final readback; all M4-C and product/Release actions stop.

@@ -335,3 +335,16 @@
 - The minimum evidence policy preserves emergency fast-forward maintenance while
   blocking deletion and non-fast-forward changes. It does not fully freeze all
   future updates and does not claim CI exists.
+
+## M4-B opening
+
+- The maintainer checkpointed the M4-A governance record as successor commit
+  `94cd28a30479f466b59591680a4be6a5089a319b` and explicitly authorized M4-B.
+  Its parent is exact remote `main@cc9bc878...`; the successor worktree is clean.
+- The archive worktree is clean at `771f8906...` and is two governance commits
+  ahead of remote `0.3.0-beta.2`. M4-B must publish that complete descendant plus
+  the navigation update by normal fast-forward; it may not rewrite history or
+  alter beta.2 product/Release bytes.
+- M4-B is documentation/provenance transport only. M4-C, Release/tag, live Cloud,
+  production behavior, repository rename/archive/delete, and Product Phase 4 stay
+  outside the authorization.

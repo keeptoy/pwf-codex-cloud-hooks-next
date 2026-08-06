@@ -1,10 +1,10 @@
 # beta.3-dev M4 仓库切换方案
 
-> 状态：`M4-A PASS / M4-B AUTHORIZATION REQUIRED`
+> 状态：`M4-B PASS / M4-C AUTHORIZATION REQUIRED`
 >
-> 本文只冻结 successor authority cutover 的路线、外部变更、验证和回滚合同。它不授权 push、
-> 创建远端 `main`、修改默认分支或 ruleset、修改旧仓库、创建 tag/Release、运行 live Cloud、
-> 改 production behavior，也不授权进入产品 Phase 4。
+> 本文冻结 successor authority cutover 的路线、外部变更、验证和回滚合同。M4-A 与 M4-B
+> successor provenance / 旧仓库 archive navigation 交割已完成。M4-C、
+> tag/Release、live Cloud、production behavior 和产品 Phase 4 仍未授权。
 
 ## 1. 目标与边界
 
@@ -226,5 +226,21 @@ fast-forward update。无分支 HTTPS fresh clone 检出 `main@cc9bc878...`、61
 paths、四个 `100755` upstream runtime 文件和 clean workspace。
 
 完成标记：`M4A_SUCCESSOR_AUTHORITY_CUTOVER=PASS`。本轮不授权 M4-B。
+
+## 13. M4-B 实际结果
+
+- successor 的 `BASELINE_PROVENANCE.md` 现在提供旧仓库、冻结 commit、beta.2 Release、
+  ZIP/bootstrap 和 audit/main 的精确可点击链接；README 与 22-entry Release inputs 未改；
+- successor ROADMAP、handoff 和 planning 记录 exact main/default/ruleset/evidence 实际值；
+- 旧仓库 README 顶部明确指向 successor `main`，并把自身定位为 public/unarchived
+  历史证据与 immutable beta.2 rollback 权威；安装与验收正文保留；
+- 旧仓库 AGENTS、work plan 和 planning 已同步历史权威/停止边界；默认分支、仓库名称、
+  public/unarchived 状态、tags、Releases 和 beta.2 assets 不变；
+- successor importer、3/3 boundary、双 ZIP 22 entries / 75,323 bytes / SHA-256
+  `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508` PASS；
+- 双仓库 changed-doc UTF-8/LF/fence/local-link 与 `git diff --check` PASS。
+
+完成标记：`M4B_ARCHIVE_PROVENANCE_HANDOFF=PASS`。M4-C、Release/tag、live Cloud、
+production behavior 与 Product Phase 4 仍需单独授权。
 
 Discovery 自身不得输出任何 M4-A/B/C PASS 标记。
