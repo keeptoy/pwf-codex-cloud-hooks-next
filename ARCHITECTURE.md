@@ -162,8 +162,8 @@ Installer 不负责修改 workspace planning，不接管第三方 policy，也�
 ## 11. Release 边界
 
 Release ZIP 由 22-entry machine allowlist 构建。外部 bootstrap 下载并校验 ZIP，因此绝不能进入它
-所校验的 ZIP。当前 stable v0.3.0 candidate 已按最终 ZIP SHA 封板；在 S2/S3 Cloud 与发布后验收
-完成前它仍不是 Release 或 rollback。beta.2 资产保持不可变。
+所校验的 ZIP。当前 stable v0.3.0 candidate 已按最终 ZIP SHA 封板，并由 exact source
+`1454c922...` 通过 S2；在 S3 发布后验收完成前它仍不是 Release 或 rollback。beta.2 资产保持不可变。
 
 ## 12. 尚未实现
 

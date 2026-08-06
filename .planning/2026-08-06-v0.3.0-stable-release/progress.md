@@ -63,3 +63,13 @@
 - Root cause is acceptance-only schema drift: manifest inventory uses `path`. Corrected
   both stable-runbook inventory blocks and added a regression assertion; S2 remains open
   pending an exact rerun from the corrected commit.
+
+## 2026-08-06 — S2 accepted rerun
+
+- Corrected source `1454c9224c83d11c073b05baf6e536a11c3bb0e5` was independently
+  re-fetched from remote `main`; Cloud did not reuse the stale attempt-1 script.
+- Strict result PASS: Linux 63/63/0/0; ZIP 22 entries / 75,386 bytes /
+  `f245a554...`; bootstrap 17,423 bytes / `ab334f03...`; isolated doctor healthy;
+  11 payloads; `LIVE_CODEX_MUTATIONS=0`; clean workspace.
+- No repository edit, live install, tag, Release or asset publication occurred in Cloud.
+  S2 is closed and execution stops before separately authorized S3.

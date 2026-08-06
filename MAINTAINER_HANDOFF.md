@@ -15,8 +15,8 @@
 - 产品 rollback：published/accepted `v0.3.0-beta.2`。
 - 当前候选身份：`0.3.0`；不改变行为且保留 canary 的 ZIP/bootstrap 已在 S1 封板，但当前仍没有
   successor tag/Release，不能作为 production rollback。
-- 当前版本路线：S1 exact candidate 已建立，S2 no-live Cloud prepublication seal 已授权；只有
-  S2 PASS 和独立授权后才能进入 S3 发布。
+- 当前版本路线：S1/S2 已完成，exact release source 是 `1454c922...`；只有维护者独立授权后才能
+  进入 S3 发布，且 tag 不得指向较新的 evidence-only `main`。
 - 当前仓库迁移：M1/M2/M3/M4 complete。M3 实际行为测试 HEAD 为
   `39795283cd65f84547651d7bec816191fb5bfedf`，ZIP SHA-256 为
   `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`；M3-B setup、Fresh、
@@ -121,7 +121,7 @@ sha256sum "$ZIP"
 3. 构建两次 ZIP 并证明字节一致；
 4. 计算 ZIP SHA，写入外部 bootstrap；
 5. 计算 bootstrap SHA；
-6. 创建新的 tag/pre-release，上传两个独立资产；
+6. 在已验收的 exact release source 创建新的 tag/Release，上传两个独立资产；
 7. 从 Release 页面重新下载并核对 SHA；
 8. fresh Cloud install、Fresh/UserPrompt、real Resume、doctor；
 9. 记录 immutable acceptance 文档和 rollback。

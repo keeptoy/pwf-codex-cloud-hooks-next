@@ -59,3 +59,13 @@ overlay contracts and Release allowlist contents are not candidate behavior chan
 - Classification is `ACCEPTANCE_ONLY`, not production, manifest or candidate-asset drift.
   The minimum correction is two `path` lookups plus a repository-boundary regression
   assertion. ZIP/bootstrap hashes remain unchanged; the source commit SHA must advance.
+
+## S2 accepted evidence
+
+- Corrected exact source `1454c9224c83d11c073b05baf6e536a11c3bb0e5` passed the full
+  Fresh Cloud no-live seal: Linux 63/63, deterministic ZIP, exact bootstrap, isolated
+  install/doctor, 11 payloads, zero live mutations and clean workspace.
+- S2 freezes the future `v0.3.0` tag target at `1454c922...`. Later evidence-only commits
+  may advance `main` but are not substitute release sources and require no asset rebuild.
+- S2 PASS authorizes only an S3 decision point. It does not create a tag/Release, promote
+  rollback, mutate live Cloud, or authorize Product Phase 4.

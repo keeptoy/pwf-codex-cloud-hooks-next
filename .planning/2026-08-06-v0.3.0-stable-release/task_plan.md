@@ -8,23 +8,22 @@ removing canaries, weakening tests, or rewriting the beta.2 rollback baseline.
 
 ## Current Gate
 
-S2 Fresh Cloud prepublication seal is active; its acceptance-only manifest assertion is
-being corrected before the exact rerun.
+S2 Fresh Cloud prepublication seal passed for exact release source
+`1454c9224c83d11c073b05baf6e536a11c3bb0e5`; S3 requires separate authorization.
 
 ## Status
 
-The maintainer authorized this commit to close S1 and become the exact stable candidate,
-then explicitly authorized entry into S2. Stable identity, documentation, tests,
-repository-boundary planning data and the external bootstrap are sealed. Published and
-accepted beta.2 remains the sole production rollback until all stable publication and
-post-publication gates pass.
+S1 and S2 are complete. Cloud accepted the frozen source, Linux suite, asset bytes,
+isolated installation, inventory and no-live boundary. Published and accepted beta.2
+remains the sole production rollback until all stable publication and post-publication
+gates pass.
 
 ## Next Step
 
-Commit and push the acceptance-only `runtime_files[].path` correction, set that new full
-SHA as S2 `EXPECTED_HEAD`, and rerun only the standalone no-live S2 script in
-`docs/v0.3.0-cloud-hard-acceptance.md`. Do not publish a tag/Release, install live
-`/opt/codex`, enter Product Phase 4, remove canaries, or alter runtime/Host behavior.
+Stop and request explicit S3 authorization. If authorized, create `v0.3.0` at exact
+release source `1454c9224c83d11c073b05baf6e536a11c3bb0e5`, upload only the two sealed
+assets once, and execute the standalone post-publication A～F runbook. Do not tag a later
+evidence-only `main`, enter Product Phase 4, remove canaries, or alter runtime/Host behavior.
 
 ## Non-goals
 
@@ -61,6 +60,7 @@ SHA as S2 `EXPECTED_HEAD`, and rerun only the standalone no-live S2 script in
 | ZIP asset | `pwf-codex-cloud-hooks-v0.3.0.zip` |
 | external bootstrap | `init-cloud-sandbox-v0.3.0.bash` |
 | repository | `keeptoy/pwf-codex-cloud-hooks-next` |
+| exact release source commit | `1454c9224c83d11c073b05baf6e536a11c3bb0e5` |
 | Release type | stable, not prerelease |
 | behavior delta from beta.3-dev | none; identity/docs/tests/asset seal only |
 
@@ -89,17 +89,18 @@ SHA as S2 `EXPECTED_HEAD`, and rerun only the standalone no-live S2 script in
 
 ### S2 — Fresh Cloud prepublication seal
 
-- [ ] Verify exact candidate commit, Git modes, LF, importer and Linux full suite.
-- [ ] Rebuild/check exact ZIP bytes cross-platform and match the S1 SHA.
-- [ ] Verify external bootstrap exact bytes/SHA without downloading an unpublished asset.
-- [ ] Run isolated install/upgrade/doctor, adapter-only policy, inventory and zero residue.
-- [ ] Prove no live `/opt/codex` mutation and a clean workspace.
+- [x] Verify exact candidate commit, Git modes, LF, importer and Linux full suite.
+- [x] Rebuild/check exact ZIP bytes cross-platform and match the S1 SHA.
+- [x] Verify external bootstrap exact bytes/SHA without downloading an unpublished asset.
+- [x] Run isolated install/doctor, adapter-only policy, inventory and zero residue.
+- [x] Prove no live `/opt/codex` mutation and a clean workspace.
 - **Exit:** Cloud prepublication PASS for the exact assets intended for publication.
-- **Status:** authorized; awaiting remote-visible candidate and Cloud execution
+- **Status:** complete; exact source `1454c9224c83d11c073b05baf6e536a11c3bb0e5`
 
 ### S3 — Immutable publication and post-publication hard acceptance
 
-- [ ] Create exact `v0.3.0` tag/Release and upload ZIP plus external bootstrap once.
+- [ ] Create `v0.3.0` at exact S2 source `1454c9224c83d11c073b05baf6e536a11c3bb0e5`
+      and upload ZIP plus external bootstrap once.
 - [ ] Re-download both assets and verify names, sizes, SHA and ZIP boundary.
 - [ ] Run completely fresh Cloud setup and automatic startup/UserPrompt lifecycle.
 - [ ] Create a real planning update, long tail, Resume catch-up and post-resume doctor.
