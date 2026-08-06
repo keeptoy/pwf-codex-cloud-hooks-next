@@ -1,5 +1,29 @@
 # Progress: Slim Repository Migration
 
+## Pre-Phase-4 roadmap calibration
+
+- Maintainer authorized a successor-only documentation calibration before Product
+  Phase 4 Discovery. Updated the active gate/Next Step without authorizing product,
+  version, bootstrap, Release, live Cloud, or repository-setting changes.
+- Replaced the migration-journal-shaped ROADMAP with a durable authority split,
+  compact M1-M4 evidence summary, Product Phase/version candidates, version
+  semantics, Discovery/promotion state machine, exact Release sealing order,
+  rollback promotion rules, and long-term generalization boundary.
+- Strict four-path UTF-8/LF/fence/link validation, required/stale ROADMAP markers,
+  `git diff --check`, and zero Release-input overlap PASS.
+- The first focused Node test launch did not reach assertions because the known
+  Windows restricted-process boundary returned worker `spawn EPERM`; the identical
+  outside-boundary rerun passed all 4 architecture/repository-boundary cases. This
+  remains classified as a platform execution limitation, not a product or assertion
+  failure.
+- Final four-path status/diff review PASS. Closed the roadmap calibration and restored
+  the sole Next Step to a separately authorized Product Phase 4 Discovery Gate. Package,
+  bootstrap, production, Release inputs, external state, and old repository bytes remain
+  unchanged.
+- Maintainer then selected the stable-first route. This migration plan is closed as an
+  execution authority; `.planning/.active_plan` moved to the dedicated v0.3.0 stable
+  Release plan. No Release byte or external state changed during the handoff.
+
 ## M2-A — orphan skeleton
 
 - Created a dedicated secondary worktree under the verified `new-space` path.

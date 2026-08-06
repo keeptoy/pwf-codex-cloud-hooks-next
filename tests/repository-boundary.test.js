@@ -14,6 +14,9 @@ const expectedPaths = [
   ".planning/2026-08-05-slim-repository-migration/findings.md",
   ".planning/2026-08-05-slim-repository-migration/progress.md",
   ".planning/2026-08-05-slim-repository-migration/task_plan.md",
+  ".planning/2026-08-06-v0.3.0-stable-release/findings.md",
+  ".planning/2026-08-06-v0.3.0-stable-release/progress.md",
+  ".planning/2026-08-06-v0.3.0-stable-release/task_plan.md",
   "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "LICENSE",
   "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "THIRD_PARTY_NOTICES.md",
   "contracts/adapter-plan-context-request-v1.schema.json",
@@ -51,7 +54,7 @@ test("slim repository has the exact current allowlist and no archived path alias
   });
   assert.equal(result.status, 0, result.stderr);
   const actual = result.stdout.trim().split(/\r?\n/).filter(Boolean).map(value => value.replaceAll("\\", "/")).sort();
-  assert.equal(expectedPaths.length, 61);
+  assert.equal(expectedPaths.length, 64);
   assert.deepEqual(actual, expectedPaths);
   for (const forbidden of [
     "PROJECT_UNDERSTANDING.md", "work_plan.md", "黑盒验证.md", "snapshot-prototype/",

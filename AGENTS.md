@@ -105,5 +105,6 @@ M1 exact mirror、M2 slim transformation、M3 Cloud equivalence 和 M4 repositor
 M4-C 在 `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151` 通过 Fresh Cloud/Linux no-live
 验收；Cloud-tested development `39795283...` 与 audit `bbad3703...` 保持不动，旧仓库仍是
 不可变 beta.2 Release/rollback 权威。当前 successor 是后续源码维护权威，但 beta.3-dev 仍未
-发布。禁止把迁移完成理解为 tag/Release、live `/opt/codex`、production behavior 或 Product
-Phase 4 授权；下一步必须等待维护者明确授权新的 Product Phase 4 Discovery Gate。
+发布。维护者已决定先封板不改变行为的稳定 `v0.3.0`；Stable Release S0 Discovery 已完成，当前
+活动计划停在 S1 候选身份/本地封板授权前。禁止把该决定理解为 tag/Release、live `/opt/codex`、
+production behavior 或 Product Phase 4 授权；Product Phase 4 必须等 stable S3 关闭后再独立授权。

@@ -8,7 +8,7 @@ immutable M1 audit oracle.
 
 ## Current Gate
 
-Post-M4 documentation-governance D1/D2/D3 complete; Product Phase 4 remains stopped.
+Closed and superseded as execution authority by the v0.3.0 stable-release plan.
 
 ## Status
 
@@ -19,17 +19,18 @@ ZIP SHA-256 `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`;
 M4-C accepts source cutover `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151` while preserving
 development/audit evidence refs and immutable beta.2 rollback assets. Successor `main`
 is the source authority; the old repository is the beta.2 rollback/history authority.
-Documentation governance D1/D2/D3 is complete. No product gate is active. Release/tag,
-live `/opt/codex`, production behavior, repository rename/archive/delete, and Product
-Phase 4 remain unauthorized.
+Documentation governance D1/D2/D3 is complete. The maintainer has separately authorized
+one successor-only roadmap calibration to compact completed migration history and freeze
+the future Phase/version/Release governance model; that gate is now complete. No product
+gate is active. Release/tag, live `/opt/codex`, production behavior, repository
+rename/archive/delete, package/bootstrap identity changes, and Product Phase 4 remain
+unauthorized.
 
 ## Next Step
 
-Stop. The only possible next programme action is a separately authorized Product Phase 4
-Discovery Gate, which must restore current upstream/Host/Cloud facts before proposing
-implementation. Do not publish a Release/tag, write live `/opt/codex`, modify production
-behavior, rename/archive either repository, or infer Phase 4 authorization from completed
-documentation governance.
+Stop using this migration plan for new execution. The maintainer selected stable
+`v0.3.0` before Product Phase 4; `.planning/.active_plan` now points to the dedicated
+stable-release plan, which is the sole authority for S0～S3 and all later Next Steps.
 
 ## Invariants
 
@@ -113,6 +114,10 @@ documentation governance.
   independent beta.2 rollback, handoff, remote-recheck, and clean-workspace gates.
 - [x] Record M4-C evidence and close repository migration without entering Release
   or Product Phase 4.
+- [x] Calibrate ROADMAP authority, future Phase/version trains, Release promotion,
+  sealing, and rollback without copying the archived migration journal.
+- [x] Pass successor documentation/reference/boundary regression and stop again before
+  Product Phase 4 Discovery.
 
 ## M4-C Verification
 

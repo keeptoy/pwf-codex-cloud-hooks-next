@@ -1,5 +1,27 @@
 # Findings: Slim Repository Migration
 
+## Pre-Phase-4 roadmap calibration
+
+- The successor ROADMAP still mixed durable current authority with M2/M3
+  intermediate stop language. Those details remain valid historical evidence in
+  the M3/M4 runbooks and planning journal, but they should not remain present-tense
+  programme instructions after M4 closure.
+- The durable governance model is: ROADMAP owns Product Phase/version/Cloud/Release
+  state; the active task plan owns the exact current authorization and stop; the
+  maintainer handoff owns executable Release operations.
+- Phase numbers and release versions are related defaults, not identities. New Hook,
+  Host ABI, trusted-graph, activation, or user-visible behavior surfaces normally
+  advance a minor train; compatible fixes use patch. Phase 9 seals the currently
+  approved train and therefore does not mechanically mean `0.9.0`.
+- `0.3.0-beta.3-dev` remains migration/equivalence source identity. Product Phase 4
+  Discovery must explicitly choose between a separate stable `v0.3.0` seal of the
+  unchanged canonical behavior and a new `0.4.0-*` Phase 4 train. No package,
+  bootstrap, ZIP, tag, or Release identity changes before that decision.
+- A future Release becomes a rollback baseline only after deterministic sealing,
+  immutable publication, downloaded-asset verification, Fresh/Resume/doctor, and
+  rollback evidence. Until then immutable beta.2 remains the sole accepted product
+  rollback.
+
 ## Frozen baseline
 
 - M1 audit commit: `bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b`.

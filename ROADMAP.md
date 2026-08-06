@@ -1,149 +1,178 @@
 # 路线图
 
-本文件是 migration、Cloud、Release 和后续 Product Phase 状态的唯一宏观权威；精确 Next Step、
-授权与停止条件仍由活动 `task_plan.md` 决定。README 不复制本文件的逐 gate 状态。
+本文件是后续 Product Phase、版本列车、Cloud 验收、Release 晋级和 rollback 状态的唯一宏观权威。
+精确 Next Step、当前授权、禁止事项和停止条件仍由活动 `task_plan.md` 决定。README 只描述稳定行为，
+不复制逐 gate 状态。
 
-> 当前回滚基线：published/accepted `v0.3.0-beta.2`。
+> 当前生产回滚基线：published/accepted `v0.3.0-beta.2`。
 >
-> 当前开发身份：`0.3.0-beta.3-dev`，未发布。
+> 当前源码开发身份：`0.3.0-beta.3-dev`，仅用于 successor 迁移与等价性证据，未发布且不可安装。
 >
-> 仓库迁移不会自动授权产品 Phase 4。
+> 当前状态：M1～M4 仓库迁移已关闭；已决定先封板不改变行为的稳定 `v0.3.0`。Stable Release
+> Discovery 已完成，等待 S1 候选身份/本地封板授权；Product Phase 4 继续停止。
 
-## 1. 当前状态
+## 1. 与活动 planning 的分工
 
-旧仓库已完成 beta.2 和完整 Cloud A～F 验收。successor migration 使用四个独立 gate：
+| 问题 | 权威文件 |
+|---|---|
+| 产品将经过哪些 Phase、每个版本列车要证明什么 | `ROADMAP.md` |
+| 哪些 Phase、Cloud gate 或 Release 已经完成 | `ROADMAP.md` |
+| 当前允许做什么、唯一 Next Step 是什么 | 活动 `.planning/<slug>/task_plan.md` |
+| 当前 gate 的不变量、退出条件和停止条件 | 活动 `task_plan.md` |
+| 研究结论、路线比较和技术取舍 | 活动 `findings.md`；稳定后提升到架构或专项文档 |
+| 实施、测试、错误和恢复记录 | 活动 `progress.md` |
+| 可复制的 Release/运维操作 | [`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) 与版本专项 runbook |
+| 稳定支持行为和用户命令 | [`README.md`](README.md) |
 
-| Gate | 目标 | 状态 |
+两层计划互补而不互相复制：ROADMAP 回答“去哪里、何时验收、何时能发布”；活动 task plan 回答
+“现在做什么、按什么合同做、做到哪里必须停”。两者若在当前 gate 或 Next Step 上冲突，以活动
+task plan 为准，并在 Phase、Cloud、Release 或 rollback 状态变化时同步本文件。
+
+## 2. 当前基线与仓库角色
+
+| 项目 | 当前事实 |
+|---|---|
+| 源码维护权威 | successor `main` |
+| 已发布生产回滚 | 旧仓库不可变 `v0.3.0-beta.2` ZIP/bootstrap 与 Cloud A～F 证据 |
+| 当前开发身份 | `0.3.0-beta.3-dev`；zero-hash bootstrap 主动 fail closed |
+| 当前 programme gate | v0.3.0 Stable Release S0 complete；S1 authorization required |
+| 当前 Release | 目标为稳定 `v0.3.0`，但尚无 successor tag/Release；development ZIP 不是发布资产 |
+| 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
+
+beta.2 的精确 source、资产、SHA 和回滚入口见
+[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与
+[`docs/v0.3.0-beta.2-cloud-hard-acceptance.md`](docs/v0.3.0-beta.2-cloud-hard-acceptance.md)。
+
+## 3. 已完成的仓库迁移
+
+M1～M4 只建立独立 successor 的来源、历史、Cloud 等价性和源码权威，没有发布 beta.3、写入 live
+`/opt/codex`、改变 production behavior 或授权 Product Phase 4。
+
+| Gate | 冻结结果 | 状态 |
 |---|---|---|
-| M1 exact mirror | 证明新 remote/audit branch 与 beta.2 commit/tree/资产完全一致 | complete |
-| M2 slim transformation | 精简历史树，建立新 authority/identity/provenance 和 root commit | complete；checkpoint 已收到 |
-| M3 Cloud equivalence | development branch Fresh/Resume/doctor/ZIP/Linux suite | complete；accepted evidence ref 保持不动 |
-| M4 cutover | 建立公开 `main`、交割、旧仓库导航和 rollback 演练 | complete；M4-C Cloud PASS |
+| M1 exact mirror | `audit/beta2-exact@bbad3703...` 保留 beta.2 commit/tree/资产 oracle | complete |
+| M2 slim transformation | parentless slim root、稳定文档边界、repository-wide LF、四个 `100755` runtime | complete |
+| M3 Cloud equivalence | tested `39795283...`；Linux/Fresh/Resume/doctor/ZIP 等价性 PASS | complete |
+| M4 repository cutover | accepted `main@0b4bd7d4...`；default/main/ruleset、handoff 与 beta.2 rollback PASS | complete |
 
-M2 内部分为：
+详细、可重放的历史门槛只保留在：
 
-- M2-A：59-path orphan skeleton、六项 rename、fresh planning；complete。
-- M2-B：文档权威、LF、行为型 test/fixture、beta.3-dev、overlay/provenance；complete。
-- M2-C：本地完整回归、确定性 ZIP、single root commit、fresh Windows clone；complete。
+- [`docs/beta3-dev-m3-cloud-equivalence.md`](docs/beta3-dev-m3-cloud-equivalence.md)；
+- [`docs/beta3-dev-m4-cutover-plan.md`](docs/beta3-dev-m4-cutover-plan.md)；
+- 活动 planning 的 findings/progress 历史。
 
-## 2. M2-B 已完成门槛
+后续治理提交不会把新的 `main` HEAD 冒充为旧 M3/M4 accepted input，也不会移动冻结 evidence refs。
 
-- 八个文档入口各自只有一个职责，无旧 Phase/Round 当前态依赖；
-- 59-path allowlist 不变，prototype/旧 planning/旧文件名不回流；
-- `.gitattributes` 对 repository-wide text 固定 LF，binary 显式 `-text`；
-- fixture bytes 不变，测试引用使用行为名；
-- architecture/repository tests 替代 Phase 文档和 prototype handoff 断言；
-- overlay evidence 指向稳定 provenance/fixtures，manifest hash 一致；
-- package 为 `0.3.0-beta.3-dev`；bootstrap 指向 successor 并以 zero hash fail closed；
-- production/runtime/schema 行为字节不变；
-- 本地验证通过后曾停在 M2-C checkpoint；该 checkpoint 和后续 M2-C 授权均已收到。
+## 4. Product Phase 路线与候选版本列车
 
-## 3. M2-C 本地关闭（complete）
+Phase 是研发/验收边界；版本号是对外行为与兼容合同边界。下表是 Discovery 的默认候选，不是发布
+承诺，也不自动授权下一 Phase。一个 Phase 可以有多个 pre-release；多个低风险 Phase 也可以在明确
+评审后合并进同一版本列车。
 
-已通过门槛：
+Product Phase 4 之前先完成一个独立稳定里程碑：把当前 beta.3-dev 已证明等价的 canonical 行为按新
+资产身份封板为 `v0.3.0`，保留现有 canary，不引入 runtime/Host ABI/trusted-graph 变化。其 S0～S3
+权威和停止条件由活动 `2026-08-06-v0.3.0-stable-release` task plan 管理。
 
-1. importer check、runtime/contract exact hash；
-2. Windows full suite，POSIX case 诚实 SKIP；
-3. 两次 development ZIP 字节一致、22 entries、bootstrap external；
-4. zero-hash bootstrap 不能安装；
-5. 创建一个无 parent 的 root commit；
-6. 验证 exact 59 paths、四个 `100755`、LF、clean；
-7. fresh Windows clone 重跑 importer/static/suite。
+| Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
+|---|---|---|---|---|
+| 4 | `0.4.0-*` | attestation、nonce 与 opt-in v3 modes | legacy 默认不变；tamper/cache/rollback 与 Fresh/Resume | pending Discovery authorization |
+| 5 | `0.5.0-*` | compaction lifecycle | 先观测 `clear`/`compact` Host schema；无重复或丢失 context | pending |
+| 6 | `0.6.0-*` | selective tool/permission hooks | 逐事件测量 latency/token/噪声；先 advisory、后扩展 | pending |
+| 7 | `0.7.0-*` | advisory completion | bounded、non-recursive、无 plan 时安静 | pending |
+| 8 | `0.8.0-*` | optional hard gating | 明确 Stop contract、上限、逃生路径、rollback 与隔离 Cloud | pending |
+| 9 | 当前列车的 `rc.N` → stable | 完整矩阵、最终字节、canary retirement、正式发布 | RC 与最终资产分别验收；重新下载双资产；可逆 | pending |
 
-M2-C 已按独立授权完成并 checkpoint；development branch 仍未 push。
+Phase 9 是 Release 收口，不机械等于 `0.9.0`。例如只完成 Phase 4 时，它可以封板 `0.4.0`；如果多个
+Phase 经独立 gate 后被明确合并，则封板当时获批的同一版本列车。
 
-## 4. M3 Cloud equivalence
+## 5. 版本号与晋级语义
 
-M3 Discovery 已冻结为三个后续独立子门：
+项目在 `0.x` 阶段仍主动维持 legacy 默认兼容；SemVer 允许的变化范围不能替代显式 Host ABI、
+trusted graph、rollback 和 Cloud 评审。
 
-1. M3-A：只 push 审核过的同名 development branch，在 Fresh Cloud 执行 no-live Linux seal、
-   63/63 suite、隔离 install/doctor、mode/importer 和确定性 22-entry ZIP；
-2. M3-B：在一次性 Cloud setup 中从精确 checkout 本地构建 ZIP，通过进程级 `file://` URL/SHA
-   覆盖交给原 bootstrap，然后执行 Fresh startup/UserPrompt、real planning update、长尾 Resume
-   owned catch-up、post-resume doctor 和 zero snapshot residue；
-3. M3-C：保存原始证据并证明 closure descendant 只变化治理文件，随后停在 M4 Discovery 前。
+| 身份 | 含义 |
+|---|---|
+| `0.x.y-dev` | checkout/source identity；不是 tag 或 Release，bootstrap 必须 fail closed |
+| `0.x.0-alpha.N` | contract、inactive implementation 或有限 Cloud 探针；不得宣称 production ready |
+| `0.x.0-beta.N` | 目标行为已受控激活，正在完成完整 Cloud、upgrade 与 rollback 验收 |
+| `0.x.0-rc.N` | feature/contract/asset boundary 冻结；只接受 Release blocker 修复 |
+| `0.x.0` | 最终 ZIP/bootstrap 字节发布并重新下载验收，建立新的 rollback 候选 |
+| `0.x.y`（`y>0`） | 同一 minor 行为合同内的兼容修复；不新增 Hook、Host ABI 或 trusted graph |
 
-完整协议与失败矩阵见 [`docs/beta3-dev-m3-cloud-equivalence.md`](docs/beta3-dev-m3-cloud-equivalence.md)。
-checkout bootstrap 始终保持 zero hash；M3 不发布资产、不创建 public `main`，也不把 development
-安装描述成 Release。
+新增 Hook 类型、Host ABI、信任/激活模型或明显用户行为面，默认提升 minor；纯兼容修复才使用 patch。
+任何字节变化都必须使用新身份和新 hash，不得复用 beta.2 或其他已发布资产。
 
-M3-A 首次 Cloud 运行已通过 identity、mode、importer/static 和 Linux 63/63，随后因 runbook 把
-实际两层 Managed Policy TOML 误读为一层而停止。修复 descendant 从头完整重跑后全部 PASS：接受
-HEAD 为 `39795283cd65f84547651d7bec816191fb5bfedf`，development ZIP 为 22 entries / 75,323 bytes /
-SHA-256 `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`，隔离 doctor、adapter-only
-policy、11 payload、zero hash 与 clean workspace 均通过。M3-B 的精确 accepted HEAD/ZIP SHA
-disposable setup 也已 PASS；当前只允许结束 setup run，并在完全不同的新 task 中先执行 Fresh
-lifecycle。Fresh 已观察到 startup SessionStart、UserPromptSubmit 和全部辅助 planning context；
-受控 baseline 回复与六项 canonical UserPrompt 自动注入也已 PASS。长 wrapper 与 Resume 也已完成：
-16 条 unsynced、message #36 planning update、截断保尾、正确顺序和 canonical 恢复全部 PASS；当前
-post-resume doctor 也以 healthy、beta.3-dev、11-file manifest exact 和零残留 PASS。M3-B 已关闭；
-M3-C 进一步证明 tested commit 到 closure 只变化七个既有治理文件，60-path/root/mode/audit/
-remote/Release 边界不漂移，并通过 importer/static、4/4 focused contracts、13-doc 与确定性 ZIP
-复验。M3 已关闭；实际 Cloud-tested development ref 保持在 `39795283...`，后续治理后代已通过
-M4 的受控 normal fast-forward 进入 `main`，没有改写该证据 ref。
+维护者已冻结选择：当前 `0.3.0-beta.3-dev` 的等价 canonical 行为先通过独立 S0～S3 gate 晋级稳定
+`v0.3.0`；完成前保持 beta.2 为 rollback。只有 stable 发布与 A～F 关闭后，才允许另行授权 Product
+Phase 4 Discovery，并从新的 `0.4.0-dev` / `0.4.0-alpha.N` 列车开始。
 
-## 5. M4 cutover
+这个路线决定本身不授权修改 `package.json`、bootstrap、ZIP identity、tag 或 Release；这些变更从
+S1 起按活动 task plan 分 gate 执行。
 
-M4-A、M4-B archive/provenance handoff 与 M4-C cutover/rollback acceptance 已通过。successor
-是 public、unarchived；M4-C 实际验收 HEAD 为 exact `main@0b4bd7d...`。Cloud-tested development
-`39795283...` 与 audit `bbad3703...` 未移动。`main-integrity` 和 `evidence-integrity` 两个
-active ruleset 分别保护 authority/evidence refs，规则只有 deletion 与 non-fast-forward；
-classic protection 不叠加。successor 仍无 tag 或 Release。
+## 6. Discovery 与 gate 晋级模型
 
-冻结候选路线不是 rename/move 已验收 development ref，而是：
+每个新 Product Phase 的第一轮必须是 Discovery：恢复当前 upstream/Host/Cloud 事实，比较路线与代价，
+冻结不变量、失败矩阵、轮次、测试、Cloud/rollback 计划，并给出 `GO`、`CONDITIONAL_GO` 或 `NO_GO`。
 
-1. 从本地 M3 治理后代的新 checkpoint 以 non-force exact refspec 创建 `main`；
-2. 验证 main SHA 与两个 evidence refs 后，再把 default 切到 `main` 并配置最小 integrity policy；
-3. 更新旧仓库入口和 successor provenance，但保持旧仓库 public/unarchived、beta.2 assets 不变；
-4. fresh default clone 执行 Linux/Cloud no-live seal，并独立下载验证 beta.2 rollback；
-5. 完成交割后仍停在产品 Phase 4 Discovery 授权门前。
+标准晋级链为：
 
-M4 分为 Discovery、M4-A successor authority、M4-B archive/provenance handoff、M4-C cutover/rollback
-acceptance 四轮，互不自动授权。M4 不发布 beta.3：正式非 `-dev` identity、ZIP/bootstrap hash 和
-发布后 Fresh/Resume 属于未来独立 Release gate。完整路线、mutation/failure matrix 和退出条件见
-[`docs/beta3-dev-m4-cutover-plan.md`](docs/beta3-dev-m4-cutover-plan.md)。
+```text
+Discovery
+  -> inactive implementation / exact contracts
+  -> local + Linux regression
+  -> no-live Cloud acceptance
+  -> explicit opt-in / canary activation
+  -> Fresh + UserPrompt + real Resume + doctor
+  -> Release candidate seal
+  -> immutable publication
+  -> downloaded-asset revalidation
+  -> rollback-baseline promotion
+```
 
-M4-A 的无分支 fresh clone 已得到 exact `main`、61 paths、四个 `100755` upstream runtime 和
-clean workspace。M4-B 已发布双向 provenance/navigation。M4-C 随后在 Fresh Cloud/Linux 证明
-63/63、61-path/4-mode、确定性 22-entry development ZIP、zero-hash bootstrap、旧 beta.2 双资产、
-隔离 rollback build/doctor、handoff、remote recheck、零 live mutation 与双 workspace clean 全部
-PASS。M4 repository cutover 已关闭；successor README/Release inputs、旧 beta.2 assets、两个仓库
-名称/公开状态和 evidence refs 均未改变。M4 没有发布 beta.3。
+每个箭头都是独立 gate；前一 gate PASS 不自动授权后一 gate。出现以下情况必须暂停并增加探路轮或
+Round 内子 gate：
 
-当前停在 Product Phase 4 Discovery Gate 的单独授权前。迁移闭环不授权 attestation、opt-in v3、
-新的 Host ABI/trusted graph、production activation 或 Release。
-
-## 6. 产品 Phase 4～9
-
-迁移完成后才允许重新打开产品路线，而且每个 Phase 第一轮都是 Discovery。
-
-| Phase | 候选范围 | 前置门槛 |
-|---|---|---|
-| 4 | attestation 与 opt-in v3 modes | 重新审计上游 mode/nonce/ledger；legacy 默认不变 |
-| 5 | compaction lifecycle | 先验证 Cloud `clear`/`compact` Host schema 与重复注入模型 |
-| 6 | selective tool/permission hooks | 逐事件测量 latency、token 和噪声；先 advisory |
-| 7 | advisory completion | bounded、non-recursive、无 plan 时安静 |
-| 8 | optional hard gating | 明确 Host Stop decision contract、逃生路径和 rollback |
-| 9 | Release/canary retirement | 完整矩阵、最终字节、fresh Cloud、可逆发布 |
-
-这些只是路线候选，不表示 upstream 中存在同名脚本就已经受支持。
-
-## 7. Discovery 触发条件
-
-以下情况必须暂停实现：
-
-- 新 Phase 或关键 activation/migration/Release/cutover；
 - Cloud 与本地证据冲突；
-- schema/Host ABI/trusted graph、安全或 rollback 变化；
+- schema、Host ABI、trusted graph、安全或 rollback 变化；
 - timeout、进程组、权限、identity 或数据安全模型变化；
-- 两条路线代价显著不同，继续写代码可能“实现正确但方向错误”。
+- 两条路线代价显著不同，继续实现可能“代码正确但方向错误”。
 
-## 8. 回滚
+## 7. Release 授权与封板顺序
 
-迁移期的回滚规则是：M4 前 production 权威仍是旧仓库 published beta.2；M2/M3 失败只处理本地
-slim worktree、未发布 branch 或 development artifacts，不得 reset/move M1 audit ref，也不得改写
-beta.2 assets。
+只有 ROADMAP 把目标版本标为获批 Release candidate，且活动 task plan 明确授权具体 Release gate，
+才允许封板。可复制命令和完整运维检查由
+[`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) 与相应版本 runbook 管理。
 
-当前仓库切换已完成，但产品回滚边界没有改变：successor `main` 是源码权威，尚未发布的
-beta.3-dev 不可作为 production rollback；需要回滚时使用旧仓库不可变 `v0.3.0-beta.2` Release
-及其固定 ZIP/bootstrap SHA。任何未来 Release 必须先建立自己的新身份和独立回滚合同。
+固定字节顺序：
+
+1. 冻结目标 version、source、contracts、tests 和 ZIP 精确 allowlist；
+2. build/check ZIP，并用独立双构建证明确定性；
+3. 计算最终 ZIP SHA-256；
+4. 把版本、包名和 ZIP SHA 写入 ZIP 外部 bootstrap；
+5. 计算封板后 bootstrap SHA-256；
+6. 创建新的 immutable tag/pre-release 或 Release，上传两个独立资产；
+7. 从 Release 页面重新下载两个资产并核对 filename、size、SHA 和 ZIP boundary；
+8. 在全新 Cloud 完成 install、Fresh/UserPrompt、real Resume、doctor 与 rollback 冒烟；
+9. 冻结 acceptance 证据，才可把该版本提升为新的 rollback baseline。
+
+RC/canary 通过不能替代最终字节验收。ZIP 或 bootstrap 任一字节重建，都必须产生新身份、新 hash 和
+新的 downloaded-asset/Fresh Cloud 证据。bootstrap 永远是 ZIP 外部资产，禁止 moving branch、
+`latest` 或无 checksum URL。
+
+## 8. 回滚与基线提升
+
+在新的正式 Release 完成第 7 节全部门槛前：
+
+- successor `main` 只是源码权威；
+- `0.3.0-beta.3-dev` 和任何 development ZIP 都不能作为 production rollback；
+- 旧仓库不可变 `v0.3.0-beta.2` 继续是唯一已接受回滚基线；
+- M3/M4 evidence refs 只证明迁移/等价性，不是 Release 资产。
+
+未来版本只有在 immutable publication、重新下载、Fresh/Resume/doctor 和 rollback 验证全部通过后，
+才能在本文件中晋级为新的回滚基线。旧资产、tag、SHA 和 acceptance 记录仍不得重写。
+
+## 9. 长期泛化边界
+
+当前唯一正式集成仍是 PWF v3.8.2。第二个只读插件尚未证明 Host/runner/Driver 抽象，因此不得把项目
+描述为通用 Skill 转换器，也不预先为泛化能力分配版本号。只有独立 Discovery 和第二实现证据完成后，
+才能决定抽象是否进入新的 Product Phase 或 `1.0.0` 稳定合同。
