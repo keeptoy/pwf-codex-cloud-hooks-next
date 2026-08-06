@@ -21,6 +21,60 @@ owned copy 部署到 Codex Cloud system-managed Hooks，并负责 Host protocol�
 这些是带日期的平台事实，不是永久常量。adapter 优先使用显式 Host input 和安装位置推导，并保留
 环境变量缺失时的受控兼容行为。
 
+### 2.1 Cloud 生命周期与 `CODEX_HOME`
+
+OpenAI 的公开 Cloud environment 文档给出的顺序是：创建容器并 checkout 选定仓库版本，运行 setup
+script（复用缓存容器时可再运行 maintenance script），然后才进入 agent phase。setup script 运行在
+独立 Bash session 中，因此其中临时 `export` 的值不会仅凭 shell 继承进入后续 agent phase。
+参见 OpenAI 官方 [`Cloud environments`](https://learn.chatgpt.com/docs/environments/cloud-environment)。
+
+Codex Cloud 配置界面把 environment settings 与 setup script 明确分成不同控制面；维护者提供的
+2026-08 界面截图也显示“环境变量”“密钥”“容器缓存”和“设置脚本”是彼此独立的配置区。应按下表
+区分，不把“配置的环境变量”和“setup shell 内创建的变量”合并成一个来源：
+
+| 渠道 | 配置/产生位置 | 生命周期 | 本仓库语义 |
+|---|---|---|---|
+| 配置的环境变量 | Cloud environment 的“环境变量”区 | 平台注入 setup 与 agent phase；值不是由 setup script 创建 | 显式外部输入；若用户配置 `CODEX_HOME`，bootstrap 必须把它当作 override 校验 |
+| secret | Cloud environment 的“密钥”区 | 只在 setup 可见，agent phase 前移除 | 只用于受控安装输入；runtime/Hook 不得依赖其存在 |
+| setup script shell | Cloud environment 的“设置脚本”区（自动或手动） | checkout 后执行的独立 Bash session；shell 内临时 `export` 不自动延续 | 安装/准备阶段；必须显式解析路径，不能借 shell 继承建立后续 Hook contract |
+
+因此同一 setup 进程中看到的环境由两部分组成：平台预先注入的配置环境变量，以及脚本自身设置的
+shell-local 变量。前者可以贯穿阶段；后者除非写入持久配置并由后续进程重新加载，否则只属于 setup
+session。界面布局本身是带日期的产品观测，公开文档中的生命周期语义才是外部依据。
+
+本仓库进一步冻结的是 2026-08 Cloud fixture 与 Fresh/Resume 验收得到的、更窄的平台观测：
+
+```text
+new container
+  -> repository clone / checkout
+  -> setup shell
+       CODEX_HOME 在入口处未由 Host 提供
+       bootstrap 显式解析 CODEX_HOME（当前默认 /opt/codex）
+  -> agent / Codex runtime starts
+  -> managed Hook process
+       CODEX_HOME=/opt/codex
+       session store=/opt/codex/sessions
+```
+
+这里的“Codex runtime starts”只是本仓库用于区分 setup 与后续 agent/Hook 生命周期的术语，不声明
+一个公开 Host 进程名或精确内部启动实现。公开文档把 `CODEX_HOME` 定义为可配置的 Codex state root，
+并对 CLI、IDE extension、app-server 和 installer 给出通用默认 `~/.codex`；它没有把 Cloud 的
+`/opt/codex` 声明为永久合同。参见 OpenAI 官方
+[`Environment variables`](https://learn.chatgpt.com/docs/config-file/environment-variables#core-locations)。
+因此本仓库只把 `/opt/codex` 当作带日期、由 fixture 和 acceptance 证明的 Cloud override/默认事实。
+
+由此得到四条设计约束：
+
+1. setup 入口不能假设 Host 已经提供 `CODEX_HOME`；bootstrap 必须使用显式配置或受控、可验证的
+   当前 Cloud 默认，并把解析后的绝对路径传给 installer。
+2. setup 中的临时 `export` 不能作为后续 Hook 获得配置的证明；后续阶段必须重新使用 Host 提供的
+   值、显式 config/input，或从已验证 managed adapter 安装位置受控推导。
+3. 用户在 environment settings 中显式提供 `CODEX_HOME` 时，它是平台配置输入，不能与 setup
+   shell 自行设置的同名变量或“实测 Host 在 setup 入口未提供该值”混为一谈；任何非默认路径仍须
+   containment、存在性和权限校验。
+4. fixtures 必须继续区分 `sandbox_initialization`、`agent_after_start` 与 `managed_hook`，避免用某一
+   阶段的环境快照替代另一阶段的 Host contract。
+
 ## 3. 部署图
 
 ```text

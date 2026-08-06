@@ -11,6 +11,49 @@ worktree before D0. Published `v0.3.0` remains exact source
 `1454c9224c83d11c073b05baf6e536a11c3bb0e5`; its ZIP and bootstrap are immutable and
 outside the modification scope of this Discovery.
 
+## Cloud lifecycle clarification
+
+OpenAI's current public Cloud-environment documentation confirms this lifecycle order:
+container creation and repository checkout, setup script, then agent phase. It also says
+that setup runs in a separate Bash session, so a setup-only `export` does not persist by
+shell inheritance. Environment variables configured in environment settings are available
+for the full chat, while secrets are removed before the agent phase.
+
+The maintainer-provided 2026-08 Codex Cloud environment screenshot visually confirms
+separate UI controls for environment variables, secrets, container caching and the
+automatic/manual setup script. This is dated UI evidence rather than a permanent Host
+contract, but it removes an important terminology ambiguity:
+
+- configured environment variables are control-plane inputs injected by the platform;
+- the setup shell receives those inputs and can additionally create shell-local variables;
+- setup-local exports do not become the later runtime/Hook environment by inheritance;
+- the later Host may independently provide runtime values such as the observed
+  `CODEX_HOME=/opt/codex`.
+
+Consequently, “configured environment variable,” “setup-shell variable,” and
+“runtime/Hook Host variable” are three provenance categories even when they share the
+same variable name. Bootstrap validation must preserve that provenance distinction.
+
+The public environment-variable reference defines `CODEX_HOME` as a configurable Codex
+state root and gives the general CLI/IDE/app-server/installer default as `~/.codex`; it
+does not publish `/opt/codex` as a permanent Cloud guarantee. The repository's narrower
+2026-08 evidence remains authoritative for this integration:
+
+- `tests/fixtures/cloud/hook-observations-v1.json` records no Host-provided `CODEX_HOME`
+  during `sandbox_initialization`, then `/opt/codex` during `agent_after_start` and
+  `managed_hook`;
+- `tests/cloud-fixtures.test.js` freezes those stage-specific observations;
+- `BASELINE_PROVENANCE.md` already classifies them as dated fixture/acceptance facts;
+- `init-cloud-sandbox-v0.3.0.bash` therefore resolves an explicit override or the current
+  `/opt/codex` default itself rather than assuming setup inherited the runtime value.
+
+Architectural conclusion: “setup has no `CODEX_HOME`” is a stage-specific observed Host
+fact, not a claim that setup has no environment variables. Setup exports do not establish
+the later Hook environment; runtime/Hook discovery must continue to prefer explicit Host
+input/config and verified installation-path inference. `ARCHITECTURE.md` now states this
+distinction and uses “Codex runtime starts” only as a repository lifecycle label, not as
+an assertion about a public internal process name.
+
 ## High-risk findings
 
 ### H1 — Managed TOML block removal can delete third-party admin state

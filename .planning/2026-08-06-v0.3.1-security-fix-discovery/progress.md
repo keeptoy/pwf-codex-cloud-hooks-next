@@ -60,3 +60,45 @@
 | What is the goal? | Bound and remediate audited security risks before Product Phase 4 without changing v0.3.0. |
 | What have I learned? | Two reproducible high risks, three medium risks and two low risks are detailed in `findings.md`. |
 | What have I done? | Persisted and activated a planning-only security Discovery; no product or Release byte changed. |
+
+## 2026-08-06 — Cloud setup/runtime lifecycle clarification
+
+- Maintainer supplied the observed sequence: new container, repository clone/checkout,
+  setup shell without Host-provided `CODEX_HOME`, then agent/runtime and managed Hooks with
+  `CODEX_HOME=/opt/codex`.
+- The OpenAI Codex manual helper was attempted first as required, but its official endpoint
+  returned HTTP 403 through the current proxy. Switched to the official OpenAI Docs MCP
+  route instead of repeating the failed request.
+- Official `Cloud environments` documentation confirmed checkout → setup → agent ordering,
+  the separate setup Bash session, non-persistence of setup-only exports, and the distinct
+  full-chat behavior of variables explicitly configured in environment settings.
+- Official `Environment variables` documentation confirmed that public `CODEX_HOME` is a
+  configurable state root with general default `~/.codex`; it does not make `/opt/codex`
+  a permanent Cloud contract.
+- Local provenance, fixture and regression evidence reconfirmed the narrower 2026-08 fact:
+  `CODEX_HOME` absent at sandbox initialization, then `/opt/codex` in agent/managed-Hook
+  stages with `/opt/codex/sessions` as the observed session store.
+- Updated `ARCHITECTURE.md` to separate official lifecycle guarantees, dated repository
+  observations and the resulting bootstrap/runtime discovery constraints. No production,
+  contract, version, tag, asset, Cloud state or Product Phase 4 behavior changed.
+- The first focused test run was blocked by the Windows sandbox runner (`spawn EPERM`).
+  The permitted out-of-sandbox rerun passed architecture and Cloud-fixture coverage but
+  exposed a pre-existing checkpoint drift: the exact repository allowlist still expected
+  65 paths and omitted this plan's three now-tracked files.
+- Updated only the repository-boundary governance fixture with those exact three paths and
+  the resulting count of 68, satisfying task-plan invariant 9 without broadening the
+  repository or Release allowlist.
+- Focused rerun PASS: 6 tests / 6 passed / 0 failed across architecture contracts, Cloud
+  fixtures and repository boundary. UTF-8, no BOM, LF-only, final newline, balanced
+  Markdown fences, local links, trailing whitespace and `git diff --check` also PASS.
+- Maintainer then supplied a Codex Cloud environment-settings screenshot showing separate
+  environment-variable, secret, container-cache and automatic/manual setup-script controls.
+  Refined the architecture and findings to distinguish platform-configured variables,
+  setup-shell-local variables and later runtime/Hook Host variables. The screenshot is
+  retained as dated UI evidence, not promoted to a permanent platform contract.
+- The first combined refinement patch used an imprecise findings line-wrap anchor and was
+  rejected atomically. Retried as three file-scoped patches with exact anchors; no partial
+  change from the failed attempt was retained.
+- Screenshot refinement validation PASS: the same 6 focused architecture/Cloud/repository
+  tests passed; UTF-8, LF-only, final newline, Markdown fences, local links, trailing
+  whitespace and `git diff --check` remained clean.
