@@ -51,3 +51,15 @@
   supplied externally as S2 `EXPECTED_HEAD` to avoid a self-referential commit hash.
 - S2 is limited to the standalone no-live Cloud prepublication script. Publication,
   Git tag/Release creation, live `/opt/codex` mutation and Product Phase 4 remain blocked.
+
+## 2026-08-06 — S2 attempt 1
+
+- Pushed exact S1 candidate `7840336a74cb4220a1fb5bb935e05a5e1e16a731` and ran the
+  Fresh Cloud no-live script.
+- Cloud PASS before the stop: exact HEAD, Linux 63/63, deterministic 22-entry ZIP at the
+  sealed size/hash, upstream checksum and isolated install.
+- The script then stopped with `KeyError: 'relative'` before strict final summaries. No
+  live install, repair, repository edit, tag, Release or asset publication occurred.
+- Root cause is acceptance-only schema drift: manifest inventory uses `path`. Corrected
+  both stable-runbook inventory blocks and added a regression assertion; S2 remains open
+  pending an exact rerun from the corrected commit.

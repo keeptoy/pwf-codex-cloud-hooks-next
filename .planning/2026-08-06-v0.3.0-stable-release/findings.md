@@ -48,3 +48,14 @@ overlay contracts and Release allowlist contents are not candidate behavior chan
   isolated install. Existing live state may exist, but S2 must prove it was not mutated.
 - S1 cannot name the immutable candidate commit until the maintainer checkpoints these
   exact bytes. That commit, not a later moving `main`, becomes S2 `EXPECTED_HEAD`.
+
+## S2 attempt 1 diagnosis
+
+- Cloud proved the exact candidate checkout, Linux 63/63 suite, deterministic ZIP bytes,
+  upstream checksum and isolated install before the runbook stopped.
+- `installed-manifest.json` defines `runtime_files[]` entries with the key `path`, as
+  frozen by `install.js`, installer tests, M3 and beta.2 F acceptance. The new stable
+  runbook alone incorrectly read `relative` in its S2 and F inventory blocks.
+- Classification is `ACCEPTANCE_ONLY`, not production, manifest or candidate-asset drift.
+  The minimum correction is two `path` lookups plus a repository-boundary regression
+  assertion. ZIP/bootstrap hashes remain unchanged; the source commit SHA must advance.

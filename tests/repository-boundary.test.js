@@ -88,6 +88,7 @@ test("archived prototype and history remain outside runtime, Release, and adapte
   const installer = read("install.js");
   const m3Runbook = read("docs/beta3-dev-m3-cloud-equivalence.md");
   const m4Runbook = read("docs/beta3-dev-m4-cutover-plan.md");
+  const stableRunbook = read("docs/v0.3.0-cloud-hard-acceptance.md");
   for (const content of [runtime, release, adapter]) {
     assert.doesNotMatch(content, /snapshot-prototype|prototype_snapshot_runner/);
     assert.doesNotMatch(content, /docs\/phase-|\.planning\/2026-08-01/);
@@ -105,4 +106,6 @@ test("archived prototype and history remain outside runtime, Release, and adapte
   assert.match(m4Runbook, /M4B_ARCHIVE_PROVENANCE_HANDOFF=PASS/);
   assert.match(m4Runbook, /M4C_CUTOVER_ROLLBACK_ACCEPTANCE=PASS/);
   assert.match(m4Runbook, /M4 不发布 beta\.3/);
+  assert.doesNotMatch(stableRunbook, /item\["relative"\]/);
+  assert.equal((stableRunbook.match(/item\["path"\]/g) || []).length, 2);
 });

@@ -8,8 +8,8 @@ removing canaries, weakening tests, or rewriting the beta.2 rollback baseline.
 
 ## Current Gate
 
-S2 Fresh Cloud prepublication seal is authorized and awaiting a remote-visible exact
-candidate commit.
+S2 Fresh Cloud prepublication seal is active; its acceptance-only manifest assertion is
+being corrected before the exact rerun.
 
 ## Status
 
@@ -21,9 +21,9 @@ post-publication gates pass.
 
 ## Next Step
 
-Make this exact commit visible to the Cloud checkout without changing candidate bytes,
-set its full SHA as S2 `EXPECTED_HEAD`, and execute only the standalone no-live S2 script
-in `docs/v0.3.0-cloud-hard-acceptance.md`. Do not publish a tag/Release, install live
+Commit and push the acceptance-only `runtime_files[].path` correction, set that new full
+SHA as S2 `EXPECTED_HEAD`, and rerun only the standalone no-live S2 script in
+`docs/v0.3.0-cloud-hard-acceptance.md`. Do not publish a tag/Release, install live
 `/opt/codex`, enter Product Phase 4, remove canaries, or alter runtime/Host behavior.
 
 ## Non-goals
