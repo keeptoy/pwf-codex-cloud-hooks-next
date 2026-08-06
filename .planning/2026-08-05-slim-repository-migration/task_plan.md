@@ -8,7 +8,7 @@ immutable M1 audit oracle.
 
 ## Current Gate
 
-M4 Discovery complete; maintainer checkpoint and M4-A authorization required.
+M4-A successor authority cutover complete; maintainer checkpoint and M4-B authorization required.
 
 ## Status
 
@@ -41,19 +41,21 @@ maintainer has now explicitly authorized M4 Discovery only. Push, public `main`,
 default-branch mutation, Release, cutover implementation, old-repository navigation
 changes, and Product Phase 4 remain unauthorized until Discovery freezes a reviewed
 sub-gate and the maintainer separately authorizes it.
-Discovery now freezes the create-main-then-switch route, three implementation
-sub-gates, exact external mutations, failure recovery, rollback independence, and
-Release decoupling. Local Windows/document/ZIP verification passes; no external
-state changed.
+Discovery froze the create-main-then-switch route, three implementation sub-gates,
+exact external mutations, failure recovery, rollback independence, and Release
+decoupling. Local Windows/document/ZIP verification passes. The maintainer has
+checkpointed both repositories and explicitly authorized M4-A only. The exact
+candidate for remote `main` is local successor commit
+`cc9bc878ddc7d70c25156dd053e2874758f0814a`; M4-B, M4-C, old-repository edits,
+Release, live Cloud, production behavior, and Product Phase 4 remain unauthorized.
 
 ## Next Step
 
-Review and checkpoint the M4 Discovery candidate, then wait for explicit M4-A
-authorization. M4-A alone may create exact remote `main`, verify its SHA, switch the
-successor default branch, and configure the reviewed integrity policy. Until that
-authorization, do not push, create remote `main`, change a default branch or
-repository setting, publish, edit live Cloud state, modify production behavior,
-update the old repository navigation, or enter Product Phase 4.
+Review and checkpoint the local M4-A governance record, then wait for explicit
+M4-B authorization. M4-B alone may synchronize successor provenance/navigation
+and the old repository archive banner under the frozen handoff contract. Until
+that authorization, do not edit or push the old repository, publish, create tags,
+touch live Cloud, modify production behavior, or enter Product Phase 4.
 
 ## Invariants
 
@@ -113,6 +115,29 @@ update the old repository navigation, or enter Product Phase 4.
 - [x] Freeze M4 sub-gates, explicit external mutations, stop conditions, rollback,
   Cloud/Release evidence, and the sole post-Discovery Next Step.
 - [x] Pass document/reference/boundary checks and stop for explicit M4-A authority.
+- [x] Receive maintainer checkpoint and explicit M4-A-only authorization.
+- [x] Complete M4-A settings-channel preflight with authenticated GitHub CLI;
+  local/remote identity, classic protection observation, regression, and ZIP PASS.
+- [x] Create remote `main` from exact `cc9bc878...` by non-force ref and verify all
+  three branch identities.
+- [x] Switch the successor default to `main` and activate the reviewed integrity
+  policy through a controlled, observable GitHub interface.
+- [x] Verify a fresh no-branch clone selects exact `main`, record M4-A evidence,
+  and stop before M4-B.
+
+## M4-A Verification
+
+- Exact non-force remote `main`: `cc9bc878ddc7d70c25156dd053e2874758f0814a`.
+- Development evidence remains `39795283cd65f84547651d7bec816191fb5bfedf`;
+  audit oracle remains `bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b`.
+- Successor default is `main`; repository remains public and unarchived.
+- `main-integrity` targets exact `main`; `evidence-integrity` targets the exact
+  development/audit refs. Both are active with deletion/non-fast-forward rules
+  only; classic protection is absent and no required CI checks were invented.
+- No-branch public HTTPS clone selects `main@cc9bc878...`, 61 paths, exactly four
+  `100755` upstream runtime files, and a clean workspace.
+- Release/tag/live Cloud/old-repository/production/Product Phase 4 mutations: 0.
+- `M4A_SUCCESSOR_AUTHORITY_CUTOVER=PASS`; M4-B remains separately unauthorized.
 
 ## M4 Discovery Verification
 

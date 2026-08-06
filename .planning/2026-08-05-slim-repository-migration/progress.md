@@ -398,3 +398,37 @@
 - The archive handoff candidate is exactly six staged governance documents; README
   is intentionally unchanged until M4-B. No commit, push, remote mutation, Release,
   live Cloud, production, or Product Phase 4 action followed Discovery.
+
+## M4-A
+
+- Maintainer confirmed clean local checkpoints for both repositories and authorized
+  M4-A. Recovered successor HEAD `cc9bc878...`, clean branch
+  `migration/slim-beta3-dev`, and the frozen M4 runbook before external action.
+- Marked M4-A in progress with a hard stop before M4-B. No remote ref, default
+  branch, ruleset, Release, live Cloud state, old-repository file, or production
+  byte has been changed at this point.
+- Local preflight PASS: importer and Node syntax; full Windows suite 63 registered /
+  52 pass / 0 fail / 11 honest POSIX skips; `git diff --check`; two exact 22-entry,
+  75,323-byte ZIP builds at SHA-256 `82770964...`.
+- Remote read-only preflight PASS: no `main` or tag; development remains
+  `39795283...`; audit remains `bbad3703...`; authenticated repository metadata
+  reports admin permission and development default; branch API reports protection
+  disabled on both evidence refs and ruleset count zero.
+- Stopped before external mutation because neither the connector nor local tooling
+  provides a non-interactive authenticated default/ruleset management channel. No
+  push, `main`, default/ruleset mutation, Release, live Cloud action, old-repository
+  edit, production change, or Product Phase 4 action occurred.
+- Maintainer installed and authorized GitHub CLI; explicit binary authentication
+  verified the active `keeptoy` account and admin repository access without
+  exposing a token. Authenticated protection/default/ruleset preflight PASS.
+- Non-force exact refspec created remote `main@cc9bc878...`; immediate readback
+  proved development `39795283...` and audit `bbad3703...` remained unchanged.
+- Changed successor default to `main`. Created active `main-integrity` ruleset ID
+  `20491892` and `evidence-integrity` ruleset ID `20491906`; authenticated branch
+  rule readback shows deletion/non-fast-forward only on their exact targets.
+- Public no-branch HTTPS fresh clone PASS at exact `main@cc9bc878...`, 61 tracked
+  paths, four `100755` upstream runtime files, clean workspace, and
+  `refs/remotes/origin/HEAD -> origin/main`.
+- `M4A_SUCCESSOR_AUTHORITY_CUTOVER=PASS`. No Release, tag, live Cloud,
+  old-repository, production, or Product Phase 4 mutation occurred. Stopped for
+  local checkpoint and explicit M4-B authorization.

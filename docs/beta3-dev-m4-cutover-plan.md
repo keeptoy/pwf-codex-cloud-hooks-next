@@ -1,6 +1,6 @@
 # beta.3-dev M4 仓库切换方案
 
-> 状态：`M4 DISCOVERY COMPLETE / M4-A AUTHORIZATION REQUIRED`
+> 状态：`M4-A PASS / M4-B AUTHORIZATION REQUIRED`
 >
 > 本文只冻结 successor authority cutover 的路线、外部变更、验证和回滚合同。它不授权 push、
 > 创建远端 `main`、修改默认分支或 ruleset、修改旧仓库、创建 tag/Release、运行 live Cloud、
@@ -200,7 +200,31 @@ Release 的失败域合并。M4 只证明新默认源码权威和旧 beta.2 roll
 - [x] production/contracts/bootstrap/Release inputs 相对 M3 closure 无变化；
 - [x] importer、focused repository contracts、文档链接/fences 和 `git diff --check` PASS；
 - [x] 路线、子门、外部 mutations、失败矩阵、rollback 和 Release 解耦已冻结；
-- [ ] 维护者收到 Discovery checkpoint；
-- [x] 唯一 Next Step 是等待 M4-A 明确授权。
+- [x] 维护者收到 Discovery checkpoint；
+- [x] 维护者明确授权 M4-A；本地/远端身份、回归与确定性 ZIP 前置检查通过；
+- [x] 通过独立 GitHub CLI 授权建立受控管理通道，按 5.2 原顺序创建 exact `main`、
+  切换 default、建立并核验 integrity rulesets、完成无分支 fresh clone；M4-A PASS。
+
+## 12. M4-A 实际结果
+
+```text
+Main created by non-force exact ref: PASS
+Remote main SHA: cc9bc878ddc7d70c25156dd053e2874758f0814a
+Development evidence SHA unchanged: PASS
+Audit oracle SHA unchanged: PASS
+Default branch main: PASS
+Main integrity policy active: PASS
+Classic protection observation: ABSENT; protection is supplied by active rulesets
+Fresh default clone main/exact: PASS
+Release/tag/live Cloud mutations: 0
+M4-A successor authority: PASS
+```
+
+`main-integrity` 和 `evidence-integrity` 均为 active branch ruleset，只包含
+`deletion` 与 `non_fast_forward`。没有 required status checks，也没有完全禁止正常
+fast-forward update。无分支 HTTPS fresh clone 检出 `main@cc9bc878...`、61 个 tracked
+paths、四个 `100755` upstream runtime 文件和 clean workspace。
+
+完成标记：`M4A_SUCCESSOR_AUTHORITY_CUTOVER=PASS`。本轮不授权 M4-B。
 
 Discovery 自身不得输出任何 M4-A/B/C PASS 标记。

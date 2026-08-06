@@ -301,3 +301,37 @@
   full Windows 63/52/0/11, strict 13-document validation, importer/static checks,
   and two exact accepted ZIP builds all pass. The selected route can advance to an
   authorization checkpoint without any production or Release-input exception.
+
+## M4-A opening
+
+- The maintainer checkpointed both repositories and explicitly authorized M4-A.
+  The exact successor candidate is `cc9bc878ddc7d70c25156dd053e2874758f0814a`;
+  its parent is the M3 closure `d9308763...`. This authorization does not extend to
+  M4-B, M4-C, archive navigation, Release, live Cloud, production, or Product Phase 4.
+- M4-A retains the Discovery ordering: authenticated protection/settings evidence
+  and a controlled mutation interface are preconditions, not facts inferred from a
+  successful Git push. If those controls cannot be observed and changed safely,
+  stop before creating `main` rather than leave a partially cut-over repository.
+- Preflight confirms exact local candidate `cc9bc878...`, remote development
+  `39795283...`, remote audit `bbad3703...`, and no remote `main` or tag. The
+  authenticated GitHub connector reports admin permission and development as the
+  default; public branch/ruleset APIs report both evidence branches unprotected and
+  zero rulesets. Thus classic protection is observed as disabled, not unknown.
+- The connector exposes branch creation but not repository-default or ruleset
+  mutations. This host has no `gh`; Git Credential Manager has no non-interactive
+  GitHub HTTPS credential. An attempted silent credential availability check was
+  terminated when it waited for interaction; a second `GCM_INTERACTIVE=Never`
+  check returned unavailable without exposing any credential. This is a control
+  channel blocker, not a repository, runtime, test, or Git transport defect.
+- The maintainer installed and separately authorized GitHub CLI. The running Codex
+  process did not inherit its new PATH, so M4-A used the explicit trusted binary
+  `C:\Program Files\GitHub CLI\gh.exe`. Authenticated status confirmed account
+  `keeptoy`, SSH Git protocol, and `repo` scope without displaying any unmasked
+  credential. This resolved the settings-channel blocker without reusing GCM.
+- Exact-ref push, default switch, and two repository rulesets succeeded. GitHub's
+  branch API now reports all three refs protected by active rulesets; the classic
+  protection endpoint remains absent. This distinction is intentional: ruleset
+  protection supplies the policy, and classic protection is not silently layered.
+- The minimum evidence policy preserves emergency fast-forward maintenance while
+  blocking deletion and non-fast-forward changes. It does not fully freeze all
+  future updates and does not claim CI exists.
