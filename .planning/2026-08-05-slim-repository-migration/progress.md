@@ -448,3 +448,8 @@
 - Prepared normal fast-forward governance publication in archive-first/successor-
   second order. `M4B_ARCHIVE_PROVENANCE_HANDOFF=PASS` is conditional only on those
   exact normal pushes and final readback; all M4-C and product/Release actions stop.
+- Published archive `11ef7c96...` first and successor `fe338942...` second by normal
+  fast-forward. Initial remote-content verification incorrectly expected `gh api`
+  to honor a raw media-type header and tested the API wrapper rather than decoded
+  Markdown; no remote content was missing. Switched to contents API Base64 decoding,
+  then verified both successor provenance links and the old README banner PASS.
