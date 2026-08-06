@@ -189,3 +189,30 @@
   no hash was written to the zero-hash bootstrap.
 - Full Windows suite after the refinement passes 63 registered / 52 pass / 0
   fail / 11 honest POSIX skips. No test assertion was changed for this refinement.
+
+## M3-A — first no-live Cloud attempt and repair opening
+
+- M3-A transport created the same-named remote development branch at exact commit
+  `f54fb78633d22af5c8f0f225fc8c44ad046aa9c1`; local/remote identity matched.
+- Cloud passed every gate through Linux 63/63 and isolated install/doctor, then the
+  runbook's Managed Policy parser failed with `KeyError: 'command'` before ZIP and
+  terminal PASS fields. Cloud worktree stayed clean and no commit/PR was created.
+- Opened a governance-only repair inside M3-A. No M3-B/live setup, product change,
+  public `main`, Release, cutover, or Product Phase 4 work is authorized.
+- A local combined search for policy shape used a malformed escaped regex and
+  failed before returning matches. Switched to fixed-string/source-specific reads
+  instead of repeating that command shape.
+- Source confirmation found the exact nested `[[hooks.<event>.hooks]]` renderer in
+  `install.js`. Corrected the runbook to validate one event group, one nested
+  command handler, handler type, and adapter-only commands.
+- Added the regression inside the existing repository-boundary case, preserving
+  the 63-test total and the frozen rule that this remains the only test file
+  allowed to differ from M2 root.
+- The first focused run was blocked before test-file execution by the known Windows
+  sandbox `spawn EPERM`; the identical outside-sandbox rerun passed 3/3. A direct
+  `tomllib` sample of the installer-shaped nested policy also reports
+  `NESTED_MANAGED_POLICY_PARSER=PASS`.
+- Final local repair validation passes importer, in-memory Python, Node syntax,
+  exact 60 paths, zero product/build drift, the single allowed test drift, and
+  `git diff --check`. Full Windows suite remains 63/52/0/11. No Release ZIP input
+  or bootstrap byte changed.

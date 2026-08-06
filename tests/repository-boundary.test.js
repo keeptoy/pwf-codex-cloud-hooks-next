@@ -80,6 +80,8 @@ test("archived prototype and history remain outside runtime, Release, and adapte
   const runtime = read("contracts/runtime-bundle-v1.json");
   const release = read("contracts/release-artifact-v1.json");
   const adapter = read("hooks/hook_adapter.py");
+  const installer = read("install.js");
+  const m3Runbook = read("docs/beta3-dev-m3-cloud-equivalence.md");
   for (const content of [runtime, release, adapter]) {
     assert.doesNotMatch(content, /snapshot-prototype|prototype_snapshot_runner/);
     assert.doesNotMatch(content, /docs\/phase-|\.planning\/2026-08-01/);
@@ -88,4 +90,9 @@ test("archived prototype and history remain outside runtime, Release, and adapte
   assert.equal(artifact.entries.length, 22);
   assert.equal(artifact.entries.some(item => item.path.startsWith("docs/") || item.path.startsWith("tests/")), false);
   assert.deepEqual(artifact.external_release_assets.map(item => item.path), ["init-cloud-sandbox-v0.3.0.bash"]);
+  assert.match(installer, /\[\[hooks\.SessionStart\.hooks\]\]/);
+  assert.match(installer, /\[\[hooks\.UserPromptSubmit\.hooks\]\]/);
+  assert.match(m3Runbook, /event_groups = policy\["hooks"\]\[event\]/);
+  assert.match(m3Runbook, /handlers = event_groups\[0\]\["hooks"\]/);
+  assert.doesNotMatch(m3Runbook, /handlers\[0\]\["command"\]/);
 });

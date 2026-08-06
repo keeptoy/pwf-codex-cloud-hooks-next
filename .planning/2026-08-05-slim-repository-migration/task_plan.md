@@ -8,23 +8,27 @@ immutable M1 audit oracle.
 
 ## Current Gate
 
-M3 pre-A README authority refinement complete; checkpoint required before M3-A.
+M3-A governance repair locally validated; full no-live Cloud rerun required.
 
 ## Status
 
-M2-A/B/C and M3 Discovery are complete. The successor has the immutable parentless
-59-path M2 root plus local M3 Discovery child commit `3ef29f5`; neither development
-commit has been pushed. The maintainer authorized a final README/ROADMAP/task-plan
-authority refinement before M3-A. Development-branch push, Cloud execution,
-disposable live installation, M4, and Product Phase 4 still require their explicit
-later gates.
+M2-A/B/C and M3 Discovery are complete. M3-A transport pushed reviewed commit
+`f54fb78633d22af5c8f0f225fc8c44ad046aa9c1` to the same-named remote development
+branch. The first no-live Cloud run passed identity, provenance, static, mode, and
+Linux 63/63 gates, then stopped in the runbook-only Managed Policy assertion because
+it read the actual two-level TOML handler structure as one level. The corrected
+governance descendant now validates the nested group/handler shape and passes local
+focused/full regression with zero product/Release-input drift. M3-A remains open
+until that exact descendant is pushed and the complete Fresh Cloud script passes
+from its first line. M3-B, M4, and Product Phase 4 remain unauthorized.
 
 ## Next Step
 
-Checkpoint the completed README authority refinement, then wait for explicit M3-A
-authorization to push the reviewed development branch and run the no-live Cloud
-seal. Do not begin M3-B, create public `main`, publish, cut over, modify production
-behavior, or enter Product Phase 4.
+Checkpoint and non-force push the reviewed governance descendant to the same-named
+development branch, verify local/remote HEAD equality, then rerun the complete Fresh
+Cloud no-live seal from the new exact HEAD. Do not combine partial results from the
+first attempt. Do not begin M3-B, create public `main`, publish, cut over, modify
+production behavior, or enter Product Phase 4.
 
 ## Invariants
 
@@ -87,6 +91,20 @@ behavior, or enter Product Phase 4.
 - Full Windows suite: 63 registered / 52 pass / 0 fail / 11 honest POSIX skips.
 - The changed README is the only changed Release ZIP input; bootstrap remains
   external, zero-hash, and unchanged.
+
+## M3-A Runbook Repair Verification
+
+- Installer source and Cloud output agree on one event-group list containing one
+  nested `hooks` handler list; the runbook validates both levels, handler type,
+  and adapter-only commands.
+- Existing repository-boundary regression extended without adding a test case:
+  focused 3/3 PASS; full Windows suite remains 63 registered / 52 pass / 0 fail /
+  11 honest POSIX skips.
+- Importer, Python/Node static checks, direct nested TOML parser sample, exact
+  60-path boundary, and `git diff --check` PASS.
+- Relative to the immutable M2 root, product/build drift remains zero and the only
+  test-tree drift remains `tests/repository-boundary.test.js`. No Release allowlist
+  input or bootstrap byte changed.
 
 ## M2-B Verification
 

@@ -14,8 +14,9 @@
 
 - 产品 rollback：published/accepted `v0.3.0-beta.2`。
 - 当前开发身份：`0.3.0-beta.3-dev`，不可发布。
-- 当前仓库迁移：M1/M2 complete，M3 Discovery complete；push、M3-A Cloud 与 M3-B disposable
-  lifecycle 仍需逐门授权。
+- 当前仓库迁移：M1/M2 和 M3 Discovery complete；M3-A transport PASS，首次 Cloud 运行发现
+  runbook-only Managed Policy parser defect，治理修复与完整重跑 in progress。M3-B disposable
+  lifecycle 仍未授权。
 - M1 audit branch：`audit/beta2-exact`，不得移动或重写。
 - Product Phase 4：未开始、未授权。
 - 生产集成：只支持 PWF v3.8.2 的两个 Managed Hook events。

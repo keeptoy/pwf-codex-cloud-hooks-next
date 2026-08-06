@@ -173,3 +173,15 @@
   repair for discoverability, plus `docs/git-file-modes.md` for renormalization,
   fresh-clone, and destructive-operation cautions. Copying the full runbook into
   the packaged README would recreate the coupling this refinement removes.
+
+## M3-A first Cloud attempt
+
+- The accepted `f54fb78633d22af5c8f0f225fc8c44ad046aa9c1` checkout passed M2
+  root/tree, 60-path governance boundary, four `100755` modes, importer/static/Bash,
+  and Linux 63/63 including root/root, cross-user, and process-group cases.
+- The isolated install and doctor completed, but the runbook parser raised
+  `KeyError: 'command'`: generated TOML stores an event group at
+  `policy["hooks"][event][0]` and the command handler below its `"hooks"` list.
+  This is currently classified as a runbook assertion defect, not production,
+  installer, test, or platform failure; source confirmation and a regression are
+  required before the rerun.

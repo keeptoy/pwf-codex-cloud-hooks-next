@@ -17,7 +17,7 @@
 |---|---|---|
 | M1 exact mirror | 证明新 remote/audit branch 与 beta.2 commit/tree/资产完全一致 | complete |
 | M2 slim transformation | 精简历史树，建立新 authority/identity/provenance 和 root commit | complete；checkpoint 已收到 |
-| M3 Cloud equivalence | development branch Fresh/Resume/doctor/ZIP/Linux suite | Discovery complete；执行未授权 |
+| M3 Cloud equivalence | development branch Fresh/Resume/doctor/ZIP/Linux suite | M3-A in progress；transport PASS，runbook parser 修复后完整 Cloud 重跑待执行 |
 | M4 cutover | 建立公开 `main`、交割、旧仓库导航和 rollback 演练 | pending；未授权 |
 
 M2 内部分为：
@@ -66,6 +66,10 @@ M3 Discovery 已冻结为三个后续独立子门：
 完整协议与失败矩阵见 [`docs/beta3-dev-m3-cloud-equivalence.md`](docs/beta3-dev-m3-cloud-equivalence.md)。
 checkout bootstrap 始终保持 zero hash；M3 不发布资产、不创建 public `main`，也不把 development
 安装描述成 Release。
+
+M3-A 首次 Cloud 运行已通过 identity、mode、importer/static 和 Linux 63/63，随后因 runbook 把
+实际两层 Managed Policy TOML 误读为一层而停止。该结果分类为验收脚本缺陷，不是 production 或
+installer failure；修复形成新的治理 descendant 后必须从头完整重跑，前后两次结果不能拼接。
 
 ## 5. M4 cutover
 
