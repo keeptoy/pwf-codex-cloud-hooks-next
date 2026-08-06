@@ -14,14 +14,14 @@
 
 - 产品 rollback：published/accepted `v0.3.0-beta.2`。
 - 当前开发身份：`0.3.0-beta.3-dev`，不可发布。
-- 当前仓库迁移：M1/M2/M3、M4-A 和 M4-B complete。实际测试 HEAD 为
+- 当前仓库迁移：M1/M2/M3/M4 complete。M3 实际行为测试 HEAD 为
   `39795283cd65f84547651d7bec816191fb5bfedf`，ZIP SHA-256 为
   `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`；M3-B setup、Fresh、
-  canonical、Resume 和 doctor 全部 PASS。M4-B 最终远端默认源码读回是
-  `main@5476a5c97e713d935622a9998f902e35a114db07`；development/audit evidence refs
-  未移动，两个 active integrity ruleset 只禁止 deletion 与 non-fast-forward。M4-C 已单独
-  授权并处于 governance-only runbook/Cloud acceptance 准备阶段；Release、live `/opt/codex`、
-  production 和 Product Phase 4 仍未授权。
+  canonical、Resume 和 doctor 全部 PASS。M4-C no-live cutover/rollback 验收 HEAD 是
+  `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151`；development/audit evidence refs
+  未移动，两个 active integrity ruleset 只禁止 deletion 与 non-fast-forward。successor 已成为
+  后续源码维护权威，旧仓库继续承载 beta.2 rollback。Release、live `/opt/codex`、production 和
+  Product Phase 4 仍未授权。
 - M1 audit branch：`audit/beta2-exact`，不得移动或重写。
 - Product Phase 4：未开始、未授权。
 - 生产集成：只支持 PWF v3.8.2 的两个 Managed Hook events。
@@ -126,10 +126,10 @@ zero checksum 并 fail closed。
 
 ## 9.1 M4 仓库切换
 
-M4 的当前权威是 `docs/beta3-dev-m4-cutover-plan.md`。默认路线保留 Cloud-tested development ref，
-从经审计治理后代新建 `main`，验证 SHA 后才切 default。旧仓库继续承载 beta.2 Release 和 rollback，
-不得 rename/archive/delete。每个远端 mutation 都要单独记录实际值并通过前一子门；Discovery 文档
-本身不授权执行这些动作。
+M4 的完成证据在 `docs/beta3-dev-m4-cutover-plan.md`。实际 accepted main 是 `0b4bd7d...`；
+Cloud-tested development 与 audit refs 保持不动，旧仓库继续承载 beta.2 Release 和 rollback。
+后续正常 main 治理提交不会改写这次 accepted SHA；若要重新执行历史 M4-C 唯一脚本，应使用记录的
+验收 commit，而不是把新 main HEAD 冒充成旧验收输入。
 
 ## 10. 回滚
 

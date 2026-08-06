@@ -101,10 +101,9 @@ git diff --check
 
 ## 当前迁移边界
 
-M1 exact mirror、M2 slim transformation、M3 Cloud equivalence、M4-A authority 和 M4-B 双向
-provenance/navigation 已完成。M4-B 最终远端读回节点是 `main@5476a5c...`；Cloud-tested
-development `39795283...` 与 audit `bbad3703...` 保持不动，旧仓库仍是不可变 beta.2 Release/
-rollback 权威。维护者只授权了 M4-C no-live cutover/rollback acceptance：可以正常 fast-forward
-发布一份仅含七个治理文件的验收 runbook，并在 Fresh Cloud/Linux 临时目录执行；不能发布 tag/
-Release、写 live `/opt/codex`、修改 production、rename/archive/delete 仓库或进入 Product Phase 4。
-M4-C 通过并完成证据回写后，本仓库才可宣告迁移闭环；Product Phase 4 仍需独立 Discovery Gate。
+M1 exact mirror、M2 slim transformation、M3 Cloud equivalence 和 M4 repository cutover 已完成。
+M4-C 在 `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151` 通过 Fresh Cloud/Linux no-live
+验收；Cloud-tested development `39795283...` 与 audit `bbad3703...` 保持不动，旧仓库仍是
+不可变 beta.2 Release/rollback 权威。当前 successor 是后续源码维护权威，但 beta.3-dev 仍未
+发布。禁止把迁移完成理解为 tag/Release、live `/opt/codex`、production behavior 或 Product
+Phase 4 授权；下一步必须等待维护者明确授权新的 Product Phase 4 Discovery Gate。

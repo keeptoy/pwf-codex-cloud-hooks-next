@@ -1,10 +1,10 @@
 # beta.3-dev M4 仓库切换方案
 
-> 状态：`M4-C AUTHORIZED / CLOUD ACCEPTANCE PREPARATION`
+> 状态：`M4 COMPLETE / CLOUD ACCEPTED`
 >
-> 本文冻结 successor authority cutover 的路线、外部变更、验证和回滚合同。M4-A 与 M4-B
-> successor provenance / 旧仓库 archive navigation 交割已完成。维护者现只授权 M4-C
-> no-live 验收；tag/Release、live `/opt/codex`、production behavior 和产品 Phase 4 仍未授权。
+> 本文冻结 successor authority cutover 的路线、外部变更、验证和回滚合同，并记录 M4-A/B/C
+> 的实际结果。M4 已关闭；tag/Release、live `/opt/codex`、production behavior 和产品 Phase 4
+> 没有因迁移完成而获得授权。
 
 ## 1. 目标与边界
 
@@ -544,5 +544,42 @@ paths、四个 `100755` upstream runtime 文件和 clean workspace。
 
 完成标记：`M4B_ARCHIVE_PROVENANCE_HANDOFF=PASS`。维护者随后已单独授权 M4-C no-live
 acceptance；Release/tag、live `/opt/codex`、production behavior 与 Product Phase 4 仍未授权。
+
+## 14. M4-C 实际结果与迁移闭环
+
+Cloud/Linux 在精确 `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151` 执行了 7.2 的完整
+唯一脚本，得到：
+
+```text
+PROBE_VERSION=PWF_BETA3DEV_M4C_CUTOVER_ROLLBACK_V1
+M4C_ACCEPTED_MAIN=0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151
+M4B_GOVERNANCE_DESCENDANT=PASS paths=7 commits=1
+LINUX_SUITE=PASS tests=63 pass=63 fail=0 skipped=0
+SUCCESSOR_BOUNDARY=PASS paths=61 executables=4
+DEVELOPMENT_ZIP=PASS entries=22 size=75323 sha256=82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508
+DEVELOPMENT_BOOTSTRAP_ZERO_HASH=PASS
+BETA2_ASSETS=PASS zip_size=84572 bootstrap_size=17425
+BETA2_ROLLBACK_BUILD_DOCTOR=PASS payloads=11 isolated=true
+MAINTAINER_HANDOFF_REHEARSAL=PASS
+REMOTE_DEFAULT_AND_EVIDENCE_RECHECK=PASS
+LIVE_CODEX_MUTATIONS=0
+WORKSPACES_CLEAN=YES
+M4C_CUTOVER_ROLLBACK_ACCEPTANCE=PASS
+```
+
+严格结论：
+
+- successor public default/source authority、两个 evidence refs 和旧仓库 default 在执行前后一致；
+- beta.3-dev development ZIP 与 M3 接受字节一致，但仍不是 Release；
+- beta.2 rollback 的下载、build 和隔离 doctor 不依赖 successor runtime/fixture 修复；
+- 没有写 live `/opt/codex`，没有 tag/Release、production、rename/archive/delete 或 Product Phase 4
+  mutation；
+- M4 repository migration/cutover 已完整关闭。
+
+完成标记：`M4_REPOSITORY_CUTOVER=PASS`。
+
+7.2 脚本是针对 accepted `0b4bd7d...` 的封闭验收证据。后续正常治理提交会移动 `main`，不应
+修改脚本的 exact-parent/seven-path 断言来伪造重跑；需要重验时应 checkout 该 accepted commit，
+或另开一个带新输入的新 gate。
 
 Discovery 自身不得输出任何 M4-A/B/C PASS 标记。

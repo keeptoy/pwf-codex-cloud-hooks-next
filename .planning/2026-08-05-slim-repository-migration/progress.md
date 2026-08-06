@@ -488,3 +488,14 @@
   called an accidental `test_cmd_placeholder` token and returned exit 1 after the
   commit. No repository operation depended on that token. Recorded the tool error,
   amended this same single descendant, and reran identity/clean checks separately.
+- Published the amended single preparation descendant by normal fast-forward as
+  `main@0b4bd7d...`; immediate readback confirmed default main and unchanged
+  development/audit refs. Both local repositories were clean before Cloud execution.
+- Maintainer returned the complete M4-C strict summary. Every frozen field PASS:
+  Linux 63/63/0/0, 61 paths/four executables, accepted 22-entry development ZIP,
+  zero-hash guard, exact beta.2 asset sizes/hashes, isolated 11-payload rollback
+  build/doctor, handoff rehearsal, remote/default/evidence recheck, zero live
+  mutation, and clean workspaces.
+- Recorded `M4C_CUTOVER_ROLLBACK_ACCEPTANCE=PASS` and closed repository migration as
+  `M4_REPOSITORY_CUTOVER=PASS`. No Release/tag, live `/opt/codex`, production byte,
+  repository rename/archive/delete, or Product Phase 4 action occurred.

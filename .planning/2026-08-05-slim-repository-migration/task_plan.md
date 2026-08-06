@@ -8,8 +8,7 @@ immutable M1 audit oracle.
 
 ## Current Gate
 
-M4-C cutover/rollback acceptance authorized; Cloud/Linux runbook preparation and
-governance-only publication are in progress.
+M4 repository cutover complete; stopped before Product Phase 4 Discovery authorization.
 
 ## Status
 
@@ -43,17 +42,21 @@ the public default, activated minimum main/evidence integrity rulesets, and pass
 fresh default clone. M4-B then published exact cross-repository provenance and old
 archive/rollback navigation without successor README/Release-input drift or beta.2
 asset mutation; its final readback commit is
-`5476a5c97e713d935622a9998f902e35a114db07`. The maintainer has now explicitly
-authorized M4-C only. Release/tag, live `/opt/codex`, production behavior,
-repository rename/archive/delete, and Product Phase 4 remain unauthorized.
+`5476a5c97e713d935622a9998f902e35a114db07`. M4-C then accepted exact
+`main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151`: Linux 63/63, exact repository
+boundary/modes, deterministic development ZIP, zero-hash guard, immutable beta.2
+assets, isolated rollback build/doctor, handoff, remote recheck, zero live mutation,
+and clean workspaces all PASS. M4 is complete. Release/tag, live `/opt/codex`,
+production behavior, repository rename/archive/delete, and Product Phase 4 remain
+unauthorized.
 
 ## Next Step
 
-Publish one normal fast-forward M4-C preparation descendant containing only the
-seven approved governance files, then run the frozen unique script from
-`docs/beta3-dev-m4-cutover-plan.md` in a fresh Cloud/Linux task. Stop after returning
-the complete output. Do not publish a Release/tag, write live `/opt/codex`, modify
-production behavior, rename/archive either repository, or enter Product Phase 4.
+Checkpoint and publish the M4-C evidence closure, then stop. The only possible next
+programme action is a separately authorized Product Phase 4 Discovery Gate; it must
+restore current upstream/Host/Cloud facts before proposing implementation. Do not
+publish a Release/tag, write live `/opt/codex`, modify production behavior,
+rename/archive either repository, or infer Phase 4 authorization from M4 completion.
 
 ## Invariants
 
@@ -132,11 +135,28 @@ production behavior, rename/archive either repository, or enter Product Phase 4.
 - [x] Publish both governance descendants by normal fast-forward, verify GitHub
   navigation/authority facts, and stop before M4-C.
 - [x] Receive the M4-B checkpoint and explicit M4-C-only authorization.
-- [ ] Publish the governance-only M4-C acceptance runbook by normal fast-forward.
-- [ ] Pass fresh Cloud/Linux default-clone, full-suite, deterministic ZIP,
+- [x] Publish the governance-only M4-C acceptance runbook by normal fast-forward.
+- [x] Pass fresh Cloud/Linux default-clone, full-suite, deterministic ZIP,
   independent beta.2 rollback, handoff, remote-recheck, and clean-workspace gates.
-- [ ] Record M4-C evidence and close repository migration without entering Release
+- [x] Record M4-C evidence and close repository migration without entering Release
   or Product Phase 4.
+
+## M4-C Verification
+
+- Accepted default source checkout:
+  `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151`, exactly one seven-governance-file
+  descendant of final M4-B `5476a5c...`.
+- Linux suite: 63 tests / 63 pass / 0 fail / 0 skipped; repository boundary is
+  61 paths with exactly four executable upstream runtime files.
+- Development ZIP: 22 entries / 75,323 bytes / SHA-256
+  `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`;
+  bootstrap zero-hash rejection PASS.
+- Immutable beta.2 assets: ZIP 84,572 bytes and bootstrap 17,425 bytes at their
+  frozen SHA-256 values; isolated rollback build/doctor PASS with 11 payloads and
+  no successor runtime/fixture dependency.
+- Maintainer handoff rehearsal, remote default/main/development/audit/old-default
+  recheck, zero live `/opt/codex` mutation, and both temporary workspaces clean PASS.
+- `M4C_CUTOVER_ROLLBACK_ACCEPTANCE=PASS` and `M4_REPOSITORY_CUTOVER=PASS`.
 
 ## M4-B Verification
 

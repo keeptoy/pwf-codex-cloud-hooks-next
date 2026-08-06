@@ -41,6 +41,7 @@ branch 重写。
 
 - 日常源码与后续治理入口：[`main`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/tree/main)；
 - M4-A authority commit：[`cc9bc878ddc7d70c25156dd053e2874758f0814a`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/cc9bc878ddc7d70c25156dd053e2874758f0814a)；
+- M4-C accepted cutover commit：[`0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151)；
 - Cloud-tested evidence：[`39795283cd65f84547651d7bec816191fb5bfedf`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/39795283cd65f84547651d7bec816191fb5bfedf)；
 - `main-integrity` 与 `evidence-integrity` 均 active，只限制 deletion 与
   non-fast-forward；classic protection 不叠加，未虚构 required CI。

@@ -368,3 +368,20 @@
 - The development bootstrap rejection can be exercised without setup side effects
   by sourcing it and invoking only `assert_hooks_checksum_configured`; full suite
   coverage plus the exact zero-hash line and Bash syntax freeze the same boundary.
+
+## M4-C accepted evidence
+
+- Fresh Cloud returned the exact terminal marker at accepted
+  `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151`. All summary fields are mutually
+  consistent with the frozen runbook: one seven-file governance descendant, Linux
+  63/63, 61 paths/four executable modes, accepted development ZIP, beta.2 assets,
+  isolated 11-payload rollback doctor, handoff, remote recheck, zero live mutation,
+  and clean workspaces.
+- M4 therefore closes without a beta.3 Release or product/runtime change. The
+  successor is the maintenance source authority; the old repository remains the
+  immutable beta.2 rollback/archive authority. Product Phase 4 is a new trust and
+  behavior domain and still requires a separate Discovery authorization.
+- The unique M4-C script is sealed evidence for `0b4bd7d...`: subsequent normal
+  governance commits move `main` but do not retroactively move the accepted input.
+  A future rerun must check out the accepted commit or define a new gate; it must
+  not weaken the exact-parent/seven-path assertion merely to follow current main.
