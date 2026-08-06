@@ -8,20 +8,22 @@ removing canaries, weakening tests, or rewriting the beta.2 rollback baseline.
 
 ## Current Gate
 
-Stable Release Discovery is complete; S1 candidate-identity authorization is required.
+S2 Fresh Cloud prepublication seal is authorized and awaiting a remote-visible exact
+candidate commit.
 
 ## Status
 
-The maintainer selected the pre-Phase-4 stable route. The repository still identifies
-itself as `0.3.0-beta.3-dev`; no package/bootstrap identity, ZIP hash, tag, Release,
-live `/opt/codex`, or product behavior has changed. Published/accepted beta.2 remains
-the sole production rollback until all stable publication and post-publication gates pass.
+The maintainer authorized this commit to close S1 and become the exact stable candidate,
+then explicitly authorized entry into S2. Stable identity, documentation, tests,
+repository-boundary planning data and the external bootstrap are sealed. Published and
+accepted beta.2 remains the sole production rollback until all stable publication and
+post-publication gates pass.
 
 ## Next Step
 
-Stop for maintainer checkpoint and explicit S1 authorization. S1 may freeze the stable
-identity, acceptance contract, tests, and final ZIP inputs, then build deterministic ZIP
-bytes and seal the external bootstrap. It may not publish a tag/Release, install live
+Make this exact commit visible to the Cloud checkout without changing candidate bytes,
+set its full SHA as S2 `EXPECTED_HEAD`, and execute only the standalone no-live S2 script
+in `docs/v0.3.0-cloud-hard-acceptance.md`. Do not publish a tag/Release, install live
 `/opt/codex`, enter Product Phase 4, remove canaries, or alter runtime/Host behavior.
 
 ## Non-goals
@@ -75,15 +77,15 @@ bytes and seal the external bootstrap. It may not publish a tag/Release, install
 
 ### S1 — Stable candidate identity and local seal
 
-- [ ] Change package/bootstrap/test/document identity from beta.3-dev to stable v0.3.0.
-- [ ] Add a standalone v0.3.0 hard-acceptance document without depending on beta.2 text.
-- [ ] Keep production/runtime/contract/overlay bytes unchanged and prove the exact drift set.
-- [ ] Freeze README and all 22 ZIP inputs before calculating the final ZIP SHA.
-- [ ] Run importer/static/full Windows suite and deterministic double-build/check.
-- [ ] Write the exact ZIP SHA into the external bootstrap and calculate bootstrap SHA.
-- [ ] Record candidate commit, entries, sizes and hashes; stop before Cloud or publication.
+- [x] Change package/bootstrap/test/document identity from beta.3-dev to stable v0.3.0.
+- [x] Add a standalone v0.3.0 hard-acceptance document without depending on beta.2 text.
+- [x] Keep production/runtime/contract/overlay bytes unchanged and prove the exact drift set.
+- [x] Freeze README and all 22 ZIP inputs before calculating the final ZIP SHA.
+- [x] Run importer/static/full Windows suite and deterministic double-build/check.
+- [x] Write the exact ZIP SHA into the external bootstrap and calculate bootstrap SHA.
+- [x] Record the commit containing this plan as the candidate; freeze entries, sizes and hashes.
 - **Exit:** reproducible sealed candidate bytes, zero placeholder, no tag/Release/live install.
-- **Status:** pending; explicit authorization required
+- **Status:** complete in the commit containing this plan
 
 ### S2 — Fresh Cloud prepublication seal
 
@@ -93,7 +95,7 @@ bytes and seal the external bootstrap. It may not publish a tag/Release, install
 - [ ] Run isolated install/upgrade/doctor, adapter-only policy, inventory and zero residue.
 - [ ] Prove no live `/opt/codex` mutation and a clean workspace.
 - **Exit:** Cloud prepublication PASS for the exact assets intended for publication.
-- **Status:** pending; separately authorized after S1 checkpoint
+- **Status:** authorized; awaiting remote-visible candidate and Cloud execution
 
 ### S3 — Immutable publication and post-publication hard acceptance
 

@@ -6,10 +6,12 @@
 
 > 当前生产回滚基线：published/accepted `v0.3.0-beta.2`。
 >
-> 当前源码开发身份：`0.3.0-beta.3-dev`，仅用于 successor 迁移与等价性证据，未发布且不可安装。
+> 当前候选身份：`0.3.0`；S1 exact candidate 已封板，S2 Cloud 预发布验收已授权但尚未通过；
+> stable 尚未发布或晋级为 rollback。
 >
 > 当前状态：M1～M4 仓库迁移已关闭；已决定先封板不改变行为的稳定 `v0.3.0`。Stable Release
-> Discovery 已完成，等待 S1 候选身份/本地封板授权；Product Phase 4 继续停止。
+> Discovery 与 S1 已完成；当前只执行 S2 Cloud no-live prepublication seal；Product Phase 4
+> 继续停止。
 
 ## 1. 与活动 planning 的分工
 
@@ -34,8 +36,8 @@ task plan 为准，并在 Phase、Cloud、Release 或 rollback 状态变化时�
 |---|---|
 | 源码维护权威 | successor `main` |
 | 已发布生产回滚 | 旧仓库不可变 `v0.3.0-beta.2` ZIP/bootstrap 与 Cloud A～F 证据 |
-| 当前开发身份 | `0.3.0-beta.3-dev`；zero-hash bootstrap 主动 fail closed |
-| 当前 programme gate | v0.3.0 Stable Release S0 complete；S1 authorization required |
+| 当前候选身份 | `0.3.0`；ZIP/bootstrap 已本地封板，尚非 Release |
+| 当前 programme gate | v0.3.0 Stable Release S2 no-live Cloud prepublication seal |
 | 当前 Release | 目标为稳定 `v0.3.0`，但尚无 successor tag/Release；development ZIP 不是发布资产 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
@@ -69,7 +71,7 @@ Phase 是研发/验收边界；版本号是对外行为与兼容合同边界。�
 承诺，也不自动授权下一 Phase。一个 Phase 可以有多个 pre-release；多个低风险 Phase 也可以在明确
 评审后合并进同一版本列车。
 
-Product Phase 4 之前先完成一个独立稳定里程碑：把当前 beta.3-dev 已证明等价的 canonical 行为按新
+Product Phase 4 之前先完成一个独立稳定里程碑：把 beta.3-dev 已证明等价的 canonical 行为按新
 资产身份封板为 `v0.3.0`，保留现有 canary，不引入 runtime/Host ABI/trusted-graph 变化。其 S0～S3
 权威和停止条件由活动 `2026-08-06-v0.3.0-stable-release` task plan 管理。
 
@@ -102,7 +104,7 @@ trusted graph、rollback 和 Cloud 评审。
 新增 Hook 类型、Host ABI、信任/激活模型或明显用户行为面，默认提升 minor；纯兼容修复才使用 patch。
 任何字节变化都必须使用新身份和新 hash，不得复用 beta.2 或其他已发布资产。
 
-维护者已冻结选择：当前 `0.3.0-beta.3-dev` 的等价 canonical 行为先通过独立 S0～S3 gate 晋级稳定
+维护者已冻结选择：`0.3.0-beta.3-dev` 的等价 canonical 行为先通过独立 S0～S3 gate 晋级稳定
 `v0.3.0`；完成前保持 beta.2 为 rollback。只有 stable 发布与 A～F 关闭后，才允许另行授权 Product
 Phase 4 Discovery，并从新的 `0.4.0-dev` / `0.4.0-alpha.N` 列车开始。
 

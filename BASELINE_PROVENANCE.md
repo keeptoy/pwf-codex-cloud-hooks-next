@@ -117,8 +117,9 @@ rename source 和七个新文档/planning entrypoints。历史 planning、Phase/
 - `adapter-output-canonical-plan.json`
 - `session-catchup-cloud-wrapper.jsonl`
 
-Production runtime、schemas、installer 和 upstream scripts 在 M2-B 不改变行为。新的开发身份为
-`0.3.0-beta.3-dev`；bootstrap 使用 successor URL 和 64 个 `0` 的 checksum，明确不可发布。
+Production runtime、schemas、installer 和 upstream scripts 在 M2-B 不改变行为。迁移使用的开发
+身份是 `0.3.0-beta.3-dev` 和 zero-hash bootstrap；后续 stable S1 在继续保持这些行为字节不变的
+前提下，把候选身份冻结为 `0.3.0` 并单独记录新资产 hash。该 candidate 尚未替代 beta.2 rollback。
 
 ## 8. 验证来源链
 
@@ -136,3 +137,21 @@ pinned upstream archive + license
 
 任一环节发生变化都必须更新相应 contract/hash/test，并使用新 Release identity；不能引用 beta.2
 哈希来证明不同字节。
+
+## 9. Stable v0.3.0 candidate（S1）
+
+| 项目 | 值 |
+|---|---|
+| target tag / Release | `v0.3.0`（尚未创建） |
+| ZIP | `pwf-codex-cloud-hooks-v0.3.0.zip` |
+| ZIP entries / size | 22 / 75,386 bytes |
+| ZIP SHA-256 | `f245a554210c7f8d07eebbb775faa7b1482fea5d363ee6fa7578c9bbd98ad9af` |
+| external bootstrap | `init-cloud-sandbox-v0.3.0.bash` |
+| bootstrap size | 17,423 bytes |
+| bootstrap SHA-256 | `ab334f0367d948fa29a2bdd37bff0c220929aeb320fdf59dbacbd5a4021b39c0` |
+| behavior delta | none；保留 canonical runtime 与 `PWF_GLOBAL_HOOK_CANARY_V1` |
+| current authority | S1 exact candidate；S2 authorized/pending execution，beta.2 仍是 rollback |
+
+包含本表的 commit 就是 exact S1 candidate。其 SHA 通过 S2 `EXPECTED_HEAD` 外部输入传递，避免
+commit 自引用；candidate filename/hash 或本表不能证明 GitHub Release 已存在；完整门槛见
+`docs/v0.3.0-cloud-hard-acceptance.md`。

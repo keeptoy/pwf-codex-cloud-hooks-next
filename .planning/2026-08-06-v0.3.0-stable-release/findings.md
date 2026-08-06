@@ -33,3 +33,18 @@
 
 Production adapter, owned runtimes, upstream runtimes, installer algorithms, schemas,
 overlay contracts and Release allowlist contents are not candidate behavior changes.
+
+## S1 seal conclusions
+
+- The 19 protected production/contract/import/build inputs are byte-identical to S1 base
+  `99ce1a5b56fb1d491003bd6b5d0c289bce9cb7a2`; the Release allowlist remains 22 entries.
+- The only ZIP-input drift is the frozen stable `README.md` and `package.json` identity.
+- Two deterministic builds are byte-identical: 75,386 bytes, SHA-256
+  `f245a554210c7f8d07eebbb775faa7b1482fea5d363ee6fa7578c9bbd98ad9af`.
+- The external bootstrap is 17,423 bytes, SHA-256
+  `ab334f0367d948fa29a2bdd37bff0c220929aeb320fdf59dbacbd5a4021b39c0`.
+- The standalone Cloud runbook uses the actual upstream v3.8.2 Skill root
+  `skills/planning-with-files` and fingerprints live managed paths before and after its
+  isolated install. Existing live state may exist, but S2 must prove it was not mutated.
+- S1 cannot name the immutable candidate commit until the maintainer checkpoints these
+  exact bytes. That commit, not a later moving `main`, becomes S2 `EXPECTED_HEAD`.

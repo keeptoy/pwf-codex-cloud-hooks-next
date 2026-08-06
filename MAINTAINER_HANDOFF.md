@@ -13,9 +13,10 @@
 ## 2. 当前事实
 
 - 产品 rollback：published/accepted `v0.3.0-beta.2`。
-- 当前开发身份：`0.3.0-beta.3-dev`，不可发布。
-- 当前版本路线：先把不改变行为且保留 canary 的 canonical runtime 封板为稳定 `v0.3.0`；S0
-  Discovery 已完成，S1 尚未授权，当前仍没有 successor tag/Release。
+- 当前候选身份：`0.3.0`；不改变行为且保留 canary 的 ZIP/bootstrap 已在 S1 封板，但当前仍没有
+  successor tag/Release，不能作为 production rollback。
+- 当前版本路线：S1 exact candidate 已建立，S2 no-live Cloud prepublication seal 已授权；只有
+  S2 PASS 和独立授权后才能进入 S3 发布。
 - 当前仓库迁移：M1/M2/M3/M4 complete。M3 实际行为测试 HEAD 为
   `39795283cd65f84547651d7bec816191fb5bfedf`，ZIP SHA-256 为
   `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`；M3-B setup、Fresh、
@@ -97,7 +98,7 @@ Doctor 输出先分类：
 不得仅为 test count 或绿色结果弱化 identity、containment、hard-link、race、timeout、cleanup、drift
 或 output-budget 断言。
 
-## 8. Development ZIP
+## 8. Candidate/Release ZIP
 
 ```bash
 ZIP="$(mktemp --suffix=.zip)"
@@ -107,8 +108,9 @@ unzip -Z1 "$ZIP"
 sha256sum "$ZIP"
 ```
 
-检查：22 entries、固定 root/order/mode/metadata、bootstrap external。development bootstrap 必须保持
-zero checksum 并 fail closed。
+检查：22 entries、固定 root/order/mode/metadata、bootstrap external。普通 development bootstrap
+必须保持 zero checksum 并 fail closed；已授权 Release candidate 只能写入冻结 ZIP 的精确 SHA，
+随后必须停止修改全部 ZIP 输入。
 
 ## 9. 正式 Release
 

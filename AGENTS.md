@@ -59,7 +59,8 @@
 - transcript JSONL 是可变 Host data；未知、损坏或身份不符不得造成 partial injection。
 - integrity 和内容注入 fail closed；advisory child failure 对 Codex loop fail open，且不能抑制
   canary 或其他已验证上下文。
-- 发布过的 beta.2 ZIP/bootstrap 字节、URL 和 SHA 不可变；当前 beta.3-dev 不是 Release。
+- 发布过的 beta.2 ZIP/bootstrap 字节、URL 和 SHA 不可变；当前 v0.3.0 candidate 已封板但不是
+  Release，直到 S3 发布和 A～F 关闭前仍不得作为 production rollback。
 
 ## Discovery 与 gate
 
@@ -94,7 +95,8 @@ git diff --check
 
 - 禁止 moving branch、`latest` 或无 checksum artifact。
 - ZIP 必须由 `contracts/release-artifact-v1.json` 精确 allowlist 构建；bootstrap 永远在 ZIP 外。
-- development bootstrap 的 64 位 zero hash 必须 fail closed，不得替换成临时构建 hash。
+- 普通 development bootstrap 使用 64 位 zero hash 并 fail closed；正式 candidate 只能在全部 ZIP
+  输入冻结、双构建一致后写入该 ZIP 的精确 hash，封板后任一 ZIP 输入变化都要求重新开始 seal。
 - 正式顺序：冻结版本/ZIP 输入 → build/check ZIP → 计算 ZIP SHA → 写入 bootstrap → 计算
   bootstrap SHA → 发布 → 重新下载双资产验证。
 - RC/canary 不能替代最终字节验收；任何重新打包都需要新身份、新 hash 和重新冒烟。
@@ -104,7 +106,8 @@ git diff --check
 M1 exact mirror、M2 slim transformation、M3 Cloud equivalence 和 M4 repository cutover 已完成。
 M4-C 在 `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151` 通过 Fresh Cloud/Linux no-live
 验收；Cloud-tested development `39795283...` 与 audit `bbad3703...` 保持不动，旧仓库仍是
-不可变 beta.2 Release/rollback 权威。当前 successor 是后续源码维护权威，但 beta.3-dev 仍未
-发布。维护者已决定先封板不改变行为的稳定 `v0.3.0`；Stable Release S0 Discovery 已完成，当前
-活动计划停在 S1 候选身份/本地封板授权前。禁止把该决定理解为 tag/Release、live `/opt/codex`、
-production behavior 或 Product Phase 4 授权；Product Phase 4 必须等 stable S3 关闭后再独立授权。
+不可变 beta.2 Release/rollback 权威。当前 successor 是后续源码维护权威；不改变行为且保留
+canary 的 stable `v0.3.0` candidate 已在 S1 冻结身份和资产字节，尚未发布。当前活动计划已经
+进入 S2 Cloud prepublication seal。禁止把 candidate 理解为 tag/Release、live
+`/opt/codex`、production behavior 或 Product Phase 4 授权；Product Phase 4 必须等 stable S3
+关闭后再独立授权。

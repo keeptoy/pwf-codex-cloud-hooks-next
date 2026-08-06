@@ -3,7 +3,9 @@
 把 [`OthmanAdi/planning-with-files`](https://github.com/OthmanAdi/planning-with-files)
 的本地 Codex Skill Hook/runtime，安全接入 Codex Cloud 的 system-managed Hooks。
 
-> 当前开发身份：`0.3.0-beta.3-dev`，尚未发布、不可直接 bootstrap 安装。
+> 本源码树的稳定 Release 身份：`v0.3.0`。本 README 只冻结该身份与稳定行为，不把发布前后会变化的
+> gate 状态写进 ZIP；当前是否已经发布/验收以 [`ROADMAP.md`](ROADMAP.md) 和
+> [`docs/v0.3.0-cloud-hard-acceptance.md`](docs/v0.3.0-cloud-hard-acceptance.md) 为准。
 >
 > 已发布回滚基线：`v0.3.0-beta.2`。其源码、资产哈希和 Cloud A～F 证据见
 > [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与
@@ -53,14 +55,14 @@ Managed policy 只注册一个绝对路径 adapter，事件集固定为：
 - 已安装且与 manifest 匹配的 pristine PWF v3.8.2 Skill；
 - production install 需要写入 `$CODEX_HOME` 和 Managed requirements 的权限。
 
-### Development bootstrap 安全边界
+### v0.3.0 外部 bootstrap 安全边界
 
-当前源码 checkout 的 bootstrap 使用 beta.3-dev successor URL，并把 ZIP SHA-256 固定为 64 个
-`0`。这是有意的 fail-closed 占位：正式 Release 封板前，直接运行会报 placeholder 错误。
+`init-cloud-sandbox-v0.3.0.bash` 使用精确 `v0.3.0` tag、包名和 ZIP SHA-256，并始终作为 ZIP 外部
+的独立资产。源码 checkout、文件名或本地 ZIP 本身不能证明 Release 已发布；只能在 Release 页面
+重新下载两个资产、核对 hard-acceptance 中的 SHA 后执行 bootstrap。
 
-不要把 development ZIP 或本地 bootstrap 当作 Release。需要生产回滚时使用不可变 beta.2 资产，
-并按 beta.2 hard-acceptance 文档复验。迁移和 Release gate 的当前进度只在完整源码仓库的
-`ROADMAP.md` 与活动 task plan 中维护。
+在 v0.3.0 完成发布后 A～F 前，生产回滚仍使用不可变 beta.2 资产并按 beta.2 hard-acceptance
+复验。Release gate 的当前进度只在 ROADMAP、活动 task plan 和 v0.3.0 hard-acceptance 中维护。
 
 ### Installer CLI
 
@@ -166,7 +168,7 @@ git diff --check
 renormalize 和 fresh-clone 复验步骤见完整源码仓库的
 [`docs/git-file-modes.md`](docs/git-file-modes.md)。
 
-## 构建 development ZIP
+## 构建精确 v0.3.0 ZIP
 
 Release allowlist 由 `contracts/release-artifact-v1.json` 唯一决定。构建器固定路径顺序、时间戳、
 权限、压缩参数和 archive root；`check` 再核对 entries、mode、metadata 与源文件字节。
@@ -174,7 +176,7 @@ Release allowlist 由 `contracts/release-artifact-v1.json` 唯一决定。构建
 PowerShell：
 
 ```powershell
-$zip = Join-Path $env:TEMP 'pwf-codex-cloud-hooks-v0.3.0-beta.3-dev.zip'
+$zip = Join-Path $env:TEMP 'pwf-codex-cloud-hooks-v0.3.0.zip'
 python tools/build_release.py build --output $zip
 python tools/build_release.py check --archive $zip
 Get-FileHash -Algorithm SHA256 $zip
@@ -189,9 +191,8 @@ python3 tools/build_release.py check --archive "$ZIP"
 sha256sum "$ZIP"
 ```
 
-development ZIP 仍必须包含精确 22 entries，且不包含外部
-`init-cloud-sandbox-v0.3.0.bash`。当前 bootstrap 的 zero hash 不得替换成 development ZIP hash；
-只有正式 Release gate 可以封板。
+ZIP 必须包含精确 22 entries，且不包含外部 `init-cloud-sandbox-v0.3.0.bash`。本地构建成功不等于
+Release 成立；发布与验收状态、候选 ZIP/bootstrap 的精确 SHA 由 v0.3.0 hard-acceptance 冻结。
 
 ## 仓库地图
 
@@ -229,7 +230,7 @@ README 不复制频繁变化的 migration、Cloud、Release 或 Product Phase �
 - [`ROADMAP.md`](ROADMAP.md) 是 programme、migration、Cloud 与 Release gate 的当前权威；
 - `.planning/.active_plan` 指向的 `task_plan.md` 是唯一 Next Step、授权与停止条件的当前权威。
 
-源码分支、文件名或 development ZIP 中出现版本号，不代表 Release 已成立。
+源码分支、package version、文件名或本地 ZIP 中出现版本号，不代表 Release 已成立。
 
 ## 许可证
 

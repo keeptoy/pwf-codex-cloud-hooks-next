@@ -15,6 +15,8 @@ const python = process.env.PYTHON || (process.platform === "win32" ? "python" : 
 const sha256 = file => crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
 const betaZipSha256 = "812cc9cdcafa93b5fcc47cc763fd743f11be77958b75eea1fa4cf0508dd391ab";
 const betaBootstrapSha256 = "d572b77d920b34c34c7912ba364376ae3668216f00ce350251bd7c8b336abcd6";
+const stableZipSha256 = "f245a554210c7f8d07eebbb775faa7b1482fea5d363ee6fa7578c9bbd98ad9af";
+const stableBootstrapSha256 = "ab334f0367d948fa29a2bdd37bff0c220929aeb320fdf59dbacbd5a4021b39c0";
 
 function run(command, archive) {
   const flag = command === "build" ? "--output" : "--archive";
@@ -31,6 +33,7 @@ test("Release ZIP build is deterministic, exact, and keeps bootstrap external", 
     const secondResult = JSON.parse(result.stdout);
     assert.equal(sha256(first), sha256(second));
     assert.equal(firstResult.sha256, secondResult.sha256);
+    assert.equal(firstResult.sha256, stableZipSha256);
     assert.equal(firstResult.entries, 22);
     assert.ok(firstResult.size > 0);
     result = run("check", first); assert.equal(result.status, 0, result.stderr);
@@ -38,7 +41,7 @@ test("Release ZIP build is deterministic, exact, and keeps bootstrap external", 
 
     const artifact = JSON.parse(fs.readFileSync(contract, "utf8"));
     const packageMetadata = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
-    assert.equal(packageMetadata.version, "0.3.0-beta.3-dev");
+    assert.equal(packageMetadata.version, "0.3.0");
     assert.equal(artifact.entries.some(entry => entry.path === "tools/build_release.py"), true);
     assert.equal(artifact.entries.some(entry => entry.path === "init-cloud-sandbox-v0.3.0.bash"), false);
     assert.deepEqual(artifact.external_release_assets.map(entry => entry.path), ["init-cloud-sandbox-v0.3.0.bash"]);
@@ -53,9 +56,10 @@ test("Release ZIP build is deterministic, exact, and keeps bootstrap external", 
       "download both published assets and verify their SHA-256 values",
     ]);
     const bootstrap = fs.readFileSync(path.join(root, "init-cloud-sandbox-v0.3.0.bash"), "utf8");
-    assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.0-beta\.3-dev\}"/);
+    assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.0\}"/);
     assert.match(bootstrap, /keeptoy\/pwf-codex-cloud-hooks-next\/releases\/download/);
-    assert.match(bootstrap, /HOOKS_SHA256="\$\{HOOKS_SHA256:-0{64}\}"/);
+    assert.match(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${stableZipSha256}\\}"`));
+    assert.equal(sha256(path.join(root, "init-cloud-sandbox-v0.3.0.bash")), stableBootstrapSha256);
     assert.notEqual(sha256(path.join(root, "init-cloud-sandbox-v0.3.0.bash")), betaBootstrapSha256);
     const betaAcceptance = fs.readFileSync(
       path.join(root, "docs", "v0.3.0-beta.2-cloud-hard-acceptance.md"),

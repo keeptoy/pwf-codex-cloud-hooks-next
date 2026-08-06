@@ -58,13 +58,13 @@ test("compatibility patch is deterministic, idempotent, and fail-closed", () => 
   }
 });
 
-test("beta.3-dev bootstrap targets the successor, fails closed, and leaves the global Skill pristine", () => {
+test("stable v0.3.0 bootstrap pins the sealed successor ZIP and leaves the global Skill pristine", () => {
   const bootstrap = fs.readFileSync(path.join(root, "init-cloud-sandbox-v0.3.0.bash"), "utf8");
   const workflow = bootstrap.match(/install_hooks_component\(\) \{([\s\S]*?)\n\}/);
   assert.ok(workflow, "install_hooks_component was not found");
-  assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.0-beta\.3-dev\}"/);
+  assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.0\}"/);
   assert.match(bootstrap, /HOOKS_URL="\$\{HOOKS_URL:-https:\/\/github\.com\/keeptoy\/pwf-codex-cloud-hooks-next\/releases\/download\/\$\{HOOKS_VERSION\}\/\$\{HOOKS_PACKAGE\}\}"/);
-  assert.match(bootstrap, /HOOKS_SHA256="\$\{HOOKS_SHA256:-0{64}\}"/);
+  assert.match(bootstrap, /HOOKS_SHA256="\$\{HOOKS_SHA256:-f245a554210c7f8d07eebbb775faa7b1482fea5d363ee6fa7578c9bbd98ad9af\}"/);
   assert.match(bootstrap, /HOOKS_SHA256 is still a placeholder/);
   assert.doesNotMatch(bootstrap, /apply_planning_skill_compat_patch|verify_patched_planning_skill|PLANNING_SKILL_PATCHED_SHA256/);
   assert.match(workflow[1], /install_managed_hooks/);
