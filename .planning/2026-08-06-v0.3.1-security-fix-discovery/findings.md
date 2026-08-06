@@ -11,6 +11,49 @@ worktree before D0. Published `v0.3.0` remains exact source
 `1454c9224c83d11c073b05baf6e536a11c3bb0e5`; its ZIP and bootstrap are immutable and
 outside the modification scope of this Discovery.
 
+## D1 source reconfirmation
+
+D1 is being frozen against clean source
+`dac1b5ebdf6d09a299d3eb002c182d0d7ac2caf0`. The two commits after the original audit
+anchor are local documentation/governance checkpoints; the affected production paths are
+unchanged.
+
+The H1 probe was rerun at this exact source with a third-party
+`[[permissions.audit]]` block immediately following the owned Hook definitions. It again
+reported:
+
+```json
+{
+  "classified_unowned_drift": false,
+  "classified_owned_drift": true,
+  "doctor_would_mark_repairable": true,
+  "reconstruction_matches_manifest": true,
+  "admin_rule_survives_repair": false,
+  "legacy_admin_array_survives_strip": false
+}
+```
+
+The H2 replacement probe was also rerun at the exact D1 source. A test seam replaced the
+accepted host transcript after `select_transcript()` returned and before
+`_parse_transcript()` reopened the path. The replacement carried a different session id,
+different project root and unique sentinel; the result was:
+
+```json
+{"outcome":"report_emitted","inject":true,"contains_replacement":true,"warnings":["duplicate_record_suppressed","unknown_transcript_record"]}
+```
+
+The warnings arise from the existing Cloud wrapper fixture and do not reject the
+replacement. The decisive facts are that injection remained enabled and the unique
+replacement sentinel reached the report. The prerequisite remains a writer able to
+replace a file inside the session store between selection and parsing.
+
+Source inspection also reconfirmed the related transaction and input facts: real
+`install()` computes `currentRequirements` and `proposedRequirements` before `acquire()`;
+real `repair()` inspects and reconstructs before `acquire()`; `uninstall()` already locks
+before reading but lacks a non-cooperating-writer revalidation; and adapter `main()` turns
+an empty/invalid payload into canary-only output, so a bounded-input rejection can remain
+Host-ABI compatible without suppressing the canary or failing the Codex loop.
+
 ## Cloud lifecycle clarification
 
 OpenAI's current public Cloud-environment documentation confirms this lifecycle order:
@@ -163,10 +206,69 @@ state is the same shared administrator policy boundary as H1.
 PowerShell inputs are SHA-pinned, but NVM installer bytes and the selected Node patch
 version do not have equivalent reproducibility/integrity controls.
 
-A future bootstrap should download to a temporary regular file, verify a frozen digest,
-avoid pipe-to-shell and select an exact Node patch/artifact identity. D1 must first decide
-whether this belongs in the same security patch. The published v0.3.0 bootstrap must not
-be edited or replaced; any correction requires a new identity, hash and acceptance cycle.
+A future bootstrap must eliminate pipe-to-shell and every unnecessary root-level remote
+runtime installer. The published v0.3.0 bootstrap must not be edited or replaced; any
+correction requires a new identity, hash and acceptance cycle.
+
+D1 defensive supply-chain cross-check against primary sources found that the NVM v0.40.1
+installer is itself tag-specific, but its default path uses Git when Git is present and
+then fetches/checks out additional repository content; hashing only `install.sh` therefore
+would not make the whole dependency graph byte-pinned. The official NVM release page also
+shows newer signed releases, so silently following “latest NVM” would merely replace one
+floating input with another. Official Node release data identifies v24 as LTS and, on the
+D1 date, exposes exact v24.18.1 Linux artifacts plus signed `SHASUMS256` files. Sources:
+
+- <https://github.com/nvm-sh/nvm/releases>
+- <https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh>
+- <https://nodejs.org/en/about/previous-releases>
+- <https://nodejs.org/download/release/latest-v24.x/>
+
+The initial D1 design considered replacing NVM with an exact official Node v24.18.1
+artifact. That route established that a deterministic replacement was technically
+possible, but the later Cloud/runtime scope review below supersedes it: this adapter does
+not need to provision Node 24 at all.
+
+#### D1 M2 amendment — frozen
+
+The maintainer subsequently clarified that the real target is a Codex Cloud Skill adapter,
+that the Cloud environment UI already offers Node 18/20/22, and that Node 24 is needed by
+other repositories rather than by this adapter. Repository inspection supports that
+separation:
+
+- this package declares `node >=18`;
+- Node runs `install.js`, tests and the setup-time Skills CLI only;
+- the installed Hook graph is Python/POSIX and has no Node runtime dependency; and
+- the current Skills CLI package also declares Node 18 or newer.
+
+Official Codex Cloud documentation says the universal image preinstalls common runtimes and
+the environment UI can pin Node.js through **Set package versions**. The linked
+`openai/codex-universal` reference README lists Node 18/20/22, while its current reference
+Dockerfile also verifies a Node 24 image input. The repository explicitly warns that it is
+not identical to production, so the maintainer's actual Cloud UI observation remains the
+narrower acceptance fact; availability of Node 24 must not be inferred from the reference
+Dockerfile.
+
+This makes “download Node v24.18.1 inside the adapter bootstrap” over-scoped. The frozen
+amendment is:
+
+1. select Cloud Node 22 through environment package settings and have the bootstrap only
+   verify a usable Node major `>=18` (Cloud acceptance uses 22);
+2. remove NVM and default Node installation from this adapter's bootstrap;
+3. install the pristine PWF Skill from its already pinned upstream v3.8.2 archive and
+   exact SHA
+   `7dab03ae283da38d33b9d551c7ec621d1818b9f0f17cf9ced566d4accbfc6dd1`
+   instead of executing `npx skills` as root, then let `install.js` revalidate the required
+   Skill hashes;
+4. keep Node 24 provisioning in each repository that actually requires Node 24, using its
+   own Cloud environment/setup contract; and
+5. retain M2 as a medium bootstrap supply-chain finding, but define closure as eliminating
+   unnecessary remote root execution rather than introducing a new Node 24 download.
+
+The Cloud-selected version is an environment setting, not a setup-shell export. The
+bootstrap accepts later supported Node majors as long as they satisfy `>=18`; Node 22 is
+the exact no-live Cloud acceptance selection for this release train, not a permanent
+platform constant. `npm` and `npx` cease to be bootstrap prerequisites once the pinned
+archive path replaces the Skills CLI.
 
 ### M3 — Unbounded Host stdin read in the adapter
 
@@ -248,17 +350,190 @@ security work should be narrow and evidence-driven rather than a redesign.
 | Transcript identity | same-object descriptor/snapshot, replacement, symlink, hardlink, rename, truncate/grow, session/project mismatch, no partial report |
 | Installer locking | deterministic concurrent administrator writer before/during lock, backup fidelity, stale-proposal rejection |
 | Host stdin | exact budget edges, UTF-8 byte/character distinction, malformed oversized input, loop remains available |
-| Bootstrap | digest-pinned NVM/Node inputs, no pipe-to-shell, deterministic fresh Linux/Cloud setup, new-identity enforcement |
+| Bootstrap | no NVM/Node download, Cloud-selected Node 22 and `>=18` verifier, digest-pinned PWF archive, no root `npx`, deterministic fresh Linux/Cloud setup, new-identity enforcement |
 | Release boundary | importer contract decision, exact allowlist, reproducible ZIP, bootstrap outside ZIP, immutable prior assets |
 | Full regression | importer/static/full Windows, all Linux-only cases, disposable no-live Cloud Fresh/UserPrompt/Resume/doctor/inventory |
 
-## Discovery decisions still open
+## D1 frozen repair design
 
-1. Whether H1, H2 and M1 form the minimum `0.3.1` security patch, or whether M2/M3 must
-   ship in the same train.
-2. Whether adding a structure-aware TOML dependency changes the release/trust inventory
-   enough to make a patch identity inappropriate.
-3. Whether transcript safety uses a held descriptor or a private snapshot, and how that
-   choice behaves across supported Linux/Cloud filesystems.
-4. Whether the importer is a source-only maintenance tool or a promised Release-ZIP tool.
-5. The exact D1 verdict: GO, CONDITIONAL_GO or NO_GO.
+### H1 — ownership-preserving TOML editing
+
+The installer will not add a general TOML dependency and will not parse/re-serialize the
+administrator's document. `package.json` currently has no dependencies, and ordinary TOML
+serialization would unnecessarily change comments, ordering and formatting in shared
+state. Instead, S1 must implement one small, conservative table-header scanner that:
+
+1. preserves every unrelated source slice byte-for-byte, including LF/CRLF choice,
+   comments, blank lines, quoted/dotted keys and ordering;
+2. recognizes complete TOML table and array-table headers while respecting quoted key
+   text and trailing comments;
+3. treats every unrelated table or array-table header as an ownership boundary;
+4. treats malformed or ambiguous header-like input in a candidate owned region as
+   `BLOCKED_AMBIGUOUS_MANAGED_REQUIREMENTS`, never as repairable owned drift; and
+5. is the only structural primitive used by install, doctor, repair, uninstall and legacy
+   trust cleanup.
+
+Newly generated 0.3.1 requirements must wrap the two exact managed Hook groups in stable
+begin/end owner comments. A marked region is removable only if markers are unique,
+properly paired and its structure contains exactly the allowlisted `SessionStart` and
+`UserPromptSubmit` group/handler families. Extra handlers, unrelated headers, nested owner
+markers or unknown keys inside the region are blockers. The manifest continues to hash
+both the full requirements and the unowned projection.
+
+Upgrade from unmarked v0.3.0 uses a one-way legacy recognizer: it may claim only the exact
+two known event groups with one handler each and the expected absolute adapter command
+family. A third-party handler sharing a group, a command collision, an unrelated header or
+an incomplete group is not removed automatically. Once a valid legacy installation is
+rewritten, it receives the new markers. This preserves bounded owned-drift repair without
+using the broad `OWNED_SEGMENT` substring as proof of ownership.
+
+`stripTrustToml()` remains separate in purpose but shares the scanner. It removes only an
+exact known `[hooks.state."..."]` single-table section, and the very next table *or*
+array-table header ends that section. It never absorbs a following administrator block.
+
+Required failing-first fixtures cover third-party arrays before/between/after the owned
+groups, a second handler in the same event group, quoted and dotted keys, comments,
+duplicate/missing markers, malformed brackets/quotes, command substring collision,
+LF/CRLF, legacy v0.3.0 upgrade and byte equality of every unowned slice across install,
+doctor, repair, uninstall and trust cleanup.
+
+### H2 — one verified transcript object
+
+Selection must return a `VerifiedTranscript`-equivalent object, not a reusable `Path`.
+For every Host path and scan candidate, the runtime must:
+
+1. open the selected session-store root and each relative directory component through
+   directory descriptors with `O_DIRECTORY|O_CLOEXEC|O_NOFOLLOW`;
+2. open the final name once with `O_RDONLY|O_CLOEXEC|O_NOFOLLOW|O_NONBLOCK`;
+3. require a regular file with `st_nlink == 1` and at most 16,000,000 bytes;
+4. read at most that budget plus one byte from the held descriptor, preserving the
+   existing 1,000,000-byte per-record limit;
+5. compare `fstat` identity before/after the read, then reopen the same name and revalidate
+   the parent chain and `(dev, ino, type, size, mtime_ns, ctime_ns, nlink)` identity; and
+6. validate session/project metadata and parse records only from the resulting immutable
+   byte snapshot. No later step may reopen the original Host path.
+
+Replacement after the final path revalidation cannot change the parsed bytes; replacement,
+rename, truncate, append, hardlink or parent-chain drift before that point fails closed.
+The original verified path remains the diagnostic `selected_transcript_path`, but report
+content and session naming derive only from the snapshot whose identity was accepted.
+Invalid UTF-8, oversize input, malformed JSONL or identity drift returns an existing
+non-injecting outcome with no partial records/report and no Host ABI/schema expansion.
+
+Fallback scanning must cap examined candidate names at 256, secure-open candidates by the
+same root-relative procedure and select by the verified descriptor metadata. Windows keeps
+an honest POSIX skip; Linux tests inject deterministic races for final-file replacement,
+symlink swap, hardlink, parent rename, truncate and append, and verify no replacement
+sentinel or partial report can escape.
+
+The 16 MB/256-candidate values are internal safety budgets, not Host ABI. If no-live Cloud
+evidence shows a legitimate current transcript exceeds either value, implementation must
+stop for a D1 amendment rather than silently raising or removing the bound.
+
+### M1 — shared-state transaction boundary
+
+For real install, repair and uninstall, `acquire()` must precede every read, classification,
+proposal, backup and mutation of requirements, legacy config/hooks, installed manifest and
+managed runtime. Dry-run remains an unlocked point-in-time preview; a later real invocation
+must discard that preview and recompute everything after taking the lock. External doctor
+uses a stable before/after read set and reports concurrent drift; the post-mutation doctor
+uses an internal already-locked inspection path to avoid recursive locking.
+
+The lock coordinates installer processes but cannot force an administrator/editor to honor
+it. Therefore each shared file receives a fingerprint containing existence, regular-file
+type, device/inode where available, size, timestamps and SHA-256. The backup is written from
+the exact captured bytes used to derive the proposal. Immediately before each atomic rename,
+the current file must match that fingerprint or the transaction aborts with a distinct
+concurrent-drift blocker. Post-write bytes and hashes are then verified before success.
+
+This removes the demonstrated stale-proposal window and narrows the remaining race to a
+non-cooperating writer acting after the last compare and around atomic rename. Node's
+standard library has no portable compare-and-swap rename, and an advisory OS lock would
+not constrain an editor that ignores it; this residual must be documented rather than
+hidden by a native dependency. Deterministic tests use an injected module-level race seam,
+not a production CLI/environment trigger, and cover writes before lock, after locked read,
+before rename, backup fidelity, post-write verification and two installer instances.
+
+### M2/M3/L1/L2 inclusion decisions
+
+| ID | 0.3.1 disposition | Frozen design |
+|---|---|---|
+| M2 | Include; bootstrap security/release blocker | Create a new `init-cloud-sandbox-v0.3.1.bash`; remove NVM, `NODE_VERSION=24`, default Node installation and root `npx skills`; require platform-provided Node and fail closed when its numeric major is below 18; select Node 22 in the Cloud environment for acceptance; download the exact PWF v3.8.2 archive to a private temporary file, verify the contract's full SHA-256 before extraction, install only the pristine Skill subtree, and let `install.js` verify all required Skill hashes. Other repositories own any Node 24 provisioning. |
+| M3 | Include; runtime blocker | Set `MAX_HOST_INPUT_BYTES = 1_000_000`; read `sys.stdin.buffer` with limit+1; require UTF-8 JSON whose root is an object. Oversize, invalid UTF-8, malformed JSON, empty input or non-object input emits the event canary only, dispatches no child, exits 0 for a valid CLI event and does not alter schemas. Exactly 1,000,000 bytes is accepted; 1,000,001 is rejected. |
+| L1 | Include; packaging correction | Add `patches/patch_planning_skill.py` to the new ZIP allowlist because the ZIP already promises the importer as a local tool. The future artifact becomes 23 entries and must prove importer `check` works from an extracted ZIP. The patcher is not installed into managed runtime and does not enter the trusted execution graph. |
+| L2 | Include; non-blocking cleanup | Update current rollback wording and active-runtime comments in the 0.3.1 source identity while preserving historical provenance context. No published v0.3.0 document or asset is rewritten. |
+
+H1, H2, M1, M2 and M3 are blockers for a security-release candidate. M2 is specifically a
+new-bootstrap/release blocker rather than a managed Hook runtime dependency. L1 and L2 ship
+in the same source train but cannot justify weakening or delaying a safety assertion. If
+the already contracted PWF archive digest cannot be reproduced, the bootstrap/release
+portion is blocked; no Node download is an allowed fallback.
+
+## D1 version and verdict
+
+`0.3.1` remains the correct candidate identity. The design adds no Hook event, Host field,
+result schema, managed runtime component, trusted execution edge or intended planning
+behavior. It restores the documented merge-preserving/fail-closed contract, bounds already
+untrusted input and makes a newly identified bootstrap byte chain deterministic. The added
+ZIP patcher is a non-executed maintenance input, not a runtime activation.
+
+**D1 verdict: GO for a separately authorized S1, with no implementation authorization
+implied by this verdict.** There is no unresolved trust-boundary choice. Platform Node
+selection, adapter bootstrap dependencies and other repositories' Node 24 requirements
+are now explicitly separated.
+
+S1 may begin only after explicit maintainer authorization and must add nearest-boundary
+failing tests before touching each production path. S2 must run the complete local/Linux
+matrix plus disposable no-live Cloud Fresh/UserPrompt/real Resume/doctor/inventory and
+verify the 16 MB transcript budget against observed Cloud data. S3 requires separate
+version/seal/publication authorization, a new 0.3.1 ZIP/bootstrap identity and exact hashes.
+
+Rollback remains published/accepted v0.3.0 throughout S1/S2 and until a separately
+published 0.3.1 passes downloaded-asset and Cloud acceptance. Any regression, unknown
+administrator-state classification, transcript identity ambiguity, ABI/trusted-graph
+expansion, platform Node/PWF archive precondition conflict or inability to reproduce exact
+assets is a stop-and-rollback condition; no existing v0.3.0 tag, URL, asset, checksum or
+acceptance record may move.
+
+## S1-A implementation result
+
+S1-A closed the four authorized code boundaries without changing Hook events, Host fields,
+result schemas, canary composition or the trusted runtime graph:
+
+- **H1:** new requirements use unique begin/end ownership markers. A conservative header
+  scanner recognizes both table forms while respecting quoted keys and comments. Marked
+  regions accept only the four expected Hook sections and key sets; malformed, duplicate,
+  shared or command-collision states become
+  `BLOCKED_AMBIGUOUS_MANAGED_REQUIREMENTS`. The one-way v0.3.0 recognizer removes only the
+  exact contiguous legacy pair, and `stripTrustToml()` now stops at any table or array
+  table. Unowned bytes after the last owned key, including CRLF comments and quoted array
+  tables, remain untouched.
+- **H2:** selection returns immutable `VerifiedTranscript` bytes rather than a reusable
+  path. Linux opens the root and every relative component with no-follow directory/file
+  descriptors, requires a regular single-link file, caps the snapshot at 16,000,000 bytes,
+  compares descriptor identity before/after read and against a no-follow reopen, and then
+  validates metadata and parses only the snapshot. Fallback examines at most 256 names.
+  Windows retains a functional snapshot/reopen check but is not treated as POSIX evidence.
+- **M1:** real install/repair/uninstall acquire the installer lock before shared-state
+  reads and proposals. Requirements/config/hooks/manifest bytes are fingerprinted with
+  identity, size, timestamps and SHA-256; backups use the captured bytes; every atomic
+  replacement revalidates the expected fingerprint and verifies written bytes. Doctor
+  performs a stable before/after read check. The deterministic race seam is module-only
+  and has no CLI/environment trigger.
+- **M3:** the adapter reads at most 1,000,001 raw bytes, accepts no more than 1,000,000,
+  decodes strict UTF-8 and requires a JSON object before any child dispatch. Oversize,
+  malformed, invalid UTF-8, empty and non-object input remain exit-0 canary-only for a
+  valid event.
+
+The owned-catchup source and runtime-bundle hashes were updated exactly, and the bundle now
+declares its Linux `openat` Host dependency. Focused Windows evidence is green; Linux
+symlink/hardlink/parent-race, process and cross-user cases remain honest S2 gates. M1 also
+retains the documented unavoidable residual for a non-cooperating writer acting after the
+last fingerprint comparison around atomic rename.
+
+The full local suite intentionally remains red in one Release test: current modified source
+builds ZIP SHA-256 `b9f178e520a4dda8fe7e81eccfb9b44b9cc27d3b1ef39bd2a57c723b94798758`,
+while the immutable v0.3.0 oracle remains
+`f245a554210c7f8d07eebbb775faa7b1482fea5d363ee6fa7578c9bbd98ad9af`. S1-A does not
+authorize changing package/ZIP identity or that oracle; the mismatch is a correct Release
+gate, not a product-test assertion to weaken.

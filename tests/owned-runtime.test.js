@@ -77,6 +77,24 @@ const nativeDiagnosticHarness = [
   "print(json.dumps(module.diagnostic_result(result),separators=(',',':')))"
 ].join(";");
 
+const replacementRaceHarness = [
+  "import importlib.util,json,os,sys",
+  "spec=importlib.util.spec_from_file_location('owned_catchup',sys.argv[1])",
+  "module=importlib.util.module_from_spec(spec)",
+  "spec.loader.exec_module(module)",
+  "original=module.select_transcript",
+  "replacement=sys.argv[2]",
+  "def wrapped(request,upstream):",
+  "    result=original(request,upstream)",
+  "    selected=result[0]",
+  "    target=getattr(selected,'path',selected)",
+  "    if target is not None: os.replace(replacement,target)",
+  "    return result",
+  "module.select_transcript=wrapped",
+  "value=json.loads(sys.stdin.read())",
+  "print(json.dumps(module.run_request(value,require_posix=False),separators=(',',':')))",
+].join("\n");
+
 function runNative(value) {
   const result = spawnSync(python, ["-c", nativeHarness, runtime], {
     encoding: "utf8",
@@ -102,6 +120,15 @@ function runNativeDiagnostic(value) {
     env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
   });
   return { ...result, json: JSON.parse(result.stdout) };
+}
+
+function runReplacementRace(value, replacement) {
+  const result = spawnSync(python, ["-c", replacementRaceHarness, runtime, replacement], {
+    encoding: "utf8",
+    input: JSON.stringify(value),
+    env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
+  });
+  return { ...result, json: result.stdout.trim() ? JSON.parse(result.stdout) : null };
 }
 
 function nativeFixture() {
@@ -204,6 +231,50 @@ test("owned runtime prefers a contained Host transcript with matching session id
     assert.match(result.json.report, /\.\.\.\[truncated\]\.\.\./);
     assert.match(result.json.report, /PWF_CATCHUP_UNSYNCED_SENTINEL_82C4/);
     assert.ok(result.json.report.length <= budget.max_report_chars);
+  } finally {
+    fs.rmSync(fixture.workspace, { recursive: true, force: true });
+  }
+});
+
+test("owned runtime parses the verified transcript snapshot after path replacement", () => {
+  const fixture = nativeFixture();
+  const replacement = path.join(path.dirname(fixture.session), "replacement.jsonl");
+  try {
+    const originalSession = observations.session.session_id;
+    const replacementText = fs.readFileSync(fixture.session, "utf8")
+      .replaceAll(originalSession, "replacement-session")
+      .replaceAll(fixture.project, path.join(fixture.workspace, "other-project"))
+      .replace("PWF_CATCHUP_UNSYNCED_SENTINEL_82C4", "REPLACEMENT_TRANSCRIPT_SENTINEL_9E31");
+    fs.writeFileSync(replacement, replacementText);
+    const result = runReplacementRace(fixture.value, replacement);
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.json.outcome, "report_emitted");
+    assert.equal(result.json.inject, true);
+    assert.match(result.json.report, /PWF_CATCHUP_UNSYNCED_SENTINEL_82C4/);
+    assert.doesNotMatch(result.json.report, /REPLACEMENT_TRANSCRIPT_SENTINEL_9E31/);
+  } finally {
+    fs.rmSync(fixture.workspace, { recursive: true, force: true });
+  }
+});
+
+test("owned runtime rejects symlinked and hard-linked transcript candidates", { skip: process.platform === "win32" }, () => {
+  const fixture = nativeFixture();
+  try {
+    const symlink = path.join(path.dirname(fixture.session), "rollout-symlink.jsonl");
+    fs.symlinkSync(fixture.session, symlink);
+    fixture.value.transcript.host_path = symlink;
+    let result = runNative(fixture.value);
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.json.outcome, "transcript_path_rejected");
+    assert.equal(result.json.inject, false);
+
+    const hardlink = path.join(path.dirname(fixture.session), "rollout-hardlink.jsonl");
+    fs.linkSync(fixture.session, hardlink);
+    fixture.value.transcript.host_path = hardlink;
+    result = runNative(fixture.value);
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.json.outcome, "transcript_path_rejected");
+    assert.equal(result.json.inject, false);
   } finally {
     fs.rmSync(fixture.workspace, { recursive: true, force: true });
   }

@@ -31,7 +31,7 @@
     "contracts": {
       "runtime_bundle": {
         "path": "contracts/runtime-bundle-v1.json",
-        "sha256": "7c4857a1ef6ac6df4ce46f58453ab845e82003ce4bc0b13326ec5a2650fc909c"
+        "sha256": "fc8fe80d70d9ce80dc3cf792cf284abae17cf044142176fa3fca6eab4720d9ad"
       },
       "compatibility_overlays": {
         "path": "contracts/compatibility-overlays-v1.json",
@@ -77,7 +77,7 @@
         "package_path": "runtime/owned-catchup.py",
         "mode": "0755",
         "origin": "local_managed_runtime",
-        "sha256": "bb3a18b8144e63b17c33db4cccf81425f135647948e6f20f4c44c3e42ba71f85"
+        "sha256": "8b5501eb4257654922a9e247bd3873e1ede75a7a1ae4b777eb7d8b3b47e41b72"
       },
       {
         "id": "owned_plan",

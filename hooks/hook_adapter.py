@@ -22,6 +22,7 @@ SESSION_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
 MAX_RUNTIME_STDOUT_BYTES = 100_000
 MAX_RUNTIME_STDERR_BYTES = 100_000
 MAX_RUNTIME_REQUEST_BYTES = 100_000
+MAX_HOST_INPUT_BYTES = 1_000_000
 ADAPTER_DEADLINE_SECONDS = 27.0
 CATCHUP_SECONDS = 15.0
 FINALIZATION_RESERVE_SECONDS = 1.0
@@ -74,12 +75,15 @@ PLAN_DIAGNOSTIC_FIELDS = {
 }
 
 
-def load_payload() -> dict:
+def load_payload() -> dict | None:
     try:
-        raw = sys.stdin.read()
-        return json.loads(raw) if raw.strip() else {}
-    except (json.JSONDecodeError, OSError):
-        return {}
+        raw = sys.stdin.buffer.read(MAX_HOST_INPUT_BYTES + 1)
+        if len(raw) > MAX_HOST_INPUT_BYTES:
+            return None
+        value = json.loads(raw.decode("utf-8")) if raw.strip() else None
+        return value if isinstance(value, dict) else None
+    except (UnicodeDecodeError, json.JSONDecodeError, OSError, ValueError):
+        return None
 
 
 def project_root(payload: dict) -> Path:
@@ -612,6 +616,15 @@ def main() -> int:
     event = sys.argv[1]
     shared_deadline = time.monotonic() + ADAPTER_DEADLINE_SECONDS
     payload = load_payload()
+    if payload is None:
+        result = {
+            "hookSpecificOutput": {
+                "hookEventName": event,
+                "additionalContext": context(event, {}),
+            }
+        }
+        print(json.dumps(result, ensure_ascii=True))
+        return 0
     output = context(event, payload)
     plan_context = ""
     catchup_report = ""

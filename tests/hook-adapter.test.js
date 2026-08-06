@@ -62,6 +62,31 @@ function invoke(layout, event, extra = {}, envOverrides = {}) {
   return { ...result, json: result.stdout.trim() ? JSON.parse(result.stdout) : null };
 }
 
+function invokeRaw(layout, event, raw, envOverrides = {}) {
+  const env = { ...process.env };
+  delete env.PLAN_ID;
+  delete env.PLANNING_DISABLED;
+  for (const [key, value] of Object.entries(envOverrides)) {
+    if (value === null) delete env[key];
+    else env[key] = value;
+  }
+  const result = spawnSync(python, [path.join(layout.managed, "hook_adapter.py"), event], {
+    input: raw,
+    encoding: "utf8",
+    env,
+  });
+  return { ...result, json: result.stdout.trim() ? JSON.parse(result.stdout) : null };
+}
+
+function jsonPayloadOfBytes(layout, event, targetBytes, multibyte = false) {
+  const value = { cwd: layout.root, hook_event_name: event, turn_id: "turn-budget", marker: multibyte ? "边界" : "", padding: "" };
+  const empty = JSON.stringify(value);
+  value.padding = "x".repeat(targetBytes - Buffer.byteLength(empty));
+  const raw = JSON.stringify(value);
+  assert.equal(Buffer.byteLength(raw), targetBytes);
+  return raw;
+}
+
 test("SessionStart emits source canary and authoritative owned plan context", () => {
   const layout = projectFixture();
   try {
@@ -94,6 +119,59 @@ test("an authoritative no-plan result emits only the event canary", () => {
     assert.equal(result.status, 0, result.stderr);
     assert.equal(result.json.hookSpecificOutput.additionalContext,
       "PWF_GLOBAL_HOOK_CANARY_V1 event=UserPromptSubmit");
+  } finally { fs.rmSync(layout.workspace, { recursive: true, force: true }); }
+});
+
+test("adapter enforces the exact Host stdin byte budget before child dispatch", () => {
+  const layout = projectFixture();
+  const capture = path.join(layout.workspace, "plan-request.json");
+  try {
+    let result = invokeRaw(
+      layout,
+      "UserPromptSubmit",
+      jsonPayloadOfBytes(layout, "UserPromptSubmit", 1_000_000),
+      { PWF_TEST_PLAN_CAPTURE: capture },
+    );
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.json.hookSpecificOutput.additionalContext, /OWNED_PORTABLE_CONTEXT/);
+    assert.equal(fs.existsSync(capture), true);
+
+    fs.rmSync(capture);
+    result = invokeRaw(
+      layout,
+      "UserPromptSubmit",
+      jsonPayloadOfBytes(layout, "UserPromptSubmit", 1_000_000, true),
+      { PWF_TEST_PLAN_CAPTURE: capture },
+    );
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.json.hookSpecificOutput.additionalContext, /OWNED_PORTABLE_CONTEXT/);
+    assert.equal(fs.existsSync(capture), true);
+
+    fs.rmSync(capture);
+    result = invokeRaw(
+      layout,
+      "UserPromptSubmit",
+      jsonPayloadOfBytes(layout, "UserPromptSubmit", 1_000_001),
+      { PWF_TEST_PLAN_CAPTURE: capture },
+    );
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.json.hookSpecificOutput.additionalContext,
+      "PWF_GLOBAL_HOOK_CANARY_V1 event=UserPromptSubmit");
+    assert.equal(fs.existsSync(capture), false);
+  } finally { fs.rmSync(layout.workspace, { recursive: true, force: true }); }
+});
+
+test("adapter rejects invalid UTF-8 and non-object JSON as canary-only", () => {
+  const layout = projectFixture();
+  const capture = path.join(layout.workspace, "plan-request.json");
+  try {
+    for (const raw of [Buffer.from([0xff]), Buffer.from("[]")]) {
+      const result = invokeRaw(layout, "UserPromptSubmit", raw, { PWF_TEST_PLAN_CAPTURE: capture });
+      assert.equal(result.status, 0, result.stderr);
+      assert.equal(result.json.hookSpecificOutput.additionalContext,
+        "PWF_GLOBAL_HOOK_CANARY_V1 event=UserPromptSubmit");
+      assert.equal(fs.existsSync(capture), false);
+    }
   } finally { fs.rmSync(layout.workspace, { recursive: true, force: true }); }
 });
 

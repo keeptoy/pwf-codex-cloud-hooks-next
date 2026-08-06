@@ -8,21 +8,25 @@ published `v0.3.0` tag, asset, checksum and acceptance record unchanged.
 
 ## Current Gate
 
-A standalone security-fix Discovery is authorized. D0 evidence persistence and plan
-activation are complete. No production implementation, version change, Cloud mutation,
-tag, publication or Product Phase 4 work is authorized by this plan state.
+The maintainer explicitly authorized S1-A only. Its nearest-boundary tests and minimum
+H1/H2/M1/M3 fixes are complete on the local Windows gate, with POSIX cases honestly
+deferred to S2 Linux. S1-B bootstrap work, L1/L2, S2, S3, version changes, Cloud mutation,
+tags, publication and Product Phase 4 remain unauthorized.
 
 ## Status
 
-The audit baseline is persisted with two high-risk, three medium-risk and two low-risk
-findings. The classifications are prioritization decisions, not claims that an incident
-has occurred. `v0.3.1` remains a candidate until D1 proves the fixes stay inside the
-existing `0.3.x` behavior, Host ABI and trusted graph.
+The audit baseline and D1 repair design are persisted. S1-A implements H1 ownership
+markers/conservative legacy recognition, H2 immutable verified transcript snapshots, M1
+lock-held shared-state transactions with fingerprint checks, and M3 bounded Host stdin.
+Focused local regression is green without Hook/Host ABI/result-schema expansion. The full
+suite has one intentional Release-gate failure because the modified source still retains
+the immutable v0.3.0 package/ZIP identity; changing that identity is not authorized here.
 
 ## Next Step
 
-Stop for maintainer review of the persisted risk register; if continued under this
-Discovery, freeze the D1 repair designs and boundary-test matrix before changing code.
+Stop for maintainer review. A separate authorization is required before S1-B bootstrap
+work or S2 Linux/no-live Cloud regression. Do not change version/Release identity merely
+to make the current v0.3.0 ZIP-hash test green.
 
 ## Authorization Boundary
 
@@ -30,11 +34,12 @@ Authorized now:
 
 - preserve the audit evidence in this planning directory;
 - activate this planning directory through `.planning/.active_plan`;
-- perform read-only Discovery and design work for the listed findings.
+- edit only the production/tests directly required for H1, H2, M1 and M3;
+- run local and honest platform-appropriate focused verification for S1-A.
 
 Not authorized now:
 
-- edit production/runtime/installer/bootstrap/contracts or change package identity;
+- edit bootstrap, Release allowlist, package identity or L1/L2-only files;
 - modify, move, replace or republish the existing `v0.3.0` tag or either asset;
 - install or repair live Cloud state, push, tag, publish or promote a rollback baseline;
 - begin Product Phase 4 features or change Host ABI, managed policy or trusted graph;
@@ -47,13 +52,38 @@ Not authorized now:
 | H1 | High | Managed TOML removal can absorb a following third-party array-of-tables block, misclassify it as owned drift and delete admin policy during repair/uninstall or legacy trust cleanup. | Design a structure-aware, merge-preserving parser/edit boundary and regression fixtures. |
 | H2 | High | `owned-catchup.py` validates a transcript path, then reopens it for parsing; a replacement between those operations can inject a transcript with a different session/project identity. | Design one verified descriptor/snapshot path with identity and race checks. |
 | M1 | Medium | Installer install/repair derives proposed shared state before taking the lock, allowing a concurrent administrator update to be overwritten by a stale proposal. | Move read/classify/propose under the lock and revalidate immediately before write. |
-| M2 | Medium | The bootstrap runs an unverified remote NVM installer through a pipe to shell and selects floating Node major `24`. | Decide whether a future, newly identified bootstrap pins and verifies both inputs. |
+| M2 | Medium | The bootstrap unnecessarily runs an unverified NVM installer through a root pipe-to-shell, selects floating Node `24` and then runs the Skills CLI remotely even though Cloud supplies compatible Node and the adapter needs only `>=18`. | Remove runtime provisioning from the adapter bootstrap; verify Cloud Node, install PWF from its pinned archive/hash and leave Node 24 to repositories that require it. |
 | M3 | Medium | `hook_adapter.py` reads untrusted Host stdin without a byte limit, leaving a memory-exhaustion path outside the bounded child-output rules. | Define an ABI-compatible input budget and canary-only failure behavior. |
 | L1 | Low | The Release ZIP contains `tools/import_upstream_runtime.py` but omits the patcher it requires, so importer self-check from an extracted ZIP fails. | Decide whether future ZIPs include the patcher or explicitly make the importer source-only. |
 | L2 | Low | README rollback wording and several runtime comments retain pre-stable/candidate-era descriptions. | Correct documentation only after the safety scope is frozen; do not alter v0.3.0 assets. |
 
 Full evidence, reproduction results, affected paths and required tests are in
 `findings.md`.
+
+## D1 Decision Freeze
+
+- **Verdict:** GO for a separately authorized S1; the verdict itself authorizes no code
+  or release mutation.
+- **Version:** `0.3.1` remains the candidate. Any new Hook/Host ABI/schema/trusted-runtime
+  edge discovered during implementation stops the patch train for a new version decision.
+- **Required blockers:** H1, H2, M1, M2 and M3 must close before candidate sealing.
+- **Bundled corrections:** L1 adds the importer patcher to the new 23-entry ZIP; L2 fixes
+  current documentation/comments without rewriting historical or published v0.3.0 bytes.
+- **H1:** conservative header scanner, explicit new owner markers, exact legacy recognizer,
+  byte-preserved unknown TOML and ambiguous-state blocker; no general TOML dependency.
+- **H2:** one `O_NOFOLLOW` root-relative descriptor read into an immutable, maximum
+  16,000,000-byte snapshot; metadata and records validate from those bytes; no original
+  path reopen; maximum 256 fallback candidates.
+- **M1:** every real read/classify/propose/backup/write operation occurs under the installer
+  lock, with exact-byte backups and immediate pre-rename fingerprint revalidation.
+- **M2:** new 0.3.1 bootstrap removes NVM/default Node installation and root `npx`; it
+  verifies platform Node `>=18`, uses Node 22 for Cloud acceptance and installs PWF from
+  the already contracted v3.8.2 archive/SHA. Other repositories own Node 24.
+- **M3:** one-million-byte Host stdin budget; rejected input is canary-only, child-free and
+  exit-0 for a valid event.
+
+The detailed semantics, hostile fixtures, residual races and rollback gates are frozen in
+`findings.md` and must be treated as S1 acceptance criteria rather than suggestions.
 
 ## Non-goals
 
@@ -100,23 +130,26 @@ Full evidence, reproduction results, affected paths and required tests are in
 
 ### D1 — Security design freeze
 
-- [ ] Reconfirm each reproduction against the current exact source and record preconditions.
-- [ ] Freeze H1 ownership-preserving TOML edit semantics and hostile fixtures.
-- [ ] Freeze H2 descriptor/snapshot, containment, identity and replacement-race semantics.
-- [ ] Freeze M1 lock transaction boundaries and concurrent-writer tests.
-- [ ] Decide the M2/M3/L1/L2 inclusion boundary and whether `0.3.1` remains correct.
-- [ ] Produce GO, CONDITIONAL_GO or NO_GO plus exact implementation and rollback gates.
+- [x] Reconfirm each reproduction against the current exact source and record preconditions.
+- [x] Freeze H1 ownership-preserving TOML edit semantics and hostile fixtures.
+- [x] Freeze H2 descriptor/snapshot, containment, identity and replacement-race semantics.
+- [x] Freeze M1 lock transaction boundaries and concurrent-writer tests.
+- [x] Decide the M2/M3/L1/L2 inclusion boundary and whether `0.3.1` remains correct.
+- [x] Produce GO, CONDITIONAL_GO or NO_GO plus exact implementation and rollback gates.
 - **Exit:** reviewed design with no production edits and no unresolved trust-boundary choice.
-- **Status:** pending
+- **Status:** complete — amended GO for separately authorized S1
 
 ### S1 — Nearest-boundary tests and minimum fixes
 
-- [ ] Obtain explicit implementation authorization after D1.
-- [ ] Add deterministic failing tests before each production change.
-- [ ] Implement only reviewed minimum fixes; preserve canary and existing Host contracts.
-- [ ] Run focused checks after each finding and classify every failure honestly.
+- [x] Obtain explicit S1-A implementation authorization after D1.
+- [x] S1-A: add deterministic failing tests and minimum H1/H2/M1/M3 production fixes;
+  preserve canary and existing Host contracts.
+- [ ] S1-B: add bootstrap tests, remove NVM/Node24/root `npx`, verify platform Node `>=18`
+  and install pristine PWF from the exact contracted archive/hash.
+- [ ] Keep L1/L2 packaging/documentation corrections separate from runtime assertions.
+- [ ] Run focused checks after each sub-gate and classify every failure honestly.
 - **Exit:** reviewed source diff and focused tests green on the appropriate platform.
-- **Status:** pending / unauthorized
+- **Status:** S1-A complete / S1-B unauthorized
 
 ### S2 — Full local, Linux and no-live Cloud regression
 
@@ -147,6 +180,6 @@ publication, live installation or Product Phase 4 without the required authoriza
 
 ## Decision Checkpoint
 
-D0 is complete. The maintainer should first review the risk ranking and scope. Continuing
-this authorized Discovery may enter D1 read-only design work; entering S1 or any later
-mutation gate requires explicit authorization.
+D0, D1 and S1-A are complete. S1-B, S2 and S3 remain separate unauthorized gates. No
+current plan state authorizes bootstrap/L1/L2 work, version changes, Cloud actions,
+commits/pushes, tags, assets, publication or Product Phase 4.

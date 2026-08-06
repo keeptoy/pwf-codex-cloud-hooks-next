@@ -25,7 +25,7 @@
       "activation_phase": 2,
       "language": "python3",
       "mode": "0755",
-      "sha256": "bb3a18b8144e63b17c33db4cccf81425f135647948e6f20f4c44c3e42ba71f85",
+      "sha256": "8b5501eb4257654922a9e247bd3873e1ede75a7a1ae4b777eb7d8b3b47e41b72",
       "direct_file_dependencies": [
         {
           "id": "session_catchup",
@@ -34,7 +34,8 @@
         }
       ],
       "host_dependencies": [
-        "python3-standard-library"
+        "python3-standard-library",
+        "linux-openat"
       ]
     },
     {
