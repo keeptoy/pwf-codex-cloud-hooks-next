@@ -86,3 +86,16 @@
   names, count, sizes, SHA-256 and ZIP contract.
 - Removed only the verified temporary detached worktree/build/download copies. Main stayed
   clean; no asset replacement, live Cloud mutation or rollback promotion occurred.
+
+## 2026-08-06 — S3 Cloud A～F and stable closure
+
+- Published bootstrap setup PASS on Codex Cloud (`/opt/codex`, pristine PWF v3.8.2,
+  managed adapter/runtime/manifest paths).
+- Fresh lifecycle PASS: startup SessionStart, UserPrompt canary and planning context.
+- Real baseline/canonical PASS with marker `PWF_V030_STABLE_CANONICAL_3C0A`.
+- Long wrapper/real Resume PASS: previous session observed, message #37, 9 unsynced,
+  truncation and tail marker preserved, catch-up before canonical planning context.
+- Final doctor/inventory/residue PASS: healthy, non-repairable, empty errors/blockers,
+  installer `0.3.0`, exact 11 payloads and zero snapshot leftovers.
+- Promoted published `v0.3.0` to the accepted rollback baseline. beta.2 remains immutable
+  as the previous fallback; stopped before Product Phase 4 Discovery.

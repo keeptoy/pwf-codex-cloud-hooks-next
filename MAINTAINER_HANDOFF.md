@@ -12,19 +12,17 @@
 
 ## 2. 当前事实
 
-- 产品 rollback：published/accepted `v0.3.0-beta.2`。
-- 当前候选身份：`0.3.0`；不改变行为且保留 canary 的 ZIP/bootstrap 已在 S1 封板，但当前仍没有
-  successor tag/Release，不能作为 production rollback。
-- 当前版本路线：S1/S2/S3-A 已完成，stable `v0.3.0` tag 精确指向 `1454c922...`，两个资产已
-  重下载验收；当前执行 Cloud setup/B～F，完成前 beta.2 仍是 rollback。
+- 产品 rollback：published/accepted stable `v0.3.0`；beta.2 为不可变 previous fallback。
+- 当前稳定身份：`v0.3.0` tag 精确指向 `1454c922...`，两个资产、Cloud setup、Fresh、canonical、
+  real Resume、doctor、11 payload 和零 residue 全部 PASS。
+- 当前版本路线：stable Release 已关闭；下一步只能是单独获批的 Product Phase 4 Discovery。
 - 当前仓库迁移：M1/M2/M3/M4 complete。M3 实际行为测试 HEAD 为
   `39795283cd65f84547651d7bec816191fb5bfedf`，ZIP SHA-256 为
   `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`；M3-B setup、Fresh、
   canonical、Resume 和 doctor 全部 PASS。M4-C no-live cutover/rollback 验收 HEAD 是
   `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151`；development/audit evidence refs
   未移动，两个 active integrity ruleset 只禁止 deletion 与 non-fast-forward。successor 已成为
-  后续源码维护权威，旧仓库继续承载 beta.2 rollback。Release、live `/opt/codex`、production 和
-  Product Phase 4 仍未授权。
+  后续源码维护权威；旧仓库继续承载不可变 beta.2 fallback。Product Phase 4 仍未授权。
 - M1 audit branch：`audit/beta2-exact`，不得移动或重写。
 - Product Phase 4：未开始、未授权；必须等待 stable v0.3.0 S3 关闭后再独立 Discovery。
 - 生产集成：只支持 PWF v3.8.2 的两个 Managed Hook events。

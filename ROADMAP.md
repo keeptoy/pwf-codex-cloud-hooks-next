@@ -4,13 +4,12 @@
 精确 Next Step、当前授权、禁止事项和停止条件仍由活动 `task_plan.md` 决定。README 只描述稳定行为，
 不复制逐 gate 状态。
 
-> 当前生产回滚基线：published/accepted `v0.3.0-beta.2`。
+> 当前生产回滚基线：published/accepted stable `v0.3.0`；beta.2 保持不可变 previous fallback。
 >
-> 当前候选身份：published stable `v0.3.0`；exact source `1454c922...` 已通过 S1/S2/S3-A，Cloud
-> setup/B～F pending，尚未晋级为 rollback。
+> 当前稳定身份：published/accepted `v0.3.0`；exact source `1454c922...` 已通过 S0～S3 全部门槛。
 >
 > 当前状态：M1～M4 仓库迁移已关闭；已决定先封板不改变行为的稳定 `v0.3.0`。Stable Release
-> Discovery、S1、S2 和 S3-A 已完成；当前只执行 S3 Cloud setup/B～F，Product Phase 4 继续停止。
+> Stable Release 已关闭；当前停止在 Product Phase 4 的独立 Discovery 授权门前。
 
 ## 1. 与活动 planning 的分工
 
@@ -34,10 +33,10 @@ task plan 为准，并在 Phase、Cloud、Release 或 rollback 状态变化时�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 已发布生产回滚 | 旧仓库不可变 `v0.3.0-beta.2` ZIP/bootstrap 与 Cloud A～F 证据 |
-| 当前候选身份 | published `v0.3.0`；S2 accepted source `1454c922...` |
-| 当前 programme gate | v0.3.0 S3 Cloud setup and lifecycle B～F |
-| 当前 Release | stable `v0.3.0` 已发布；A～F 关闭前尚非 accepted rollback |
+| 已发布生产回滚 | successor `v0.3.0`；beta.2 为不可变 previous fallback |
+| 当前稳定身份 | published/accepted `v0.3.0`；source `1454c922...` |
+| 当前 programme gate | Product Phase 4 Discovery authorization checkpoint |
+| 当前 Release | stable `v0.3.0` 已完成 Cloud A～F 并晋级 rollback |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 beta.2 的精确 source、资产、SHA 和回滚入口见
@@ -162,15 +161,11 @@ RC/canary 通过不能替代最终字节验收。ZIP 或 bootstrap 任一字节�
 
 ## 8. 回滚与基线提升
 
-在新的正式 Release 完成第 7 节全部门槛前：
+stable `v0.3.0` 已完成第 7 节全部门槛并成为当前 production rollback。successor `main` 继续作为
+源码维护权威；beta.2 作为不可变 previous fallback，M3/M4 evidence refs 仍只证明迁移/等价性。
 
-- successor `main` 只是源码权威；
-- `0.3.0-beta.3-dev` 和任何 development ZIP 都不能作为 production rollback；
-- 旧仓库不可变 `v0.3.0-beta.2` 继续是唯一已接受回滚基线；
-- M3/M4 evidence refs 只证明迁移/等价性，不是 Release 资产。
-
-未来版本只有在 immutable publication、重新下载、Fresh/Resume/doctor 和 rollback 验证全部通过后，
-才能在本文件中晋级为新的回滚基线。旧资产、tag、SHA 和 acceptance 记录仍不得重写。
+未来版本仍只有在 immutable publication、重新下载、Fresh/Resume/doctor 和 rollback 验证全部通过后，
+才能在本文件中取代 v0.3.0。旧资产、tag、SHA 和 acceptance 记录不得重写。
 
 ## 9. 长期泛化边界
 

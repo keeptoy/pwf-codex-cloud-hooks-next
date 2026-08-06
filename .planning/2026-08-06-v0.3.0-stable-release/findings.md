@@ -81,3 +81,17 @@ overlay contracts and Release allowlist contents are not candidate behavior chan
 - Publication alone does not promote rollback. beta.2 remains authoritative until the
   published bootstrap, Fresh/UserPrompt, canonical plan, real Resume, doctor, inventory
   and residue checks all pass.
+
+## S3 final acceptance
+
+- Published bootstrap setup completed successfully against live `/opt/codex` with pristine
+  PWF v3.8.2 and the frozen managed runtime paths.
+- Fresh lifecycle observed startup SessionStart and UserPrompt canaries. A real structured
+  plan then produced canonical plan/progress context on the following prompt.
+- Real Resume observed catch-up before plan context, previous-session identity, planning
+  update at message #37, 9 unsynced messages, truncation plus preserved tail sentinel and
+  the canonical plan marker.
+- Post-resume doctor was healthy/non-repairable with empty errors/blockers, installer
+  `0.3.0`, exact 11-payload inventory and zero snapshot residue.
+- All stable gates are complete. v0.3.0 becomes the accepted rollback baseline; beta.2 is
+  retained unchanged as the previous fallback. Product Phase 4 still requires Discovery.

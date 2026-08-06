@@ -138,7 +138,7 @@ pinned upstream archive + license
 任一环节发生变化都必须更新相应 contract/hash/test，并使用新 Release identity；不能引用 beta.2
 哈希来证明不同字节。
 
-## 9. Stable v0.3.0 candidate（S1）
+## 9. Stable v0.3.0 accepted Release
 
 | 项目 | 值 |
 |---|---|
@@ -151,8 +151,8 @@ pinned upstream archive + license
 | bootstrap size | 17,423 bytes |
 | bootstrap SHA-256 | `ab334f0367d948fa29a2bdd37bff0c220929aeb320fdf59dbacbd5a4021b39c0` |
 | behavior delta | none；保留 canonical runtime 与 `PWF_GLOBAL_HOOK_CANARY_V1` |
-| current authority | published/S3-A accepted candidate；Cloud B～F pending，beta.2 仍是 rollback |
+| current authority | published/accepted rollback；beta.2 为 immutable previous fallback |
 
-S2 已接受上表 exact source，S3-A 已证明 tag target 与两个下载资产。后续 evidence-only `main`
-提交不得取代该 tag target；Cloud B～F 与 rollback promotion 仍以
-`docs/v0.3.0-cloud-hard-acceptance.md` 为门槛。
+S2 已接受上表 exact source，S3-A 已证明 tag target 与两个下载资产，Cloud setup/B～F 进一步证明
+Fresh/canonical/real Resume/doctor/11-payload/zero-residue 全部门槛。后续 evidence-only `main` 提交
+不得取代该 tag target；完整证据见 `docs/v0.3.0-cloud-hard-acceptance.md`。

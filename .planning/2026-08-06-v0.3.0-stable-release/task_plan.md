@@ -8,21 +8,19 @@ removing canaries, weakening tests, or rewriting the beta.2 rollback baseline.
 
 ## Current Gate
 
-S3 post-publication hard acceptance is active. Immutable publication/download passed;
-Cloud setup and lifecycle A～F remain.
+Stable v0.3.0 Release and Cloud hard acceptance are complete. Product Phase 4 remains a
+separate, unauthorized Discovery gate.
 
 ## Status
 
-S1, S2 and S3-A immutable publication/download are complete. `v0.3.0` is a published
-stable Release at exact source `1454c922...`, but published and accepted beta.2 remains
-the sole production rollback until Cloud setup and lifecycle A～F all pass.
+S0～S3 are complete. `v0.3.0` is the published and accepted rollback baseline at exact
+source `1454c922...`; beta.2 remains an immutable previous fallback and historical oracle.
 
 ## Next Step
 
-Use the published external bootstrap in a completely fresh Cloud setup run, verify the
-setup output, then start a new task and execute B～F exactly as specified by
-`docs/v0.3.0-cloud-hard-acceptance.md`. Do not replace assets, retarget the tag, promote
-rollback early, enter Product Phase 4, remove canaries, or alter runtime/Host behavior.
+Stop. Do not enter Product Phase 4 until the maintainer explicitly authorizes a new
+Discovery round. Do not replace assets, retarget the tag, remove canaries, or alter
+runtime/Host behavior under this completed stable-release plan.
 
 ## Non-goals
 
@@ -101,12 +99,12 @@ rollback early, enter Product Phase 4, remove canaries, or alter runtime/Host be
 - [x] Create `v0.3.0` at exact S2 source `1454c9224c83d11c073b05baf6e536a11c3bb0e5`
       and upload ZIP plus external bootstrap once.
 - [x] Re-download both assets and verify names, sizes, SHA and ZIP boundary.
-- [ ] Run completely fresh Cloud setup and automatic startup/UserPrompt lifecycle.
-- [ ] Create a real planning update, long tail, Resume catch-up and post-resume doctor.
-- [ ] Verify exact 11-file inventory, zero snapshot residue and beta.2 rollback independence.
-- [ ] Record acceptance evidence and promote v0.3.0 as the new rollback baseline.
+- [x] Run completely fresh Cloud setup and automatic startup/UserPrompt lifecycle.
+- [x] Create a real planning update, long tail, Resume catch-up and post-resume doctor.
+- [x] Verify exact 11-file inventory, zero snapshot residue and beta.2 rollback independence.
+- [x] Record acceptance evidence and promote v0.3.0 as the new rollback baseline.
 - **Exit:** immutable published assets and complete A～F acceptance PASS.
-- **Status:** in progress; S3-A PASS, Cloud setup/B～F pending
+- **Status:** complete; published/accepted v0.3.0 rollback baseline
 
 ## Stop Conditions
 
