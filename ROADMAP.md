@@ -140,5 +140,10 @@ PASS。M4 repository cutover 已关闭；successor README/Release inputs、旧 b
 
 ## 8. 回滚
 
-在 M4 前，production 权威仍是旧仓库 published beta.2。M2/M3 失败只处理本地 slim worktree、
-未发布 branch 或 development artifacts；不得 reset/move M1 audit ref，也不得改写 beta.2 assets。
+迁移期的回滚规则是：M4 前 production 权威仍是旧仓库 published beta.2；M2/M3 失败只处理本地
+slim worktree、未发布 branch 或 development artifacts，不得 reset/move M1 audit ref，也不得改写
+beta.2 assets。
+
+当前仓库切换已完成，但产品回滚边界没有改变：successor `main` 是源码权威，尚未发布的
+beta.3-dev 不可作为 production rollback；需要回滚时使用旧仓库不可变 `v0.3.0-beta.2` Release
+及其固定 ZIP/bootstrap SHA。任何未来 Release 必须先建立自己的新身份和独立回滚合同。

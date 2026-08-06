@@ -499,3 +499,31 @@
 - Recorded `M4C_CUTOVER_ROLLBACK_ACCEPTANCE=PASS` and closed repository migration as
   `M4_REPOSITORY_CUTOVER=PASS`. No Release/tag, live `/opt/codex`, production byte,
   repository rename/archive/delete, or Product Phase 4 action occurred.
+- Maintainer authorized post-M4 documentation governance. Started D1 archive, D2
+  successor, and D3 cross-repository consistency with both worktrees initially clean.
+  The first scan classified stale current-state wording separately from immutable
+  historical gate evidence; no product or external state is in scope.
+- D2 content cleanup is complete pending D3. Added current/historical disambiguation
+  around the exact M3 runbook, compacted the active Status from a contradictory M3-B
+  journal to an M1–M4 authority summary, labeled completed M3/M4 docs in AGENTS, and
+  split ROADMAP rollback into migration-time evidence versus current beta.2 rollback.
+- README, ARCHITECTURE, BASELINE_PROVENANCE, and MAINTAINER_HANDOFF required no D2
+  change. Targeted stale current-marker scan is clean; product and Release inputs are
+  untouched.
+- D3 boundary checks pass: exactly six successor documentation/planning paths, zero
+  Release overlap, 61 tracked paths, and four executable upstream runtime files.
+  Cross-role accepted/development/Product-Phase markers are consistent with archive.
+- Two wrapper-parser attempts failed before shell execution on embedded backticks and
+  changed no state. The quoting-safe third form passed strict UTF-8/LF/fences/local
+  links plus `git diff --check` for all six successor paths.
+- Importer and Node syntax PASS; focused architecture/repository-boundary tests pass
+  4/4 outside the known Windows test-worker sandbox restriction. D1/D2/D3 are complete
+  with no production, Release, remote, live runtime, or Product Phase 4 mutation.
+- A final broad stale-string assertion initially treated the findings evidence log as
+  a current-state declaration. Restricted it to task/macro/design status sources;
+  both repositories then passed the exact six-path final governance gate.
+- Prepublication handoff audit confirms successor HEAD equals `origin/main`, it has its
+  own Git root with no superproject, tracked files have zero local-path dependency, and
+  README/AGENTS/MAINTAINER_HANDOFF provide a context-free onboarding route. The only
+  remaining local cleanup is branch/upstream normalization and removal of the local-only
+  migration source remote after committing the governance changes.

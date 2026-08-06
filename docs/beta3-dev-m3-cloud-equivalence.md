@@ -1,11 +1,13 @@
 # beta.3-dev M3 Cloud equivalence
 
-> 状态：`M3 COMPLETE / M4 DISCOVERY AUTHORIZATION REQUIRED`
+> 状态：`M3 COMPLETE / HISTORICAL GATE / M4 COMPLETE`
 >
 > 目标：证明 slim successor 的受控 development commit 在 Linux、隔离安装和真实 Codex Cloud
 > lifecycle 上与已验收 beta.2 production 行为等价。
 >
-> 本文不授权 push、live `/opt/codex` 安装、Release、public `main`、M4 cutover 或 Product Phase 4。
+> 时态说明：本文保留 M3-A/B/C 的精确 runbook、当时授权边界和接受证据；其中“不授权 M4”描述
+> M3 gate 本身，不是当前仓库状态。后续 M4 已独立完成，当前源码路线看 `ROADMAP.md`，当前授权看
+> 活动 planning。本文仍不授权 Release、live `/opt/codex` 或 Product Phase 4。
 
 ## 1. 基线与身份
 
@@ -634,3 +636,8 @@ docs/beta3-dev-m3-cloud-equivalence.md
 tree、远端 tested HEAD 均未移动；production、tests、contracts、bootstrap 与 Release allowlist
 overlap 为零。Importer/static、13-doc UTF-8/fences、focused contracts 4/4、`git diff --check` 和两次
 确定性 ZIP 均 PASS。该 commit 只在本地创建，未 push。M3 至此关闭。
+
+当前补充：M4 后续通过独立 Discovery、authority、archive/provenance 和 cutover/rollback gates
+完成仓库切换；M4-C 接受点为 `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151`。这不会改写
+本文件冻结的 M3 tested commit、ZIP SHA 或当时的 stop conditions。successor 现在是源码权威，
+旧仓库仍是 published beta.2 rollback/history 权威；beta.3-dev 与 Product Phase 4 均未发布/未授权。

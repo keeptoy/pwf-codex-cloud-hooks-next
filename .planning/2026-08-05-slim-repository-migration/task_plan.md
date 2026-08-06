@@ -8,55 +8,28 @@ immutable M1 audit oracle.
 
 ## Current Gate
 
-M4 repository cutover complete; stopped before Product Phase 4 Discovery authorization.
+Post-M4 documentation-governance D1/D2/D3 complete; Product Phase 4 remains stopped.
 
 ## Status
 
-M2-A/B/C, M3 Discovery, and M3-A are complete. The maintainer has explicitly
-authorized M3-B. The repaired accepted development
-commit is `39795283cd65f84547651d7bec816191fb5bfedf`; its complete Fresh Cloud rerun
-passes Linux 63/63, isolated install/doctor, adapter-only policy, 11 payload,
-deterministic 22-entry ZIP, zero-hash bootstrap, and clean workspace. Accepted ZIP
-SHA-256 is `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`.
-M3-B disposable setup is PASS: exact accepted HEAD and ZIP SHA matched, the
-bootstrap completed, the global Skill is pristine upstream v3.8.2, install and
-doctor are healthy, and both adapter protocol probes passed. Fresh automatic
-Runtime injection is also PASS with SessionStart
-`source=startup`, UserPromptSubmit, and all auxiliary planning observations.
-The controlled baseline acknowledgment and immediate canonical no-tools check are
-PASS: all six canary/marker/framing/progress/context fields were observed.
-The long wrapper also returned its exact sole acknowledgment without echoing the
-tail sentinel or modifying planning state.
-Automatic Resume is PASS: source `resume`, previous session, codex runtime,
-`task_plan.md` update at message #36, 16 unsynced messages, bounded truncation,
-C7F4 tail preservation, catch-up-before-plan ordering, and restored canonical
-plan framing were all observed.
-Post-resume doctor is PASS with healthy true, repairable false, empty errors and
-blockers, installer `0.3.0-beta.3-dev`, exact 11-file manifest inventory, and zero
-snapshot leftovers. M3-B is complete.
-M3-C closure proves the tested-commit descendant contains exactly seven existing
-governance paths, with root/tree/path/mode/audit/remote/Release boundaries intact.
-M4 Discovery then froze create-main-then-switch and preserved both evidence refs.
-M4-A created exact `main@cc9bc878ddc7d70c25156dd053e2874758f0814a`, made it
-the public default, activated minimum main/evidence integrity rulesets, and passed
-fresh default clone. M4-B then published exact cross-repository provenance and old
-archive/rollback navigation without successor README/Release-input drift or beta.2
-asset mutation; its final readback commit is
-`5476a5c97e713d935622a9998f902e35a114db07`. M4-C then accepted exact
-`main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151`: Linux 63/63, exact repository
-boundary/modes, deterministic development ZIP, zero-hash guard, immutable beta.2
-assets, isolated rollback build/doctor, handoff, remote recheck, zero live mutation,
-and clean workspaces all PASS. M4 is complete. Release/tag, live `/opt/codex`,
-production behavior, repository rename/archive/delete, and Product Phase 4 remain
-unauthorized.
+Repository migration M1 through M4 is complete. M1 freezes the immutable beta.2 audit
+oracle; M2 freezes the parentless slim root and maintained source boundary; M3 accepts
+Cloud-tested development `39795283cd65f84547651d7bec816191fb5bfedf` and deterministic
+ZIP SHA-256 `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`;
+M4-C accepts source cutover `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151` while preserving
+development/audit evidence refs and immutable beta.2 rollback assets. Successor `main`
+is the source authority; the old repository is the beta.2 rollback/history authority.
+Documentation governance D1/D2/D3 is complete. No product gate is active. Release/tag,
+live `/opt/codex`, production behavior, repository rename/archive/delete, and Product
+Phase 4 remain unauthorized.
 
 ## Next Step
 
-Checkpoint and publish the M4-C evidence closure, then stop. The only possible next
-programme action is a separately authorized Product Phase 4 Discovery Gate; it must
-restore current upstream/Host/Cloud facts before proposing implementation. Do not
-publish a Release/tag, write live `/opt/codex`, modify production behavior,
-rename/archive either repository, or infer Phase 4 authorization from M4 completion.
+Stop. The only possible next programme action is a separately authorized Product Phase 4
+Discovery Gate, which must restore current upstream/Host/Cloud facts before proposing
+implementation. Do not publish a Release/tag, write live `/opt/codex`, modify production
+behavior, rename/archive either repository, or infer Phase 4 authorization from completed
+documentation governance.
 
 ## Invariants
 

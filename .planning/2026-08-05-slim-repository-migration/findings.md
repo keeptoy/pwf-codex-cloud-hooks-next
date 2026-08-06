@@ -385,3 +385,42 @@
   governance commits move `main` but do not retroactively move the accepted input.
   A future rerun must check out the accepted commit or define a new gate; it must
   not weaken the exact-parent/seven-path assertion merely to follow current main.
+
+## Post-M4 documentation-governance Discovery
+
+- Historical gate-local prohibitions remain valid evidence; current-state banners,
+  status summaries, navigation, and active Next Steps must reflect M1–M4 complete.
+- The successor M3 runbook still declares “M4 Discovery authorization required” in
+  its top status and end-of-gate Next Step. Its exact script and evidence should not
+  be rewritten; a current historical-status banner/pointer should disambiguate it.
+- Successor macro documents are mostly current after M4 closure. D2 should therefore
+  be narrow, keeping README stable and avoiding duplicate migration流水账 across
+  ROADMAP, handoff, provenance, and planning.
+- This documentation-only gate is not Product Phase 4 Discovery and cannot authorize
+  Release, trusted-graph, Host ABI, production, or live Cloud changes.
+- D2 macro review found README, ARCHITECTURE, AGENTS, BASELINE_PROVENANCE, and
+  MAINTAINER_HANDOFF already consistent with completed M4 and unpublished beta.3-dev;
+  duplicating more migration chronology into them would increase coupling.
+- D2 should add a historical-gate banner/current pointer to the exact M3 runbook,
+  replace the successor task plan’s internally contradictory “M3-B authorized” status
+  journal with a compact M1–M4 completion summary, and split ROADMAP rollback wording
+  into historical migration rollback versus current product rollback.
+- M3’s internal “PASS does not authorize next gate” statements and copyable scripts
+  remain exact historical evidence. M4’s internal staged authorization statements are
+  likewise retained because its final result section already closes the chronology.
+- D1/D2/D3 establish the stable temporal model: current wrappers and navigation state
+  the latest authority, while accepted M1–M4 protocol bodies retain the boundaries that
+  made each gate auditable. No macro document needs to duplicate the full chronology.
+- Successor independence has two layers. A fresh clone is already fully standalone:
+  it is not a superproject/submodule, tracked files contain no local `new-space`, user,
+  or `baseline-source` path dependency, and README/AGENTS/handoff cover build, test,
+  Release, rollback, trust, and the only Next Step without old conversation context.
+- This local migration checkout still has a non-tracked `baseline-source` remote and is
+  checked out on a local branch named `migration/slim-beta3-dev`, even though its HEAD
+  equals `origin/main`. These are migration-era local configuration, not repository
+  dependencies. After the governance commit, normalize the local branch to `main`, set
+  `origin/main` upstream, and remove only the local `baseline-source` remote.
+- Remote `migration/slim-beta3-dev@39795283...` is accepted M3 evidence, not the future
+  integration branch. It must remain frozen. Normal work after M4 is direct or reviewed
+  work targeting `main`; any future feature-branch/PR policy is a separate governance
+  choice, not an instruction to push new commits onto the evidence ref.

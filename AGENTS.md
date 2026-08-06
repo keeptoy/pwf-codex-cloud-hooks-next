@@ -25,8 +25,8 @@
 | `MAINTAINER_HANDOFF.md` | 新人如何接手、分类变更、验证、发布和回滚 |
 | 活动 `.planning/<slug>/task_plan.md` | 当前唯一 Next Step、授权、禁止事项和停止条件 |
 | 活动 `findings.md` / `progress.md` | 研究结论、实施和错误证据 |
-| `docs/beta3-dev-m3-cloud-equivalence.md` | M3 的 transport、no-live Cloud seal、disposable setup、Fresh/Resume 和停止门槛 |
-| `docs/beta3-dev-m4-cutover-plan.md` | M4 的 public main、default/protection、旧仓库导航、rollback 和停止门槛 |
+| `docs/beta3-dev-m3-cloud-equivalence.md` | 已完成 M3 的 transport、no-live Cloud seal、disposable setup、Fresh/Resume 和历史停止门槛 |
+| `docs/beta3-dev-m4-cutover-plan.md` | 已完成 M4 的 public main、default/protection、旧仓库导航、rollback 和接受证据 |
 | `docs/v0.3.0-beta.2-cloud-hard-acceptance.md` | 不可变 beta.2 A～F 与资产验收证据 |
 | `docs/git-file-modes.md` | Windows/Linux mode、LF 检查与恢复 |
 
