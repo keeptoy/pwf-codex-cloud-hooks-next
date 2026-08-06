@@ -17,8 +17,8 @@
 |---|---|---|
 | M1 exact mirror | 证明新 remote/audit branch 与 beta.2 commit/tree/资产完全一致 | complete |
 | M2 slim transformation | 精简历史树，建立新 authority/identity/provenance 和 root commit | complete；checkpoint 已收到 |
-| M3 Cloud equivalence | development branch Fresh/Resume/doctor/ZIP/Linux suite | complete；local governance closure，not pushed |
-| M4 cutover | 建立公开 `main`、交割、旧仓库导航和 rollback 演练 | Discovery complete；checkpoint / M4-A authorization required |
+| M3 Cloud equivalence | development branch Fresh/Resume/doctor/ZIP/Linux suite | complete；accepted evidence ref 保持不动 |
+| M4 cutover | 建立公开 `main`、交割、旧仓库导航和 rollback 演练 | M4-A/B complete；M4-C authorized / Cloud acceptance preparing |
 
 M2 内部分为：
 
@@ -79,12 +79,13 @@ lifecycle。Fresh 已观察到 startup SessionStart、UserPromptSubmit 和全部
 post-resume doctor 也以 healthy、beta.3-dev、11-file manifest exact 和零残留 PASS。M3-B 已关闭；
 M3-C 进一步证明 tested commit 到 closure 只变化七个既有治理文件，60-path/root/mode/audit/
 remote/Release 边界不漂移，并通过 importer/static、4/4 focused contracts、13-doc 与确定性 ZIP
-复验。M3 已关闭；closure commit 只保留在本地，当前等待 M4 Discovery 单独授权。
+复验。M3 已关闭；实际 Cloud-tested development ref 保持在 `39795283...`，后续治理后代已通过
+M4 的受控 normal fast-forward 进入 `main`，没有改写该证据 ref。
 
 ## 5. M4 cutover
 
 M4-A 与 M4-B archive/provenance handoff 已通过。successor 是 public、
-unarchived，default 已切为 exact `main@cc9bc878...`；Cloud-tested development
+unarchived，default 的 M4-B 最终读回为 exact `main@5476a5c...`；Cloud-tested development
 `39795283...` 与 audit `bbad3703...` 未移动。`main-integrity` 和 `evidence-integrity` 两个
 active ruleset 分别保护 authority/evidence refs，规则只有 deletion 与 non-fast-forward；
 classic protection 不叠加。successor 仍无 tag 或 Release。
@@ -104,7 +105,9 @@ acceptance 四轮，互不自动授权。M4 不发布 beta.3：正式非 `-dev` 
 
 M4-A 的无分支 fresh clone 已得到 exact `main`、61 paths、四个 `100755` upstream runtime 和
 clean workspace。M4-B 已发布双向 provenance/navigation，保持 successor README/Release inputs、
-旧 beta.2 assets 与两个仓库名称/公开状态不变。当前停在 M4-C 单独授权前；M4 不发布 beta.3。
+旧 beta.2 assets 与两个仓库名称/公开状态不变。维护者现已单独授权 M4-C；只允许发布
+governance-only runbook，并完成 Fresh default clone、Linux suite、确定性 development ZIP、独立
+beta.2 rollback、handoff、remote recheck 与 clean-workspace 验收。M4 仍不发布 beta.3。
 
 ## 6. 产品 Phase 4～9
 

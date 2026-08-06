@@ -453,3 +453,38 @@
   to honor a raw media-type header and tested the API wrapper rather than decoded
   Markdown; no remote content was missing. Switched to contents API Base64 decoding,
   then verified both successor provenance links and the old README banner PASS.
+
+## M4-C
+
+- Maintainer checkpointed the successor after M4-B and explicitly authorized the
+  next gate. Recovered clean successor/archive worktrees and repeated the repository
+  reading order before changing any file.
+- Local and authenticated remote readback agree on final M4-B
+  `main@5476a5c97e713d935622a9998f902e35a114db07`, development evidence
+  `39795283...`, audit oracle `bbad3703...`, active integrity rulesets, old default
+  `0.3.0-beta.2@11ef7c...`, and unchanged immutable beta.2 asset metadata.
+- Opened M4-C as a no-live Cloud/Linux acceptance gate. The only intended remote
+  mutation before execution is one normal fast-forward containing seven governance
+  files and the copyable runbook; Release/tag, live `/opt/codex`, production,
+  repository rename/archive/delete, and Product Phase 4 remain stopped.
+- The first combined planning patch failed atomically because it expected a generic
+  `## M4-B` findings heading while the file uses `## M4-B opening`; no partial edit
+  occurred. Re-read exact headings and applied bounded file-level patches.
+- Added the unique 276-line Cloud script and synchronized AGENTS, ROADMAP, handoff,
+  M4 design, and planning. Exact changed boundary is seven existing governance
+  paths, 61 tracked paths, four executable upstream files, and zero Release-input
+  overlap. Strict UTF-8/LF/fences/local links and `git diff --check` PASS.
+- Direct `bash` was absent from inherited PATH; the explicit Git Bash syntax check
+  first hit the known sandbox signal-pipe error and then passed outside that process
+  boundary. All four embedded Python heredocs compile. Importer and Node syntax PASS.
+- Focused Node tests first hit the known Windows sandbox `spawn EPERM` before any
+  assertion; the approved rerun passed 4/4. Full Windows suite passes 63 registered /
+  52 pass / 0 fail / 11 honest POSIX skips.
+- The first double-ZIP helper used unsupported `New-Item -LiteralPath`; PowerShell
+  reported a non-terminating parameter error even though the builder later passed.
+  Replaced it with strict-error `New-Item -Path`, verified the resolved temp target,
+  and reran cleanly: two exact 22-entry / 75,323-byte ZIPs at accepted SHA-256.
+- The seven-file commit itself succeeded, but its combined verification command then
+  called an accidental `test_cmd_placeholder` token and returned exit 1 after the
+  commit. No repository operation depended on that token. Recorded the tool error,
+  amended this same single descendant, and reran identity/clean checks separately.

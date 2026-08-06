@@ -348,3 +348,23 @@
 - M4-B is documentation/provenance transport only. M4-C, Release/tag, live Cloud,
   production behavior, repository rename/archive/delete, and Product Phase 4 stay
   outside the authorization.
+
+## M4-C acceptance design
+
+- The final published M4-B readback commit is `5476a5c97e713d935622a9998f902e35a114db07`.
+  M4-C needs a committed runbook, so the accepted Cloud checkout cannot remain
+  byte-for-byte at that commit. The safe identity rule is one governance-only
+  descendant, exact seven-path diff, remote-main SHA captured before clone and
+  unchanged after the run, with `5476a5c...` required as its direct M4-B ancestor.
+- Authenticated readback confirms successor default `main@5476a5c...`, unchanged
+  development `39795283...`, audit `bbad3703...`, and active main/evidence rulesets.
+  The old repository remains public/unarchived at default
+  `0.3.0-beta.2@11ef7c...`; beta.2 ZIP/bootstrap size and digest remain exact.
+- Rollback independence is proved from the downloaded beta.2 package plus the old
+  repository's own pinned Skill fixture. Its install and doctor use only a trusted
+  temporary `CODEX_HOME` and requirements path; the successor package is never an
+  input to the rollback check, and neither bootstrap is executed against live
+  `/opt/codex`.
+- The development bootstrap rejection can be exercised without setup side effects
+  by sourcing it and invoking only `assert_hooks_checksum_configured`; full suite
+  coverage plus the exact zero-hash line and Bash syntax freeze the same boundary.

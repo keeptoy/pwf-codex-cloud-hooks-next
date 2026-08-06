@@ -1,10 +1,10 @@
 # beta.3-dev M4 仓库切换方案
 
-> 状态：`M4-B PASS / M4-C AUTHORIZATION REQUIRED`
+> 状态：`M4-C AUTHORIZED / CLOUD ACCEPTANCE PREPARATION`
 >
 > 本文冻结 successor authority cutover 的路线、外部变更、验证和回滚合同。M4-A 与 M4-B
-> successor provenance / 旧仓库 archive navigation 交割已完成。M4-C、
-> tag/Release、live Cloud、production behavior 和产品 Phase 4 仍未授权。
+> successor provenance / 旧仓库 archive navigation 交割已完成。维护者现只授权 M4-C
+> no-live 验收；tag/Release、live `/opt/codex`、production behavior 和产品 Phase 4 仍未授权。
 
 ## 1. 目标与边界
 
@@ -157,8 +157,310 @@ M4-B 完成标记：`M4B_ARCHIVE_PROVENANCE_HANDOFF=PASS`。
 8. 按 `MAINTAINER_HANDOFF.md` 做一次新人接手演练；
 9. 新旧工作区 clean，远端 main/default/evidence refs/old default 再次核对。
 
-M4-C 完成标记：`M4C_CUTOVER_ROLLBACK_ACCEPTANCE=PASS`。M4 最终闭环标记为
-`M4_REPOSITORY_CUTOVER=PASS`。
+M4-B 最终读回 commit 是 `5476a5c97e713d935622a9998f902e35a114db07`。由于唯一验收脚本本身
+需要提交到本文，M4-C 接受 HEAD 必须是它的**一个且只有一个**普通后代，并且该后代只能修改下面
+七个治理文件：根 `AGENTS.md`、`ROADMAP.md`、`MAINTAINER_HANDOFF.md`、本文和活动 planning 三文件。
+脚本在 clone 前捕获远端 `main` 精确 SHA，运行末尾要求同一 SHA 未移动；这避免把 moving branch
+误当作固定验收身份，同时也避免在 commit 内容中制造无法收敛的 self-hash。
+
+### 7.1 执行边界
+
+- 在没有预设仓库 setup script 的全新 Cloud/Linux task 中复制执行下方完整 Bash；脚本自己 clone
+  两个 public repository，不能从当前 workspace 或历史 cache 借用文件；
+- 不执行 successor development bootstrap，也不执行下载的 beta.2 bootstrap；前者只调用无副作用
+  的 zero-hash guard，后者只做不可变资产 hash/size 校验；
+- beta.2 install/doctor 只写 `mktemp` 下的隔离 `CODEX_HOME` 和 requirements，Skill 输入只来自
+  旧仓库自己的 pinned fixture；不得读取 successor 的 fixture/runtime 来帮助 rollback；
+- 成功输出 `M4C_CUTOVER_ROLLBACK_ACCEPTANCE=PASS` 后，把完整严格汇总返回维护者。该 marker 只
+  关闭 Cloud gate；`M4_REPOSITORY_CUTOVER=PASS` 必须等证据回写和双仓库 clean/remote readback
+  完成后才能由维护者记录。
+
+### 7.2 唯一执行脚本
+
+```bash
+set -Eeuo pipefail
+
+PROBE_VERSION="PWF_BETA3DEV_M4C_CUTOVER_ROLLBACK_V1"
+SUCCESSOR_URL="https://github.com/keeptoy/pwf-codex-cloud-hooks-next.git"
+ARCHIVE_URL="https://github.com/keeptoy/pwf-codex-cloud-hooks.git"
+M4B_FINAL_SHA="5476a5c97e713d935622a9998f902e35a114db07"
+DEVELOPMENT_SHA="39795283cd65f84547651d7bec816191fb5bfedf"
+AUDIT_SHA="bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b"
+ARCHIVE_DEFAULT_SHA="11ef7c968ad8e8ef0babe5ed169e814b71cea18a"
+DEVELOPMENT_ZIP_SHA256="82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508"
+BETA2_ZIP_SHA256="812cc9cdcafa93b5fcc47cc763fd743f11be77958b75eea1fa4cf0508dd391ab"
+BETA2_BOOTSTRAP_SHA256="d572b77d920b34c34c7912ba364376ae3668216f00ce350251bd7c8b336abcd6"
+BETA2_BASE_URL="https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/download/v0.3.0-beta.2"
+ZERO_SHA256="0000000000000000000000000000000000000000000000000000000000000000"
+
+for command in bash cmp curl git mktemp node python3 sha256sum unzip; do
+  command -v "$command" >/dev/null 2>&1 || {
+    printf 'MISSING_COMMAND=%s\n' "$command" >&2
+    exit 1
+  }
+done
+
+PROBE_DIR="$(mktemp -d)"
+trap 'rm -rf -- "$PROBE_DIR"' EXIT
+case "$PROBE_DIR" in
+  /tmp/*|/var/tmp/*) ;;
+  *) printf 'UNTRUSTED_PROBE_DIR=%s\n' "$PROBE_DIR" >&2; exit 1 ;;
+esac
+
+SUCCESSOR_CLONE="$PROBE_DIR/successor"
+ARCHIVE_CLONE="$PROBE_DIR/archive"
+TEST_OUTPUT="$PROBE_DIR/linux-suite.tap"
+ZIP_ONE="$PROBE_DIR/development-one.zip"
+ZIP_TWO="$PROBE_DIR/development-two.zip"
+BETA2_ZIP="$PROBE_DIR/pwf-codex-cloud-hooks-v0.3.0-beta.2.zip"
+BETA2_BOOTSTRAP="$PROBE_DIR/init-cloud-sandbox-v0.3.0.bash"
+BETA2_PACKAGE_DIR="$PROBE_DIR/beta2-package"
+BETA2_CODEX_HOME="$PROBE_DIR/beta2-codex-home"
+BETA2_REQUIREMENTS="$PROBE_DIR/beta2-etc/codex/requirements.toml"
+
+remote_sha() {
+  git ls-remote "$1" "$2" |
+    awk -v expected_ref="$2" '$2 == expected_ref { print $1 }'
+}
+
+SUCCESSOR_SYMREF_BEFORE="$(git ls-remote --symref "$SUCCESSOR_URL" HEAD)"
+printf '%s\n' "$SUCCESSOR_SYMREF_BEFORE" | grep -Fqx $'ref: refs/heads/main\tHEAD'
+EXPECTED_MAIN_SHA="$(printf '%s\n' "$SUCCESSOR_SYMREF_BEFORE" |
+  awk '$2 == "HEAD" && $1 != "ref:" && length($1) == 40 { print $1 }')"
+test -n "$EXPECTED_MAIN_SHA"
+test "$(remote_sha "$SUCCESSOR_URL" refs/heads/main)" = "$EXPECTED_MAIN_SHA"
+test "$(remote_sha "$SUCCESSOR_URL" refs/heads/migration/slim-beta3-dev)" = "$DEVELOPMENT_SHA"
+test "$(remote_sha "$SUCCESSOR_URL" refs/heads/audit/beta2-exact)" = "$AUDIT_SHA"
+
+ARCHIVE_SYMREF_BEFORE="$(git ls-remote --symref "$ARCHIVE_URL" HEAD)"
+printf '%s\n' "$ARCHIVE_SYMREF_BEFORE" |
+  grep -Fqx $'ref: refs/heads/0.3.0-beta.2\tHEAD'
+test "$(remote_sha "$ARCHIVE_URL" refs/heads/0.3.0-beta.2)" = "$ARCHIVE_DEFAULT_SHA"
+
+git clone --quiet "$SUCCESSOR_URL" "$SUCCESSOR_CLONE"
+git -C "$SUCCESSOR_CLONE" branch --show-current | grep -Fxq main
+test "$(git -C "$SUCCESSOR_CLONE" rev-parse HEAD)" = "$EXPECTED_MAIN_SHA"
+test "$(git -C "$SUCCESSOR_CLONE" symbolic-ref refs/remotes/origin/HEAD)" = \
+  refs/remotes/origin/main
+test "$(git -C "$SUCCESSOR_CLONE" rev-parse HEAD^)" = "$M4B_FINAL_SHA"
+test "$(git -C "$SUCCESSOR_CLONE" rev-list --count "$M4B_FINAL_SHA..HEAD")" -eq 1
+
+EXPECTED_GOVERNANCE_DIFF="$(cat <<'EOF'
+.planning/2026-08-05-slim-repository-migration/findings.md
+.planning/2026-08-05-slim-repository-migration/progress.md
+.planning/2026-08-05-slim-repository-migration/task_plan.md
+AGENTS.md
+MAINTAINER_HANDOFF.md
+ROADMAP.md
+docs/beta3-dev-m4-cutover-plan.md
+EOF
+)"
+ACTUAL_GOVERNANCE_DIFF="$(
+  git -C "$SUCCESSOR_CLONE" diff --name-only "$M4B_FINAL_SHA..HEAD" |
+    LC_ALL=C sort
+)"
+test "$ACTUAL_GOVERNANCE_DIFF" = "$EXPECTED_GOVERNANCE_DIFF"
+
+test "$(git -C "$SUCCESSOR_CLONE" ls-files | wc -l)" -eq 61
+EXPECTED_EXECUTABLES="$(cat <<'EOF'
+runtime/upstream/inject-plan.sh
+runtime/upstream/ledger-summary.sh
+runtime/upstream/resolve-plan-dir.sh
+runtime/upstream/session-catchup.py
+EOF
+)"
+ACTUAL_EXECUTABLES="$(
+  git -C "$SUCCESSOR_CLONE" ls-files --stage |
+    awk '$1 == "100755" { print $4 }' |
+    LC_ALL=C sort
+)"
+test "$ACTUAL_EXECUTABLES" = "$EXPECTED_EXECUTABLES"
+
+cd "$SUCCESSOR_CLONE"
+python3 tools/import_upstream_runtime.py check > "$PROBE_DIR/importer.json"
+python3 - <<'PY'
+from pathlib import Path
+for value in (
+    "hooks/hook_adapter.py",
+    "runtime/owned-plan.py",
+    "runtime/owned-catchup.py",
+):
+    path = Path(value)
+    compile(path.read_text(encoding="utf-8"), str(path), "exec")
+PY
+node --check install.js
+bash -n init-cloud-sandbox-v0.3.0.bash
+
+if ! node --test --test-reporter=tap tests/*.test.js > "$TEST_OUTPUT" 2>&1; then
+  cat "$TEST_OUTPUT" >&2
+  exit 1
+fi
+if ! python3 - "$TEST_OUTPUT" <<'PY'
+import re
+import sys
+from pathlib import Path
+
+text = Path(sys.argv[1]).read_text(encoding="utf-8")
+expected = {"tests": 63, "pass": 63, "fail": 0, "skipped": 0}
+for name, value in expected.items():
+    matches = re.findall(rf"^(?:#|ℹ)\s*{name}\s+(\d+)\s*$", text, re.MULTILINE)
+    if not matches or int(matches[-1]) != value:
+        raise SystemExit(f"unexpected {name} summary: {matches}")
+PY
+then
+  cat "$TEST_OUTPUT" >&2
+  exit 1
+fi
+
+python3 tools/build_release.py build --output "$ZIP_ONE" > /dev/null
+python3 tools/build_release.py check --archive "$ZIP_ONE" > /dev/null
+python3 tools/build_release.py build --output "$ZIP_TWO" > /dev/null
+python3 tools/build_release.py check --archive "$ZIP_TWO" > /dev/null
+cmp "$ZIP_ONE" "$ZIP_TWO"
+test "$(unzip -Z1 "$ZIP_ONE" | wc -l)" -eq 22
+test "$(wc -c < "$ZIP_ONE")" -eq 75323
+test "$(sha256sum "$ZIP_ONE" | awk '{print $1}')" = "$DEVELOPMENT_ZIP_SHA256"
+
+grep -Fq "readonly HOOKS_SHA256=\"\${HOOKS_SHA256:-$ZERO_SHA256}\"" \
+  init-cloud-sandbox-v0.3.0.bash
+set +e
+BOOTSTRAP_REJECTION="$(
+  bash -c 'source "$1"; assert_hooks_checksum_configured' _ \
+    "$SUCCESSOR_CLONE/init-cloud-sandbox-v0.3.0.bash" 2>&1
+)"
+BOOTSTRAP_STATUS=$?
+set -e
+test "$BOOTSTRAP_STATUS" -ne 0
+printf '%s\n' "$BOOTSTRAP_REJECTION" | grep -Fq 'HOOKS_SHA256 is still a placeholder'
+
+git clone --quiet "$ARCHIVE_URL" "$ARCHIVE_CLONE"
+git -C "$ARCHIVE_CLONE" branch --show-current | grep -Fxq '0.3.0-beta.2'
+test "$(git -C "$ARCHIVE_CLONE" rev-parse HEAD)" = "$ARCHIVE_DEFAULT_SHA"
+test "$(git -C "$ARCHIVE_CLONE" symbolic-ref refs/remotes/origin/HEAD)" = \
+  refs/remotes/origin/0.3.0-beta.2
+
+curl --fail --silent --show-error --location --retry 3 \
+  --output "$BETA2_ZIP" \
+  "$BETA2_BASE_URL/pwf-codex-cloud-hooks-v0.3.0-beta.2.zip"
+curl --fail --silent --show-error --location --retry 3 \
+  --output "$BETA2_BOOTSTRAP" \
+  "$BETA2_BASE_URL/init-cloud-sandbox-v0.3.0.bash"
+printf '%s  %s\n' "$BETA2_ZIP_SHA256" "$BETA2_ZIP" | sha256sum --check --status -
+printf '%s  %s\n' "$BETA2_BOOTSTRAP_SHA256" "$BETA2_BOOTSTRAP" |
+  sha256sum --check --status -
+test "$(wc -c < "$BETA2_ZIP")" -eq 84572
+test "$(wc -c < "$BETA2_BOOTSTRAP")" -eq 17425
+
+mkdir -p "$BETA2_PACKAGE_DIR" "$BETA2_CODEX_HOME" "$(dirname "$BETA2_REQUIREMENTS")"
+unzip -q "$BETA2_ZIP" -d "$BETA2_PACKAGE_DIR"
+BETA2_PACKAGE="$BETA2_PACKAGE_DIR/pwf-codex-cloud-hooks"
+test -f "$BETA2_PACKAGE/install.js"
+test -f "$BETA2_PACKAGE/tools/build_release.py"
+python3 "$BETA2_PACKAGE/tools/build_release.py" check \
+  --contract "$BETA2_PACKAGE/contracts/release-artifact-v1.json" \
+  --archive "$BETA2_ZIP" > /dev/null
+python3 - "$BETA2_PACKAGE/package.json" <<'PY'
+import json
+import sys
+from pathlib import Path
+assert json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))["version"] == "0.3.0-beta.2"
+PY
+
+node "$BETA2_PACKAGE/install.js" install --json \
+  --codex-home "$BETA2_CODEX_HOME" \
+  --skill-root "$ARCHIVE_CLONE/tests/fixtures/planning-with-files" \
+  --managed-requirements "$BETA2_REQUIREMENTS" > "$PROBE_DIR/beta2-install.json"
+node "$BETA2_PACKAGE/install.js" doctor --json \
+  --codex-home "$BETA2_CODEX_HOME" \
+  --skill-root "$ARCHIVE_CLONE/tests/fixtures/planning-with-files" \
+  --managed-requirements "$BETA2_REQUIREMENTS" > "$PROBE_DIR/beta2-doctor.json"
+
+python3 - \
+  "$PROBE_DIR/beta2-install.json" \
+  "$PROBE_DIR/beta2-doctor.json" \
+  "$BETA2_CODEX_HOME/hooks/planning-with-files/installed-manifest.json" \
+  "$BETA2_REQUIREMENTS" \
+  "$BETA2_CODEX_HOME" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+install = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+doctor = json.loads(Path(sys.argv[2]).read_text(encoding="utf-8"))
+manifest = json.loads(Path(sys.argv[3]).read_text(encoding="utf-8"))
+requirements = Path(sys.argv[4]).read_text(encoding="utf-8")
+codex_home = str(Path(sys.argv[5]).resolve())
+assert install["healthy"] is True
+assert doctor == {
+    **doctor,
+    "action": "doctor",
+    "healthy": True,
+    "repairable": False,
+    "managed": True,
+    "events": ["SessionStart", "UserPromptSubmit"],
+    "errors": [],
+    "blockers": [],
+}
+assert len(manifest["runtime_files"]) == 11
+assert codex_home in requirements
+assert "/opt/codex" not in requirements
+PY
+
+for file in \
+  AGENTS.md README.md ARCHITECTURE.md ROADMAP.md BASELINE_PROVENANCE.md \
+  MAINTAINER_HANDOFF.md .planning/.active_plan; do
+  test -s "$SUCCESSOR_CLONE/$file"
+  sed -n '1,80p' "$SUCCESSOR_CLONE/$file" > /dev/null
+done
+PLAN_ID="$(tr -d '\r\n[:space:]' < "$SUCCESSOR_CLONE/.planning/.active_plan")"
+case "$PLAN_ID" in
+  ''|*[!A-Za-z0-9._-]*) exit 1 ;;
+esac
+for file in task_plan.md findings.md progress.md; do
+  test -s "$SUCCESSOR_CLONE/.planning/$PLAN_ID/$file"
+  sed -n '1,80p' "$SUCCESSOR_CLONE/.planning/$PLAN_ID/$file" > /dev/null
+done
+grep -Fq 'v0.3.0-beta.2' "$SUCCESSOR_CLONE/README.md"
+grep -Fq '0.3.0-beta.3-dev' "$SUCCESSOR_CLONE/README.md"
+grep -Fq 'global PWF Skill' "$SUCCESSOR_CLONE/ARCHITECTURE.md"
+grep -Fq 'bootstrap 永远在 ZIP 外' "$SUCCESSOR_CLONE/AGENTS.md"
+
+test -z "$(git -C "$SUCCESSOR_CLONE" status --short)"
+test -z "$(git -C "$ARCHIVE_CLONE" status --short)"
+test -z "$(find "$SUCCESSOR_CLONE" -type d -name __pycache__ -print -quit)"
+
+SUCCESSOR_SYMREF_AFTER="$(git ls-remote --symref "$SUCCESSOR_URL" HEAD)"
+ARCHIVE_SYMREF_AFTER="$(git ls-remote --symref "$ARCHIVE_URL" HEAD)"
+test "$SUCCESSOR_SYMREF_AFTER" = "$SUCCESSOR_SYMREF_BEFORE"
+test "$ARCHIVE_SYMREF_AFTER" = "$ARCHIVE_SYMREF_BEFORE"
+test "$(remote_sha "$SUCCESSOR_URL" refs/heads/main)" = "$EXPECTED_MAIN_SHA"
+test "$(remote_sha "$SUCCESSOR_URL" refs/heads/migration/slim-beta3-dev)" = "$DEVELOPMENT_SHA"
+test "$(remote_sha "$SUCCESSOR_URL" refs/heads/audit/beta2-exact)" = "$AUDIT_SHA"
+test "$(remote_sha "$ARCHIVE_URL" refs/heads/0.3.0-beta.2)" = "$ARCHIVE_DEFAULT_SHA"
+test -z "$(git ls-remote --tags "$SUCCESSOR_URL")"
+
+printf 'PROBE_VERSION=%s\n' "$PROBE_VERSION"
+printf 'M4C_ACCEPTED_MAIN=%s\n' "$EXPECTED_MAIN_SHA"
+printf 'M4B_GOVERNANCE_DESCENDANT=PASS paths=7 commits=1\n'
+printf 'LINUX_SUITE=PASS tests=63 pass=63 fail=0 skipped=0\n'
+printf 'SUCCESSOR_BOUNDARY=PASS paths=61 executables=4\n'
+printf 'DEVELOPMENT_ZIP=PASS entries=22 size=75323 sha256=%s\n' \
+  "$DEVELOPMENT_ZIP_SHA256"
+printf 'DEVELOPMENT_BOOTSTRAP_ZERO_HASH=PASS\n'
+printf 'BETA2_ASSETS=PASS zip_size=84572 bootstrap_size=17425\n'
+printf 'BETA2_ROLLBACK_BUILD_DOCTOR=PASS payloads=11 isolated=true\n'
+printf 'MAINTAINER_HANDOFF_REHEARSAL=PASS\n'
+printf 'REMOTE_DEFAULT_AND_EVIDENCE_RECHECK=PASS\n'
+printf 'LIVE_CODEX_MUTATIONS=0\n'
+printf 'WORKSPACES_CLEAN=YES\n'
+printf 'M4C_CUTOVER_ROLLBACK_ACCEPTANCE=PASS\n'
+```
+
+脚本成功时只输出上面的严格汇总；Linux suite 仅在失败时展开完整 TAP，避免正常运行产生一长串
+无关日志。任何命令失败都会由 `set -Eeuo pipefail` 立即停止，且不会输出 PASS marker。
+
+M4-C Cloud 完成标记：`M4C_CUTOVER_ROLLBACK_ACCEPTANCE=PASS`。M4 最终闭环标记仍为
+`M4_REPOSITORY_CUTOVER=PASS`，但只能在 Cloud 结果回写后记录。
 
 ## 8. 外部 mutation 清单
 
@@ -240,7 +542,7 @@ paths、四个 `100755` upstream runtime 文件和 clean workspace。
   `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508` PASS；
 - 双仓库 changed-doc UTF-8/LF/fence/local-link 与 `git diff --check` PASS。
 
-完成标记：`M4B_ARCHIVE_PROVENANCE_HANDOFF=PASS`。M4-C、Release/tag、live Cloud、
-production behavior 与 Product Phase 4 仍需单独授权。
+完成标记：`M4B_ARCHIVE_PROVENANCE_HANDOFF=PASS`。维护者随后已单独授权 M4-C no-live
+acceptance；Release/tag、live `/opt/codex`、production behavior 与 Product Phase 4 仍未授权。
 
 Discovery 自身不得输出任何 M4-A/B/C PASS 标记。

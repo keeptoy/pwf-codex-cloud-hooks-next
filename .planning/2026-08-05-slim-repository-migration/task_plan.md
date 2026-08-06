@@ -8,7 +8,8 @@ immutable M1 audit oracle.
 
 ## Current Gate
 
-M4-B archive/provenance handoff complete; maintainer checkpoint and M4-C authorization required.
+M4-C cutover/rollback acceptance authorized; Cloud/Linux runbook preparation and
+governance-only publication are in progress.
 
 ## Status
 
@@ -39,18 +40,20 @@ governance paths, with root/tree/path/mode/audit/remote/Release boundaries intac
 M4 Discovery then froze create-main-then-switch and preserved both evidence refs.
 M4-A created exact `main@cc9bc878ddc7d70c25156dd053e2874758f0814a`, made it
 the public default, activated minimum main/evidence integrity rulesets, and passed
-fresh default clone. M4-B now publishes exact cross-repository provenance and old
+fresh default clone. M4-B then published exact cross-repository provenance and old
 archive/rollback navigation without successor README/Release-input drift or beta.2
-asset mutation. M4-C, Release/tag, live Cloud, production behavior, repository
-rename/archive/delete, and Product Phase 4 remain unauthorized.
+asset mutation; its final readback commit is
+`5476a5c97e713d935622a9998f902e35a114db07`. The maintainer has now explicitly
+authorized M4-C only. Release/tag, live `/opt/codex`, production behavior,
+repository rename/archive/delete, and Product Phase 4 remain unauthorized.
 
 ## Next Step
 
-Review and checkpoint the published M4-B governance descendants, then wait for
-explicit M4-C authorization. M4-C alone may run the frozen no-live cutover,
-rollback-download, clean-clone, and handoff acceptance. Do not publish a Release/
-tag, touch live Cloud, modify production behavior, rename/archive either repository,
-or enter Product Phase 4.
+Publish one normal fast-forward M4-C preparation descendant containing only the
+seven approved governance files, then run the frozen unique script from
+`docs/beta3-dev-m4-cutover-plan.md` in a fresh Cloud/Linux task. Stop after returning
+the complete output. Do not publish a Release/tag, write live `/opt/codex`, modify
+production behavior, rename/archive either repository, or enter Product Phase 4.
 
 ## Invariants
 
@@ -128,6 +131,12 @@ or enter Product Phase 4.
 - [x] Pass dual-repository document/boundary/Release-drift and remote-identity gates.
 - [x] Publish both governance descendants by normal fast-forward, verify GitHub
   navigation/authority facts, and stop before M4-C.
+- [x] Receive the M4-B checkpoint and explicit M4-C-only authorization.
+- [ ] Publish the governance-only M4-C acceptance runbook by normal fast-forward.
+- [ ] Pass fresh Cloud/Linux default-clone, full-suite, deterministic ZIP,
+  independent beta.2 rollback, handoff, remote-recheck, and clean-workspace gates.
+- [ ] Record M4-C evidence and close repository migration without entering Release
+  or Product Phase 4.
 
 ## M4-B Verification
 
