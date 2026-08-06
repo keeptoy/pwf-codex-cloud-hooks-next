@@ -6,11 +6,11 @@
 
 > 当前生产回滚基线：published/accepted `v0.3.0-beta.2`。
 >
-> 当前候选身份：`0.3.0`；exact source `1454c922...` 已通过 S1/S2，当前停止等待 S3 授权；stable
-> 尚未发布或晋级为 rollback。
+> 当前候选身份：published stable `v0.3.0`；exact source `1454c922...` 已通过 S1/S2/S3-A，Cloud
+> setup/B～F pending，尚未晋级为 rollback。
 >
 > 当前状态：M1～M4 仓库迁移已关闭；已决定先封板不改变行为的稳定 `v0.3.0`。Stable Release
-> Discovery、S1 与 S2 已完成；当前不得执行 S3 publication 或 Product Phase 4。
+> Discovery、S1、S2 和 S3-A 已完成；当前只执行 S3 Cloud setup/B～F，Product Phase 4 继续停止。
 
 ## 1. 与活动 planning 的分工
 
@@ -35,9 +35,9 @@ task plan 为准，并在 Phase、Cloud、Release 或 rollback 状态变化时�
 |---|---|
 | 源码维护权威 | successor `main` |
 | 已发布生产回滚 | 旧仓库不可变 `v0.3.0-beta.2` ZIP/bootstrap 与 Cloud A～F 证据 |
-| 当前候选身份 | `0.3.0`；S2 accepted source `1454c922...`，尚非 Release |
-| 当前 programme gate | v0.3.0 Stable Release S3 authorization checkpoint |
-| 当前 Release | 目标为稳定 `v0.3.0`，但尚无 successor tag/Release；development ZIP 不是发布资产 |
+| 当前候选身份 | published `v0.3.0`；S2 accepted source `1454c922...` |
+| 当前 programme gate | v0.3.0 S3 Cloud setup and lifecycle B～F |
+| 当前 Release | stable `v0.3.0` 已发布；A～F 关闭前尚非 accepted rollback |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 beta.2 的精确 source、资产、SHA 和回滚入口见

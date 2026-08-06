@@ -69,3 +69,15 @@ overlay contracts and Release allowlist contents are not candidate behavior chan
   may advance `main` but are not substitute release sources and require no asset rebuild.
 - S2 PASS authorizes only an S3 decision point. It does not create a tag/Release, promote
   rollback, mutate live Cloud, or authorize Product Phase 4.
+
+## S3-A immutable publication
+
+- Maintainer explicitly authorized S3. GitHub stable Release `v0.3.0` was created at the
+  frozen S2 source `1454c9224c83d11c073b05baf6e536a11c3bb0e5`, not at the later
+  evidence-only `main`.
+- Release is neither draft nor prerelease and contains exactly the external bootstrap plus
+  deterministic 22-entry ZIP. GitHub digests and independent downloaded SHA/size/contract
+  checks match the frozen S1/S2 values.
+- Publication alone does not promote rollback. beta.2 remains authoritative until the
+  published bootstrap, Fresh/UserPrompt, canonical plan, real Resume, doctor, inventory
+  and residue checks all pass.

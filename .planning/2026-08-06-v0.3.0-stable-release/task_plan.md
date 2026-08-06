@@ -8,22 +8,21 @@ removing canaries, weakening tests, or rewriting the beta.2 rollback baseline.
 
 ## Current Gate
 
-S2 Fresh Cloud prepublication seal passed for exact release source
-`1454c9224c83d11c073b05baf6e536a11c3bb0e5`; S3 requires separate authorization.
+S3 post-publication hard acceptance is active. Immutable publication/download passed;
+Cloud setup and lifecycle A～F remain.
 
 ## Status
 
-S1 and S2 are complete. Cloud accepted the frozen source, Linux suite, asset bytes,
-isolated installation, inventory and no-live boundary. Published and accepted beta.2
-remains the sole production rollback until all stable publication and post-publication
-gates pass.
+S1, S2 and S3-A immutable publication/download are complete. `v0.3.0` is a published
+stable Release at exact source `1454c922...`, but published and accepted beta.2 remains
+the sole production rollback until Cloud setup and lifecycle A～F all pass.
 
 ## Next Step
 
-Stop and request explicit S3 authorization. If authorized, create `v0.3.0` at exact
-release source `1454c9224c83d11c073b05baf6e536a11c3bb0e5`, upload only the two sealed
-assets once, and execute the standalone post-publication A～F runbook. Do not tag a later
-evidence-only `main`, enter Product Phase 4, remove canaries, or alter runtime/Host behavior.
+Use the published external bootstrap in a completely fresh Cloud setup run, verify the
+setup output, then start a new task and execute B～F exactly as specified by
+`docs/v0.3.0-cloud-hard-acceptance.md`. Do not replace assets, retarget the tag, promote
+rollback early, enter Product Phase 4, remove canaries, or alter runtime/Host behavior.
 
 ## Non-goals
 
@@ -99,15 +98,15 @@ evidence-only `main`, enter Product Phase 4, remove canaries, or alter runtime/H
 
 ### S3 — Immutable publication and post-publication hard acceptance
 
-- [ ] Create `v0.3.0` at exact S2 source `1454c9224c83d11c073b05baf6e536a11c3bb0e5`
+- [x] Create `v0.3.0` at exact S2 source `1454c9224c83d11c073b05baf6e536a11c3bb0e5`
       and upload ZIP plus external bootstrap once.
-- [ ] Re-download both assets and verify names, sizes, SHA and ZIP boundary.
+- [x] Re-download both assets and verify names, sizes, SHA and ZIP boundary.
 - [ ] Run completely fresh Cloud setup and automatic startup/UserPrompt lifecycle.
 - [ ] Create a real planning update, long tail, Resume catch-up and post-resume doctor.
 - [ ] Verify exact 11-file inventory, zero snapshot residue and beta.2 rollback independence.
 - [ ] Record acceptance evidence and promote v0.3.0 as the new rollback baseline.
 - **Exit:** immutable published assets and complete A～F acceptance PASS.
-- **Status:** pending; publication requires explicit authorization after S2
+- **Status:** in progress; S3-A PASS, Cloud setup/B～F pending
 
 ## Stop Conditions
 

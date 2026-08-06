@@ -73,3 +73,16 @@
   11 payloads; `LIVE_CODEX_MUTATIONS=0`; clean workspace.
 - No repository edit, live install, tag, Release or asset publication occurred in Cloud.
   S2 is closed and execution stops before separately authorized S3.
+
+## 2026-08-06 — S3-A immutable publication/download
+
+- Maintainer authorized S3. Built twice from detached exact source `1454c922...`; ZIP
+  remained 22 entries / 75,386 bytes / `f245a554...`, bootstrap remained 17,423 bytes /
+  `ab334f03...`.
+- Created non-draft, non-prerelease GitHub Release `v0.3.0`; its lightweight tag resolves
+  exactly to `1454c9224c83d11c073b05baf6e536a11c3bb0e5`.
+- Uploaded only `pwf-codex-cloud-hooks-v0.3.0.zip` and
+  `init-cloud-sandbox-v0.3.0.bash`. Re-downloaded both assets and independently verified
+  names, count, sizes, SHA-256 and ZIP contract.
+- Removed only the verified temporary detached worktree/build/download copies. Main stayed
+  clean; no asset replacement, live Cloud mutation or rollback promotion occurred.

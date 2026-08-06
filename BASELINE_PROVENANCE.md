@@ -142,7 +142,7 @@ pinned upstream archive + license
 
 | 项目 | 值 |
 |---|---|
-| target tag / Release | `v0.3.0`（尚未创建） |
+| tag / Release | [`v0.3.0`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/tag/v0.3.0) |
 | exact release source commit | `1454c9224c83d11c073b05baf6e536a11c3bb0e5` |
 | ZIP | `pwf-codex-cloud-hooks-v0.3.0.zip` |
 | ZIP entries / size | 22 / 75,386 bytes |
@@ -151,8 +151,8 @@ pinned upstream archive + license
 | bootstrap size | 17,423 bytes |
 | bootstrap SHA-256 | `ab334f0367d948fa29a2bdd37bff0c220929aeb320fdf59dbacbd5a4021b39c0` |
 | behavior delta | none；保留 canonical runtime 与 `PWF_GLOBAL_HOOK_CANARY_V1` |
-| current authority | S2 accepted candidate；S3 pending authorization，beta.2 仍是 rollback |
+| current authority | published/S3-A accepted candidate；Cloud B～F pending，beta.2 仍是 rollback |
 
-S2 已接受上表 exact source。后续 evidence-only `main` 提交不得取代该 tag target；candidate
-filename/hash 或本表不能证明 GitHub Release 已存在；完整门槛见
-`docs/v0.3.0-cloud-hard-acceptance.md`。
+S2 已接受上表 exact source，S3-A 已证明 tag target 与两个下载资产。后续 evidence-only `main`
+提交不得取代该 tag target；Cloud B～F 与 rollback promotion 仍以
+`docs/v0.3.0-cloud-hard-acceptance.md` 为门槛。
