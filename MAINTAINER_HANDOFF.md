@@ -14,10 +14,11 @@
 
 - 产品 rollback：published/accepted `v0.3.0-beta.2`。
 - 当前开发身份：`0.3.0-beta.3-dev`，不可发布。
-- 当前仓库迁移：M1/M2、M3 Discovery 和 M3-A no-live Cloud seal complete。M3-A 接受 HEAD 为
+- 当前仓库迁移：M1/M2/M3 complete。实际测试 HEAD 为
   `39795283cd65f84547651d7bec816191fb5bfedf`，ZIP SHA-256 为
-  `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`。M3-B disposable lifecycle
-  仍未授权；在获得授权前不得移动远端 development branch。
+  `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`；M3-B setup、Fresh、
+  canonical、Resume 和 doctor 全部 PASS。M3 closure descendant 只含治理文件；M4 Discovery
+  尚未授权，远端 development branch 暂不移动。
 - M1 audit branch：`audit/beta2-exact`，不得移动或重写。
 - Product Phase 4：未开始、未授权。
 - 生产集成：只支持 PWF v3.8.2 的两个 Managed Hook events。

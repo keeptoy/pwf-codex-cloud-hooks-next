@@ -233,3 +233,111 @@
   zero Release-allowlist overlap, and focused architecture/repository contracts
   4/4. A final read-only remote query confirms the development branch still equals
   accepted HEAD `39795283cd65f84547651d7bec816191fb5bfedf`.
+
+## M3-B authorized — disposable setup opening
+
+- Maintainer confirmed both repositories were checkpointed, kept the successor
+  checkpoint local/unpushed, and explicitly authorized M3-B.
+- Recovered clean archive HEAD `4962984cb4dd7f88ff2811e0330e0829948e0a4e`
+  and clean successor local HEAD `cc6c38000aa2d024a4d9eed2530ad09fdf9ef2db`;
+  the latter is a governance-only child of accepted M3-A HEAD `39795283...`.
+- The first sandboxed `git ls-remote` attempt failed because Git for Windows could
+  not create its signal pipe (`Win32 error 5`). The approved read-only retry
+  succeeded and proves remote `migration/slim-beta3-dev` still points exactly to
+  `39795283cd65f84547651d7bec816191fb5bfedf`.
+- M3-B is now in progress only at disposable setup. Frozen external inputs are
+  accepted HEAD `39795283cd65f84547651d7bec816191fb5bfedf` and ZIP SHA-256
+  `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`.
+  No successor push, M3-C, public `main`, Release, cutover, Product Phase 4, or
+  production-source change is authorized.
+- The first focused local test launch again hit the known Windows sandbox
+  `spawn EPERM` before assertions ran. The identical approved outside-sandbox
+  rerun passed all three repository-boundary cases; this is a platform execution
+  restriction, not a product or assertion failure.
+- Maintainer returned the complete disposable setup result. Both Release-tool
+  build/check passes report 22 entries, 75,323 bytes, and exact accepted SHA-256
+  `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`.
+- Cloud detected `/opt/codex`, installed pristine upstream PWF v3.8.2, installed
+  the managed runtime from exact accepted HEAD `39795283...`, returned healthy
+  install and doctor JSON with empty errors/blockers, validated TOML and the Codex
+  Hook feature, and passed both direct adapter protocol probes.
+- Terminal markers `M3B_DISPOSABLE_SETUP=PASS`, exact accepted HEAD, and exact ZIP
+  SHA were all observed. Setup is closed; the only next step is a completely new
+  task's no-tools Fresh lifecycle prompt. Direct setup adapter output is not reused
+  as automatic Runtime injection evidence.
+- One PowerShell excerpt read used the host default encoding and displayed Chinese
+  runbook text as mojibake. Re-read the bounded Fresh section with explicit UTF-8;
+  repository bytes were not changed by either read.
+- Maintainer clarified the actual Cloud boundary: every new container clones the
+  GitHub repository first and then automatically runs the saved repository setup
+  before Runtime/first prompt. Recorded this order in the runbook so a manual old-
+  container install cannot be mistaken for Fresh preparation.
+- The completely new task's first no-tools reply observed exact startup
+  SessionStart and UserPromptSubmit canary lines. Strict summary reports
+  SessionStart OBSERVED, source startup, and UserPromptSubmit OBSERVED; planning
+  context, plan-data marker, and recent progress were also OBSERVED.
+- Fresh lifecycle is PASS. The sole next action is the controlled real-apply_patch
+  baseline prompt in the same task; canonical no-tools validation, long wrapper,
+  Resume, and doctor remain sequential later steps.
+- The first PowerShell attempt to slice the baseline section selected a non-scalar
+  end marker and printed a reversed oversized excerpt. Replaced it with a unique
+  UTF-8 prompt-line lookup and forward closing-fence scan; the exact bounded prompt
+  was recovered and no repository byte changed from either read.
+- The controlled baseline step returned exactly
+  `PWF_BETA3DEV_M3_BASELINE_CREATED`. This closes the response-shape requirement,
+  but file selection/injection still requires the immediate canonical no-tools
+  check and the real structured `patch_apply_end` remains a Resume cross-check.
+- The immediate no-tools canonical check reports all six fields OBSERVED:
+  UserPromptSubmit canary, C7F4 plan marker, ACTIVE PLAN, plan-data framing, recent
+  progress, and overall Planning context. Canonical baseline/UserPrompt is PASS.
+- The sole next step is the exact long-wrapper message in the same task. It must
+  receive only `PWF_BETA3DEV_M3_UNSYNCED_ACKNOWLEDGED`; Resume cannot begin before
+  that response and no planning file may change after the baseline patch.
+- The long wrapper returned exactly
+  `PWF_BETA3DEV_M3_UNSYNCED_ACKNOWLEDGED` and did not echo its C7F4 tail sentinel.
+  The current run must now end; the frozen no-tools Resume prompt is the first
+  message after reopening the same task.
+- One combined governance patch was rejected atomically because its expected
+  runbook sentence did not match the actual wording. No partial edit occurred;
+  re-read the exact paragraph and applied smaller bounded patches successfully.
+- The restored no-tools reply reports source `resume`, SESSION CATCHUP, previous
+  rollout `019fd4e2...`, Runtime codex, `task_plan.md at message #36`, and 16
+  unsynced messages. Truncation marker, exact C7F4 tail, catch-up-before-plan order,
+  canonical marker/framing, and progress are all observed. Resume is PASS.
+- Two later multi-file governance patches also failed closed on stale exact-context
+  assumptions (first a checklist line, then ROADMAP wrapping). Neither made partial
+  edits. Re-read the bounded current text and applied per-file patches instead.
+- Post-resume doctor/inventory/residue is now the only remaining M3-B gate. M3-C
+  remains unauthorized.
+- Maintainer returned the final doctor output: exit 0, healthy true, repairable
+  false, empty errors/blockers, installer `0.3.0-beta.3-dev`, exact 11-file actual/
+  declared inventory, and zero snapshot leftovers. M3-B is complete.
+- Two M3-B closure-status multi-file patches failed atomically on stale expected
+  checklist/ROADMAP wrapping. Neither made partial edits. Exact bounded reads and
+  per-file patches completed the synchronization; product, tests, contracts,
+  bootstrap, Release inputs, remote branch, and live Cloud state were not changed.
+- Stopped at `M3-B PASS / M3-C AUTHORIZATION REQUIRED`. No closure commit, push,
+  public `main`, Release, cutover, M4, or Product Phase 4 action followed.
+
+## M3-C authorized — closure audit opening
+
+- Maintainer explicitly authorized M3-C and confirmed neither repository had been
+  committed after M3-B. M3-C will audit first and may create one local governance
+  closure commit only after all descendant checks pass; no push or M4 is authorized.
+- Initial successor inspection shows local HEAD `cc6c380...` is a governance child
+  of tested `39795283...`; the worktree modifies five existing governance files.
+  The complete candidate diff from tested commit currently spans seven existing
+  governance paths: AGENTS, MAINTAINER_HANDOFF, ROADMAP, the M3 runbook, and three
+  active planning files. No new path is present in this preliminary view.
+- Formal local audit PASS: exactly seven allowed governance paths, one immutable
+  parentless root/tree, 60 tracked paths, four exact `100755` upstream files, local
+  audit oracle unchanged, and Release allowlist overlap zero.
+- Approved read-only remote query took about one minute but completed successfully:
+  `audit/beta2-exact` remains `bbad3703...` and `migration/slim-beta3-dev` remains
+  exact tested HEAD `39795283...`. No remote state changed.
+- M3-C pre-commit seal PASS: importer/static, 13 maintained-doc UTF-8/fences,
+  `git diff --check`, focused architecture/repository contracts 4/4, and two exact
+  22-entry / 75,323-byte ZIPs at accepted SHA-256.
+- The commit containing this record is the single local M3 governance closure.
+  Candidate remains exactly seven existing governance paths with zero production,
+  test, contract, bootstrap, or Release-input drift; no push or M4 action follows.

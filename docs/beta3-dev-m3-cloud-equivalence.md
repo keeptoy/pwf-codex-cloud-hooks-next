@@ -1,6 +1,6 @@
 # beta.3-dev M3 Cloud equivalence
 
-> 状态：`M3-A PASS / M3-B AUTHORIZATION REQUIRED`
+> 状态：`M3 COMPLETE / M4 DISCOVERY AUTHORIZATION REQUIRED`
 >
 > 目标：证明 slim successor 的受控 development commit 在 Linux、隔离安装和真实 Codex Cloud
 > lifecycle 上与已验收 beta.2 production 行为等价。
@@ -46,8 +46,8 @@ beta.3-dev 的文档、仓库身份和 package version 本来就与 beta.2 不�
 |---|---|---|---|
 | Discovery | 冻结本文、失败矩阵、运输和安装方式 | 无 | complete |
 | M3-A | push 精确 development commit；Fresh Cloud 跑 no-live Linux seal 和隔离安装 | 新 remote branch；不碰 `/opt/codex` | complete / PASS |
-| M3-B | 一次性 Cloud setup 用本地 development ZIP 安装；执行 Fresh/D/Resume/F | 只改变 disposable Cloud container | 未授权 |
-| M3-C | 记录原始证据、证明 closure 只有治理文件、关闭 M3 | governance commit；无 Release/cutover | 未授权 |
+| M3-B | 一次性 Cloud setup 用本地 development ZIP 安装；执行 Fresh/D/Resume/F | 只改变 disposable Cloud container | complete / PASS |
+| M3-C | 记录原始证据、证明 closure 只有治理文件、关闭 M3 | governance commit；无 Release/cutover | complete / PASS |
 
 每个子门单独停止。`M3-A PASS` 不自动授权 M3-B；`M3-B PASS` 不自动授权 M3-C 或 M4。
 
@@ -288,8 +288,11 @@ M3-B 使用精确 checkout 前不得 push 到同名 development branch；否则 
 
 ## 6. M3-B：disposable Cloud setup
 
-M3-A PASS 且维护者单独授权后，在同一 development branch 的 Cloud repository setup 中运行。
-把 M3-A 原样输出的两个值填入当前 setup 配置；不要修改仓库文件：
+M3-A PASS 且维护者单独授权后，把脚本保存为同一 development branch 的 Cloud repository
+setup 配置。Cloud 创建每个新容器时，会先 clone GitHub 仓库，再在该 checkout 中自动运行这里
+保存的 setup，最后才启动 Runtime 和第一轮对话。旧容器中手工安装的 `/opt/codex` 不会被新容器
+继承；只手工跑过一次而没有保存为 repository setup，不能开始 Fresh。把 M3-A 原样输出的两个值
+填入当前 setup 配置；不要修改仓库文件：
 
 ```bash
 set -Eeuo pipefail
@@ -325,6 +328,18 @@ printf 'M3B_INSTALLED_ZIP_SHA256=%s\n' "$ACTUAL_SHA256"
 production bootstrap。setup 必须报告成功、global Skill pristine、doctor healthy、adapter-only policy
 和 installed version `0.3.0-beta.3-dev`。结束 setup task，不把它 resume 成黑盒 task。
 
+### 6.1 已接受的 setup 证据
+
+- `M3B_DISPOSABLE_SETUP=PASS`；安装来源为精确 accepted HEAD
+  `39795283cd65f84547651d7bec816191fb5bfedf`；
+- 两次 build/check 都得到 22 entries、75,323 bytes、SHA-256
+  `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`；
+- bootstrap 完成 pristine upstream v3.8.2 Skill、Managed install、healthy doctor、
+  requirements TOML/Codex Hook feature 和两个 adapter protocol probes；
+- adapter probe 输出只是 setup 白盒/协议证据，不得替代全新 task 的自动 Runtime lifecycle 黑盒；
+- installed manifest 版本由 healthy doctor 对当前 installer 版本严格校验，并将在 post-resume
+  doctor 中再次显式打印。setup run 到此结束，不对它执行 resume。
+
 ## 7. M3-B：Fresh lifecycle
 
 新建完全不同的 task。第一条消息原样发送：
@@ -355,6 +370,14 @@ Planning context（辅助观察）: OBSERVED 或 NOT_OBSERVED
 
 严格 PASS 只要求两个 canary 与 `SessionStart source: startup`。三个 planning 字段是辅助观察；
 Fresh task 尚无受控 plan 时，`=== recent progress ===: NOT_OBSERVED` 不单独构成失败。
+
+### 7.1 已接受的 Fresh 证据
+
+- `PWF_GLOBAL_HOOK_CANARY_V1 event=SessionStart source=startup`：OBSERVED；
+- `PWF_GLOBAL_HOOK_CANARY_V1 event=UserPromptSubmit`：OBSERVED；
+- SessionStart、source `startup`、UserPromptSubmit 三项硬门槛全部 PASS；
+- Planning context、`===BEGIN PLAN DATA===`、`=== recent progress ===` 三项辅助观察也全部
+  OBSERVED。该证据来自 setup 自动完成后的全新 task 第一条 no-tools 回复，不是 adapter 自测。
 
 ## 8. M3-B：受控 planning baseline 与 UserPrompt
 
@@ -400,6 +423,15 @@ Planning context: OBSERVED 或 NOT_OBSERVED
 
 六项必须全部 `OBSERVED`。
 
+### 8.1 已接受的 baseline/UserPrompt 证据
+
+- baseline 步骤返回唯一确认词 `PWF_BETA3DEV_M3_BASELINE_CREATED`；
+- 随后的无工具 UserPrompt 验证中，UserPromptSubmit canary、canonical C7F4 marker、
+  ACTIVE PLAN、`===BEGIN PLAN DATA===`、`=== recent progress ===` 和 Planning context
+  六项全部 OBSERVED；
+- 这证明目标 scoped plan 已被 canonical Runtime 选中并注入。真实 structured
+  `patch_apply_end` 仍由 Resume catch-up 报告作最终交叉验证。
+
 ## 9. M3-B：长尾、Resume 与 owned catch-up
 
 在同一 task 把整个代码块作为一条消息发送：
@@ -429,7 +461,9 @@ PWF_BETA3DEV_M3_UNSYNCED_ACKNOWLEDGED
 PWF_BETA3DEV_M3_REAL_RESUME_TAIL_C7F4
 ```
 
-模型必须只回复确认词，且不得再修改 planning。然后离开并重新打开同一个 task，第一条消息发送：
+模型必须只回复确认词，且不得再修改 planning。已接受的前置证据是唯一回复
+`PWF_BETA3DEV_M3_UNSYNCED_ACKNOWLEDGED`，没有复述尾部 sentinel；sentinel 是否被 Runtime 从
+transcript 尾部恢复只由下一条 Resume 报告判定。然后离开并重新打开同一个 task，第一条消息发送：
 
 ```text
 这是 pwf-codex-cloud-hooks beta.3-dev M3 automatic canonical resume 黑盒验证。
@@ -465,6 +499,17 @@ Planning context: OBSERVED 或 NOT_OBSERVED
 
 全部观察项必须为 `OBSERVED`，source 必须为 `resume`，unsynced messages 必须是至少 1 的实际整数；
 `UNSYNCED CONTEXT` 必须同时有 `...[truncated]...` 和尾部唯一标记，并且 catch-up 在 planning context 前。
+
+### 9.1 已接受的 Resume 证据
+
+- Previous session：`rollout-2026-08-06T02-23-49-019fd4e2-50e2-7d60-8deb-9ecd273513e0`；
+- source `resume`、SESSION CATCHUP、Runtime codex 全部 OBSERVED；
+- Last planning update：`task_plan.md at message #36`；Unsynced messages：`16`；
+- `UNSYNCED CONTEXT` 同时保留 `...[truncated]...` 与
+  `PWF_BETA3DEV_M3_REAL_RESUME_TAIL_C7F4`，并包含 baseline acknowledgment、canonical
+  UserPrompt 回复和 long-wrapper acknowledgment；
+- catch-up 位于 planning context 前，C7F4 canonical marker、plan framing 和 progress 全部恢复。
+  结构化 planning update 已被 catch-up 识别；Markdown 展示形式不改变冻结的 marker/更新判定。
 
 ## 10. M3-B：post-resume doctor
 
@@ -522,6 +567,17 @@ Snapshot leftovers: 实际数字
 PASS：doctor exit 0、healthy true、repairable false、errors/blockers 为空、version 为 beta.3-dev、
 11 个 payload 与 manifest 精确相等、snapshot leftovers 为 0。
 
+### 10.1 已接受的 post-resume doctor 证据
+
+- doctor exit `0`，`healthy=true`，`repairable=false`，`errors=[]`，`blockers=[]`；
+- installer version：`0.3.0-beta.3-dev`；
+- installed runtime files：`11`，实际清单与 manifest 声明精确相等；
+- inventory 包含 adapter、两个 owned runtimes、两份 exact-v1 schema、四份 upstream 文件、
+  compatibility ledger 和 third-party notice；
+- snapshot leftovers：`0`。
+
+至此 M3-B 全部 PASS。该结果不自动授权 M3-C、治理 commit、push、public `main`、Release 或 M4。
+
 ## 11. M3-C 证据关闭
 
 至少保存：
@@ -541,3 +597,40 @@ commit 到 closure commit 只变化 AGENTS/README/ARCHITECTURE/ROADMAP/provenanc
 
 M3 PASS 后唯一 Next Step 是等待 M4 Discovery 授权。不得自动创建 public `main`、改变默认分支、
 发布 beta.3、修改旧仓库导航、cut over production 或进入 Product Phase 4。
+
+### 11.1 接受的 M3 证据清单
+
+| Gate | 接受值 |
+|---|---|
+| tested commit | `39795283cd65f84547651d7bec816191fb5bfedf` |
+| M2 root/tree | `3234e4e02090c838f5ee260cd8f2d99daf358d65` / `300f5a86b122df58f91fe7fee67e3cc561fd967f` |
+| M3-A Linux | 63/63/0/0；root/cross-user/process-group、isolated doctor、adapter-only PASS |
+| development ZIP | 22 entries / 75,323 bytes / `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508` |
+| setup | exact HEAD/SHA、pristine Skill、healthy doctor、两个 adapter probes PASS |
+| Fresh | SessionStart `startup` 与 UserPromptSubmit canary OBSERVED |
+| baseline/UserPrompt | baseline ACK；六项 canonical context 全部 OBSERVED |
+| Resume | rollout `019fd4e2...`；message #36；16 unsynced；截断/尾标记/顺序/plan PASS |
+| doctor | exit 0；healthy；beta.3-dev；11-file manifest exact；snapshot 0 |
+
+各 gate 的接受输出分别保存在 5.3、6.1、7.1、8.1、9.1 和 10.1。M3-B 的 setup/Fresh/
+baseline/canonical/long-wrapper/Resume/doctor 原始回复由维护者逐步返回；本清单保留所有决定
+PASS/FAIL 的原始字段、完整 identity、计数、hash、reason arrays 和 inventory 边界。
+
+### 11.2 Closure descendant 证明
+
+从 tested commit 到包含本节的 closure commit 恰好变化七个既有治理路径：
+
+```text
+.planning/2026-08-05-slim-repository-migration/findings.md
+.planning/2026-08-05-slim-repository-migration/progress.md
+.planning/2026-08-05-slim-repository-migration/task_plan.md
+AGENTS.md
+MAINTAINER_HANDOFF.md
+ROADMAP.md
+docs/beta3-dev-m3-cloud-equivalence.md
+```
+
+验证结果：60 tracked paths、唯一 parentless M2 root、四个 `100755` upstream 文件、M1 audit ref/
+tree、远端 tested HEAD 均未移动；production、tests、contracts、bootstrap 与 Release allowlist
+overlap 为零。Importer/static、13-doc UTF-8/fences、focused contracts 4/4、`git diff --check` 和两次
+确定性 ZIP 均 PASS。该 commit 只在本地创建，未 push。M3 至此关闭。

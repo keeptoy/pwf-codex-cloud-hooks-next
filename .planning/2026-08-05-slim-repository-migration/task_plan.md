@@ -8,25 +8,44 @@ immutable M1 audit oracle.
 
 ## Current Gate
 
-M3-A complete; M3-B explicit authorization required.
+M3 complete; M4 Discovery explicit authorization required.
 
 ## Status
 
-M2-A/B/C, M3 Discovery, and M3-A are complete. The repaired accepted development
+M2-A/B/C, M3 Discovery, and M3-A are complete. The maintainer has explicitly
+authorized M3-B. The repaired accepted development
 commit is `39795283cd65f84547651d7bec816191fb5bfedf`; its complete Fresh Cloud rerun
 passes Linux 63/63, isolated install/doctor, adapter-only policy, 11 payload,
 deterministic 22-entry ZIP, zero-hash bootstrap, and clean workspace. Accepted ZIP
 SHA-256 is `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`.
-M3-B, M3-C, M4, and Product Phase 4 remain unauthorized.
+M3-B disposable setup is PASS: exact accepted HEAD and ZIP SHA matched, the
+bootstrap completed, the global Skill is pristine upstream v3.8.2, install and
+doctor are healthy, and both adapter protocol probes passed. Fresh automatic
+Runtime injection is also PASS with SessionStart
+`source=startup`, UserPromptSubmit, and all auxiliary planning observations.
+The controlled baseline acknowledgment and immediate canonical no-tools check are
+PASS: all six canary/marker/framing/progress/context fields were observed.
+The long wrapper also returned its exact sole acknowledgment without echoing the
+tail sentinel or modifying planning state.
+Automatic Resume is PASS: source `resume`, previous session, codex runtime,
+`task_plan.md` update at message #36, 16 unsynced messages, bounded truncation,
+C7F4 tail preservation, catch-up-before-plan ordering, and restored canonical
+plan framing were all observed.
+Post-resume doctor is PASS with healthy true, repairable false, empty errors and
+blockers, installer `0.3.0-beta.3-dev`, exact 11-file manifest inventory, and zero
+snapshot leftovers. M3-B is complete.
+M3-C closure proves the tested-commit descendant contains exactly seven existing
+governance paths, with root/tree/path/mode/audit/remote/Release boundaries intact.
+The commit containing this record is the single local M3 closure commit. M4 and
+Product Phase 4 remain unauthorized.
 
 ## Next Step
 
-Checkpoint this M3-A evidence locally without pushing the successor development
-branch, then wait for explicit maintainer authorization for M3-B. When authorized,
-M3-B must checkout exact accepted HEAD `39795283cd65f84547651d7bec816191fb5bfedf`
-and receive the accepted ZIP SHA only through process-level setup input. Do not
-begin M3-C, create public `main`, publish, cut over, modify production behavior, or
-enter Product Phase 4.
+Stop with M3 closed and wait for explicit maintainer authorization for M4
+Discovery. Keep the closure commit local and keep remote
+`migration/slim-beta3-dev` on tested HEAD `39795283...`; do not push, create public
+`main`, change the default branch, publish, cut over, modify production behavior,
+or enter Product Phase 4.
 
 ## Invariants
 
@@ -64,7 +83,35 @@ enter Product Phase 4.
 - [x] Stop for explicit authorization before creating an M3 child commit or push.
 - [x] Pass M3-A transport, complete no-live Linux/Cloud seal, isolated doctor,
   deterministic ZIP, zero-hash, and clean-workspace gates.
-- [ ] Receive explicit maintainer authorization before M3-B disposable setup.
+- [x] Receive explicit maintainer authorization before M3-B disposable setup.
+- [x] Pass M3-B disposable setup from exact accepted HEAD and ZIP SHA.
+- [x] Pass M3-B Fresh automatic startup/UserPrompt lifecycle gate.
+- [x] Confirm the controlled baseline and canonical UserPrompt with all six
+  automatic-injection observations.
+- [x] Preserve the real structured planning update in Resume catch-up evidence.
+- [x] Receive the exact long-wrapper acknowledgment without further planning edits.
+- [x] Pass Resume catch-up, bounded tail, ordering, and canonical restoration.
+- [x] Pass post-resume doctor, 11-file inventory, version, and zero-residue gate.
+- [x] Receive explicit maintainer authorization before M3-C evidence closure.
+- [x] Prove the complete closure descendant is exactly seven existing governance
+  paths with root/path/mode/audit/remote/Release boundaries intact.
+- [x] Pass final document/importer/focused-test and staged-candidate checks.
+- [x] Create and verify one local M3 closure commit without push.
+
+## M3-C Closure Audit
+
+- Candidate diff from tested `39795283...`: exactly seven existing governance
+  paths; no production, test, contract, bootstrap, Release-input, or new-path drift.
+- Identity: one parentless M2 root `3234e4e...` / tree `300f5a86...`; 60 tracked
+  paths; exactly four `100755` upstream runtime files.
+- Audit oracle: local and remote `audit/beta2-exact` remain `bbad3703...` / tree
+  `ff49c3c...`.
+- Remote development branch remains exact tested HEAD
+  `39795283cd65f84547651d7bec816191fb5bfedf`; Release allowlist overlap is zero.
+- Importer/static checks PASS; 13 maintained Markdown documents are strict UTF-8
+  with balanced fences; architecture/repository focused tests PASS 4/4.
+- Two development ZIP builds remain byte-identical at 22 entries / 75,323 bytes /
+  SHA-256 `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`.
 
 ## M3 Discovery Verification
 

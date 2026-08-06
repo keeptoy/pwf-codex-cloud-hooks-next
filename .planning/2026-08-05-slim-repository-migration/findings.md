@@ -196,3 +196,40 @@
 - The remote branch must remain on accepted HEAD until M3-B consumes it. M3-A
   evidence updates therefore remain a local governance checkpoint and are not
   pushed ahead of the tested commit.
+
+## M3-B setup evidence
+
+- The accepted development checkout rebuilt the exact 22-entry / 75,323-byte ZIP
+  with accepted SHA-256 and installed it through a process-only `file://` override;
+  the checked-in bootstrap remains zero-hash and no Release asset was involved.
+- Healthy install/doctor plus pristine upstream Skill and both adapter protocol
+  probes close the setup gate. Doctor validates installed manifest version against
+  the current installer version even though the setup summary does not print that
+  field; post-resume doctor remains the explicit version/inventory/residue proof.
+- Direct adapter probe output is not automatic Host lifecycle injection. Fresh
+  acceptance must come from the first no-tools reply in a completely new task.
+- Cloud repository setup order is explicit: create new container, clone the GitHub
+  repository, run the saved setup script inside that checkout, start Runtime, then
+  accept the first user prompt. A prior manual install in another container is not
+  inherited and cannot authorize Fresh without the saved setup configuration.
+- The accepted Fresh reply observed startup SessionStart, UserPromptSubmit, and all
+  three auxiliary planning sections. Only the two canaries and startup source are
+  hard Fresh requirements; the auxiliary observations are additional positive
+  evidence, not a newly expanded contract.
+- The immediate canonical no-tools check observed all six required fields after
+  the exact baseline acknowledgment. This proves active scoped selection, marker,
+  framing, and recent-progress injection. It does not replace Resume's structured
+  `patch_apply_end` evidence, which remains the proof of the real planning update.
+- Resume recognized `task_plan.md` at message #36 as the last planning update and
+  recovered 16 unsynced messages, the truncation marker, exact C7F4 tail, ordering,
+  and canonical plan/progress. This closes the structured-update cross-check even
+  though the model-rendered Markdown presentation is not a byte-for-byte file dump.
+- Post-resume doctor closes installed-state equivalence: healthy true, repairable
+  false, empty errors/blockers, beta.3-dev manifest version, exact 11-file declared/
+  actual inventory, and zero snapshot residue. M3-B is complete; M3-C remains an
+  independent authorization boundary because it creates the closure descendant.
+- M3-C initial audit proves the complete tested-commit-to-worktree candidate is
+  exactly seven existing governance files. Root/tree, 60-path identity, four-mode
+  executable set, audit oracle, remote tested HEAD, and zero Release overlap all
+  remain frozen; therefore a local closure commit is eligible only after final
+  document/importer/focused/staged checks.

@@ -17,7 +17,7 @@
 |---|---|---|
 | M1 exact mirror | 证明新 remote/audit branch 与 beta.2 commit/tree/资产完全一致 | complete |
 | M2 slim transformation | 精简历史树，建立新 authority/identity/provenance 和 root commit | complete；checkpoint 已收到 |
-| M3 Cloud equivalence | development branch Fresh/Resume/doctor/ZIP/Linux suite | M3-A complete；M3-B explicit authorization required |
+| M3 Cloud equivalence | development branch Fresh/Resume/doctor/ZIP/Linux suite | complete；local governance closure，not pushed |
 | M4 cutover | 建立公开 `main`、交割、旧仓库导航和 rollback 演练 | pending；未授权 |
 
 M2 内部分为：
@@ -71,7 +71,15 @@ M3-A 首次 Cloud 运行已通过 identity、mode、importer/static 和 Linux 63
 实际两层 Managed Policy TOML 误读为一层而停止。修复 descendant 从头完整重跑后全部 PASS：接受
 HEAD 为 `39795283cd65f84547651d7bec816191fb5bfedf`，development ZIP 为 22 entries / 75,323 bytes /
 SHA-256 `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`，隔离 doctor、adapter-only
-policy、11 payload、zero hash 与 clean workspace 均通过。M3-B 仍需维护者单独授权。
+policy、11 payload、zero hash 与 clean workspace 均通过。M3-B 的精确 accepted HEAD/ZIP SHA
+disposable setup 也已 PASS；当前只允许结束 setup run，并在完全不同的新 task 中先执行 Fresh
+lifecycle。Fresh 已观察到 startup SessionStart、UserPromptSubmit 和全部辅助 planning context；
+受控 baseline 回复与六项 canonical UserPrompt 自动注入也已 PASS。长 wrapper 与 Resume 也已完成：
+16 条 unsynced、message #36 planning update、截断保尾、正确顺序和 canonical 恢复全部 PASS；当前
+post-resume doctor 也以 healthy、beta.3-dev、11-file manifest exact 和零残留 PASS。M3-B 已关闭；
+M3-C 进一步证明 tested commit 到 closure 只变化七个既有治理文件，60-path/root/mode/audit/
+remote/Release 边界不漂移，并通过 importer/static、4/4 focused contracts、13-doc 与确定性 ZIP
+复验。M3 已关闭；closure commit 只保留在本地，当前等待 M4 Discovery 单独授权。
 
 ## 5. M4 cutover
 
