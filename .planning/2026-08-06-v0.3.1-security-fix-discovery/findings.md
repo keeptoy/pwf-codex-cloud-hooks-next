@@ -746,3 +746,56 @@ for this ordinary documentation delta. This is a risk-proportionate evidence dec
 not permission to reuse behavioral evidence after a code or contract change: any such
 change would require a new gate. S3-C remains responsible for final downloaded-asset and
 Cloud validation of the actual published bytes.
+
+## S3-A immutable local seal
+
+The authorized local seal is complete from checkpoint
+`9ef80422cb01c87240da884389f279c4910e2f2c`. Before freezing, README gate wording was
+made status-neutral so a Release input would not permanently claim a transient pre-seal
+state. No Release input was modified after the freeze.
+
+The 23 allowlisted input blobs are:
+
+| SHA-256 | path |
+|---|---|
+| `c0c904451cf5042d621c8702d475af65b757ca5e45d74da50d9541a55b469262` | `contracts/adapter-plan-context-request-v1.schema.json` |
+| `a86588e3c7d55cbbeddc74110403ba815ad8715735c149d77dd0c47996ee72d5` | `contracts/adapter-runtime-request-v1.schema.json` |
+| `4b3e89ddfd7f32e3fa08a50c990bf8b4dbf407645e480864c9c296614299b7c9` | `contracts/compatibility-overlays-v1.json` |
+| `5d739740d82e01abf06c4b18b3a1eeb533a1f8e7513a24827b4bdcb36d484172` | `contracts/plan-context-result-v1.schema.json` |
+| `a8f6d7979fd222b734acdd1c63f483fa5a4be1a3f93daff105e5392f8191cfe2` | `contracts/release-artifact-v1.json` |
+| `01ada6e9c94a6015c87669b74974bca6381c043eb61800e318b0d6a61abfb930` | `contracts/runtime-bundle-v1.json` |
+| `1cb545d9487c8d0ef9f4ccd270a786d0dc998629813e81a2cc05463b23b62ed7` | `contracts/runtime-result-v1.schema.json` |
+| `6048971b0710e00dfa34ebc86c73596b336a5ed64c5d9f7df3d9272464c251f5` | `hooks/hook_adapter.py` |
+| `b321c48bdc2733d8b5166d736c127a338fafc10ea7377e6938417783f2b5a257` | `install.js` |
+| `a6c7ed97fe8e56341193ae8d48c29feeae9805082e780a2dfe606e759a371037` | `LICENSE` |
+| `fdfe8d0f11e8f2438d5d85c769962c86d25efccac49a58d5007b32156ac37967` | `package.json` |
+| `346d8ccfa8e634238a882be4edaef70e27339151fbfa891f027719211723edcf` | `patches/patch_planning_skill.py` |
+| `9275b0c7d8ba52fc62ed2e349242d045f58461d13ae07bc18ddce441bca3dff7` | `README.md` |
+| `8b5501eb4257654922a9e247bd3873e1ede75a7a1ae4b777eb7d8b3b47e41b72` | `runtime/owned-catchup.py` |
+| `1d8098d12ae6fdc9389b1047fc3691d1f792c813d21575ace7db0daa85c32595` | `runtime/owned-plan.py` |
+| `72c7904ec9a03f994d349ac1b9b3cfe484b417e738b25c0545d9ae11a2cc0364` | `runtime/upstream/inject-plan.sh` |
+| `d4fe626a6bed95ce00a05bc4ffb2dbf70990f9a16e116607c0a21ad0679cf3b9` | `runtime/upstream/ledger-summary.sh` |
+| `38a1c5effb35f9506e2e371ccabb6be6e4f4170acc18f1811f08d634f5f0e9bd` | `runtime/upstream/resolve-plan-dir.sh` |
+| `fc765590dc32b3949027de97e33dad6a049daf148719ba1822598a6c146461e2` | `runtime/upstream/session-catchup.py` |
+| `ba31b6620593dd80561e6586908ffb8e5af07a2a069510bce04c00c49a27c53c` | `THIRD_PARTY_NOTICES.md` |
+| `5d292ba228997c6a180642eedd2f75e931dcb80af76bf0bfc5ff1b05103552e6` | `tools/build_release.py` |
+| `c24d32a70774f0933f4cddcbbe5e781babae814e6242559ff37c8e5b104cc4f8` | `tools/import_upstream_runtime.py` |
+| `06b076b80a69ae94396f26191ad73621ce0bd070a1a0c6f45012b538b6facceb` | `upstream-manifest.json` |
+
+The canonical manifest is the lexicographically sorted sequence
+`<lowercase-file-sha><two spaces><path><LF>`. Its SHA-256 is
+`8b1fd450739e6ee90dc1b6210c3e9fe1831de36d03bb70a90438fc07124fdf58`.
+
+Independent builds and checks produced byte-identical 23-entry, 82,725-byte archives with
+SHA-256 `f097b04015b1a3847ca5a24b9236f882c5a008b22033793b5661e282c39131f9`.
+Only after that freeze, the ZIP-external v0.3.1 bootstrap default changed from the 64-zero
+placeholder to this exact hash; explicit zero override remains fail closed. The sealed
+bootstrap is 21,565 bytes with SHA-256
+`ce31a32002aea46bbf3f9baf9a0e93451d24c3b3653952e425d1e1ff6960a5e8`.
+
+The exact ZIP and witness build are retained locally under
+`%LOCALAPPDATA%/Temp/pwf-v0.3.1-s3a-9ef80422/`. This retention is only a handoff for a
+possible S3-B; it is not a published asset or durable Release store. Published v0.3.0
+remains at commit `1454c922...`, bootstrap SHA-256 `ab334f03...b39c0` and ZIP SHA-256
+`f245a554...d9af`. S3-B, S3-C, commit/push/tag/publication, live Cloud and rollback
+promotion remain separate decisions.

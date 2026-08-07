@@ -3,8 +3,9 @@
 把 [`OthmanAdi/planning-with-files`](https://github.com/OthmanAdi/planning-with-files)
 的本地 Codex Skill Hook/runtime，安全接入 Codex Cloud 的 system-managed Hooks。
 
-> 当前候选源码身份：`0.3.1`。它是尚未封板、尚未发布的兼容安全修复候选；源码 checkout、版本字段、
-> 文件名或本地 ZIP 都不构成 Release。当前 gate 以 [`ROADMAP.md`](ROADMAP.md) 和活动 task plan 为准。
+> 当前源码/package 身份：`0.3.1`。源码 checkout、版本字段、文件名、本地 ZIP 或本地 seal 都不单独
+> 构成 Release；seal、publication 与 acceptance 状态以 [`ROADMAP.md`](ROADMAP.md) 和活动 task plan
+> 为准。
 >
 > 当前已接受的 rollback：`v0.3.0`；其 tag、双资产和 Cloud A～F 证据见
 > [`docs/v0.3.0-cloud-hard-acceptance.md`](docs/v0.3.0-cloud-hard-acceptance.md)。
@@ -60,9 +61,10 @@ Managed policy 只注册一个绝对路径 adapter，事件集固定为：
 的独立资产。源码 checkout、文件名或本地 ZIP 本身不能证明 Release 已发布；只能在 Release 页面
 重新下载两个资产、核对 hard-acceptance 中的 SHA 后执行 bootstrap。
 
-当前 `init-cloud-sandbox-v0.3.1.bash` 是候选外部资产，仍使用 64 位 zero ZIP hash 并故意 fail closed；
-它在单独的 seal gate 写入候选 ZIP 精确 hash 前不可用于发布或生产安装。生产回滚继续使用已接受的
-不可变 v0.3.0 资产；beta.2 保持 previous fallback。Release gate 进度只在 ROADMAP 和活动 task plan 维护。
+`init-cloud-sandbox-v0.3.1.bash` 是 ZIP 外部的候选资产：普通 development 状态使用 64 位 zero hash
+并 fail closed；只有明确授权的 seal 才能写入冻结 ZIP 的精确 SHA-256。即使完成本地 seal，也必须在
+独立 publication、重新下载和 Cloud acceptance 关闭后才能成为 Release 或 rollback。当前 gate 与
+rollback 状态只在 ROADMAP 和活动 task plan 维护。
 
 ### Installer CLI
 
@@ -194,7 +196,8 @@ sha256sum "$ZIP"
 
 当前 ZIP 必须包含精确 23 entries：importer 与其必需的
 `patches/patch_planning_skill.py` 必须同时存在；两个 bootstrap 都不得进入 ZIP，当前外部候选资产是
-`init-cloud-sandbox-v0.3.1.bash`。本地构建成功不等于 Release 成立；候选 bootstrap 仍为 zero hash。
+`init-cloud-sandbox-v0.3.1.bash`。本地构建或 seal 成功不等于 Release 成立；bootstrap 的默认 hash
+必须与当前 gate 一致，并且只能在冻结全部 ZIP 输入后由授权 seal 从 zero 改为该 ZIP 的精确 SHA-256。
 已发布 v0.3.0 的 22-entry ZIP、外部 bootstrap、tag 和 SHA 继续由其 hard-acceptance 冻结，不从当前
 工作树重建或覆盖。
 

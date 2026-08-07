@@ -18,6 +18,7 @@ const betaBootstrapSha256 = "d572b77d920b34c34c7912ba364376ae3668216f00ce350251b
 const stableCommit = "1454c9224c83d11c073b05baf6e536a11c3bb0e5";
 const stableZipSha256 = "f245a554210c7f8d07eebbb775faa7b1482fea5d363ee6fa7578c9bbd98ad9af";
 const stableBootstrapSha256 = "ab334f0367d948fa29a2bdd37bff0c220929aeb320fdf59dbacbd5a4021b39c0";
+const sealedCandidateZipSha256 = "f097b04015b1a3847ca5a24b9236f882c5a008b22033793b5661e282c39131f9";
 const zeroSha256 = "0".repeat(64);
 
 function run(command, archive, contractPath = contract, builderPath = builder, cwd = root) {
@@ -50,7 +51,7 @@ function extractZip(archive, destination) {
   assert.equal(result.status, 0, result.stderr);
 }
 
-test("0.3.1 candidate ZIP is deterministic, self-contained, and keeps its unsealed bootstrap external", () => {
+test("0.3.1 sealed candidate ZIP is exact, self-contained, and keeps its bootstrap external", () => {
   const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-release-candidate-"));
   const first = path.join(workspace, "first.zip"), second = path.join(workspace, "second.zip");
   try {
@@ -60,6 +61,7 @@ test("0.3.1 candidate ZIP is deterministic, self-contained, and keeps its unseal
     const secondResult = JSON.parse(result.stdout);
     assert.equal(sha256(first), sha256(second));
     assert.equal(firstResult.sha256, secondResult.sha256);
+    assert.equal(firstResult.sha256, sealedCandidateZipSha256);
     assert.notEqual(firstResult.sha256, stableZipSha256);
     assert.equal(firstResult.entries, 23);
     assert.ok(firstResult.size > 0);
@@ -89,7 +91,8 @@ test("0.3.1 candidate ZIP is deterministic, self-contained, and keeps its unseal
     const bootstrap = fs.readFileSync(path.join(root, "init-cloud-sandbox-v0.3.1.bash"), "utf8");
     assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.1\}"/);
     assert.match(bootstrap, /keeptoy\/pwf-codex-cloud-hooks-next\/releases\/download/);
-    assert.match(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${zeroSha256}\\}"`));
+    assert.match(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${sealedCandidateZipSha256}\\}"`));
+    assert.doesNotMatch(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${zeroSha256}\\}"`));
 
     const extracted = path.join(workspace, "extracted");
     extractZip(first, extracted);

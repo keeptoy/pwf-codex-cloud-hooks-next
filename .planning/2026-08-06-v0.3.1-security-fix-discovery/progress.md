@@ -692,3 +692,52 @@ local/Linux/no-live Cloud regression.
   2/2. The failure was a platform limitation and changed no file.
 - Per the maintainer's risk-proportionate decision, no product suite or Cloud lifecycle was
   rerun for these ZIP-excluded runbook/planning edits.
+
+## 2026-08-07 — S3-A authorized and recovered
+
+- Maintainer checkpointed the evidence split and explicitly authorized S3-A.
+- Recovery found a clean `validation/v0.3.1-s2-runbook` at
+  `9ef80422cb01c87240da884389f279c4910e2f2c`, with remote runbook ref still at
+  `101dca5...`; no push is inferred or authorized.
+- S3-A is limited to final pre-freeze Release-input wording, exact 23-input freeze,
+  independent ZIP double-build/check, writing only the resulting hash into the external
+  v0.3.1 bootstrap, computing its SHA and local regression/evidence.
+- Commit, push, tag, publication, S3-B/S3-C, downloaded-asset acceptance, rollback
+  promotion, live Cloud mutation, Product Phase 4 and every v0.3.0/beta.2 change remain
+  outside this gate.
+
+## 2026-08-07 — S3-A immutable local seal complete
+
+- Neutralized transient pre-seal wording in README before the freeze. README is the only
+  changed Release input relative to checkpoint `9ef80422...`; after freezing, none of the
+  23 allowlisted inputs changed.
+- Captured all 23 per-file SHA-256 values in findings. The canonical sorted input manifest
+  digest is `8b1fd450739e6ee90dc1b6210c3e9fe1831de36d03bb70a90438fc07124fdf58`.
+- Two independent builds/checks are byte-identical: 23 entries, 82,725 bytes, SHA-256
+  `f097b04015b1a3847ca5a24b9236f882c5a008b22033793b5661e282c39131f9`.
+  Both exact copies remain in `%LOCALAPPDATA%/Temp/pwf-v0.3.1-s3a-9ef80422/` for a later
+  separately authorized publication decision.
+- Added failing-first seal assertions. Before the bootstrap edit, the two v0.3.1 tests
+  failed because its default still contained the 64-zero placeholder; the stable v0.3.0
+  oracle passed. Changed only the external v0.3.1 bootstrap default to the frozen ZIP
+  digest. Focused seal tests then passed 3/3, and an explicit zero override remains rejected.
+- Sealed bootstrap identity: 21,565 bytes, SHA-256
+  `ce31a32002aea46bbf3f9baf9a0e93451d24c3b3653952e425d1e1ff6960a5e8`.
+- The managed Windows sandbox twice blocked child execution: Node test runner reported
+  `spawn EPERM`, and Git Bash reported `couldn't create signal pipe, Win32 error 5`.
+  Approved local-boundary reruns of the same commands passed. An initial PowerShell static
+  command also used unavailable bare `bash`; rerunning with the maintainer-provided
+  `D:\\Program Files\\Git\\bin\\bash.exe` fixed the command environment without changing files.
+- Full regression first exposed two governance fixture drifts in sequence: the tests still
+  required README's old `当前候选源码身份` phrase and architecture's old `未封板` phrase. Only
+  those test assertions were updated to the new stable wording. Final Windows-local suite:
+  79 registered / 67 passed / 0 failed / 12 honest POSIX-only skips.
+- Importer check, Python compilation, `node --check`, both bootstrap Bash syntax checks,
+  retained ZIP builder checks, deterministic identity, exact bootstrap hash, Git modes,
+  Markdown hygiene and `git diff --check` pass. The frozen input-manifest digest remained
+  exact after all ZIP-excluded test/governance updates.
+- Stable protection remains green: `v0.3.0^{commit}` is `1454c922...`, v0.3.0 bootstrap
+  SHA-256 remains `ab334f03...b39c0`, and the stable ZIP oracle remains `f245a554...d9af`.
+- S3-A stops here with an uncommitted, unpublished local seal. No push, tag, Release,
+  downloaded-asset acceptance, live Cloud change, rollback promotion, Product Phase 4 or
+  v0.3.0/beta.2 mutation occurred. S3-B and S3-C remain unauthorized.

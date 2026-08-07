@@ -52,23 +52,29 @@ The maintainer accepts risk-proportionate local/document validation without a se
 rerun for this ordinary documentation delta; this does not make `c527...` a Cloud PASS or
 seal, and final bytes still require S3-C Cloud acceptance.
 
+The maintainer checkpointed the documentation/evidence split at
+`validation/v0.3.1-s2-runbook@9ef80422cb01c87240da884389f279c4910e2f2c` and explicitly
+authorized S3-A. That local gate is complete: all 23 ZIP inputs are frozen under input-set
+digest `8b1fd450...fdf58`; independent builds are byte-identical at 82,725 bytes with ZIP
+SHA-256 `f097b040...31f9`; the external v0.3.1 bootstrap alone now pins that ZIP and is
+21,565 bytes with SHA-256 `ce31a320...a5e8`. No commit, push, tag, publication,
+downloaded-asset acceptance, rollback promotion, live Cloud mutation or Product Phase 4
+was performed.
+
 ## Status
 
-S1 is complete through S1-C and S2 Cloud hard acceptance is complete. The current
-source/package/contract identity remains an unsealed 0.3.1 candidate; its ZIP is
-deterministic and self-contained, while published v0.3.0 remains the accepted rollback
-oracle. S2 PASS does not write the candidate bootstrap hash or establish a Release. The
-last exact Cloud-PASS ZIP and the current post-S2 documentation-only ZIP are recorded as
-separate identities and must not be conflated.
+S1, S2 and S3-A are complete. The exact local ZIP/bootstrap pair remains a non-Release
+0.3.1 candidate until separately authorized S3-B publication and S3-C downloaded-asset/
+Cloud acceptance. Published v0.3.0 remains the accepted rollback oracle. The last exact
+Cloud-PASS ZIP, the post-S2 documentation-only observation and the final S3-A sealed ZIP
+remain separate identities and must not be conflated.
 
 ## Next Step
 
-Persist the S2 PASS closure and stop at the S3-A authorization gate. The recommended next
-step is a separately authorized immutable candidate seal: freeze the exact 23 ZIP inputs,
-build the final ZIP twice, write only its exact hash into the external v0.3.1 bootstrap,
-compute the bootstrap hash, rerun regression and stop before tag/publication. Until that
-explicit grant, do not edit the bootstrap hash, freeze/tag/publish assets, update remote
-main, promote rollback or begin Product Phase 4.
+Stop for maintainer checkpoint. The next possible critical gate is a separate S3-B
+publication decision for the reviewed exact sealed source and two retained local assets.
+Until explicitly authorized, do not commit from this agent, push, tag, publish, update
+remote main, download/accept assets, promote rollback or begin Product Phase 4.
 
 ## Authorization Boundary
 
@@ -105,6 +111,11 @@ Authorized now:
   runbook and current planning, without changing production or Release inputs.
 - persist the maintainer-attested S2 PASS in the runbook/governance documents and normally
   fast-forward that evidence-only closure on the rolling runbook branch.
+- execute the explicitly authorized S3-A local seal from checkpoint `9ef80422...`:
+  make only seal-stability wording changes in current Release inputs, freeze/hash all 23
+  input blobs, double-build/check the final ZIP, replace only the v0.3.1 bootstrap's
+  64-zero ZIP hash with that exact digest, compute the bootstrap digest, rerun local
+  regression and update ZIP-excluded governance evidence.
 
 Not authorized now:
 
@@ -115,8 +126,10 @@ Not authorized now:
 - begin Product Phase 4 features or change Host ABI, managed policy or trusted graph;
 - weaken safety assertions or reinterpret Windows skips as Linux/Cloud evidence.
 - force-push, update remote `main`, move `validation/v0.3.1-s2-03a6cc2f`, push another
-  ref, create/move a tag, write the final candidate ZIP hash, publish assets, modify live
-  `/opt/codex` from this agent, or reuse a disposable Cloud container as production.
+  ref, create/move a tag, publish assets, modify live `/opt/codex` from this agent, or reuse
+  a disposable Cloud container as production;
+- create a commit in this gate from this agent, push any ref, begin S3-B/S3-C, call the
+  locally sealed bytes a Release/accepted rollback, or modify any v0.3.0/beta.2 identity.
 
 ## Risk Register
 
@@ -247,7 +260,8 @@ The detailed semantics, hostile fixtures, residual races and rollback gates are 
 
 ### S3 — Immutable seal and release decision
 
-- [ ] **S3-A seal authorization:** freeze final source and all 23 ZIP-input blobs; perform
+- [x] Obtain explicit S3-A authorization from the maintainer after the S2 evidence checkpoint.
+- [x] **S3-A local seal:** freeze final source and all 23 ZIP-input blobs; perform
   independent double build/check; write that exact ZIP hash into only the external
   v0.3.1 bootstrap; compute bootstrap SHA; rerun regression; stop before tag/publication.
 - [ ] **S3-B publication authorization:** create immutable `v0.3.1` tag/Release from the
@@ -257,7 +271,7 @@ The detailed semantics, hostile fixtures, residual races and rollback gates are 
   promote v0.3.1 as rollback while retaining v0.3.0 unchanged.
 - **Exit:** a separately published and accepted security release, or an explicit no-release
   closure with findings disposition recorded.
-- **Status:** pending / unauthorized
+- **Status:** S3-A complete / S3-B and S3-C pending and unauthorized
 
 ## Stop Conditions
 
@@ -269,8 +283,8 @@ publication, live installation or Product Phase 4 without the required authoriza
 
 ## Decision Checkpoint
 
-D0, D1, S1-A through S1-C and S2 are complete. S3 remains a separate unauthorized gate.
-No current plan state authorizes changing the published v0.3.0 bootstrap/assets, setting a
-final v0.3.1 ZIP hash, live Cloud mutation,
-commits or pushes outside the rolling runbook branch, tags, publication, rollback promotion
-or Product Phase 4.
+D0, D1, S1-A through S1-C, S2 and S3-A are complete. The exact local ZIP/bootstrap pair is
+sealed but uncommitted and unpublished. No further critical action is authorized: stop
+before any commit by this agent, push, tag, publication, downloaded-asset acceptance, live
+Cloud mutation, rollback promotion, Product Phase 4 action or modification of published
+v0.3.0/beta.2.

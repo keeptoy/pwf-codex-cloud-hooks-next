@@ -16,6 +16,8 @@ assert.deepEqual(Object.keys(manifest.compatibility_patches), ["PWF_CODEX_CLOUD_
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 const bash = process.env.BASH || (process.platform === "win32" ? "D:\\Program Files\\Git\\bin\\bash.exe" : "bash");
 const bootstrap031 = path.join(root, "init-cloud-sandbox-v0.3.1.bash");
+const sealedCandidateZipSha256 = "f097b04015b1a3847ca5a24b9236f882c5a008b22033793b5661e282c39131f9";
+const zeroSha256 = "0".repeat(64);
 
 function bashPath(value) {
   const normalized = value.replaceAll("\\", "/");
@@ -108,12 +110,12 @@ test("stable v0.3.0 bootstrap pins the sealed successor ZIP and leaves the globa
   assert.match(bootstrap, /run_verification\(\) \{[\s\S]*verify_planning_skill/);
 });
 
-test("v0.3.1 bootstrap removes remote Node tooling and pins the pristine Skill archive", () => {
+test("v0.3.1 sealed bootstrap pins both archives and removes remote Node tooling", () => {
   const bootstrap = fs.readFileSync(bootstrap031, "utf8");
   const runAll = bootstrap.match(/run_all\(\) \{([\s\S]*?)\n\}/);
   assert.ok(runAll, "run_all was not found");
   assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.1\}"/);
-  assert.match(bootstrap, /HOOKS_SHA256="\$\{HOOKS_SHA256:-0{64}\}"/);
+  assert.match(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${sealedCandidateZipSha256}\\}"`));
   assert.match(bootstrap, new RegExp(manifest.release_archive_url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(bootstrap, new RegExp(manifest.release_archive_sha256));
   assert.match(bootstrap, /PLANNING_WITH_FILES_ARCHIVE_ROOT="\$\{PLANNING_WITH_FILES_ARCHIVE_ROOT:-planning-with-files-3\.8\.2\}"/);
@@ -125,9 +127,15 @@ test("v0.3.1 bootstrap removes remote Node tooling and pins the pristine Skill a
   assert.doesNotMatch(bootstrap, /\bnvm\b|\bnpx\b|\bnpm\b/i);
   assert.doesNotMatch(bootstrap, /\|[ \t]*bash\b/);
   assert.ok(runAll[1].indexOf("verify_node_toolchain") < runAll[1].indexOf("install_system_prerequisites"));
-  const developmentGate = runBash('source "$1"\nassert_hooks_checksum_configured', [bootstrap031]);
-  assert.equal(developmentGate.status, 1, developmentGate.stdout);
-  assert.match(developmentGate.stderr, /HOOKS_SHA256 is still a placeholder/);
+  const sealedGate = runBash('source "$1"\nassert_hooks_checksum_configured', [bootstrap031]);
+  assert.equal(sealedGate.status, 0, sealedGate.stderr);
+  const zeroOverride = runBash(
+    'source "$1"\nassert_hooks_checksum_configured',
+    [bootstrap031],
+    { HOOKS_SHA256: zeroSha256 },
+  );
+  assert.equal(zeroOverride.status, 1, zeroOverride.stdout);
+  assert.match(zeroOverride.stderr, /HOOKS_SHA256 is still a placeholder/);
 });
 
 test("v0.3.1 bootstrap rejects Node below 18 and accepts supported platform majors", () => {
