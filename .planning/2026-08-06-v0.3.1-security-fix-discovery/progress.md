@@ -389,3 +389,139 @@ local/Linux/no-live Cloud regression.
   UTF-8/no BOM, LF-only, final newline, fences, local links and trailing whitespace.
 - Final JSON parsing, `git diff --check` and cache audit pass; zero `__pycache__` directories
   and zero `.pyc` files remain.
+
+## 2026-08-07 — S2 authorized and recovered
+
+- Maintainer checkpointed S1-C and explicitly authorized S2 verification.
+- Recovery followed the repository authority chain and planning-with-files catch-up. The
+  worktree is clean at `main@03a6cc2f32481df0d7e1fdff8aafad841b2b5fbc`, five commits ahead
+  of `origin/main`; the active security-fix plan is unchanged.
+- Read the historical M3/no-live Cloud runbook and current Linux-only test seams. Its
+  structure remains useful, but old version, path count, test count, ZIP entry count/hash
+  and accepted HEAD are historical and cannot be copied into 0.3.1 evidence.
+- Platform discovery found `wsl.exe` but no installed Linux distribution, and no Docker or
+  Podman executable. The combined inspection command exited 1 because `wsl --status`
+  reported the missing distribution and `docker` was not found; classified as a local
+  platform limitation, not a product failure. Windows skips will not be treated as Linux
+  evidence.
+- S2 permits exact-candidate verification and disposable no-live Cloud tasks, but not push,
+  live `/opt/codex`, seal, tag, publication, rollback promotion or Product Phase 4.
+- The `openai-docs` manual helper failed on the proxied official manual URL with HTTP 403;
+  classified as a documentation-channel failure. The required official Docs MCP fallback
+  succeeded.
+- Official docs confirm IDE-to-Cloud delegation can carry local source changes into an
+  isolated Cloud chat. They also document branch checkout/cache behavior. The installed
+  `codex cloud exec` help exposes environment and branch selection but no local-change
+  transport. CLI execution against the unpushed checkpoint is therefore invalid; IDE
+  delegation remains the no-push Cloud route, otherwise S2 needs a separate push grant.
+- The CLI help command completed but warned that its sandboxed process could not clean or
+  create PATH-alias temp directories below the user Codex temp root. The help output was
+  complete and no repository content changed; this warning is unrelated to product tests.
+
+## 2026-08-07 — S2 exact-checkpoint Windows/local seal
+
+- The first disposable local `git clone` attempt was blocked by Git for Windows failing to
+  create its shell signal pipe inside the managed sandbox. It left only the named partial
+  `.s2-local-probe`; after exact-path validation, the permitted out-of-sandbox retry removed
+  that partial directory and cloned successfully. Classified as a sandbox limitation.
+- The disposable clone is detached at exact candidate
+  `03a6cc2f32481df0d7e1fdff8aafad841b2b5fbc`, has 69 tracked paths, a clean worktree and
+  the exact stable `v0.3.0` tag oracle `1454c922...`.
+- Importer check, Python compile, installer Node syntax, both bootstrap Bash syntax and
+  `git diff --check` pass against that clone.
+- Two candidate ZIP builds are byte-identical: 23 entries, 82,421 bytes, observed S2
+  SHA-256 `2cd19e04a15995014ae354ad0319e4182a72ea0fc82b08213959b3550c741cfb`.
+  The patcher is present, both bootstraps are absent, and importer `check` passes from the
+  extracted ZIP. This observed hash is not written into the zero-hash bootstrap and is not
+  an S3 seal.
+- Exact-checkpoint full Windows suite: 79 registered / 67 passed / 0 failed / 12 honest
+  POSIX skips. The stable tag rebuild/original SHA, candidate identity drift rejection,
+  bootstrap archive/Node boundaries and repository inventory all pass.
+- Current v0.3.0 bootstrap SHA-256 remains `ab334f03...`; the 0.3.1 bootstrap still embeds
+  64 zeroes. Windows-local seal is complete but supplies no Linux/Cloud evidence.
+- Verified the disposable clone remained clean with zero Python cache residue, then
+  resolved both named probe/artifact directories under the workspace and removed only
+  those temporary trees. The main worktree returned to the three planning-file edits.
+- The first read-only `codex cloud list` failed to send its request inside the network
+  sandbox; the approved out-of-sandbox retry succeeded. Historical tasks identify the
+  `pwf-codex-cloud-hooks` environment label but return null environment IDs. A later CLI
+  diagnostic trace proves the label is resolved internally to the configured environment,
+  so it can be used for a future `--env` submission even though list filtering output was
+  not visibly narrowed.
+- A first combined remote-identity command failed for two independent command/platform
+  reasons: unquoted PowerShell `HEAD^{tree}` was parsed incorrectly, and sandboxed Git SSH
+  hit the Windows signal-pipe restriction. The corrected quoted revision plus permitted
+  read-only `git ls-remote` succeeded.
+- Current remote `main` is exactly `bef919475b6ebc3d74c09f9664749664cf950537`, five local
+  commits behind candidate `03a6cc2f...`; testing it would be invalid. The proposed new
+  validation ref `validation/v0.3.1-s2-03a6cc2f` is confirmed absent, but no push was made.
+- S2 is paused at its transport gate. Remaining Linux and Cloud evidence needs either IDE
+  delegation carrying local source or explicit authorization for the exact non-force
+  validation-branch push; neither is inferred from the general S2 grant.
+- The Cloud CLI created an untracked 2,147-byte `error.log` containing request diagnostics
+  and local account metadata. After confirming its timestamps matched only this S2 lookup,
+  removed that exact generated file; it was untracked, is not recoverable from Git and can
+  be regenerated by the CLI. No account identifier was copied into planning evidence.
+
+## 2026-08-07 — S2 exact transport authorized
+
+- Maintainer explicitly authorized exactly one ordinary non-force push of frozen candidate
+  `03a6cc2f32481df0d7e1fdff8aafad841b2b5fbc` to new validation-only remote ref
+  `refs/heads/validation/v0.3.1-s2-03a6cc2f`, followed by read-only SHA verification.
+- The maintainer will operate Codex Cloud and perform black-box validation manually. This
+  agent must not submit the Cloud task; the historical v0.3.0 hard-acceptance document is
+  the behavioral flow only, not a reusable version/hash/count/Release identity oracle.
+- No force push, remote-main update, second ref/commit push, S3, seal, tag, asset,
+  publication, rollback promotion, live production mutation or Product Phase 4 action is
+  authorized.
+
+## 2026-08-07 — S2 exact transport complete
+
+- Ran exactly one `git push` invocation with source
+  `03a6cc2f32481df0d7e1fdff8aafad841b2b5fbc` and destination
+  `refs/heads/validation/v0.3.1-s2-03a6cc2f`. It used ordinary push semantics with no
+  force option and Git reported `[new branch]`.
+- Immediately queried that exact ref read-only. The remote returned
+  `03a6cc2f32481df0d7e1fdff8aafad841b2b5fbc`; exact remote identity verification PASS.
+- No second push was attempted. Remote main, tags, Release assets and local source/index
+  were not mutated. The three pre-existing planning-file edits remain the only worktree
+  changes and were not included in the pushed checkpoint.
+- Froze the manual Cloud handoff against the historical v0.3.0 behavioral flow: current
+  branch/commit/version/ZIP identity and fresh lifecycle markers replace historical
+  values; S3-A asset download/publication and rollback promotion remain excluded.
+
+## 2026-08-07 — S2 newcomer runbook authorized
+
+- Maintainer requested a self-contained `v0.3.1 Cloud hard acceptance` document and an
+  ordinary remote push so a new operator can select a branch and follow it directly.
+- To preserve the frozen exact-candidate ref, the runbook will be committed on a separate
+  evidence-only branch descended from `03a6cc2f...`; the existing
+  `validation/v0.3.1-s2-03a6cc2f` ref must not move.
+- Repository inspection found the exact tracked-path test freezes 69 paths. Adding the doc
+  without synchronizing that assertion would make the Cloud full suite fail. The sub-gate
+  therefore permits only the mechanical new path plus 70-count update in that test; docs,
+  tests and planning remain outside the 23-entry Release allowlist.
+- The first local `git switch -c` could not create `.git/refs/heads/validation/...` under
+  the managed filesystem sandbox. It created no ref; the approved out-of-sandbox retry
+  created local `validation/v0.3.1-s2-runbook` at exact base `03a6cc2f...`.
+- Added the 469-line self-contained runbook plus only the required repository inventory
+  path/count synchronization. It freezes candidate/evidence identities, hard stops, an
+  exact Linux/setup script, B through F prompts, post-resume policy/inventory checks,
+  explicit S3 exclusions and a raw-evidence return template.
+- The first Bash-fence validation was blocked by the known Windows Git Bash signal-pipe
+  restriction. The first approved retry passed each block as a `-c` argument, but native
+  PowerShell quoting stripped embedded quotes and produced a false EOF syntax error. A
+  redirected-stdin retry then hit the host's older .NET API, where `ArgumentList` is null.
+  The final compatible `ProcessStartInfo.Arguments='-n -s'` plus redirected stdin preserved
+  exact bytes: both Bash blocks PASS `bash -n`; Markdown UTF-8/LF/fence/whitespace and
+  `git diff --check` also PASS. None of the failed validators changed repository content.
+- The first focused repository-boundary test attempt hit the known sandboxed Node runner
+  `spawn EPERM`. The approved out-of-sandbox rerun passed 3/3, including the new exact
+  70-path inventory and continued docs/tests exclusion from Release.
+- Full Windows-local regression on the runbook branch passed: 79 registered / 67 passed /
+  0 failed / 12 honest POSIX skips. These skips remain pending Linux/Cloud evidence and are
+  not reclassified by this documentation gate.
+- Importer check, installer Node syntax, owned Python compile and deterministic Release
+  build/check pass. The evidence-only doc/test/planning changes leave the 23-entry ZIP
+  byte-identical at 82,421 bytes and SHA-256
+  `2cd19e04a15995014ae354ad0319e4182a72ea0fc82b08213959b3550c741cfb`.

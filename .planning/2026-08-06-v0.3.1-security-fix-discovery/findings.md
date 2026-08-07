@@ -604,3 +604,82 @@ ephemeral build result until a separately authorized seal gate freezes every ZIP
 The Windows-local full suite is green, but Linux descriptor/race/cross-user behavior and
 disposable no-live Cloud acceptance remain S2 gates and cannot be inferred from these
 results.
+
+## S2 transport discovery
+
+Official Codex documentation distinguishes two Cloud submission paths relevant to the
+unpublished checkpoint:
+
+- IDE-to-Cloud delegation explicitly carries the existing chat context, including local
+  source changes, into a new isolated Cloud chat. This is the only documented path found
+  that can transport the current local checkpoint without first moving a remote ref.
+- `codex cloud exec` submits by environment plus Git branch. The installed CLI
+  (`0.146.0-alpha.9.2`) exposes `--env`, `--branch` and attempts/config options, but no local
+  patch, commit archive or working-tree upload option. A branch-only CLI task therefore
+  cannot identify local `main@03a6cc2f...` while `origin/main` remains five commits behind.
+
+The Cloud environment cache is also not exact-source transport: official documentation
+says initial cache creation clones the default branch and a resumed cache checks out the
+chat branch. Setup/maintenance environment configuration changes can invalidate the cache,
+but that does not make an unpublished local commit addressable.
+
+Consequently S2 may use IDE Cloud delegation without a push if that surface is invoked by
+the maintainer. Direct CLI execution must stop at the transport gate unless the exact
+checkpoint is first made reachable by a separately authorized remote branch update. A
+Cloud run against current `origin/main` would test the wrong source and is invalid evidence.
+
+Read-only remote verification initially confirmed GitHub `main` and local `origin/main`
+both remained `bef919475b6ebc3d74c09f9664749664cf950537`, while the S2 candidate was
+`03a6cc2f32481df0d7e1fdff8aafad841b2b5fbc` with tree
+`2a202622e03f4c582943d25aa0fd9725859cb96d`; the proposed transport ref was absent. After
+the maintainer explicitly authorized exactly one ordinary non-force push, Git created new
+remote ref `refs/heads/validation/v0.3.1-s2-03a6cc2f`. An immediate read-only
+`git ls-remote --heads` returned exact SHA
+`03a6cc2f32481df0d7e1fdff8aafad841b2b5fbc`. Remote main, tags and assets were not targets.
+The one-time push exception is consumed and supplies exact-source Cloud transport only.
+
+The Cloud CLI can read historical tasks and recognizes environment label
+`pwf-codex-cloud-hooks` in returned metadata. Although list records expose null
+`environment_id` values and the returned task set was not visibly narrowed, the CLI's own
+diagnostic trace confirms that it resolves this repository/label to an internal environment
+ID before calling the API. The label is therefore a usable future `--env` selector after
+exact-source transport is authorized; no internal account identifier is persisted here.
+
+## S2 manual Codex Cloud handoff
+
+The historical `docs/v0.3.0-cloud-hard-acceptance.md` remains the behavioral reference,
+not the current candidate identity. For this S2 run:
+
+- checkout branch `validation/v0.3.1-s2-03a6cc2f` and reject any full HEAD other than
+  `03a6cc2f32481df0d7e1fdff8aafad841b2b5fbc`;
+- select the Cloud-provided Node 22 runtime; the product contract remains Node `>=18`;
+- require the Linux suite to report zero failures and zero skips, but record its actual
+  runner counts rather than copying the historical v0.3.0 count;
+- build/check the candidate twice. The Windows exact-checkpoint oracle is 23 entries,
+  82,421 bytes and SHA-256
+  `2cd19e04a15995014ae354ad0319e4182a72ea0fc82b08213959b3550c741cfb`;
+  any Linux build mismatch is a stop condition, not authority to rewrite the oracle;
+- keep `init-cloud-sandbox-v0.3.1.bash` outside the ZIP with its 64-zero default hash. For
+  the disposable candidate setup only, pass the locally built archive through explicit
+  `HOOKS_URL=file://...` and its computed `HOOKS_SHA256`; do not edit/seal the bootstrap;
+- reuse the B through F lifecycle sequence and observation rules, but use fresh 0.3.1 S2
+  markers such as plan `pwf-v031-s2-03a6`, canonical marker
+  `PWF_V031_S2_CANONICAL_03A6`, acknowledgment `PWF_V031_S2_BASELINE_CREATED`, unsynced
+  acknowledgment `PWF_V031_S2_UNSYNCED_ACKNOWLEDGED`, and tail marker
+  `PWF_V031_S2_REAL_RESUME_TAIL_03A6`;
+- require post-resume doctor to be healthy/non-repairable with empty errors/blockers,
+  installer version `0.3.1`, the exact manifest inventory, 11 runtime payloads and zero
+  snapshot residue.
+
+Do not execute the historical S3-A Release-download/publication steps, reuse its v0.3.0
+tag/asset hashes/counts, claim the observed candidate ZIP hash is sealed, or promote 0.3.1
+as rollback. The accepted v0.3.0 Release remains unchanged while this manual run is S2
+candidate evidence only.
+
+The newcomer runbook is intentionally placed on a separate evidence-only branch rather
+than moving `validation/v0.3.1-s2-03a6cc2f`. Because the repository boundary contract
+freezes every tracked path, the new doc requires the mechanical inventory change from 69
+to 70 paths. Both the doc and that test are excluded from the 23-entry Release allowlist;
+the runbook setup independently proves exact-candidate ancestry, rejects any delta outside
+the doc/inventory-test/current-planning paths, and requires the built ZIP to match the
+existing exact-candidate size/hash oracle before disposable installation.

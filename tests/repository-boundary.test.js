@@ -32,6 +32,7 @@ const expectedPaths = [
   "docs/git-file-modes.md",
   "docs/v0.3.0-beta.2-cloud-hard-acceptance.md", "hooks/hook_adapter.py",
   "docs/v0.3.0-cloud-hard-acceptance.md",
+  "docs/v0.3.1-cloud-hard-acceptance.md",
   "init-cloud-sandbox-v0.3.0.bash", "init-cloud-sandbox-v0.3.1.bash", "install.js", "package.json",
   "patches/patch_planning_skill.py", "runtime/owned-catchup.py", "runtime/owned-plan.py",
   "runtime/upstream/inject-plan.sh", "runtime/upstream/ledger-summary.sh",
@@ -58,7 +59,7 @@ test("slim repository has the exact current allowlist and no archived path alias
   });
   assert.equal(result.status, 0, result.stderr);
   const actual = result.stdout.trim().split(/\r?\n/).filter(Boolean).map(value => value.replaceAll("\\", "/")).sort();
-  assert.equal(expectedPaths.length, 69);
+  assert.equal(expectedPaths.length, 70);
   assert.deepEqual(actual, expectedPaths);
   for (const forbidden of [
     "PROJECT_UNDERSTANDING.md", "work_plan.md", "黑盒验证.md", "snapshot-prototype/",
