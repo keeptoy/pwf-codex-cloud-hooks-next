@@ -9,8 +9,8 @@
 > 当前稳定身份：published/accepted `v0.3.0`；exact source `1454c922...` 已通过 S0～S3 全部门槛。
 >
 > 当前状态：M1～M4 与 stable v0.3.0 Release 已关闭。Product Phase 4 之前另行授权的
-> `0.3.1 security-fix train` 正在进行；当前只到 S1-C 候选源码/打包身份收口，S2、Cloud、seal、tag、
-> push 与 publication 尚未授权。
+> `0.3.1 security-fix train` 正在进行；S1 与 S2 Linux/Cloud hard acceptance 已完成，当前停止在
+> S3-A immutable seal 授权门前。seal、tag、publication 与 rollback promotion 尚未授权。
 
 ## 1. 与活动 planning 的分工
 
@@ -36,7 +36,7 @@ task plan 为准，并在 Phase、Cloud、Release 或 rollback 状态变化时�
 | 源码维护权威 | successor `main` |
 | 已发布生产回滚 | successor `v0.3.0`；beta.2 为不可变 previous fallback |
 | 当前稳定身份 | published/accepted `v0.3.0`；source `1454c922...` |
-| 当前 programme gate | `0.3.1 security-fix train` S1-C；Product Phase 4 仍未授权 |
+| 当前 programme gate | `0.3.1 security-fix train` S2 PASS；等待 S3-A seal 授权；Product Phase 4 未授权 |
 | 当前 Release | stable `v0.3.0` 已完成 Cloud A～F 并晋级 rollback |
 | 当前候选源码 | `0.3.1`；bootstrap zero hash，未封板、未发布 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |

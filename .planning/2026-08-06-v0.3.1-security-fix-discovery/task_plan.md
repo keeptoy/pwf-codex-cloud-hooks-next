@@ -36,25 +36,27 @@ without a local `v0.3.0` tag ref. The maintainer authorizes the minimum fixture/
 checkout test correction, runbook/planning synchronization and ordinary iterative
 commit/push on the runbook branch only.
 
+The maintainer has now confirmed that the fresh rerun at rolling runbook HEAD
+`5b619dafebea25a82fdd9dfe3f4da185c644f58d` passed the entire Linux/setup/B–F matrix and
+explicitly closed S2. Exact F evidence shows healthy/non-repairable doctor, installer
+`0.3.1`, 11 exact payloads, adapter-only policy and zero snapshot residue. S3 remains a
+separate unauthorized critical gate.
+
 ## Status
 
-S1 is complete through S1-C. The current source/package/contract identity is an unsealed
-0.3.1 candidate; its ZIP is deterministic and self-contained, while published v0.3.0
-remains an independent immutable oracle. S2 is authorized and in progress. Recovery found
-a clean checkpoint, but the Windows host has neither an installed WSL distribution nor
-Docker/Podman; its 12 POSIX skips therefore require a real Linux/Cloud target rather than a
-local substitute. The one-time transport exception has been consumed successfully: remote
-validation ref `validation/v0.3.1-s2-03a6cc2f` resolves exactly to the frozen checkpoint.
+S1 is complete through S1-C and S2 Cloud hard acceptance is complete. The current
+source/package/contract identity remains an unsealed 0.3.1 candidate; its ZIP is
+deterministic and self-contained, while published v0.3.0 remains the accepted rollback
+oracle. S2 PASS does not write the candidate bootstrap hash or establish a Release.
 
 ## Next Step
 
-Make the ZIP extraction fixture restore recorded Unix modes; make the immutable v0.3.0
-source oracle run from its pinned commit object while still checking the tag when present;
-remove hard-coded candidate commit/tree, allowed-delta and v0.3.0 setup prerequisites from
-the runbook. Run focused/full/static/package regression, normally commit/push the reviewed
-changes to `validation/v0.3.1-s2-runbook`, then have the maintainer rerun the document from
-section 0 in a fresh Cloud environment. Do not move the exact-candidate ref, use remote
-main, submit a Cloud task from this agent, alter Release inputs, force-push or begin S3.
+Persist the S2 PASS closure and stop at the S3-A authorization gate. The recommended next
+step is a separately authorized immutable candidate seal: freeze the exact 23 ZIP inputs,
+build the final ZIP twice, write only its exact hash into the external v0.3.1 bootstrap,
+compute the bootstrap hash, rerun regression and stop before tag/publication. Until that
+explicit grant, do not edit the bootstrap hash, freeze/tag/publish assets, update remote
+main, promote rollback or begin Product Phase 4.
 
 ## Authorization Boundary
 
@@ -89,6 +91,8 @@ Authorized now:
 - maintain the rolling S2 runbook branch through reviewed ordinary commits/pushes; for the
   demonstrated first-attempt failure, edit only `tests/release-package.test.js`, the
   runbook and current planning, without changing production or Release inputs.
+- persist the maintainer-attested S2 PASS in the runbook/governance documents and normally
+  fast-forward that evidence-only closure on the rolling runbook branch.
 
 Not authorized now:
 
@@ -223,19 +227,22 @@ The detailed semantics, hostile fixtures, residual races and rollback gates are 
   branch without changing candidate Release inputs or moving the exact-candidate ref.
 - [x] Classify Cloud attempt 1 and locally validate the minimum ZIP-mode fixture plus
   tagless-checkout stable-oracle corrections.
-- [ ] Run Linux-only races, file-identity and installer concurrency coverage.
-- [ ] Prove Fresh/UserPrompt/Resume/doctor/inventory behavior in disposable no-live Cloud.
-- [ ] Prove zero published-asset mutation and a clean tested workspace.
+- [x] Run Linux-only races, file-identity and installer concurrency coverage.
+- [x] Prove Fresh/UserPrompt/Resume/doctor/inventory behavior in disposable no-live Cloud.
+- [x] Prove zero published-asset mutation and a clean tested workspace.
 - **Exit:** exact candidate source has complete risk-proportionate regression evidence.
-- **Status:** in progress / Cloud attempt 1 stopped on test fixture / minimum fixture fix
-  locally green and awaiting rolling-branch push plus a fresh Cloud rerun
+- **Status:** complete / Attempt 2 full Linux, setup and B–F PASS / stopped before S3
 
 ### S3 — Immutable seal and release decision
 
-- [ ] Obtain separate seal/publication authorization.
-- [ ] Freeze the final identity, allowlist, ZIP inputs and exact source.
-- [ ] Follow ZIP-before-bootstrap hashing and downloaded-asset revalidation order.
-- [ ] Promote rollback only after full Cloud acceptance; retain v0.3.0 unchanged.
+- [ ] **S3-A seal authorization:** freeze final source and all 23 ZIP-input blobs; perform
+  independent double build/check; write that exact ZIP hash into only the external
+  v0.3.1 bootstrap; compute bootstrap SHA; rerun regression; stop before tag/publication.
+- [ ] **S3-B publication authorization:** create immutable `v0.3.1` tag/Release from the
+  reviewed sealed source and upload exactly the ZIP plus external bootstrap once.
+- [ ] **S3-C acceptance/promotion authorization:** redownload both assets, reverify
+  filename/size/SHA/boundary, run final Fresh/Resume/doctor smoke, then decide whether to
+  promote v0.3.1 as rollback while retaining v0.3.0 unchanged.
 - **Exit:** a separately published and accepted security release, or an explicit no-release
   closure with findings disposition recorded.
 - **Status:** pending / unauthorized
@@ -250,8 +257,8 @@ publication, live installation or Product Phase 4 without the required authoriza
 
 ## Decision Checkpoint
 
-D0, D1 and S1-A through S1-C are complete. S2 verification is authorized and in progress;
-S3 remains a separate unauthorized gate. No current plan state authorizes changing the
-published v0.3.0 bootstrap/assets, setting a final v0.3.1 ZIP hash, live Cloud mutation,
+D0, D1, S1-A through S1-C and S2 are complete. S3 remains a separate unauthorized gate.
+No current plan state authorizes changing the published v0.3.0 bootstrap/assets, setting a
+final v0.3.1 ZIP hash, live Cloud mutation,
 commits or pushes outside the rolling runbook branch, tags, publication, rollback promotion
 or Product Phase 4.

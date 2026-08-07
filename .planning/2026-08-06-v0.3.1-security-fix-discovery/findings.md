@@ -706,3 +706,11 @@ The stable regression should archive the already-pinned `stableCommit` object di
 when `refs/tags/v0.3.0` exists it must still equal that commit, but absence of the optional
 local ref must not require creating a synthetic tag. This retains byte-oracle coverage and
 removes a checkout-shape dependency.
+
+Fresh Cloud Attempt 2 at rolling runbook HEAD `5b619daf...` closes S2. The maintainer
+attests Linux suite 79/79 with zero failure/skip, deterministic candidate ZIP oracle,
+disposable setup and B through E all PASS. The exact supplied F output proves doctor PASS,
+installer `0.3.1`, 11 manifest-matching payloads, adapter-only Managed policy and zero
+snapshot leftovers. This is sufficient to close the risk-proportionate S2 gate but is not
+an immutable asset or publication proof. The next safe boundary is S3-A seal only; tag,
+publication and rollback promotion remain later independent decisions.

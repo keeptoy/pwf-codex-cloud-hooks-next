@@ -15,8 +15,9 @@
 - 产品 rollback：published/accepted stable `v0.3.0`；beta.2 为不可变 previous fallback。
 - 当前稳定身份：`v0.3.0` tag 精确指向 `1454c922...`，两个资产、Cloud setup、Fresh、canonical、
   real Resume、doctor、11 payload 和零 residue 全部 PASS。
-- 当前版本路线：stable Release 已关闭；Product Phase 4 前另行授权的 0.3.1 security-fix train 正在
-  S1-C 候选源码/打包身份收口，S2、Cloud、seal、tag、push 与 publication 尚未授权。
+- 当前版本路线：stable Release 已关闭；Product Phase 4 前另行授权的 0.3.1 security-fix train 已完成
+  S1 与 S2 Linux/Cloud hard acceptance，当前等待 S3-A immutable seal 授权；seal、tag、publication
+  与 rollback promotion 尚未授权。
 - 当前仓库迁移：M1/M2/M3/M4 complete。M3 实际行为测试 HEAD 为
   `39795283cd65f84547651d7bec816191fb5bfedf`，ZIP SHA-256 为
   `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`；M3-B setup、Fresh、

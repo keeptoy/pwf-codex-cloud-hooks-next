@@ -110,4 +110,6 @@ M4-C 在 `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151` 通过 Fresh Cloud/Linu
 不可变 beta.2 Release/previous-fallback 权威。当前 successor 是后续源码维护权威；不改变行为且保留
 canary 的 stable `v0.3.0` 已在 exact source `1454c922...` 完成 S0～S3、immutable assets 与 Cloud
 A～F，并晋级为 accepted rollback；beta.2 保持不可变 previous fallback。Product Phase 4 仍未授权；
-当前只执行活动 task plan 明确授权的 0.3.1 兼容安全修复 gate，不得借此进入下一 Product Phase。
+0.3.1 兼容安全修复已完成 S1 与 S2 Linux/Cloud hard acceptance，当前停止在 S3-A immutable seal
+授权门前。不得把 S2 PASS 解释为 seal、tag、publication、rollback promotion 或下一 Product Phase
+授权。

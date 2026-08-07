@@ -581,3 +581,37 @@ local/Linux/no-live Cloud regression.
   still exactly 82,421 bytes with SHA-256
   `2cd19e04a15995014ae354ad0319e4182a72ea0fc82b08213959b3550c741cfb`;
   no Release input changed.
+
+## 2026-08-07 — S2 fixture correction published for Cloud rerun
+
+- Created commit `5b619dafebea25a82fdd9dfe3f4da185c644f58d`
+  (`test: make Cloud release fixture portable`) as a direct descendant of the first
+  runbook commit. It contains exactly the release-package test fixture, runbook and three
+  active planning files; no Release input or production file is present.
+- Normally fast-forwarded `refs/heads/validation/v0.3.1-s2-runbook` from `ecc0e8c...` to
+  `5b619daf...`. Immediate read-only verification returned the exact new SHA.
+- Rechecked frozen exact-candidate ref `refs/heads/validation/v0.3.1-s2-03a6cc2f`; it remains
+  `03a6cc2f32481df0d7e1fdff8aafad841b2b5fbc`. No other ref, tag, asset or remote main was
+  targeted.
+- Next evidence must come from a completely fresh Cloud run at the rolling branch's current
+  HEAD. Attempt 1 remains a stopped fixture result and cannot be merged with the rerun.
+  This post-push planning note remains local until a later checkpoint/push cycle.
+
+## 2026-08-07 — S2 Cloud Attempt 2 PASS and closure
+
+- Maintainer confirms the complete fresh rerun at rolling runbook HEAD `5b619daf...`
+  passed Linux suite, deterministic ZIP oracle, disposable setup and B through F. Linux
+  result is 79 registered / 79 passed / 0 failed / 0 skipped; Attempt 1 was not combined.
+- Maintainer supplied exact F result: `POST_RESUME_DOCTOR=PASS`, installer `0.3.1`, 11
+  runtime files, `MANAGED_POLICY=ADAPTER_ONLY`, the exact expected inventory,
+  `SNAPSHOT_LEFTOVERS=0` and `V031_S2_POST_RESUME=PASS`.
+- Marked `V031_S2_CLOUD_HARD_ACCEPTANCE=PASS` and closed S2. This is a candidate acceptance,
+  not Release/publication/rollback evidence; bootstrap remains zero hash and v0.3.0 remains
+  the accepted rollback.
+- Split the next critical boundary into S3-A immutable seal, S3-B publication and S3-C
+  downloaded-asset/final Cloud/rollback promotion. All three remain unauthorized; the
+  current action only persists and publishes the S2 evidence closure on the runbook branch.
+- Synchronized the S2 PASS/S3 unauthorized state into the Cloud runbook, ROADMAP,
+  MAINTAINER_HANDOFF and AGENTS current boundary. Focused architecture/repository governance
+  regression passed 5/5. No product or Release input changed, so the already-complete full
+  local and Cloud product matrices were not rerun for this evidence-only closure.
