@@ -42,12 +42,24 @@ explicitly closed S2. Exact F evidence shows healthy/non-repairable doctor, inst
 `0.3.1`, 11 exact payloads, adapter-only policy and zero snapshot residue. S3 remains a
 separate unauthorized critical gate.
 
+After S2 closure, the maintainer authorized a README patcher explanation and then its
+migration into architecture. Only README is a Release input; no executable, contract,
+bootstrap or trusted edge changed. The resulting current candidate ZIP is locally
+deterministic at 23 entries / 82,658 bytes /
+`c527b555bbbffdc86796ff91753186c15bdab287852fc5667edb9e5493d952ff`, while Attempt 2's
+23 entries / 82,421 bytes / `2cd19e04...` remains the exact historical Cloud-PASS oracle.
+The maintainer accepts risk-proportionate local/document validation without a separate S2
+rerun for this ordinary documentation delta; this does not make `c527...` a Cloud PASS or
+seal, and final bytes still require S3-C Cloud acceptance.
+
 ## Status
 
 S1 is complete through S1-C and S2 Cloud hard acceptance is complete. The current
 source/package/contract identity remains an unsealed 0.3.1 candidate; its ZIP is
 deterministic and self-contained, while published v0.3.0 remains the accepted rollback
-oracle. S2 PASS does not write the candidate bootstrap hash or establish a Release.
+oracle. S2 PASS does not write the candidate bootstrap hash or establish a Release. The
+last exact Cloud-PASS ZIP and the current post-S2 documentation-only ZIP are recorded as
+separate identities and must not be conflated.
 
 ## Next Step
 

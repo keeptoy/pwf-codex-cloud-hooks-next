@@ -664,3 +664,31 @@ local/Linux/no-live Cloud regression.
 - Full Windows-local regression PASS after the final documentation layout: 79 registered /
   67 passed / 0 failed / 12 honest POSIX skips. Release self-containment and immutable
   v0.3.0 oracle coverage remain green; no Linux/Cloud evidence was reclassified.
+
+## 2026-08-07 — Runbook ZIP evidence split synchronized
+
+- Maintainer accepted the recommendation to preserve Attempt 2 exact evidence while
+  updating future-run fields for the current README-only candidate, without repeating the
+  full S2 lifecycle for an ordinary non-executable documentation delta.
+- Updated only the Cloud runbook and active planning. These paths are excluded from the
+  Release ZIP and therefore do not change the locally observed `c527b555...` candidate.
+- Runbook current identity, setup `EXPECTED_ZIP_SHA256`, future evidence criteria and empty
+  return template now use 23 entries / 82,658 bytes / `c527b555...` and explicitly state
+  that this identity is locally verified but not Cloud PASS or sealed.
+- Attempt 2 remains byte-for-byte factual in its execution record: exact source
+  `5b619daf...`, 23 entries / 82,421 bytes / `2cd19e04...`, Linux 79/79 and B–F PASS.
+- S2 remains closed as the behavioral/security gate; the current documentation-only delta
+  is carried into a future S3-A freeze and mandatory S3-C final-byte Cloud acceptance.
+  S3, commit, push, tag, publication and rollback promotion remain unauthorized.
+- The first synchronization updated the script hash but missed two old size literals in
+  the same setup block (`test` and summary output). A complete hard-coded identity scan
+  found them before validation; both now use 82,658, while the only remaining 82,421
+  references are deliberately frozen Attempt 2/history fields.
+- Documentation-only validation PASS: strict UTF-8/no BOM, LF-only, final newline, no
+  trailing whitespace, `git diff --check`, exact old/current identity occurrence checks
+  and machine-contract confirmation that runbook/planning stay outside the Release ZIP.
+- The first Git Bash fence check hit the known managed Windows sandbox signal-pipe failure
+  (`Win32 error 5`). The permitted out-of-sandbox retry parsed both Bash fences and passed
+  2/2. The failure was a platform limitation and changed no file.
+- Per the maintainer's risk-proportionate decision, no product suite or Cloud lifecycle was
+  rerun for these ZIP-excluded runbook/planning edits.

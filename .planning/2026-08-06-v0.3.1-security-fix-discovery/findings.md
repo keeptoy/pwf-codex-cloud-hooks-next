@@ -730,3 +730,19 @@ this prose-only change changes candidate ZIP bytes and makes the earlier S2 ZIP 
 a historical oracle for the tested `5b619daf...` source. It does not change runtime,
 installer logic, contracts, trusted graph or the already-closed Cloud behavior evidence,
 and it does not authorize an S3 seal.
+
+## Post-S2 ZIP evidence synchronization decision
+
+The Cloud runbook now separates mutable “current candidate / future execution” fields from
+the immutable Attempt 2 evidence. Its setup oracle and empty return template use the
+current locally reproduced 23-entry, 82,658-byte `c527b555...` candidate, while the
+completed Attempt 2 record retains exact source `5b619daf...`, 82,421 bytes and
+`2cd19e04...`. The current value is explicitly not labeled Cloud PASS or seal.
+
+Only README changed among Release inputs. Architecture, the runbook and planning records
+are outside the allowlist. Because no executable, runtime, installer, contract, bootstrap
+or trusted edge changed, the maintainer chose not to repeat the full S2 lifecycle solely
+for this ordinary documentation delta. This is a risk-proportionate evidence decision,
+not permission to reuse behavioral evidence after a code or contract change: any such
+change would require a new gate. S3-C remains responsible for final downloaded-asset and
+Cloud validation of the actual published bytes.
