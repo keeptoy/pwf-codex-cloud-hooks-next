@@ -14,6 +14,43 @@ const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 const patchContract = manifest.compatibility_patches.PWF_CODEX_CLOUD_COMPAT_PATCH;
 assert.deepEqual(Object.keys(manifest.compatibility_patches), ["PWF_CODEX_CLOUD_COMPAT_PATCH"]);
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
+const bash = process.env.BASH || (process.platform === "win32" ? "D:\\Program Files\\Git\\bin\\bash.exe" : "bash");
+const bootstrap031 = path.join(root, "init-cloud-sandbox-v0.3.1.bash");
+
+function bashPath(value) {
+  const normalized = value.replaceAll("\\", "/");
+  return process.platform === "win32"
+    ? normalized.replace(/^([A-Za-z]):/, (_, drive) => `/${drive.toLowerCase()}`)
+    : normalized;
+}
+
+function runBash(command, args = [], env = {}) {
+  return spawnSync(bash, ["-c", command, "_", ...args.map(bashPath)], {
+    encoding: "utf8",
+    env: { ...process.env, ...env },
+  });
+}
+
+function makeSkillArchive(workspace, driftRequiredFile = false) {
+  const archiveRoot = path.join(workspace, "planning-with-files-3.8.2");
+  const skillRoot = path.join(archiveRoot, "skills", "planning-with-files");
+  const archive = path.join(workspace, "planning-with-files-v3.8.2.zip");
+  fs.mkdirSync(path.dirname(skillRoot), { recursive: true });
+  fs.cpSync(pristineSkill, skillRoot, { recursive: true });
+  if (driftRequiredFile) fs.appendFileSync(path.join(skillRoot, "SKILL.md"), "\nunknown drift\n");
+  fs.writeFileSync(path.join(archiveRoot, "OUTSIDE_SKILL_SENTINEL"), "must not be installed\n");
+  const result = spawnSync(python, ["-c", [
+    "import pathlib, sys, zipfile",
+    "root = pathlib.Path(sys.argv[1])",
+    "archive = pathlib.Path(sys.argv[2])",
+    "with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as output:",
+    "    for item in sorted(root.rglob('*')):",
+    "        if item.is_file():",
+    "            output.write(item, item.relative_to(root.parent).as_posix())",
+  ].join("\n"), archiveRoot, archive], { encoding: "utf8" });
+  assert.equal(result.status, 0, result.stderr);
+  return { archive, sha256: require("node:crypto").createHash("sha256").update(fs.readFileSync(archive)).digest("hex") };
+}
 
 function fixture(prefix = "pwf-skill-patch-") {
   const workspace = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
@@ -69,6 +106,112 @@ test("stable v0.3.0 bootstrap pins the sealed successor ZIP and leaves the globa
   assert.doesNotMatch(bootstrap, /apply_planning_skill_compat_patch|verify_patched_planning_skill|PLANNING_SKILL_PATCHED_SHA256/);
   assert.match(workflow[1], /install_managed_hooks/);
   assert.match(bootstrap, /run_verification\(\) \{[\s\S]*verify_planning_skill/);
+});
+
+test("v0.3.1 bootstrap removes remote Node tooling and pins the pristine Skill archive", () => {
+  const bootstrap = fs.readFileSync(bootstrap031, "utf8");
+  const runAll = bootstrap.match(/run_all\(\) \{([\s\S]*?)\n\}/);
+  assert.ok(runAll, "run_all was not found");
+  assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.1\}"/);
+  assert.match(bootstrap, /HOOKS_SHA256="\$\{HOOKS_SHA256:-0{64}\}"/);
+  assert.match(bootstrap, new RegExp(manifest.release_archive_url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(bootstrap, new RegExp(manifest.release_archive_sha256));
+  assert.match(bootstrap, /PLANNING_WITH_FILES_ARCHIVE_ROOT="\$\{PLANNING_WITH_FILES_ARCHIVE_ROOT:-planning-with-files-3\.8\.2\}"/);
+  assert.match(bootstrap, /PLANNING_WITH_FILES_SOURCE_PATH="\$\{PLANNING_WITH_FILES_SOURCE_PATH:-skills\/planning-with-files\}"/);
+  assert.match(bootstrap, /verify_node_toolchain\(\)/);
+  assert.match(bootstrap, /Node\.js 18 or newer is required/);
+  assert.match(bootstrap, /verify_sha256 "\$PLANNING_WITH_FILES_ARCHIVE_SHA256"/);
+  assert.doesNotMatch(bootstrap, /\bNVM(?:_DIR|_VERSION)?\b|\bNODE_VERSION\b|\bSKILLS_CLI_VERSION\b/);
+  assert.doesNotMatch(bootstrap, /\bnvm\b|\bnpx\b|\bnpm\b/i);
+  assert.doesNotMatch(bootstrap, /\|[ \t]*bash\b/);
+  assert.ok(runAll[1].indexOf("verify_node_toolchain") < runAll[1].indexOf("install_system_prerequisites"));
+  const developmentGate = runBash('source "$1"\nassert_hooks_checksum_configured', [bootstrap031]);
+  assert.equal(developmentGate.status, 1, developmentGate.stdout);
+  assert.match(developmentGate.stderr, /HOOKS_SHA256 is still a placeholder/);
+});
+
+test("v0.3.1 bootstrap rejects Node below 18 and accepts supported platform majors", () => {
+  const command = [
+    'source "$1"',
+    'node() { printf "%s\\n" "$PWF_TEST_NODE_VERSION"; }',
+    "verify_node_toolchain",
+  ].join("\n");
+  for (const version of ["v18.0.0", "v22.17.1", "v24.3.0"]) {
+    const result = runBash(command, [bootstrap031], { PWF_TEST_NODE_VERSION: version });
+    assert.equal(result.status, 0, `${version}: ${result.stderr}`);
+  }
+  for (const version of ["v17.9.1", "not-a-node-version", "v18"]) {
+    const result = runBash(command, [bootstrap031], { PWF_TEST_NODE_VERSION: version });
+    assert.equal(result.status, 1, `${version}: ${result.stdout}`);
+    assert.match(result.stderr, /Node\.js 18 or newer is required|Unable to parse Node\.js version/);
+  }
+});
+
+test("v0.3.1 bootstrap installs only the verified pristine Skill subtree", () => {
+  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-bootstrap-v031-"));
+  const installedSkill = path.join(workspace, "global", "planning-with-files");
+  const replacedSentinel = path.join(installedSkill, "replaced-skill-sentinel");
+  try {
+    const fixtureArchive = makeSkillArchive(workspace);
+    fs.mkdirSync(installedSkill, { recursive: true });
+    fs.writeFileSync(replacedSentinel, "old installation\n");
+    const command = [
+      'source "$1"',
+      'download_file() { cp -- "$PWF_TEST_ARCHIVE" "$2"; }',
+      "install_planning_skill",
+    ].join("\n");
+    const result = runBash(command, [bootstrap031], {
+      PLANNING_WITH_FILES_ARCHIVE_SHA256: fixtureArchive.sha256,
+      PLANNING_WITH_FILES_ROOT: bashPath(installedSkill),
+      PWF_TEST_ARCHIVE: bashPath(fixtureArchive.archive),
+    });
+    assert.equal(result.status, 0, result.stderr);
+    for (const [relative, expected] of Object.entries(manifest.required_skill_files)) {
+      const actual = require("node:crypto").createHash("sha256")
+        .update(fs.readFileSync(path.join(installedSkill, relative))).digest("hex");
+      assert.equal(actual, expected, relative);
+    }
+    assert.equal(fs.existsSync(path.join(installedSkill, "OUTSIDE_SKILL_SENTINEL")), false);
+    assert.equal(fs.existsSync(replacedSentinel), false);
+  } finally {
+    fs.rmSync(workspace, { recursive: true, force: true });
+  }
+});
+
+test("v0.3.1 bootstrap rejects a bad Skill archive without replacing an existing Skill", () => {
+  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-bootstrap-v031-bad-"));
+  const installedSkill = path.join(workspace, "global", "planning-with-files");
+  const sentinel = path.join(installedSkill, "existing-skill-sentinel");
+  try {
+    const fixtureArchive = makeSkillArchive(workspace);
+    fs.mkdirSync(installedSkill, { recursive: true });
+    fs.writeFileSync(sentinel, "preserve me\n");
+    const command = [
+      'source "$1"',
+      'download_file() { cp -- "$PWF_TEST_ARCHIVE" "$2"; }',
+      "install_planning_skill",
+    ].join("\n");
+    const result = runBash(command, [bootstrap031], {
+      PLANNING_WITH_FILES_ARCHIVE_SHA256: "0".repeat(64),
+      PLANNING_WITH_FILES_ROOT: bashPath(installedSkill),
+      PWF_TEST_ARCHIVE: bashPath(fixtureArchive.archive),
+    });
+    assert.equal(result.status, 1, result.stdout);
+    assert.match(result.stderr, /SHA-256 verification failed/);
+    assert.equal(fs.readFileSync(sentinel, "utf8"), "preserve me\n");
+
+    const driftFixture = makeSkillArchive(path.join(workspace, "drift"), true);
+    const driftResult = runBash(command, [bootstrap031], {
+      PLANNING_WITH_FILES_ARCHIVE_SHA256: driftFixture.sha256,
+      PLANNING_WITH_FILES_ROOT: bashPath(installedSkill),
+      PWF_TEST_ARCHIVE: bashPath(driftFixture.archive),
+    });
+    assert.equal(driftResult.status, 1, driftResult.stdout);
+    assert.match(driftResult.stderr, /SHA-256 verification failed/);
+    assert.equal(fs.readFileSync(sentinel, "utf8"), "preserve me\n");
+  } finally {
+    fs.rmSync(workspace, { recursive: true, force: true });
+  }
 });
 
 test("managed compatibility overlay remains reproducible for the owned imported copy", () => {

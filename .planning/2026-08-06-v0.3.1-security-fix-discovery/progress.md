@@ -289,3 +289,55 @@ local/Linux/no-live Cloud regression.
   multiline validator successfully; no repository content was changed by the failed check.
 - S1-A is complete. S1-B bootstrap, L1/L2, S2 Linux/no-live Cloud, version/seal/publication,
   remote operations and Product Phase 4 remain unauthorized and untouched.
+
+## 2026-08-07 — S1-B authorized and recovered
+
+- Maintainer confirmed a local checkpoint and explicitly authorized continuation into
+  S1-B.
+- Context recovery followed the repository authority chain and planning-with-files
+  catch-up. The recovered worktree is clean at
+  `main@2558b95ca49233111eab4f3a7ae857da039b2c30`, three commits ahead of `origin/main`;
+  the active security-fix plan is unchanged.
+- S1-B is limited to failing-first tests and a new `init-cloud-sandbox-v0.3.1.bash` that
+  removes NVM/default Node installation/root `npx`, verifies platform Node major `>=18`,
+  and installs pristine PWF v3.8.2 from its exact contracted archive/hash.
+- Existing `init-cloud-sandbox-v0.3.0.bash`, v0.3.0 tags/assets/checksums, L1/L2, S2/S3,
+  version/package/ZIP identity, Cloud/remote operations and Product Phase 4 remain outside
+  this authorization.
+
+## 2026-08-07 — S1-B implementation complete
+
+- Read the complete v0.3.0 bootstrap, runtime/upstream contracts, installer Skill
+  validation, Release boundary tests and exact repository inventory before editing.
+- Added four nearest-boundary bootstrap tests first. The first permitted run produced the
+  intended failure state: three legacy tests passed and all four new tests failed because
+  `init-cloud-sandbox-v0.3.1.bash` did not yet exist.
+- Added only the new v0.3.1 bootstrap plus S1-B tests and the exact future repository path.
+  The script verifies platform Node `>=18`, downloads and checks the contracted PWF v3.8.2
+  archive, extracts only the Skill subtree, checks required-file hashes and uses a staged
+  replace/restore transaction. Its project ZIP hash remains 64 zeroes and fail closed.
+- First post-fix focused run classified three non-product issues: the repository-boundary
+  test correctly could not see an untracked new path; one test read the archive fields from
+  the wrong manifest nesting; and Windows Git Bash requires `/c/...` rather than `C:/...`
+  for the production absolute-path guard. Corrected only the two test defects and retained
+  the real tracked-inventory assertion.
+- Enhanced the archive test to replace an existing disposable Skill and to prove both a
+  bad archive digest and a digest-valid archive with required-file drift preserve the old
+  Skill. Final S1-B/contract focused result: 9 passed / 0 failed.
+- Static validation PASS: importer check, old/new Bash syntax, installer/test Node syntax,
+  owned Python compile, UTF-8/no-BOM/LF/final-newline checks and `git diff --check`. The
+  v0.3.0 bootstrap blob remains exactly `7fc930b2d028068cbc3f4852635b39eb138ac49b` in both
+  worktree and checkpoint.
+- Full local suite: 76 registered / 62 passed / 2 failed / 12 honest POSIX skips. The first
+  failure is the already-recorded immutable v0.3.0 ZIP oracle (`b9f178e5...` candidate
+  build versus `f245a554...` stable oracle). The second is solely that the new bootstrap is
+  not tracked until the maintainer's next checkpoint.
+- Replayed repository-boundary tests through a copied disposable Git index containing an
+  intent-to-add entry for only the new bootstrap: 3 passed / 0 failed. The first wrapper
+  invocation reported outer exit 1 even though all three Node tests passed because cleanup
+  overwrote PowerShell's final status; reran with an explicitly preserved test exit code
+  and obtained exit 0. Both disposable indexes were removed, and the real index remained
+  unchanged with no staged paths.
+- No live network archive was fetched, no Cloud/container state was changed and no
+  package/ZIP contract, v0.3.0 asset, tag, commit, push or publication was performed. S1-B
+  stops here; L1/L2, S2/S3 and Product Phase 4 remain unauthorized.

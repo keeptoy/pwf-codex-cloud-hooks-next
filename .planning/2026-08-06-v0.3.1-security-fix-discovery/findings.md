@@ -537,3 +537,37 @@ while the immutable v0.3.0 oracle remains
 `f245a554210c7f8d07eebbb775faa7b1482fea5d363ee6fa7578c9bbd98ad9af`. S1-A does not
 authorize changing package/ZIP identity or that oracle; the mismatch is a correct Release
 gate, not a product-test assertion to weaken.
+
+## S1-B implementation result
+
+S1-B closes the authorized M2 source boundary with a new, unsealed
+`init-cloud-sandbox-v0.3.1.bash`; the published v0.3.0 bootstrap remains byte-identical to
+its checkpointed Git blob.
+
+- The new script has no NVM configuration, Node download/install, `npm`, `npx` or
+  pipe-to-shell path. It requires the platform `node`, strictly parses its semantic version,
+  rejects numeric majors below 18 and performs this check before `run_all` begins APT or
+  PowerShell network mutation. The retained `nodejs` component command is now verification
+  only. Node 22 remains the exact future Cloud acceptance selection; later majors satisfying
+  the contract are accepted locally.
+- The default PWF source is the contracted v3.8.2 GitHub archive with SHA-256
+  `7dab03ae283da38d33b9d551c7ec621d1818b9f0f17cf9ced566d4accbfc6dd1`. The bootstrap
+  extracts only `planning-with-files-3.8.2/skills/planning-with-files`, rejects symlinks in
+  that subtree, verifies the exact three `required_skill_files` hashes, and stages a bounded
+  same-parent replacement with restoration of an existing Skill on transaction failure.
+  `install.js` subsequently revalidates the same required hashes before installing Hooks.
+- The new bootstrap defaults to `HOOKS_VERSION=v0.3.1` but retains the required 64-zero
+  `HOOKS_SHA256`; `hooks`/`all` therefore fail closed until a later authorized gate supplies
+  an exact candidate input or S3 seals final bytes. `package.json`, the 22-entry v0.3.0 ZIP
+  allowlist and its sole external v0.3.0 bootstrap asset remain unchanged.
+- Windows/Git-Bash tests use a deterministic local archive and stub only the download
+  transport. They prove Node version boundaries, subtree-only installation, successful
+  replacement, archive-digest rejection, required-file drift rejection and preservation of
+  an existing Skill. They are not evidence for real GitHub transport, root-owned Linux
+  modes, Codex Cloud Node 22 selection or Fresh/Resume behavior; those remain S2 gates.
+
+The exact repository inventory now anticipates 69 tracked paths. Before checkpoint, the
+new bootstrap is intentionally untracked and the real-index boundary test reports that
+single difference. A disposable copied index with intent-to-add for only that path passes
+all three repository-boundary tests without changing the real index, proving the contract
+matches the next checkpoint rather than weakening the allowlist.

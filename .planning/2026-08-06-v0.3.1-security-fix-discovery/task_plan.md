@@ -8,10 +8,12 @@ published `v0.3.0` tag, asset, checksum and acceptance record unchanged.
 
 ## Current Gate
 
-The maintainer explicitly authorized S1-A only. Its nearest-boundary tests and minimum
-H1/H2/M1/M3 fixes are complete on the local Windows gate, with POSIX cases honestly
-deferred to S2 Linux. S1-B bootstrap work, L1/L2, S2, S3, version changes, Cloud mutation,
-tags, publication and Product Phase 4 remain unauthorized.
+S1-B is complete on the local Windows/Git-Bash gate from the maintainer's checkpointed
+S1-A basis `main@2558b95ca49233111eab4f3a7ae857da039b2c30`. The new development bootstrap
+removes NVM/Node installation and root `npx`, verifies platform Node `>=18`, installs only
+the verified pristine PWF v3.8.2 Skill subtree, and retains a zero project-ZIP hash so it
+cannot masquerade as a sealed release. L1/L2, S2, S3, package/ZIP Release identity changes,
+Cloud mutation, tags, publication and Product Phase 4 remain unauthorized.
 
 ## Status
 
@@ -21,12 +23,17 @@ lock-held shared-state transactions with fingerprint checks, and M3 bounded Host
 Focused local regression is green without Hook/Host ABI/result-schema expansion. The full
 suite has one intentional Release-gate failure because the modified source still retains
 the immutable v0.3.0 package/ZIP identity; changing that identity is not authorized here.
+S1-B focused and static verification is green. The full suite has only the pre-existing
+immutable v0.3.0 ZIP oracle failure plus the expected tracked-inventory failure while the
+new bootstrap remains untracked before the maintainer's next checkpoint; an isolated
+temporary-index replay proves the exact 69-path boundary passes once that file is included.
 
 ## Next Step
 
-Stop for maintainer review. A separate authorization is required before S1-B bootstrap
-work or S2 Linux/no-live Cloud regression. Do not change version/Release identity merely
-to make the current v0.3.0 ZIP-hash test green.
+Stop for maintainer review/checkpoint. A separate authorization is required before L1/L2
+or S2 Linux/no-live Cloud regression. After the new bootstrap is included in a local
+checkpoint, rerun the real-index repository-boundary test; do not change package/ZIP/Release
+identity merely to make the current v0.3.0 ZIP-hash test green.
 
 ## Authorization Boundary
 
@@ -34,12 +41,18 @@ Authorized now:
 
 - preserve the audit evidence in this planning directory;
 - activate this planning directory through `.planning/.active_plan`;
-- edit only the production/tests directly required for H1, H2, M1 and M3;
-- run local and honest platform-appropriate focused verification for S1-A.
+- retain the checkpointed S1-A H1/H2/M1/M3 implementation unchanged except for a directly
+  demonstrated S1-B integration defect;
+- add failing-first tests and a new `init-cloud-sandbox-v0.3.1.bash` implementing only the
+  frozen M2 bootstrap design;
+- update exact repository-boundary test inventory solely because S1-B adds tracked source
+  and test paths;
+- run local and honest platform-appropriate focused/full verification for S1-B.
 
 Not authorized now:
 
-- edit bootstrap, Release allowlist, package identity or L1/L2-only files;
+- edit the immutable `init-cloud-sandbox-v0.3.0.bash`, Release ZIP allowlist, package/version
+  identity or L1/L2-only files;
 - modify, move, replace or republish the existing `v0.3.0` tag or either asset;
 - install or repair live Cloud state, push, tag, publish or promote a rollback baseline;
 - begin Product Phase 4 features or change Host ABI, managed policy or trusted graph;
@@ -144,12 +157,13 @@ The detailed semantics, hostile fixtures, residual races and rollback gates are 
 - [x] Obtain explicit S1-A implementation authorization after D1.
 - [x] S1-A: add deterministic failing tests and minimum H1/H2/M1/M3 production fixes;
   preserve canary and existing Host contracts.
-- [ ] S1-B: add bootstrap tests, remove NVM/Node24/root `npx`, verify platform Node `>=18`
+- [x] Obtain explicit S1-B implementation authorization after the local S1-A checkpoint.
+- [x] S1-B: add bootstrap tests, remove NVM/Node24/root `npx`, verify platform Node `>=18`
   and install pristine PWF from the exact contracted archive/hash.
 - [ ] Keep L1/L2 packaging/documentation corrections separate from runtime assertions.
-- [ ] Run focused checks after each sub-gate and classify every failure honestly.
+- [x] Run focused checks after each authorized sub-gate and classify every failure honestly.
 - **Exit:** reviewed source diff and focused tests green on the appropriate platform.
-- **Status:** S1-A complete / S1-B unauthorized
+- **Status:** S1-A and S1-B complete / L1-L2 unauthorized
 
 ### S2 — Full local, Linux and no-live Cloud regression
 
@@ -180,6 +194,7 @@ publication, live installation or Product Phase 4 without the required authoriza
 
 ## Decision Checkpoint
 
-D0, D1 and S1-A are complete. S1-B, S2 and S3 remain separate unauthorized gates. No
-current plan state authorizes bootstrap/L1/L2 work, version changes, Cloud actions,
-commits/pushes, tags, assets, publication or Product Phase 4.
+D0, D1, S1-A and S1-B are complete. L1/L2, S2 and S3 remain separate unauthorized gates.
+No current plan state authorizes changing the published v0.3.0 bootstrap or assets,
+package/ZIP Release identity, Cloud actions, commits/pushes, tags, publication or Product
+Phase 4.
