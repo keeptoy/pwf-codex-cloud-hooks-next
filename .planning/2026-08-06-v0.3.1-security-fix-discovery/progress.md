@@ -841,3 +841,35 @@ local/Linux/no-live Cloud regression.
 - S3-C now waits on maintainer-run Cloud outputs from runbook section 13 plus sections 4–8.
   Public-byte PASS alone does not close S3-C and does not authorize rollback/Latest
   promotion.
+
+## 2026-08-07 — S3-C runbook entrypoint correction authorized
+
+- Maintainer reported that the old remote `validation/v0.3.1-s2-runbook` checkout stopped
+  because its zero-default bootstrap did not match a copied setup assertion for sealed
+  hash `f097...`. Classified this as a stale branch/runbook identity mix, not a product or
+  published-asset failure.
+- Maintainer accepted the proposed two-lane model: exact-commit Source/Candidate validation
+  and immutable-tag/public-asset Release validation. The current S3-C entry is section 13;
+  historical section 3 must not be used for the final Release smoke.
+- Read-only remote preflight found runbook ref exactly
+  `101dca5a5c174badf943466fe0158065c6dd1a11`, `main` at `bef9194...`, and immutable
+  `v0.3.1` still at `9aa2148...`.
+- Authorized scope is runbook plus active planning, one documentation-only checkpoint and
+  one ordinary fast-forward push of the existing validation ref after an exact immediate
+  remote-parent preflight. No force option, `dev`, remote main, tag, Release, Latest,
+  rollback or Cloud mutation is authorized.
+- First runbook syntax command incorrectly expected two Bash fences and stopped before
+  running any syntax/test/diff check when it found the actual three. The existing S3-C
+  record already documents three fences; the corrected validation expects and parses all
+  three. This was a validation-command defect and changed no repository file.
+- The corrected in-sandbox run then hit the known Git Bash signal-pipe restriction at the
+  first fence (`couldn't create signal pipe, Win32 error 5`) before focused tests or diff
+  checks ran. This is a managed Windows platform limitation; the identical read-only
+  validation is rerun at the permitted local boundary rather than weakening syntax checks.
+- The local-boundary rerun parsed all three Bash fences and passed `bash -n` 3/3. Focused
+  architecture/repository governance tests passed 5/5, `git diff --check` passed, and an
+  explicit comparison against immutable `v0.3.1` confirmed zero drift in all published
+  source/bootstrap paths. Only the runbook and three active planning files differ.
+- Before push, clarified that `--force-with-lease` is still a force-family operation and
+  is not used. Safety comes from an immediate exact remote-SHA preflight plus Git's normal
+  server-side non-fast-forward rejection.

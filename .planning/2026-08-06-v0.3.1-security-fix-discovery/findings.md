@@ -812,3 +812,24 @@ evidence but is not the S3-C consumer-path proof: neither public URL has been do
 hashed from received bytes or exercised in a Fresh Cloud container. Therefore v0.3.1 is a
 published security release but not yet an accepted rollback, and no published object may
 be edited in place if S3-C later finds a defect.
+
+## Cloud source versus published-asset acceptance
+
+The failed maintainer attempt on the stale remote runbook branch was an identity-routing
+error: that checkout still contained a zero-default development bootstrap, while the
+copied current setup asserted the sealed `f097...` default. It does not show corruption of
+the immutable v0.3.1 tag or either public asset.
+
+Cloud acceptance has two distinct black-box lanes. Source/Candidate acceptance checks out
+a development or validation branch, records the exact commit, runs repository/Linux tests,
+builds the candidate ZIP and installs it with explicit local URL/hash overrides. A moving
+branch transports work but never owns a PASS; the exact commit does. Published Release
+acceptance pins the immutable tag/source, downloads exact public assets and exercises the
+downloaded bootstrap's default public ZIP path. The lanes must not share a bootstrap or
+hash assertion from different checkout identities.
+
+After v0.3.1 S3-C, this versioned validation branch should freeze as evidence. Future
+rolling integration should use a durable `dev` branch, with optional short-lived
+feature/security branches, while `main` remains the stable source authority and version
+tags remain immutable. `0.3.1-dev` is intentionally avoided after v0.3.1 publication;
+future source/package identity must advance independently from the durable branch name.

@@ -83,22 +83,37 @@ assets; only after the exact evidence is returned may the maintainer decide roll
 `Latest` promotion. The agent remains unauthorized to submit the Cloud task itself or to
 promote before that evidence.
 
+The maintainer accepted the proposed branch/acceptance split after a Cloud attempt used
+the old remote runbook branch: its bootstrap still had the development zero hash while the
+copied setup expected the sealed `f097...` hash. This is an entrypoint identity mismatch,
+not a Release-byte failure. The maintainer authorizes one runbook-routing correction,
+planning synchronization, one documentation/planning-only checkpoint and exactly one
+ordinary non-force fast-forward push of current branch
+`validation/v0.3.1-s2-runbook`. The push must be bounded to observed remote parent
+`101dca5a5c174badf943466fe0158065c6dd1a11` by an immediate read-only preflight and Git's
+normal server-side fast-forward check; neither `--force` nor `--force-with-lease` is
+permitted. No `dev` branch is created in this gate; remote `main`, tags, Release assets,
+`Latest`, rollback state and product bytes remain untouched.
+
 ## Status
 
-S1, S2, S3-A and S3-B are complete. S3-C is authorized and in progress at public
-downloaded-byte verification; final Cloud evidence and promotion decision remain pending.
+S1, S2, S3-A and S3-B are complete. S3-C is authorized and in progress at final Cloud
+handoff routing; public downloaded-byte verification is complete, while final Cloud
+evidence and promotion decision remain pending.
 Published/accepted v0.3.0 remains the rollback oracle and `Latest`. Historical Cloud-PASS,
 post-S2 observation, local seal, publication metadata and downloaded bytes remain distinct
 evidence classes.
 
 ## Next Step
 
-Download both v0.3.1 assets from their public Release URLs into a new disposable local
-directory; verify exact names, sizes, hashes, ZIP inventory/metadata/self-contained
-importer and bootstrap-to-ZIP binding without using retained local assets as the oracle.
-Then prepare the exact Cloud smoke handoff and stop for maintainer-run evidence. Do not
-submit Cloud, promote rollback/Latest, push a branch, edit Release/tag/assets, update
-remote main or begin Product Phase 4.
+Separate the historical Source/Candidate S2 entry from the current Published Release S3-C
+entry in the hard-acceptance runbook, validate the documentation-only delta, checkpoint
+only the runbook and active planning, then perform the one authorized ordinary
+fast-forward push to `validation/v0.3.1-s2-runbook` after an exact remote-parent preflight,
+and verify its exact remote SHA. Stop for a fresh
+maintainer-run Cloud execution of section 13 plus sections 4–8. Do not submit Cloud,
+promote rollback/Latest, create `dev`, edit Release/tag/assets, update remote main or begin
+Product Phase 4.
 
 ## Authorization Boundary
 
@@ -147,21 +162,27 @@ Authorized now:
 - execute S3-C public-byte verification and prepare the final Cloud handoff; after the
   maintainer returns exact Fresh/Resume/doctor evidence, evaluate but do not silently
   assume rollback/Latest promotion.
+- correct only the v0.3.1 hard-acceptance entry routing and active planning, checkpoint
+  those documentation-only changes, and perform exactly one ordinary non-force
+  fast-forward push of `validation/v0.3.1-s2-runbook`, after immediately confirming
+  observed remote parent `101dca5a5c174badf943466fe0158065c6dd1a11`; do not use any
+  force option.
 
 Not authorized now:
 
 - edit the immutable `init-cloud-sandbox-v0.3.0.bash` or any published acceptance byte;
 - modify, move, replace or republish the existing `v0.3.0` tag or either asset;
-- submit or mutate live Cloud state from this agent, push any branch, move any existing
-  tag, publish any asset outside the exact S3-B pair or promote a rollback baseline;
+- submit or mutate live Cloud state from this agent, push any branch except the one exact
+  authorized runbook fast-forward, move any existing tag, publish any asset or promote a
+  rollback baseline;
 - begin Product Phase 4 features or change Host ABI, managed policy or trusted graph;
 - weaken safety assertions or reinterpret Windows skips as Linux/Cloud evidence.
 - force-push, update remote `main`, move `validation/v0.3.1-s2-03a6cc2f`, push another
   ref, create/move a tag, publish assets, modify live `/opt/codex` from this agent, or reuse
   a disposable Cloud container as production;
-- create a commit in this gate from this agent, push any branch/ref, call publication or
-  local download accepted rollback, promote `Latest` before exact Cloud evidence, or
-  modify any v0.3.0/beta.2/v0.3.1 published identity.
+- create any commit outside the authorized runbook/planning checkpoint, push another
+  branch/ref, call publication or local download accepted rollback, promote `Latest`
+  before exact Cloud evidence, or modify any v0.3.0/beta.2/v0.3.1 published identity.
 
 ## Risk Register
 
