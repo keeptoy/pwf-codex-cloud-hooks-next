@@ -914,3 +914,51 @@ local/Linux/no-live Cloud regression.
   governance tests pass 5/5, `git diff --check` passes, the changed-path set is exactly the
   runbook plus three active planning files, and every immutable v0.3.1 published
   source/bootstrap path remains byte-identical to the tag.
+
+## 2026-08-07 — S3-C final Cloud acceptance returned
+
+- The documentation checkpoint and authorized ordinary push completed at exact runbook
+  ref `05d9d56d1caf639de0dbfb57323014b5e47984ff` before the final Cloud run.
+- Maintainer reports the public Release setup and all frozen B–F black-box stages PASS in
+  Cloud. The exact F script exited 0 under `set -Eeuo pipefail`.
+- Returned F evidence records a healthy/non-repairable managed doctor, no errors or
+  blockers, installer version 0.3.1, both managed events, the exact 11 runtime payloads,
+  `ADAPTER_ONLY` policy, zero snapshot leftovers and `V031_S2_POST_RESUME=PASS`.
+- The S2-named final marker is intentionally retained by the frozen B–F fixture and does
+  not identify the installed Release bytes. Public setup plus local public-byte checks bind
+  this run to immutable v0.3.1.
+- B–E raw console output was not copied into the repository; the evidence records the
+  maintainer's all-PASS attestation without inventing missing log lines.
+- S3-C is closed PASS. v0.3.0 remains rollback/`Latest`; no new checkpoint/push, promotion,
+  Release/tag/asset edit, remote-main change or Product Phase 4 action is authorized.
+- The first local Bash-fence validation stopped at the known managed Windows sandbox
+  signal-pipe denial before Node tests ran. The first local-boundary retry passed each
+  multiline fence through PowerShell's native `-c` argument path, which stripped shell
+  quoting and produced a harness-only unmatched-`)` error. Passing the same unchanged
+  fence text over standard input corrected the harness.
+- Final validation PASS: all three Bash fences parse, focused architecture/repository
+  governance tests pass 5/5, the changed-path set is exactly seven ZIP-excluded evidence/
+  governance files, strict UTF-8/no-BOM/LF/final-newline/fence/trailing-whitespace checks
+  pass, `git diff --check` passes, and all v0.3.1 published source/bootstrap paths have zero
+  drift from immutable tag `v0.3.1`.
+- Full product regression was not repeated because this closure changes no production,
+  contract, Release input or published byte; the focused governance and syntax boundary is
+  proportionate to the evidence-only delta.
+
+## 2026-08-07 — S3-C closure checkpoint/transport authorized
+
+- Maintainer instructed the agent to continue after receiving the validated seven-file
+  closure summary. Scope is exactly one local evidence checkpoint plus one ordinary
+  non-force fast-forward push of existing `validation/v0.3.1-s2-runbook`.
+- The push requires an immediate exact remote-parent preflight and read-only post-push SHA
+  verification. Explicit staging is limited to the seven reviewed evidence/governance
+  paths.
+- No PR, force option, alternate ref, rollback/Latest promotion, Release/tag/asset change,
+  remote-main update, `dev` creation or Product Phase 4 action is authorized.
+- Immediate read-only remote preflight PASS: local parent and remote validation ref both
+  resolve to `05d9d56d1caf639de0dbfb57323014b5e47984ff`; remote main remains
+  `bef919475b6ebc3d74c09f9664749664cf950537`, and immutable tag v0.3.1 remains
+  `9aa2148886e499f9f45594f7ae4f7681f1045de2`.
+- Checkpoint pre-validation PASS: exact seven-path scope, strict Markdown hygiene,
+  `git diff --check`, all three Bash fences, focused governance tests 5/5 and zero drift
+  from every immutable v0.3.1 published source/bootstrap path.

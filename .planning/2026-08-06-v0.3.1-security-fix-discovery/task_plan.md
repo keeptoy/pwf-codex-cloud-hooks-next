@@ -111,23 +111,36 @@ one documentation checkpoint plus one ordinary non-force fast-forward push of ex
 `e9abf838aff9496629804e927baaaa91e0068756`; normal server-side fast-forward checks must
 protect it, with no force option. Scope remains the runbook and three active planning files.
 
+That checkpoint and ordinary push completed at
+`validation/v0.3.1-s2-runbook@05d9d56d1caf639de0dbfb57323014b5e47984ff`. The maintainer
+then ran the public setup and B–F in Cloud and confirmed every stage PASS. Exact returned F
+evidence shows exit 0, healthy/non-repairable doctor with no errors or blockers, installer
+0.3.1, 11 exact runtime payloads, adapter-only policy and zero snapshot residue. S3-C is
+therefore complete. Persisting that evidence and synchronizing governance locally is
+authorized; no further checkpoint/push or rollback/Latest promotion is inferred.
+
+After reviewing the validated seven-file closure summary, the maintainer instructed the
+agent to continue to the next step. This authorizes exactly one local S3-C evidence
+checkpoint and one ordinary non-force fast-forward push of the existing
+`validation/v0.3.1-s2-runbook` ref after an immediate exact remote-parent preflight. It
+does not authorize a PR, another branch, rollback/Latest promotion, Release/tag/asset
+mutation, remote-main change or Product Phase 4.
+
 ## Status
 
-S1, S2, S3-A and S3-B are complete. S3-C is authorized and in progress at the minimum
-portable Cloud wrapper checkpoint/transport; public downloaded-byte verification is
-complete, while final Cloud evidence and promotion decision remain pending.
+S1, S2, S3-A, S3-B and S3-C are complete. Published v0.3.1 has passed public downloaded-byte
+verification and final Cloud setup/Fresh/Resume/doctor/inventory/residue acceptance.
 Published/accepted v0.3.0 remains the rollback oracle and `Latest`. Historical Cloud-PASS,
 post-S2 observation, local seal, publication metadata and downloaded bytes remain distinct
 evidence classes.
 
 ## Next Step
 
-Finish the official Cloud checkout/cache explanation, revalidate the four-document delta,
-create the one authorized documentation checkpoint, then ordinary fast-forward push the
-existing validation ref after confirming remote parent `e9abf838...`; verify the exact
-remote SHA and stop for a fresh/reset-cache maintainer-run section 13 plus B–F. Do not
-submit Cloud, promote rollback/Latest, create `dev`, edit Release/tag/assets, update remote
-main or begin Product Phase 4.
+Revalidate the exact seven-file S3-C closure delta, confirm the existing remote validation
+ref still equals local parent `05d9d56d1caf639de0dbfb57323014b5e47984ff`, create one
+evidence checkpoint, push it by ordinary fast-forward and verify the resulting remote SHA.
+Then stop before the separate rollback/Latest promotion decision. Do not create a PR or
+`dev`, edit Release/tag/assets, update remote main or begin Product Phase 4.
 
 ## Authorization Boundary
 
@@ -186,6 +199,11 @@ Authorized now:
 - add the reviewed official checkout/cache lifecycle explanation, checkpoint only the
   runbook and three active planning files, and perform one ordinary non-force fast-forward
   push of `validation/v0.3.1-s2-runbook` after confirming remote parent `e9abf838...`.
+- persist the maintainer-confirmed S3-C PASS and exact returned F evidence in the runbook,
+  active planning and governance documents; validate this ZIP-excluded local delta.
+- create exactly one checkpoint containing only the validated seven-file S3-C closure and
+  perform exactly one ordinary non-force fast-forward push of the existing validation ref,
+  followed by read-only remote-SHA verification.
 
 Not authorized now:
 
@@ -202,6 +220,10 @@ Not authorized now:
 - create any commit outside the authorized runbook/planning checkpoint, push another
   branch/ref, call publication or local download accepted rollback, promote `Latest`
   before exact Cloud evidence, or modify any v0.3.0/beta.2/v0.3.1 published identity.
+- create or push the S3-C closure checkpoint, promote rollback/`Latest`, or begin another
+  gate without fresh explicit authorization.
+- open a PR, push another ref, use any force option or treat this checkpoint transport as
+  rollback/Latest promotion.
 
 ## Risk Register
 
@@ -338,12 +360,13 @@ The detailed semantics, hostile fixtures, residual races and rollback gates are 
   v0.3.1 bootstrap; compute bootstrap SHA; rerun regression; stop before tag/publication.
 - [x] **S3-B publication authorization:** create immutable `v0.3.1` tag/Release from the
   reviewed sealed source and upload exactly the ZIP plus external bootstrap once.
-- [ ] **S3-C acceptance/promotion authorization:** redownload both assets, reverify
-  filename/size/SHA/boundary, run final Fresh/Resume/doctor smoke, then decide whether to
-  promote v0.3.1 as rollback while retaining v0.3.0 unchanged.
+- [x] **S3-C acceptance:** redownload both assets, reverify filename/size/SHA/boundary and
+  run final Fresh/Resume/doctor/inventory/residue smoke against the public assets.
+- [ ] **Rollback/Latest promotion decision:** separately decide whether to promote v0.3.1
+  while retaining immutable v0.3.0 and beta.2 evidence unchanged.
 - **Exit:** a separately published and accepted security release, or an explicit no-release
   closure with findings disposition recorded.
-- **Status:** S3-A and S3-B complete / S3-C authorized and in progress
+- **Status:** S3-A, S3-B and S3-C complete / stopped before rollback/Latest promotion
 
 ## Stop Conditions
 
@@ -355,7 +378,7 @@ publication, live installation or Product Phase 4 without the required authoriza
 
 ## Decision Checkpoint
 
-D0, D1, S1-A through S1-C, S2, S3-A and S3-B are complete. S3-C is authorized only under
-the three-step evidence split above. Public-byte PASS alone cannot close S3-C: stop for
-maintainer-run Cloud evidence before rollback/Latest promotion. Product Phase 4, branch
-push and modification of any published v0.3.0/beta.2/v0.3.1 identity remain unauthorized.
+D0, D1, S1-A through S1-C, S2, S3-A, S3-B and S3-C are complete. Public-byte verification
+and maintainer-run Cloud evidence jointly close S3-C. Stop before rollback/Latest promotion
+and before any checkpoint/push. Product Phase 4 and modification of any published
+v0.3.0/beta.2/v0.3.1 identity remain unauthorized.

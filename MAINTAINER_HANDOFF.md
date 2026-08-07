@@ -16,8 +16,8 @@
 - 当前稳定身份：`v0.3.0` tag 精确指向 `1454c922...`，两个资产、Cloud setup、Fresh、canonical、
   real Resume、doctor、11 payload 和零 residue 全部 PASS。
 - 当前版本路线：stable Release 已关闭；Product Phase 4 前另行授权的 0.3.1 security-fix train 已完成
-  S1、S2 Linux/Cloud hard acceptance、S3-A 本地 seal 与 S3-B publication。S3-C 已授权且本地公开下载
-  字节验收 PASS，当前等待维护者执行 final Cloud smoke；v0.3.1 rollback/Latest promotion 尚未授权。
+  S1、S2 Linux/Cloud hard acceptance、S3-A 本地 seal、S3-B publication 与 S3-C 公开下载/final Cloud
+  acceptance；v0.3.1 rollback/Latest promotion 尚未授权，当前仍由 v0.3.0 承担该角色。
 - 当前仓库迁移：M1/M2/M3/M4 complete。M3 实际行为测试 HEAD 为
   `39795283cd65f84547651d7bec816191fb5bfedf`，ZIP SHA-256 为
   `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`；M3-B setup、Fresh、

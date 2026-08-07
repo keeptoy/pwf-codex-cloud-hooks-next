@@ -850,3 +850,20 @@ rolling integration should use a durable `dev` branch, with optional short-lived
 feature/security branches, while `main` remains the stable source authority and version
 tags remain immutable. `0.3.1-dev` is intentionally avoided after v0.3.1 publication;
 future source/package identity must advance independently from the durable branch name.
+
+## S3-C final Cloud acceptance result
+
+The maintainer confirmed that the public Release setup and the frozen B–F black-box matrix
+all passed in a fresh Cloud environment. The exact returned F output independently shows
+exit 0, post-resume doctor `healthy=true` and `repairable=false`, empty errors/blockers,
+installer 0.3.1, the exact 11-file managed runtime inventory, adapter-only policy and zero
+snapshot leftovers. The retained `V031_S2_POST_RESUME=PASS` marker is a frozen fixture ID,
+not evidence that the final smoke used the historical S2 archive.
+
+Together with the earlier public URL filename/size/SHA and extracted-importer checks, this
+closes S3-C for immutable `v0.3.1@9aa2148886e499f9f45594f7ae4f7681f1045de2` and its two
+published assets. The maintainer attested B–E PASS, but their raw console logs were not
+copied into the repository; the evidence record must state that limitation rather than
+reconstructing output. S3-C acceptance does not itself change the production lifecycle:
+v0.3.0 remains accepted rollback/`Latest`, beta.2 remains previous fallback, and any
+promotion or Product Phase 4 start requires a separate gate.
