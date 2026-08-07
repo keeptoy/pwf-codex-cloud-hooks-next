@@ -137,22 +137,35 @@ must not edit either Release body or asset, move a tag, update remote main, crea
 PR/branch, or begin Product Phase 4. After promotion, v0.3.0 becomes the immutable immediate
 previous fallback and beta.2 remains the older immutable fallback oracle.
 
+The promotion evidence checkpoint was ordinarily fast-forwarded to exact local/remote
+validation head `c92b0879e1b2525291f084b96c89ec05d0e9f8f0`. The maintainer has now
+explicitly authorized the separate main-convergence gate: persist this gate in the three
+active planning files, checkpoint and ordinarily fast-forward only the existing
+`validation/v0.3.1-s2-runbook` ref, open a draft PR from that ref to `main`, review its
+exact scope and mergeability, then use a GitHub merge commit so every accepted source and
+evidence commit retains its identity. After merge, verify that remote `main` contains the
+validation head and that v0.3.1/v0.3.0 tags, Release assets and `Latest` remain unchanged.
+No force operation, squash/rebase merge, branch deletion, Release mutation or Product
+Phase 4 work is authorized.
+
 ## Status
 
 S1, S2, S3-A, S3-B and S3-C are complete. Published v0.3.1 has passed public downloaded-byte
 verification and final Cloud setup/Fresh/Resume/doctor/inventory/residue acceptance. The
 external latest-pointer promotion is complete and v0.3.1 is now production rollback/
-`Latest`; governance synchronization and validation are complete, and the final evidence
-checkpoint is ready for ordinary transport. Historical Cloud-PASS, post-S2 observation,
+`Latest`; governance synchronization and its final evidence checkpoint are complete at
+local/remote validation head `c92b087...`. Historical Cloud-PASS, post-S2 observation,
 local seal, publication metadata and downloaded bytes remain distinct evidence classes.
+The main-convergence gate is now active; Product Phase 4 remains unauthorized.
 
 ## Next Step
 
-Confirm `Latest=v0.3.1` and remote validation parent
-`f452d069576da7d1cf7b772aa7bc3003d20db01b`; checkpoint the validated ten-file promotion
-evidence and ordinarily fast-forward the existing validation ref, then verify exact remote
-SHA and stop. Do not create a PR or `dev`, edit Release bodies/assets or tags, update remote
-main or begin Product Phase 4.
+Persist this main-convergence authorization, validate the planning-only delta, checkpoint
+and ordinarily fast-forward the existing validation ref after an exact remote-parent
+preflight. Open and review a draft PR from `validation/v0.3.1-s2-runbook` to `main`; if the
+PR remains a clean descendant-only change with no unrelated paths, make it ready and merge
+with a merge commit. Verify exact remote ancestry and immutable Release identities, then
+stop. Do not begin Product Phase 4.
 
 ## Authorization Boundary
 
@@ -222,26 +235,25 @@ Authorized now:
 - update the focused governance test to distinguish current ROADMAP lifecycle authority
   from the sealed README's tag-time snapshot; do not change any runtime, packaging or
   Release semantic assertion.
+- execute the separately authorized main-convergence gate: update only the three active
+  planning files, create one governance checkpoint, ordinarily fast-forward the existing
+  validation ref, open/review its PR to `main`, and merge only with a merge commit after
+  exact scope and identity checks; retain the validation branch as evidence.
 
 Not authorized now:
 
 - edit the immutable `init-cloud-sandbox-v0.3.0.bash` or any published acceptance byte;
-- modify, move, replace or republish the existing `v0.3.0` tag or either asset;
-- submit or mutate live Cloud state from this agent, push any branch except the one exact
-  authorized validation fast-forward, move any existing tag, publish any asset or promote
-  a rollback baseline;
+- modify, move, replace or republish any v0.3.1, v0.3.0 or beta.2 tag, Release or asset;
+- submit or mutate live Cloud state, publish an asset or change the rollback/`Latest`
+  pointer;
 - begin Product Phase 4 features or change Host ABI, managed policy or trusted graph;
-- weaken safety assertions or reinterpret Windows skips as Linux/Cloud evidence.
-- force-push, update remote `main`, move `validation/v0.3.1-s2-03a6cc2f`, push another
-  ref, create/move a tag, publish assets, modify live `/opt/codex` from this agent, or reuse
-  a disposable Cloud container as production;
-- create any commit outside the authorized runbook/planning checkpoint, push another
-  branch/ref, call publication or local download accepted rollback, promote `Latest`
-  before exact Cloud evidence, or modify any v0.3.0/beta.2/v0.3.1 published identity.
-- create or push another S3-C checkpoint or begin another gate without fresh explicit
-  authorization.
-- open a PR, push another ref, use any force option, update remote main, move a tag, edit a
-  Release body/asset or perform any external change beyond the one latest-pointer update.
+- weaken safety assertions or reinterpret Windows skips as Linux/Cloud evidence;
+- force-push, squash/rebase the accepted commit chain, delete the validation branch, push
+  another ref, create/move a tag, edit a Release body/asset, modify live `/opt/codex` or
+  reuse a disposable Cloud container as production;
+- modify product/Release inputs for the convergence checkpoint, merge a PR whose base/head
+  identities or changed-path scope differ from the reviewed boundary, or continue after
+  the post-merge verification without fresh authorization.
 
 ## Risk Register
 

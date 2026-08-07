@@ -883,3 +883,23 @@ README therefore retains its tag-time rollback snapshot while ROADMAP/runbook/pl
 the new lifecycle fact. The validation branch must never rebuild or replace v0.3.1 assets;
 a future artifact and README synchronization require a new version, fresh seal and fresh
 acceptance.
+
+## Main-convergence decision
+
+The accepted Release lifecycle and the stable source authority have temporarily diverged:
+v0.3.1 is production rollback/`Latest`, while remote `main` remains at `bef9194...` and the
+complete accepted train is on `validation/v0.3.1-s2-runbook@c92b087...`. Local ancestry
+shows the validation head is 16 commits ahead of remote main and zero behind, with
+`bef9194...` as the exact merge base. GitHub has no existing PR for the branch. The active
+main ruleset rejects deletion and non-fast-forward updates but does not require PR checks;
+all three merge styles are enabled.
+
+A PR remains the preferred governance path despite the clean fast-forward topology because
+it creates a durable review surface for the security fixes, tests and S1-S3 evidence. The
+PR must use a merge commit: squash or rebase would replace commit identities already cited
+by the immutable tag, runbook and planning evidence. The existing validation branch is the
+correct head and should remain after merge as an evidence ref; no new `dev` or integration
+branch is needed for this closed train. The PR body must distinguish exact Release source
+`9aa2148...` from the later governance/evidence head and explicitly exclude Product Phase
+4. A successful merge changes source governance only; it must leave tags, Release assets,
+published bytes and `Latest` unchanged.

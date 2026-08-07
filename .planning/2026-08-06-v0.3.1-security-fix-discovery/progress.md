@@ -1024,3 +1024,45 @@ local/Linux/no-live Cloud regression.
   validation parent `f452d069576da7d1cf7b772aa7bc3003d20db01b`, remote main
   `bef919475b6ebc3d74c09f9664749664cf950537` and v0.3.1 tag
   `9aa2148886e499f9f45594f7ae4f7681f1045de2` all match the frozen boundary.
+
+## 2026-08-07 — main convergence authorized
+
+- The completed promotion evidence was checkpointed and ordinarily pushed at exact
+  local/remote validation head `c92b0879e1b2525291f084b96c89ec05d0e9f8f0`; the worktree
+  was clean before this gate.
+- Read-only orientation found remote main at
+  `bef919475b6ebc3d74c09f9664749664cf950537`, with the validation head 16 commits ahead,
+  zero behind and no divergence. The comparison covers 29 files, including the bounded
+  security fixes, regression tests, Release/Cloud governance and persisted evidence.
+- GitHub reports `main` as the default branch, no open PRs and no historical PR for the
+  validation head. The active main ruleset prevents deletion/non-fast-forward updates but
+  requires no status checks; merge, rebase and squash methods are all repository-enabled.
+- Maintainer approved the proposed source-governance convergence sequence. The active gate
+  permits only this planning checkpoint/push, one draft PR from the existing validation
+  branch to main, exact PR review, merge-commit integration and post-merge identity checks.
+  Product/Release inputs, published identities, Cloud, rollback/Latest and Product Phase 4
+  remain outside scope.
+- The first combined planning patch was rejected atomically because its findings tail
+  anchor did not match the file exactly. It changed no file. File-local exact-anchor
+  patches were used instead and applied successfully.
+- Main-convergence remote preflight authenticated as `keeptoy` and confirmed exact remote
+  main `bef9194...`, validation parent `c92b087...`, v0.3.1 tag `9aa2148...` and v0.3.0
+  tag `1454c92...`. The combined query then stopped read-only because this `gh release
+  view` version does not expose an `isLatest` JSON field. The retry uses the Releases API
+  `/latest` endpoint and supported release fields; no remote state was changed.
+- The batched Releases API retry returned the exact v0.3.1 and v0.3.0 asset fingerprints
+  but also reported one read-only TLS handshake timeout, making the batched output order
+  unsuitable as sole `Latest` evidence. A single-endpoint retry is used to bind the latest
+  response unambiguously; the timeout caused no mutation.
+- The isolated `/releases/latest` retry PASS: it identifies non-draft/non-prerelease
+  v0.3.1 and the exact immutable 21,565-byte bootstrap `ce31a320...a5e8` plus 82,725-byte
+  ZIP `f097b040...31f9`. Together with the exact refs above, the convergence preflight is
+  green.
+- The first focused governance test invocation could not start either test file because
+  the managed Windows sandbox denied Node test-runner child creation with `spawn EPERM`.
+  This occurred before test logic and is a platform limitation, not a failed assertion.
+  The same unchanged test command is rerun at the approved local boundary. The accompanying
+  exact three-path, UTF-8/no-BOM/LF/final-newline and `git diff --check` checks passed.
+- Local-boundary focused governance rerun PASS: 5 tests passed, 0 failed. No full product
+  or Cloud suite is repeated because this checkpoint changes only the three active planning
+  files and all accepted product/Release bytes remain untouched.
