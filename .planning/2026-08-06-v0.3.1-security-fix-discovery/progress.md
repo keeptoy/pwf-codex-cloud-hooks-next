@@ -1066,3 +1066,29 @@ local/Linux/no-live Cloud regression.
 - Local-boundary focused governance rerun PASS: 5 tests passed, 0 failed. No full product
   or Cloud suite is repeated because this checkpoint changes only the three active planning
   files and all accepted product/Release bytes remain untouched.
+
+## 2026-08-08 — main convergence verified / terminal closure authorized
+
+- Draft PR #1 was created from exact validation head `c8cfb262...` to exact base
+  `bef9194...`. GitHub reported `MERGEABLE/CLEAN`, 17 original commits, 29 expected paths
+  and no required checks. Its body separated immutable Release source `9aa2148...` from the
+  later evidence head and explicitly excluded Product Phase 4.
+- After read-only scope review, PR #1 was marked ready and merged only with GitHub's merge
+  method locked by `--match-head-commit c8cfb262...`; no squash, rebase, force operation or
+  branch deletion occurred. The merge commit is `07214f97...` with exact parents
+  `bef9194...` and `c8cfb26...`.
+- Post-merge verification PASS: remote main is `07214f97...`; validation remains
+  `c8cfb262...`; Release source `9aa2148...` is an ancestor of main; v0.3.1/v0.3.0 tags,
+  Latest and every checked asset identity/size/digest are unchanged. Local `origin/main`
+  was updated and exact ancestry checks passed while the validation checkout stayed clean.
+- On 2026-08-08 the maintainer instructed the agent to continue with the previously
+  proposed pure-planning closure. Local main fast-forwarded from `03a6cc2...` to exact
+  `07214f97...`, and short-lived branch `agent/close-v0.3.1-security-train` was created from
+  that commit after confirming no local/remote branch collision.
+- Closure scope is exactly the active task plan, findings and progress. The resulting
+  terminal state has no Next Step and grants no Product Phase 4 or other inherited
+  authority. No product, test, contract, README, bootstrap, Release or acceptance file is
+  modified.
+- Terminal closure validation PASS: focused governance 5/5, exact three changed paths,
+  UTF-8 without BOM, LF/final newline, no trailing whitespace and `git diff --check`.
+  Full product/Linux/Cloud suites were not repeated for this planning-only declaration.
