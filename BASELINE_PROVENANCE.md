@@ -151,7 +151,7 @@ pinned upstream archive + license
 | bootstrap size | 17,423 bytes |
 | bootstrap SHA-256 | `ab334f0367d948fa29a2bdd37bff0c220929aeb320fdf59dbacbd5a4021b39c0` |
 | behavior delta | none；保留 canonical runtime 与 `PWF_GLOBAL_HOOK_CANARY_V1` |
-| current authority | published/accepted rollback；beta.2 为 immutable previous fallback |
+| current lifecycle role | immutable immediate previous fallback；当前 rollback/`Latest` 为 v0.3.1 |
 
 S2 已接受上表 exact source，S3-A 已证明 tag target 与两个下载资产，Cloud setup/B～F 进一步证明
 Fresh/canonical/real Resume/doctor/11-payload/zero-residue 全部门槛。后续 evidence-only `main` 提交

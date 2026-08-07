@@ -169,12 +169,17 @@ test("machine contracts freeze provenance, overlays, Host protocol, and artifact
   assert.equal(result.properties.report.maxLength, 20000);
 
   assert.equal(artifact.archive_root, "pwf-codex-cloud-hooks/");
+  assert.equal(artifact.package_name, "pwf-codex-cloud-hooks");
+  assert.equal(artifact.package_version, "0.3.1");
   assert.equal(artifact.ordering, "lexicographic_by_utf8_path");
   assert.equal(artifact.external_release_assets.length, 1);
-  assert.equal(artifact.external_release_assets[0].path, "init-cloud-sandbox-v0.3.0.bash");
+  assert.equal(artifact.external_release_assets[0].path, "init-cloud-sandbox-v0.3.1.bash");
   const artifactPaths = artifact.entries.map(entry => entry.path);
   assert.equal(new Set(artifactPaths).size, artifactPaths.length);
+  assert.equal(artifactPaths.length, 23);
+  assert.equal(artifactPaths.includes("patches/patch_planning_skill.py"), true);
   assert.equal(artifactPaths.includes("init-cloud-sandbox-v0.3.0.bash"), false);
+  assert.equal(artifactPaths.includes("init-cloud-sandbox-v0.3.1.bash"), false);
   for (const entry of artifact.entries.filter(entry => entry.state === "present")) {
     assert.equal(fs.existsSync(path.join(root, entry.path)), true, entry.path);
   }

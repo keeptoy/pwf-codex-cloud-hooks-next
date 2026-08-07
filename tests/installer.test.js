@@ -56,6 +56,15 @@ function run(home, ...args) {
   const result = spawnSync(process.execPath, [cli, ...args, "--codex-home", home, "--skill-root", skill, "--managed-requirements", requirements, "--json"], { encoding: "utf8" });
   return { ...result, json: result.stdout.trim() ? JSON.parse(result.stdout) : null };
 }
+function directOptions(home) {
+  return {
+    codexHome: home,
+    skillRoot: skill,
+    managedRequirements: path.join(home, "etc", "codex", "requirements.toml"),
+    dryRun: false,
+    repair: false,
+  };
+}
 function fixture() {
   const home = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-hooks-test-"));
   fs.mkdirSync(path.join(home, "etc", "codex"), { recursive: true });
@@ -123,6 +132,126 @@ test("managed install is merge-preserving, idempotent, diagnosable and uninstall
   requirements = fs.readFileSync(requirementsPath, "utf8");
   assert.match(requirements, /command = "\/usr\/bin\/keep"/); assert.doesNotMatch(requirements, /hook_adapter\.py/);
   assert.equal(fs.existsSync(path.join(home, "hooks", "planning-with-files")), false);
+});
+
+test("managed TOML ownership preserves unrelated array tables and rejects ambiguous marked state", () => {
+  const home = fixture();
+  try {
+    const installer = require(cli);
+    const paths = installer.pathsFor(home, path.join(home, "etc", "codex", "requirements.toml"));
+    const base = fs.readFileSync(paths.requirements, "utf8");
+    const managed = installer.managedRequirements(base, paths);
+    assert.match(managed, /# BEGIN pwf-codex-cloud-hooks managed requirements/);
+    assert.match(managed, /# END pwf-codex-cloud-hooks managed requirements/);
+
+    const admin = '[[permissions.audit]]\nname = "administrator-owned-rule"\nnetwork = "deny"\n';
+    const withAdmin = `${managed.trimEnd()}\n${admin}`;
+    const unowned = installer.removeOwnedRequirements(withAdmin);
+    assert.match(unowned, /administrator-owned-rule/);
+    assert.doesNotMatch(unowned, /hook_adapter\.py/);
+
+    const legacy = managed
+      .replace(/^# BEGIN pwf-codex-cloud-hooks managed requirements\r?\n/m, "")
+      .replace(/^# END pwf-codex-cloud-hooks managed requirements\r?\n?/m, "");
+    const legacyUnowned = installer.removeOwnedRequirements(`${legacy.trimEnd()}\n${admin}`);
+    assert.match(legacyUnowned, /administrator-owned-rule/);
+    assert.doesNotMatch(legacyUnowned, /hook_adapter\.py/);
+
+    const ambiguous = managed.replace(
+      "# END pwf-codex-cloud-hooks managed requirements",
+      "unknown = true\n# END pwf-codex-cloud-hooks managed requirements",
+    );
+    assert.throws(
+      () => installer.removeOwnedRequirements(ambiguous),
+      /BLOCKED_AMBIGUOUS_MANAGED_REQUIREMENTS/,
+    );
+
+    const trustEntry = { rawKey: "legacy-key", fileKey: "file:legacy-key" };
+    const trust = '[hooks.state."legacy-key"]\nenabled = true\n\n[[permissions.audit]]\nname = "keep-trust-neighbor"\n';
+    const stripped = installer.stripTrustToml(trust, [trustEntry]);
+    assert.match(stripped, /keep-trust-neighbor/);
+  } finally {
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+test("legacy TOML recognition fails closed on shared groups, malformed headers, and command collisions", () => {
+  const home = fixture();
+  try {
+    const installer = require(cli);
+    const paths = installer.pathsFor(home, path.join(home, "etc", "codex", "requirements.toml"));
+    const managed = installer.managedRequirements(fs.readFileSync(paths.requirements, "utf8"), paths);
+    const legacy = managed
+      .replace(/^# BEGIN pwf-codex-cloud-hooks managed requirements\r?\n/m, "")
+      .replace(/^# END pwf-codex-cloud-hooks managed requirements\r?\n?/m, "");
+
+    const sharedGroup = legacy.replace(
+      "[[hooks.UserPromptSubmit]]",
+      '[[hooks.SessionStart.hooks]]\ntype = "command"\ncommand = "/usr/bin/admin"\n\n[[hooks.UserPromptSubmit]]',
+    );
+    assert.throws(() => installer.removeOwnedRequirements(sharedGroup), /BLOCKED_AMBIGUOUS_MANAGED_REQUIREMENTS/);
+
+    const malformed = `${legacy.trimEnd()}\n[[permissions.audit]\nnetwork = "deny"\n`;
+    assert.throws(() => installer.removeOwnedRequirements(malformed), /BLOCKED_AMBIGUOUS_MANAGED_REQUIREMENTS/);
+
+    const collision = '[[hooks.Stop]]\n[[hooks.Stop.hooks]]\ntype = "command"\ncommand = "/tmp/hooks/planning-with-files/hook_adapter.py Stop"\n';
+    assert.throws(() => installer.removeOwnedRequirements(collision), /BLOCKED_AMBIGUOUS_MANAGED_REQUIREMENTS/);
+
+    const quotedAdmin = '  # administrator comment\r\n[["permissions.audit"]]\r\nname = "quoted-admin"\r\n';
+    const preserved = installer.removeOwnedRequirements(`${legacy.trimEnd()}\n${quotedAdmin}`);
+    assert.ok(preserved.includes(quotedAdmin));
+  } finally {
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+test("real install recomputes shared requirements after acquiring its lock", () => {
+  const home = fixture();
+  const requirements = path.join(home, "etc", "codex", "requirements.toml");
+  const installer = require(cli);
+  try {
+    installer.setTestHooks({
+      afterAcquire({ operation }) {
+        if (operation === "install") {
+          fs.appendFileSync(requirements, '\n[[permissions.audit]]\nname = "lock-held-admin-write"\n');
+        }
+      },
+    });
+    const result = installer.install(directOptions(home));
+    assert.equal(result.healthy, true);
+    assert.match(fs.readFileSync(requirements, "utf8"), /lock-held-admin-write/);
+  } finally {
+    installer.setTestHooks(null);
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+test("real install aborts rather than overwriting requirements changed before rename", () => {
+  const home = fixture();
+  const requirements = path.join(home, "etc", "codex", "requirements.toml");
+  const initial = fs.readFileSync(requirements);
+  const installer = require(cli);
+  let injected = false;
+  try {
+    installer.setTestHooks({
+      beforeAtomicReplace({ file }) {
+        if (!injected && file === requirements) {
+          injected = true;
+          fs.appendFileSync(requirements, '\n[[permissions.audit]]\nname = "pre-rename-admin-write"\n');
+        }
+      },
+    });
+    assert.throws(() => installer.install(directOptions(home)), /BLOCKED_CONCURRENT_DRIFT/);
+    assert.match(fs.readFileSync(requirements, "utf8"), /pre-rename-admin-write/);
+    const backups = path.join(home, "backups", "planning-with-files-hooks");
+    const entries = fs.readdirSync(backups);
+    assert.equal(entries.length, 1);
+    assert.deepEqual(fs.readFileSync(path.join(backups, entries[0], "system-requirements.toml")), initial);
+    assert.equal(fs.existsSync(path.join(home, ".pwf-codex-cloud-hooks.lock")), false);
+  } finally {
+    installer.setTestHooks(null);
+    fs.rmSync(home, { recursive: true, force: true });
+  }
 });
 
 test("installed runtime permissions are cross-user readable on the Linux target", { skip: process.platform === "win32" }, () => {
@@ -200,6 +329,38 @@ test("repair fails closed for unowned requirements, manifest, and runtime drift"
   fs.rmSync(path.join(runtime, "unknown.sh")); fs.mkdirSync(path.join(runtime, "unknown-directory"));
   result = run(home, "doctor"); assert.equal(result.status, 1); assert.equal(result.json.repairable, false); assert.match(result.json.blockers.join(" "), /unknown-directory/);
   fs.rmSync(home, { recursive: true, force: true });
+});
+
+test("doctor and repair preserve third-party array drift and report ambiguous owned state as a blocker", () => {
+  const home = fixture(), requirements = path.join(home, "etc", "codex", "requirements.toml");
+  try {
+    let result = run(home, "install");
+    assert.equal(result.status, 0, result.stderr);
+    const installed = fs.readFileSync(requirements, "utf8");
+    const admin = '\n[[permissions.audit]]\nname = "administrator-owned-rule"\nnetwork = "deny"\n';
+    fs.writeFileSync(requirements, installed + admin);
+    const drifted = fs.readFileSync(requirements);
+
+    result = run(home, "doctor");
+    assert.equal(result.status, 1);
+    assert.equal(result.json.repairable, false);
+    assert.match(result.json.blockers.join(" "), /unowned managed requirements drift/);
+    result = run(home, "install", "--repair");
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /REPAIR_BLOCKED_UNKNOWN_DRIFT/);
+    assert.deepEqual(fs.readFileSync(requirements), drifted);
+
+    fs.writeFileSync(requirements, installed.replace(
+      "# END pwf-codex-cloud-hooks managed requirements",
+      "unknown = true\n# END pwf-codex-cloud-hooks managed requirements",
+    ));
+    result = run(home, "doctor");
+    assert.equal(result.status, 1);
+    assert.equal(result.json.repairable, false);
+    assert.match(result.json.blockers.join(" "), /BLOCKED_AMBIGUOUS_MANAGED_REQUIREMENTS/);
+  } finally {
+    fs.rmSync(home, { recursive: true, force: true });
+  }
 });
 
 test("installation backup can restore every pre-existing managed file byte-for-byte", () => {

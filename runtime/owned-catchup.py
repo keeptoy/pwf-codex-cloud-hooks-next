@@ -4,13 +4,14 @@
 from __future__ import annotations
 
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
 import re
 import stat
 import sys
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Dict, Iterable, List, NamedTuple, Optional, Tuple
 
 
 # The installed runtime has an exact fail-closed inventory. Importing the
@@ -26,6 +27,8 @@ SESSION_ATTACHMENTS = {"legacy", "attached", "detached"}
 SESSION_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
 HOST_PATH_STATES = {"absent", "validated", "rejected"}
 MAX_RECORD_BYTES = 1_000_000
+MAX_TRANSCRIPT_BYTES = 16_000_000
+MAX_FALLBACK_CANDIDATES = 256
 KNOWN_RECORD_TYPES = {"session_meta", "turn_context", "world_state", "event_msg", "response_item", "user", "assistant"}
 KNOWN_EVENT_TYPES = {
     "agent_message", "agent_reasoning", "mcp_tool_call_end", "patch_apply_end",
@@ -47,6 +50,15 @@ UPSTREAM_PATH = Path(__file__).resolve().parent / "upstream" / "session-catchup.
 
 class InvalidRequest(ValueError):
     """Raised when input does not satisfy the v1 managed runtime contract."""
+
+
+class VerifiedTranscript(NamedTuple):
+    """Immutable bytes and identity from one verified Host transcript object."""
+
+    path: Path
+    data: bytes
+    identity: Tuple[int, int, int, int, int, int, int]
+    mtime_ns: int
 
 
 def _load_upstream() -> Any:
@@ -244,22 +256,101 @@ def _canonical_directory(value: str) -> Optional[Path]:
         return None
 
 
-def _contained_regular_file(value: str, roots: List[Path]) -> Optional[Path]:
-    path = Path(value)
+def _file_identity(info: os.stat_result) -> Tuple[int, int, int, int, int, int, int]:
+    return (
+        info.st_dev,
+        info.st_ino,
+        stat.S_IFMT(info.st_mode),
+        info.st_size,
+        info.st_mtime_ns,
+        info.st_ctime_ns,
+        info.st_nlink,
+    )
+
+
+def _read_descriptor(fd: int) -> Tuple[Optional[bytes], Optional[str]]:
+    chunks: List[bytes] = []
+    total = 0
+    while total <= MAX_TRANSCRIPT_BYTES:
+        chunk = os.read(fd, min(65_536, MAX_TRANSCRIPT_BYTES + 1 - total))
+        if not chunk:
+            break
+        chunks.append(chunk)
+        total += len(chunk)
+    if total > MAX_TRANSCRIPT_BYTES:
+        return None, "record_too_large"
+    return b"".join(chunks), None
+
+
+def _open_relative_nofollow(root: Path, relative: Path) -> int:
+    directory_flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
+    file_flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
+    directory_fd = os.open(root, directory_flags)
     try:
-        info = path.lstat()
-        if stat.S_ISLNK(info.st_mode) or not stat.S_ISREG(info.st_mode):
-            return None
-        resolved = path.resolve(strict=True)
-    except OSError:
-        return None
+        for component in relative.parts[:-1]:
+            next_fd = os.open(component, directory_flags, dir_fd=directory_fd)
+            os.close(directory_fd)
+            directory_fd = next_fd
+        return os.open(relative.parts[-1], file_flags, dir_fd=directory_fd)
+    finally:
+        os.close(directory_fd)
+
+
+def _verified_transcript(value: str, roots: List[Path]) -> Tuple[Optional[VerifiedTranscript], Optional[str]]:
+    candidate = Path(value)
+    if not candidate.is_absolute():
+        return None, None
     for root in roots:
         try:
-            resolved.relative_to(root)
-            return resolved
+            relative = candidate.relative_to(root)
         except ValueError:
             continue
-    return None
+        if not relative.parts or any(part in {"", ".", ".."} for part in relative.parts):
+            return None, None
+        first_fd: Optional[int] = None
+        second_fd: Optional[int] = None
+        try:
+            if os.name == "nt":
+                initial = candidate.lstat()
+                if stat.S_ISLNK(initial.st_mode):
+                    return None, None
+                resolved = candidate.resolve(strict=True)
+                resolved.relative_to(root)
+                first_fd = os.open(resolved, os.O_RDONLY | getattr(os, "O_BINARY", 0))
+            else:
+                resolved = root / relative
+                first_fd = _open_relative_nofollow(root, relative)
+            before = os.fstat(first_fd)
+            if not stat.S_ISREG(before.st_mode) or before.st_nlink != 1:
+                return None, None
+            if before.st_size > MAX_TRANSCRIPT_BYTES:
+                return None, "record_too_large"
+            data, warning = _read_descriptor(first_fd)
+            if warning or data is None:
+                return None, warning
+            after = os.fstat(first_fd)
+            identity = _file_identity(before)
+            if _file_identity(after) != identity or len(data) != after.st_size:
+                return None, "transcript_unreadable"
+            if os.name == "nt":
+                second_fd = os.open(resolved, os.O_RDONLY | getattr(os, "O_BINARY", 0))
+            else:
+                second_fd = _open_relative_nofollow(root, relative)
+            if _file_identity(os.fstat(second_fd)) != identity:
+                return None, "transcript_unreadable"
+            return VerifiedTranscript(resolved, data, identity, before.st_mtime_ns), None
+        except (OSError, RuntimeError, ValueError) as error:
+            if isinstance(error, OSError) and error.errno in {
+                getattr(os, "ENOENT", 2), getattr(os, "ENOTDIR", 20), getattr(os, "ELOOP", 40)
+            }:
+                return None, None
+            return None, "transcript_unreadable"
+        finally:
+            if first_fd is not None:
+                os.close(first_fd)
+            if second_fd is not None:
+                os.close(second_fd)
+    return None, None
 
 
 def _decode_record(raw: bytes) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
@@ -278,19 +369,15 @@ def _decode_record(raw: bytes) -> Tuple[Optional[Dict[str, Any]], Optional[str]]
     return (value, None) if isinstance(value, dict) else (None, "invalid_json_record")
 
 
-def _session_meta(path: Path) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
-    try:
-        with path.open("rb") as stream:
-            for raw in stream:
-                record, warning = _decode_record(raw)
-                if warning:
-                    return None, warning
-                if not record or record.get("type") != "session_meta":
-                    continue
-                payload = record.get("payload")
-                return (payload, None) if isinstance(payload, dict) else (None, "invalid_json_record")
-    except OSError:
-        return None, "transcript_unreadable"
+def _session_meta(transcript: VerifiedTranscript) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
+    for raw in io.BytesIO(transcript.data):
+        record, warning = _decode_record(raw)
+        if warning:
+            return None, warning
+        if not record or record.get("type") != "session_meta":
+            continue
+        payload = record.get("payload")
+        return (payload, None) if isinstance(payload, dict) else (None, "invalid_json_record")
     return None, None
 
 
@@ -308,10 +395,10 @@ def _matches_project(meta: Dict[str, Any], project_root: str, upstream: Any) -> 
     return isinstance(cwd, str) and upstream.same_project_path(cwd, project_root)
 
 
-def _candidate_state(path: Path, request: Dict[str, Any], upstream: Any) -> Tuple[str, Optional[str]]:
-    if path.name.startswith("rollout-") is False or path.suffix != ".jsonl":
+def _candidate_state(transcript: VerifiedTranscript, request: Dict[str, Any], upstream: Any) -> Tuple[str, Optional[str]]:
+    if transcript.path.name.startswith("rollout-") is False or transcript.path.suffix != ".jsonl":
         return "rejected", None
-    meta, warning = _session_meta(path)
+    meta, warning = _session_meta(transcript)
     if warning:
         return "malformed", warning
     if not meta:
@@ -323,36 +410,36 @@ def _candidate_state(path: Path, request: Dict[str, Any], upstream: Any) -> Tupl
     return "accepted", None
 
 
-def _fallback_candidates(roots: List[Path]) -> Tuple[bool, List[Path]]:
-    candidates: List[Path] = []
+def _fallback_candidates(roots: List[Path]) -> Tuple[bool, List[VerifiedTranscript], List[str]]:
+    candidates: List[VerifiedTranscript] = []
+    warnings: List[str] = []
     any_store = False
+    examined = 0
     for root in roots:
         any_store = True
         try:
             for candidate in root.rglob("rollout-*.jsonl"):
-                contained = _contained_regular_file(str(candidate), [root])
-                if contained is not None:
-                    candidates.append(contained)
+                if examined >= MAX_FALLBACK_CANDIDATES:
+                    break
+                examined += 1
+                verified, warning = _verified_transcript(str(candidate), [root])
+                if verified is not None:
+                    candidates.append(verified)
+                elif warning:
+                    warnings.append(warning)
         except OSError:
             continue
-    candidates.sort(key=lambda item: _mtime(item), reverse=True)
-    return any_store, candidates
+    candidates.sort(key=lambda item: item.mtime_ns, reverse=True)
+    return any_store, candidates, list(dict.fromkeys(warnings))
 
 
-def _mtime(path: Path) -> float:
-    try:
-        return path.stat().st_mtime
-    except OSError:
-        return 0.0
-
-
-def select_transcript(request: Dict[str, Any], upstream: Any) -> Tuple[Optional[Path], str, str, List[str]]:
+def select_transcript(request: Dict[str, Any], upstream: Any) -> Tuple[Optional[VerifiedTranscript], str, str, List[str]]:
     transcript = request["transcript"]
     roots = [root for value in transcript["session_store_roots"] if (root := _canonical_directory(value))]
     warnings: List[str] = []
 
     if transcript["host_path_state"] == "validated":
-        host = _contained_regular_file(transcript["host_path"], roots)
+        host, open_warning = _verified_transcript(transcript["host_path"], roots)
         if host is not None:
             state, warning = _candidate_state(host, request, upstream)
             if state == "accepted":
@@ -363,6 +450,9 @@ def select_transcript(request: Dict[str, Any], upstream: Any) -> Tuple[Optional[
                 if warning:
                     warnings.append(warning)
                 return None, "none", "transcript_unreadable" if warning == "transcript_unreadable" else "malformed_transcript", warnings
+        if open_warning:
+            warnings.append(open_warning)
+            return None, "none", "transcript_unreadable" if open_warning == "transcript_unreadable" else "malformed_transcript", warnings
         warnings.append("transcript_path_rejected")
         if not transcript["allow_scan_fallback"]:
             return None, "none", "transcript_path_rejected", warnings
@@ -376,10 +466,14 @@ def select_transcript(request: Dict[str, Any], upstream: Any) -> Tuple[Optional[
     if not roots:
         return None, "none", "no_session_store", warnings
     warnings.append("scan_fallback_used")
-    any_store, candidates = _fallback_candidates(roots)
+    any_store, candidates, candidate_warnings = _fallback_candidates(roots)
+    warnings.extend(candidate_warnings)
     if not any_store:
         return None, "none", "no_session_store", warnings
-    malformed_outcome = ""
+    malformed_outcome = (
+        "transcript_unreadable" if "transcript_unreadable" in candidate_warnings
+        else "malformed_transcript" if candidate_warnings else ""
+    )
     for candidate in candidates:
         state, warning = _candidate_state(candidate, request, upstream)
         if state == "accepted":
@@ -418,28 +512,24 @@ def _record_warning(record: Dict[str, Any]) -> Optional[str]:
     return None
 
 
-def _parse_transcript(path: Path) -> Tuple[Optional[List[Dict[str, Any]]], List[str], Optional[str]]:
+def _parse_transcript(transcript: VerifiedTranscript) -> Tuple[Optional[List[Dict[str, Any]]], List[str], Optional[str]]:
     records: List[Dict[str, Any]] = []
     warnings: List[str] = []
-    try:
-        with path.open("rb") as stream:
-            for line_number, raw in enumerate(stream):
-                record, warning = _decode_record(raw)
-                if warning:
-                    warnings.append(warning)
-                    return None, list(dict.fromkeys(warnings)), "malformed_transcript"
-                if not record:
-                    continue
-                shape_warning = _record_warning(record)
-                if shape_warning == "invalid_json_record":
-                    warnings.append(shape_warning)
-                    return None, list(dict.fromkeys(warnings)), "malformed_transcript"
-                if shape_warning:
-                    warnings.append(shape_warning)
-                record["_line_num"] = line_number
-                records.append(record)
-    except OSError:
-        return None, warnings, "transcript_unreadable"
+    for line_number, raw in enumerate(io.BytesIO(transcript.data)):
+        record, warning = _decode_record(raw)
+        if warning:
+            warnings.append(warning)
+            return None, list(dict.fromkeys(warnings)), "malformed_transcript"
+        if not record:
+            continue
+        shape_warning = _record_warning(record)
+        if shape_warning == "invalid_json_record":
+            warnings.append(shape_warning)
+            return None, list(dict.fromkeys(warnings)), "malformed_transcript"
+        if shape_warning:
+            warnings.append(shape_warning)
+        record["_line_num"] = line_number
+        records.append(record)
     return records, list(dict.fromkeys(warnings)), None
 
 
@@ -574,31 +664,31 @@ def execute(request: Dict[str, Any], upstream: Any) -> Dict[str, Any]:
             parse_outcome or "runtime_error",
             request,
             selected_transcript=selected,
-            selected_transcript_path=str(session),
+            selected_transcript_path=str(session.path),
             warnings=warnings,
         )
     last_update_line, last_update_file = upstream.find_last_planning_update(records)
     if last_update_line < 0 or last_update_file is None:
         return runtime_result(
             "no_planning_update", request, selected_transcript=selected,
-            selected_transcript_path=str(session), warnings=warnings,
+            selected_transcript_path=str(session.path), warnings=warnings,
         )
     messages_after, normalization_warnings = _normalize_messages(records, last_update_line, upstream)
     warnings = list(dict.fromkeys(warnings + normalization_warnings))
     if not messages_after:
         return runtime_result(
             "no_unsynced_context", request, selected_transcript=selected,
-            selected_transcript_path=str(session), warnings=warnings,
+            selected_transcript_path=str(session.path), warnings=warnings,
         )
-    report = _render_report(session, last_update_file, last_update_line, messages_after, request["output_budget"])
+    report = _render_report(session.path, last_update_file, last_update_line, messages_after, request["output_budget"])
     if report is None:
         return runtime_result(
             "output_budget_exceeded", request, selected_transcript=selected,
-            selected_transcript_path=str(session), warnings=warnings,
+            selected_transcript_path=str(session.path), warnings=warnings,
         )
     return runtime_result(
         "report_emitted", request, selected_transcript=selected,
-        selected_transcript_path=str(session), report=report, warnings=warnings,
+        selected_transcript_path=str(session.path), report=report, warnings=warnings,
     )
 
 

@@ -31,7 +31,7 @@
     "contracts": {
       "runtime_bundle": {
         "path": "contracts/runtime-bundle-v1.json",
-        "sha256": "7c4857a1ef6ac6df4ce46f58453ab845e82003ce4bc0b13326ec5a2650fc909c"
+        "sha256": "01ada6e9c94a6015c87669b74974bca6381c043eb61800e318b0d6a61abfb930"
       },
       "compatibility_overlays": {
         "path": "contracts/compatibility-overlays-v1.json",
@@ -57,7 +57,7 @@
       },
       "release_artifact": {
         "path": "contracts/release-artifact-v1.json",
-        "sha256": "e35faf156b04d5d56ea51055250d788c9113cc6cf1be8f4fa5b2f0f30d3ac7d4"
+        "sha256": "a8f6d7979fd222b734acdd1c63f483fa5a4be1a3f93daff105e5392f8191cfe2"
       }
     },
     "importer": {
@@ -77,14 +77,14 @@
         "package_path": "runtime/owned-catchup.py",
         "mode": "0755",
         "origin": "local_managed_runtime",
-        "sha256": "bb3a18b8144e63b17c33db4cccf81425f135647948e6f20f4c44c3e42ba71f85"
+        "sha256": "8b5501eb4257654922a9e247bd3873e1ede75a7a1ae4b777eb7d8b3b47e41b72"
       },
       {
         "id": "owned_plan",
         "package_path": "runtime/owned-plan.py",
         "mode": "0755",
         "origin": "local_managed_runtime",
-        "sha256": "2be123e4b73ac72ed189ecffa816ceb6b4129f216093a16b2bba9c998353caef"
+        "sha256": "1d8098d12ae6fdc9389b1047fc3691d1f792c813d21575ace7db0daa85c32595"
       }
     ],
     "files": [

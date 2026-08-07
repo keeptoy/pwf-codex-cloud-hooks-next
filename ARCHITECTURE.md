@@ -21,12 +21,66 @@ owned copy 部署到 Codex Cloud system-managed Hooks，并负责 Host protocol�
 这些是带日期的平台事实，不是永久常量。adapter 优先使用显式 Host input 和安装位置推导，并保留
 环境变量缺失时的受控兼容行为。
 
+### 2.1 Cloud 生命周期与 `CODEX_HOME`
+
+OpenAI 的公开 Cloud environment 文档给出的顺序是：创建容器并 checkout 选定仓库版本，运行 setup
+script（复用缓存容器时可再运行 maintenance script），然后才进入 agent phase。setup script 运行在
+独立 Bash session 中，因此其中临时 `export` 的值不会仅凭 shell 继承进入后续 agent phase。
+参见 OpenAI 官方 [`Cloud environments`](https://learn.chatgpt.com/docs/environments/cloud-environment)。
+
+Codex Cloud 配置界面把 environment settings 与 setup script 明确分成不同控制面；维护者提供的
+2026-08 界面截图也显示“环境变量”“密钥”“容器缓存”和“设置脚本”是彼此独立的配置区。应按下表
+区分，不把“配置的环境变量”和“setup shell 内创建的变量”合并成一个来源：
+
+| 渠道 | 配置/产生位置 | 生命周期 | 本仓库语义 |
+|---|---|---|---|
+| 配置的环境变量 | Cloud environment 的“环境变量”区 | 平台注入 setup 与 agent phase；值不是由 setup script 创建 | 显式外部输入；若用户配置 `CODEX_HOME`，bootstrap 必须把它当作 override 校验 |
+| secret | Cloud environment 的“密钥”区 | 只在 setup 可见，agent phase 前移除 | 只用于受控安装输入；runtime/Hook 不得依赖其存在 |
+| setup script shell | Cloud environment 的“设置脚本”区（自动或手动） | checkout 后执行的独立 Bash session；shell 内临时 `export` 不自动延续 | 安装/准备阶段；必须显式解析路径，不能借 shell 继承建立后续 Hook contract |
+
+因此同一 setup 进程中看到的环境由两部分组成：平台预先注入的配置环境变量，以及脚本自身设置的
+shell-local 变量。前者可以贯穿阶段；后者除非写入持久配置并由后续进程重新加载，否则只属于 setup
+session。界面布局本身是带日期的产品观测，公开文档中的生命周期语义才是外部依据。
+
+本仓库进一步冻结的是 2026-08 Cloud fixture 与 Fresh/Resume 验收得到的、更窄的平台观测：
+
+```text
+new container
+  -> repository clone / checkout
+  -> setup shell
+       CODEX_HOME 在入口处未由 Host 提供
+       bootstrap 显式解析 CODEX_HOME（当前默认 /opt/codex）
+  -> agent / Codex runtime starts
+  -> managed Hook process
+       CODEX_HOME=/opt/codex
+       session store=/opt/codex/sessions
+```
+
+这里的“Codex runtime starts”只是本仓库用于区分 setup 与后续 agent/Hook 生命周期的术语，不声明
+一个公开 Host 进程名或精确内部启动实现。公开文档把 `CODEX_HOME` 定义为可配置的 Codex state root，
+并对 CLI、IDE extension、app-server 和 installer 给出通用默认 `~/.codex`；它没有把 Cloud 的
+`/opt/codex` 声明为永久合同。参见 OpenAI 官方
+[`Environment variables`](https://learn.chatgpt.com/docs/config-file/environment-variables#core-locations)。
+因此本仓库只把 `/opt/codex` 当作带日期、由 fixture 和 acceptance 证明的 Cloud override/默认事实。
+
+由此得到四条设计约束：
+
+1. setup 入口不能假设 Host 已经提供 `CODEX_HOME`；bootstrap 必须使用显式配置或受控、可验证的
+   当前 Cloud 默认，并把解析后的绝对路径传给 installer。
+2. setup 中的临时 `export` 不能作为后续 Hook 获得配置的证明；后续阶段必须重新使用 Host 提供的
+   值、显式 config/input，或从已验证 managed adapter 安装位置受控推导。
+3. 用户在 environment settings 中显式提供 `CODEX_HOME` 时，它是平台配置输入，不能与 setup
+   shell 自行设置的同名变量或“实测 Host 在 setup 入口未提供该值”混为一谈；任何非默认路径仍须
+   containment、存在性和权限校验。
+4. fixtures 必须继续区分 `sandbox_initialization`、`agent_after_start` 与 `managed_hook`，避免用某一
+   阶段的环境快照替代另一阶段的 Host contract。
+
 ## 3. 部署图
 
 ```text
 fixed upstream v3.8.2 archive
         |
-        | importer + manifest + compatibility overlay
+        | importer validates manifest/ledger; patcher applies owned overlay
         v
 repository-owned runtime bundle
         |
@@ -46,6 +100,46 @@ $CODEX_HOME/hooks/planning-with-files/
 ```
 
 Managed policy 只认识 adapter。child runtimes 是已安装 adapter 的 sibling，不能独立注册为 handler。
+
+### 3.1 源码重建与生产执行是两条路径
+
+`patches/patch_planning_skill.py` 位于源码重建和 Release 审计层，是
+`tools/import_upstream_runtime.py` 的直接依赖；它不是安装后的 Hook runtime，也不进入 Managed policy
+或 trusted execution graph。Importer 从固定的 PWF v3.8.2 archive 重建 owned runtime 时，只有上游
+`scripts/session-catchup.py` 需要经过 patcher，另外三个上游脚本保持 pristine。
+
+Patcher 的职责严格限定为：
+
+1. 固定 patch ID、目标文件和四个精确源码 anchor；上游结构意外变化时拒绝继续，而不是猜测替换；
+2. 按 machine contract 的顺序应用 session store、explicit runtime、scoped planning state 和 bounded
+   wrapper context 四项 compatibility overlay；
+3. 核对 pristine/managed SHA-256，使 `runtime/upstream/session-catchup.py` 可以从固定上游确定性复现；
+4. 为 importer 的 `import`/`check` 和独立维护检查提供转换逻辑，不在生产安装时修改 global PWF Skill。
+
+维护者的源码重建/核验路径发生在源码树或自包含的 Release ZIP 中：
+
+```text
+pinned PWF v3.8.2 archive
+  -> importer 校验 archive、manifest、allowlist、overlay ledger 与 patcher anchors
+  -> patcher 只转换 session-catchup.py
+  -> repository-owned runtime/upstream/*
+  -> Release builder 将成品 runtime、importer 与 patcher 一起装入候选 ZIP
+```
+
+生产安装/运行路径不现场打 patch，而是使用 ZIP 内已经生成的成品：
+
+```text
+Release ZIP
+  -> install.js 校验 runtime contract、SHA-256、mode 与 inventory
+  -> 复制成品到 $CODEX_HOME/hooks/planning-with-files/
+  -> Managed policy 只启动绝对路径 hook_adapter.py
+  -> adapter 只调用已安装的 sibling owned/upstream runtime
+```
+
+因此 v0.3.0 即使没有在 ZIP 中附带 patcher，也能正常安装和运行：它已经包含转换完成的
+`runtime/upstream/session-catchup.py`。缺陷只在于解压 v0.3.0 ZIP 后，随包提供的 importer 缺少直接
+依赖，无法独立完成维护自检。0.3.1 把 patcher 加入第 23 个 entry，修复的是 Release 工具自包含性，
+没有新增生产 runtime 或激活边。
 
 ## 4. Runtime 数据流
 
@@ -161,9 +255,15 @@ Installer 不负责修改 workspace planning，不接管第三方 policy，也�
 
 ## 11. Release 边界
 
-Release ZIP 由 22-entry machine allowlist 构建。外部 bootstrap 下载并校验 ZIP，因此绝不能进入它
-所校验的 ZIP。stable v0.3.0 已从 exact source `1454c922...` 发布并完成下载复核与 Cloud A～F，
-现为 accepted rollback。beta.2 资产保持不可变 previous fallback。
+已发布 `v0.3.0` ZIP 由 22-entry machine allowlist 构建；它的 tag、ZIP、外部 bootstrap 与 SHA 均保持
+不可变。已发布 `v0.3.1` ZIP 由 23-entry machine allowlist 构建，新增的非 runtime entry 是 importer 必需的
+`patches/patch_planning_skill.py`，从而使解压后的 importer check 自包含。外部 bootstrap 下载并校验
+ZIP，因此绝不能进入它所校验的 ZIP。development bootstrap 使用 zero hash 并 fail closed；授权 seal
+只能在全部 ZIP 输入冻结、双构建一致后写入该 ZIP 的精确 SHA。完成本地 seal 仍不等于已发布或已接受。
+
+v0.3.1 已从 exact source `9aa2148...` 发布，完成公开下载复核与 Cloud A～F，并晋级为当前 accepted
+production rollback 与 GitHub `Latest`。stable v0.3.0 保持不可变 immediate previous fallback；beta.2
+是更早的不可变 fallback oracle。候选源码/package/contract 身份仍不表示已发布。
 
 ## 12. 尚未实现
 

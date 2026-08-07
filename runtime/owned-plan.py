@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""Inactive managed plan-context runtime using the exact v1 JSON protocol.
+"""Active managed plan-context runtime using the exact v1 JSON protocol.
 
-The adapter does not dispatch this child until Phase 3 Round 4. Round 3 installs
-and verifies it so the production trust graph can be tested before activation.
+The adapter dispatches this sibling before catch-up for both supported Hook events.
 """
 
 from __future__ import annotations

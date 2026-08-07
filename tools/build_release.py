@@ -47,6 +47,14 @@ def load_contract(path: Path) -> tuple[dict, list[str]]:
     contract = json.loads(path.read_text(encoding="utf-8"))
     if contract.get("schema_version") != 1:
         raise ValueError("unsupported release artifact schema")
+    package = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
+    for contract_key, package_key in (("package_name", "name"), ("package_version", "version")):
+        expected = contract.get(contract_key)
+        actual = package.get(package_key)
+        if not isinstance(expected, str) or not expected:
+            raise ValueError(f"artifact {contract_key.replace('_', ' ')} is invalid")
+        if expected != actual:
+            raise ValueError(f"package {package_key} mismatch: contract={expected!r}, package.json={actual!r}")
     if contract.get("ordering") != "lexicographic_by_utf8_path":
         raise ValueError("unsupported artifact ordering")
     if contract.get("timestamp") != "1980-01-01T00:00:00Z":

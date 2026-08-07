@@ -17,6 +17,9 @@ const expectedPaths = [
   ".planning/2026-08-06-v0.3.0-stable-release/findings.md",
   ".planning/2026-08-06-v0.3.0-stable-release/progress.md",
   ".planning/2026-08-06-v0.3.0-stable-release/task_plan.md",
+  ".planning/2026-08-06-v0.3.1-security-fix-discovery/findings.md",
+  ".planning/2026-08-06-v0.3.1-security-fix-discovery/progress.md",
+  ".planning/2026-08-06-v0.3.1-security-fix-discovery/task_plan.md",
   "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "LICENSE",
   "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "THIRD_PARTY_NOTICES.md",
   "contracts/adapter-plan-context-request-v1.schema.json",
@@ -29,7 +32,8 @@ const expectedPaths = [
   "docs/git-file-modes.md",
   "docs/v0.3.0-beta.2-cloud-hard-acceptance.md", "hooks/hook_adapter.py",
   "docs/v0.3.0-cloud-hard-acceptance.md",
-  "init-cloud-sandbox-v0.3.0.bash", "install.js", "package.json",
+  "docs/v0.3.1-cloud-hard-acceptance.md",
+  "init-cloud-sandbox-v0.3.0.bash", "init-cloud-sandbox-v0.3.1.bash", "install.js", "package.json",
   "patches/patch_planning_skill.py", "runtime/owned-catchup.py", "runtime/owned-plan.py",
   "runtime/upstream/inject-plan.sh", "runtime/upstream/ledger-summary.sh",
   "runtime/upstream/resolve-plan-dir.sh", "runtime/upstream/session-catchup.py",
@@ -55,7 +59,7 @@ test("slim repository has the exact current allowlist and no archived path alias
   });
   assert.equal(result.status, 0, result.stderr);
   const actual = result.stdout.trim().split(/\r?\n/).filter(Boolean).map(value => value.replaceAll("\\", "/")).sort();
-  assert.equal(expectedPaths.length, 65);
+  assert.equal(expectedPaths.length, 70);
   assert.deepEqual(actual, expectedPaths);
   for (const forbidden of [
     "PROJECT_UNDERSTANDING.md", "work_plan.md", "黑盒验证.md", "snapshot-prototype/",
@@ -94,9 +98,11 @@ test("archived prototype and history remain outside runtime, Release, and adapte
     assert.doesNotMatch(content, /docs\/phase-|\.planning\/2026-08-01/);
   }
   const artifact = JSON.parse(release);
-  assert.equal(artifact.entries.length, 22);
+  assert.equal(artifact.package_version, "0.3.1");
+  assert.equal(artifact.entries.length, 23);
+  assert.equal(artifact.entries.some(item => item.path === "patches/patch_planning_skill.py"), true);
   assert.equal(artifact.entries.some(item => item.path.startsWith("docs/") || item.path.startsWith("tests/")), false);
-  assert.deepEqual(artifact.external_release_assets.map(item => item.path), ["init-cloud-sandbox-v0.3.0.bash"]);
+  assert.deepEqual(artifact.external_release_assets.map(item => item.path), ["init-cloud-sandbox-v0.3.1.bash"]);
   assert.match(installer, /\[\[hooks\.SessionStart\.hooks\]\]/);
   assert.match(installer, /\[\[hooks\.UserPromptSubmit\.hooks\]\]/);
   assert.match(m3Runbook, /event_groups = policy\["hooks"\]\[event\]/);
