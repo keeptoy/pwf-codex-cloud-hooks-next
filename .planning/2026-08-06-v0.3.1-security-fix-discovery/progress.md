@@ -873,3 +873,44 @@ local/Linux/no-live Cloud regression.
 - Before push, clarified that `--force-with-lease` is still a force-family operation and
   is not used. Safety comes from an immediate exact remote-SHA preflight plus Git's normal
   server-side non-fast-forward rejection.
+
+## 2026-08-07 — S3-C Cloud wrapper portability correction
+
+- The authorized ordinary push completed from remote `101dca5...` to exact
+  `e9abf838aff9496629804e927baaaa91e0068756`; immediate remote verification matched, the
+  local worktree was clean, remote main remained `bef9194...` and tag v0.3.1 remained
+  `9aa2148...`.
+- Maintainer's fresh S3-C attempt then stopped at
+  `git fetch --no-tags origin ...`: the Cloud-provided checkout has no `origin` remote.
+  Classified as a runbook portability defect. Cloud had already loaded the requested
+  repository/branch; no product, network-access, tag or published-asset failure occurred.
+- Maintainer requested a simpler Cloud flow. Section 13 now removes all Git fetch/tag/
+  checkout/status operations plus redundant Node-22, file-size, `bash -n`, embedded ZIP
+  hash grep and second doctor checks.
+- The minimum wrapper retains the independent public bootstrap SHA check, then runs the
+  verified bootstrap's `all` command. That command already verifies Node >=18 and the
+  pinned ZIP, then installs, doctors and verifies managed state. B–F remain the lifecycle
+  black box after setup.
+- Local validation PASS: all three runbook Bash fences parse with `bash -n`, focused
+  architecture/repository governance tests pass 5/5, `git diff --check` passes and all
+  immutable v0.3.1 published source/bootstrap paths remain byte-identical to the tag.
+- This local correction authorizes no second checkpoint/push. Remote runbook stays at
+  `e9abf838...` until the maintainer explicitly authorizes transport.
+- Official Cloud-environment documentation cross-check confirms the required nuance:
+  normal tasks check out the selected branch/commit before setup; cache creation checks
+  out the default branch and runs setup; cache resume checks out the chat-selected branch
+  and runs the optional maintenance script instead. Section 13 now states this explicitly,
+  requires Fresh/reset-cache acceptance and forbids setup dependence on workspace branch,
+  tag or Git remote topology.
+- Confirmed the installation path remains branch-independent: verified public bootstrap
+  bytes download verified public ZIP bytes and perform install/doctor/verify. Activation is
+  deferred until the later agent/runtime reads Managed requirements; B–F run in that phase,
+  and F's workspace installer is post-install verification only.
+- Maintainer approved the wording and explicitly authorized one documentation checkpoint
+  plus one ordinary non-force push of the existing validation ref. Read-only preflight
+  found exact remote parent `e9abf838aff9496629804e927baaaa91e0068756`, remote main
+  `bef9194...` and immutable tag v0.3.1 `9aa2148...`.
+- Final pre-check after the lifecycle wording PASS: all three Bash fences parse, focused
+  governance tests pass 5/5, `git diff --check` passes, the changed-path set is exactly the
+  runbook plus three active planning files, and every immutable v0.3.1 published
+  source/bootstrap path remains byte-identical to the tag.

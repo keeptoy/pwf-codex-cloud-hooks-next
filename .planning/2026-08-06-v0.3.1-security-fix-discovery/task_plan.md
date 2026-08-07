@@ -95,25 +95,39 @@ normal server-side fast-forward check; neither `--force` nor `--force-with-lease
 permitted. No `dev` branch is created in this gate; remote `main`, tags, Release assets,
 `Latest`, rollback state and product bytes remain untouched.
 
+That authorized push completed as ordinary fast-forward commit
+`e9abf838aff9496629804e927baaaa91e0068756`. The maintainer's next Cloud attempt reached
+the new S3-C wrapper but stopped because the platform-provided checkout has no `origin`
+remote. This is a runbook portability defect, not a repository-access failure or Release
+defect: Cloud already loaded the selected repository/branch, and published-asset smoke does
+not need to mutate or refetch workspace Git identity. The maintainer now requests a simpler
+wrapper. Local runbook/planning correction is authorized; a further commit or push is not
+inferred from that request and requires a new explicit transport authorization.
+
+After official documentation cross-check and review of the branch-independent public-asset
+installer path, the maintainer accepted the lifecycle wording and explicitly authorized
+one documentation checkpoint plus one ordinary non-force fast-forward push of existing ref
+`validation/v0.3.1-s2-runbook`. Immediate read-only preflight observed that ref at
+`e9abf838aff9496629804e927baaaa91e0068756`; normal server-side fast-forward checks must
+protect it, with no force option. Scope remains the runbook and three active planning files.
+
 ## Status
 
-S1, S2, S3-A and S3-B are complete. S3-C is authorized and in progress at final Cloud
-handoff routing; public downloaded-byte verification is complete, while final Cloud
-evidence and promotion decision remain pending.
+S1, S2, S3-A and S3-B are complete. S3-C is authorized and in progress at the minimum
+portable Cloud wrapper checkpoint/transport; public downloaded-byte verification is
+complete, while final Cloud evidence and promotion decision remain pending.
 Published/accepted v0.3.0 remains the rollback oracle and `Latest`. Historical Cloud-PASS,
 post-S2 observation, local seal, publication metadata and downloaded bytes remain distinct
 evidence classes.
 
 ## Next Step
 
-Separate the historical Source/Candidate S2 entry from the current Published Release S3-C
-entry in the hard-acceptance runbook, validate the documentation-only delta, checkpoint
-only the runbook and active planning, then perform the one authorized ordinary
-fast-forward push to `validation/v0.3.1-s2-runbook` after an exact remote-parent preflight,
-and verify its exact remote SHA. Stop for a fresh
-maintainer-run Cloud execution of section 13 plus sections 4–8. Do not submit Cloud,
-promote rollback/Latest, create `dev`, edit Release/tag/assets, update remote main or begin
-Product Phase 4.
+Finish the official Cloud checkout/cache explanation, revalidate the four-document delta,
+create the one authorized documentation checkpoint, then ordinary fast-forward push the
+existing validation ref after confirming remote parent `e9abf838...`; verify the exact
+remote SHA and stop for a fresh/reset-cache maintainer-run section 13 plus B–F. Do not
+submit Cloud, promote rollback/Latest, create `dev`, edit Release/tag/assets, update remote
+main or begin Product Phase 4.
 
 ## Authorization Boundary
 
@@ -166,15 +180,20 @@ Authorized now:
   those documentation-only changes, and perform exactly one ordinary non-force
   fast-forward push of `validation/v0.3.1-s2-runbook`, after immediately confirming
   observed remote parent `101dca5a5c174badf943466fe0158065c6dd1a11`; do not use any
-  force option.
+  force option (consumed successfully at `e9abf838...`).
+- simplify the local S3-C wrapper and record the observed no-`origin` Cloud failure without
+  changing production, published assets or remote state.
+- add the reviewed official checkout/cache lifecycle explanation, checkpoint only the
+  runbook and three active planning files, and perform one ordinary non-force fast-forward
+  push of `validation/v0.3.1-s2-runbook` after confirming remote parent `e9abf838...`.
 
 Not authorized now:
 
 - edit the immutable `init-cloud-sandbox-v0.3.0.bash` or any published acceptance byte;
 - modify, move, replace or republish the existing `v0.3.0` tag or either asset;
 - submit or mutate live Cloud state from this agent, push any branch except the one exact
-  authorized runbook fast-forward, move any existing tag, publish any asset or promote a
-  rollback baseline;
+  authorized validation fast-forward, move any existing tag, publish any asset or promote
+  a rollback baseline;
 - begin Product Phase 4 features or change Host ABI, managed policy or trusted graph;
 - weaken safety assertions or reinterpret Windows skips as Linux/Cloud evidence.
 - force-push, update remote `main`, move `validation/v0.3.1-s2-03a6cc2f`, push another

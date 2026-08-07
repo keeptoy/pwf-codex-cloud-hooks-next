@@ -828,6 +828,23 @@ acceptance pins the immutable tag/source, downloads exact public assets and exer
 downloaded bootstrap's default public ZIP path. The lanes must not share a bootstrap or
 hash assertion from different checkout identities.
 
+The observed Codex Cloud checkout for the final smoke had no `origin` remote. Official
+Cloud-environment documentation distinguishes two paths: a normal task checks out the
+selected branch/commit before setup, while cache creation checks out the repository default
+branch and runs setup there; a resumed cached environment checks out the chat-selected
+branch and runs only the optional maintenance script. A runbook therefore must not treat
+the setup workspace branch or ordinary Git remote topology as a Cloud contract.
+
+S3-B already proved the immutable tag/source and public metadata; S3-C only needs the public
+consumer path. Its minimum wrapper therefore verifies the downloaded bootstrap SHA and
+executes `all`. That verified bootstrap already enforces Node >=18, downloads and verifies
+the pinned ZIP, installs the Skill/runtime, runs doctor and verifies managed state.
+Repeating those checks in the wrapper adds failure surface without adding an independent
+trust edge. Installation completes in setup; managed Hook activation occurs when the later
+agent/runtime starts and reads Managed requirements. B–F run in that later phase after the
+chat-selected branch checkout; F's workspace installer is post-install verification, not
+a setup dependency.
+
 After v0.3.1 S3-C, this versioned validation branch should freeze as evidence. Future
 rolling integration should use a durable `dev` branch, with optional short-lived
 feature/security branches, while `main` remains the stable source authority and version
