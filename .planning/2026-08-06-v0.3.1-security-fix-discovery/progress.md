@@ -615,3 +615,52 @@ local/Linux/no-live Cloud regression.
   MAINTAINER_HANDOFF and AGENTS current boundary. Focused architecture/repository governance
   regression passed 5/5. No product or Release input changed, so the already-complete full
   local and Cloud product matrices were not rerun for this evidence-only closure.
+
+## 2026-08-07 — Post-S2 README patcher clarification authorized
+
+- Maintainer requested a logical README supplement after the 0.3.1 candidate ZIP build
+  instructions: patcher location, responsibilities and the distinct source/import versus
+  production install/runtime paths.
+- Added the explanation without changing importer, patcher, runtime, installer, contracts,
+  bootstrap or trusted graph. The text explicitly preserves global PWF pristine behavior
+  and classifies the v0.3.0 omission as extracted-artifact maintenance self-containment,
+  not a production runtime failure.
+- Recorded the long-term documentation split: architecture owns component/trust/overlay
+  design; README keeps build consequences, commands and a link after that migration.
+- README is a 23-entry Release input, so this documentation-only edit changes candidate ZIP
+  bytes. The S2 hash remains historical evidence for tested source `5b619daf...`; no final
+  hash is written, and S3, tag, push, publication and rollback promotion remain unauthorized.
+- The first focused Node invocation was blocked by the known managed Windows sandbox
+  `spawn EPERM`; the permitted out-of-sandbox rerun passed all 5 architecture/repository
+  governance tests. This was a platform-runner failure and made no repository change.
+- Importer check, Markdown UTF-8/no-BOM/LF/final-newline/trailing-whitespace checks and
+  `git diff --check` PASS. Release-package tests pass 3/3, including extracted-ZIP importer
+  self-containment and the unchanged published v0.3.0 oracle.
+- Two post-edit candidate builds are byte-identical: 23 entries, 83,394 bytes and observed
+  SHA-256 `b7c13b63e2ebd559c83348b5357ba96468246c4f2d05a3cc039e4a932a5401a6`.
+  This is an unsealed local observation only and is not copied into bootstrap or the S2
+  runbook's historical tested-source oracle.
+- Full Windows-local regression PASS: 79 registered / 67 passed / 0 failed / 12 honest
+  POSIX skips. No Linux/Cloud result was reclassified, and no S3 action or remote mutation
+  occurred.
+
+## 2026-08-07 — Patcher design migrated to architecture
+
+- Maintainer explicitly authorized the previously discussed documentation split.
+- Moved the complete patcher location, four responsibilities, source/import path,
+  production install/runtime path and v0.3.0/v0.3.1 distinction into architecture section
+  3.1; refined the deployment edge to name importer validation and patcher transformation.
+- Reduced README to the operational artifact consequence and an architecture link. README
+  remains a Release input, so validation must observe a new unsealed candidate ZIP identity.
+- No runtime, installer, patcher, importer, contract, bootstrap, Hook behavior or trusted
+  graph changed. S3, tag, push, publication and rollback promotion remain unauthorized.
+- Importer check, Markdown UTF-8/no-BOM/LF/final-newline/trailing-whitespace validation and
+  `git diff --check` PASS after migration.
+- Two final post-migration candidate builds are byte-identical: 23 entries, 82,658 bytes
+  and observed SHA-256
+  `c527b555bbbffdc86796ff91753186c15bdab287852fc5667edb9e5493d952ff`.
+  The earlier `b7c13b63...` value remains only the transient pre-migration README-expanded
+  observation; neither value is a seal or bootstrap input.
+- Full Windows-local regression PASS after the final documentation layout: 79 registered /
+  67 passed / 0 failed / 12 honest POSIX skips. Release self-containment and immutable
+  v0.3.0 oracle coverage remain green; no Linux/Cloud evidence was reclassified.

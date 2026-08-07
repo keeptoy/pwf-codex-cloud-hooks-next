@@ -80,7 +80,7 @@ new container
 ```text
 fixed upstream v3.8.2 archive
         |
-        | importer + manifest + compatibility overlay
+        | importer validates manifest/ledger; patcher applies owned overlay
         v
 repository-owned runtime bundle
         |
@@ -100,6 +100,46 @@ $CODEX_HOME/hooks/planning-with-files/
 ```
 
 Managed policy 只认识 adapter。child runtimes 是已安装 adapter 的 sibling，不能独立注册为 handler。
+
+### 3.1 源码重建与生产执行是两条路径
+
+`patches/patch_planning_skill.py` 位于源码重建和 Release 审计层，是
+`tools/import_upstream_runtime.py` 的直接依赖；它不是安装后的 Hook runtime，也不进入 Managed policy
+或 trusted execution graph。Importer 从固定的 PWF v3.8.2 archive 重建 owned runtime 时，只有上游
+`scripts/session-catchup.py` 需要经过 patcher，另外三个上游脚本保持 pristine。
+
+Patcher 的职责严格限定为：
+
+1. 固定 patch ID、目标文件和四个精确源码 anchor；上游结构意外变化时拒绝继续，而不是猜测替换；
+2. 按 machine contract 的顺序应用 session store、explicit runtime、scoped planning state 和 bounded
+   wrapper context 四项 compatibility overlay；
+3. 核对 pristine/managed SHA-256，使 `runtime/upstream/session-catchup.py` 可以从固定上游确定性复现；
+4. 为 importer 的 `import`/`check` 和独立维护检查提供转换逻辑，不在生产安装时修改 global PWF Skill。
+
+维护者的源码重建/核验路径发生在源码树或自包含的 Release ZIP 中：
+
+```text
+pinned PWF v3.8.2 archive
+  -> importer 校验 archive、manifest、allowlist、overlay ledger 与 patcher anchors
+  -> patcher 只转换 session-catchup.py
+  -> repository-owned runtime/upstream/*
+  -> Release builder 将成品 runtime、importer 与 patcher 一起装入候选 ZIP
+```
+
+生产安装/运行路径不现场打 patch，而是使用 ZIP 内已经生成的成品：
+
+```text
+Release ZIP
+  -> install.js 校验 runtime contract、SHA-256、mode 与 inventory
+  -> 复制成品到 $CODEX_HOME/hooks/planning-with-files/
+  -> Managed policy 只启动绝对路径 hook_adapter.py
+  -> adapter 只调用已安装的 sibling owned/upstream runtime
+```
+
+因此 v0.3.0 即使没有在 ZIP 中附带 patcher，也能正常安装和运行：它已经包含转换完成的
+`runtime/upstream/session-catchup.py`。缺陷只在于解压 v0.3.0 ZIP 后，随包提供的 importer 缺少直接
+依赖，无法独立完成维护自检。0.3.1 把 patcher 加入第 23 个 entry，修复的是 Release 工具自包含性，
+没有新增生产 runtime 或激活边。
 
 ## 4. Runtime 数据流
 

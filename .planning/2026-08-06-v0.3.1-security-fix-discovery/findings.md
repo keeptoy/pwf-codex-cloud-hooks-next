@@ -714,3 +714,19 @@ installer `0.3.1`, 11 manifest-matching payloads, adapter-only Managed policy an
 snapshot leftovers. This is sufficient to close the risk-proportionate S2 gate but is not
 an immutable asset or publication proof. The next safe boundary is S3-A seal only; tag,
 publication and rollback promotion remain later independent decisions.
+
+## Post-S2 patcher documentation placement
+
+The maintainer explicitly authorized a README clarification after S2 closure. The build
+section now distinguishes the source/import path from the production install/runtime path,
+defines the patcher's exact maintenance responsibilities and explains why v0.3.0 runtime
+worked even though its extracted-ZIP importer was not self-contained.
+
+The documentation split is now implemented. Architecture section 3 owns the two paths,
+patcher responsibilities, trust edges and the v0.3.0/v0.3.1 self-containment distinction;
+section 9 continues to own the four exact overlay meanings. README retains only the build
+consequence and an architecture link. Because README is one of the 23 Release entries,
+this prose-only change changes candidate ZIP bytes and makes the earlier S2 ZIP size/hash
+a historical oracle for the tested `5b619daf...` source. It does not change runtime,
+installer logic, contracts, trusted graph or the already-closed Cloud behavior evidence,
+and it does not authorize an S3 seal.

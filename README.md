@@ -198,6 +198,14 @@ sha256sum "$ZIP"
 已发布 v0.3.0 的 22-entry ZIP、外部 bootstrap、tag 和 SHA 继续由其 hard-acceptance 冻结，不从当前
 工作树重建或覆盖。
 
+### Importer 与 patcher 摘要
+
+候选 ZIP 必须同时包含 importer 与 patcher，确保解压后的维护工具可以独立 `check`；正常安装不会
+现场打 patch，而是由 `install.js` 校验并复制 ZIP 内已经生成的 owned runtime。因此 v0.3.0 的生产
+安装能够正常运行，0.3.1 增加第 23 个 patcher entry 修复的是 Release 工具自包含性。两条路径、
+patcher 的四项职责、信任边界和 overlay 顺序见 [`ARCHITECTURE.md`](ARCHITECTURE.md) 的部署图及
+“来源与 overlay”章节。
+
 ## 仓库地图
 
 | 路径 | 职责 |
