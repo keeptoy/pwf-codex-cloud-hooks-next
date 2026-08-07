@@ -256,13 +256,14 @@ Installer 不负责修改 workspace planning，不接管第三方 policy，也�
 ## 11. Release 边界
 
 已发布 `v0.3.0` ZIP 由 22-entry machine allowlist 构建；它的 tag、ZIP、外部 bootstrap 与 SHA 均保持
-不可变。`0.3.1` 候选由 23-entry machine allowlist 构建，新增的非 runtime entry 是 importer 必需的
+不可变。已发布 `v0.3.1` ZIP 由 23-entry machine allowlist 构建，新增的非 runtime entry 是 importer 必需的
 `patches/patch_planning_skill.py`，从而使解压后的 importer check 自包含。外部 bootstrap 下载并校验
 ZIP，因此绝不能进入它所校验的 ZIP。development bootstrap 使用 zero hash 并 fail closed；授权 seal
 只能在全部 ZIP 输入冻结、双构建一致后写入该 ZIP 的精确 SHA。完成本地 seal 仍不等于已发布或已接受。
 
-stable v0.3.0 已从 exact source `1454c922...` 发布并完成下载复核与 Cloud A～F，现为 accepted
-rollback。beta.2 资产保持不可变 previous fallback。候选源码/package/contract 身份不表示已发布。
+v0.3.1 已从 exact source `9aa2148...` 发布，完成公开下载复核与 Cloud A～F，并晋级为当前 accepted
+production rollback 与 GitHub `Latest`。stable v0.3.0 保持不可变 immediate previous fallback；beta.2
+是更早的不可变 fallback oracle。候选源码/package/contract 身份仍不表示已发布。
 
 ## 12. 尚未实现
 

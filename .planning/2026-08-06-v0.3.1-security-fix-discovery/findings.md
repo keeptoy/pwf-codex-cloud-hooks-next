@@ -867,3 +867,19 @@ copied into the repository; the evidence record must state that limitation rathe
 reconstructing output. S3-C acceptance does not itself change the production lifecycle:
 v0.3.0 remains accepted rollback/`Latest`, beta.2 remains previous fallback, and any
 promotion or Product Phase 4 start requires a separate gate.
+
+## v0.3.1 rollback/Latest promotion result
+
+The maintainer separately authorized promotion after S3-C closure. Immediate preflight
+proved `Latest=v0.3.0`, the exact v0.3.1 tag and the two accepted public asset sizes/digests.
+The sole external mutation marked the existing v0.3.1 Release as GitHub `Latest`.
+
+Before/after fingerprints show no v0.3.1 or v0.3.0 Release body, identity or asset change;
+both tags and remote main also remained exact. v0.3.1 is therefore the current production
+rollback/`Latest`, v0.3.0 is the immutable immediate previous fallback, and beta.2 is the
+older immutable fallback oracle. Because README is a Release allowlist input, the required
+post-promotion current-state wording must not be written there under the existing identity.
+README therefore retains its tag-time rollback snapshot while ROADMAP/runbook/planning own
+the new lifecycle fact. The validation branch must never rebuild or replace v0.3.1 assets;
+a future artifact and README synchronization require a new version, fresh seal and fresh
+acceptance.

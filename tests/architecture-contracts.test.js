@@ -40,7 +40,7 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.match(architecture, /does not resolve planning files/);
   assert.match(architecture, /只有 `runtime\/upstream\/session-catchup\.py` 与 pristine upstream 不同/);
   assert.match(architecture, /已发布 `v0\.3\.0` ZIP 由 22-entry machine allowlist 构建/);
-  assert.match(architecture, /`0\.3\.1` 候选由 23-entry machine allowlist 构建/);
+  assert.match(architecture, /已发布 `v0\.3\.1` ZIP 由 23-entry machine allowlist 构建/);
 
   assert.equal((bundle.local_files || []).some(item => item.id === "owned_plan"), true);
   assert.equal((upstream.managed_runtime.local_files || []).some(item => item.id === "owned_plan"), true);
@@ -70,7 +70,7 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.doesNotMatch(adapter, /task_file\.read_text|progress_file\.read_text/);
 });
 
-test("current documentation and runtime comments identify the 0.3.1 source without rewriting stable history", () => {
+test("current governance promotes 0.3.1 while the sealed README preserves publication history", () => {
   const readme = readText("README.md");
   const roadmap = readText("ROADMAP.md");
   const ownedPlan = readText("runtime/owned-plan.py");
@@ -80,6 +80,7 @@ test("current documentation and runtime comments identify the 0.3.1 source witho
   assert.match(readme, /当前已接受的 rollback：`v0\.3\.0`/);
   assert.match(readme, /`v0\.3\.0-beta\.2` 保持为不可变 previous fallback/);
   assert.match(roadmap, /0\.3\.1 security-fix train/);
+  assert.match(roadmap, /当前生产回滚基线与 GitHub `Latest`：published\/accepted `v0\.3\.1`/);
   assert.doesNotMatch(ownedPlan, /Inactive managed plan-context runtime|Phase 3 Round 4/);
   assert.doesNotMatch(adapter, /inactive exact-v1 owned-plan request/);
 });

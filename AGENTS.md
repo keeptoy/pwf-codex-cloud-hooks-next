@@ -59,8 +59,8 @@
 - transcript JSONL 是可变 Host data；未知、损坏或身份不符不得造成 partial injection。
 - integrity 和内容注入 fail closed；advisory child failure 对 Codex loop fail open，且不能抑制
   canary 或其他已验证上下文。
-- 已发布 v0.3.0 与 beta.2 的 ZIP/bootstrap 字节、URL 和 SHA 不可变；当前 0.3.1 候选不是 Release，
-  在独立 seal、发布和验收关闭前不得作为 production rollback。
+- 已发布 v0.3.1、v0.3.0 与 beta.2 的 ZIP/bootstrap 字节、URL 和 SHA 均不可变；v0.3.1 是当前
+  production rollback/`Latest`，v0.3.0 是 immediate previous fallback，beta.2 是更早 fallback oracle。
 
 ## Discovery 与 gate
 
@@ -101,6 +101,8 @@ git diff --check
 - 正式顺序：冻结版本/ZIP 输入 → build/check ZIP → 计算 ZIP SHA → 写入 bootstrap → 计算
   bootstrap SHA → 发布 → 重新下载双资产验证。
 - RC/canary 不能替代最终字节验收；任何重新打包都需要新身份、新 hash 和重新冒烟。
+- pointer-only rollback/`Latest` promotion 不得改写 sealed README 或其他 ZIP 输入；tag 后 current-state
+  治理进入 ROADMAP、版本 acceptance 和活动 planning，README 在下一新版本 seal 中再同步。
 
 ## 当前迁移边界
 
@@ -109,7 +111,7 @@ M4-C 在 `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151` 通过 Fresh Cloud/Linu
 验收；Cloud-tested development `39795283...` 与 audit `bbad3703...` 保持不动，旧仓库仍是
 不可变 beta.2 Release/previous-fallback 权威。当前 successor 是后续源码维护权威；不改变行为且保留
 canary 的 stable `v0.3.0` 已在 exact source `1454c922...` 完成 S0～S3、immutable assets 与 Cloud
-A～F，并晋级为 accepted rollback；beta.2 保持不可变 previous fallback。Product Phase 4 仍未授权；
-0.3.1 兼容安全修复已完成 S1、S2 Linux/Cloud hard acceptance、S3-A 本地 immutable seal 与 S3-B
-publication；S3-C public-byte verification 与 final Cloud A～F 已 PASS。该 acceptance 不自动产生
-rollback/Latest promotion；当前 rollback/Latest 仍是 v0.3.0，下一 Product Phase 仍未授权。
+A～F；它现为 immediate previous fallback，beta.2 保持更早的不可变 fallback oracle。0.3.1 兼容
+安全修复已完成 S1、S2 Linux/Cloud hard acceptance、S3-A immutable seal、S3-B publication、S3-C
+public-byte/final Cloud A～F 与 rollback/Latest promotion，现为 production rollback/`Latest`。
+Product Phase 4 仍未授权。

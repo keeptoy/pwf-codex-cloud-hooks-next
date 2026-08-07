@@ -12,21 +12,22 @@
 
 ## 2. 当前事实
 
-- 产品 rollback：published/accepted stable `v0.3.0`；beta.2 为不可变 previous fallback。
-- 当前稳定身份：`v0.3.0` tag 精确指向 `1454c922...`，两个资产、Cloud setup、Fresh、canonical、
+- 产品 rollback/`Latest`：published/accepted `v0.3.1`；v0.3.0 为不可变 immediate previous fallback，
+  beta.2 为更早的不可变 fallback oracle。
+- 当前稳定身份：`v0.3.1` tag 精确指向 `9aa2148...`，两个资产、Cloud setup、Fresh、canonical、
   real Resume、doctor、11 payload 和零 residue 全部 PASS。
 - 当前版本路线：stable Release 已关闭；Product Phase 4 前另行授权的 0.3.1 security-fix train 已完成
   S1、S2 Linux/Cloud hard acceptance、S3-A 本地 seal、S3-B publication 与 S3-C 公开下载/final Cloud
-  acceptance；v0.3.1 rollback/Latest promotion 尚未授权，当前仍由 v0.3.0 承担该角色。
+  acceptance，并已完成 rollback/Latest promotion。
 - 当前仓库迁移：M1/M2/M3/M4 complete。M3 实际行为测试 HEAD 为
   `39795283cd65f84547651d7bec816191fb5bfedf`，ZIP SHA-256 为
   `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`；M3-B setup、Fresh、
   canonical、Resume 和 doctor 全部 PASS。M4-C no-live cutover/rollback 验收 HEAD 是
   `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151`；development/audit evidence refs
   未移动，两个 active integrity ruleset 只禁止 deletion 与 non-fast-forward。successor 已成为
-  后续源码维护权威；旧仓库继续承载不可变 beta.2 previous fallback。Product Phase 4 仍未授权。
+  后续源码维护权威；旧仓库继续承载不可变 beta.2 fallback oracle。Product Phase 4 仍未授权。
 - M1 audit branch：`audit/beta2-exact`，不得移动或重写。
-- Product Phase 4：未开始、未授权；必须等待 stable v0.3.0 S3 关闭后再独立 Discovery。
+- Product Phase 4：未开始、未授权；0.3.1 安全修复列车的关闭不自动授权下一 Phase。
 - 生产集成：只支持 PWF v3.8.2 的两个 Managed Hook events。
 
 ## 3. 日常健康检查
@@ -112,10 +113,10 @@ sha256sum "$ZIP"
 当前 published v0.3.1：exact source `9aa2148...`；23 entries、82,725 bytes、ZIP SHA-256
 `f097b040...31f9`；固定 package
 identity/root/order/mode/metadata，importer 与 patcher 同时存在，bootstrap external。bootstrap 已固定
-该 ZIP，21,565 bytes、SHA-256 `ce31a320...a5e8`。S3-B 已上传恰好这两项资产并核对服务端 digest；尚未
-完成 S3-C 下载字节/Cloud 验收，也不是 accepted rollback。任何字节问题必须使用新身份，不得原位
-替换资产。已发布 v0.3.0 仍是独立的
-22-entry immutable oracle，不从候选工作树重建或覆盖。
+该 ZIP，21,565 bytes、SHA-256 `ce31a320...a5e8`。S3-B 已上传恰好这两项资产并核对服务端 digest，
+S3-C 已完成下载字节/Cloud 验收，现为 accepted rollback/`Latest`。任何字节问题必须使用新身份，
+不得原位替换资产。已发布 v0.3.0 仍是独立的 22-entry immutable immediate previous fallback，
+不从当前工作树重建或覆盖。
 
 ## 9. 正式 Release
 
@@ -136,7 +137,7 @@ identity/root/order/mode/metadata，importer 与 patcher 同时存在，bootstra
 ## 9.1 M4 仓库切换
 
 M4 的完成证据在 `docs/beta3-dev-m4-cutover-plan.md`。实际 accepted main 是 `0b4bd7d...`；
-Cloud-tested development 与 audit refs 保持不动，旧仓库继续承载 beta.2 Release 和 previous fallback。
+Cloud-tested development 与 audit refs 保持不动，旧仓库继续承载 beta.2 Release/fallback oracle。
 后续正常 main 治理提交不会改写这次 accepted SHA；若要重新执行历史 M4-C 唯一脚本，应使用记录的
 验收 commit，而不是把新 main HEAD 冒充成旧验收输入。
 
@@ -145,10 +146,10 @@ Cloud-tested development 与 audit refs 保持不动，旧仓库继续承载 bet
 迁移/开发失败：保持 M1 audit oracle；移除的只能是已验证的临时 worktree/local unpublished branch，
 禁止 `git reset --hard` audit ref。
 
-Production 回滚：优先使用 successor 已发布/接受的不可变 v0.3.0 ZIP/bootstrap，并按其
-hard-acceptance 复核。beta.2 只是 previous fallback；需要再退一级时，使用旧仓库不可变资产、重新
-核验两个 SHA，并按 beta.2 acceptance 执行 install/doctor/Fresh/Resume。回滚不得依赖当前 0.3.1
-候选或 development branch 先被修好。
+Production 回滚：优先使用 successor 已发布/接受的不可变 v0.3.1 ZIP/bootstrap，并按其
+hard-acceptance 复核。需要退一级时使用不可变 v0.3.0；需要再退一级时，使用旧仓库 beta.2 不可变
+资产、重新核验两个 SHA，并按对应 acceptance 执行 install/doctor/Fresh/Resume。回滚不得依赖 moving
+branch 或未发布工作树先被修好。
 
 ## 11. 交接完成标准
 

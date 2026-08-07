@@ -4,14 +4,15 @@
 精确 Next Step、当前授权、禁止事项和停止条件仍由活动 `task_plan.md` 决定。README 只描述稳定行为，
 不复制逐 gate 状态。
 
-> 当前生产回滚基线：published/accepted stable `v0.3.0`；beta.2 保持不可变 previous fallback。
+> 当前生产回滚基线与 GitHub `Latest`：published/accepted `v0.3.1`；stable v0.3.0 保持不可变
+> immediate previous fallback，beta.2 保持更早的不可变 fallback oracle。
 >
-> 当前稳定身份：published/accepted `v0.3.0`；exact source `1454c922...` 已通过 S0～S3 全部门槛。
+> 当前稳定身份：published/accepted `v0.3.1`；exact source `9aa2148...` 已通过 S1～S3 全部门槛。
 >
 > 当前状态：M1～M4 与 stable v0.3.0 Release 已关闭。Product Phase 4 之前另行授权的
 > `0.3.1 security-fix train` 已完成 S1、S2 Linux/Cloud hard acceptance、S3-A 本地 immutable
-> seal、S3-B publication 与 S3-C public-byte/final Cloud acceptance。rollback/Latest promotion
-> 尚未授权。
+> seal、S3-B publication、S3-C public-byte/final Cloud acceptance 与 rollback/Latest promotion。
+> Product Phase 4 仍未授权。
 
 ## 1. 与活动 planning 的分工
 
@@ -35,12 +36,16 @@ task plan 为准，并在 Phase、Cloud、Release 或 rollback 状态变化时�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 已发布生产回滚 | successor `v0.3.0`；beta.2 为不可变 previous fallback |
-| 当前稳定身份 | published/accepted `v0.3.0`；source `1454c922...` |
-| 当前 programme gate | `0.3.1 security-fix train` S3-C complete / rollback promotion pending；Product Phase 4 未授权 |
-| 当前 Release | `v0.3.1` 已发布并通过 S3-C；stable/accepted `v0.3.0` 仍为 rollback/Latest |
-| 当前候选源码 | published/Cloud-accepted `v0.3.1@9aa2148...`；尚未提升为 rollback |
+| 已发布生产回滚 | successor `v0.3.1`；v0.3.0 为 immediate previous fallback，beta.2 为更早 fallback oracle |
+| 当前稳定身份 | published/accepted `v0.3.1`；source `9aa2148...` |
+| 当前 programme gate | `0.3.1 security-fix train` complete through rollback/Latest promotion；Product Phase 4 未授权 |
+| 当前 Release | `v0.3.1` 已发布、S3-C accepted，并设为 GitHub `Latest` |
+| 当前回退层级 | v0.3.1 production rollback → immutable v0.3.0 → immutable beta.2 oracle |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
+
+`README.md` 是 v0.3.1 sealed ZIP 的精确输入，因此它保留 tag 封板时“v0.3.0 仍是 rollback”的历史快照；
+本次 pointer-only promotion 不修改该字节。当前 lifecycle 事实以本表、v0.3.1 acceptance runbook 和活动
+task plan 为准。下一版本必须在新身份和新 seal 下同步 README，不得用当前治理分支重建或替换 v0.3.1。
 
 beta.2 的精确 source、资产、SHA 和回滚入口见
 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与
@@ -106,9 +111,9 @@ trusted graph、rollback 和 Cloud 评审。
 新增 Hook 类型、Host ABI、信任/激活模型或明显用户行为面，默认提升 minor；纯兼容修复才使用 patch。
 任何字节变化都必须使用新身份和新 hash，不得复用 beta.2 或其他已发布资产。
 
-`v0.3.0` 已完成独立 S0～S3 gate 并成为 rollback；当前 0.3.1 只修复同一 minor 行为合同内的问题。
-0.3.1 的源码身份、bootstrap、ZIP、Cloud、seal 和 Release 必须继续按活动 task plan 分 gate 授权；
-该安全修复列车不授权 Product Phase 4，也不允许重写任何 v0.3.0 或 beta.2 身份与资产。
+`v0.3.0` 已完成独立 S0～S3 gate；0.3.1 只修复同一 minor 行为合同内的问题，并已完成源码身份、
+bootstrap、ZIP、Cloud、seal、Release 与 rollback promotion 的分 gate 验收。该安全修复列车不授权
+Product Phase 4，也不允许重写任何 v0.3.1、v0.3.0 或 beta.2 身份与资产。
 
 ## 6. Discovery 与 gate 晋级模型
 
@@ -162,11 +167,12 @@ RC/canary 通过不能替代最终字节验收。ZIP 或 bootstrap 任一字节�
 
 ## 8. 回滚与基线提升
 
-stable `v0.3.0` 已完成第 7 节全部门槛并成为当前 production rollback。successor `main` 继续作为
-源码维护权威；beta.2 作为不可变 previous fallback，M3/M4 evidence refs 仍只证明迁移/等价性。
+`v0.3.1` 已完成第 7 节全部门槛并成为当前 production rollback 与 GitHub `Latest`。successor `main`
+继续作为源码维护权威；stable v0.3.0 是不可变 immediate previous fallback，beta.2 是更早的不可变
+fallback oracle，M3/M4 evidence refs 仍只证明迁移/等价性。
 
 未来版本仍只有在 immutable publication、重新下载、Fresh/Resume/doctor 和 rollback 验证全部通过后，
-才能在本文件中取代 v0.3.0。旧资产、tag、SHA 和 acceptance 记录不得重写。
+才能在本文件中取代 v0.3.1。旧资产、tag、SHA 和 acceptance 记录不得重写。
 
 ## 9. 长期泛化边界
 

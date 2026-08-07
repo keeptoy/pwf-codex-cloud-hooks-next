@@ -962,3 +962,65 @@ local/Linux/no-live Cloud regression.
 - Checkpoint pre-validation PASS: exact seven-path scope, strict Markdown hygiene,
   `git diff --check`, all three Bash fences, focused governance tests 5/5 and zero drift
   from every immutable v0.3.1 published source/bootstrap path.
+
+## 2026-08-07 — v0.3.1 rollback/Latest promotion authorized
+
+- Maintainer explicitly approved promoting the already published and S3-C-accepted v0.3.1
+  Release to production rollback and GitHub `Latest`.
+- Minimum external mutation is one latest-release pointer update after read-only Release,
+  tag, asset and current-latest preflight. Neither Release body nor asset may be edited or
+  re-uploaded, and neither v0.3.1 nor v0.3.0 tag may move.
+- After promotion, v0.3.0 becomes the immutable immediate previous fallback; beta.2 remains
+  the older immutable fallback oracle. Remote main is a separate source-governance gate and
+  remains out of scope.
+- Authorized completion includes current-state governance/acceptance synchronization plus
+  one evidence checkpoint and ordinary fast-forward push of the existing validation ref.
+  No PR, force option, other branch/ref, Product Phase 4 or other external mutation is
+  authorized.
+- Read-only preflight confirmed `Latest=v0.3.0`; v0.3.1 is non-draft/non-prerelease with
+  exact 21,565-byte bootstrap `ce31a320...a5e8` and 82,725-byte ZIP `f097b040...31f9`.
+- Executed exactly one `gh release edit v0.3.1 --latest` mutation. Post-verification reports
+  `Latest=v0.3.1` at the existing Release URL.
+- Canonical before/after fingerprints prove both v0.3.1 and v0.3.0 Release name/body/tag,
+  draft/prerelease fields and asset IDs/timestamps/names/sizes/digests are unchanged.
+  v0.3.1 tag remains `9aa2148886e499f9f45594f7ae4f7681f1045de2`, v0.3.0 tag remains
+  `1454c9224c83d11c073b05baf6e536a11c3bb0e5`, and remote main remains
+  `bef919475b6ebc3d74c09f9664749664cf950537`.
+- External lifecycle promotion is complete. Current documentation now needs to identify
+  v0.3.1 as production rollback/Latest, v0.3.0 as immediate previous fallback and beta.2
+  as the older immutable fallback oracle; historical gate-time statements remain evidence.
+- The first repository-wide current-state scan combined a complex alternation with glob
+  filters and unexpectedly returned exit 1/no matches despite known text. Reissued a
+  narrower search over explicit authoritative files; it returned the expected matches.
+- Current-state synchronization touches ten existing documentation/planning files. The
+  focused architecture contract test contained two exact assertions for the superseded
+  v0.3.0 rollback chain, so its test title and only those current-role assertions were
+  updated for v0.3.1 → v0.3.0 → beta.2. No runtime/packaging assertion changed.
+- A combined three-file patch for that test/planning update used an imprecise task-plan
+  line-wrap anchor and was rejected atomically. No partial change remained; the retry used
+  exact file-local anchors.
+- The first focused rerun stopped before `npm test`: 3/5 governance tests passed. Both
+  failures were stale wording assertions—architecture still expected “0.3.1 candidate”,
+  and the new README beta.2 regex did not span its line wrap.
+- Inspection of `release-package.test.js` then confirmed a harder boundary: README is an
+  input to the exact `f097...` sealed ZIP rebuilt from the current tree. Changing README
+  after promotion would invalidate that byte identity. The README change was therefore
+  reverted instead of weakening the sealed-hash test.
+- Current lifecycle truth is synchronized only in ZIP-excluded ROADMAP, architecture,
+  handoff, acceptance and planning documents. The focused governance test now asserts both
+  v0.3.1 current promotion in ROADMAP and the sealed README's tag-time snapshot. A new
+  version/seal is required before README can change.
+- Corrected focused rerun PASS: 5/5 governance tests. The complete local suite then passed
+  79 registered / 67 passed / 0 failed / 12 honest Windows POSIX skips, including the exact
+  23-entry `f097...` v0.3.1 sealed ZIP assertion.
+- Final local boundary PASS: changed-path set is exactly ten governance/planning/test files;
+  strict UTF-8/no-BOM/LF/final-newline/fence/trailing-whitespace checks and
+  `git diff --check` pass; all three runbook Bash fences parse; stale current-state wording
+  is absent from current authorities.
+- Explicit comparison against immutable tag v0.3.1 confirms README, all contracts, runtime,
+  installer, tools, package identity, manifest and sealed bootstrap have zero drift. No
+  Product Phase 4 behavior or published byte changed during governance synchronization.
+- Final remote preflight before evidence checkpoint PASS: `Latest=v0.3.1`, existing
+  validation parent `f452d069576da7d1cf7b772aa7bc3003d20db01b`, remote main
+  `bef919475b6ebc3d74c09f9664749664cf950537` and v0.3.1 tag
+  `9aa2148886e499f9f45594f7ae4f7681f1045de2` all match the frozen boundary.

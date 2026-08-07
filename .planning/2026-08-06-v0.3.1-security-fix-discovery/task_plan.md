@@ -126,21 +126,33 @@ checkpoint and one ordinary non-force fast-forward push of the existing
 does not authorize a PR, another branch, rollback/Latest promotion, Release/tag/asset
 mutation, remote-main change or Product Phase 4.
 
+After the S3-C checkpoint reached the remote validation ref, the maintainer explicitly
+authorized promotion of v0.3.1 to production rollback and GitHub `Latest`. This final S3
+lifecycle gate may first reverify the existing v0.3.1 Release identity/assets and current
+v0.3.0 `Latest`, then change only the GitHub latest-release pointer, verify it, synchronize
+ZIP-excluded current governance/acceptance documentation, update the directly dependent
+governance assertion, and create/push one ordinary evidence checkpoint on the existing
+validation ref. Sealed README and every other ZIP input remain exact to the tag. The gate
+must not edit either Release body or asset, move a tag, update remote main, create a
+PR/branch, or begin Product Phase 4. After promotion, v0.3.0 becomes the immutable immediate
+previous fallback and beta.2 remains the older immutable fallback oracle.
+
 ## Status
 
 S1, S2, S3-A, S3-B and S3-C are complete. Published v0.3.1 has passed public downloaded-byte
-verification and final Cloud setup/Fresh/Resume/doctor/inventory/residue acceptance.
-Published/accepted v0.3.0 remains the rollback oracle and `Latest`. Historical Cloud-PASS,
-post-S2 observation, local seal, publication metadata and downloaded bytes remain distinct
-evidence classes.
+verification and final Cloud setup/Fresh/Resume/doctor/inventory/residue acceptance. The
+external latest-pointer promotion is complete and v0.3.1 is now production rollback/
+`Latest`; governance synchronization and validation are complete, and the final evidence
+checkpoint is ready for ordinary transport. Historical Cloud-PASS, post-S2 observation,
+local seal, publication metadata and downloaded bytes remain distinct evidence classes.
 
 ## Next Step
 
-Revalidate the exact seven-file S3-C closure delta, confirm the existing remote validation
-ref still equals local parent `05d9d56d1caf639de0dbfb57323014b5e47984ff`, create one
-evidence checkpoint, push it by ordinary fast-forward and verify the resulting remote SHA.
-Then stop before the separate rollback/Latest promotion decision. Do not create a PR or
-`dev`, edit Release/tag/assets, update remote main or begin Product Phase 4.
+Confirm `Latest=v0.3.1` and remote validation parent
+`f452d069576da7d1cf7b772aa7bc3003d20db01b`; checkpoint the validated ten-file promotion
+evidence and ordinarily fast-forward the existing validation ref, then verify exact remote
+SHA and stop. Do not create a PR or `dev`, edit Release bodies/assets or tags, update remote
+main or begin Product Phase 4.
 
 ## Authorization Boundary
 
@@ -204,6 +216,12 @@ Authorized now:
 - create exactly one checkpoint containing only the validated seven-file S3-C closure and
   perform exactly one ordinary non-force fast-forward push of the existing validation ref,
   followed by read-only remote-SHA verification.
+- promote the already accepted immutable v0.3.1 Release by changing only GitHub's latest
+  pointer, then synchronize, checkpoint and ordinarily push the resulting governance/
+  acceptance evidence on the existing validation ref.
+- update the focused governance test to distinguish current ROADMAP lifecycle authority
+  from the sealed README's tag-time snapshot; do not change any runtime, packaging or
+  Release semantic assertion.
 
 Not authorized now:
 
@@ -220,10 +238,10 @@ Not authorized now:
 - create any commit outside the authorized runbook/planning checkpoint, push another
   branch/ref, call publication or local download accepted rollback, promote `Latest`
   before exact Cloud evidence, or modify any v0.3.0/beta.2/v0.3.1 published identity.
-- create or push the S3-C closure checkpoint, promote rollback/`Latest`, or begin another
-  gate without fresh explicit authorization.
-- open a PR, push another ref, use any force option or treat this checkpoint transport as
-  rollback/Latest promotion.
+- create or push another S3-C checkpoint or begin another gate without fresh explicit
+  authorization.
+- open a PR, push another ref, use any force option, update remote main, move a tag, edit a
+  Release body/asset or perform any external change beyond the one latest-pointer update.
 
 ## Risk Register
 
@@ -273,12 +291,14 @@ The detailed semantics, hostile fixtures, residual races and rollback gates are 
 - Do not remove or rename the current canary as part of a security repair.
 - Do not turn documentation cleanup or Release packaging ergonomics into a behavioral
   redesign.
-- Do not treat candidate version `0.3.1` as approved, sealed, published or accepted.
+- Do not treat the post-tag governance branch as the exact v0.3.1 Release source; the
+  immutable tag owns that identity, and any future artifact bytes require a new version/seal.
 
 ## Invariants
 
-1. Published/accepted `v0.3.0` remains the current rollback baseline; beta.2 remains the
-   immutable previous fallback. Their tags, URLs, assets, hashes and evidence do not move.
+1. Published/accepted `v0.3.1` is the current rollback/`Latest`; v0.3.0 is the immutable
+   immediate previous fallback and beta.2 is the older immutable fallback oracle. Their
+   tags, URLs, assets, hashes and evidence do not move.
 2. Security-fix Discovery precedes Product Phase 4 but does not authorize Product Phase 4.
 3. Managed requirements remain shared administrator state: edits must preserve unknown
    content, and unknown drift must fail closed.
@@ -362,11 +382,15 @@ The detailed semantics, hostile fixtures, residual races and rollback gates are 
   reviewed sealed source and upload exactly the ZIP plus external bootstrap once.
 - [x] **S3-C acceptance:** redownload both assets, reverify filename/size/SHA/boundary and
   run final Fresh/Resume/doctor/inventory/residue smoke against the public assets.
-- [ ] **Rollback/Latest promotion decision:** separately decide whether to promote v0.3.1
-  while retaining immutable v0.3.0 and beta.2 evidence unchanged.
+- [x] **Rollback/Latest external promotion:** reverify immutable publication/acceptance
+  evidence, mark v0.3.1 as `Latest`, and prove both Releases/tags plus remote main unchanged.
+- [x] **Promotion governance content:** synchronize and validate the new lifecycle state
+  while preserving every sealed v0.3.1 input.
+- [ ] **Promotion evidence transport:** create the one authorized checkpoint and ordinary-
+  push the existing validation ref without moving remote main.
 - **Exit:** a separately published and accepted security release, or an explicit no-release
   closure with findings disposition recorded.
-- **Status:** S3-A, S3-B and S3-C complete / stopped before rollback/Latest promotion
+- **Status:** external promotion and governance validation complete / evidence transport ready
 
 ## Stop Conditions
 
@@ -379,6 +403,7 @@ publication, live installation or Product Phase 4 without the required authoriza
 ## Decision Checkpoint
 
 D0, D1, S1-A through S1-C, S2, S3-A, S3-B and S3-C are complete. Public-byte verification
-and maintainer-run Cloud evidence jointly close S3-C. Stop before rollback/Latest promotion
-and before any checkpoint/push. Product Phase 4 and modification of any published
-v0.3.0/beta.2/v0.3.1 identity remain unauthorized.
+and maintainer-run Cloud evidence jointly close S3-C. The minimum latest-pointer promotion
+completed with v0.3.1 now production rollback/`Latest`; only its final evidence transport
+remains. Product Phase 4, remote-main mutation and modification of any published
+v0.3.0/beta.2/v0.3.1 byte remain unauthorized.
