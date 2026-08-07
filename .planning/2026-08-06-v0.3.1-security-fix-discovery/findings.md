@@ -571,3 +571,36 @@ new bootstrap is intentionally untracked and the real-index boundary test report
 single difference. A disposable copied index with intent-to-add for only that path passes
 all three repository-boundary tests without changing the real index, proving the contract
 matches the next checkpoint rather than weakening the allowlist.
+
+## S1-C candidate identity and packaging result
+
+S1-C closes L1/L2 and the candidate identity boundary without sealing or publishing a
+Release:
+
+- `package.json` now identifies current source as `0.3.1`. The Release artifact contract
+  freezes both `package_name=pwf-codex-cloud-hooks` and `package_version=0.3.1`; the builder
+  reads `package.json` and rejects missing or mismatched name/version before writing a ZIP.
+- The current candidate allowlist has 23 entries. It adds only
+  `patches/patch_planning_skill.py`, the direct import dependency of the already-packaged
+  `tools/import_upstream_runtime.py`. The patcher is maintenance tooling, not a new installed
+  runtime or trusted execution edge.
+- A built candidate ZIP is extracted into a disposable directory and its own importer
+  successfully runs `check`. Both bootstrap scripts remain outside the ZIP; the current
+  external asset identity is `init-cloud-sandbox-v0.3.1.bash`, whose embedded project ZIP
+  hash remains 64 zeroes and fails closed.
+- Current candidate tests prove deterministic double-build and contract/package identity.
+  Published stable identity is a separate oracle: `v0.3.0^{commit}` remains
+  `1454c9224c83d11c073b05baf6e536a11c3bb0e5`; rebuilding from that tag produces the original
+  22-entry ZIP SHA-256
+  `f245a554210c7f8d07eebbb775faa7b1482fea5d363ee6fa7578c9bbd98ad9af`, and the unchanged
+  v0.3.0 bootstrap remains
+  `ab334f0367d948fa29a2bdd37bff0c220929aeb320fdf59dbacbd5a4021b39c0`.
+- README, architecture, roadmap, maintainer guidance and active runtime comments now
+  distinguish the unsealed 0.3.1 candidate, accepted v0.3.0 rollback and immutable beta.2
+  previous fallback. Historical acceptance/provenance bytes were not rewritten.
+
+No current candidate ZIP SHA is promoted to an identity in S1-C. That value remains an
+ephemeral build result until a separately authorized seal gate freezes every ZIP input.
+The Windows-local full suite is green, but Linux descriptor/race/cross-user behavior and
+disposable no-live Cloud acceptance remain S2 gates and cannot be inferred from these
+results.

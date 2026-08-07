@@ -8,8 +8,9 @@
 >
 > 当前稳定身份：published/accepted `v0.3.0`；exact source `1454c922...` 已通过 S0～S3 全部门槛。
 >
-> 当前状态：M1～M4 仓库迁移已关闭；已决定先封板不改变行为的稳定 `v0.3.0`。Stable Release
-> Stable Release 已关闭；当前停止在 Product Phase 4 的独立 Discovery 授权门前。
+> 当前状态：M1～M4 与 stable v0.3.0 Release 已关闭。Product Phase 4 之前另行授权的
+> `0.3.1 security-fix train` 正在进行；当前只到 S1-C 候选源码/打包身份收口，S2、Cloud、seal、tag、
+> push 与 publication 尚未授权。
 
 ## 1. 与活动 planning 的分工
 
@@ -35,8 +36,9 @@ task plan 为准，并在 Phase、Cloud、Release 或 rollback 状态变化时�
 | 源码维护权威 | successor `main` |
 | 已发布生产回滚 | successor `v0.3.0`；beta.2 为不可变 previous fallback |
 | 当前稳定身份 | published/accepted `v0.3.0`；source `1454c922...` |
-| 当前 programme gate | Product Phase 4 Discovery authorization checkpoint |
+| 当前 programme gate | `0.3.1 security-fix train` S1-C；Product Phase 4 仍未授权 |
 | 当前 Release | stable `v0.3.0` 已完成 Cloud A～F 并晋级 rollback |
+| 当前候选源码 | `0.3.1`；bootstrap zero hash，未封板、未发布 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 beta.2 的精确 source、资产、SHA 和回滚入口见
@@ -69,9 +71,10 @@ Phase 是研发/验收边界；版本号是对外行为与兼容合同边界。�
 承诺，也不自动授权下一 Phase。一个 Phase 可以有多个 pre-release；多个低风险 Phase 也可以在明确
 评审后合并进同一版本列车。
 
-Product Phase 4 之前先完成一个独立稳定里程碑：把 beta.3-dev 已证明等价的 canonical 行为按新
-资产身份封板为 `v0.3.0`，保留现有 canary，不引入 runtime/Host ABI/trusted-graph 变化。其 S0～S3
-权威和停止条件由活动 `2026-08-06-v0.3.0-stable-release` task plan 管理。
+Product Phase 4 之前已完成独立 stable v0.3.0 里程碑。随后发现的兼容安全问题由单独授权的
+`0.3.1 security-fix train` 处理，不新增 Hook、Host ABI 或 trusted graph。它分为本地实现/身份收口、
+完整本地与 Linux/no-live Cloud 验证、最终 seal/release decision；精确 Next Step 与授权边界由活动
+`2026-08-06-v0.3.1-security-fix-discovery` task plan 管理。
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
@@ -102,12 +105,9 @@ trusted graph、rollback 和 Cloud 评审。
 新增 Hook 类型、Host ABI、信任/激活模型或明显用户行为面，默认提升 minor；纯兼容修复才使用 patch。
 任何字节变化都必须使用新身份和新 hash，不得复用 beta.2 或其他已发布资产。
 
-维护者已冻结选择：`0.3.0-beta.3-dev` 的等价 canonical 行为先通过独立 S0～S3 gate 晋级稳定
-`v0.3.0`；完成前保持 beta.2 为 rollback。只有 stable 发布与 A～F 关闭后，才允许另行授权 Product
-Phase 4 Discovery，并从新的 `0.4.0-dev` / `0.4.0-alpha.N` 列车开始。
-
-这个路线决定本身不授权修改 `package.json`、bootstrap、ZIP identity、tag 或 Release；这些变更从
-S1 起按活动 task plan 分 gate 执行。
+`v0.3.0` 已完成独立 S0～S3 gate 并成为 rollback；当前 0.3.1 只修复同一 minor 行为合同内的问题。
+0.3.1 的源码身份、bootstrap、ZIP、Cloud、seal 和 Release 必须继续按活动 task plan 分 gate 授权；
+该安全修复列车不授权 Product Phase 4，也不允许重写任何 v0.3.0 或 beta.2 身份与资产。
 
 ## 6. Discovery 与 gate 晋级模型
 

@@ -215,9 +215,13 @@ Installer 不负责修改 workspace planning，不接管第三方 policy，也�
 
 ## 11. Release 边界
 
-Release ZIP 由 22-entry machine allowlist 构建。外部 bootstrap 下载并校验 ZIP，因此绝不能进入它
-所校验的 ZIP。stable v0.3.0 已从 exact source `1454c922...` 发布并完成下载复核与 Cloud A～F，
-现为 accepted rollback。beta.2 资产保持不可变 previous fallback。
+已发布 `v0.3.0` ZIP 由 22-entry machine allowlist 构建；它的 tag、ZIP、外部 bootstrap 与 SHA 均保持
+不可变。未封板 `0.3.1` 候选由 23-entry machine allowlist 构建，新增的非 runtime entry 是 importer
+必需的 `patches/patch_planning_skill.py`，从而使解压后的 importer check 自包含。外部 bootstrap 下载并
+校验 ZIP，因此绝不能进入它所校验的 ZIP；0.3.1 候选 bootstrap 在 seal 前保持 zero hash 并 fail closed。
+
+stable v0.3.0 已从 exact source `1454c922...` 发布并完成下载复核与 Cloud A～F，现为 accepted
+rollback。beta.2 资产保持不可变 previous fallback。候选源码/package/contract 身份不表示已发布。
 
 ## 12. 尚未实现
 

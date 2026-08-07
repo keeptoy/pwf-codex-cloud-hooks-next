@@ -15,14 +15,15 @@
 - 产品 rollback：published/accepted stable `v0.3.0`；beta.2 为不可变 previous fallback。
 - 当前稳定身份：`v0.3.0` tag 精确指向 `1454c922...`，两个资产、Cloud setup、Fresh、canonical、
   real Resume、doctor、11 payload 和零 residue 全部 PASS。
-- 当前版本路线：stable Release 已关闭；下一步只能是单独获批的 Product Phase 4 Discovery。
+- 当前版本路线：stable Release 已关闭；Product Phase 4 前另行授权的 0.3.1 security-fix train 正在
+  S1-C 候选源码/打包身份收口，S2、Cloud、seal、tag、push 与 publication 尚未授权。
 - 当前仓库迁移：M1/M2/M3/M4 complete。M3 实际行为测试 HEAD 为
   `39795283cd65f84547651d7bec816191fb5bfedf`，ZIP SHA-256 为
   `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`；M3-B setup、Fresh、
   canonical、Resume 和 doctor 全部 PASS。M4-C no-live cutover/rollback 验收 HEAD 是
   `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151`；development/audit evidence refs
   未移动，两个 active integrity ruleset 只禁止 deletion 与 non-fast-forward。successor 已成为
-  后续源码维护权威；旧仓库继续承载不可变 beta.2 fallback。Product Phase 4 仍未授权。
+  后续源码维护权威；旧仓库继续承载不可变 beta.2 previous fallback。Product Phase 4 仍未授权。
 - M1 audit branch：`audit/beta2-exact`，不得移动或重写。
 - Product Phase 4：未开始、未授权；必须等待 stable v0.3.0 S3 关闭后再独立 Discovery。
 - 生产集成：只支持 PWF v3.8.2 的两个 Managed Hook events。
@@ -42,6 +43,7 @@ Linux/Cloud 再加：
 
 ```bash
 bash -n init-cloud-sandbox-v0.3.0.bash
+bash -n init-cloud-sandbox-v0.3.1.bash
 git ls-files --stage runtime/upstream
 ```
 
@@ -106,9 +108,10 @@ unzip -Z1 "$ZIP"
 sha256sum "$ZIP"
 ```
 
-检查：22 entries、固定 root/order/mode/metadata、bootstrap external。普通 development bootstrap
-必须保持 zero checksum 并 fail closed；已授权 Release candidate 只能写入冻结 ZIP 的精确 SHA，
-随后必须停止修改全部 ZIP 输入。
+当前 0.3.1 候选检查：23 entries、固定 package identity/root/order/mode/metadata、importer 与 patcher
+同时存在、bootstrap external。普通 development bootstrap 必须保持 zero checksum 并 fail closed；
+已授权 seal 只能写入冻结 ZIP 的精确 SHA，随后必须停止修改全部 ZIP 输入。已发布 v0.3.0 仍是独立的
+22-entry immutable oracle，不从候选工作树重建或覆盖。
 
 ## 9. 正式 Release
 
@@ -129,7 +132,7 @@ sha256sum "$ZIP"
 ## 9.1 M4 仓库切换
 
 M4 的完成证据在 `docs/beta3-dev-m4-cutover-plan.md`。实际 accepted main 是 `0b4bd7d...`；
-Cloud-tested development 与 audit refs 保持不动，旧仓库继续承载 beta.2 Release 和 rollback。
+Cloud-tested development 与 audit refs 保持不动，旧仓库继续承载 beta.2 Release 和 previous fallback。
 后续正常 main 治理提交不会改写这次 accepted SHA；若要重新执行历史 M4-C 唯一脚本，应使用记录的
 验收 commit，而不是把新 main HEAD 冒充成旧验收输入。
 
@@ -138,8 +141,10 @@ Cloud-tested development 与 audit refs 保持不动，旧仓库继续承载 bet
 迁移/开发失败：保持 M1 audit oracle；移除的只能是已验证的临时 worktree/local unpublished branch，
 禁止 `git reset --hard` audit ref。
 
-Production 回滚：使用旧仓库不可变 beta.2 ZIP/bootstrap，重新核验两个 SHA，再按 beta.2 acceptance
-执行 install/doctor/Fresh/Resume。回滚不应依赖当前 development branch 先被修好。
+Production 回滚：优先使用 successor 已发布/接受的不可变 v0.3.0 ZIP/bootstrap，并按其
+hard-acceptance 复核。beta.2 只是 previous fallback；需要再退一级时，使用旧仓库不可变资产、重新
+核验两个 SHA，并按 beta.2 acceptance 执行 install/doctor/Fresh/Resume。回滚不得依赖当前 0.3.1
+候选或 development branch 先被修好。
 
 ## 11. 交接完成标准
 

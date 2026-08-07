@@ -39,14 +39,16 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.match(architecture, /Managed policy 只认识 adapter/);
   assert.match(architecture, /does not resolve planning files/);
   assert.match(architecture, /只有 `runtime\/upstream\/session-catchup\.py` 与 pristine upstream 不同/);
-  assert.match(architecture, /Release ZIP 由 22-entry machine allowlist 构建/);
+  assert.match(architecture, /已发布 `v0\.3\.0` ZIP 由 22-entry machine allowlist 构建/);
+  assert.match(architecture, /未封板 `0\.3\.1` 候选由 23-entry machine allowlist 构建/);
 
   assert.equal((bundle.local_files || []).some(item => item.id === "owned_plan"), true);
   assert.equal((upstream.managed_runtime.local_files || []).some(item => item.id === "owned_plan"), true);
   assert.equal(artifact.entries.some(item => item.path === "runtime/owned-plan.py"), true);
   assert.equal(artifact.entries.some(item => item.path === "contracts/adapter-plan-context-request-v1.schema.json"), true);
   assert.equal(artifact.entries.some(item => item.path === "contracts/plan-context-result-v1.schema.json"), true);
-  assert.equal(artifact.entries.length, 22);
+  assert.equal(artifact.entries.some(item => item.path === "patches/patch_planning_skill.py"), true);
+  assert.equal(artifact.entries.length, 23);
 
   const adapter = readText("hooks/hook_adapter.py");
   assert.match(adapter, /"plan": "owned-plan\.py"/);
@@ -66,4 +68,18 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
     "def session_attachment(", "def plan_file(", "def resolve_project_state(",
   ]) assert.doesNotMatch(adapter, new RegExp(retired.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.doesNotMatch(adapter, /task_file\.read_text|progress_file\.read_text/);
+});
+
+test("current documentation and runtime comments identify the active 0.3.1 candidate without rewriting stable history", () => {
+  const readme = readText("README.md");
+  const roadmap = readText("ROADMAP.md");
+  const ownedPlan = readText("runtime/owned-plan.py");
+  const adapter = readText("hooks/hook_adapter.py");
+
+  assert.match(readme, /当前候选源码身份：`0\.3\.1`/);
+  assert.match(readme, /当前已接受的 rollback：`v0\.3\.0`/);
+  assert.match(readme, /`v0\.3\.0-beta\.2` 保持为不可变 previous fallback/);
+  assert.match(roadmap, /0\.3\.1 security-fix train/);
+  assert.doesNotMatch(ownedPlan, /Inactive managed plan-context runtime|Phase 3 Round 4/);
+  assert.doesNotMatch(adapter, /inactive exact-v1 owned-plan request/);
 });

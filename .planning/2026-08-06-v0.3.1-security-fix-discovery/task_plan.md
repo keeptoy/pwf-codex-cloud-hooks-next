@@ -8,32 +8,30 @@ published `v0.3.0` tag, asset, checksum and acceptance record unchanged.
 
 ## Current Gate
 
-S1-B is complete on the local Windows/Git-Bash gate from the maintainer's checkpointed
-S1-A basis `main@2558b95ca49233111eab4f3a7ae857da039b2c30`. The new development bootstrap
-removes NVM/Node installation and root `npx`, verifies platform Node `>=18`, installs only
-the verified pristine PWF v3.8.2 Skill subtree, and retains a zero project-ZIP hash so it
-cannot masquerade as a sealed release. L1/L2, S2, S3, package/ZIP Release identity changes,
-Cloud mutation, tags, publication and Product Phase 4 remain unauthorized.
+S1-C is complete on the maintainer-authorized basis
+`main@06d6f4e4f8be836d4789341e20729ea033dcbdc1`. L1/L2 and the minimum 0.3.1
+candidate-source identity closure are implemented: a self-contained 23-entry candidate
+ZIP contract, package/contract/bootstrap identity consistency, separate current-candidate
+and immutable published-v0.3.0 tests, and current documentation/comment corrections. The
+v0.3.1 bootstrap retains its zero ZIP hash. Work stops for a local checkpoint before S2;
+Cloud mutation, final seal, tags, push, publication, rollback promotion and Product Phase 4
+remain unauthorized.
 
 ## Status
 
-The audit baseline and D1 repair design are persisted. S1-A implements H1 ownership
-markers/conservative legacy recognition, H2 immutable verified transcript snapshots, M1
-lock-held shared-state transactions with fingerprint checks, and M3 bounded Host stdin.
-Focused local regression is green without Hook/Host ABI/result-schema expansion. The full
-suite has one intentional Release-gate failure because the modified source still retains
-the immutable v0.3.0 package/ZIP identity; changing that identity is not authorized here.
-S1-B focused and static verification is green. The full suite has only the pre-existing
-immutable v0.3.0 ZIP oracle failure plus the expected tracked-inventory failure while the
-new bootstrap remains untracked before the maintainer's next checkpoint; an isolated
-temporary-index replay proves the exact 69-path boundary passes once that file is included.
+The audit baseline, D1 repair design and S1-A/S1-B implementations are persisted. S1-C has
+closed the former Release-identity failures without weakening the immutable v0.3.0 oracle:
+the current source/package/contract identity is an unsealed 0.3.1 candidate; its ZIP is
+deterministic, contains the importer patcher and passes extracted importer `check`; the
+published v0.3.0 tag independently rebuilds to its exact original ZIP hash. Focused tests
+pass 9/9 and the full Windows-local suite passes 67 with 12 honest POSIX skips. This is not
+Linux/no-live Cloud evidence and does not begin S2.
 
 ## Next Step
 
-Stop for maintainer review/checkpoint. A separate authorization is required before L1/L2
-or S2 Linux/no-live Cloud regression. After the new bootstrap is included in a local
-checkpoint, rerun the real-index repository-boundary test; do not change package/ZIP/Release
-identity merely to make the current v0.3.0 ZIP-hash test green.
+Maintainer creates a local checkpoint and reviews the S1-C diff/evidence. Do not start S2
+unless it receives separate authorization; S2 must rerun the exact checkpointed source and
+add the outstanding Linux and disposable no-live Cloud evidence.
 
 ## Authorization Boundary
 
@@ -41,18 +39,21 @@ Authorized now:
 
 - preserve the audit evidence in this planning directory;
 - activate this planning directory through `.planning/.active_plan`;
-- retain the checkpointed S1-A H1/H2/M1/M3 implementation unchanged except for a directly
-  demonstrated S1-B integration defect;
-- add failing-first tests and a new `init-cloud-sandbox-v0.3.1.bash` implementing only the
-  frozen M2 bootstrap design;
-- update exact repository-boundary test inventory solely because S1-B adds tracked source
-  and test paths;
-- run local and honest platform-appropriate focused/full verification for S1-B.
+- retain checkpointed S1-A/S1-B runtime and bootstrap behavior unchanged except for a
+  directly demonstrated S1-C integration defect;
+- add `patches/patch_planning_skill.py` to the current candidate ZIP allowlist and prove
+  extracted-ZIP importer self-containment;
+- set and validate the 0.3.1 candidate source/package/contract/external-bootstrap identity
+  without setting a final ZIP hash or claiming a Release;
+- split current-candidate deterministic packaging assertions from immutable v0.3.0 tag and
+  asset oracles;
+- perform the frozen L2 README/current-comment corrections and directly required stable
+  architecture/roadmap/maintainer validation synchronization;
+- run local focused/full verification and deterministic candidate/stable-oracle builds.
 
 Not authorized now:
 
-- edit the immutable `init-cloud-sandbox-v0.3.0.bash`, Release ZIP allowlist, package/version
-  identity or L1/L2-only files;
+- edit the immutable `init-cloud-sandbox-v0.3.0.bash` or any published acceptance byte;
 - modify, move, replace or republish the existing `v0.3.0` tag or either asset;
 - install or repair live Cloud state, push, tag, publish or promote a rollback baseline;
 - begin Product Phase 4 features or change Host ABI, managed policy or trusted graph;
@@ -160,10 +161,15 @@ The detailed semantics, hostile fixtures, residual races and rollback gates are 
 - [x] Obtain explicit S1-B implementation authorization after the local S1-A checkpoint.
 - [x] S1-B: add bootstrap tests, remove NVM/Node24/root `npx`, verify platform Node `>=18`
   and install pristine PWF from the exact contracted archive/hash.
-- [ ] Keep L1/L2 packaging/documentation corrections separate from runtime assertions.
+- [x] Obtain explicit S1-C authorization after checkpointing S1-B.
+- [x] S1-C: add the importer patcher to the 23-entry candidate ZIP and prove extracted-ZIP
+  importer `check` succeeds.
+- [x] S1-C: freeze package/contract/bootstrap as an unsealed 0.3.1 candidate while keeping
+  published v0.3.0 tag/assets independently verifiable and unchanged.
+- [x] S1-C: complete L2 current documentation/comments without rewriting historical facts.
 - [x] Run focused checks after each authorized sub-gate and classify every failure honestly.
 - **Exit:** reviewed source diff and focused tests green on the appropriate platform.
-- **Status:** S1-A and S1-B complete / L1-L2 unauthorized
+- **Status:** complete through S1-C / stopped before S2
 
 ### S2 — Full local, Linux and no-live Cloud regression
 
@@ -174,10 +180,10 @@ The detailed semantics, hostile fixtures, residual races and rollback gates are 
 - **Exit:** exact candidate source has complete risk-proportionate regression evidence.
 - **Status:** pending / unauthorized
 
-### S3 — New candidate identity and immutable release decision
+### S3 — Immutable seal and release decision
 
-- [ ] Obtain separate version/seal/publication authorization.
-- [ ] Freeze the new identity, allowlist, ZIP inputs and exact source.
+- [ ] Obtain separate seal/publication authorization.
+- [ ] Freeze the final identity, allowlist, ZIP inputs and exact source.
 - [ ] Follow ZIP-before-bootstrap hashing and downloaded-asset revalidation order.
 - [ ] Promote rollback only after full Cloud acceptance; retain v0.3.0 unchanged.
 - **Exit:** a separately published and accepted security release, or an explicit no-release
@@ -194,7 +200,7 @@ publication, live installation or Product Phase 4 without the required authoriza
 
 ## Decision Checkpoint
 
-D0, D1, S1-A and S1-B are complete. L1/L2, S2 and S3 remain separate unauthorized gates.
-No current plan state authorizes changing the published v0.3.0 bootstrap or assets,
-package/ZIP Release identity, Cloud actions, commits/pushes, tags, publication or Product
-Phase 4.
+D0, D1 and S1-A through S1-C are complete. S2 and S3 remain separate unauthorized gates.
+No current plan state authorizes changing the published v0.3.0 bootstrap/assets, setting a
+final v0.3.1 ZIP hash, Cloud actions, commits/pushes, tags, publication, rollback promotion
+or Product Phase 4.

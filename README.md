@@ -3,13 +3,12 @@
 把 [`OthmanAdi/planning-with-files`](https://github.com/OthmanAdi/planning-with-files)
 的本地 Codex Skill Hook/runtime，安全接入 Codex Cloud 的 system-managed Hooks。
 
-> 本源码树的稳定 Release 身份：`v0.3.0`。本 README 只冻结该身份与稳定行为，不把发布前后会变化的
-> gate 状态写进 ZIP；当前是否已经发布/验收以 [`ROADMAP.md`](ROADMAP.md) 和
-> [`docs/v0.3.0-cloud-hard-acceptance.md`](docs/v0.3.0-cloud-hard-acceptance.md) 为准。
+> 当前候选源码身份：`0.3.1`。它是尚未封板、尚未发布的兼容安全修复候选；源码 checkout、版本字段、
+> 文件名或本地 ZIP 都不构成 Release。当前 gate 以 [`ROADMAP.md`](ROADMAP.md) 和活动 task plan 为准。
 >
-> 已发布回滚基线：`v0.3.0-beta.2`。其源码、资产哈希和 Cloud A～F 证据见
-> [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与
-> [`docs/v0.3.0-beta.2-cloud-hard-acceptance.md`](docs/v0.3.0-beta.2-cloud-hard-acceptance.md)。
+> 当前已接受的 rollback：`v0.3.0`；其 tag、双资产和 Cloud A～F 证据见
+> [`docs/v0.3.0-cloud-hard-acceptance.md`](docs/v0.3.0-cloud-hard-acceptance.md)。
+> `v0.3.0-beta.2` 保持为不可变 previous fallback，来源见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)。
 
 ## 项目边界
 
@@ -55,14 +54,15 @@ Managed policy 只注册一个绝对路径 adapter，事件集固定为：
 - 已安装且与 manifest 匹配的 pristine PWF v3.8.2 Skill；
 - production install 需要写入 `$CODEX_HOME` 和 Managed requirements 的权限。
 
-### v0.3.0 外部 bootstrap 安全边界
+### 外部 bootstrap 安全边界
 
 `init-cloud-sandbox-v0.3.0.bash` 使用精确 `v0.3.0` tag、包名和 ZIP SHA-256，并始终作为 ZIP 外部
 的独立资产。源码 checkout、文件名或本地 ZIP 本身不能证明 Release 已发布；只能在 Release 页面
 重新下载两个资产、核对 hard-acceptance 中的 SHA 后执行 bootstrap。
 
-在 v0.3.0 完成发布后 A～F 前，生产回滚仍使用不可变 beta.2 资产并按 beta.2 hard-acceptance
-复验。Release gate 的当前进度只在 ROADMAP、活动 task plan 和 v0.3.0 hard-acceptance 中维护。
+当前 `init-cloud-sandbox-v0.3.1.bash` 是候选外部资产，仍使用 64 位 zero ZIP hash 并故意 fail closed；
+它在单独的 seal gate 写入候选 ZIP 精确 hash 前不可用于发布或生产安装。生产回滚继续使用已接受的
+不可变 v0.3.0 资产；beta.2 保持 previous fallback。Release gate 进度只在 ROADMAP 和活动 task plan 维护。
 
 ### Installer CLI
 
@@ -137,6 +137,7 @@ npm test
 python3 -c "from pathlib import Path; [compile(p.read_text(encoding='utf-8'), str(p), 'exec') for p in map(Path, ['hooks/hook_adapter.py','runtime/owned-plan.py','runtime/owned-catchup.py'])]"
 node --check install.js
 bash -n init-cloud-sandbox-v0.3.0.bash
+bash -n init-cloud-sandbox-v0.3.1.bash
 git diff --check
 ```
 
@@ -168,7 +169,7 @@ git diff --check
 renormalize 和 fresh-clone 复验步骤见完整源码仓库的
 [`docs/git-file-modes.md`](docs/git-file-modes.md)。
 
-## 构建精确 v0.3.0 ZIP
+## 构建当前 0.3.1 候选 ZIP
 
 Release allowlist 由 `contracts/release-artifact-v1.json` 唯一决定。构建器固定路径顺序、时间戳、
 权限、压缩参数和 archive root；`check` 再核对 entries、mode、metadata 与源文件字节。
@@ -176,7 +177,7 @@ Release allowlist 由 `contracts/release-artifact-v1.json` 唯一决定。构建
 PowerShell：
 
 ```powershell
-$zip = Join-Path $env:TEMP 'pwf-codex-cloud-hooks-v0.3.0.zip'
+$zip = Join-Path $env:TEMP 'pwf-codex-cloud-hooks-v0.3.1.zip'
 python tools/build_release.py build --output $zip
 python tools/build_release.py check --archive $zip
 Get-FileHash -Algorithm SHA256 $zip
@@ -191,8 +192,11 @@ python3 tools/build_release.py check --archive "$ZIP"
 sha256sum "$ZIP"
 ```
 
-ZIP 必须包含精确 22 entries，且不包含外部 `init-cloud-sandbox-v0.3.0.bash`。本地构建成功不等于
-Release 成立；发布与验收状态、候选 ZIP/bootstrap 的精确 SHA 由 v0.3.0 hard-acceptance 冻结。
+当前 ZIP 必须包含精确 23 entries：importer 与其必需的
+`patches/patch_planning_skill.py` 必须同时存在；两个 bootstrap 都不得进入 ZIP，当前外部候选资产是
+`init-cloud-sandbox-v0.3.1.bash`。本地构建成功不等于 Release 成立；候选 bootstrap 仍为 zero hash。
+已发布 v0.3.0 的 22-entry ZIP、外部 bootstrap、tag 和 SHA 继续由其 hard-acceptance 冻结，不从当前
+工作树重建或覆盖。
 
 ## 仓库地图
 
@@ -219,7 +223,7 @@ Release 成立；发布与验收状态、候选 ZIP/bootstrap 的精确 SHA 由 
 - transcript path 必须 containment、regular-file 和 session identity 校验；
 - integrity 与内容注入 fail closed，单个 advisory child 对 Codex loop fail open；
 - Release ZIP 使用精确 allowlist，bootstrap 永远作为 ZIP 外部独立资产；
-- 已发布 beta.2 字节、URL 和 SHA-256 不可改写；
+- 已发布 v0.3.0 与 beta.2 的字节、URL 和 SHA-256 不可改写；
 - 封板顺序固定：冻结 ZIP 输入 → 构建 ZIP/hash → 写入 bootstrap → 计算 bootstrap hash →
   发布 → 重新下载双资产复验。
 

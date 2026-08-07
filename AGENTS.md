@@ -59,8 +59,8 @@
 - transcript JSONL 是可变 Host data；未知、损坏或身份不符不得造成 partial injection。
 - integrity 和内容注入 fail closed；advisory child failure 对 Codex loop fail open，且不能抑制
   canary 或其他已验证上下文。
-- 发布过的 beta.2 ZIP/bootstrap 字节、URL 和 SHA 不可变；当前 v0.3.0 candidate 已封板但不是
-  Release，直到 S3 发布和 A～F 关闭前仍不得作为 production rollback。
+- 已发布 v0.3.0 与 beta.2 的 ZIP/bootstrap 字节、URL 和 SHA 不可变；当前 0.3.1 候选不是 Release，
+  在独立 seal、发布和验收关闭前不得作为 production rollback。
 
 ## Discovery 与 gate
 
@@ -81,6 +81,7 @@ npm test
 python3 -c "from pathlib import Path; [compile(p.read_text(encoding='utf-8'), str(p), 'exec') for p in map(Path, ['hooks/hook_adapter.py','runtime/owned-plan.py','runtime/owned-catchup.py'])]"
 node --check install.js
 bash -n init-cloud-sandbox-v0.3.0.bash
+bash -n init-cloud-sandbox-v0.3.1.bash
 git diff --check
 ```
 
@@ -106,7 +107,7 @@ git diff --check
 M1 exact mirror、M2 slim transformation、M3 Cloud equivalence 和 M4 repository cutover 已完成。
 M4-C 在 `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151` 通过 Fresh Cloud/Linux no-live
 验收；Cloud-tested development `39795283...` 与 audit `bbad3703...` 保持不动，旧仓库仍是
-不可变 beta.2 Release/rollback 权威。当前 successor 是后续源码维护权威；不改变行为且保留
+不可变 beta.2 Release/previous-fallback 权威。当前 successor 是后续源码维护权威；不改变行为且保留
 canary 的 stable `v0.3.0` 已在 exact source `1454c922...` 完成 S0～S3、immutable assets 与 Cloud
-A～F，并晋级为 accepted rollback；beta.2 保持不可变 previous fallback。当前停止在 Product Phase 4
-Discovery 授权门前，stable 完成状态不得被理解为自动授权下一 Product Phase。
+A～F，并晋级为 accepted rollback；beta.2 保持不可变 previous fallback。Product Phase 4 仍未授权；
+当前只执行活动 task plan 明确授权的 0.3.1 兼容安全修复 gate，不得借此进入下一 Product Phase。

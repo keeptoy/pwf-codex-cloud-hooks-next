@@ -97,9 +97,11 @@ test("archived prototype and history remain outside runtime, Release, and adapte
     assert.doesNotMatch(content, /docs\/phase-|\.planning\/2026-08-01/);
   }
   const artifact = JSON.parse(release);
-  assert.equal(artifact.entries.length, 22);
+  assert.equal(artifact.package_version, "0.3.1");
+  assert.equal(artifact.entries.length, 23);
+  assert.equal(artifact.entries.some(item => item.path === "patches/patch_planning_skill.py"), true);
   assert.equal(artifact.entries.some(item => item.path.startsWith("docs/") || item.path.startsWith("tests/")), false);
-  assert.deepEqual(artifact.external_release_assets.map(item => item.path), ["init-cloud-sandbox-v0.3.0.bash"]);
+  assert.deepEqual(artifact.external_release_assets.map(item => item.path), ["init-cloud-sandbox-v0.3.1.bash"]);
   assert.match(installer, /\[\[hooks\.SessionStart\.hooks\]\]/);
   assert.match(installer, /\[\[hooks\.UserPromptSubmit\.hooks\]\]/);
   assert.match(m3Runbook, /event_groups = policy\["hooks"\]\[event\]/);

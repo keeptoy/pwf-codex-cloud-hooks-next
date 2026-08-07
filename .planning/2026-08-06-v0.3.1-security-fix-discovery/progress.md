@@ -341,3 +341,51 @@ local/Linux/no-live Cloud regression.
 - No live network archive was fetched, no Cloud/container state was changed and no
   package/ZIP contract, v0.3.0 asset, tag, commit, push or publication was performed. S1-B
   stops here; L1/L2, S2/S3 and Product Phase 4 remain unauthorized.
+
+## 2026-08-07 — S1-C authorized and recovered
+
+- Maintainer checkpointed S1-B and explicitly authorized L1/L2 plus minimum 0.3.1
+  candidate-source, Release-test and packaging-boundary closure.
+- Recovered a clean `main@06d6f4e4f8be836d4789341e20729ea033dcbdc1`, four commits ahead
+  of `origin/main`; planning catch-up reported no unsynced work. The real-index exact
+  repository-boundary suite was rerun after checkpoint and passed 3/3.
+- S1-C may change current candidate package/contract/tests/docs, but must retain the
+  v0.3.1 bootstrap's zero ZIP hash and every existing v0.3.0 tag, asset, checksum and
+  acceptance byte unchanged. S2, Cloud, final seal, tag, push and publication remain
+  unauthorized.
+
+## 2026-08-07 — S1-C implementation complete
+
+- Added candidate/stable identity tests before production edits. The sandboxed runner was
+  blocked by the known Windows `spawn EPERM`; the permitted rerun produced the intended
+  pre-fix state: 9 registered, 3 passed and 6 failed on 23-entry/package identity,
+  self-containment and L2 assertions. The independent v0.3.0 tag rebuild already passed.
+- Set current package identity to 0.3.1; added package name/version to the Release contract;
+  made the builder reject either identity mismatch; added the importer patcher as entry 23;
+  and changed only the current contract's external asset identity to the unsealed v0.3.1
+  bootstrap. Synchronized the exact Release-contract, owned-plan and runtime-bundle hashes.
+- Corrected current owned-plan/adapter comments and synchronized README, architecture,
+  roadmap, maintainer guidance and AGENTS boundaries. Accepted v0.3.0 remains the production
+  rollback and beta.2 remains the immutable previous fallback.
+- Focused S1-C result: 9 tests / 9 passed / 0 failed. It includes deterministic candidate
+  double-build, extracted-ZIP importer `check`, package-name/version drift rejection and
+  exact stable-tag rebuild.
+- Full Windows-local result: 79 registered / 67 passed / 0 failed / 12 honest POSIX skips.
+  This closes the former package-identity failure but is not S2 Linux or Cloud evidence.
+- Static checks pass: importer check, Node/Python syntax, old/new bootstrap Bash syntax and
+  `git diff --check`. Git Bash initially hit the managed Windows sandbox's signal-pipe
+  access error; the approved out-of-sandbox retry passed both scripts.
+- Immutable checks pass: `v0.3.0^{commit}` is still `1454c922...`; rebuilding its exact
+  source yields ZIP `f245a554...`; the current v0.3.0 bootstrap SHA-256 remains
+  `ab334f03...`; the v0.3.1 bootstrap still embeds the 64-zero ZIP hash; the four upstream
+  Git modes remain `100755`.
+- No network fetch, Cloud mutation, live install/repair, final ZIP hash, seal, commit, push,
+  tag, publication, rollback promotion or Product Phase 4 action occurred. S1-C stops for
+  maintainer checkpoint; S2 and S3 remain unauthorized.
+- The first final Markdown validator used PowerShell single-quoted `` `[ `t]+$` `` syntax;
+  it therefore treated literal `t` as whitespace and falsely reported many historical
+  lines ending in that letter. Classified as a validation-command defect; it made no file
+  changes. The corrected `[ \t]+$` rerun passed all 8 changed Markdown files for strict
+  UTF-8/no BOM, LF-only, final newline, fences, local links and trailing whitespace.
+- Final JSON parsing, `git diff --check` and cache audit pass; zero `__pycache__` directories
+  and zero `.pyc` files remain.

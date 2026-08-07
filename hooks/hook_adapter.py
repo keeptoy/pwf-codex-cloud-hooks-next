@@ -204,7 +204,7 @@ def build_runtime_request(event: str, payload: dict, project: dict) -> dict | No
 
 
 def build_plan_context_request(event: str, payload: dict, root: Path) -> dict | None:
-    """Build the inactive exact-v1 owned-plan request without dispatching it."""
+    """Build the exact-v1 request for the active owned-plan sibling."""
     root_value = str(root)
     if event not in EVENTS or not root.is_absolute() or not (2 <= len(root_value) <= 4096):
         return None
