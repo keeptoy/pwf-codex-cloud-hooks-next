@@ -741,3 +741,103 @@ local/Linux/no-live Cloud regression.
 - S3-A stops here with an uncommitted, unpublished local seal. No push, tag, Release,
   downloaded-asset acceptance, live Cloud change, rollback promotion, Product Phase 4 or
   v0.3.0/beta.2 mutation occurred. S3-B and S3-C remain unauthorized.
+
+## 2026-08-07 — S3-B authorized and preflighted
+
+- Maintainer checkpointed S3-A as clean commit
+  `9aa2148886e499f9f45594f7ae4f7681f1045de2` and instructed the agent to continue to the
+  next plan step. S3-B alone is authorized; S3-C, rollback promotion, Product Phase 4,
+  branch push and every v0.3.0/beta.2 mutation remain excluded.
+- Recovery found local branch `validation/v0.3.1-s2-runbook` clean at that commit before
+  the authorization record. The only subsequent working-tree difference is current
+  ZIP-excluded planning evidence; no Release input or bootstrap drift exists.
+- Exact retained ZIP and witness still exist, each 82,725 bytes with SHA-256
+  `f097b04015b1a3847ca5a24b9236f882c5a008b22033793b5661e282c39131f9`.
+  The checkpointed external bootstrap remains 21,565 bytes with SHA-256
+  `ce31a32002aea46bbf3f9baf9a0e93451d24c3b3653952e425d1e1ff6960a5e8`.
+- One PowerShell preflight passed unquoted `HEAD^{tree}` and caused the shell wrapper to
+  mis-handle `{tree}` as an encoded command. It changed no files or refs. The corrected
+  quoted form returned tree `1cef0c0955a81db301f6ded27c0f4e0e20c9fba7`.
+- GitHub authentication is active as `keeptoy` with repository scope. Read-only remote
+  preflight returned no `refs/tags/v0.3.1`, and `gh release view v0.3.1` returned the
+  expected `release not found`. No existing identity will be overwritten.
+- Prepublication source check proved all 23 Release inputs plus the external v0.3.1
+  bootstrap match checkpoint `9aa2148` exactly; only ZIP-excluded current planning differs
+  in the worktree, with no staged changes.
+- A third independent prepublication build/check reproduced 23 entries, 82,725 bytes and
+  exact ZIP SHA-256 `f097b040...31f9`; its unique temporary copy was removed after the
+  comparison. Focused sealed/stable protection tests passed 4/4.
+- Existing v0.3.0 is a lightweight tag, so the new immutable v0.3.1 tag will use the same
+  repository convention and point directly to checkpoint `9aa2148`.
+- Created local lightweight `v0.3.1` at exact commit
+  `9aa2148886e499f9f45594f7ae4f7681f1045de2`, then performed one ordinary non-force push
+  of only `refs/tags/v0.3.1`. Immediate `git ls-remote` returned the same exact commit.
+  No branch or prior tag moved.
+- GitHub CLI supports `--verify-tag` and `--latest=false`; S3-B publication will use both so
+  it cannot synthesize a different tag and will not create/update the moving Latest pointer.
+
+## 2026-08-07 — S3-B immutable publication complete
+
+- Created GitHub Release `v0.3.1` with `--verify-tag --latest=false`, title `v0.3.1` and
+  release notes that include both exact SHA-256 values plus the explicit S3-C/rollback
+  caveat. Release URL:
+  `https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/tag/v0.3.1`.
+- Uploaded exactly two assets once: `pwf-codex-cloud-hooks-v0.3.1.zip` and
+  `init-cloud-sandbox-v0.3.1.bash`. No witness ZIP, source archive, checksum sidecar or
+  unrelated file was uploaded.
+- Read-only GitHub API verification reports non-draft/non-prerelease Release, published at
+  `2026-08-07T11:49:01Z`, asset count 2, exact sizes 82,725 and 21,565 bytes, and exact
+  service-side digests `sha256:f097b040...31f9` and `sha256:ce31a320...a5e8`.
+- Remote tag verification still resolves `refs/tags/v0.3.1` to exact source
+  `9aa2148886e499f9f45594f7ae4f7681f1045de2`. GitHub `Latest` remains `v0.3.0`.
+- S3-B did not download either published asset, execute the published bootstrap, mutate
+  Cloud, push a branch, alter remote main, move/replace any tag or asset, promote rollback
+  or begin Product Phase 4. Those downloaded-byte and lifecycle checks remain S3-C.
+- Synchronized only ZIP-excluded governance/runbook files to published-but-unaccepted
+  status. README, all 23 ZIP inputs and the external bootstrap remain byte-identical to
+  tag `v0.3.1`; post-publication sealed-path diff check PASS.
+- Focused architecture/repository governance regression passed 5/5. `git diff --check`,
+  current/stable tag identity and exact tracked-path boundary remain green. No full product
+  or Cloud suite was repeated for publication metadata-only governance edits.
+
+## 2026-08-07 — S3-C authorized / public-byte verification started
+
+- Maintainer instructed the agent to continue, authorizing S3-C. The gate is explicitly
+  split into agent-run public download verification, maintainer-run Fresh/Resume/doctor
+  Cloud smoke, then an evidence-based rollback/Latest decision. The agent will not submit
+  Cloud or promote before the maintainer returns exact evidence.
+- S3-B governance changes are not checkpointed, but they are all ZIP-excluded documents;
+  tag `v0.3.1`, all 23 Release inputs and the external bootstrap remain unchanged.
+- First public-download command failed before receiving an asset because this host's older
+  PowerShell `New-Item` does not accept `-LiteralPath`. The directory was never created and
+  curl then failed with local output error 23. No partial file, network integrity failure or
+  Release defect exists. Retry uses a new GUID path with `New-Item -Path -ErrorAction Stop`.
+- Corrected public consumer-path download PASS from both unauthenticated GitHub Release
+  URLs. Fresh evidence directory:
+  `%LOCALAPPDATA%/Temp/pwf-v031-s3c-download-b74056ef919a4bfdb6937c855ae12c94/`.
+- Downloaded ZIP is exactly 82,725 bytes / `f097b040...31f9`; downloaded bootstrap is
+  exactly 21,565 bytes / `ce31a320...a5e8`. Filenames match the Release contract.
+- Builder inspection of the downloaded ZIP reports healthy, 23 entries and the same exact
+  digest/size. Downloaded bootstrap visibly binds default `v0.3.1` URL/package to the exact
+  ZIP digest; it has not been executed.
+- Extracted the downloaded ZIP into the same fresh evidence directory while restoring its
+  recorded Unix modes. Its bundled importer `check` passed against all four exact managed
+  upstream hashes; patcher is present and no bootstrap entered the ZIP.
+- Downloaded bootstrap binding checks PASS: exact v0.3.1 URL/package and `f097b040...31f9`
+  default, no zero default. Git Bash syntax check PASS. The bootstrap remains unexecuted
+  locally because Windows cannot represent the final Linux/Cloud install boundary.
+- Added runbook section 13 for the maintainer-run S3-C Cloud smoke. Its setup wrapper pins
+  tag/source `v0.3.1@9aa2148`, verifies the publicly downloaded bootstrap bytes, exercises
+  that bootstrap's default public ZIP URL in a Fresh Node-22 `/opt/codex` container and
+  requires an initial healthy/non-repairable doctor before B–F.
+- The final smoke deliberately reuses sections 4–8 verbatim; their S2 strings are stable
+  fixture IDs, while `V031_S3C_PUBLIC_RELEASE_SETUP=PASS` separates final-publication
+  evidence from historical S2. The wrapper and both existing Bash fences pass `bash -n`
+  (3/3). No Cloud task was submitted by this agent.
+- Focused architecture/repository governance regression passed 5/5 after the S3-C handoff
+  edit. Strict Markdown hygiene, `git diff --check` and published sealed-path comparison
+  against tag v0.3.1 all PASS. Current dirty state remains exactly seven ZIP-excluded
+  governance/runbook files.
+- S3-C now waits on maintainer-run Cloud outputs from runbook section 13 plus sections 4–8.
+  Public-byte PASS alone does not close S3-C and does not authorize rollback/Latest
+  promotion.

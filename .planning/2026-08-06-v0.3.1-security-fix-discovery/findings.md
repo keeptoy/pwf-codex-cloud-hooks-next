@@ -799,3 +799,16 @@ possible S3-B; it is not a published asset or durable Release store. Published v
 remains at commit `1454c922...`, bootstrap SHA-256 `ab334f03...b39c0` and ZIP SHA-256
 `f245a554...d9af`. S3-B, S3-C, commit/push/tag/publication, live Cloud and rollback
 promotion remain separate decisions.
+
+## S3-B publication result
+
+The immutable `v0.3.1` tag and Release are now public at exact sealed source
+`9aa2148886e499f9f45594f7ae4f7681f1045de2`. The Release contains exactly the external
+bootstrap and 23-entry ZIP described by S3-A. GitHub metadata independently reports their
+expected sizes and `sha256:` digests, and `Latest` remains accepted v0.3.0.
+
+This closes only the publication transaction. Server metadata is strong upload-integrity
+evidence but is not the S3-C consumer-path proof: neither public URL has been downloaded,
+hashed from received bytes or exercised in a Fresh Cloud container. Therefore v0.3.1 is a
+published security release but not yet an accepted rollback, and no published object may
+be edited in place if S3-C later finds a defect.

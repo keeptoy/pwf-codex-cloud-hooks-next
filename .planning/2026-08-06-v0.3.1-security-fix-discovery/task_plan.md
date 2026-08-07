@@ -61,20 +61,44 @@ SHA-256 `f097b040...31f9`; the external v0.3.1 bootstrap alone now pins that ZIP
 downloaded-asset acceptance, rollback promotion, live Cloud mutation or Product Phase 4
 was performed.
 
+The maintainer checkpointed the completed local seal as
+`validation/v0.3.1-s2-runbook@9aa2148` and instructed the agent to continue to the next
+step. This explicitly authorizes S3-B only: reverify the exact sealed source/assets, create
+one immutable `v0.3.1` tag at that reviewed source, publish exactly the sealed ZIP and its
+external bootstrap once, and verify remote identities read-only. It does not authorize
+S3-C downloaded-asset/Cloud acceptance, rollback promotion, Product Phase 4, remote main
+mutation or any change to v0.3.0/beta.2.
+
+S3-B is complete. Lightweight tag `v0.3.1` resolves remotely to exact sealed source
+`9aa2148886e499f9f45594f7ae4f7681f1045de2`; the public non-draft/non-prerelease Release
+contains exactly the 82,725-byte ZIP and 21,565-byte external bootstrap, whose GitHub
+service-side SHA-256 digests match `f097b040...31f9` and `ce31a320...a5e8`. `Latest`
+remains v0.3.0. No published asset has been downloaded or executed in this gate.
+
+The maintainer now instructs the agent to continue, explicitly authorizing S3-C. This gate
+is split into three evidence steps: the agent downloads both public Release URLs into a
+fresh local directory and verifies exact filename/size/SHA/boundary; the maintainer runs
+the final Fresh/Resume/doctor smoke in a new Codex Cloud container using those public
+assets; only after the exact evidence is returned may the maintainer decide rollback and
+`Latest` promotion. The agent remains unauthorized to submit the Cloud task itself or to
+promote before that evidence.
+
 ## Status
 
-S1, S2 and S3-A are complete. The exact local ZIP/bootstrap pair remains a non-Release
-0.3.1 candidate until separately authorized S3-B publication and S3-C downloaded-asset/
-Cloud acceptance. Published v0.3.0 remains the accepted rollback oracle. The last exact
-Cloud-PASS ZIP, the post-S2 documentation-only observation and the final S3-A sealed ZIP
-remain separate identities and must not be conflated.
+S1, S2, S3-A and S3-B are complete. S3-C is authorized and in progress at public
+downloaded-byte verification; final Cloud evidence and promotion decision remain pending.
+Published/accepted v0.3.0 remains the rollback oracle and `Latest`. Historical Cloud-PASS,
+post-S2 observation, local seal, publication metadata and downloaded bytes remain distinct
+evidence classes.
 
 ## Next Step
 
-Stop for maintainer checkpoint. The next possible critical gate is a separate S3-B
-publication decision for the reviewed exact sealed source and two retained local assets.
-Until explicitly authorized, do not commit from this agent, push, tag, publish, update
-remote main, download/accept assets, promote rollback or begin Product Phase 4.
+Download both v0.3.1 assets from their public Release URLs into a new disposable local
+directory; verify exact names, sizes, hashes, ZIP inventory/metadata/self-contained
+importer and bootstrap-to-ZIP binding without using retained local assets as the oracle.
+Then prepare the exact Cloud smoke handoff and stop for maintainer-run evidence. Do not
+submit Cloud, promote rollback/Latest, push a branch, edit Release/tag/assets, update
+remote main or begin Product Phase 4.
 
 ## Authorization Boundary
 
@@ -116,20 +140,28 @@ Authorized now:
   input blobs, double-build/check the final ZIP, replace only the v0.3.1 bootstrap's
   64-zero ZIP hash with that exact digest, compute the bootstrap digest, rerun local
   regression and update ZIP-excluded governance evidence.
+- execute S3-B publication exactly once from clean checkpoint `9aa2148`: create immutable
+  tag `v0.3.1`, push only that tag, create the corresponding GitHub Release and upload only
+  `pwf-codex-cloud-hooks-v0.3.1.zip` plus `init-cloud-sandbox-v0.3.1.bash`, then perform
+  read-only remote identity/asset metadata verification.
+- execute S3-C public-byte verification and prepare the final Cloud handoff; after the
+  maintainer returns exact Fresh/Resume/doctor evidence, evaluate but do not silently
+  assume rollback/Latest promotion.
 
 Not authorized now:
 
 - edit the immutable `init-cloud-sandbox-v0.3.0.bash` or any published acceptance byte;
 - modify, move, replace or republish the existing `v0.3.0` tag or either asset;
-- install or repair live Cloud state from this agent, push outside the rolling runbook
-  branch, tag, publish or promote a rollback baseline;
+- submit or mutate live Cloud state from this agent, push any branch, move any existing
+  tag, publish any asset outside the exact S3-B pair or promote a rollback baseline;
 - begin Product Phase 4 features or change Host ABI, managed policy or trusted graph;
 - weaken safety assertions or reinterpret Windows skips as Linux/Cloud evidence.
 - force-push, update remote `main`, move `validation/v0.3.1-s2-03a6cc2f`, push another
   ref, create/move a tag, publish assets, modify live `/opt/codex` from this agent, or reuse
   a disposable Cloud container as production;
-- create a commit in this gate from this agent, push any ref, begin S3-B/S3-C, call the
-  locally sealed bytes a Release/accepted rollback, or modify any v0.3.0/beta.2 identity.
+- create a commit in this gate from this agent, push any branch/ref, call publication or
+  local download accepted rollback, promote `Latest` before exact Cloud evidence, or
+  modify any v0.3.0/beta.2/v0.3.1 published identity.
 
 ## Risk Register
 
@@ -264,14 +296,14 @@ The detailed semantics, hostile fixtures, residual races and rollback gates are 
 - [x] **S3-A local seal:** freeze final source and all 23 ZIP-input blobs; perform
   independent double build/check; write that exact ZIP hash into only the external
   v0.3.1 bootstrap; compute bootstrap SHA; rerun regression; stop before tag/publication.
-- [ ] **S3-B publication authorization:** create immutable `v0.3.1` tag/Release from the
+- [x] **S3-B publication authorization:** create immutable `v0.3.1` tag/Release from the
   reviewed sealed source and upload exactly the ZIP plus external bootstrap once.
 - [ ] **S3-C acceptance/promotion authorization:** redownload both assets, reverify
   filename/size/SHA/boundary, run final Fresh/Resume/doctor smoke, then decide whether to
   promote v0.3.1 as rollback while retaining v0.3.0 unchanged.
 - **Exit:** a separately published and accepted security release, or an explicit no-release
   closure with findings disposition recorded.
-- **Status:** S3-A complete / S3-B and S3-C pending and unauthorized
+- **Status:** S3-A and S3-B complete / S3-C authorized and in progress
 
 ## Stop Conditions
 
@@ -283,8 +315,7 @@ publication, live installation or Product Phase 4 without the required authoriza
 
 ## Decision Checkpoint
 
-D0, D1, S1-A through S1-C, S2 and S3-A are complete. The exact local ZIP/bootstrap pair is
-sealed but uncommitted and unpublished. No further critical action is authorized: stop
-before any commit by this agent, push, tag, publication, downloaded-asset acceptance, live
-Cloud mutation, rollback promotion, Product Phase 4 action or modification of published
-v0.3.0/beta.2.
+D0, D1, S1-A through S1-C, S2, S3-A and S3-B are complete. S3-C is authorized only under
+the three-step evidence split above. Public-byte PASS alone cannot close S3-C: stop for
+maintainer-run Cloud evidence before rollback/Latest promotion. Product Phase 4, branch
+push and modification of any published v0.3.0/beta.2/v0.3.1 identity remain unauthorized.

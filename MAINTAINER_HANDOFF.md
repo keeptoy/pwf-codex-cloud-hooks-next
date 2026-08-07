@@ -16,8 +16,8 @@
 - 当前稳定身份：`v0.3.0` tag 精确指向 `1454c922...`，两个资产、Cloud setup、Fresh、canonical、
   real Resume、doctor、11 payload 和零 residue 全部 PASS。
 - 当前版本路线：stable Release 已关闭；Product Phase 4 前另行授权的 0.3.1 security-fix train 已完成
-  S1、S2 Linux/Cloud hard acceptance 与 S3-A 本地 immutable seal。当前等待 S3-B publication 授权；
-  tag、publication、S3-C downloaded-asset/Cloud acceptance 与 rollback promotion 尚未授权。
+  S1、S2 Linux/Cloud hard acceptance、S3-A 本地 seal 与 S3-B publication。S3-C 已授权且本地公开下载
+  字节验收 PASS，当前等待维护者执行 final Cloud smoke；v0.3.1 rollback/Latest promotion 尚未授权。
 - 当前仓库迁移：M1/M2/M3/M4 complete。M3 实际行为测试 HEAD 为
   `39795283cd65f84547651d7bec816191fb5bfedf`，ZIP SHA-256 为
   `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`；M3-B setup、Fresh、
@@ -109,10 +109,12 @@ unzip -Z1 "$ZIP"
 sha256sum "$ZIP"
 ```
 
-当前 0.3.1 本地封板候选：23 entries、82,725 bytes、ZIP SHA-256 `f097b040...31f9`；固定 package
+当前 published v0.3.1：exact source `9aa2148...`；23 entries、82,725 bytes、ZIP SHA-256
+`f097b040...31f9`；固定 package
 identity/root/order/mode/metadata，importer 与 patcher 同时存在，bootstrap external。bootstrap 已固定
-该 ZIP，21,565 bytes、SHA-256 `ce31a320...a5e8`。这些是 S3-A 本地证据，不是 tag、Release、下载验收
-或 rollback 身份；任何 ZIP 输入变化都必须使本次 seal 失效并重新开始。已发布 v0.3.0 仍是独立的
+该 ZIP，21,565 bytes、SHA-256 `ce31a320...a5e8`。S3-B 已上传恰好这两项资产并核对服务端 digest；尚未
+完成 S3-C 下载字节/Cloud 验收，也不是 accepted rollback。任何字节问题必须使用新身份，不得原位
+替换资产。已发布 v0.3.0 仍是独立的
 22-entry immutable oracle，不从候选工作树重建或覆盖。
 
 ## 9. 正式 Release
