@@ -148,24 +148,32 @@ validation head and that v0.3.1/v0.3.0 tags, Release assets and `Latest` remain 
 No force operation, squash/rebase merge, branch deletion, Release mutation or Product
 Phase 4 work is authorized.
 
+Main convergence completed through GitHub PR #1. Merge commit
+`07214f97a8348a71b9ad26ae12331e73b873f668` has exact parents `bef9194...` and
+`c8cfb26...`; remote main contains both the accepted Release source and the complete
+validation evidence chain. Post-merge verification preserved the validation ref, both
+stable tags, all Release asset identities and `Latest=v0.3.1`. The maintainer has now
+authorized one terminal planning-only closure checkpoint from that exact main commit, one
+short-lived closure branch/PR, merge-commit integration and final read-only verification.
+The closure changes only this plan, findings and progress; its declaration of completion
+is the terminal repository state and does not authorize a new gate.
+
 ## Status
 
-S1, S2, S3-A, S3-B and S3-C are complete. Published v0.3.1 has passed public downloaded-byte
-verification and final Cloud setup/Fresh/Resume/doctor/inventory/residue acceptance. The
-external latest-pointer promotion is complete and v0.3.1 is now production rollback/
-`Latest`; governance synchronization and its final evidence checkpoint are complete at
-local/remote validation head `c92b087...`. Historical Cloud-PASS, post-S2 observation,
-local seal, publication metadata and downloaded bytes remain distinct evidence classes.
-The main-convergence gate is now active; Product Phase 4 remains unauthorized.
+**COMPLETE.** S1, S2, S3-A, S3-B, S3-C, rollback/Latest promotion and main convergence are
+all closed. Published v0.3.1 passed public-byte and final Cloud acceptance and is the
+production rollback/`Latest`; v0.3.0 remains the immediate previous fallback and beta.2
+the older fallback oracle. Remote main contains exact Release source `9aa2148...`, evidence
+head `c8cfb26...` and merge commit `07214f9...`. Historical Cloud-PASS, post-S2
+observation, local seal, publication metadata and downloaded bytes remain distinct
+evidence classes. Product Phase 4 remains unauthorized.
 
 ## Next Step
 
-Persist this main-convergence authorization, validate the planning-only delta, checkpoint
-and ordinarily fast-forward the existing validation ref after an exact remote-parent
-preflight. Open and review a draft PR from `validation/v0.3.1-s2-runbook` to `main`; if the
-PR remains a clean descendant-only change with no unrelated paths, make it ready and merge
-with a merge commit. Verify exact remote ancestry and immutable Release identities, then
-stop. Do not begin Product Phase 4.
+None. Stop with no active implementation, Cloud, Release or Product gate. Keep
+`.planning/.active_plan` pointing here as a completed-plan sentinel until the maintainer
+explicitly authorizes and activates a new plan. Product Phase 4 or any other source change
+requires a fresh Discovery/gate and must not inherit authority from this completed train.
 
 ## Authorization Boundary
 
@@ -239,6 +247,10 @@ Authorized now:
   planning files, create one governance checkpoint, ordinarily fast-forward the existing
   validation ref, open/review its PR to `main`, and merge only with a merge commit after
   exact scope and identity checks; retain the validation branch as evidence.
+- create the terminal closure from exact merged main `07214f9...`: update only the three
+  active planning files, commit them on `agent/close-v0.3.1-security-train`, ordinarily
+  push that new branch, open/review one closure PR, merge it with a merge commit and verify
+  the unchanged product/Release boundary. This authorization is consumed by that closure.
 
 Not authorized now:
 
@@ -249,11 +261,11 @@ Not authorized now:
 - begin Product Phase 4 features or change Host ABI, managed policy or trusted graph;
 - weaken safety assertions or reinterpret Windows skips as Linux/Cloud evidence;
 - force-push, squash/rebase the accepted commit chain, delete the validation branch, push
-  another ref, create/move a tag, edit a Release body/asset, modify live `/opt/codex` or
-  reuse a disposable Cloud container as production;
-- modify product/Release inputs for the convergence checkpoint, merge a PR whose base/head
-  identities or changed-path scope differ from the reviewed boundary, or continue after
-  the post-merge verification without fresh authorization.
+  any ref other than the exact closure branch, create/move a tag, edit a Release body/asset,
+  modify live `/opt/codex` or reuse a disposable Cloud container as production;
+- modify any non-planning file for closure, merge a PR whose base/head identities or
+  changed-path scope differ from the reviewed three-file boundary, delete either evidence
+  branch, or continue after final verification without fresh authorization.
 
 ## Risk Register
 

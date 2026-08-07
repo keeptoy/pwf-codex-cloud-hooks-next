@@ -903,3 +903,20 @@ branch is needed for this closed train. The PR body must distinguish exact Relea
 `9aa2148...` from the later governance/evidence head and explicitly exclude Product Phase
 4. A successful merge changes source governance only; it must leave tags, Release assets,
 published bytes and `Latest` unchanged.
+
+## Main-convergence result and terminal state
+
+GitHub PR #1 merged the complete validation chain into main with merge commit
+`07214f97a8348a71b9ad26ae12331e73b873f668`. Its parents are exact pre-convergence main
+`bef919475b6ebc3d74c09f9664749664cf950537` and exact validation head
+`c8cfb262930927e5224561a2acb9b57d6cd030d3`, so no accepted commit identity was rewritten.
+Remote main now contains immutable Release source `9aa2148...` and the subsequent S3-C,
+promotion and governance evidence. The validation branch remains at `c8cfb26...`.
+
+Post-merge checks showed zero lifecycle drift: v0.3.1 and v0.3.0 tags stayed at
+`9aa2148...` and `1454c92...`; v0.3.1 remained `Latest`; both versions retained their exact
+asset IDs, timestamps, sizes and SHA-256 digests. Therefore the security-fix programme has
+no remaining implementation, verification, publication, rollback or source-convergence
+work. Keeping `.planning/.active_plan` pointed at this completed plan is safer than leaving
+an ambiguous empty pointer: its terminal Next Step denies inherited authority and forces
+the next Product Phase or maintenance train to create and activate a fresh plan.
