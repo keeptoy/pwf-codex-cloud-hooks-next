@@ -525,3 +525,59 @@ local/Linux/no-live Cloud regression.
   build/check pass. The evidence-only doc/test/planning changes leave the 23-entry ZIP
   byte-identical at 82,421 bytes and SHA-256
   `2cd19e04a15995014ae354ad0319e4182a72ea0fc82b08213959b3550c741cfb`.
+
+## 2026-08-07 — S2 newcomer runbook published
+
+- Created evidence-only commit `ecc0e8c4453181c207c4c901ed190c11708e8d18`
+  (`docs: add v0.3.1 Cloud S2 runbook`). Its direct parent is exact candidate
+  `03a6cc2f32481df0d7e1fdff8aafad841b2b5fbc`; its five changed paths are exactly the
+  runbook, mechanical inventory test and three current planning files.
+- Performed one ordinary non-force push to new ref
+  `refs/heads/validation/v0.3.1-s2-runbook`; Git reported `[new branch]`.
+- Immediate read-only dual-ref verification PASS: the runbook ref resolves exactly to
+  `ecc0e8c4453181c207c4c901ed190c11708e8d18`, and frozen exact-candidate ref
+  `refs/heads/validation/v0.3.1-s2-03a6cc2f` remains
+  `03a6cc2f32481df0d7e1fdff8aafad841b2b5fbc`.
+- No remote main, tag, Release asset, bootstrap, runtime, contract or Release input moved.
+  Both push exceptions are now consumed. This post-push planning record remains local for
+  the maintainer's next checkpoint and will not trigger another push.
+
+## 2026-08-07 — S2 Cloud attempt 1 classified
+
+- Maintainer designated `validation/v0.3.1-s2-runbook` as the rolling validation branch;
+  future reviewed commits and normal pushes on that branch are expected. Hard-coded first-
+  candidate commit/tree ancestry and allowed-delta checks are retired from the runbook.
+- Cloud attempt 1 reached the Linux suite: 79 registered / 78 passed / 1 failed / 0 skipped.
+  `set -e` correctly stopped before ZIP byte-oracle and disposable install/setup steps, so
+  no B–F acceptance claim exists for this attempt.
+- Failure was `runtime mode mismatch for session_catchup` after the test fixture used
+  Python `zipfile.extractall()`. Builder metadata had already passed, and a disposable
+  probe that reapplied the recorded entry modes allowed importer validation to proceed.
+  Classified as a test-fixture defect; no production or Release input change is indicated.
+- The first setup precheck also found the stable commit object without a local `v0.3.0` tag
+  ref. A disposable synthetic tag proved the remaining path but was cleaned and never
+  pushed. The authorized permanent fix removes the runbook tag prerequisite and makes the
+  stable test use its pinned commit object, verifying the tag only when the ref exists.
+
+## 2026-08-07 — S2 attempt-1 fixture correction locally validated
+
+- Replaced the test fixture's bare `zipfile.extractall()` with extraction followed by
+  `stat.S_IMODE(info.external_attr >> 16)` and `chmod` for each non-directory entry. The
+  production builder/importer and their strict mode assertions are unchanged.
+- Stable Release regression now archives the already-pinned `stableCommit` object. If the
+  local `v0.3.0` tag ref exists it must still resolve to that commit; absence no longer
+  blocks a valid Cloud checkout or requires a synthetic tag.
+- Focused Release-package result: 3 registered / 3 passed / 0 failed / 0 skipped.
+- Independently reran the same 3 tests with an empty temporary Git ref database and the
+  real object store supplied only through alternates. `v0.3.0` was absent while the stable
+  commit object remained readable; all 3 tests passed. The temporary Git dir was removed
+  and real refs were untouched.
+- Updated the runbook to use the rolling branch's dynamic HEAD plus clean
+  `git status`/`git diff`; removed hard-coded candidate commit/tree, allowed-delta,
+  v0.3.0-tag and stable-bootstrap prechecks. Added the complete stopped Attempt 1 record.
+  Both runbook Bash blocks and Markdown byte/fence checks pass.
+- Full Windows-local suite: 79 registered / 67 passed / 0 failed / 12 honest POSIX skips.
+  Importer check and deterministic build/check also pass. The 23-entry candidate ZIP is
+  still exactly 82,421 bytes with SHA-256
+  `2cd19e04a15995014ae354ad0319e4182a72ea0fc82b08213959b3550c741cfb`;
+  no Release input changed.

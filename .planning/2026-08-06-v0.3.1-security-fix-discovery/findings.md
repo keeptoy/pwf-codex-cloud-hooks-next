@@ -683,3 +683,26 @@ to 70 paths. Both the doc and that test are excluded from the 23-entry Release a
 the runbook setup independently proves exact-candidate ancestry, rejects any delta outside
 the doc/inventory-test/current-planning paths, and requires the built ZIP to match the
 existing exact-candidate size/hash oracle before disposable installation.
+
+The first real Linux/Cloud attempt disproved the need for that ancestry/allowed-delta
+restriction as an operational gate. The runbook branch is now the reviewed rolling S2
+source: each run records its current HEAD and requires a clean `git status`/`git diff`,
+while normal commits may update tests, docs, planning and any separately reviewed defect.
+Release identity continues to be controlled by the machine allowlist and deterministic ZIP
+result, not by freezing the first runbook commit.
+
+Cloud registered 79 tests / 78 passed / 1 failed / 0 skipped. The sole failure occurs after
+the candidate ZIP passes builder metadata validation: `tests/release-package.test.js`
+extracts with Python `zipfile.extractall()`, which writes file bytes but does not apply the
+Unix mode stored in `ZipInfo.external_attr`. The extracted
+`runtime/upstream/session-catchup.py` therefore loses executable mode and the importer
+correctly emits `runtime mode mismatch for session_catchup`. This is a test-fixture defect,
+not evidence of bad ZIP metadata or a production defect. The minimum correction is to
+apply each regular entry's recorded permission bits after extraction, then keep the strict
+importer check unchanged.
+
+The same Cloud checkout contains the immutable v0.3.0 commit object but no local tag ref.
+The stable regression should archive the already-pinned `stableCommit` object directly;
+when `refs/tags/v0.3.0` exists it must still equal that commit, but absence of the optional
+local ref must not require creating a synthetic tag. This retains byte-oracle coverage and
+removes a checkout-shape dependency.

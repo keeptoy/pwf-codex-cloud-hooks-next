@@ -29,9 +29,22 @@ function run(command, archive, contractPath = contract, builderPath = builder, c
 }
 
 function extractZip(archive, destination) {
+  const script = [
+    "import pathlib, stat, sys, zipfile",
+    "destination = pathlib.Path(sys.argv[2])",
+    "destination.mkdir(parents=True, exist_ok=True)",
+    "with zipfile.ZipFile(sys.argv[1]) as package:",
+    "    package.extractall(destination)",
+    "    for info in package.infolist():",
+    "        if info.is_dir():",
+    "            continue",
+    "        mode = stat.S_IMODE(info.external_attr >> 16)",
+    "        if mode:",
+    "            (destination / info.filename).chmod(mode)",
+  ].join("\n");
   const result = spawnSync(
     python,
-    ["-c", "import pathlib,sys,zipfile; pathlib.Path(sys.argv[2]).mkdir(parents=True, exist_ok=True); zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])", archive, destination],
+    ["-c", script, archive, destination],
     { encoding: "utf8" },
   );
   assert.equal(result.status, 0, result.stderr);
@@ -128,15 +141,23 @@ test("Release builder rejects package and artifact candidate identity drift", ()
   }
 });
 
-test("published v0.3.0 tag and external bootstrap retain their immutable Release identity", () => {
+test("published v0.3.0 source/tag oracle and external bootstrap retain their immutable Release identity", () => {
   const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-release-stable-"));
   try {
-    let result = spawnSync("git", ["rev-parse", "v0.3.0^{commit}"], { cwd: root, encoding: "utf8" });
+    const tagResult = spawnSync("git", ["rev-parse", "--verify", "v0.3.0^{commit}"], {
+      cwd: root,
+      encoding: "utf8",
+    });
+    if (tagResult.status === 0) assert.equal(tagResult.stdout.trim(), stableCommit);
+
+    let result = spawnSync("git", ["cat-file", "-e", `${stableCommit}^{commit}`], {
+      cwd: root,
+      encoding: "utf8",
+    });
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(result.stdout.trim(), stableCommit);
 
     const sourceArchive = path.join(workspace, "v0.3.0-source.zip");
-    result = spawnSync("git", ["archive", "--format=zip", `--output=${sourceArchive}`, "v0.3.0"], {
+    result = spawnSync("git", ["archive", "--format=zip", `--output=${sourceArchive}`, stableCommit], {
       cwd: root,
       encoding: "utf8",
     });

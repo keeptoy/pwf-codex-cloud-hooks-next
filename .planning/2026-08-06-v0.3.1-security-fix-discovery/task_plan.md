@@ -19,11 +19,22 @@ maintainer has separately authorized exactly one ordinary non-force push of the 
 candidate to new validation ref `validation/v0.3.1-s2-03a6cc2f`; this narrow transport
 exception authorizes no other ref, commit or remote mutation.
 
-The maintainer has now separately authorized a newcomer-oriented v0.3.1 Cloud hard-
-acceptance runbook and a normal push. This documentation sub-gate may add the runbook,
-synchronize only the exact repository-inventory test required by that new tracked path,
-persist S2 governance, create one evidence-only descendant commit, and push it to a new
-runbook branch. It must not move the frozen exact-candidate ref or change any Release input.
+The maintainer separately authorized a newcomer-oriented v0.3.1 Cloud hard-acceptance
+runbook and one normal push. That documentation sub-gate is complete: evidence-only commit
+`ecc0e8c4453181c207c4c901ed190c11708e8d18` is published at
+`validation/v0.3.1-s2-runbook`, while the frozen exact-candidate ref still resolves to
+`03a6cc2f...`. Neither commit changes any of the 23 Release inputs.
+
+The maintainer now designates `validation/v0.3.1-s2-runbook` as the rolling S2 validation
+branch. Future runs record the branch's current HEAD and require a clean checkout; they do
+not hard-code an ancestor commit/tree or restrict legitimate reviewed follow-up paths by
+diffing against the first candidate. The first Cloud attempt demonstrated a Linux-only
+test-fixture defect in `tests/release-package.test.js`: Python `zipfile.extractall()` did
+not apply the archive's recorded executable modes before extracted importer `check`. The
+same attempt also showed that a valid Cloud checkout may contain the stable commit object
+without a local `v0.3.0` tag ref. The maintainer authorizes the minimum fixture/tagless-
+checkout test correction, runbook/planning synchronization and ordinary iterative
+commit/push on the runbook branch only.
 
 ## Status
 
@@ -37,13 +48,13 @@ validation ref `validation/v0.3.1-s2-03a6cc2f` resolves exactly to the frozen ch
 
 ## Next Step
 
-Create and validate `docs/v0.3.1-cloud-hard-acceptance.md` as a self-contained manual S2
-runbook. Commit it, the necessary tracked-inventory assertion and current S2 planning as an
-evidence-only descendant of candidate `03a6cc2f...`; normally push a new
-`validation/v0.3.1-s2-runbook` branch and verify its remote SHA. The maintainer then selects
-that branch in a disposable Codex Cloud task and manually executes the runbook. Do not move
-the frozen exact-candidate ref, use remote main, submit a Cloud task from this agent, alter
-Release inputs, force-push or begin S3.
+Make the ZIP extraction fixture restore recorded Unix modes; make the immutable v0.3.0
+source oracle run from its pinned commit object while still checking the tag when present;
+remove hard-coded candidate commit/tree, allowed-delta and v0.3.0 setup prerequisites from
+the runbook. Run focused/full/static/package regression, normally commit/push the reviewed
+changes to `validation/v0.3.1-s2-runbook`, then have the maintainer rerun the document from
+section 0 in a fresh Cloud environment. Do not move the exact-candidate ref, use remote
+main, submit a Cloud task from this agent, alter Release inputs, force-push or begin S3.
 
 ## Authorization Boundary
 
@@ -73,19 +84,23 @@ Authorized now:
 - add the v0.3.1 manual Cloud hard-acceptance runbook, update only the exact tracked-path
   inventory assertion required by that new doc, persist S2 planning, commit those
   evidence-only changes and normally push new ref
-  `refs/heads/validation/v0.3.1-s2-runbook` once, followed by read-only SHA verification.
+  `refs/heads/validation/v0.3.1-s2-runbook` once, followed by read-only SHA verification
+  (consumed successfully on 2026-08-07).
+- maintain the rolling S2 runbook branch through reviewed ordinary commits/pushes; for the
+  demonstrated first-attempt failure, edit only `tests/release-package.test.js`, the
+  runbook and current planning, without changing production or Release inputs.
 
 Not authorized now:
 
 - edit the immutable `init-cloud-sandbox-v0.3.0.bash` or any published acceptance byte;
 - modify, move, replace or republish the existing `v0.3.0` tag or either asset;
-- install or repair live Cloud state, make any push beyond the two exact validation/runbook
-  exceptions, tag, publish or promote a rollback baseline;
+- install or repair live Cloud state from this agent, push outside the rolling runbook
+  branch, tag, publish or promote a rollback baseline;
 - begin Product Phase 4 features or change Host ABI, managed policy or trusted graph;
 - weaken safety assertions or reinterpret Windows skips as Linux/Cloud evidence.
 - force-push, update remote `main`, move `validation/v0.3.1-s2-03a6cc2f`, push another
-  ref/commit, create/move a tag, write the final candidate ZIP hash, publish assets, modify
-  live `/opt/codex`, or reuse a disposable Cloud container as production.
+  ref, create/move a tag, write the final candidate ZIP hash, publish assets, modify live
+  `/opt/codex` from this agent, or reuse a disposable Cloud container as production.
 
 ## Risk Register
 
@@ -204,13 +219,16 @@ The detailed semantics, hostile fixtures, residual races and rollback gates are 
 - [x] Run importer/static/full suite and deterministic packaging checks.
 - [x] Transport the exact checkpoint through the separately authorized new validation ref
   and verify its remote SHA read-only.
-- [ ] Publish the self-contained S2 manual runbook on a separate evidence-only validation
+- [x] Publish the self-contained S2 manual runbook on a separate evidence-only validation
   branch without changing candidate Release inputs or moving the exact-candidate ref.
+- [x] Classify Cloud attempt 1 and locally validate the minimum ZIP-mode fixture plus
+  tagless-checkout stable-oracle corrections.
 - [ ] Run Linux-only races, file-identity and installer concurrency coverage.
 - [ ] Prove Fresh/UserPrompt/Resume/doctor/inventory behavior in disposable no-live Cloud.
 - [ ] Prove zero published-asset mutation and a clean tested workspace.
 - **Exit:** exact candidate source has complete risk-proportionate regression evidence.
-- **Status:** in progress / local seal complete / waiting at Cloud transport gate
+- **Status:** in progress / Cloud attempt 1 stopped on test fixture / minimum fixture fix
+  locally green and awaiting rolling-branch push plus a fresh Cloud rerun
 
 ### S3 — Immutable seal and release decision
 
@@ -235,5 +253,5 @@ publication, live installation or Product Phase 4 without the required authoriza
 D0, D1 and S1-A through S1-C are complete. S2 verification is authorized and in progress;
 S3 remains a separate unauthorized gate. No current plan state authorizes changing the
 published v0.3.0 bootstrap/assets, setting a final v0.3.1 ZIP hash, live Cloud mutation,
-commits or pushes beyond the separately authorized evidence-only runbook branch, tags,
-publication, rollback promotion or Product Phase 4.
+commits or pushes outside the rolling runbook branch, tags, publication, rollback promotion
+or Product Phase 4.
