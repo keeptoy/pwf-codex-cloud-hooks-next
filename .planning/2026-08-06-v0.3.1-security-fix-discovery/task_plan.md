@@ -152,19 +152,20 @@ Main convergence completed through GitHub PR #1. Merge commit
 `07214f97a8348a71b9ad26ae12331e73b873f668` has exact parents `bef9194...` and
 `c8cfb26...`; remote main contains both the accepted Release source and the complete
 validation evidence chain. Post-merge verification preserved the validation ref, both
-stable tags, all Release asset identities and `Latest=v0.3.1`. The maintainer has now
-authorized one terminal planning-only closure checkpoint from that exact main commit, one
-short-lived closure branch/PR, merge-commit integration and final read-only verification.
-The closure changes only this plan, findings and progress; its declaration of completion
-is the terminal repository state and does not authorize a new gate.
+stable tags, all Release asset identities and `Latest=v0.3.1`. Terminal planning-only
+closure then completed through GitHub PR #2: exact closure commit `1e3b473...` changed
+only this plan, findings and progress, and merge commit `4658f1a...` has exact parents
+`07214f9...` and `1e3b473...`. That consumed the closure authorization; its declaration
+of completion is the terminal repository state and does not authorize a new gate.
 
 ## Status
 
 **COMPLETE.** S1, S2, S3-A, S3-B, S3-C, rollback/Latest promotion and main convergence are
 all closed. Published v0.3.1 passed public-byte and final Cloud acceptance and is the
 production rollback/`Latest`; v0.3.0 remains the immediate previous fallback and beta.2
-the older fallback oracle. Remote main contains exact Release source `9aa2148...`, evidence
-head `c8cfb26...` and merge commit `07214f9...`. Historical Cloud-PASS, post-S2
+the older fallback oracle. Remote main is the terminal closure merge `4658f1a...` and
+contains exact Release source `9aa2148...`, evidence head `c8cfb26...`, main-convergence
+merge `07214f9...` and closure commit `1e3b473...`. Historical Cloud-PASS, post-S2
 observation, local seal, publication metadata and downloaded bytes remain distinct
 evidence classes. Product Phase 4 remains unauthorized.
 
@@ -410,11 +411,13 @@ The detailed semantics, hostile fixtures, residual races and rollback gates are 
   evidence, mark v0.3.1 as `Latest`, and prove both Releases/tags plus remote main unchanged.
 - [x] **Promotion governance content:** synchronize and validate the new lifecycle state
   while preserving every sealed v0.3.1 input.
-- [ ] **Promotion evidence transport:** create the one authorized checkpoint and ordinary-
-  push the existing validation ref without moving remote main.
+- [x] **Promotion evidence transport:** checkpoint and ordinarily push the accepted
+  promotion evidence as `c92b087...` on the existing validation ref without moving remote
+  main.
 - **Exit:** a separately published and accepted security release, or an explicit no-release
   closure with findings disposition recorded.
-- **Status:** external promotion and governance validation complete / evidence transport ready
+- **Status:** complete — publication, S3-C, rollback/Latest promotion and promotion evidence
+  transport are all closed
 
 ## Stop Conditions
 
@@ -426,8 +429,9 @@ publication, live installation or Product Phase 4 without the required authoriza
 
 ## Decision Checkpoint
 
-D0, D1, S1-A through S1-C, S2, S3-A, S3-B and S3-C are complete. Public-byte verification
-and maintainer-run Cloud evidence jointly close S3-C. The minimum latest-pointer promotion
-completed with v0.3.1 now production rollback/`Latest`; only its final evidence transport
-remains. Product Phase 4, remote-main mutation and modification of any published
-v0.3.0/beta.2/v0.3.1 byte remain unauthorized.
+D0, D1, S1-A through S1-C, S2 and S3-A through S3-C are complete. Public-byte verification
+and maintainer-run Cloud evidence jointly closed S3-C; promotion evidence was transported
+at `c92b087...`; main convergence completed through merge `07214f9...`; and terminal
+planning closure completed through merge `4658f1a...`. No implementation, verification,
+publication, promotion, evidence-transport or source-convergence step remains. Product
+Phase 4 and modification of any published v0.3.0/beta.2/v0.3.1 byte remain unauthorized.

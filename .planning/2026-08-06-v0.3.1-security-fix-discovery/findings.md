@@ -920,3 +920,17 @@ no remaining implementation, verification, publication, rollback or source-conve
 work. Keeping `.planning/.active_plan` pointed at this completed plan is safer than leaving
 an ambiguous empty pointer: its terminal Next Step denies inherited authority and forces
 the next Product Phase or maintenance train to create and activate a fresh plan.
+
+## Terminal planning consistency governance
+
+Current `main@4658f1a6f58cb737f96dd0f8d59274343f03bc11` is GitHub PR #2's terminal
+planning-only merge. Its parents are main-convergence merge `07214f9...` and exact closure
+commit `1e3b473...`; the closure commit changed only this plan, findings and progress.
+Therefore the lower S3 checklist's unchecked promotion-evidence item, its “transport
+ready” status and the old Decision Checkpoint were bookkeeping drift, not an outstanding
+product, Release or source-governance gate.
+
+The correction marks the already-proven `c92b087...` promotion evidence transport complete
+and aligns the lower summary with PR #1/PR #2 terminal history. Historical attempt records,
+immutable Release identities and the completed-plan sentinel remain unchanged. This
+planning-only correction creates no Product Phase 4 authority.

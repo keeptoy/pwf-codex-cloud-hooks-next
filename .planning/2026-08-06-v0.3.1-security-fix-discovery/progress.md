@@ -1092,3 +1092,27 @@ local/Linux/no-live Cloud regression.
 - Terminal closure validation PASS: focused governance 5/5, exact three changed paths,
   UTF-8 without BOM, LF/final newline, no trailing whitespace and `git diff --check`.
   Full product/Linux/Cloud suites were not repeated for this planning-only declaration.
+
+## 2026-08-08 — terminal planning consistency governance
+
+- Maintainer explicitly authorized immediate documentation governance for the stale lower
+  S3 promotion-transport checkbox and Decision Checkpoint in this completed active plan.
+- Recovery found clean `main...origin/main` at terminal PR #2 merge `4658f1a...`; planning
+  catch-up reported no unsynced context. Exact history confirms promotion evidence
+  checkpoint `c92b087...`, main-convergence merge `07214f9...`, closure commit `1e3b473...`
+  and terminal closure merge `4658f1a...`.
+- Corrected only the three active planning files: reconciled the completed closure evidence,
+  marked promotion evidence transport complete, replaced the obsolete “ready/remains”
+  wording and preserved `Next Step: None` plus the Product Phase 4 prohibition.
+- No product, test, contract, README, bootstrap, Release input, tag, asset, remote ref,
+  Cloud state or active-plan pointer was changed.
+- The sandboxed focused Node governance run could not enter test logic because the Windows
+  runner denied child creation with `spawn EPERM`. The approved local-boundary rerun of the
+  unchanged command passed 5/5 architecture/repository governance tests.
+- The first Markdown/diff validator proved all byte and content assertions but returned
+  outer exit 1 because the expected no-match `rg` status was left as PowerShell's final
+  process status. The corrected final validator explicitly returns success after handling
+  the expected no-match result; no file content changed because of this harness defect.
+- Final planning-only validation PASS: exact three changed paths, UTF-8 without BOM,
+  LF/final newline, balanced fences, no trailing whitespace, `git diff --check`, required
+  terminal assertions present and all three obsolete lower-plan phrases absent.
