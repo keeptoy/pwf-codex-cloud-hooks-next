@@ -12,9 +12,10 @@
 ## Current status
 
 - D0: complete
-- D1: complete — CONDITIONAL GO
-- Identity decision: waiting for maintainer choice
-- D2–D5: pending and unauthorized
+- D1: complete — prior condition satisfied
+- Identity decision: complete — maintainer selected `0.3.2-dev`
+- R0: authorized / next gate
+- D2–D6: pending / sequentially authorized after predecessor exit
 
 ## Validation record
 
@@ -47,13 +48,44 @@
 | Error | Attempt | Resolution |
 |---|---:|---|
 | None | 0 | D0 completed cleanly. |
+| `.git/index.lock` permission denied while creating the authorized planning checkpoint | 1 | Sandbox blocks `.git` writes; no partial commit occurred. Controlled escalation then committed the same exact three paths. |
+
+## 2026-08-08 — Plan refinement after maintainer commit
+
+- 维护者已提交初版文档治理计划；复核时工作树干净，`main` 位于 `87d9c51`，相对 `origin/main`
+  ahead 1。本轮不改写该提交，也不 push。
+- 接受新增 `DESIGN.md` 的方向，统一采用根级大写命名；冻结其职责为仓库地图、模块入口/依赖、
+  change-impact 与验证路由，明确不得复制 ARCHITECTURE 的设计原理/trusted graph 或 ROADMAP 状态。
+- 将 README `## 仓库地图` 迁入 DESIGN 纳入 D2；README 完成迁移后只保留文档入口。
+- 将后续目标从“精简 MAINTAINER_HANDOFF”调整为“逐节拆分并退役”：README 承接用户/开发命令，
+  DESIGN 承接模块变更与验证选择，ROADMAP 承接 lifecycle 策略，provenance/runbook/acceptance 承接来源
+  和精确版本证据。
+- 增加 handoff traceability、零入链、独有安全/恢复步骤零遗漏和 repository-boundary 同步作为删除门槛。
+- 迁移序列扩展为 D2–D6 / Batch A–F；本轮仍只调整活动 planning，未创建 DESIGN、未删除 handoff、
+  未修改任何宏观文档、产品、测试或 Release 字节。
+- Planning-only validation PASS：精确变更仍只有活动计划三文件；UTF-8/no BOM、LF、final newline、
+  无尾随空格、fence 平衡，旧阶段/旧 handoff 保留方案无未标注残留，`git diff --check` 通过。
+
+## 2026-08-08 — Identity route authorization
+
+- 维护者明确采用 `0.3.2-dev`，关闭 identity decision checkpoint；D0/D1 探路阶段正式结束。
+- 维护者允许在关键 gate 主动本地 commit，以便按阶段回滚调整；push、remote ref、tag、Release assets、
+  publication 和 Cloud 仍未授权。
+- 估算后续为六个实施轮次：R0 identity、D2 entrypoint/DESIGN、D3 architecture/design、D4 handoff
+  retirement、D5 lifecycle/provenance、D6 full validation/closure；每轮验证通过后一个 commit。
+- 当前 Next Step 改为提交本次 planning checkpoint，再开始 R0；尚未修改 package、contract、bootstrap、
+  tests 或宏观文档。
+- 按 AGENTS 必读顺序重新完整复核 README、ARCHITECTURE、ROADMAP 和活动 planning；确认没有 runtime、
+  Host ABI、trusted graph、production rollback 或 Cloud 假设变化，不需要增加 Discovery 轮。
+- 已创建并回填本地 planning checkpoint；该 commit 只包含活动 task plan、findings 和 progress，不包含
+  宏观文档、产品、测试或 Release 字节，并未 push。
 
 ## 5-question reboot check
 
 | Question | Answer |
 |---|---|
-| Where am I? | D1 complete; stopped at Release identity decision |
-| Where am I going? | Selected identity route, then separately authorized R0/D2 implementation |
+| Where am I? | D0/D1 complete; `0.3.2-dev` selected; R0 is the next authorized gate |
+| Where am I going? | Six sequential implementation rounds, one verified commit per gate |
 | What's the goal? | One truth source per question domain; other documents summarize and link |
 | What have I learned? | README governance crosses the sealed Release-input boundary; current mutable facts are duplicated across five macro docs |
-| What have I done? | Froze authority, migration and validation design without editing macro/product documents |
+| What have I done? | Froze authority/migration design and recorded the selected identity route without editing macro/product documents |
