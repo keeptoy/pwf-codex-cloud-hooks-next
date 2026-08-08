@@ -52,6 +52,8 @@
 | `.git/index.lock` permission denied while creating the authorized planning checkpoint | 1 | Sandbox blocks `.git` writes; no partial commit occurred. Controlled escalation then committed the same exact three paths. |
 | Focused `node --test` returned four file-level `spawn EPERM` failures | 1 | Test workers could not start under the sandbox; controlled rerun reached all product assertions. |
 | Git Bash failed to create a Win32 signal pipe for three `bash -n` checks | 1 | Sandbox process limitation; controlled rerun parsed all three scripts successfully. |
+| D2 Bash syntax command used the conventional `C:` Git installation path, but this host installs Git on `D:` | 1 | Read-only discovery found `D:\Program Files\Git`; rerun uses that exact executable and does not change product files. |
+| First D2 one-off link check passed an empty root-document parent to `Join-Path`; PowerShell emitted non-terminating errors and still exited 0 | 1 | Result discarded. Rerun uses `ErrorActionPreference=Stop` and normalizes an empty parent to `.` before evaluating targets. |
 
 ## 2026-08-08 — Plan refinement after maintainer commit
 
@@ -152,6 +154,44 @@
   tests 或其他产品/Release 字节。
 - 本次决策已以单一本地 planning checkpoint 收口，仅包含活动 task plan/findings/progress，未 push；
   可在 D2 实施前独立回滚而不影响已完成的 R0 identity checkpoint。
+
+## 2026-08-08 — D2 entrypoint and DESIGN foundation started
+
+- session catch-up 无未同步输出；D2 起点工作树干净，HEAD 为 handoff decision checkpoint `aa7653d`，
+  分支相对 `origin/main` ahead 4。
+- 重新读取 README、ARCHITECTURE、ROADMAP、AGENTS、活动 planning 和 focused governance/repository
+  tests；D2 状态切换为 in progress。
+- 冻结本轮边界：README 文档地图/去 stale identity/contract-driven build、DESIGN foundation/仓库地图、
+  ROADMAP planning 入口、AGENTS agent-only 导航、focused assertions/repository inventory。D3–D5 不提前。
+- 先更新 `tests/architecture-contracts.test.js` 与 repository exact inventory；failing-first 为 5 registered /
+  3 passed / 2 failed，失败精确指向 `DESIGN.md` 不存在及 tracked inventory 缺该路径，既有架构/runtime/
+  历史边界断言继续通过。
+- 已创建并暂存 `DESIGN.md`，迁入仓库地图并明确 implementation map 的权威边界；README、ROADMAP、
+  AGENTS 的入口分工同步完成。focused rerun PASS：5 registered / 5 passed / 0 failed。
+- Full Windows suite PASS：81 registered / 69 passed / 0 failed / 12 honest POSIX/Linux SKIP；published
+  v0.3.1/v0.3.0 oracle 均保持通过。
+- Importer check、三个 Python production 文件 compile、`node --check install.js`、working/staged
+  `git diff --check` 与 `DESIGN.md` LF attribute PASS。
+- 当前 0.3.2-dev ZIP 双构建一致：23 entries / 82,512 bytes / observed SHA
+  `2bd6fc93f1bd8161467e1a92ca6383583bd321748a2d39a7ee41087fb5db9725`；仅作 D2 验证，未写入
+  zero-hash bootstrap，不构成 seal 或 Release。
+- 三个 external bootstrap 已使用本机实际 Git Bash 路径通过 `bash -n`；首次 link-check 因 PowerShell
+  root-path 处理错误产生非终止报错，其结果已作废并记入 error log；修正后的链接/锚点检查 PASS。
+
+## 2026-08-08 — D2 entrypoint and DESIGN foundation complete
+
+- README 已删除 stale 顶部 identity/lifecycle blockquote 与第二份仓库地图，新增唯一的人类文档权威地图；
+  development ZIP 说明改为 contract-driven，不再维护固定候选版本或 entry count。
+- 新增 tracked、LF、ZIP-excluded `DESIGN.md` foundation，承接唯一仓库地图与五层实现视图；ROADMAP
+  planning 章节与 AGENTS agent-only 导航均改为链接该入口体系。
+- Focused governance PASS：5/5；full Windows suite PASS：81 registered / 69 passed / 0 failed /
+  12 honest POSIX/Linux SKIP。
+- Importer check、Python compile、Node syntax、三个 bootstrap Bash syntax、本地链接/README anchor、
+  working/staged diff check、DESIGN LF 与 repository exact inventory 全部 PASS。
+- 0.3.2-dev deterministic ZIP 双构建均为 23 entries / 82,512 bytes / SHA `2bd6fc93...b9725`；
+  zero-hash bootstrap 保持不动，无 seal、publication、tag、asset、push、remote 或 Cloud 变更。
+- D2 exit PASS；活动计划已切换到 D3 ARCHITECTURE/DESIGN separation。本轮已用单一
+  `docs: establish entrypoints and design map` 本地 checkpoint 收口，未 push。
 
 ## 5-question reboot check
 

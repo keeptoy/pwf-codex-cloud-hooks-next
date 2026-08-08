@@ -219,6 +219,34 @@ tracked 文档，D5 会触碰历史/当前语义分界，D6 才能证明整体�
 - **顺序理由：** D4 先稳定 ROADMAP/provenance/history 与 governance guard；D5 再重写 handoff，避免
   路标先指向仍在移动或重复的目的地。
 
+## D2 entrypoint migration design
+
+- README 的新 `开发状态与文档地图` 是人的通用导航 authority；AGENTS 不再复制完整 authority table，
+  只保留 agent 必读顺序、当前授权入口、冲突/安全/验证规则并链接 README 文档地图。
+- DESIGN 在 D2 先建立稳定边界和仓库地图：回答“实现落在哪里、读者下一步看哪里”；D3 再补模块
+  entry/dependency/change-impact/validation routing，避免 D2 提前改写 ARCHITECTURE 系统正文。
+- README 顶部 stale lifecycle blockquote 整块删除。由于 README 已处于 0.3.2-dev source identity，构建
+  章节也必须去掉“当前 0.3.1 候选”、固定 23 entries 和旧 external candidate 描述，改为 contract-driven
+  development ZIP 说明；published/current lifecycle 继续只由 ROADMAP 与版本 acceptance 回答。
+- ROADMAP `## 1` 删除完整 planning 职责表，只保留 programme/task-plan 两层分工和 README 文档地图
+  链接。ROADMAP 内“handoff 管完整 Release 操作”的旧入口同时改为 README 通用命令 + 版本 runbook，
+  与已冻结的 handoff onboarding/triage 职责一致。
+- DESIGN 是 tracked root doc 但不进入 23-entry Release allowlist；repository-boundary 应增加该精确路径，
+  focused test 应显式断言 README 无第二份仓库地图、DESIGN 有唯一仓库地图且 ZIP 不含 DESIGN。
+
+## D2 implementation result
+
+- README 现在拥有唯一的人类文档导航表，仓库路径表已完全迁出；其开发 ZIP 说明改为读取 machine
+  contract，不再冻结候选版本、entry count 或 lifecycle 角色。
+- DESIGN foundation 已成为 tracked、LF、ZIP-excluded 根级文档，拥有唯一 `仓库地图`，并先冻结
+  source/build/install/runtime/evidence 五层实现视图；D3 将在此基础上补齐模块变更与验证路由。
+- ROADMAP 只保留 programme 与活动 planning 的宏观/微观分层，并链接 README 文档地图；AGENTS 只
+  保留 agent 必读顺序、授权/证据/contract 路由和安全规则，不再复制完整文档权威表。
+- README 字节变化只改变当前 0.3.2-dev 开发 ZIP；v0.3.1/v0.3.0 immutable source oracle 均通过。
+  当前双构建观察值为 23 entries / 82,512 bytes / SHA `2bd6fc93...b9725`，未写入 bootstrap，不是 seal。
+- focused governance、完整 Windows suite、链接/锚点、LF、importer、Python/Node/Bash syntax、双构建和
+  repository inventory 全部通过；D2 exit 成立，可进入 D3。
+
 ## R0 identity audit
 
 - 当前 `package.json.version` 与 `contracts/release-artifact-v1.json.package_version` 均为 sealed

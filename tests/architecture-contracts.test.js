@@ -70,17 +70,37 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.doesNotMatch(adapter, /task_file\.read_text|progress_file\.read_text/);
 });
 
-test("current governance promotes 0.3.1 while the sealed README preserves publication history", () => {
+test("README owns the document map while DESIGN owns the repository implementation map", () => {
   const readme = readText("README.md");
+  const design = readText("DESIGN.md");
   const roadmap = readText("ROADMAP.md");
+  const agents = readText("AGENTS.md");
+  const artifact = readJson("contracts/release-artifact-v1.json");
   const ownedPlan = readText("runtime/owned-plan.py");
   const adapter = readText("hooks/hook_adapter.py");
 
-  assert.match(readme, /当前源码\/package 身份：`0\.3\.1`/);
-  assert.match(readme, /当前已接受的 rollback：`v0\.3\.0`/);
-  assert.match(readme, /`v0\.3\.0-beta\.2` 保持为不可变 previous fallback/);
-  assert.match(roadmap, /0\.3\.1 security-fix train/);
-  assert.match(roadmap, /当前生产回滚基线与 GitHub `Latest`：published\/accepted `v0\.3\.1`/);
+  assert.match(readme, /## 开发状态与文档地图/);
+  for (const authority of [
+    "ARCHITECTURE.md", "DESIGN.md", "ROADMAP.md", "BASELINE_PROVENANCE.md", "MAINTAINER_HANDOFF.md",
+  ]) assert.match(readme, new RegExp(authority.replace(".", "\\.")));
+  assert.doesNotMatch(readme, /当前源码\/package 身份|当前已接受的 rollback|previous fallback/);
+  assert.doesNotMatch(readme, /## 仓库地图/);
+  assert.doesNotMatch(readme, /构建当前 0\.3\.1 候选 ZIP|当前 ZIP 必须包含精确 23 entries/);
+
+  assert.match(design, /^# 仓库实现设计/m);
+  assert.match(design, /## 1\. 文档定位/);
+  assert.match(design, /## 2\. 仓库地图/);
+  for (const implementationPath of [
+    "install.js", "hooks/hook_adapter.py", "runtime/owned-plan.py", "runtime/owned-catchup.py",
+    "tools/import_upstream_runtime.py", "tools/build_release.py",
+  ]) assert.match(design, new RegExp(implementationPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.doesNotMatch(design, /当前生产回滚|GitHub `Latest`|Product Phase 4.*未授权/);
+  assert.equal(artifact.entries.some(entry => entry.path === "DESIGN.md"), false);
+
+  assert.doesNotMatch(roadmap, /\| 当前允许做什么、唯一 Next Step 是什么 \|/);
+  assert.match(roadmap, /README\.md.*开发状态与文档地图/);
+  assert.match(agents, /README\.md.*开发状态与文档地图/);
+  assert.match(agents, /DESIGN\.md/);
   assert.doesNotMatch(ownedPlan, /Inactive managed plan-context runtime|Phase 3 Round 4/);
   assert.doesNotMatch(adapter, /inactive exact-v1 owned-plan request/);
 });

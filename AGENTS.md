@@ -7,28 +7,25 @@
 
 1. 读 `README.md`：支持的稳定行为、安装、doctor/repair 和开发入口。
 2. 读 `ARCHITECTURE.md`：组件职责、Host contract、trusted graph 和失败语义。
-3. 读 `ROADMAP.md`：当前 migration/Product Phase、Cloud gate 和 Release 路线。
-4. 读 `.planning/.active_plan`，再读活动计划的 `task_plan.md`、`findings.md`、`progress.md`。
-5. 只读当前任务直接相关的 contracts、源码、tests 和专项文档。
-6. 修改前运行 `git status --short --branch`，保留用户已有改动。
+3. 读 `DESIGN.md`：仓库模块、实现层次、改动落点和验证路由。
+4. 读 `ROADMAP.md`：当前 migration/Product Phase、Cloud gate 和 Release 路线。
+5. 读 `.planning/.active_plan`，再读活动计划的 `task_plan.md`、`findings.md`、`progress.md`。
+6. 只读当前任务直接相关的 contracts、源码、tests 和专项文档。
+7. 修改前运行 `git status --short --branch`，保留用户已有改动。
 
 恢复、resume、`/clear` 或 context compaction 后重复以上流程，不凭历史对话猜授权范围。
 
-## 文档权威
+## 文档权威与智能体职责
 
-| 文件 | 唯一回答的问题 |
+面向人的完整“问题 → 唯一权威”表只在 [`README.md` 的“开发状态与文档地图”](README.md#开发状态与文档地图)
+维护，本文件不复制第二份。智能体额外遵守以下执行入口：
+
+| 智能体必须确认的事项 | 读取位置 |
 |---|---|
-| `README.md` | 稳定支持行为，以及怎么安装、修复、测试和打包 |
-| `ARCHITECTURE.md` | 为什么这样设计，组件和信任边界是什么 |
-| `ROADMAP.md` | 后续 migration/Product Phase、Cloud 与 Release gate |
-| `BASELINE_PROVENANCE.md` | beta.2、M1、上游和 overlay 从哪里来、如何复现 |
-| `MAINTAINER_HANDOFF.md` | 新人如何接手、分类变更、验证、发布和回滚 |
-| 活动 `.planning/<slug>/task_plan.md` | 当前唯一 Next Step、授权、禁止事项和停止条件 |
-| 活动 `findings.md` / `progress.md` | 研究结论、实施和错误证据 |
-| `docs/beta3-dev-m3-cloud-equivalence.md` | 已完成 M3 的 transport、no-live Cloud seal、disposable setup、Fresh/Resume 和历史停止门槛 |
-| `docs/beta3-dev-m4-cutover-plan.md` | 已完成 M4 的 public main、default/protection、旧仓库导航、rollback 和接受证据 |
-| `docs/v0.3.0-beta.2-cloud-hard-acceptance.md` | 不可变 beta.2 A～F 与资产验收证据 |
-| `docs/git-file-modes.md` | Windows/Linux mode、LF 检查与恢复 |
+| 当前唯一 Next Step、授权、禁止事项和停止条件 | 活动 `.planning/<slug>/task_plan.md` |
+| 当前研究、实施、验证和错误证据 | 活动 `findings.md` / `progress.md` |
+| gate 内 schema/hash/inventory/Host ABI 技术语义 | 当前任务直接相关的 machine contract |
+| 已完成 gate 的不可变历史证据 | README 文档地图指向的对应专项 acceptance/runbook |
 
 冲突时：当前用户指令优先，但不会自动扩大破坏性、发布、部署或外部变更权限；活动 task plan
 控制当前 gate；专项 contract 控制 gate 内技术语义；ROADMAP 控制 programme 路线；README 不能把
@@ -36,15 +33,10 @@
 
 ## 文档同步
 
-- 稳定用户行为、命令：README；频繁变化的 gate/Next Step 不复制进 README。
-- 稳定架构、Cloud 事实、职责：ARCHITECTURE + findings。
-- migration/Product Phase、Cloud、Release、rollback：ROADMAP + task plan。
-- baseline/upstream/overlay/资产来源：BASELINE_PROVENANCE + machine contract。
-- 当前 Next Step/禁止/停止条件：task plan。
-- 实施、测试、错误：progress；稳定研究结论进入 findings。
-- 运维流程：MAINTAINER_HANDOFF；mode/LF 专项进入 `docs/git-file-modes.md`。
-
-不要在多个宏观文档复制逐轮流水账。
+- 稳定结论只提升到 README 文档地图指定的唯一 authority；其他位置保留最小摘要和链接。
+- AGENTS 只维护智能体读取顺序、冲突规则、trust/Release 安全边界和强制验证，不维护当前 lifecycle。
+- 当前 Next Step/禁止/停止条件只写 task plan；实施、测试和错误写 progress，研究取舍写 findings。
+- 历史 acceptance/runbook 保留时间语义，不用当前状态批量改写；不要在多个宏观文档复制流水账。
 
 ## 稳定架构与安全边界
 
@@ -82,6 +74,7 @@ python3 -c "from pathlib import Path; [compile(p.read_text(encoding='utf-8'), st
 node --check install.js
 bash -n init-cloud-sandbox-v0.3.0.bash
 bash -n init-cloud-sandbox-v0.3.1.bash
+bash -n init-cloud-sandbox-v0.3.2.bash
 git diff --check
 ```
 

@@ -14,22 +14,15 @@
 > seal、S3-B publication、S3-C public-byte/final Cloud acceptance 与 rollback/Latest promotion。
 > Product Phase 4 仍未授权。
 
-## 1. 与活动 planning 的分工
+## 1. 文档分层与活动 planning
 
-| 问题 | 权威文件 |
-|---|---|
-| 产品将经过哪些 Phase、每个版本列车要证明什么 | `ROADMAP.md` |
-| 哪些 Phase、Cloud gate 或 Release 已经完成 | `ROADMAP.md` |
-| 当前允许做什么、唯一 Next Step 是什么 | 活动 `.planning/<slug>/task_plan.md` |
-| 当前 gate 的不变量、退出条件和停止条件 | 活动 `task_plan.md` |
-| 研究结论、路线比较和技术取舍 | 活动 `findings.md`；稳定后提升到架构或专项文档 |
-| 实施、测试、错误和恢复记录 | 活动 `progress.md` |
-| 可复制的 Release/运维操作 | [`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) 与版本专项 runbook |
-| 稳定支持行为和用户命令 | [`README.md`](README.md) |
+面向所有读者的“问题 → 唯一权威”导航见 [`README.md` 的“开发状态与文档地图”](README.md#开发状态与文档地图)。
+本文件只回答 programme 将去哪里、Phase/版本列车要证明什么，以及 Cloud、Release 和 rollback 何时
+完成；不再维护 planning 文件职责总表。
 
-两层计划互补而不互相复制：ROADMAP 回答“去哪里、何时验收、何时能发布”；活动 task plan 回答
-“现在做什么、按什么合同做、做到哪里必须停”。两者若在当前 gate 或 Next Step 上冲突，以活动
-task plan 为准，并在 Phase、Cloud、Release 或 rollback 状态变化时同步本文件。
+ROADMAP 与活动 planning 互补：ROADMAP 管宏观路线和 lifecycle，`.planning/.active_plan` 指向的活动
+`task_plan.md` 管当前唯一 Next Step、授权、禁止事项和停止条件。两者若在当前 gate 上冲突，以活动
+task plan 为准；只有 programme/Cloud/Release/rollback 状态真正变化时才同步本文件。
 
 ## 2. 当前基线与仓库角色
 
@@ -43,9 +36,9 @@ task plan 为准，并在 Phase、Cloud、Release 或 rollback 状态变化时�
 | 当前回退层级 | v0.3.1 production rollback → immutable v0.3.0 → immutable beta.2 oracle |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
-`README.md` 是 v0.3.1 sealed ZIP 的精确输入，因此它保留 tag 封板时“v0.3.0 仍是 rollback”的历史快照；
-本次 pointer-only promotion 不修改该字节。当前 lifecycle 事实以本表、v0.3.1 acceptance runbook 和活动
-task plan 为准。下一版本必须在新身份和新 seal 下同步 README，不得用当前治理分支重建或替换 v0.3.1。
+v0.3.1 tag 中的 `README.md` 仍是该 sealed ZIP 的不可变历史输入；当前 main 的 README 已属于后续
+development source，不反向改写 v0.3.1。当前 lifecycle 事实以本表、v0.3.1 acceptance 和活动 task plan
+为准；不得用当前工作树重建或替换已发布 v0.3.1。
 
 beta.2 的精确 source、资产、SHA 和回滚入口见
 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与
@@ -146,8 +139,8 @@ Round 内子 gate：
 ## 7. Release 授权与封板顺序
 
 只有 ROADMAP 把目标版本标为获批 Release candidate，且活动 task plan 明确授权具体 Release gate，
-才允许封板。可复制命令和完整运维检查由
-[`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) 与相应版本 runbook 管理。
+才允许封板。稳定构建/验证命令由 [`README.md`](README.md) 管理，精确版本步骤和资产证据由相应版本
+runbook/acceptance 管理；[`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) 只提供维护者接手和结果分流入口。
 
 固定字节顺序：
 

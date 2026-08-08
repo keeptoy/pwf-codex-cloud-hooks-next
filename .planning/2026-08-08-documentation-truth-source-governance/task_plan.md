@@ -12,24 +12,24 @@
 
 维护者已明确采用 `0.3.2-dev` 文档治理身份路线，并允许在关键 gate 主动创建本地 Git commit 作为
 回滚点。D0/D1 探路与 R0 identity foundation 已完成；新 source/package/contract/bootstrap identity
-通过完整 Windows 回归、immutable v0.3.1/v0.3.0 oracle 和 deterministic ZIP 验证。当前进入 D2
-entry-point and DESIGN foundation；授权不包含 seal、publication、tag、asset、push、remote ref、Cloud
-或 Product Phase 4 变更。
+通过完整 Windows 回归、immutable v0.3.1/v0.3.0 oracle 和 deterministic ZIP 验证。D2 entry-point and
+DESIGN foundation 已完成并通过完整回归，当前进入 D3 ARCHITECTURE/DESIGN separation；授权不包含
+seal、publication、tag、asset、push、remote ref、Cloud 或 Product Phase 4 变更。
 
 ## Next Step
 
-实施 D2：创建 ZIP-excluded `DESIGN.md` foundation，将 README 仓库地图迁入 DESIGN，并同步 README
-文档地图、ROADMAP planning 分工入口、AGENTS agent-only 文档规则和 focused governance assertions。
+实施 D3：按 why/how 边界整理 ARCHITECTURE 与 DESIGN，把 repository/source/installed layout、模块入口、
+依赖、change-impact 与验证路由放入 DESIGN，同时避免复制函数/字段级实现正文或当前 lifecycle 状态。
 
 ## Current Phase
 
-D2 — Entry-point and DESIGN foundation
+D3 — ARCHITECTURE/DESIGN separation
 
 ## Status
 
-**GO.** D0/D1/R0 已完成，`0.3.2-dev` development identity 已建立。D2–D6 在本计划冻结范围内按 gate 顺序实施；
-每一 gate 通过相称验证后可主动 commit，前一 gate 未通过不得进入下一 gate。Release seal/publication、
-push/remote/Cloud 和 Product Phase 4 仍需独立授权。
+**GO.** D0/D1/R0/D2 已完成，`0.3.2-dev` development identity 与文档入口已建立。D3–D6 在本计划
+冻结范围内按 gate 顺序实施；每一 gate 通过相称验证后可主动 commit，前一 gate 未通过不得进入下一
+gate。Release seal/publication、push/remote/Cloud 和 Product Phase 4 仍需独立授权。
 
 ## Estimated Implementation Rounds
 
@@ -128,12 +128,12 @@ push/remote/Cloud 和 Product Phase 4 仍需独立授权。
 
 ### D2 — Entry-point and DESIGN foundation
 
-- [ ] 按获批身份路线更新 README 开发状态/文档地图并删除时间敏感顶部 blockquote。
-- [ ] 新建 `DESIGN.md`，声明读者、回答的问题、不回答的问题和链接方向。
-- [ ] 把 README `## 仓库地图` 迁入 DESIGN；README 仅保留简短入口。
-- [ ] 精简 ROADMAP 的分工章节为宏观路线权威声明和 README 链接。
-- [ ] 同步 AGENTS 的文档权威表，但保留智能体专属读取/冲突/安全规则。
-- **Status:** authorized / next gate
+- [x] 按获批身份路线更新 README 开发状态/文档地图并删除时间敏感顶部 blockquote。
+- [x] 新建 `DESIGN.md`，声明读者、回答的问题、不回答的问题和链接方向。
+- [x] 把 README `## 仓库地图` 迁入 DESIGN；README 仅保留简短入口。
+- [x] 精简 ROADMAP 的分工章节为宏观路线权威声明和 README 链接。
+- [x] 同步 AGENTS 的文档权威表，但保留智能体专属读取/冲突/安全规则。
+- **Status:** complete
 
 ### D3 — ARCHITECTURE/DESIGN separation
 
@@ -142,7 +142,7 @@ push/remote/Cloud 和 Product Phase 4 仍需独立授权。
   importer/patcher、Release builder 的职责、入口、依赖、变更影响和验证路由。
 - [ ] 函数/字段级行为继续指向源码、machine contract 和最近边界测试，不在 DESIGN 复制实现正文。
 - [ ] 验证 ARCHITECTURE 与 DESIGN 不各自维护一份完整组件清单、调用链或当前 lifecycle 状态。
-- **Status:** pending / authorized after D2 exit
+- **Status:** next / authorized
 
 ### D4 — Lifecycle, provenance and authority guards
 

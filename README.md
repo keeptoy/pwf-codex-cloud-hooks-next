@@ -3,14 +3,6 @@
 把 [`OthmanAdi/planning-with-files`](https://github.com/OthmanAdi/planning-with-files)
 的本地 Codex Skill Hook/runtime，安全接入 Codex Cloud 的 system-managed Hooks。
 
-> 当前源码/package 身份：`0.3.1`。源码 checkout、版本字段、文件名、本地 ZIP 或本地 seal 都不单独
-> 构成 Release；seal、publication 与 acceptance 状态以 [`ROADMAP.md`](ROADMAP.md) 和活动 task plan
-> 为准。
->
-> 当前已接受的 rollback：`v0.3.0`；其 tag、双资产和 Cloud A～F 证据见
-> [`docs/v0.3.0-cloud-hard-acceptance.md`](docs/v0.3.0-cloud-hard-acceptance.md)。
-> `v0.3.0-beta.2` 保持为不可变 previous fallback，来源见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)。
-
 ## 项目边界
 
 本仓库目前只正式支持 `OthmanAdi/planning-with-files v3.8.2`。它是一个垂直适配原型，负责：
@@ -57,14 +49,10 @@ Managed policy 只注册一个绝对路径 adapter，事件集固定为：
 
 ### 外部 bootstrap 安全边界
 
-`init-cloud-sandbox-v0.3.0.bash` 使用精确 `v0.3.0` tag、包名和 ZIP SHA-256，并始终作为 ZIP 外部
-的独立资产。源码 checkout、文件名或本地 ZIP 本身不能证明 Release 已发布；只能在 Release 页面
-重新下载两个资产、核对 hard-acceptance 中的 SHA 后执行 bootstrap。
-
-`init-cloud-sandbox-v0.3.1.bash` 是 ZIP 外部的候选资产：普通 development 状态使用 64 位 zero hash
-并 fail closed；只有明确授权的 seal 才能写入冻结 ZIP 的精确 SHA-256。即使完成本地 seal，也必须在
-独立 publication、重新下载和 Cloud acceptance 关闭后才能成为 Release 或 rollback。当前 gate 与
-rollback 状态只在 ROADMAP 和活动 task plan 维护。
+所有 bootstrap 都是 ZIP 外部资产，因为它们负责下载并校验 ZIP，不能进入自己验证的 archive。
+development bootstrap 使用 64 位 zero hash 并 fail closed；只有独立授权的 seal 才能在冻结全部 ZIP
+输入后写入精确 SHA-256。已发布资产必须从对应 Release 页面重新下载，并按版本 acceptance 核对
+filename、size 和 SHA；源码 checkout、版本字段、文件名或本地 ZIP 都不能单独证明 Release 成立。
 
 ### Installer CLI
 
@@ -140,6 +128,7 @@ python3 -c "from pathlib import Path; [compile(p.read_text(encoding='utf-8'), st
 node --check install.js
 bash -n init-cloud-sandbox-v0.3.0.bash
 bash -n init-cloud-sandbox-v0.3.1.bash
+bash -n init-cloud-sandbox-v0.3.2.bash
 git diff --check
 ```
 
@@ -171,7 +160,7 @@ git diff --check
 renormalize 和 fresh-clone 复验步骤见完整源码仓库的
 [`docs/git-file-modes.md`](docs/git-file-modes.md)。
 
-## 构建当前 0.3.1 候选 ZIP
+## 构建开发 ZIP
 
 Release allowlist 由 `contracts/release-artifact-v1.json` 唯一决定。构建器固定路径顺序、时间戳、
 权限、压缩参数和 archive root；`check` 再核对 entries、mode、metadata 与源文件字节。
@@ -179,7 +168,7 @@ Release allowlist 由 `contracts/release-artifact-v1.json` 唯一决定。构建
 PowerShell：
 
 ```powershell
-$zip = Join-Path $env:TEMP 'pwf-codex-cloud-hooks-v0.3.1.zip'
+$zip = Join-Path $env:TEMP 'pwf-codex-cloud-hooks-candidate.zip'
 python tools/build_release.py build --output $zip
 python tools/build_release.py check --archive $zip
 Get-FileHash -Algorithm SHA256 $zip
@@ -194,12 +183,11 @@ python3 tools/build_release.py check --archive "$ZIP"
 sha256sum "$ZIP"
 ```
 
-当前 ZIP 必须包含精确 23 entries：importer 与其必需的
-`patches/patch_planning_skill.py` 必须同时存在；两个 bootstrap 都不得进入 ZIP，当前外部候选资产是
-`init-cloud-sandbox-v0.3.1.bash`。本地构建或 seal 成功不等于 Release 成立；bootstrap 的默认 hash
-必须与当前 gate 一致，并且只能在冻结全部 ZIP 输入后由授权 seal 从 zero 改为该 ZIP 的精确 SHA-256。
-已发布 v0.3.0 的 22-entry ZIP、外部 bootstrap、tag 和 SHA 继续由其 hard-acceptance 冻结，不从当前
-工作树重建或覆盖。
+ZIP entries、外部资产和 package identity 只由 Release contract 决定；不要在文档中另建可漂移的
+entry count。Importer 与其直接 patcher 依赖必须同时进入 allowlist，所有 bootstrap 必须保持在 ZIP
+外。本地双构建、`check` 或 hash 只证明当前开发字节可复现，不等于完成 seal、publication、Cloud
+acceptance 或 rollback 晋级。已发布版本的精确字节只从 immutable tag/source oracle 和对应 acceptance
+复核，不从当前工作树覆盖。
 
 ### Importer 与 patcher 摘要
 
@@ -209,23 +197,6 @@ sha256sum "$ZIP"
 patcher 的四项职责、信任边界和 overlay 顺序见 [`ARCHITECTURE.md`](ARCHITECTURE.md) 的部署图及
 “来源与 overlay”章节。
 
-## 仓库地图
-
-| 路径 | 职责 |
-|---|---|
-| `install.js` | Managed install/doctor/repair/uninstall |
-| `hooks/hook_adapter.py` | Codex Hook protocol、child supervision、结果组合 |
-| `runtime/owned-plan.py` | canonical plan resolution、安全快照和 context 生成 |
-| `runtime/owned-catchup.py` | Host transcript 校验、session catch-up result |
-| `runtime/upstream/` | importer 管理的四个固定上游 runtime 文件 |
-| `contracts/` | Host ABI、result schema、runtime/overlay/Release machine contracts |
-| `tools/import_upstream_runtime.py` | 固定 archive 的确定性 import/check |
-| `patches/patch_planning_skill.py` | owned catch-up compatibility overlay 复现 |
-| `tools/build_release.py` | 确定性 ZIP build/check |
-| `tests/` | production、安全、供应链、安装和仓库边界回归 |
-| `BASELINE_PROVENANCE.md` | beta.2、M1、上游与 overlay 来源链 |
-| `MAINTAINER_HANDOFF.md` | 维护、变更分类、验证、Release 与回滚入口 |
-
 ## 安全与 Release 不变量
 
 - global PWF Skill 始终 pristine；production 只执行 manifest/allowlist 固定的 owned runtime；
@@ -234,18 +205,27 @@ patcher 的四项职责、信任边界和 overlay 顺序见 [`ARCHITECTURE.md`](
 - transcript path 必须 containment、regular-file 和 session identity 校验；
 - integrity 与内容注入 fail closed，单个 advisory child 对 Codex loop fail open；
 - Release ZIP 使用精确 allowlist，bootstrap 永远作为 ZIP 外部独立资产；
-- 已发布 v0.3.0 与 beta.2 的字节、URL 和 SHA-256 不可改写；
+- 任何已发布版本的 tag、资产字节、URL、SHA-256 和 acceptance 证据都不可原位改写；
 - 封板顺序固定：冻结 ZIP 输入 → 构建 ZIP/hash → 写入 bootstrap → 计算 bootstrap hash →
   发布 → 重新下载双资产复验。
 
-## 开发状态
+## 开发状态与文档地图
 
-README 不复制频繁变化的 migration、Cloud、Release 或 Product Phase 状态。在完整源码仓库中：
+README 只维护稳定支持行为和用户/开发命令，不复制频繁变化的 migration、Cloud、Release 或当前 gate
+状态。需要继续了解仓库时，按问题进入唯一权威：
 
-- [`ROADMAP.md`](ROADMAP.md) 是 programme、migration、Cloud 与 Release gate 的当前权威；
-- `.planning/.active_plan` 指向的 `task_plan.md` 是唯一 Next Step、授权与停止条件的当前权威。
+| 要回答的问题 | 唯一权威 |
+|---|---|
+| 支持什么，以及如何安装、doctor/repair、测试和打包 | 本 README |
+| 为什么这样设计，跨组件数据流、信任边界和失败语义是什么 | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
+| 实现落在哪些仓库模块，源码/build/install/runtime 如何对应 | [`DESIGN.md`](DESIGN.md) |
+| 当前 programme、版本列车、Cloud/Release/rollback 状态 | [`ROADMAP.md`](ROADMAP.md) |
+| 当前唯一 Next Step、授权、禁止事项和停止条件 | `.planning/.active_plan` 指向的活动 `task_plan.md` |
+| baseline、upstream、overlay 和不可变资产从哪里来 | [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) |
+| 新维护者如何接手、避坑并解释能力检测结果 | [`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) |
+| 某次迁移、Cloud 或 Release 如何被验收 | 对应的 [`docs/`](docs/) 专项 runbook/acceptance |
 
-源码分支、package version、文件名或本地 ZIP 中出现版本号，不代表 Release 已成立。
+源码分支、package version、文件名、本地 ZIP 或本地 seal 中出现版本号，不代表 Release 已成立。
 
 ## 许可证
 
