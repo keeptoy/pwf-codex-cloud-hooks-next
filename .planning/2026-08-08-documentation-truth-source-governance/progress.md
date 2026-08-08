@@ -293,3 +293,23 @@
 - Final pre-commit audit PASS: forbidden current-role wording 在受治理宏观文档中只剩 ROADMAP §2 一处；
   v0.3.1 provenance 的 exact source/ZIP/bootstrap 与 acceptance 交叉一致；focused 7/7、终态 10 份
   Markdown 的 local links/UTF-8/LF/final newline/fences 和 `git diff --check` 全部通过。
+
+## 2026-08-09 — Local Git Bash path correction
+
+- 维护者补充本机 Git Bash 位于 `D:\Program Files\Git\git-bash.exe`。恢复活动 planning 后确认工作树
+  起点干净，D5 仍为下一 gate；本轮只校正并持久化本机验证工具发现，不开始 D5 文档迁移。
+- 路径探测 PASS：launcher、`bin\bash.exe`、`usr\bin\bash.exe` 均存在；Git for Windows launcher/
+  `bin\bash.exe` 版本为 `2.55.0.windows.2`。
+- Direct launcher probe: `git-bash.exe -lc ...` 没有返回 stdout，PowerShell `$LASTEXITCODE` 为空；确认
+  launcher 不适合 headless exit-code 验证，下一步改用显式 `bin\bash.exe`，而不是重复 PATH-only 探测。
+- Headless attempt 1: 显式 `D:\Program Files\Git\bin\bash.exe` 选路正确，但受限沙箱内创建 Win32
+  signal pipe 返回 error 5，exit `-1073741502`；相关 launcher/mintty/bash 无残留进程。按已知平台限制
+  使用受控权限重跑，不把该结果归类为脚本语法失败。
+- Headless attempt 2: 受控权限已越过 signal-pipe 限制，但含 pipe/command substitution 的复合 `-lc`
+  参数经 PowerShell→Win32 传递后被错误拆分，Bash 报 unmatched `)`、exit 2；归类为调用引号缺陷。
+  改用无嵌套 shell 字符串的 `--version` 与逐文件 `-n` 参数，不重复该命令形态。
+- Headless attempt 3 PASS: `D:\Program Files\Git\bin\bash.exe --version` 返回 GNU Bash 5.3.15；对
+  v0.3.0、v0.3.1、v0.3.2 三个 bootstrap 逐文件运行 `-n`，全部 exit 0。D4 中“本机没有 Bash”的
+  PATH-only SKIP 由本节纠正：当时只是 PowerShell PATH 未解析到 Bash，并非 binary 不存在。
+- 持久化边界：本机路径只进入活动 findings/progress，不写入 README/AGENTS 或产品 contract；D5 状态
+  保持 ready，未修改 production、bootstrap 字节、历史证据或 Release/Cloud 状态。

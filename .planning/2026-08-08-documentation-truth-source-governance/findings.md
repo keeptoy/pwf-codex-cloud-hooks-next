@@ -378,3 +378,16 @@ tracked 文档，D5 会触碰历史/当前语义分界，D6 才能证明整体�
   authority 清晰度，因此 D4 选择零 diff，并由治理测试把这些路径作为历史证据白名单。
 - AGENTS、ARCHITECTURE、DESIGN、README 只保留各自稳定职责与链接；handoff 的 mutable facts 留到 D5
   逐节迁移，避免在 authority 尚未稳定前重写 onboarding 入口。
+
+## Local Windows Git Bash discovery
+
+- 本机 Git for Windows 安装根为 `D:\Program Files\Git`，版本观测为 `2.55.0.windows.2`；已确认存在
+  `git-bash.exe`、`bin\bash.exe` 和 `usr\bin\bash.exe`。
+- `git-bash.exe` 是异步终端启动器，不是适合 CI/agent 捕获 stdout 与 exit code 的 Bash binary；从
+  PowerShell 直接传 `-lc` 会立即返回，命令输出不可捕获且 `$LASTEXITCODE` 为空。
+- 无界面自动化应优先显式调用 `D:\Program Files\Git\bin\bash.exe`；不能因 `bash` 不在 PowerShell
+  `PATH` 就断言“本机没有 Bash”。具体 bootstrap syntax 结果由 progress 记录。
+- 受控权限下确认该 binary 为 GNU Bash `5.3.15(1)-release (x86_64-pc-cygwin)`。本仓库后续 Windows
+  syntax gate 应使用显式 binary + 直接参数（例如 `& $gitBashBinary -n <file>`），避免 launcher 和复杂
+  `-lc` 的 PowerShell/Win32 quoting 歧义；受限沙箱若报 Win32 signal-pipe error 5，应按 platform
+  limitation 受控重跑。
