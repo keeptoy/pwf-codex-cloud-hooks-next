@@ -138,6 +138,21 @@
 - R0 已以单一本地 checkpoint commit 收口：精确包含 11 个获批路径（identity contract/bootstrap、四个
   focused tests、upstream manifest 和三份活动 planning），未 push，便于进入 D2 前独立回滚。
 
+## 2026-08-08 — Handoff retention and D4/D5 reorder
+
+- 维护者决定保留 `MAINTAINER_HANDOFF.md`，撤回此前“逐节迁移后删除”的候选方向；历史 progress 中的
+  retirement/零入链记录仅保留决策演进语义，均由本节取代，不再是实施目标。
+- handoff 新职责冻结为维护者 onboarding/triage 入口：新人最短接手路径、稳定踩坑摘要，以及能力/
+  健康检测的“信号 → PASS/repairable/blocker/platform limitation/product defect → authority”反馈。
+- handoff 不得维护 current version/Latest/rollback、commit/hash/test count、逐 gate 状态、完整命令清单
+  或第二份 Release/rollback runbook；这些内容仍迁入 README、DESIGN、ROADMAP、provenance 和版本专项。
+- D4/D5 顺序已交换：D4 先清理 lifecycle/provenance/history 重复并建立 governance guard；D5 再基于
+  稳定 authority 去事实化并重写 handoff。总轮次不变，当前 D2 Next Step 也不变。
+- 本轮只修改活动 task plan/findings/progress；未修改 handoff、README、DESIGN、ROADMAP、provenance、
+  tests 或其他产品/Release 字节。
+- 本次决策已以单一本地 planning checkpoint 收口，仅包含活动 task plan/findings/progress，未 push；
+  可在 D2 实施前独立回滚而不影响已完成的 R0 identity checkpoint。
+
 ## 5-question reboot check
 
 | Question | Answer |

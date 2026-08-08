@@ -3,8 +3,9 @@
 ## Goal
 
 建立“一类事实只有一个真理源”的仓库文档体系：权威文档完整回答其唯一问题，其他文档只保留面向
-读者的最小摘要和稳定链接。新增 `DESIGN.md` 承接仓库/模块实现设计，并在内容逐节归位后退役
-`MAINTAINER_HANDOFF.md`；同时不改写历史验收、不破坏 sealed Release 字节边界，也不把文档整理
+读者的最小摘要和稳定链接。新增 `DESIGN.md` 承接仓库/模块实现设计，并把
+`MAINTAINER_HANDOFF.md` 重构为新人维护者路标、踩坑摘要和能力检测反馈入口；同时不改写历史验收、
+不破坏 sealed Release 字节边界，也不把文档整理
 扩大为产品、Host ABI、trusted graph 或 Product Phase 4 变更。
 
 ## Current Gate
@@ -39,8 +40,8 @@ push/remote/Cloud 和 Product Phase 4 仍需独立授权。
 | 1 | R0 | `0.3.2-dev` package/contract、zero-hash bootstrap、identity tests | identity foundation |
 | 2 | D2 | README 文档地图、DESIGN foundation、ROADMAP/AGENTS 入口迁移 | entrypoint/design foundation |
 | 3 | D3 | ARCHITECTURE/DESIGN 的 why/how 分层与模块验证路由 | architecture/design split |
-| 4 | D4 | handoff 逐节迁移、零入链并删除 | handoff retirement |
-| 5 | D5 | lifecycle/provenance 去重、必要历史标签与治理 guard | authority deduplication |
+| 4 | D4 | lifecycle/provenance 去重、必要历史标签与治理 guard | authority deduplication |
+| 5 | D5 | handoff 去事实化，保留新人路标、踩坑摘要与能力反馈 | maintainer entrypoint |
 | 6 | D6 | 全量回归、deterministic package/repository checks、计划闭环 | governance closure |
 
 若某轮暴露 Release identity、repository inventory 或历史证据冲突，则该轮停止并增加修复回合，不把
@@ -78,6 +79,7 @@ push/remote/Cloud 和 Product Phase 4 仍需独立授权。
 | 稳定用户/开发命令 | `README.md` | DESIGN 仅按模块链接命令，不复制完整操作清单 |
 | 变更分类、模块修改路径、验证选择 | `DESIGN.md` | AGENTS 保留智能体强制边界；README 只链接 |
 | Release/rollback 生命周期策略 | `ROADMAP.md` | README/DESIGN 只链接；精确版本步骤和资产由专项 runbook/acceptance 回答 |
+| 新人维护者最短接手路径、常见误判、检测结果如何分流 | `MAINTAINER_HANDOFF.md` | 只保留稳定摘要和 authority 链接，不维护当前版本/完整流程 |
 | 历史 Cloud/Release 验收 | 对应 `docs/*acceptance*.md` | ROADMAP 只记录结论和链接，不复制原始证据 |
 
 ## First Migration Candidate
@@ -142,21 +144,28 @@ push/remote/Cloud 和 Product Phase 4 仍需独立授权。
 - [ ] 验证 ARCHITECTURE 与 DESIGN 不各自维护一份完整组件清单、调用链或当前 lifecycle 状态。
 - **Status:** pending / authorized after D2 exit
 
-### D4 — MAINTAINER_HANDOFF decomposition and retirement
-
-- [ ] 建立 `MAINTAINER_HANDOFF.md` 逐节迁移矩阵，每节只能是迁入明确 authority、保留为历史链接，或
-  作为重复内容有理由删除。
-- [ ] 将用户/开发命令迁入 README，模块变更与验证选择迁入 DESIGN，programme/Release/rollback 策略
-  迁入 ROADMAP，来源链迁入 BASELINE_PROVENANCE，精确版本证据留在专项 runbook/acceptance。
-- [ ] 更新 README、ROADMAP、AGENTS、专项文档和测试中的全部入链后删除 `MAINTAINER_HANDOFF.md`。
-- [ ] 删除前验证没有只存在于 handoff 的安全步骤、失败分类或恢复入口。
-- **Status:** pending / authorized after D3 exit
-
-### D5 — Lifecycle, provenance and historical deduplication
+### D4 — Lifecycle, provenance and authority guards
 
 - [ ] ROADMAP 只保留当前宏观状态与未来路线。
 - [ ] BASELINE_PROVENANCE 只保留来源链和不可变身份。
 - [ ] 历史 acceptance/runbook 保持时间语义，增加必要的“历史证据”标签而不改写原始事实。
+- [ ] 增加 authority guard：当前 lifecycle 只允许 ROADMAP 完整维护，历史文档/fixtures 白名单化；
+  handoff 不得保存可漂移的版本角色、hash、测试计数或完整 Release/rollback 步骤。
+- **Status:** pending / authorized after D3 exit
+
+### D5 — MAINTAINER_HANDOFF maintainer entrypoint
+
+- [ ] 建立 `MAINTAINER_HANDOFF.md` 逐节迁移矩阵：事实/完整步骤迁入明确 authority；有价值的接手路标、
+  常见误判和失败分类压缩成稳定摘要并链接。
+- [ ] 保留“接手前最短路径”，但命令详情链接 README，当前授权链接活动 task plan，系统边界链接
+  ARCHITECTURE，模块变更/验证选择链接 DESIGN，lifecycle 链接 ROADMAP，来源/资产链接
+  BASELINE_PROVENANCE 与版本 acceptance。
+- [ ] 增加能力检测反馈矩阵：检测什么、PASS/repairable/blocker/platform limitation 分别意味着什么、
+  下一步去哪个 authority；不得在 handoff 复制完整命令或修复 runbook。
+- [ ] 保留少量高价值踩坑提示：版本字段不等于 Release、Windows SKIP 不替代 Linux/Cloud、global Skill
+  必须 pristine、unknown drift 不可伪装 repair、当前 gate 只读活动 plan；每项都链接完整解释。
+- [ ] 验证 handoff 无 current version/hash/test-count/逐 gate 状态，无第二份 Release/rollback 流程，且
+  所有链接有效。
 - **Status:** pending / authorized after D4 exit
 
 ### D6 — Validation and closure
@@ -192,8 +201,8 @@ exact sealed v0.3.1 ZIP。维护者已在 2026-08-08 明确选择第 1 条：
   contract 和最近边界测试为准。
 - DESIGN 不复制 ARCHITECTURE 的设计理由/trusted graph，也不复制 ROADMAP 当前 lifecycle；它以模块
   入口、依赖、改动落点和验证选择为边界。
-- 退役 handoff 后，不再建立新的综合运维手册；操作内容按“用户命令、模块变更、programme 策略、
-  精确版本 runbook”归入各自权威。
+- handoff 是维护者导航摘要，不是综合运维真理源；用户命令、模块变更、programme 策略和精确版本
+  runbook 分别归入各自权威。能力检测只摘要“信号 → 含义 → 去向”，不复制完整操作正文。
 - 历史 acceptance/runbook 不反向改成当前状态，只增加必要的“历史证据/当前入口”链接。
 - 引用方向优先为入口 → 权威 → machine evidence；避免两个宏观文档互相要求同步同一事实。
 
@@ -219,18 +228,18 @@ exact sealed v0.3.1 ZIP。维护者已在 2026-08-08 明确选择第 1 条：
 精确范围：`ARCHITECTURE.md`、`DESIGN.md`、focused governance assertions、直接依赖的 planning。
 冻结“为什么/系统边界”与“如何落到仓库模块/如何选择验证”的分工，删除二者间的完整清单复制。
 
-### Batch D — Handoff decomposition and retirement
+### Batch D — Lifecycle/provenance deduplication and guards
 
-精确范围：`MAINTAINER_HANDOFF.md`、`README.md`、`DESIGN.md`、`ROADMAP.md`、
-`BASELINE_PROVENANCE.md`、`AGENTS.md`、确有承接关系的专项 runbook/acceptance、focused governance 和
-repository-boundary assertions、直接依赖的 planning。先迁移和验证全部独有内容，再更新入链和删除
-handoff；禁止先删后补。
+精确范围：`ROADMAP.md`、`BASELINE_PROVENANCE.md`、确有歧义的专项 runbook/acceptance、focused
+authority assertions 和直接依赖的 planning。先把 current lifecycle、不可变来源与历史证据稳定在
+各自 authority，并建立对 README/DESIGN/handoff 的重复事实 guard。
 
-### Batch E — Historical labels and automated guard
+### Batch E — MAINTAINER_HANDOFF maintainer entrypoint
 
-只对确有歧义的专项 runbook/acceptance 增加历史标签/当前入口，不改写冻结事实。增加一个小型
-authority regression：README 必须链接所有权威、非 ROADMAP 宏观文档不得声明当前 Latest/rollback，
-README 不得出现具体当前 lifecycle/hash/test-count 模式；历史目录和版本 acceptance 进入白名单。
+精确范围：`MAINTAINER_HANDOFF.md`、`README.md`、`DESIGN.md`、`ROADMAP.md`、`ARCHITECTURE.md`、
+`BASELINE_PROVENANCE.md`、AGENTS 和 focused governance assertions 中确有链接/承接关系的部分。handoff
+保留新人最短接手路径、踩坑摘要和能力检测反馈矩阵；删除 current facts、完整命令/Release/rollback
+流程并指向 Batch D 已稳定的 authority。
 
 ### Batch F — Final validation and closure
 
@@ -245,7 +254,7 @@ README 不得出现具体当前 lifecycle/hash/test-count 模式；历史目录�
 | README/ROADMAP/ARCHITECTURE | local links/anchors、authority assertions、focused governance tests |
 | DESIGN/模块说明 | 与 ARCHITECTURE 的职责互斥、源码/contracts/tests 链接、change-impact/validation 路由 |
 | 新增/删除 tracked docs | repository-boundary exact inventory 与 Release exclusion |
-| 删除 MAINTAINER_HANDOFF | 逐节迁移矩阵、全仓零入链、独有安全/恢复步骤零遗漏 |
+| 重构 MAINTAINER_HANDOFF | 逐节迁移矩阵、入口/踩坑/能力反馈完整、无 mutable facts/完整 runbook、链接有效 |
 | README/package/Release contract | full suite、deterministic build/check、新身份与 bootstrap boundary |
 | acceptance/provenance | 历史 hash/URL/身份不变，当前状态只在权威文件更新 |
 
@@ -253,7 +262,8 @@ README 不得出现具体当前 lifecycle/hash/test-count 模式；历史目录�
 
 - 同一事实仍有两个可独立编辑的“完整版本”，且无法决定权威归属。
 - DESIGN 开始复刻 ARCHITECTURE 的设计理由/trusted graph，或承担 ROADMAP 当前 lifecycle。
-- MAINTAINER_HANDOFF 尚有无承接者的独有步骤、失败分类、恢复入口或仍有有效入链。
+- MAINTAINER_HANDOFF 仍维护当前版本/hash/测试计数/逐 gate 状态或第二份完整 Release/rollback 流程。
+- MAINTAINER_HANDOFF 只剩链接清单，没有新人路径、踩坑价值或“检测信号 → 含义 → authority”反馈。
 - 摘要开始复制具体 gate、hash、测试数字或频繁变化的生命周期状态。
 - README 字节变化却没有新的 source/package/Release identity 决策。
 - 拟修改已发布 tag/asset/acceptance 字节或把历史快照改写为当前事实。
@@ -266,6 +276,7 @@ README 不得出现具体当前 lifecycle/hash/test-count 模式；历史目录�
 - 不重写 v0.3.1/v0.3.0/beta.2 的已发布资产与历史验收。
 - 不把所有信息集中到一个超大文档；“一个真理源”按问题域划分，而不是全仓只有一份文档。
 - 不把 DESIGN 建成新的综合手册、第二份 ARCHITECTURE 或源码逐函数说明。
+- 不删除 MAINTAINER_HANDOFF；保留其维护者 onboarding/triage 导航职责，但不让它成为第二真理源。
 - 不删除对新用户有价值的摘要、入口命令或安全警告，只删除可漂移的重复正文。
 
 ## Errors Encountered

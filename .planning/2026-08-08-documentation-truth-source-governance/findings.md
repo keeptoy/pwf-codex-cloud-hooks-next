@@ -9,8 +9,8 @@
   README 顶部已过时、时间敏感的版本/rollback blockquote。
 - 新建根级 `DESIGN.md`，把 README `仓库地图` 迁入其中，形成与宏观 ARCHITECTURE 分层的仓库/模块
   实现设计权威。
-- 后续把 `MAINTAINER_HANDOFF.md` 内容迁入各问题域的权威文档，使文档自解释，并在零遗漏、零入链后
-  退役该聚合手册。
+- 后续把 `MAINTAINER_HANDOFF.md` 的事实和完整流程迁入各问题域的权威文档，但保留该文件作为新人
+  维护者路标、踩坑摘要和能力检测反馈入口。
 
 ## Initial authority findings
 
@@ -62,8 +62,8 @@ promotion evidence transport 的旧 checkbox/status/Decision Checkpoint。新计
    Product Phase 4 与 rollback 状态。
 4. `BASELINE_PROVENANCE.md`：不可变来源链和历史迁移证据；目前少量“当前角色”字段会随 ROADMAP
    漂移。
-5. `MAINTAINER_HANDOFF.md`：接手和操作流程聚合页；目前混合入口命令、模块变更、验证、Release
-   策略、精确版本证据和回滚角色，内容应按问题域拆回各 authority，最终删除该聚合页。
+5. `MAINTAINER_HANDOFF.md`：维护者 onboarding/triage 入口；目前混合入口命令、模块变更、验证、
+   Release 策略、精确版本证据和回滚角色，事实/完整流程应拆回各 authority，文件本身保留稳定路标。
 6. `AGENTS.md`：智能体入口、安全/验证/发布规则；目前既含 agent-only 约束，也完整复制文档权威表
    和当前版本角色。
 
@@ -88,8 +88,8 @@ promotion evidence transport 的旧 checkbox/status/Decision Checkpoint。新计
   programme 状态副本。
 - AGENTS 保留不可绕过的 trust/Release 安全规则和验证命令，因为这是 agent 执行边界；但具体当前
   版本角色改为链接 ROADMAP。
-- 原先“让 MAINTAINER_HANDOFF 只保留操作步骤”的假设已被维护者的新目标取代：操作步骤也应由其
-  实际问题域的 authority 自解释；handoff 只在迁移期间作为来源清单存在，完成后删除。
+- MAINTAINER_HANDOFF 保留维护者接手顺序、常见误判和能力检测结果分流；操作步骤由实际问题域的
+  authority 自解释，handoff 只摘要并链接。
 - ARCHITECTURE 可解释为何 bootstrap 必须在 ZIP 外，但不维护“当前 Latest 是谁”。
 
 ### Historical snapshots that must not be normalized
@@ -125,6 +125,7 @@ README (入口、稳定行为、用户/开发命令、文档地图)
   │    ├─ machine contracts (schema/hash/inventory/allowlist)
   │    └─ source/tests (更细行为与可执行证明)
   ├─ BASELINE_PROVENANCE (不可变来源链)
+  ├─ MAINTAINER_HANDOFF (维护者路标、踩坑摘要、能力检测反馈)
   └─ docs/* (专项 runbook、历史 acceptance、平台专项)
 ```
 
@@ -145,7 +146,7 @@ ARCHITECTURE 唯一回答“为什么这样设计、跨组件如何流动、信�
 `DESIGN.md` 默认应是 tracked 但 ZIP-excluded 的治理文档；新增 tracked path 仍需同步 repository boundary，
 但不应仅因它位于根目录就扩大 Release allowlist。
 
-## MAINTAINER_HANDOFF decomposition
+## MAINTAINER_HANDOFF refactoring
 
 | 现有内容类型 | 迁移后的 authority |
 |---|---|
@@ -158,10 +159,11 @@ ARCHITECTURE 唯一回答“为什么这样设计、跨组件如何流动、信�
 | M4 cutover 等已经完成的历史步骤 | 对应历史专项文档，不在当前手册复述 |
 | agent-only trust、Release 和停止规则 | AGENTS，且链接人的文档地图 |
 
-退役条件不是“内容看起来都重复”，而是逐节 traceability 完成：每段都有承接 authority 或明确的重复
-删除理由；所有入链已更新；全仓不再引用 handoff；安全步骤、失败分类和恢复入口没有仅存于 handoff；
-repository-boundary 与 focused governance assertions 已同步。这样删除 handoff 才会提升自解释性，而不是
-把维护知识藏散。
+保留条件是逐节 traceability 完成：每段事实/完整步骤都有承接 authority；handoff 自己只拥有新人最短
+接手路径、稳定踩坑摘要和能力检测反馈。它应形成一个短反馈环：先确认当前 gate → 运行 README 指向的
+健康/验证入口 → 把结果分类为 PASS、repairable、blocker、platform limitation 或 product defect → 跳到
+README/DESIGN/ARCHITECTURE/ROADMAP/provenance/runbook 中的唯一权威。这样既不会把维护知识藏散，也不会
+让 handoff 成为第二份状态或操作真理源。
 
 ## Executable contract impact
 
@@ -201,9 +203,21 @@ tracked 文档，D5 会触碰历史/当前语义分界，D6 才能证明整体�
 1. 身份基础必须先于 README，因为任何 README edit 会立即改变 candidate ZIP。
 2. README/ROADMAP/AGENTS/DESIGN 同批建立入口，避免文档地图或仓库地图在中间状态出现两个完整权威表。
 3. 先建立 DESIGN，再清理 ARCHITECTURE/DESIGN 边界；否则直接移走 README 仓库地图会产生无主内容。
-4. handoff 在 DESIGN 和其他 authority 具备承接位置后逐节拆解，最后更新入链并删除，禁止先删后补。
-5. 历史 acceptance 最后处理且默认不改；只有读者可能误认“当前状态”时才增加标签/入口。
+4. 先完成 lifecycle/provenance/历史边界去重和 guard，再重写 handoff；路标只能指向已经稳定的 authority。
+5. handoff 最后去事实化并保留 onboarding/triage 价值，不删除文件，也不保留第二份完整流程。
 6. 重复事实 guard 只针对当前宏观文档，必须显式排除 immutable acceptance、历史 planning 和 fixtures。
+
+## Handoff retention decision
+
+维护者撤回“删除 handoff”的初步方向，选择保留它作为新人维护者入口。这个决定与单一真理源原则不
+冲突，前提是 handoff 拥有的是导航/反馈问题，而不是被导航的事实本身：
+
+- **独有价值：** 五分钟接手路径、最容易踩的安全坑、能力/健康检测结果如何解释和分流。
+- **允许摘要：** 每项最多一条稳定结论，紧接 authority 链接。
+- **禁止内容：** 当前版本/Latest/rollback、commit/hash/test count、逐 gate 状态、完整构建/发布/回滚
+  步骤、可独立维护的命令清单。
+- **顺序理由：** D4 先稳定 ROADMAP/provenance/history 与 governance guard；D5 再重写 handoff，避免
+  路标先指向仍在移动或重复的目的地。
 
 ## R0 identity audit
 
