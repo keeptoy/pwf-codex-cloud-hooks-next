@@ -39,8 +39,8 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.match(architecture, /Managed policy 只认识 adapter/);
   assert.match(architecture, /does not resolve planning files/);
   assert.match(architecture, /只有 `runtime\/upstream\/session-catchup\.py` 与 pristine upstream 不同/);
-  assert.match(architecture, /已发布 `v0\.3\.0` ZIP 由 22-entry machine allowlist 构建/);
-  assert.match(architecture, /已发布 `v0\.3\.1` ZIP 由 23-entry machine allowlist 构建/);
+  assert.match(architecture, /Release ZIP 的身份与内容由 machine contract/);
+  assert.match(architecture, /已发布资产的精确身份与来源只在.*BASELINE_PROVENANCE/s);
 
   assert.equal((bundle.local_files || []).some(item => item.id === "owned_plan"), true);
   assert.equal((upstream.managed_runtime.local_files || []).some(item => item.id === "owned_plan"), true);
@@ -81,7 +81,8 @@ test("README owns the document map while DESIGN owns the repository implementati
 
   assert.match(readme, /## 开发状态与文档地图/);
   for (const authority of [
-    "ARCHITECTURE.md", "DESIGN.md", "ROADMAP.md", "BASELINE_PROVENANCE.md", "MAINTAINER_HANDOFF.md",
+    "ARCHITECTURE.md", "DESIGN.md", "CHANGELOG.md", "ROADMAP.md", "BASELINE_PROVENANCE.md",
+    "MAINTAINER_HANDOFF.md",
   ]) assert.match(readme, new RegExp(authority.replace(".", "\\.")));
   assert.doesNotMatch(readme, /当前源码\/package 身份|当前已接受的 rollback|previous fallback/);
   assert.doesNotMatch(readme, /## 仓库地图/);
@@ -108,6 +109,7 @@ test("README owns the document map while DESIGN owns the repository implementati
 test("ARCHITECTURE preserves system reasoning while DESIGN routes implementation changes", () => {
   const architecture = readText("ARCHITECTURE.md");
   const design = readText("DESIGN.md");
+  const agents = readText("AGENTS.md");
 
   for (const architectureSection of [
     "## 2. 为什么需要适配层", "## 3. 部署图", "## 4. Runtime 数据流",
@@ -129,4 +131,40 @@ test("ARCHITECTURE preserves system reasoning while DESIGN routes implementation
   assert.match(design, /repository source.*Release ZIP.*installed managed runtime/is);
   assert.match(design, /入口.*直接依赖.*影响.*验证/s);
   assert.doesNotMatch(design, /ADAPTER_DEADLINE_SECONDS|20,000|50 \/ 20|当前生产回滚|GitHub `Latest`/);
+});
+
+test("change history, programme intent, current action, and immutable evidence have separate authorities", () => {
+  const changelog = readText("CHANGELOG.md");
+  const roadmap = readText("ROADMAP.md");
+  const provenance = readText("BASELINE_PROVENANCE.md");
+  const architecture = readText("ARCHITECTURE.md");
+  const design = readText("DESIGN.md");
+  const agents = readText("AGENTS.md");
+  const artifact = readJson("contracts/release-artifact-v1.json");
+
+  for (const heading of [
+    "## Unreleased — 0.3.2-dev", "## v0.3.1", "## v0.3.0", "## v0.3.0-beta.2",
+  ]) assert.match(changelog, new RegExp(heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  for (const target of ["ROADMAP.md", "BASELINE_PROVENANCE.md", "docs/v0.3.1-cloud-hard-acceptance.md"]) {
+    assert.match(changelog, new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  }
+  assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|Next Step|GitHub `Latest`|production rollback|\d+ registered/);
+  assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
+
+  assert.match(roadmap, /\| 当前开发列车 \| `0\.3\.2-dev`；文档治理/);
+  assert.match(roadmap, /活动.*task_plan.*当前唯一 Next Step/s);
+  assert.equal((roadmap.match(/GitHub `Latest`/g) || []).length, 1);
+
+  for (const identity of [
+    "v0.3.1", "9aa2148886e499f9f45594f7ae4f7681f1045de2",
+    "v0.3.0", "1454c9224c83d11c073b05baf6e536a11c3bb0e5",
+    "v0.3.0-beta.2", "bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b",
+  ]) assert.match(provenance, new RegExp(identity.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.doesNotMatch(provenance, /当前源码权威|current lifecycle role|GitHub `Latest`|\d+ registered/);
+
+  for (const macroDoc of [architecture, design, agents]) {
+    assert.doesNotMatch(macroDoc, /当前生产回滚|当前回退层级|GitHub `Latest`|production rollback/);
+  }
+  assert.match(agents, /当前版本角色只见 `ROADMAP\.md`/);
+  assert.match(design, /CHANGELOG\.md/);
 });

@@ -115,9 +115,10 @@ requirements 或第三方管理员变更会 fail closed，不会被静默吸收�
 1. [`AGENTS.md`](AGENTS.md)
 2. 本 README
 3. [`ARCHITECTURE.md`](ARCHITECTURE.md)
-4. [`ROADMAP.md`](ROADMAP.md)
-5. `.planning/.active_plan` 指向的 `task_plan.md`、`findings.md`、`progress.md`
-6. 当前任务直接相关的 contracts、源码和测试
+4. [`DESIGN.md`](DESIGN.md)
+5. [`ROADMAP.md`](ROADMAP.md)
+6. `.planning/.active_plan` 指向的 `task_plan.md`、`findings.md`、`progress.md`
+7. 当前任务直接相关的 contracts、源码和测试
 
 常用检查：
 
@@ -192,10 +193,9 @@ acceptance 或 rollback 晋级。已发布版本的精确字节只从 immutable 
 ### Importer 与 patcher 摘要
 
 候选 ZIP 必须同时包含 importer 与 patcher，确保解压后的维护工具可以独立 `check`；正常安装不会
-现场打 patch，而是由 `install.js` 校验并复制 ZIP 内已经生成的 owned runtime。因此 v0.3.0 的生产
-安装能够正常运行，0.3.1 增加第 23 个 patcher entry 修复的是 Release 工具自包含性。两条路径、
-patcher 的四项职责、信任边界和 overlay 顺序见 [`ARCHITECTURE.md`](ARCHITECTURE.md) 的部署图及
-“来源与 overlay”章节。
+现场打 patch，而是由 `install.js` 校验并复制 ZIP 内已经生成的 owned runtime。两条路径、patcher 的
+四项职责、信任边界和 overlay 顺序见 [`ARCHITECTURE.md`](ARCHITECTURE.md) 的部署图及“来源与 overlay”
+章节；各版本实际 package delta 见 [`CHANGELOG.md`](CHANGELOG.md)。
 
 ## 安全与 Release 不变量
 
@@ -219,6 +219,7 @@ README 只维护稳定支持行为和用户/开发命令，不复制频繁变化
 | 支持什么，以及如何安装、doctor/repair、测试和打包 | 本 README |
 | 为什么这样设计，跨组件数据流、信任边界和失败语义是什么 | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | 实现落在哪些仓库模块，源码/build/install/runtime 如何对应 | [`DESIGN.md`](DESIGN.md) |
+| 各已发布版本和 Unreleased 已经改变了什么 | [`CHANGELOG.md`](CHANGELOG.md) |
 | 当前 programme、版本列车、Cloud/Release/rollback 状态 | [`ROADMAP.md`](ROADMAP.md) |
 | 当前唯一 Next Step、授权、禁止事项和停止条件 | `.planning/.active_plan` 指向的活动 `task_plan.md` |
 | baseline、upstream、overlay 和不可变资产从哪里来 | [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) |

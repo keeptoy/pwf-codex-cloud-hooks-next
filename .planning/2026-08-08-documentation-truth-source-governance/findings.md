@@ -299,6 +299,37 @@ tracked 文档，D5 会触碰历史/当前语义分界，D6 才能证明整体�
 - Focused governance/repository boundary 6/6 与完整 Windows suite 70 pass / 0 fail / 12 honest SKIP 均
   通过；links/anchors/LF/fences/diff check 通过，D3 exit 成立。
 
+## D4 change architecture design
+
+- 采用“3+1”模型：CHANGELOG 回答已合并/已发布 delta；ROADMAP 回答开发列车目标与跨 Phase intent；
+  活动 task plan 回答当前唯一授权行动；provenance/acceptance/contracts 作为正交 evidence layer。
+- README 文档地图应新增 CHANGELOG 入口，本地恢复顺序应补上已遗漏的 DESIGN；CHANGELOG 不必成为
+  每次 agent 必读文件，因此 AGENTS 强制顺序无需增加它。
+- ARCHITECTURE 第 11 节前半的 bootstrap/allowlist/seal 原则属于稳定 Release boundary；其中具体版本
+  entry count、当前 rollback/Latest 和版本角色不属于架构，应改为 CHANGELOG/ROADMAP/provenance 链接。
+- CHANGELOG `Unreleased` 只记录已经合并到当前 source 的 0.3.2-dev 文档治理 delta；开发目标只链接
+  ROADMAP，不把计划内容写成结果。稳定版本只摘要行为/维护变化并链接精确 provenance/acceptance。
+- ROADMAP 当前重复两次维护 v0.3.1/Latest/rollback（顶部 blockquote、§2 table，§8 再总结）；D4 应删除
+  顶部副本，以 §2 作为 current lifecycle 唯一完整表，§8 只保留晋级规则并回链 §2。
+- ROADMAP 尚未说明当前 `0.3.2-dev` documentation-governance train；应在 §2 记录其宏观目标与“不改变
+  runtime/Host ABI/trusted graph、不自动发布”，但具体 D4/D5/D6 Next Step 仍只在活动 task plan。
+- ROADMAP §4 仍把已完成 0.3.1 train 的旧活动 plan 写成精确 Next Step authority；应改为已完成版本
+  摘要并链接 CHANGELOG/acceptance，避免 historical plan 被误当成 current authorization。
+- 三份 version acceptance 已各自完整冻结 exact bytes 与 Cloud 证据，因此 provenance 不需要复制其
+  Attempt/命令/测试流水账；只需维护三份 immutable identity index 并链接对应 acceptance。
+- v0.3.1 provenance 可从 acceptance 固定 tag/source `9aa2148...`、23-entry ZIP、bootstrap 与两个 SHA；
+  lifecycle role 必须留在 ROADMAP，不进入 provenance identity table。
+- 历史 acceptance 顶部出现“当前状态/当前入口”是其 runbook 内部的时间语义，不应批量改写；D4 guard
+  应白名单 `docs/*acceptance*.md`，只要求新增文件或宏观 authority 不把这些历史文字当成 current source。
+- BASELINE_PROVENANCE 当前真正应保留的是 beta.2/v0.3.0 身份、上游、overlay 与 reproduction chain；
+  M1 测试数字、current source/protection、Cloud facts 正文和 slim transformation 轮次应缩成 immutable
+  lineage/evidence links，并补齐缺失的 v0.3.1 immutable identity index。
+- 现有 architecture test 把 v0.3.0/v0.3.1 entry count 强制留在 ARCHITECTURE，正是 D4 要迁移的旧 guard；
+  应改为由 provenance/acceptance 保护 exact identity，ARCHITECTURE 只断言 contract-driven Release 原则。
+- 新 CHANGELOG 是 tracked root doc，repository exact inventory 从 75 增至 76，且 Release contract 必须
+  继续排除它。D4 先保护 CHANGELOG/ROADMAP/provenance/architecture 边界；handoff 的 mutable-fact guard
+  在 D5 重写 handoff 时启用，避免跨 gate 提前修改或让 D4 永久红灯。
+
 ## R0 identity audit
 
 - 当前 `package.json.version` 与 `contracts/release-artifact-v1.json.package_version` 均为 sealed
@@ -334,3 +365,16 @@ tracked 文档，D5 会触碰历史/当前语义分界，D6 才能证明整体�
 - `upstream-manifest.json.managed_runtime.contracts.release_artifact.sha256` 也绑定当前
   `contracts/release-artifact-v1.json`。R0 改变 package/external-asset identity 后必须同步该 machine hash；
   这不是 runtime graph 变化，而是既有完整性边的预期更新。
+
+## D4 implemented authority boundaries
+
+- `CHANGELOG.md` 已成为 tracked、ZIP-excluded 的实际版本 delta 权威；Unreleased 不含 SHA、当前角色、
+  Next Step 或计划能力。
+- ROADMAP 第 2 节是当前 lifecycle 的唯一完整陈述；当前开发列车为 `0.3.2-dev` 文档治理，未来 Phase
+  仍保持未授权边界。
+- BASELINE_PROVENANCE 现按 v0.3.1、v0.3.0、beta.2 索引不可变身份，并保留迁移、upstream、overlay
+  与 reproduction 来源链，不再维护当前分支保护、版本角色或测试流水账。
+- acceptance/runbook 已具备明确版本、gate 与状态语境；批量追加“历史”标签会改写证据字节而没有增加
+  authority 清晰度，因此 D4 选择零 diff，并由治理测试把这些路径作为历史证据白名单。
+- AGENTS、ARCHITECTURE、DESIGN、README 只保留各自稳定职责与链接；handoff 的 mutable facts 留到 D5
+  逐节迁移，避免在 authority 尚未稳定前重写 onboarding 入口。

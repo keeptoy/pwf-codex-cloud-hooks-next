@@ -13,8 +13,10 @@ contract 或测试中的字段级行为。
 | 为什么需要适配层，跨组件数据流、trusted graph 和失败语义 | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | 实现位于哪里，模块之间怎样对应，改动应从哪里开始 | 本 DESIGN |
 | 稳定用户行为、安装、doctor/repair、测试和打包命令 | [`README.md`](README.md) |
+| 已发布版本与 Unreleased 已经改变了什么 | [`CHANGELOG.md`](CHANGELOG.md) |
 | 当前 programme、版本列车与 Release/rollback 状态 | [`ROADMAP.md`](ROADMAP.md) |
 | 当前唯一 Next Step 与授权边界 | `.planning/.active_plan` 指向的活动 `task_plan.md` |
+| upstream、overlay 与不可变资产的精确来源 | [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) |
 
 DESIGN 只提供实现层导航。函数、schema 字段、hash、allowlist 和测试结果必须回到相邻源码、contracts
 与 tests；带时间的验收事实必须回到对应专项文档。
@@ -123,6 +125,7 @@ contract 为准。
 
 - 首次使用或寻找命令：回到 [`README.md`](README.md)。
 - 判断 trust、Host contract 或失败语义：阅读 [`ARCHITECTURE.md`](ARCHITECTURE.md)。
+- 了解各版本已经发生的变化：阅读 [`CHANGELOG.md`](CHANGELOG.md)。
 - 判断当前 programme 或 Release 状态：阅读 [`ROADMAP.md`](ROADMAP.md)。
 - 追溯 upstream、overlay 或历史资产：阅读 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)。
 - 新维护者接手和结果分流：阅读 [`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md)。

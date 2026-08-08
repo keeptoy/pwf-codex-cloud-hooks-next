@@ -17,8 +17,9 @@
 - R0: complete
 - D2: complete
 - D3: complete
-- D4: authorized / next gate
-- D5–D6: pending / sequentially authorized after predecessor exit
+- D4: complete
+- D5: ready / authorized after D4 checkpoint
+- D6: pending / authorized after D5 exit
 
 ## Validation record
 
@@ -244,3 +245,51 @@
 - Focused 6/6、full Windows 70 pass / 0 fail / 12 SKIP、links/anchors/LF/fences/repository/diff checks PASS。
 - D3 exit PASS；活动计划已切换到 D4 authority deduplication。本轮已用单一
   `docs: map implementation modules and validation` 本地 checkpoint 收口，未 push。
+
+## 2026-08-08 — D4 change architecture and evidence separation started
+
+- `planning-with-files` catch-up 无未同步输出；起点工作树干净，HEAD 为 D3 checkpoint `f98f983`，分支
+  相对 `origin/main` ahead 6。
+- 维护者批准“ROADMAP intent → task plan authorized action → CHANGELOG actual delta，provenance/
+  acceptance/contracts 作为正交 evidence layer”的 D4 方案。
+- D4 获批范围扩展为新增 ZIP-excluded CHANGELOG、README 文档地图入口、ROADMAP/provenance 去重、必要
+  历史标签、authority/repository guards 和 planning；不改 runtime/Host ABI/trusted graph/已发布证据字节。
+- D4 状态切换为 in progress；新增 README 字节仍使用已建立的 0.3.2-dev identity，并触发完整 package
+  与 immutable oracle 验证，不构成 seal 或 Release。
+- D4 的 authority guard 不提前约束仍待 D5 重写的 handoff；本轮只覆盖 CHANGELOG、ROADMAP、provenance
+  和宏观入口文档，handoff 去事实化及其 guard 保留为 D5 exit。
+- Error: 首次同步上述范围时，`apply_patch` 因 Batch D 原文在 `README/DESIGN/` 后换行而未匹配；补丁
+  整体未应用。读取精确上下文后拆成窄补丁重试。
+- Red test attempt: `node --test tests/architecture-contracts.test.js tests/repository-boundary.test.js` 在受限
+  Windows runner 启动 test worker 时返回 `spawn EPERM`，没有执行断言；按已知平台分类使用受控权限重跑。
+- Red test evidence: 受控重跑得到 7 tests / 3 pass / 4 fail；失败精确来自旧 ARCHITECTURE Release
+  叙述、README/DESIGN 尚无 CHANGELOG 入口、`CHANGELOG.md` 尚不存在，以及 tracked inventory 尚未加入
+  新文件。证明新 guard 在实现前有效，没有 runtime failure。
+- 实施中发现 AGENTS 虽声明“不维护当前 lifecycle”，但稳定边界和尾部迁移段仍复制完整版本角色；将
+  D4 直接依赖扩为 AGENTS 最小 authority 同步：保留稳定 trust/Release 规则，以 ROADMAP/provenance
+  链接替换 current-role/gate 流水账，不把 CHANGELOG 加入每次必读顺序。
+- Focused green attempt: architecture assertions 4 项中 3 PASS、1 FAIL；唯一失败是新测试把 ROADMAP
+  中“活动 task plan”与“当前唯一 Next Step”的合法语序写反，属于 test defect。同步修正 regex，并补上
+  新测试作用域内遗漏的 `agents` 读取，不改文档语义。
+- Focused governance PASS: architecture authority assertions 4/4；将新 CHANGELOG 加入 index 后，
+  architecture + repository-boundary 合计 7/7 PASS，tracked exact inventory 为 76，CHANGELOG 仍被
+  Release machine allowlist 排除。
+- Markdown/static PASS: 10 个本轮 Markdown 变更的相对文件链接均存在，UTF-8 no-BOM、LF、final newline
+  与 fence balance 全部通过；`git diff --check` PASS，`docs/` 历史 acceptance/runbook 为零 diff。
+- Full suite PASS: 83 tests / 71 pass / 12 honest POSIX skips / 0 fail；其中 v0.3.2-dev deterministic package、
+  published v0.3.1/v0.3.0 immutable oracle 与新增 authority/repository guards 均通过。
+- Platform limitation: 并行静态检查中的三个 `bash -n` 因当前 Windows runner 没有 `bash` 而 SKIP；
+  同一并行调用未可靠回传 importer/语法与双 ZIP 输出，因此将这两组单独重跑，不推断 PASS。
+- Importer/static PASS: pinned upstream owned copy healthy；三份 production Python compile 与 `node --check
+  install.js` PASS。
+- Package PASS: 两次独立 build/check 均为 23 entries / 82,518 bytes / SHA-256 `4447acfb...3df3`，字节
+  一致；临时 ZIP 已清理。这只是 `0.3.2-dev` 可复现性证据，不构成 seal 或 Release。
+- D4 exit PASS: 新 CHANGELOG、ROADMAP lifecycle 单点、provenance identity index、宏观文档 guard 和
+  76-path repository inventory 已建立；历史 acceptance/runbook 零 diff，runtime/ABI/trusted graph 零变化。
+  本地 checkpoint 使用 `docs: separate change lifecycle and provenance`；下一步为 D5 handoff maintainer
+  entrypoint，未 push、tag、seal、发布或改动 Cloud。
+- Error: 首次收口 D4 状态的组合补丁因 findings 中预期锚点与文件实际排序不一致而整体未应用；读取
+  精确尾部后按 task/progress 与 findings 分拆重试。
+- Final pre-commit audit PASS: forbidden current-role wording 在受治理宏观文档中只剩 ROADMAP §2 一处；
+  v0.3.1 provenance 的 exact source/ZIP/bootstrap 与 acceptance 交叉一致；focused 7/7、终态 10 份
+  Markdown 的 local links/UTF-8/LF/final newline/fences 和 `git diff --check` 全部通过。

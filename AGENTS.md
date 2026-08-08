@@ -35,6 +35,8 @@
 
 - 稳定结论只提升到 README 文档地图指定的唯一 authority；其他位置保留最小摘要和链接。
 - AGENTS 只维护智能体读取顺序、冲突规则、trust/Release 安全边界和强制验证，不维护当前 lifecycle。
+- 已发生的版本 delta 只写 CHANGELOG；programme/lifecycle 只写 ROADMAP；不可变身份只写 provenance/
+  acceptance。
 - 当前 Next Step/禁止/停止条件只写 task plan；实施、测试和错误写 progress，研究取舍写 findings。
 - 历史 acceptance/runbook 保留时间语义，不用当前状态批量改写；不要在多个宏观文档复制流水账。
 
@@ -51,8 +53,8 @@
 - transcript JSONL 是可变 Host data；未知、损坏或身份不符不得造成 partial injection。
 - integrity 和内容注入 fail closed；advisory child failure 对 Codex loop fail open，且不能抑制
   canary 或其他已验证上下文。
-- 已发布 v0.3.1、v0.3.0 与 beta.2 的 ZIP/bootstrap 字节、URL 和 SHA 均不可变；v0.3.1 是当前
-  production rollback/`Latest`，v0.3.0 是 immediate previous fallback，beta.2 是更早 fallback oracle。
+- 所有已发布版本的 tag、ZIP/bootstrap 字节、URL、SHA 和 acceptance 均不可变；精确身份见
+  `BASELINE_PROVENANCE.md`，当前版本角色只见 `ROADMAP.md`。
 
 ## Discovery 与 gate
 
@@ -97,14 +99,8 @@ git diff --check
 - pointer-only rollback/`Latest` promotion 不得改写 sealed README 或其他 ZIP 输入；tag 后 current-state
   治理进入 ROADMAP、版本 acceptance 和活动 planning，README 在下一新版本 seal 中再同步。
 
-## 当前迁移边界
+## Programme 与历史证据入口
 
-M1 exact mirror、M2 slim transformation、M3 Cloud equivalence 和 M4 repository cutover 已完成。
-M4-C 在 `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151` 通过 Fresh Cloud/Linux no-live
-验收；Cloud-tested development `39795283...` 与 audit `bbad3703...` 保持不动，旧仓库仍是
-不可变 beta.2 Release/previous-fallback 权威。当前 successor 是后续源码维护权威；不改变行为且保留
-canary 的 stable `v0.3.0` 已在 exact source `1454c922...` 完成 S0～S3、immutable assets 与 Cloud
-A～F；它现为 immediate previous fallback，beta.2 保持更早的不可变 fallback oracle。0.3.1 兼容
-安全修复已完成 S1、S2 Linux/Cloud hard acceptance、S3-A immutable seal、S3-B publication、S3-C
-public-byte/final Cloud A～F 与 rollback/Latest promotion，现为 production rollback/`Latest`。
-Product Phase 4 仍未授权。
+当前开发列车、版本角色、Product Phase 与授权状态只读 `ROADMAP.md` 和活动 task plan。已完成迁移、
+已发布版本、不可变 refs/资产与 Cloud 验收只读 `BASELINE_PROVENANCE.md` 及其链接的专项 acceptance；
+不得在本文件冻结第二份 commit、测试计数、逐 gate 状态或 rollback 层级。

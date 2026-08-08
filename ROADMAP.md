@@ -1,79 +1,63 @@
 # 路线图
 
 本文件是后续 Product Phase、版本列车、Cloud 验收、Release 晋级和 rollback 状态的唯一宏观权威。
-精确 Next Step、当前授权、禁止事项和停止条件仍由活动 `task_plan.md` 决定。README 只描述稳定行为，
-不复制逐 gate 状态。
-
-> 当前生产回滚基线与 GitHub `Latest`：published/accepted `v0.3.1`；stable v0.3.0 保持不可变
-> immediate previous fallback，beta.2 保持更早的不可变 fallback oracle。
->
-> 当前稳定身份：published/accepted `v0.3.1`；exact source `9aa2148...` 已通过 S1～S3 全部门槛。
->
-> 当前状态：M1～M4 与 stable v0.3.0 Release 已关闭。Product Phase 4 之前另行授权的
-> `0.3.1 security-fix train` 已完成 S1、S2 Linux/Cloud hard acceptance、S3-A 本地 immutable
-> seal、S3-B publication、S3-C public-byte/final Cloud acceptance 与 rollback/Latest promotion。
-> Product Phase 4 仍未授权。
+已经发生的版本变化见 [`CHANGELOG.md`](CHANGELOG.md)，不可变来源与资产见
+[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)。精确 Next Step、当前授权、禁止事项和停止条件仍由
+活动 `task_plan.md` 决定。
 
 ## 1. 文档分层与活动 planning
 
-面向所有读者的“问题 → 唯一权威”导航见 [`README.md` 的“开发状态与文档地图”](README.md#开发状态与文档地图)。
-本文件只回答 programme 将去哪里、Phase/版本列车要证明什么，以及 Cloud、Release 和 rollback 何时
-完成；不再维护 planning 文件职责总表。
+面向所有读者的“问题 → 唯一权威”导航见
+[`README.md` 的“开发状态与文档地图”](README.md#开发状态与文档地图)。本文件只回答 programme 将去哪里、
+当前版本角色是什么，以及 Phase/版本列车要证明什么；不维护逐次实现流水账或证据表。
 
 ROADMAP 与活动 planning 互补：ROADMAP 管宏观路线和 lifecycle，`.planning/.active_plan` 指向的活动
 `task_plan.md` 管当前唯一 Next Step、授权、禁止事项和停止条件。两者若在当前 gate 上冲突，以活动
-task plan 为准；只有 programme/Cloud/Release/rollback 状态真正变化时才同步本文件。
+task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正变化时才同步本文件。
 
 ## 2. 当前基线与仓库角色
+
+本节是当前 lifecycle 角色的唯一完整陈述；其他宏观文档只链接这里。
 
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 已发布生产回滚 | successor `v0.3.1`；v0.3.0 为 immediate previous fallback，beta.2 为更早 fallback oracle |
-| 当前稳定身份 | published/accepted `v0.3.1`；source `9aa2148...` |
-| 当前 programme gate | `0.3.1 security-fix train` complete through rollback/Latest promotion；Product Phase 4 未授权 |
-| 当前 Release | `v0.3.1` 已发布、S3-C accepted，并设为 GitHub `Latest` |
-| 当前回退层级 | v0.3.1 production rollback → immutable v0.3.0 → immutable beta.2 oracle |
+| 当前开发列车 | `0.3.2-dev`；文档治理与自解释入口收口，不改变 runtime、Host ABI 或 trusted graph |
+| 当前已接受版本 | `v0.3.1`；production rollback 与 GitHub `Latest` |
+| 回退证据链 | immutable `v0.3.0` → immutable `v0.3.0-beta.2` oracle |
+| 当前 programme 边界 | Product Phase 4 未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
-v0.3.1 tag 中的 `README.md` 仍是该 sealed ZIP 的不可变历史输入；当前 main 的 README 已属于后续
-development source，不反向改写 v0.3.1。当前 lifecycle 事实以本表、v0.3.1 acceptance 和活动 task plan
-为准；不得用当前工作树重建或替换已发布 v0.3.1。
-
-beta.2 的精确 source、资产、SHA 和回滚入口见
-[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与
-[`docs/v0.3.0-beta.2-cloud-hard-acceptance.md`](docs/v0.3.0-beta.2-cloud-hard-acceptance.md)。
+`v0.3.1` tag 中的 README 和资产仍是 sealed 历史输入；当前 main 属于后续 development source，不反向
+改写已发布版本。版本 delta 见 [`CHANGELOG.md`](CHANGELOG.md)，精确 source/资产/SHA 见
+[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，最终验收见
+[`docs/v0.3.1-cloud-hard-acceptance.md`](docs/v0.3.1-cloud-hard-acceptance.md)。
 
 ## 3. 已完成的仓库迁移
 
-M1～M4 只建立独立 successor 的来源、历史、Cloud 等价性和源码权威，没有发布 beta.3、写入 live
+M1～M4 建立了独立 successor 的来源、历史、Cloud 等价性和源码权威，没有发布 beta.3、写入 live
 `/opt/codex`、改变 production behavior 或授权 Product Phase 4。
 
 | Gate | 冻结结果 | 状态 |
 |---|---|---|
-| M1 exact mirror | `audit/beta2-exact@bbad3703...` 保留 beta.2 commit/tree/资产 oracle | complete |
-| M2 slim transformation | parentless slim root、稳定文档边界、repository-wide LF、四个 `100755` runtime | complete |
-| M3 Cloud equivalence | tested `39795283...`；Linux/Fresh/Resume/doctor/ZIP 等价性 PASS | complete |
-| M4 repository cutover | accepted `main@0b4bd7d4...`；default/main/ruleset、handoff 与 beta.2 rollback PASS | complete |
+| M1 exact mirror | beta.2 commit/tree/资产 oracle 的 exact mirror | complete |
+| M2 slim transformation | parentless slim root、稳定文档边界、repository-wide LF、固定 executable runtime | complete |
+| M3 Cloud equivalence | Linux/Fresh/Resume/doctor/ZIP 等价性 | complete |
+| M4 repository cutover | default/main/ruleset、旧仓库导航与 rollback | complete |
 
-详细、可重放的历史门槛只保留在：
+不可变 refs 和可重放证据只保留在 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)、
+[`docs/beta3-dev-m3-cloud-equivalence.md`](docs/beta3-dev-m3-cloud-equivalence.md) 与
+[`docs/beta3-dev-m4-cutover-plan.md`](docs/beta3-dev-m4-cutover-plan.md)。后续 main 提交不能冒充这些旧 gate
+的 accepted input。
 
-- [`docs/beta3-dev-m3-cloud-equivalence.md`](docs/beta3-dev-m3-cloud-equivalence.md)；
-- [`docs/beta3-dev-m4-cutover-plan.md`](docs/beta3-dev-m4-cutover-plan.md)；
-- 活动 planning 的 findings/progress 历史。
+## 4. 当前开发列车与 Product Phase 路线
 
-后续治理提交不会把新的 `main` HEAD 冒充为旧 M3/M4 accepted input，也不会移动冻结 evidence refs。
+`0.3.2-dev` 的宏观目标是完成文档真理源治理：稳定行为、架构理由、实现导航、实际版本变化、programme
+路线、当前行动和不可变证据分别只有一个主维护位置。该列车当前只改变 development 文档与治理检查，
+不授权 seal、publication、Cloud acceptance、行为变化或 Product Phase 4。
 
-## 4. Product Phase 路线与候选版本列车
-
-Phase 是研发/验收边界；版本号是对外行为与兼容合同边界。下表是 Discovery 的默认候选，不是发布
-承诺，也不自动授权下一 Phase。一个 Phase 可以有多个 pre-release；多个低风险 Phase 也可以在明确
-评审后合并进同一版本列车。
-
-Product Phase 4 之前已完成独立 stable v0.3.0 里程碑。随后发现的兼容安全问题由单独授权的
-`0.3.1 security-fix train` 处理，不新增 Hook、Host ABI 或 trusted graph。它分为本地实现/身份收口、
-完整本地与 Linux/no-live Cloud 验证、最终 seal/release decision；精确 Next Step 与授权边界由活动
-`2026-08-06-v0.3.1-security-fix-discovery` task plan 管理。
+下表是未来 Discovery 的候选，不是发布承诺，也不自动授权下一 Phase。一个 Phase 可以有多个
+pre-release；多个低风险 Phase 也只有在独立评审后才能进入同一版本列车。
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
@@ -102,11 +86,7 @@ trusted graph、rollback 和 Cloud 评审。
 | `0.x.y`（`y>0`） | 同一 minor 行为合同内的兼容修复；不新增 Hook、Host ABI 或 trusted graph |
 
 新增 Hook 类型、Host ABI、信任/激活模型或明显用户行为面，默认提升 minor；纯兼容修复才使用 patch。
-任何字节变化都必须使用新身份和新 hash，不得复用 beta.2 或其他已发布资产。
-
-`v0.3.0` 已完成独立 S0～S3 gate；0.3.1 只修复同一 minor 行为合同内的问题，并已完成源码身份、
-bootstrap、ZIP、Cloud、seal、Release 与 rollback promotion 的分 gate 验收。该安全修复列车不授权
-Product Phase 4，也不允许重写任何 v0.3.1、v0.3.0 或 beta.2 身份与资产。
+任何字节变化都必须使用新身份和新 hash，不得复用已发布资产。
 
 ## 6. Discovery 与 gate 晋级模型
 
@@ -140,7 +120,7 @@ Round 内子 gate：
 
 只有 ROADMAP 把目标版本标为获批 Release candidate，且活动 task plan 明确授权具体 Release gate，
 才允许封板。稳定构建/验证命令由 [`README.md`](README.md) 管理，精确版本步骤和资产证据由相应版本
-runbook/acceptance 管理；[`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) 只提供维护者接手和结果分流入口。
+acceptance 管理；[`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) 只提供维护者接手和结果分流入口。
 
 固定字节顺序：
 
@@ -160,12 +140,9 @@ RC/canary 通过不能替代最终字节验收。ZIP 或 bootstrap 任一字节�
 
 ## 8. 回滚与基线提升
 
-`v0.3.1` 已完成第 7 节全部门槛并成为当前 production rollback 与 GitHub `Latest`。successor `main`
-继续作为源码维护权威；stable v0.3.0 是不可变 immediate previous fallback，beta.2 是更早的不可变
-fallback oracle，M3/M4 evidence refs 仍只证明迁移/等价性。
-
-未来版本仍只有在 immutable publication、重新下载、Fresh/Resume/doctor 和 rollback 验证全部通过后，
-才能在本文件中取代 v0.3.1。旧资产、tag、SHA 和 acceptance 记录不得重写。
+当前角色只在第 2 节维护。未来版本只有在 immutable publication、重新下载、Fresh/Resume/doctor 和
+rollback 验证全部通过后，才能更新该表并成为新的基线。旧资产、tag、SHA、acceptance 和迁移 evidence
+refs 不得重写；pointer-only promotion 也不能反向修改 sealed ZIP 输入。
 
 ## 9. 长期泛化边界
 

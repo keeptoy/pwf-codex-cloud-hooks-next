@@ -141,10 +141,10 @@ Release ZIP
   -> adapter 只调用已安装的 sibling owned/upstream runtime
 ```
 
-因此 v0.3.0 即使没有在 ZIP 中附带 patcher，也能正常安装和运行：它已经包含转换完成的
-`runtime/upstream/session-catchup.py`。缺陷只在于解压 v0.3.0 ZIP 后，随包提供的 importer 缺少直接
-依赖，无法独立完成维护自检。0.3.1 把 patcher 加入第 23 个 entry，修复的是 Release 工具自包含性，
-没有新增生产 runtime 或激活边。
+因此生产安装是否健康只取决于已校验的成品 runtime 与安装 contract；源码重建工具是否自包含是独立
+的 Release 维护边界，不能反向扩大 trusted execution graph。各版本对此边界的实际变化见
+[`CHANGELOG.md`](CHANGELOG.md)，精确 package 身份和资产见
+[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)。
 
 ## 4. Runtime 数据流
 
@@ -263,15 +263,16 @@ Installer 不负责修改 workspace planning，不接管第三方 policy，也�
 
 ## 11. Release 边界
 
-已发布 `v0.3.0` ZIP 由 22-entry machine allowlist 构建；它的 tag、ZIP、外部 bootstrap 与 SHA 均保持
-不可变。已发布 `v0.3.1` ZIP 由 23-entry machine allowlist 构建，新增的非 runtime entry 是 importer 必需的
-`patches/patch_planning_skill.py`，从而使解压后的 importer check 自包含。外部 bootstrap 下载并校验
-ZIP，因此绝不能进入它所校验的 ZIP。development bootstrap 使用 zero hash 并 fail closed；授权 seal
-只能在全部 ZIP 输入冻结、双构建一致后写入该 ZIP 的精确 SHA。完成本地 seal 仍不等于已发布或已接受。
+Release ZIP 的身份与内容由 machine contract 和 package identity 决定，不由文档中的手写 entry count
+决定。外部 bootstrap 下载并校验 ZIP，因此绝不能进入它所校验的 ZIP。development bootstrap 使用
+zero hash 并 fail closed；授权 seal 只能在全部 ZIP 输入冻结、双构建一致后写入该 ZIP 的精确 SHA。
+完成本地 seal 仍不等于已发布或已接受。
 
-v0.3.1 已从 exact source `9aa2148...` 发布，完成公开下载复核与 Cloud A～F，并晋级为当前 accepted
-production rollback 与 GitHub `Latest`。stable v0.3.0 保持不可变 immediate previous fallback；beta.2
-是更早的不可变 fallback oracle。候选源码/package/contract 身份仍不表示已发布。
+已发布 tag、ZIP、外部 bootstrap、URL、SHA 和 acceptance 均不可原位改写。候选源码、package、
+contract、文件名或本地构建结果都不能单独建立 Release。各版本实际变化只在
+[`CHANGELOG.md`](CHANGELOG.md) 摘要；已发布资产的精确身份与来源只在
+[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 索引；当前 lifecycle 与未来晋级只在
+[`ROADMAP.md`](ROADMAP.md) 维护。
 
 ## 12. 尚未实现
 

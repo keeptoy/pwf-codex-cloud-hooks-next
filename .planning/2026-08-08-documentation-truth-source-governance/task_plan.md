@@ -13,21 +13,23 @@
 维护者已明确采用 `0.3.2-dev` 文档治理身份路线，并允许在关键 gate 主动创建本地 Git commit 作为
 回滚点。D0/D1 探路与 R0 identity foundation 已完成；新 source/package/contract/bootstrap identity
 通过完整 Windows 回归、immutable v0.3.1/v0.3.0 oracle 和 deterministic ZIP 验证。D2 entry-point 与
-D3 implementation navigation 已完成并通过完整回归，当前进入 D4 lifecycle/provenance guards；授权
+D3 implementation navigation 与 D4 lifecycle/provenance guards 已完成并通过完整回归，下一 gate 为
+D5 handoff maintainer entrypoint；授权
 不包含 seal、publication、tag、asset、push、remote ref、Cloud 或 Product Phase 4 变更。
 
 ## Next Step
 
-实施 D4：清理 ROADMAP、BASELINE_PROVENANCE 与历史 runbook/acceptance 间的 current lifecycle/
-provenance 重复，增加只允许 ROADMAP 完整维护当前版本角色的 authority guard，并保持历史证据原义。
+实施 D5：将 `MAINTAINER_HANDOFF.md` 收口为新人最短接手路径、踩坑摘要与能力检测结果分流；可漂移
+事实和完整步骤只链接 D4 已稳定的 authority，不复制第二份 runbook。
 
 ## Current Phase
 
-D4 — Lifecycle, provenance and authority guards
+D5 — MAINTAINER_HANDOFF maintainer entrypoint
 
 ## Status
 
-**GO.** D0/D1/R0/D2/D3 已完成，`0.3.2-dev` development identity、文档入口与实现导航已建立。
+**GO.** D0/D1/R0/D2/D3/D4 已完成，`0.3.2-dev` development identity、文档入口、实现导航与
+change/lifecycle/provenance 权威分层已建立。
 D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相称验证后可主动 commit，前一 gate 未通过
 不得进入下一 gate。Release seal/publication、push/remote/Cloud 和 Product Phase 4 仍需独立授权。
 
@@ -40,7 +42,7 @@ D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相
 | 1 | R0 | `0.3.2-dev` package/contract、zero-hash bootstrap、identity tests | identity foundation |
 | 2 | D2 | README 文档地图、DESIGN foundation、ROADMAP/AGENTS 入口迁移 | entrypoint/design foundation |
 | 3 | D3 | ARCHITECTURE/DESIGN 的 why/how 分层与模块验证路由 | architecture/design split |
-| 4 | D4 | lifecycle/provenance 去重、必要历史标签与治理 guard | authority deduplication |
+| 4 | D4 | CHANGELOG、lifecycle/provenance 去重、必要历史标签与治理 guard | authority deduplication |
 | 5 | D5 | handoff 去事实化，保留新人路标、踩坑摘要与能力反馈 | maintainer entrypoint |
 | 6 | D6 | 全量回归、deterministic package/repository checks、计划闭环 | governance closure |
 
@@ -72,6 +74,7 @@ D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相
 | 系统为何如此设计、跨组件数据流、信任边界、失败语义 | `ARCHITECTURE.md` | README/DESIGN 只保留稳定摘要和链接 |
 | 仓库地图、模块职责/入口/依赖、变更影响与验证路由 | `DESIGN.md` | README 只保留入口链接；源码/contracts/tests 回答更细行为 |
 | 当前 programme、Product Phase、版本列车、Cloud/Release/rollback 状态 | `ROADMAP.md` | README 只说明该类状态去 ROADMAP；不复制具体版本角色 |
+| 已发布版本与 Unreleased 已合并变更 | `CHANGELOG.md` | 只写实际 delta 并链接 ROADMAP/provenance/acceptance，不写计划或证据表 |
 | 当前唯一 Next Step、授权、禁止事项、停止条件 | 活动 `task_plan.md` | ROADMAP/README 只链接，不复制逐 gate 状态 |
 | 当前研究结论与取舍 | 活动 `findings.md` | 稳定结论成熟后提升到对应权威文档并从 findings 链接 |
 | 当前实施、验证和错误证据 | 活动 `progress.md` | 宏观文档不复制流水账 |
@@ -146,12 +149,15 @@ D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相
 
 ### D4 — Lifecycle, provenance and authority guards
 
-- [ ] ROADMAP 只保留当前宏观状态与未来路线。
-- [ ] BASELINE_PROVENANCE 只保留来源链和不可变身份。
-- [ ] 历史 acceptance/runbook 保持时间语义，增加必要的“历史证据”标签而不改写原始事实。
-- [ ] 增加 authority guard：当前 lifecycle 只允许 ROADMAP 完整维护，历史文档/fixtures 白名单化；
-  handoff 不得保存可漂移的版本角色、hash、测试计数或完整 Release/rollback 步骤。
-- **Status:** next / authorized
+- [x] 新建 ZIP-excluded `CHANGELOG.md`，稳定版本只摘要实际变化，`Unreleased` 只记录已合并变化并链接
+  ROADMAP 的开发目标；不维护 Next Step、当前 rollback/Latest、hash、测试计数或计划中能力。
+- [x] ROADMAP 只保留当前宏观状态与未来路线。
+- [x] BASELINE_PROVENANCE 只保留来源链和不可变身份。
+- [x] 历史 acceptance/runbook 保持时间语义；复核确认现有标题、状态和 gate 语境足以标识历史证据，
+  因而保持零 diff，不为标签重写原始字节。
+- [x] 增加 authority guard：当前 lifecycle 只允许 ROADMAP 完整维护，CHANGELOG/provenance/宏观文档
+  不得复制当前版本角色，历史 acceptance/runbook/fixtures 明确白名单化；handoff 去事实化 guard 延至 D5。
+- **Status:** complete
 
 ### D5 — MAINTAINER_HANDOFF maintainer entrypoint
 
@@ -166,7 +172,7 @@ D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相
   必须 pristine、unknown drift 不可伪装 repair、当前 gate 只读活动 plan；每项都链接完整解释。
 - [ ] 验证 handoff 无 current version/hash/test-count/逐 gate 状态，无第二份 Release/rollback 流程，且
   所有链接有效。
-- **Status:** pending / authorized after D4 exit
+- **Status:** ready / authorized after D4 checkpoint
 
 ### D6 — Validation and closure
 
@@ -230,9 +236,13 @@ exact sealed v0.3.1 ZIP。维护者已在 2026-08-08 明确选择第 1 条：
 
 ### Batch D — Lifecycle/provenance deduplication and guards
 
-精确范围：`ROADMAP.md`、`BASELINE_PROVENANCE.md`、确有歧义的专项 runbook/acceptance、focused
-authority assertions 和直接依赖的 planning。先把 current lifecycle、不可变来源与历史证据稳定在
-各自 authority，并建立对 README/DESIGN/handoff 的重复事实 guard。
+精确范围：新 `CHANGELOG.md`、`README.md` 文档地图、`AGENTS.md` 最小 authority 同步、`ROADMAP.md`、
+`BASELINE_PROVENANCE.md`、确有
+歧义的专项 runbook/acceptance、focused authority/repository assertions 和直接依赖的 planning。先把
+版本 delta、current lifecycle、不可变来源与历史证据稳定在各自 authority，并建立对 README/ARCHITECTURE/
+DESIGN/CHANGELOG/provenance 的重复事实 guard。CHANGELOG tracked 但默认 ZIP-excluded；README 因新增入口
+发生字节变化时，
+继续使用已建立的 0.3.2-dev identity 并运行相称 package/full-suite 验证。
 
 ### Batch E — MAINTAINER_HANDOFF maintainer entrypoint
 
@@ -261,6 +271,7 @@ authority assertions 和直接依赖的 planning。先把 current lifecycle、�
 ## Stop Conditions
 
 - 同一事实仍有两个可独立编辑的“完整版本”，且无法决定权威归属。
+- CHANGELOG 把 ROADMAP 计划写成已完成变化，或复制 provenance hash/asset 证据表与当前 lifecycle 角色。
 - DESIGN 开始复刻 ARCHITECTURE 的设计理由/trusted graph，或承担 ROADMAP 当前 lifecycle。
 - MAINTAINER_HANDOFF 仍维护当前版本/hash/测试计数/逐 gate 状态或第二份完整 Release/rollback 流程。
 - MAINTAINER_HANDOFF 只剩链接清单，没有新人路径、踩坑价值或“检测信号 → 含义 → authority”反馈。
