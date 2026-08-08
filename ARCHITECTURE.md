@@ -7,6 +7,9 @@ owned copy 部署到 Codex Cloud system-managed Hooks，并负责 Host protocol�
 
 本仓库不是第二套 planning 方法，也不是通用 Skill 转换器。
 
+已经理解这些设计边界、只需要定位源码模块、依赖关系、改动影响或验证入口时，转到
+[`DESIGN.md`](DESIGN.md)；本文件继续只维护系统级理由、关系和不变量。
+
 ## 2. 为什么需要适配层
 
 上游 `planning-with-files v3.8.2` 已有本地 Codex Hook 集成，但本地模型通常依赖项目/用户级
@@ -100,6 +103,8 @@ $CODEX_HOME/hooks/planning-with-files/
 ```
 
 Managed policy 只认识 adapter。child runtimes 是已安装 adapter 的 sibling，不能独立注册为 handler。
+repository source、Release ZIP 与 installed layout 的逐层对应见
+[`DESIGN.md` 的“实现布局”](DESIGN.md#3-实现布局)。
 
 ### 3.1 源码重建与生产执行是两条路径
 
@@ -164,6 +169,9 @@ hookSpecificOutput.additionalContext
 
 Plan runtime runs first for both `SessionStart` and `UserPromptSubmit`. The adapter does not resolve planning files,
 does not read `task_plan.md`/`progress.md`, and contains no parallel plan-selection or injection algorithm.
+
+各模块的代码入口、直接依赖、变更影响和测试路由见
+[`DESIGN.md` 的“模块职责与依赖”](DESIGN.md#4-模块职责与依赖)。
 
 ## 5. Canonical plan contract
 

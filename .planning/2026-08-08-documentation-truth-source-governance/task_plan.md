@@ -12,24 +12,24 @@
 
 维护者已明确采用 `0.3.2-dev` 文档治理身份路线，并允许在关键 gate 主动创建本地 Git commit 作为
 回滚点。D0/D1 探路与 R0 identity foundation 已完成；新 source/package/contract/bootstrap identity
-通过完整 Windows 回归、immutable v0.3.1/v0.3.0 oracle 和 deterministic ZIP 验证。D2 entry-point and
-DESIGN foundation 已完成并通过完整回归，当前进入 D3 ARCHITECTURE/DESIGN separation；授权不包含
-seal、publication、tag、asset、push、remote ref、Cloud 或 Product Phase 4 变更。
+通过完整 Windows 回归、immutable v0.3.1/v0.3.0 oracle 和 deterministic ZIP 验证。D2 entry-point 与
+D3 implementation navigation 已完成并通过完整回归，当前进入 D4 lifecycle/provenance guards；授权
+不包含 seal、publication、tag、asset、push、remote ref、Cloud 或 Product Phase 4 变更。
 
 ## Next Step
 
-实施 D3：按 why/how 边界整理 ARCHITECTURE 与 DESIGN，把 repository/source/installed layout、模块入口、
-依赖、change-impact 与验证路由放入 DESIGN，同时避免复制函数/字段级实现正文或当前 lifecycle 状态。
+实施 D4：清理 ROADMAP、BASELINE_PROVENANCE 与历史 runbook/acceptance 间的 current lifecycle/
+provenance 重复，增加只允许 ROADMAP 完整维护当前版本角色的 authority guard，并保持历史证据原义。
 
 ## Current Phase
 
-D3 — ARCHITECTURE/DESIGN separation
+D4 — Lifecycle, provenance and authority guards
 
 ## Status
 
-**GO.** D0/D1/R0/D2 已完成，`0.3.2-dev` development identity 与文档入口已建立。D3–D6 在本计划
-冻结范围内按 gate 顺序实施；每一 gate 通过相称验证后可主动 commit，前一 gate 未通过不得进入下一
-gate。Release seal/publication、push/remote/Cloud 和 Product Phase 4 仍需独立授权。
+**GO.** D0/D1/R0/D2/D3 已完成，`0.3.2-dev` development identity、文档入口与实现导航已建立。
+D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相称验证后可主动 commit，前一 gate 未通过
+不得进入下一 gate。Release seal/publication、push/remote/Cloud 和 Product Phase 4 仍需独立授权。
 
 ## Estimated Implementation Rounds
 
@@ -137,12 +137,12 @@ gate。Release seal/publication、push/remote/Cloud 和 Product Phase 4 仍需�
 
 ### D3 — ARCHITECTURE/DESIGN separation
 
-- [ ] ARCHITECTURE 只回答设计原理、跨组件关系、trusted graph、失败语义和系统不变量。
-- [ ] DESIGN 回答 repository/source/installed layout，以及 installer、adapter、plan、catch-up、
+- [x] ARCHITECTURE 只回答设计原理、跨组件关系、trusted graph、失败语义和系统不变量。
+- [x] DESIGN 回答 repository/source/installed layout，以及 installer、adapter、plan、catch-up、
   importer/patcher、Release builder 的职责、入口、依赖、变更影响和验证路由。
-- [ ] 函数/字段级行为继续指向源码、machine contract 和最近边界测试，不在 DESIGN 复制实现正文。
-- [ ] 验证 ARCHITECTURE 与 DESIGN 不各自维护一份完整组件清单、调用链或当前 lifecycle 状态。
-- **Status:** next / authorized
+- [x] 函数/字段级行为继续指向源码、machine contract 和最近边界测试，不在 DESIGN 复制实现正文。
+- [x] 验证 ARCHITECTURE 与 DESIGN 不各自维护一份完整组件清单、调用链或当前 lifecycle 状态。
+- **Status:** complete
 
 ### D4 — Lifecycle, provenance and authority guards
 
@@ -151,7 +151,7 @@ gate。Release seal/publication、push/remote/Cloud 和 Product Phase 4 仍需�
 - [ ] 历史 acceptance/runbook 保持时间语义，增加必要的“历史证据”标签而不改写原始事实。
 - [ ] 增加 authority guard：当前 lifecycle 只允许 ROADMAP 完整维护，历史文档/fixtures 白名单化；
   handoff 不得保存可漂移的版本角色、hash、测试计数或完整 Release/rollback 步骤。
-- **Status:** pending / authorized after D3 exit
+- **Status:** next / authorized
 
 ### D5 — MAINTAINER_HANDOFF maintainer entrypoint
 

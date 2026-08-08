@@ -15,8 +15,10 @@
 - D1: complete — prior condition satisfied
 - Identity decision: complete — maintainer selected `0.3.2-dev`
 - R0: complete
-- D2: authorized / next gate
-- D3–D6: pending / sequentially authorized after predecessor exit
+- D2: complete
+- D3: complete
+- D4: authorized / next gate
+- D5–D6: pending / sequentially authorized after predecessor exit
 
 ## Validation record
 
@@ -54,6 +56,8 @@
 | Git Bash failed to create a Win32 signal pipe for three `bash -n` checks | 1 | Sandbox process limitation; controlled rerun parsed all three scripts successfully. |
 | D2 Bash syntax command used the conventional `C:` Git installation path, but this host installs Git on `D:` | 1 | Read-only discovery found `D:\Program Files\Git`; rerun uses that exact executable and does not change product files. |
 | First D2 one-off link check passed an empty root-document parent to `Join-Path`; PowerShell emitted non-terminating errors and still exited 0 | 1 | Result discarded. Rerun uses `ErrorActionPreference=Stop` and normalizes an empty parent to `.` before evaluating targets. |
+| D3 source audit passed the literal `tests/*.test.js` glob to Windows `rg`, which does not expand it | 1 | Partial test-list result discarded; rerun targets the `tests` directory with `-g '*.test.js'` while preserving the successful source symbol query separately. |
+| Combined D3 closure patch assumed the reboot table still followed the D2 completion section | 1 | Patch was rejected atomically with no partial edits; split closure updates by file and inspect the actual progress tail before retrying. |
 
 ## 2026-08-08 — Plan refinement after maintainer commit
 
@@ -197,8 +201,46 @@
 
 | Question | Answer |
 |---|---|
-| Where am I? | D0/D1/R0 complete; D2 entrypoint/DESIGN foundation is next |
-| Where am I going? | Five remaining sequential implementation rounds, one verified commit per gate |
+| Where am I? | D0/D1/R0/D2/D3 complete; D4 lifecycle/provenance guards are next |
+| Where am I going? | D4–D6, one verified local commit per gate |
 | What's the goal? | One truth source per question domain; other documents summarize and link |
-| What have I learned? | README governance crosses the sealed Release-input boundary; current mutable facts are duplicated across five macro docs |
-| What have I done? | Established a tested 0.3.2-dev identity without changing runtime/Host ABI/trusted graph or published bytes |
+| What have I learned? | ARCHITECTURE is already cohesive; D3 should add implementation navigation rather than dismantle it |
+| What have I done? | Added source/ZIP/installed module navigation without dismantling ARCHITECTURE or changing runtime/trust behavior |
+
+## 2026-08-08 — D3 implementation navigation started
+
+- `planning-with-files` catch-up 无未同步输出；起点工作树干净，HEAD 为 D2 checkpoint `124f408`，分支
+  相对 `origin/main` ahead 5。
+- 维护者确认 D3 不大规模拆分现有 ARCHITECTURE；本轮主任务是让不熟悉源码的人能从 DESIGN 快速定位
+  模块职责、依赖、变更影响和验证入口，ARCHITECTURE 只增加稳定路标。
+- 活动计划 D3 状态切换为 in progress；D4 lifecycle/provenance 内容不提前处理。
+- 完成源码符号、contract inventory 与测试名称审计，冻结 repository/Release/installed layout 和七条
+  模块验证路由；所有职责均来自实际依赖，不凭文件名推断。
+- 先增加 D3 focused governance assertion；failing-first 为 3 registered / 2 passed / 1 failed，首个失败
+  精确指向 ARCHITECTURE 尚无 DESIGN 路标。既有架构 contract 与 D2 文档地图断言继续通过。
+- 最小实现完成：ARCHITECTURE 未删除或迁移任何章节，只在总览、部署图、runtime 数据流处增加 DESIGN
+  路标；DESIGN 新增 layout 对照、七类模块卡、machine contract 路由、按变更目标定位和分层验证选择。
+- DESIGN 只链接最近边界测试与 README 命令 authority，不复制 schema 字段、预算/hash、测试计数或
+  lifecycle 状态；D4 的版本历史/lifecycle 清理保持未触碰。
+- Focused D3 rerun PASS：3 registered / 3 passed / 0 failed；新增断言同时保护 ARCHITECTURE 的 why/
+  trusted/failure 章节不被拆空，以及 DESIGN 的 layout/module/change/validation 路由完整性。
+- ARCHITECTURE/DESIGN 全部本地 Markdown target 与两个新增标题 anchor PASS；`git diff --check` PASS，
+  精确变更仍为两份目标文档、一个 focused test 和三份 planning。
+- Installer/runtime-bundle/Release-contract 精度复核后，DESIGN 已明确 installed inventory 与 repository/
+  ZIP contracts 的差异；没有把 Release ZIP 误写成 installed runtime 的压缩副本。
+- 最终 focused governance + repository boundary PASS：6 registered / 6 passed / 0 failed；两文档 LF、
+  Markdown fences、全部本地 targets、D3 anchors 和 `git diff --check` 均 PASS。
+- Full Windows suite PASS：82 registered / 70 passed / 0 failed / 12 honest POSIX/Linux SKIP；candidate ZIP、
+  published v0.3.1/v0.3.0 oracle、runtime/installer/trust seams 均保持绿色。
+
+## 2026-08-08 — D3 implementation navigation complete
+
+- ARCHITECTURE 仅增加 DESIGN 总入口、layout 和 module-routing 三处稳定路标；原有 why、部署图、runtime
+  data flow、contracts、trusted graph、失败语义和系统不变量完整保留。
+- DESIGN 已补齐 repository/ZIP/installed/policy/global-Skill layout、七类模块职责与依赖、machine
+  contract 路由、按变更目标定位和风险分层验证路由。
+- D3 没有修改 README、ROADMAP、provenance、handoff、runtime、contracts、package/Release identity 或
+  ZIP 输入；D4 lifecycle/provenance 内容未提前改写。
+- Focused 6/6、full Windows 70 pass / 0 fail / 12 SKIP、links/anchors/LF/fences/repository/diff checks PASS。
+- D3 exit PASS；活动计划已切换到 D4 authority deduplication。本轮已用单一
+  `docs: map implementation modules and validation` 本地 checkpoint 收口，未 push。

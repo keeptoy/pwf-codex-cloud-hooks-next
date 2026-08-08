@@ -247,6 +247,58 @@ tracked 文档，D5 会触碰历史/当前语义分界，D6 才能证明整体�
 - focused governance、完整 Windows suite、链接/锚点、LF、importer、Python/Node/Bash syntax、双构建和
   repository inventory 全部通过；D2 exit 成立，可进入 D3。
 
+## D3 boundary audit
+
+- ARCHITECTURE 的部署图与 runtime 数据流虽然包含文件名，但它们证明 trusted graph 和跨组件关系，
+  不是仓库维护清单；应原样保留。DESIGN 的仓库地图与后续模块路由回答“改哪里、影响谁、测什么”，
+  两者是 intentional overlap 而非重复 authority。
+- ARCHITECTURE 的 plan/catch-up contract、信任分层、失败语义、installer ownership 和 Release 安全原则
+  均应保留；D3 不把这些正文迁入 DESIGN。
+- DESIGN 应新增三类维护视图：repository/source/Release/installed layout 对照、模块 responsibility/
+  direct-dependency/consumer/change-impact 表、按变更意图选择入口与验证的 routing 表。
+- DESIGN 的验证列只链接到 tests 文件或 README 的完整命令区，不冻结测试数量、命令副本、schema 字段、
+  hash、版本角色或 lifecycle 状态。
+- ARCHITECTURE 只需在开头、部署图和 runtime 数据流附近增加指向 DESIGN 的稳定路标；版本历史与
+  lifecycle 重复属于 D4，本轮保持不动。
+- ROADMAP 已明确拥有 current programme/version/Release/rollback；DESIGN 现有 foundation 没有这些
+  mutable facts。D3 扩充时继续使用角色名和路径，不引入任何当前版本身份。
+- DESIGN 现有“实现层次”可直接演进为 layout 对照，其末尾“后续章节”占位应在 D3 删除，改成真实的
+  module/change routing；“继续阅读”保留为收尾导航。
+- 源码符号与测试名确认七条主维护路线：installer→`installer.test.js`；adapter/composition→
+  `hook-adapter`、`runtime-supervisor`、`activation`；plan→`owned-plan-runtime`；catch-up→`owned-runtime`；
+  importer/patcher→`import-runtime`、`skill-patch`；builder/contract→`release-package`、`contracts`；跨层
+  trust seam→`architecture-contracts`、`repository-boundary`。
+- `install.js` 同时读取 package、upstream manifest、runtime/contracts 并拥有 requirements/manifest/drift；
+  module card 应把它标为 install plane owner，而不是简单 CLI 文件。
+- `hook_adapter.py` 的边界集中在 Host payload、typed request/result validation、child supervision 与最终
+  context composition；plan/catch-up 选择算法分别留在 owned runtime，DESIGN 只说明此依赖方向。
+- Layout 对照必须区分：源码树含 importer/patcher/builder/docs/tests；Release ZIP 只含 release contract
+  allowlist；installed managed dir 只含 adapter、两个 owned runtime、四个 upstream runtime、运行所需
+  contracts 与 installed manifest；global Skill 是 pristine reference，四者不能混成一张目录表。
+- Contract routing 可按所有权分组：plan request/result 连接 adapter↔owned-plan；runtime request/result
+  连接 adapter↔owned-catchup；runtime bundle/compatibility overlay 连接 importer/patcher↔owned bundle；
+  release artifact 只连接 builder↔candidate ZIP。具体字段仍由 JSON contract 自己回答。
+- `owned-plan.py` 直接消费两个 upstream shell sibling；`owned-catchup.py` 动态加载 owned upstream
+  `session-catchup.py`；这两个依赖方向适合写入 DESIGN，但 timeout/budget/precedence 等语义继续只链接
+  ARCHITECTURE/contracts/tests。
+- Installer 精确 inventory 复核：installed managed dir 包含 adapter、两个 owned runtime、四个 upstream
+  runtime、两个 installed plan contracts、compatibility overlay、third-party notice 和 installed manifest；
+  runtime/catch-up schema 是 repository/ZIP contract，不作为 installed file 复制。DESIGN 应点明这个差异。
+- Release artifact contract 复核：ZIP 包含 installer/runtime、全部 machine contracts、importer/patcher/
+  builder 和 attribution，但排除 tests/docs/planning/bootstrap/DESIGN；因此 layout 表的“allowlist maintenance
+  inputs”表述准确，不能把 Release ZIP 简化成 installed runtime 的压缩副本。
+
+## D3 implementation result
+
+- ARCHITECTURE 的全部原有章节、部署图和 runtime data flow 均保留，只增加三个由 architecture → DESIGN
+  的单向路标；没有为了制造 why/how 分层而拆散已完整的系统说明。
+- DESIGN 现在可独立回答三类维护问题：代码/产物/安装布局如何对应；七个主要模块的入口、依赖、下游、
+  change-impact 与最近测试是什么；按具体变更目标应从哪里开始且哪些边界不可顺手扩大。
+- Machine contract 路由只说明 producer/consumer/复核方向，不复制字段；验证路由只选择证据类型并链接
+  README 完整命令，不冻结测试计数。DESIGN 未引入 current version/Latest/rollback/hash/逐 gate 状态。
+- Focused governance/repository boundary 6/6 与完整 Windows suite 70 pass / 0 fail / 12 honest SKIP 均
+  通过；links/anchors/LF/fences/diff check 通过，D3 exit 成立。
+
 ## R0 identity audit
 
 - 当前 `package.json.version` 与 `contracts/release-artifact-v1.json.package_version` 均为 sealed

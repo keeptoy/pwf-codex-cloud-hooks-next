@@ -104,3 +104,29 @@ test("README owns the document map while DESIGN owns the repository implementati
   assert.doesNotMatch(ownedPlan, /Inactive managed plan-context runtime|Phase 3 Round 4/);
   assert.doesNotMatch(adapter, /inactive exact-v1 owned-plan request/);
 });
+
+test("ARCHITECTURE preserves system reasoning while DESIGN routes implementation changes", () => {
+  const architecture = readText("ARCHITECTURE.md");
+  const design = readText("DESIGN.md");
+
+  for (const architectureSection of [
+    "## 2. 为什么需要适配层", "## 3. 部署图", "## 4. Runtime 数据流",
+    "## 7. 信任分层", "## 8. 失败语义",
+  ]) assert.match(architecture, new RegExp(architectureSection.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(architecture, /\[.*DESIGN.*\]\(DESIGN\.md\)/);
+
+  for (const designSection of [
+    "## 3. 实现布局", "## 4. 模块职责与依赖", "## 5. 按变更目标定位",
+    "## 6. 验证路由",
+  ]) assert.match(design, new RegExp(designSection.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+
+  for (const target of [
+    "contracts/runtime-bundle-v1.json", "contracts/release-artifact-v1.json",
+    "tests/installer.test.js", "tests/hook-adapter.test.js", "tests/owned-plan-runtime.test.js",
+    "tests/owned-runtime.test.js", "tests/import-runtime.test.js", "tests/release-package.test.js",
+  ]) assert.match(design, new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+
+  assert.match(design, /repository source.*Release ZIP.*installed managed runtime/is);
+  assert.match(design, /入口.*直接依赖.*影响.*验证/s);
+  assert.doesNotMatch(design, /ADAPTER_DEADLINE_SECONDS|20,000|50 \/ 20|当前生产回滚|GitHub `Latest`/);
+});
