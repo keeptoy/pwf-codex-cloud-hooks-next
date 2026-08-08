@@ -125,7 +125,7 @@ managed hash，因此在不修改 reproduction contract 前保留。它不是 gl
 Cloud 平台观测属于带日期的 fixture/acceptance，不在本文件复制成第二份平台合同：
 
 - 当前已验证的 setup、agent 与 Hook 生命周期语义见
-  [`ARCHITECTURE.md` 的 Cloud 生命周期](ARCHITECTURE.md#21-cloud-生命周期与-codex_home)；
+  [`ARCHITECTURE.md` 的 Cloud 生命周期](ARCHITECTURE.md#cloud-lifecycle)；
 - machine-shaped 观测见 `tests/fixtures/cloud/hook-observations-v1.json` 与
   `tests/fixtures/cloud/session-catchup-cloud-wrapper.jsonl`；
 - 迁移 Cloud 等价性见 M3/M4 专项文档；

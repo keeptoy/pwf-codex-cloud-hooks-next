@@ -108,6 +108,8 @@ requirements 或第三方管理员变更会 fail closed，不会被静默吸收�
 3. blockers 或 unknown drift 必须人工定位；
 4. 修复后重新 doctor，再做 Fresh/Resume 黑盒验证。
 
+<a name="local-development"></a>
+
 ## 本地开发
 
 恢复上下文时按以下顺序阅读：
@@ -208,6 +210,8 @@ acceptance 或 rollback 晋级。已发布版本的精确字节只从 immutable 
 - 任何已发布版本的 tag、资产字节、URL、SHA-256 和 acceptance 证据都不可原位改写；
 - 封板顺序固定：冻结 ZIP 输入 → 构建 ZIP/hash → 写入 bootstrap → 计算 bootstrap hash →
   发布 → 重新下载双资产复验。
+
+<a name="documentation-map"></a>
 
 ## 开发状态与文档地图
 

@@ -391,3 +391,16 @@ tracked 文档，D5 会触碰历史/当前语义分界，D6 才能证明整体�
   syntax gate 应使用显式 binary + 直接参数（例如 `& $gitBashBinary -n <file>`），避免 launcher 和复杂
   `-lc` 的 PowerShell/Win32 quoting 歧义；受限沙箱若报 Win32 signal-pipe error 5，应按 platform
   limitation 受控重跑。
+
+## D4.1 cross-document anchor finding
+
+- `ARCHITECTURE.md#21-cloud-生命周期与-codex_home` 按当前 GitHub heading slug 规则应可用，但依赖章节
+  编号、中文标题、inline code 处理与大小写，任何标题整理都会使 fragment 漂移。
+- D4 的通用 local-link script 在 `#` 处分割并只检查目标文件，因而“links PASS”没有证明 fragment
+  存在；现有 focused tests 也只保护章节/文件链接，没有验证这六个 fragment。这是验证声明过宽，需在
+  D5 前修正。
+- 当前根级权威文档共有六条跨文档 fragment，指向五个章节。采用英文显式 `name` anchor，并让通用
+  guard 解析所有根级 authority docs；比只修 Cloud 一条或复制 GitHub slug 算法更稳定、易验证。
+- D4.1 已按该策略完成：`documentation-map`、`local-development`、`cloud-lifecycle`、
+  `implementation-layout`、`module-responsibilities` 成为稳定链接合同；可见标题继续保留原编号和中文，
+  二者不再耦合。AGENTS 记录规则，focused test 负责 machine enforcement。

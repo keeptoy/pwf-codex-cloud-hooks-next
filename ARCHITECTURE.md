@@ -24,6 +24,8 @@ owned copy 部署到 Codex Cloud system-managed Hooks，并负责 Host protocol�
 这些是带日期的平台事实，不是永久常量。adapter 优先使用显式 Host input 和安装位置推导，并保留
 环境变量缺失时的受控兼容行为。
 
+<a name="cloud-lifecycle"></a>
+
 ### 2.1 Cloud 生命周期与 `CODEX_HOME`
 
 OpenAI 的公开 Cloud environment 文档给出的顺序是：创建容器并 checkout 选定仓库版本，运行 setup
@@ -104,7 +106,7 @@ $CODEX_HOME/hooks/planning-with-files/
 
 Managed policy 只认识 adapter。child runtimes 是已安装 adapter 的 sibling，不能独立注册为 handler。
 repository source、Release ZIP 与 installed layout 的逐层对应见
-[`DESIGN.md` 的“实现布局”](DESIGN.md#3-实现布局)。
+[`DESIGN.md` 的“实现布局”](DESIGN.md#implementation-layout)。
 
 ### 3.1 源码重建与生产执行是两条路径
 
@@ -171,7 +173,7 @@ Plan runtime runs first for both `SessionStart` and `UserPromptSubmit`. The adap
 does not read `task_plan.md`/`progress.md`, and contains no parallel plan-selection or injection algorithm.
 
 各模块的代码入口、直接依赖、变更影响和测试路由见
-[`DESIGN.md` 的“模块职责与依赖”](DESIGN.md#4-模块职责与依赖)。
+[`DESIGN.md` 的“模块职责与依赖”](DESIGN.md#module-responsibilities)。
 
 ## 5. Canonical plan contract
 

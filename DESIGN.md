@@ -38,6 +38,8 @@ DESIGN 只提供实现层导航。函数、schema 字段、hash、allowlist 和�
 | [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) | baseline、上游 archive、overlay 与不可变资产来源链 |
 | [`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) | 新维护者最短接手路径、踩坑摘要与检测结果分流 |
 
+<a name="implementation-layout"></a>
+
 ## 3. 实现布局
 
 同一能力会依次出现在 **repository source → Release ZIP → installed managed runtime**，但三者不是
@@ -62,6 +64,8 @@ pinned upstream + provenance
 
 源码重建发生在 repository source 或自包含 Release ZIP；生产执行只发生在 installer 已校验的 managed
 runtime。完整 trusted graph 及为什么必须分开见 [`ARCHITECTURE.md`](ARCHITECTURE.md)。
+
+<a name="module-responsibilities"></a>
 
 ## 4. 模块职责与依赖
 
@@ -105,7 +109,7 @@ contract 为准。
 
 ## 6. 验证路由
 
-完整可复制命令只在 [`README.md` 的“本地开发”](README.md#本地开发) 维护；这里回答应选择哪一类证据，
+完整可复制命令只在 [`README.md` 的“本地开发”](README.md#local-development) 维护；这里回答应选择哪一类证据，
 不冻结测试数量。
 
 1. **单模块修改：** 先跑上表对应的最近边界测试，再跑直接 producer/consumer 的 seam test。

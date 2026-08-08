@@ -17,7 +17,7 @@
 
 ## 文档权威与智能体职责
 
-面向人的完整“问题 → 唯一权威”表只在 [`README.md` 的“开发状态与文档地图”](README.md#开发状态与文档地图)
+面向人的完整“问题 → 唯一权威”表只在 [`README.md` 的“开发状态与文档地图”](README.md#documentation-map)
 维护，本文件不复制第二份。智能体额外遵守以下执行入口：
 
 | 智能体必须确认的事项 | 读取位置 |
@@ -37,6 +37,8 @@
 - AGENTS 只维护智能体读取顺序、冲突规则、trust/Release 安全边界和强制验证，不维护当前 lifecycle。
 - 已发生的版本 delta 只写 CHANGELOG；programme/lifecycle 只写 ROADMAP；不可变身份只写 provenance/
   acceptance。
+- 跨文档深链接必须指向目标文件中的稳定英文显式命名锚点；不得把标题编号、中文文字或自动 heading
+  slug 当作长期链接合同。
 - 当前 Next Step/禁止/停止条件只写 task plan；实施、测试和错误写 progress，研究取舍写 findings。
 - 历史 acceptance/runbook 保留时间语义，不用当前状态批量改写；不要在多个宏观文档复制流水账。
 

@@ -9,6 +9,32 @@ const root = path.resolve(__dirname, "..");
 const readJson = relative => JSON.parse(fs.readFileSync(path.join(root, relative), "utf8"));
 const readText = relative => fs.readFileSync(path.join(root, relative), "utf8");
 
+test("cross-document fragments use stable explicit anchors", () => {
+  const authorityDocs = [
+    "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md",
+    "DESIGN.md", "README.md", "ROADMAP.md",
+  ];
+  const discovered = [];
+
+  for (const source of authorityDocs) {
+    const sourceText = readText(source);
+    const linkPattern = /\]\(([^)#]+\.md)#([^)]+)\)/g;
+    for (const match of sourceText.matchAll(linkPattern)) {
+      const [, relativeTarget, fragment] = match;
+      const targetPath = path.resolve(root, path.dirname(source), relativeTarget);
+      assert.equal(fs.existsSync(targetPath), true, `${source}: missing target ${relativeTarget}`);
+      assert.match(fragment, /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/, `${source}: unstable fragment #${fragment}`);
+      const targetText = fs.readFileSync(targetPath, "utf8");
+      const escaped = fragment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const explicitAnchor = new RegExp(`<a\\s+(?:name|id)=["']${escaped}["']\\s*><\\/a>`, "i");
+      assert.match(targetText, explicitAnchor, `${source}: target lacks explicit anchor #${fragment}`);
+      discovered.push(`${source}->${path.basename(relativeTarget)}#${fragment}`);
+    }
+  }
+
+  assert.equal(discovered.length, 6, `unexpected root authority fragment inventory: ${discovered.join(", ")}`);
+});
+
 test("canonical plan-context architecture is exact, plan-first, and adapter-thin", () => {
   const request = readJson("contracts/adapter-plan-context-request-v1.schema.json");
   const result = readJson("contracts/plan-context-result-v1.schema.json");

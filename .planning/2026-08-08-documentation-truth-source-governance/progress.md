@@ -313,3 +313,35 @@
   PATH-only SKIP 由本节纠正：当时只是 PowerShell PATH 未解析到 Bash，并非 binary 不存在。
 - 持久化边界：本机路径只进入活动 findings/progress，不写入 README/AGENTS 或产品 contract；D5 状态
   保持 ready，未修改 production、bootstrap 字节、历史证据或 Release/Cloud 状态。
+
+## 2026-08-09 — D4.1 stable cross-document anchors started
+
+- 维护者确认在 D5 前修正 D4 fragment 漂移风险；起点工作树干净，HEAD 为 local Bash discovery
+  checkpoint `7188a98`，分支相对 `origin/main` ahead 8。
+- 复核确认现有六条跨文档 fragment 指向五个目标章节；当前 Cloud slug 大概率有效，但 D4 link checker
+  只验证文件存在，未验证 fragment。D4.1 状态切换为 in progress，D5 暂不开始。
+- 冻结实现：英文显式 named anchors + 通用 root-authority fragment guard；README 是 ZIP 输入，因此完成
+  focused/static 后仍运行 full suite 和双 deterministic ZIP，不改 runtime/ABI/trusted graph/Release 状态。
+- D4.1 failing-first evidence: architecture governance 5 tests / 4 pass / 1 fail；唯一失败为
+  `AGENTS.md: unstable fragment #开发状态与文档地图`，证明新 guard 在文档改动前能拒绝 generated-heading
+  fragment，既有 architecture/change-authority assertions 全部保持绿色。
+- 最小实现完成：README `documentation-map`/`local-development`、ARCHITECTURE `cloud-lifecycle`、DESIGN
+  `implementation-layout`/`module-responsibilities` 五个英文 named anchors 已建立，六条跨文档链接全部迁移；
+  标题文字和编号未改。
+- Focused D4.1 PASS: architecture + repository-boundary 8/8；通用 guard 扫描七份 root authority docs，
+  精确发现六条 fragment，并逐条验证 stable ASCII name 与目标文件显式 anchor。
+- Static PASS: 六条 fragment 全部为新英文 names，旧 generated slugs 零残留；9 份本轮 Markdown 的
+  UTF-8 no-BOM、LF、final newline、fence balance、`git diff --check` 通过，历史 `docs/` 零 diff。
+- Full Windows suite PASS: 84 tests / 72 pass / 12 honest POSIX skips / 0 fail；新增 anchor guard、当前
+  0.3.2-dev package 与 published v0.3.1/v0.3.0 immutable oracle 全部绿色。
+- Importer/static PASS；三份 production Python compile 与 `node --check install.js` PASS。显式
+  `D:\Program Files\Git\bin\bash.exe -n` 对三个 bootstrap 全部 PASS。
+- Package PASS: 两次独立 build/check 均为 23 entries / 82,554 bytes / SHA-256 `87aaccd6...f6bb2`，
+  字节一致且临时文件已清理；只作 0.3.2-dev 开发证据，不构成 seal 或 Release。
+- D4.1 exit PASS: 五个 stable anchors、六条迁移链接、通用 fragment guard 与 AGENTS 规则已建立；旧
+  generated fragments 零残留，runtime/ABI/trusted graph/历史 evidence 零变化。活动 Next Step 恢复为 D5。
+- Final pre-commit audit PASS: focused 8/8；9 份 changed Markdown 的 UTF-8/LF/final newline/fences、
+  `git diff --check` 与历史 `docs/` 零 diff 均通过；精确变更为六份根级文档、一个 focused test 和三份
+  planning，没有 runtime/contract/bootstrap 字节变化。
+- D4.1 已用 `docs: stabilize cross-document anchors` 本地 checkpoint 收口；未 push、tag、seal、发布或
+  修改 Cloud。D5 maintainer entrypoint 重新成为当前 Next Step。

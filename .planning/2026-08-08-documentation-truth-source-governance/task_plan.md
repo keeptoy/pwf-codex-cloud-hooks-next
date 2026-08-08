@@ -13,14 +13,14 @@
 维护者已明确采用 `0.3.2-dev` 文档治理身份路线，并允许在关键 gate 主动创建本地 Git commit 作为
 回滚点。D0/D1 探路与 R0 identity foundation 已完成；新 source/package/contract/bootstrap identity
 通过完整 Windows 回归、immutable v0.3.1/v0.3.0 oracle 和 deterministic ZIP 验证。D2 entry-point 与
-D3 implementation navigation 与 D4 lifecycle/provenance guards 已完成并通过完整回归，下一 gate 为
-D5 handoff maintainer entrypoint；授权
+D3 implementation navigation、D4 lifecycle/provenance guards 与 D4.1 stable-anchor correction 已完成并
+通过完整回归；下一 gate 为 D5 handoff maintainer entrypoint。授权
 不包含 seal、publication、tag、asset、push、remote ref、Cloud 或 Product Phase 4 变更。
 
 ## Next Step
 
 实施 D5：将 `MAINTAINER_HANDOFF.md` 收口为新人最短接手路径、踩坑摘要与能力检测结果分流；可漂移
-事实和完整步骤只链接 D4 已稳定的 authority，不复制第二份 runbook。
+事实和完整步骤只链接 D4/D4.1 已稳定的 authority，不复制第二份 runbook。
 
 ## Current Phase
 
@@ -28,8 +28,8 @@ D5 — MAINTAINER_HANDOFF maintainer entrypoint
 
 ## Status
 
-**GO.** D0/D1/R0/D2/D3/D4 已完成，`0.3.2-dev` development identity、文档入口、实现导航与
-change/lifecycle/provenance 权威分层已建立。
+**GO.** D0/D1/R0/D2/D3/D4/D4.1 已完成，`0.3.2-dev` development identity、文档入口、实现导航、
+change/lifecycle/provenance 权威分层与 stable fragment guard 已建立。
 D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相称验证后可主动 commit，前一 gate 未通过
 不得进入下一 gate。Release seal/publication、push/remote/Cloud 和 Product Phase 4 仍需独立授权。
 
@@ -159,6 +159,16 @@ D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相
   不得复制当前版本角色，历史 acceptance/runbook/fixtures 明确白名单化；handoff 去事实化 guard 延至 D5。
 - **Status:** complete
 
+### D4.1 — Stable cross-document anchor correction
+
+- [x] 将现有六条根级跨文档 fragment 迁移到五个英文显式命名锚点；标题编号、中文和 inline code 不再
+  构成外部链接合同。
+- [x] 增加通用 guard：扫描根级权威 Markdown 的本地跨文档 fragment，目标文件必须存在对应显式
+  `name`/`id` anchor；新增 generated-heading fragment 必须失败。
+- [x] 验证 focused governance、全部本地 targets/fragments、UTF-8/LF/fences、完整 suite 与双
+  deterministic ZIP；README 仍使用 `0.3.2-dev`，不 seal 或发布。
+- **Status:** complete
+
 ### D5 — MAINTAINER_HANDOFF maintainer entrypoint
 
 - [ ] 建立 `MAINTAINER_HANDOFF.md` 逐节迁移矩阵：事实/完整步骤迁入明确 authority；有价值的接手路标、
@@ -172,7 +182,7 @@ D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相
   必须 pristine、unknown drift 不可伪装 repair、当前 gate 只读活动 plan；每项都链接完整解释。
 - [ ] 验证 handoff 无 current version/hash/test-count/逐 gate 状态，无第二份 Release/rollback 流程，且
   所有链接有效。
-- **Status:** ready / authorized after D4 checkpoint
+- **Status:** ready / authorized after D4.1 exit
 
 ### D6 — Validation and closure
 

@@ -8,7 +8,7 @@
 ## 1. 文档分层与活动 planning
 
 面向所有读者的“问题 → 唯一权威”导航见
-[`README.md` 的“开发状态与文档地图”](README.md#开发状态与文档地图)。本文件只回答 programme 将去哪里、
+[`README.md` 的“开发状态与文档地图”](README.md#documentation-map)。本文件只回答 programme 将去哪里、
 当前版本角色是什么，以及 Phase/版本列车要证明什么；不维护逐次实现流水账或证据表。
 
 ROADMAP 与活动 planning 互补：ROADMAP 管宏观路线和 lifecycle，`.planning/.active_plan` 指向的活动
