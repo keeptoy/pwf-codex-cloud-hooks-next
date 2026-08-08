@@ -204,3 +204,39 @@ tracked 文档，D5 会触碰历史/当前语义分界，D6 才能证明整体�
 4. handoff 在 DESIGN 和其他 authority 具备承接位置后逐节拆解，最后更新入链并删除，禁止先删后补。
 5. 历史 acceptance 最后处理且默认不改；只有读者可能误认“当前状态”时才增加标签/入口。
 6. 重复事实 guard 只针对当前宏观文档，必须显式排除 immutable acceptance、历史 planning 和 fixtures。
+
+## R0 identity audit
+
+- 当前 `package.json.version` 与 `contracts/release-artifact-v1.json.package_version` 均为 sealed
+  `0.3.1`；Release allowlist 仍是 23 entries，包含 README，因此 D2 前必须先建立新开发身份。
+- `init-cloud-sandbox-v0.3.1.bash` 默认绑定 `v0.3.1` 和 sealed ZIP SHA `f097b040...31f9`；该文件必须
+  保持字节不变。R0 应从其逻辑复制新建 `init-cloud-sandbox-v0.3.2.bash`，只改变新身份默认值并把
+  HOOKS SHA 置为 64-zero，从而在未 seal 状态 fail closed。
+- 当前 `tests/release-package.test.js` 把工作树的 deterministic ZIP 直接断言为 sealed v0.3.1 hash；R0
+  必须把 current-tree assertions 改为 0.3.2 development identity/双构建一致/zero-hash，同时新增或保留
+  从 immutable v0.3.1 source oracle 重建 exact ZIP 和 bootstrap SHA 的历史断言。
+- `tests/contracts.test.js` 与 `tests/repository-boundary.test.js` 也把 current artifact 外部资产固定为
+  v0.3.1；它们应切换到 v0.3.2 development bootstrap，并同时继续断言 v0.3.0/v0.3.1 bootstrap 不进入
+  current ZIP。
+- R0 不增加 ZIP entry；新 bootstrap 与既有 bootstrap 一样保持 ZIP-external。它只增加一个 tracked
+  root path，因此 repository-boundary 精确 inventory 必须同步。
+- v0.3.1 历史实现最初使用 current-tree candidate tests，seal 后再把 bootstrap 的 zero hash 写为精确
+  hash；本轮应保留这个“两态 bootstrap”模型，但不能继续让 current main 的 ZIP 与 sealed v0.3.1
+  hash相等。历史提交 `9aa2148`/tag 可作为 v0.3.1 immutable oracle。
+- `tests/skill-patch.test.js` 当前所有 bootstrap 行为测试都指向 sealed v0.3.1。R0 应保留至少一个
+  v0.3.1 sealed identity/override test，同时把共享行为和默认 zero-hash gate 转到新 v0.3.2 development
+  bootstrap；这样旧资产不可变与新 candidate fail-closed 两者都有覆盖。
+- `tests/architecture-contracts.test.js` 的 README v0.3.1/tag-time 断言应留到 D2 与 README 同批迁移；
+  R0 不提前修改 README 或该文档治理断言。
+- v0.3.1 开发阶段的既有模式确认：package/contract 使用目标 `0.3.1`，bootstrap 默认 `v0.3.1` +
+  64-zero；本计划已明确选择更诚实的 source identity `0.3.2-dev`，而新 bootstrap 的未来 Release 路径
+  仍应默认 `v0.3.2` + 64-zero。未来若获批 seal，必须先把 package/contract 从 `0.3.2-dev` 冻结为
+  `0.3.2` 并重新构建，不能把 dev ZIP 的观察 hash直接写入 bootstrap。
+- immutable v0.3.1 oracle 已完整确定：tag/source
+  `9aa2148886e499f9f45594f7ae4f7681f1045de2`，ZIP SHA
+  `f097b04015b1a3847ca5a24b9236f882c5a008b22033793b5661e282c39131f9`，bootstrap SHA
+  `ce31a32002aea46bbf3f9baf9a0e93451d24c3b3653952e425d1e1ff6960a5e8`。R0 可从该 source 重建 ZIP，
+  并核对 tag 中 bootstrap/current frozen v0.3.1 bootstrap 字节与 SHA。
+- `upstream-manifest.json.managed_runtime.contracts.release_artifact.sha256` 也绑定当前
+  `contracts/release-artifact-v1.json`。R0 改变 package/external-asset identity 后必须同步该 machine hash；
+  这不是 runtime graph 变化，而是既有完整性边的预期更新。

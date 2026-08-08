@@ -18,7 +18,9 @@ const betaBootstrapSha256 = "d572b77d920b34c34c7912ba364376ae3668216f00ce350251b
 const stableCommit = "1454c9224c83d11c073b05baf6e536a11c3bb0e5";
 const stableZipSha256 = "f245a554210c7f8d07eebbb775faa7b1482fea5d363ee6fa7578c9bbd98ad9af";
 const stableBootstrapSha256 = "ab334f0367d948fa29a2bdd37bff0c220929aeb320fdf59dbacbd5a4021b39c0";
-const sealedCandidateZipSha256 = "f097b04015b1a3847ca5a24b9236f882c5a008b22033793b5661e282c39131f9";
+const release031Commit = "9aa2148886e499f9f45594f7ae4f7681f1045de2";
+const release031ZipSha256 = "f097b04015b1a3847ca5a24b9236f882c5a008b22033793b5661e282c39131f9";
+const release031BootstrapSha256 = "ce31a32002aea46bbf3f9baf9a0e93451d24c3b3653952e425d1e1ff6960a5e8";
 const zeroSha256 = "0".repeat(64);
 
 function run(command, archive, contractPath = contract, builderPath = builder, cwd = root) {
@@ -51,7 +53,7 @@ function extractZip(archive, destination) {
   assert.equal(result.status, 0, result.stderr);
 }
 
-test("0.3.1 sealed candidate ZIP is exact, self-contained, and keeps its bootstrap external", () => {
+test("0.3.2-dev candidate ZIP is deterministic, self-contained, and keeps its bootstrap external", () => {
   const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-release-candidate-"));
   const first = path.join(workspace, "first.zip"), second = path.join(workspace, "second.zip");
   try {
@@ -61,8 +63,8 @@ test("0.3.1 sealed candidate ZIP is exact, self-contained, and keeps its bootstr
     const secondResult = JSON.parse(result.stdout);
     assert.equal(sha256(first), sha256(second));
     assert.equal(firstResult.sha256, secondResult.sha256);
-    assert.equal(firstResult.sha256, sealedCandidateZipSha256);
     assert.notEqual(firstResult.sha256, stableZipSha256);
+    assert.notEqual(firstResult.sha256, release031ZipSha256);
     assert.equal(firstResult.entries, 23);
     assert.ok(firstResult.size > 0);
     result = run("check", first); assert.equal(result.status, 0, result.stderr);
@@ -70,14 +72,14 @@ test("0.3.1 sealed candidate ZIP is exact, self-contained, and keeps its bootstr
 
     const artifact = JSON.parse(fs.readFileSync(contract, "utf8"));
     const packageMetadata = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
-    assert.equal(packageMetadata.version, "0.3.1");
+    assert.equal(packageMetadata.version, "0.3.2-dev");
     assert.equal(artifact.package_name, packageMetadata.name);
     assert.equal(artifact.package_version, packageMetadata.version);
     assert.equal(artifact.entries.some(entry => entry.path === "tools/build_release.py"), true);
     assert.equal(artifact.entries.some(entry => entry.path === "tools/import_upstream_runtime.py"), true);
     assert.equal(artifact.entries.some(entry => entry.path === "patches/patch_planning_skill.py"), true);
     assert.equal(artifact.entries.some(entry => entry.path.startsWith("init-cloud-sandbox-")), false);
-    assert.deepEqual(artifact.external_release_assets.map(entry => entry.path), ["init-cloud-sandbox-v0.3.1.bash"]);
+    assert.deepEqual(artifact.external_release_assets.map(entry => entry.path), ["init-cloud-sandbox-v0.3.2.bash"]);
     assert.deepEqual(artifact.checksum_workflow, [
       "freeze all required entries",
       "import and verify allowlisted upstream files",
@@ -88,11 +90,10 @@ test("0.3.1 sealed candidate ZIP is exact, self-contained, and keeps its bootstr
       "publish both immutable assets",
       "download both published assets and verify their SHA-256 values",
     ]);
-    const bootstrap = fs.readFileSync(path.join(root, "init-cloud-sandbox-v0.3.1.bash"), "utf8");
-    assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.1\}"/);
+    const bootstrap = fs.readFileSync(path.join(root, "init-cloud-sandbox-v0.3.2.bash"), "utf8");
+    assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.2\}"/);
     assert.match(bootstrap, /keeptoy\/pwf-codex-cloud-hooks-next\/releases\/download/);
-    assert.match(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${sealedCandidateZipSha256}\\}"`));
-    assert.doesNotMatch(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${zeroSha256}\\}"`));
+    assert.match(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${zeroSha256}\\}"`));
 
     const extracted = path.join(workspace, "extracted");
     extractZip(first, extracted);
@@ -119,6 +120,52 @@ test("0.3.1 sealed candidate ZIP is exact, self-contained, and keeps its bootstr
     }));
     assert.deepEqual([...eolByPath.keys()].sort(), [...releasePaths].sort());
     for (const releasePath of releasePaths) assert.equal(eolByPath.get(releasePath), "lf", releasePath);
+  } finally {
+    fs.rmSync(workspace, { recursive: true, force: true });
+  }
+});
+
+test("published v0.3.1 source/tag oracle and external bootstrap retain their immutable Release identity", () => {
+  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-release-v031-"));
+  try {
+    const tagResult = spawnSync("git", ["rev-parse", "--verify", "v0.3.1^{commit}"], {
+      cwd: root,
+      encoding: "utf8",
+    });
+    if (tagResult.status === 0) assert.equal(tagResult.stdout.trim(), release031Commit);
+
+    let result = spawnSync("git", ["cat-file", "-e", `${release031Commit}^{commit}`], {
+      cwd: root,
+      encoding: "utf8",
+    });
+    assert.equal(result.status, 0, result.stderr);
+
+    const sourceArchive = path.join(workspace, "v0.3.1-source.zip");
+    result = spawnSync("git", ["archive", "--format=zip", `--output=${sourceArchive}`, release031Commit], {
+      cwd: root,
+      encoding: "utf8",
+    });
+    assert.equal(result.status, 0, result.stderr);
+    const releaseRoot = path.join(workspace, "source");
+    extractZip(sourceArchive, releaseRoot);
+    const releaseArtifact = JSON.parse(fs.readFileSync(path.join(releaseRoot, "contracts", "release-artifact-v1.json"), "utf8"));
+    const releasePackage = JSON.parse(fs.readFileSync(path.join(releaseRoot, "package.json"), "utf8"));
+    assert.equal(releasePackage.version, "0.3.1");
+    assert.equal(releaseArtifact.entries.length, 23);
+    assert.deepEqual(releaseArtifact.external_release_assets.map(entry => entry.path), ["init-cloud-sandbox-v0.3.1.bash"]);
+
+    const releaseZip = path.join(workspace, "pwf-codex-cloud-hooks-v0.3.1.zip");
+    result = run(
+      "build",
+      releaseZip,
+      path.join(releaseRoot, "contracts", "release-artifact-v1.json"),
+      path.join(releaseRoot, "tools", "build_release.py"),
+      releaseRoot,
+    );
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(sha256(releaseZip), release031ZipSha256);
+    assert.equal(sha256(path.join(releaseRoot, "init-cloud-sandbox-v0.3.1.bash")), release031BootstrapSha256);
+    assert.equal(sha256(path.join(root, "init-cloud-sandbox-v0.3.1.bash")), release031BootstrapSha256);
   } finally {
     fs.rmSync(workspace, { recursive: true, force: true });
   }

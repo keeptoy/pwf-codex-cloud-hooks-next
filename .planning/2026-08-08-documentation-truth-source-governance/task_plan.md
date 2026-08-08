@@ -10,22 +10,23 @@
 ## Current Gate
 
 维护者已明确采用 `0.3.2-dev` 文档治理身份路线，并允许在关键 gate 主动创建本地 Git commit 作为
-回滚点。D0/D1 探路已经完成：既有修订得到保护，文档职责、重复事实、authority matrix、摘要/引用
-规则、迁移批次、Release 边界与验证门槛已经冻结。当前进入 R0 source/Release identity foundation；
-授权不包含 seal、publication、tag、asset、push、remote ref、Cloud 或 Product Phase 4 变更。
+回滚点。D0/D1 探路与 R0 identity foundation 已完成；新 source/package/contract/bootstrap identity
+通过完整 Windows 回归、immutable v0.3.1/v0.3.0 oracle 和 deterministic ZIP 验证。当前进入 D2
+entry-point and DESIGN foundation；授权不包含 seal、publication、tag、asset、push、remote ref、Cloud
+或 Product Phase 4 变更。
 
 ## Next Step
 
-提交本次方案微调和身份决议检查点，然后实施 R0：建立诚实的 `0.3.2-dev` package/contract/bootstrap/
-test identity，不改变 runtime、Host ABI 或 trusted graph。
+实施 D2：创建 ZIP-excluded `DESIGN.md` foundation，将 README 仓库地图迁入 DESIGN，并同步 README
+文档地图、ROADMAP planning 分工入口、AGENTS agent-only 文档规则和 focused governance assertions。
 
 ## Current Phase
 
-R0 — Source/Release identity foundation
+D2 — Entry-point and DESIGN foundation
 
 ## Status
 
-**GO.** D0/D1 探路完成，`0.3.2-dev` 路线已明确选择。R0–D6 在本计划冻结范围内按 gate 顺序实施；
+**GO.** D0/D1/R0 已完成，`0.3.2-dev` development identity 已建立。D2–D6 在本计划冻结范围内按 gate 顺序实施；
 每一 gate 通过相称验证后可主动 commit，前一 gate 未通过不得进入下一 gate。Release seal/publication、
 push/remote/Cloud 和 Product Phase 4 仍需独立授权。
 
@@ -113,15 +114,15 @@ push/remote/Cloud 和 Product Phase 4 仍需独立授权。
 
 ### R0 — Source/Release identity foundation
 
-- [ ] 推荐路线下把当前 source/package/Release contract 置为新的 `0.3.2-dev` 身份。
-- [ ] 新建 ZIP-external `init-cloud-sandbox-v0.3.2.bash`，development 默认 64-zero hash 并 fail closed；
+- [x] 推荐路线下把当前 source/package/Release contract 置为新的 `0.3.2-dev` 身份。
+- [x] 新建 ZIP-external `init-cloud-sandbox-v0.3.2.bash`，development 默认 64-zero hash 并 fail closed；
   v0.3.1/v0.3.0 bootstrap 保持不可变。
-- [ ] 把 exact v0.3.1 ZIP/bootstrap 验证改为从 immutable tag/source oracle 重建；current candidate
+- [x] 把 exact v0.3.1 ZIP/bootstrap 验证改为从 immutable tag/source oracle 重建；current candidate
   assertions 改为新开发身份，不复用 `f097...`。
-- [ ] 同步 repository-boundary 精确 tracked-path inventory。
-- [ ] 明确 `DESIGN.md` 为 tracked 但 ZIP-excluded 的治理文档；除非另有 Release contract 决策，不把它
+- [x] 同步 repository-boundary 精确 tracked-path inventory。
+- [x] 明确 `DESIGN.md` 为 tracked 但 ZIP-excluded 的治理文档；除非另有 Release contract 决策，不把它
   顺手加入 candidate ZIP。
-- **Status:** authorized / next gate
+- **Status:** complete
 
 ### D2 — Entry-point and DESIGN foundation
 
@@ -130,7 +131,7 @@ push/remote/Cloud 和 Product Phase 4 仍需独立授权。
 - [ ] 把 README `## 仓库地图` 迁入 DESIGN；README 仅保留简短入口。
 - [ ] 精简 ROADMAP 的分工章节为宏观路线权威声明和 README 链接。
 - [ ] 同步 AGENTS 的文档权威表，但保留智能体专属读取/冲突/安全规则。
-- **Status:** pending / authorized after R0 exit
+- **Status:** authorized / next gate
 
 ### D3 — ARCHITECTURE/DESIGN separation
 
@@ -200,7 +201,8 @@ exact sealed v0.3.1 ZIP。维护者已在 2026-08-08 明确选择第 1 条：
 
 ### Batch A — Identity foundation（推荐路线独有）
 
-精确范围：`package.json`、`contracts/release-artifact-v1.json`、新 v0.3.2 development bootstrap、
+精确范围：`package.json`、`contracts/release-artifact-v1.json`、`upstream-manifest.json` 中该 contract 的
+精确 hash、新 v0.3.2 development bootstrap、
 `tests/release-package.test.js`、`tests/skill-patch.test.js`、`tests/repository-boundary.test.js`，以及直接
 依赖的 planning。目标仅是建立诚实的新字节身份，不改变 runtime/Host ABI/trusted graph。
 
@@ -272,3 +274,6 @@ README 不得出现具体当前 lifecycle/hash/test-count 模式；历史目录�
 |---|---:|---|
 | None | 0 | D0 completed without command or file-write errors. |
 | Git could not create `.git/index.lock` under workspace sandbox | 1 | No partial stage/commit occurred; controlled escalation succeeded for the same exact three planning paths. |
+| Focused Node test runner failed with `spawn EPERM` before loading tests | 1 | Classified as sandbox process-spawn limitation; controlled rerun reached all product assertions and produced the expected identity red state. |
+| Focused R0 rerun found stale release-contract SHA in `upstream-manifest.json` | 1 | Keep the integrity assertion; update only the manifest's exact hash for the intentionally changed release contract, then rerun. |
+| Git Bash `bash -n` could not create a signal pipe in the sandbox | 1 | Controlled rerun parsed all three bootstraps successfully. |

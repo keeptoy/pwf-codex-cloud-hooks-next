@@ -14,8 +14,9 @@
 - D0: complete
 - D1: complete — prior condition satisfied
 - Identity decision: complete — maintainer selected `0.3.2-dev`
-- R0: authorized / next gate
-- D2–D6: pending / sequentially authorized after predecessor exit
+- R0: complete
+- D2: authorized / next gate
+- D3–D6: pending / sequentially authorized after predecessor exit
 
 ## Validation record
 
@@ -49,6 +50,8 @@
 |---|---:|---|
 | None | 0 | D0 completed cleanly. |
 | `.git/index.lock` permission denied while creating the authorized planning checkpoint | 1 | Sandbox blocks `.git` writes; no partial commit occurred. Controlled escalation then committed the same exact three paths. |
+| Focused `node --test` returned four file-level `spawn EPERM` failures | 1 | Test workers could not start under the sandbox; controlled rerun reached all product assertions. |
+| Git Bash failed to create a Win32 signal pipe for three `bash -n` checks | 1 | Sandbox process limitation; controlled rerun parsed all three scripts successfully. |
 
 ## 2026-08-08 — Plan refinement after maintainer commit
 
@@ -80,12 +83,67 @@
 - 已创建并回填本地 planning checkpoint；该 commit 只包含活动 task plan、findings 和 progress，不包含
   宏观文档、产品、测试或 Release 字节，并未 push。
 
+## 2026-08-08 — R0 identity foundation started
+
+- session catch-up 无未同步输出；R0 起点工作树干净，HEAD 为 planning checkpoint `b6d8b5b`，分支
+  相对 `origin/main` ahead 2。
+- 重新读取活动 task plan/findings/progress；R0 状态切换为 in progress。
+- 本轮严格限制为 package/Release contract、ZIP-external v0.3.2 development bootstrap、identity tests、
+  repository-boundary inventory 和 planning；README/DESIGN/其他宏观文档留到 D2。
+- 完成第一轮 identity grep 与 contract/test 阅读：确认 current-tree exact v0.3.1 hash 断言需要迁移为
+  development identity，而 sealed v0.3.1 必须转为 immutable source oracle 测试；R0 不改变 23-entry
+  ZIP allowlist，只新增一个 ZIP-external tracked bootstrap。
+- 复核 v0.3.1 历史 planning/commit 与 bootstrap tests：采用既有 development zero-hash → authorized seal
+  模型；R0 将新 candidate 行为移到 v0.3.2 bootstrap，同时保留 v0.3.1 immutable oracle。
+- 从 v0.3.1 acceptance/tag 固定 exact oracle：source `9aa2148...`、ZIP `f097b040...31f9`、bootstrap
+  `ce31a320...a5e8`；确认新 source 使用 `0.3.2-dev`，未来 seal 必须另行冻结为 `0.3.2` 后重建。
+- 先更新四个 focused identity test 文件；首次 failing-first 运行被 sandbox 的 Node worker `spawn EPERM`
+  阻断，尚未产生可解释的红灯，必须受控重跑。
+- 受控 failing-first 重跑：16 registered / 8 passed / 8 failed。v0.3.1/v0.3.0 immutable oracle、identity
+  drift rejection 和既有安全行为通过；失败精确指向 package/contract 仍为 0.3.1、v0.3.2 bootstrap
+  尚不存在、repository inventory 尚未出现该路径，属于预期红灯。
+- 开始最小实现：将 package/Release contract 切换到 `0.3.2-dev`，external asset 指向新 v0.3.2
+  bootstrap；23-entry ZIP allowlist 和 runtime/contracts 内容不变。
+- 使用 v0.3.1 sealed bootstrap 作为逻辑模板创建 v0.3.2 development bootstrap；除默认
+  `HOOKS_VERSION=v0.3.2` 与 `HOOKS_SHA256=64-zero` 外字节逻辑保持一致。v0.3.1 当前文件 SHA 仍为
+  immutable `ce31a320...a5e8`。
+- 实现后 focused rerun 为 16 registered / 15 passed / 1 failed；唯一失败是
+  `upstream-manifest.json` 中 release artifact contract SHA 仍为旧值 `a8f6...`，实际新 contract SHA 为
+  `d71aa79a...648c`。保留 fail-closed hash 断言并同步该 machine reference。
+- 已仅更新 `upstream-manifest.json.managed_runtime.contracts.release_artifact.sha256` 为精确
+  `d71aa79a...648c`；其他 runtime、source 和 contract hash 均未改变。
+- focused R0 rerun PASS：16 registered / 16 passed / 0 failed；current 0.3.2-dev 双构建、zero-hash
+  bootstrap、v0.3.1/v0.3.0 immutable oracle、contract/inventory 和 Skill bootstrap 边界全部通过。
+- Full Windows suite PASS：81 registered / 69 passed / 0 failed / 12 honest POSIX/Linux SKIP。
+- Importer check、三个 Python production 文件 compile、`node --check install.js`、ZIP build/check 和
+  `git diff --check` PASS。独立双构建均为 23 entries / 82,732 bytes / observed dev SHA
+  `a71025f0c0be39e1dea9387dea2c46ae48c584a6353385ee0dbb3807005c86e1`；该观察值不进入 zero-hash
+  bootstrap，也不构成 seal。
+- 三个 Git Bash `bash -n` 在沙箱内均被 Win32 signal-pipe permission error 阻断；这是平台限制，需
+  受控重跑，不能把后续 PowerShell exit code 误记为 syntax PASS。
+- 受控 Git Bash syntax rerun PASS：v0.3.0、v0.3.1、v0.3.2 三个 bootstrap 均通过 `bash -n`。
+
+## 2026-08-08 — R0 identity foundation complete
+
+- Production/machine changes: `package.json=0.3.2-dev`；Release artifact contract 同步版本并只把 external
+  asset 切到 `init-cloud-sandbox-v0.3.2.bash`；23-entry ZIP allowlist 不变；upstream manifest 只同步
+  release-contract SHA。
+- 新 bootstrap 与 immutable v0.3.1 文件仅有两项默认值差异：`v0.3.2` 和 64-zero ZIP hash；旧 v0.3.1
+  bootstrap SHA 仍为 `ce31a320...a5e8`，旧 v0.3.1 ZIP oracle 仍为 `f097b040...31f9`。
+- Tests: focused 16/16 PASS；full Windows 81 registered / 69 passed / 0 failed / 12 honest POSIX SKIP；
+  importer/compile/Node syntax/三 bootstrap Bash syntax/双 deterministic ZIP/check/`git diff --check` PASS。
+- Current development ZIP observation: 23 entries / 82,732 bytes / SHA `a71025f0...c86e1`；只作本轮验证，
+  未写入 bootstrap，不是 seal、candidate publication 或 Release。
+- R0 exit PASS。Next Step 切换到 D2 entrypoint/DESIGN foundation；README 和其他宏观文档尚未修改。
+- R0 已以单一本地 checkpoint commit 收口：精确包含 11 个获批路径（identity contract/bootstrap、四个
+  focused tests、upstream manifest 和三份活动 planning），未 push，便于进入 D2 前独立回滚。
+
 ## 5-question reboot check
 
 | Question | Answer |
 |---|---|
-| Where am I? | D0/D1 complete; `0.3.2-dev` selected; R0 is the next authorized gate |
-| Where am I going? | Six sequential implementation rounds, one verified commit per gate |
+| Where am I? | D0/D1/R0 complete; D2 entrypoint/DESIGN foundation is next |
+| Where am I going? | Five remaining sequential implementation rounds, one verified commit per gate |
 | What's the goal? | One truth source per question domain; other documents summarize and link |
 | What have I learned? | README governance crosses the sealed Release-input boundary; current mutable facts are duplicated across five macro docs |
-| What have I done? | Froze authority/migration design and recorded the selected identity route without editing macro/product documents |
+| What have I done? | Established a tested 0.3.2-dev identity without changing runtime/Host ABI/trusted graph or published bytes |

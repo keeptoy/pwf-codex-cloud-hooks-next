@@ -16,6 +16,7 @@ assert.deepEqual(Object.keys(manifest.compatibility_patches), ["PWF_CODEX_CLOUD_
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 const bash = process.env.BASH || (process.platform === "win32" ? "D:\\Program Files\\Git\\bin\\bash.exe" : "bash");
 const bootstrap031 = path.join(root, "init-cloud-sandbox-v0.3.1.bash");
+const bootstrap032 = path.join(root, "init-cloud-sandbox-v0.3.2.bash");
 const sealedCandidateZipSha256 = "f097b04015b1a3847ca5a24b9236f882c5a008b22033793b5661e282c39131f9";
 const zeroSha256 = "0".repeat(64);
 
@@ -138,25 +139,34 @@ test("v0.3.1 sealed bootstrap pins both archives and removes remote Node tooling
   assert.match(zeroOverride.stderr, /HOOKS_SHA256 is still a placeholder/);
 });
 
-test("v0.3.1 bootstrap rejects Node below 18 and accepts supported platform majors", () => {
+test("v0.3.2 development bootstrap pins its future identity and fails closed on the zero hash", () => {
+  const bootstrap = fs.readFileSync(bootstrap032, "utf8");
+  assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.2\}"/);
+  assert.match(bootstrap, /HOOKS_SHA256="\$\{HOOKS_SHA256:-0{64}\}"/);
+  const developmentGate = runBash('source "$1"\nassert_hooks_checksum_configured', [bootstrap032]);
+  assert.equal(developmentGate.status, 1, developmentGate.stdout);
+  assert.match(developmentGate.stderr, /HOOKS_SHA256 is still a placeholder/);
+});
+
+test("v0.3.2 bootstrap rejects Node below 18 and accepts supported platform majors", () => {
   const command = [
     'source "$1"',
     'node() { printf "%s\\n" "$PWF_TEST_NODE_VERSION"; }',
     "verify_node_toolchain",
   ].join("\n");
   for (const version of ["v18.0.0", "v22.17.1", "v24.3.0"]) {
-    const result = runBash(command, [bootstrap031], { PWF_TEST_NODE_VERSION: version });
+    const result = runBash(command, [bootstrap032], { PWF_TEST_NODE_VERSION: version });
     assert.equal(result.status, 0, `${version}: ${result.stderr}`);
   }
   for (const version of ["v17.9.1", "not-a-node-version", "v18"]) {
-    const result = runBash(command, [bootstrap031], { PWF_TEST_NODE_VERSION: version });
+    const result = runBash(command, [bootstrap032], { PWF_TEST_NODE_VERSION: version });
     assert.equal(result.status, 1, `${version}: ${result.stdout}`);
     assert.match(result.stderr, /Node\.js 18 or newer is required|Unable to parse Node\.js version/);
   }
 });
 
-test("v0.3.1 bootstrap installs only the verified pristine Skill subtree", () => {
-  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-bootstrap-v031-"));
+test("v0.3.2 bootstrap installs only the verified pristine Skill subtree", () => {
+  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-bootstrap-v032-"));
   const installedSkill = path.join(workspace, "global", "planning-with-files");
   const replacedSentinel = path.join(installedSkill, "replaced-skill-sentinel");
   try {
@@ -168,7 +178,7 @@ test("v0.3.1 bootstrap installs only the verified pristine Skill subtree", () =>
       'download_file() { cp -- "$PWF_TEST_ARCHIVE" "$2"; }',
       "install_planning_skill",
     ].join("\n");
-    const result = runBash(command, [bootstrap031], {
+    const result = runBash(command, [bootstrap032], {
       PLANNING_WITH_FILES_ARCHIVE_SHA256: fixtureArchive.sha256,
       PLANNING_WITH_FILES_ROOT: bashPath(installedSkill),
       PWF_TEST_ARCHIVE: bashPath(fixtureArchive.archive),
@@ -186,8 +196,8 @@ test("v0.3.1 bootstrap installs only the verified pristine Skill subtree", () =>
   }
 });
 
-test("v0.3.1 bootstrap rejects a bad Skill archive without replacing an existing Skill", () => {
-  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-bootstrap-v031-bad-"));
+test("v0.3.2 bootstrap rejects a bad Skill archive without replacing an existing Skill", () => {
+  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-bootstrap-v032-bad-"));
   const installedSkill = path.join(workspace, "global", "planning-with-files");
   const sentinel = path.join(installedSkill, "existing-skill-sentinel");
   try {
@@ -199,7 +209,7 @@ test("v0.3.1 bootstrap rejects a bad Skill archive without replacing an existing
       'download_file() { cp -- "$PWF_TEST_ARCHIVE" "$2"; }',
       "install_planning_skill",
     ].join("\n");
-    const result = runBash(command, [bootstrap031], {
+    const result = runBash(command, [bootstrap032], {
       PLANNING_WITH_FILES_ARCHIVE_SHA256: "0".repeat(64),
       PLANNING_WITH_FILES_ROOT: bashPath(installedSkill),
       PWF_TEST_ARCHIVE: bashPath(fixtureArchive.archive),
@@ -209,7 +219,7 @@ test("v0.3.1 bootstrap rejects a bad Skill archive without replacing an existing
     assert.equal(fs.readFileSync(sentinel, "utf8"), "preserve me\n");
 
     const driftFixture = makeSkillArchive(path.join(workspace, "drift"), true);
-    const driftResult = runBash(command, [bootstrap031], {
+    const driftResult = runBash(command, [bootstrap032], {
       PLANNING_WITH_FILES_ARCHIVE_SHA256: driftFixture.sha256,
       PLANNING_WITH_FILES_ROOT: bashPath(installedSkill),
       PWF_TEST_ARCHIVE: bashPath(driftFixture.archive),
