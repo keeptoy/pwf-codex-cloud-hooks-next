@@ -54,11 +54,12 @@
 
 ## Validation Status
 
-- R0–R4 PASS；R5 runbook 正在补齐 Source/Candidate + Published Release 双通道，尚无 Cloud PASS。
+- R0–R4 PASS；R5-SC Attempt 1 因 test routing defect 停止，修复已本地验证，等待 Fresh Cloud 重跑；
+  R5-PR 尚未开始，仍无 Cloud PASS。
 
 ## Current Handoff
 
-- 当前执行 R0 Release Discovery；v0.3.2 尚未 seal、tag、发布或通过 Cloud。
+- 当前执行 R5-SC Cloud handoff；v0.3.2 已 seal/tag/publication，但尚未通过 Cloud hard acceptance。
 - `v0.3.1` 仍是唯一 accepted rollback/`Latest`。
 - 维护者要求把 v0.3.2 Cloud hard acceptance 拆成两步：先源码构建/本地 override 安装并跑黑盒，再在
   独立 Fresh Cloud 中用公开 bootstrap 默认下载链重跑黑盒；两条证据不得混用。
@@ -74,3 +75,22 @@
 - 从当前树重新 build/check Release ZIP 仍为 23 entries、82,627 bytes、SHA-256
   `b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081`；本轮仅修改 ZIP 外的
   docs/planning/test guard，sealed tag/source、bootstrap 与公开 Release 资产不变。
+- R5-SC Cloud Attempt 1 已按预期 fail-fast：tagless/no-remote `work@8a40f80` 通过所有静态检查，但完整
+  Linux suite 的 published v0.3.2 tag oracle 因缺少本地 tag 成为唯一失败；ZIP/install/B～F 均未执行。
+- 当前修复 gate：把 publication-only tag/history oracles 物理分离为独立 test file；R5-SC 只运行明确
+  可在 tagless checkout 执行的 portable suite，默认本地 `npm test` 仍包含全部 oracles；同时把前置条件
+  分流规则提升到 ROADMAP 第 7 节。
+- failing-first governance test 为 9 tests / 7 PASS / 2 expected FAIL，红项精确对应 runbook 尚未分流
+  publication oracle 与 ROADMAP 第 7 节尚未记录 checkout prerequisites。
+- 三个 published tag/source/asset oracle 已物理迁入 `tests/published-release-oracles.test.js`；candidate ZIP
+  与 identity drift 留在 `tests/release-package.test.js`。DESIGN reverse index 已同步，默认 `npm test`
+  仍包含两个模块。
+- R5-SC runbook 现在用 `find` 组装除 publication oracle 文件外的 portable suite，拒绝 oracle 泄漏，
+  并输出 `V032_SC_EXCLUDED_TEST_SUITE=published-release-oracles.test.js`；不再把 scoped PASS 表述为完整 suite。
+- ROADMAP 第 7 节已持久化 Source/Candidate、Publication audit、Published Release 三类 checkout 前置条件、
+  验证职责与不可替代结论，并禁止为了测试绿色在 Cloud 补造 tag/remote。
+- validation：architecture + candidate + publication focused 14/14 PASS；默认完整 `npm test` 为 90 tests、
+  78 PASS、12 Windows/POSIX SKIP、0 FAIL，三个 publication oracle 实际通过；本地模拟 portable selection
+  为 87 tests、75 PASS、12 Windows/POSIX SKIP、0 FAIL，且 oracle 未泄漏。
+- 更新后的 3 个 runbook Bash blocks 均 `bash -n` PASS；JS syntax、`git diff --check` PASS；Release ZIP
+  仍为 23 entries、82,627 bytes、SHA-256 `b42aecaf...e5081`，sealed/public assets 未变化。

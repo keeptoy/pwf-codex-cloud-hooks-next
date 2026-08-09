@@ -104,3 +104,18 @@
   的入口；Published Release PASS 只属于 `v0.3.2` tag、公开双资产字节与 checksum。
 - v0.3.2 相对 v0.3.1 没有 production runtime 行为变化，可以复用同一套黑盒 fixture，但风险较低不等于
   可以省略任一身份通道。只有 `R5-SC PASS` 与 `R5-PR PASS` 同时成立，R5 才可关闭。
+
+## R5-SC Attempt 1：tagless Cloud checkout
+
+- Cloud 在 branch transport 上以合成分支 `work` 检出精确 HEAD
+  `8a40f806db4784a4e7eb5109257c16a240d9107a`，工作树干净且 sealed source commit object 存在，但没有
+  remote 或本地 `refs/tags/v0.3.2`；这符合 Cloud checkout 不承诺完整 Git ref topology 的模型。
+- Source/Candidate setup 的 upstream integrity、Python/Node/Bash static checks 均 PASS；Linux suite 为
+  89 tests / 88 PASS / 1 FAIL / 0 skipped，唯一失败是 published v0.3.2 tag oracle 对本地 tag ref 的前置
+  假设。脚本按 fail-fast 在 ZIP 双构建、安装和 B～F 前停止，因此没有 runtime 产品失败证据。
+- 分类为 `test routing defect / Cloud fixture mismatch`，不是 product defect。不得在 Cloud 创建本地 tag
+  来让测试变绿，因为那会用 runbook 常量伪造 publication 前置条件并形成循环证明。
+- 选择物理测试分组：portable candidate/package tests 保留在 `release-package.test.js`；所有依赖本地
+  immutable tag/历史 refs 的审计移动到 `published-release-oracles.test.js`。默认 `npm test` 仍运行两组；
+  R5-SC 明确排除 publication-only 文件并要求其余 Linux tests `fail=0/skipped=0`，R5-PR 继续证明公开资产
+  消费路径。测试语义不通过环境变量暗中降级。

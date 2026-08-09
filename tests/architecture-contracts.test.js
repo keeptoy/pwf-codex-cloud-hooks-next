@@ -201,6 +201,7 @@ test("ARCHITECTURE preserves system reasoning while DESIGN routes implementation
     "contracts/runtime-bundle-v1.json", "contracts/release-artifact-v1.json",
     "tests/installer.test.js", "tests/hook-adapter.test.js", "tests/owned-plan-runtime.test.js",
     "tests/owned-runtime.test.js", "tests/import-runtime.test.js", "tests/release-package.test.js",
+    "tests/published-release-oracles.test.js",
   ]) assert.match(design, new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 
   assert.match(design, /repository source.*Release ZIP.*installed managed runtime/is);
@@ -317,6 +318,9 @@ test("change history, programme intent, current action, and immutable evidence h
   assert.match(acceptance032, /两条通道不得共用容器、安装状态或 B～F 结果/);
   assert.match(acceptance032, /V032_SOURCE_CANDIDATE_SETUP=PASS/);
   assert.match(acceptance032, /V032_PUBLIC_RELEASE_SETUP=PASS/);
+  assert.match(acceptance032, /published-release-oracles\.test\.js/);
+  assert.match(acceptance032, /tagless.*Source\/Candidate/is);
+  assert.match(acceptance032, /V032_SC_EXCLUDED_TEST_SUITE=published-release-oracles\.test\.js/);
   assert.match(acceptance032, /PENDING_R5_SC.*PENDING_R5_PR.*PENDING_R5/is);
   assert.match(acceptance032, /Fresh.*canonical.*long tail.*real Resume.*doctor/is);
   assert.match(acceptance032, /不授权.*Latest.*rollback/is);
@@ -338,4 +342,19 @@ test("ROADMAP discovery governance separates new rounds from in-round safety gat
   assert.match(discovery, /本地测试.*Cloud.*回滚.*GO.*CONDITIONAL_GO.*NO_GO/is);
   assert.match(discovery, /暂停.*production dispatch.*发布哈希.*外部.*不变/is);
   assert.match(discovery, /实现正确.*架构方向错/is);
+});
+
+test("Release governance routes tests by checkout prerequisites without forging refs", () => {
+  const roadmap = readText("ROADMAP.md");
+  const releaseStart = roadmap.indexOf("## 7. Release 授权与封板顺序\n");
+  const retentionStart = roadmap.indexOf("## 8.", releaseStart);
+  assert.ok(releaseStart >= 0 && retentionStart > releaseStart);
+  const release = roadmap.slice(releaseStart, retentionStart);
+
+  assert.match(release, /Source\/Candidate.*Published Release/is);
+  assert.match(release, /tagless.*checkout.*remote.*tag/is);
+  assert.match(release, /publication-only.*oracle.*分流/is);
+  assert.match(release, /不得.*创建.*tag.*伪造.*前置条件/is);
+  assert.match(release, /完整.*suite.*封板.*publication/is);
+  assert.match(release, /公开.*URL.*SHA.*默认.*下载/is);
 });

@@ -18,8 +18,9 @@ GitHub `Latest`。
 
 ## Next Step
 
-维护者按 `docs/v0.3.2-cloud-hard-acceptance.md` 执行 R5 双通道：先在 Fresh Cloud 从第 4 节完成
-R5-SC 源码回归、双构建、本地 override 安装及第 6～10 节黑盒；保存证据并弃用环境后，再在另一个
+维护者在新的 Fresh Cloud 按 `docs/v0.3.2-cloud-hard-acceptance.md` 从第 4 节重跑 R5-SC：执行显式排除
+publication-only oracle 的 portable Linux suite、双构建、本地 override 安装及第 6～10 节黑盒；保存
+证据并弃用环境后，再在另一个
 Fresh Cloud 从第 5 节完成 R5-PR 公开 bootstrap 默认下载链及完整第 6～10 节黑盒。回传第 11 节两套
 原始证据；智能体不代跑 Cloud。
 
@@ -46,8 +47,9 @@ Fresh Cloud 从第 5 节完成 R5-PR 公开 bootstrap 默认下载链及完整�
 
 ## Status
 
-R0–R4 PASS / R5-SC + R5-PR waiting for maintainer Cloud evidence。当前 production rollback/`Latest`
-仍为 `v0.3.1`；`v0.3.2` 已发布但尚未通过 Cloud hard acceptance。
+R0–R4 PASS / R5-SC Attempt 1 STOPPED（test routing defect）/ routing fix locally PASS / Fresh rerun
+waiting / R5-PR waiting。当前 production rollback/`Latest` 仍为 `v0.3.1`；`v0.3.2` 已发布但尚未通过
+Cloud hard acceptance。
 
 ## Errors Encountered
 
