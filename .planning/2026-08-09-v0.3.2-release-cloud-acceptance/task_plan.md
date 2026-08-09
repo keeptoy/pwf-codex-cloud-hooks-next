@@ -65,3 +65,4 @@ Cloud hard acceptance。
 | Windows sandbox 内直接以两个 test file 调用 `node --test` 时 child runner `spawn EPERM` | 1 | 分类为 sandbox process limitation；改在沙箱外以相同 focused test 命令复跑，不修改断言 |
 | acceptance Bash block lint 在沙箱内再次触发 Git Bash signal-pipe Win32 error 5；沙箱外 `bash -n -c <PowerShell string>` 又因 Windows native argument quoting 丢失嵌套引号 | 2 | 不把 argument-transport 错误当作脚本语法错误；改为沙箱外通过 stdin 向 `bash -n` 传递每个原始代码块 |
 | sandbox 内 `git add` 无法创建 `.git/index.lock`，返回 permission denied | 1 | `.git` 在当前权限配置中只读；保留工作树改动，改为获批后在沙箱外提交同一精确文件集 |
+| Windows 本地 `git clone --no-tags --local` 仍通过 local optimization 带入 tag refs，未形成预期 tagless fixture | 1 | 临时 clone 已由受控 finally 清理；下一次只在验证过的临时 clone 内显式删除本地 tag refs，再移除 remote 并运行 portable suite |

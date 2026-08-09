@@ -94,3 +94,7 @@
   为 87 tests、75 PASS、12 Windows/POSIX SKIP、0 FAIL，且 oracle 未泄漏。
 - 更新后的 3 个 runbook Bash blocks 均 `bash -n` PASS；JS syntax、`git diff --check` PASS；Release ZIP
   仍为 23 entries、82,627 bytes、SHA-256 `b42aecaf...e5081`，sealed/public assets 未变化。
+- commit 后在受控临时 clone 中移除全部本地 tags 与 remote，确认工作树干净后执行同一 portable selection：
+  87 tests、75 PASS、12 Windows/POSIX SKIP、0 FAIL；输出 `TAGLESS_NO_REMOTE=PASS`、
+  `TAGLESS_NO_TAGS=PASS`、`TAGLESS_PORTABLE_SUITE=PASS`。首次 `--no-tags --local` 因本地优化仍复制 refs，
+  fixture 已安全清理并改用显式删除临时 refs 的方法复验。
