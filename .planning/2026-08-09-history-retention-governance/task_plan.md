@@ -13,12 +13,14 @@ trusted graph、Release 不可变性和历史可追溯性的前提下，让当�
 - 已授权 H5：验证 immutable recovery 后，移除 completed planning、角色窗口外的历史 acceptance/runbook/
   bootstrap，并同步直接链接、历史 oracle 和治理测试；必要的 README/DESIGN/ROADMAP 路由更新属于 H5。
 - H5 不修改 production、contracts、package identity、当前 `v0.3.2` bootstrap、Release contract 或 Cloud。
-- 不 push、创建 PR/tag/Release/asset；H6 合并建议和平台/Release 收口仍须维护者再次确认。
+- 已授权 H6：同步唯一 authority，运行完整本地 regression、deterministic development package 与适用
+  Windows checks，形成 source-merge 建议并创建本地关键恢复点。
+- 不 push、合并分支、创建 PR/tag/Release/asset，不运行 live Cloud 或 rollback promotion。
 
 ## Next Step
 
-等待维护者评审 H5 的 recovery、角色窗口、删除清单和验证结果；获批后再决定是否进入 H6 的最终
-authority/package/platform 收口与合并建议，不自动 push 或发布。
+H0–H6 已完成，当前分支具备合回 `0.3.2-dev` 的 source-merge GO 建议；等待维护者另行授权实际 merge/
+push。未来 Release、Cloud 或 rollback gate 必须在对应活动计划中重新授权和验证，不能继承本结论。
 
 ## Phases
 
@@ -28,12 +30,25 @@ authority/package/platform 收口与合并建议，不自动 push 或发布。
 - [x] H3 — 维护者评审并冻结 retention contract、版本窗口与退出条件。
 - [x] H4 — failing-first 重构 repository governance guards；不先删文件追求绿色。
 - [x] H5 — 迁移 completed planning、旧 acceptance/runbook/bootstrap 和历史 oracle 引用。
-- [ ] H6 — 同步唯一 authority、运行完整 regression/package/platform gate，形成合并建议。
+- [x] H6 — 同步唯一 authority、运行完整 regression/package/platform gate，形成合并建议。
 
 ## Status
 
-H0–H5 完成：20 个历史路径经 immutable recovery 验证后退出当前树，直接依赖已改为当前角色入口或
-exact-commit links，聚焦/完整回归与静态检查通过。H6 尚未授权。
+H0–H6 完成；本地 source candidate 建议 GO。尚未授权 push、merge、PR、Release、Cloud 或 rollback。
+
+## Merge Recommendation
+
+- **GO（仅 source merge）**：当前治理分支可在维护者评审后合回 `0.3.2-dev`。
+- authority 已同步到 README 文档地图、CHANGELOG Unreleased 与 ROADMAP programme 摘要；ARCHITECTURE/
+  DESIGN 无需复制第二份治理规则。
+- 完整本地 regression 为 87 tests、75 PASS、12 Windows/POSIX SKIP、0 FAIL；适用 source/static/
+  bootstrap checks 全部通过。
+- development ZIP 双构建均为 23 entries、82,632 bytes、同一 SHA-256；该证据只说明当前候选字节
+  可确定性重建，不建立 seal 或 Release identity。
+- 相对 `0.3.2-dev@cde4b15`，候选没有 hooks、runtime、contracts、installer、importer/patcher、package
+  contract 或当前 v0.3.1/v0.3.2 bootstrap 漂移；变化局限于治理、文档、planning 与治理测试。
+- **非 Release/Cloud GO**：12 个 POSIX/Linux-only case 在 Windows 上诚实 SKIP，且本轮未运行 live Cloud、
+  publication、rollback 或最终资产验收；后续相关 gate 必须重新执行平台证据。
 
 ## Provisional Exit Conditions
 
@@ -70,3 +85,4 @@ exact-commit links，聚焦/完整回归与静态检查通过。H6 尚未授权�
 | 新 documentation lifecycle test 把 handoff 链接标签误写成不含反引号的精确文本 | 1 | 分类为 test defect；改为验证标签包含目标语义且链接目的地精确，不改生产或文档内容 |
 | PowerShell 环境中直接调用 `bash -n` 时找不到 `bash` | 1 | 分类为 platform limitation；不重复原命令，使用测试套件已采用的 Git for Windows Bash 探测路径，若不存在则诚实 SKIP |
 | 仓库 Markdown link probe 把裁剪后的 upstream Skill fixture 当作完整文档检查 | 1 | 分类为 fixture scope error；排除 `tests/fixtures/` 后检查 repository-owned Markdown，fixture 完整性继续由其专属 import/runtime tests 负责 |
+| 沙箱内最终 Node 聚焦测试无法创建 worker，两个文件均报 `spawn EPERM` | 1 | 分类为 sandbox execution limitation；获批后在沙箱外以同一命令复跑，12/12 PASS |

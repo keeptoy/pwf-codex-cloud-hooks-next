@@ -157,7 +157,7 @@ test("README owns the document map while DESIGN owns the repository implementati
   assert.match(readme, /## 开发状态与文档地图/);
   for (const authority of [
     "ARCHITECTURE.md", "DESIGN.md", "CHANGELOG.md", "ROADMAP.md", "BASELINE_PROVENANCE.md",
-    "MAINTAINER_HANDOFF.md",
+    "MAINTAINER_HANDOFF.md", "docs/repository-governance-guide.md",
   ]) assert.match(readme, new RegExp(authority.replace(".", "\\.")));
   assert.doesNotMatch(readme, /当前源码\/package 身份|当前已接受的 rollback|previous fallback/);
   assert.doesNotMatch(readme, /## 仓库地图/);
@@ -252,11 +252,14 @@ test("change history, programme intent, current action, and immutable evidence h
   for (const target of ["ROADMAP.md", "BASELINE_PROVENANCE.md", "docs/v0.3.1-cloud-hard-acceptance.md"]) {
     assert.match(changelog, new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
+  assert.match(changelog, /trusted.*exact.*planning.*lifecycle/is);
+  assert.match(changelog, /candidate.*accepted.*role window/is);
   assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|Next Step|GitHub `Latest`|production rollback|\d+ registered/);
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 
   assert.match(roadmap, /\| 当前开发列车 \| `0\.3\.2-dev`；文档治理/);
   assert.match(roadmap, /活动.*task_plan.*当前唯一 Next Step/s);
+  assert.match(roadmap, /一个 active planning.*candidate.*accepted role window.*immutable/s);
   assert.equal((roadmap.match(/GitHub `Latest`/g) || []).length, 1);
 
   for (const identity of [

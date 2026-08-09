@@ -14,6 +14,10 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - README 只保留稳定行为与文档入口；新增 DESIGN，集中维护仓库模块、依赖、改动落点和验证路由。
 - 建立“CHANGELOG 记录实际变化、ROADMAP 维护 programme/lifecycle、活动 task plan 控制当前行动、
   provenance/acceptance 冻结证据”的文档分层。
+- 新增可迁移仓库治理指南，并把 trusted source exact zones 与 planning/docs lifecycle zones 分开测试，
+  避免活动治理文件变化削弱或误触发执行边界。
+- 采用 candidate + accepted role window：当前树只保留一个 active planning scope、v0.3.1 accepted 入口
+  和 v0.3.2 candidate 入口；更早 planning、runbook、acceptance 与 bootstrap 通过 immutable refs 恢复。
 
 ### Compatibility
 

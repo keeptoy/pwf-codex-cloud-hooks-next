@@ -55,6 +55,10 @@ accepted input。
 路线、当前行动和不可变证据分别只有一个主维护位置。该列车当前只改变 development 文档与治理检查，
 不授权 seal、publication、Cloud acceptance、行为变化或 Product Phase 4。
 
+该列车的仓库生命周期治理保持一个 active planning，并以 candidate + accepted role window 控制当前
+bootstrap/acceptance；更早历史退出 HEAD 后由 immutable commit、tag 和 Release 恢复。trusted/Release
+zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。
+
 下表是未来 Discovery 的候选，不是发布承诺，也不自动授权下一 Phase。一个 Phase 可以有多个
 pre-release；多个低风险 Phase 也只有在独立评审后才能进入同一版本列车。
 

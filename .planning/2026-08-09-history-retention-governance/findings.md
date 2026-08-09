@@ -149,3 +149,25 @@ graph、Release/rollback mechanism、长期基线晋级。普通 patch、文案�
 - 不改变 package/version、Release ZIP allowlist、bootstrap hash 或 published identity。
 - 不宣称 `governance/history-retention` 已成为 source/release/rollback baseline。
 - 不执行 Cloud、seal、publication、rollback promotion 或 push；本地关键恢复点 commit 已获授权。
+
+## H6 Authority Audit
+
+- README 的唯一完整文档地图尚未列出通用仓库治理指南；目前只有 handoff 能发现它，不足以成为稳定
+  “问题 → authority”入口。
+- CHANGELOG Unreleased 尚未记录已经发生的 guard 分区与 history-window rotation；这些是 `0.3.2-dev`
+  的实际治理 delta，应进入 CHANGELOG，而不是只留在 planning。
+- ROADMAP 已说明 `0.3.2-dev` 的文档治理目标，但尚未冻结该列车采用“一个 active planning + candidate /
+  accepted role window + immutable cold history”的 programme-level治理结果。
+- ARCHITECTURE/DESIGN 的 runtime/trusted graph 分工已经完整，H6 不应为仓库治理重复增加系统架构章节。
+- Authority 补齐后，README 提供唯一治理指南入口，CHANGELOG 记录实际 delta，ROADMAP 只冻结 programme
+  级 role-window 结果；三者没有复制 planning 流水或 provenance 精确资产表。
+- README 是 development ZIP 输入，因此 H6 必须以补齐后的字节重新双构建；本地确定性 hash 只证明当前
+  source candidate 可复现，不建立 seal、publication 或 rollback 身份。
+- 相对 `0.3.2-dev@cde4b15` 的最终边界审计没有发现 hooks、runtime、contracts、installer、tools、
+  patcher、package contract 或当前 v0.3.1/v0.3.2 bootstrap 变化；`TRUSTED_CURRENT_ROLE_DIFF=NONE`。
+- README 是本轮唯一变化的 candidate ZIP 输入；补齐 authority 后的双构建字节完全一致，因此该输入变化
+  已在 development-package 层闭合，但不能把本地 hash 提升为正式资产身份。
+- Windows 上 12 个 POSIX/Linux-only tests 继续诚实 SKIP。由于本轮没有 production/trusted/Host ABI
+  变化，它们不阻塞 source merge；但也不能替代未来 Release/Cloud gate 的 Linux 和 live-host 证据。
+- 综合 authority、regression、package、静态检查与边界审计，H6 对 source merge 给出 GO；对 Release、
+  Cloud、publication 和 rollback 不作 GO 结论。

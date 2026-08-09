@@ -2,6 +2,22 @@
 
 ## 2026-08-09
 
+- H6 恢复轮次：维护者明确授权最终本地收口；工作区从 H5 commit `435f830` 干净开始。重读 README/ARCHITECTURE 后确认 H6 只需 authority/package/platform evidence，不改变 trusted graph 或 runtime。
+- 重读 DESIGN/ROADMAP；H6 的适用验证是文档 authority、repository guard、完整本地 regression 与 deterministic development package。没有 production/contract/Host ABI 变化，不触发新的 live Cloud/rollback gate。
+- H6 authority failing-first：architecture governance 7 tests 中 5 PASS、2 FAIL；缺口精确落在 README 未导航治理指南，以及 CHANGELOG/ROADMAP 未提升已发生的 exact-vs-lifecycle 与 role-window 结论。
+- 已同步 README 文档地图、CHANGELOG Unreleased 与 ROADMAP `0.3.2-dev` programme 摘要；未向 ARCHITECTURE/DESIGN 复制第二份治理规则。
+- H6 authority test 复跑 7/7 PASS。
+- H6 完整 `npm test`：87 tests，75 PASS、12 Windows/POSIX SKIP、0 FAIL。
+- H6 development ZIP 双构建与逐包 check：两次均为 23 entries、82,632 bytes、SHA-256 `f15f9c9522c79c838b09d340b103181701d89ff5d0b8d53878c933639e2096c5`，确定性 PASS；临时 ZIP 已删除，该 hash 不是 seal/Release identity。
+- H6 source/platform/static gate：importer check、Python compile、`node --check install.js`、Git for Windows
+  Bash 对 v0.3.1/v0.3.2 bootstrap 的 `bash -n`、63 个 tracked files 的 UTF-8/LF、15 个仓库自有
+  Markdown 的 fence/relative links、四个 upstream `100755` modes 与 `git diff --check` 全部 PASS。
+- 最终边界审计：相对 `0.3.2-dev@cde4b15` 没有 trusted/current-role 文件变化，输出
+  `TRUSTED_CURRENT_ROLE_DIFF=NONE`；本轮 diff 仅涉及治理、文档、planning、测试和已验证可恢复的冷历史退场。
+- H6 结论：source merge 建议 GO；12 个 Windows/POSIX SKIP 不阻塞无 production 漂移的源码治理合并，
+  但本结论不覆盖 Release、Cloud、publication 或 rollback，实际 merge/push 仍等待维护者授权。
+- 最终 architecture/repository 聚焦复跑首次受沙箱 `spawn EPERM` 阻断；以同一只读命令在沙箱外复跑后
+  12/12 PASS，归类为执行环境限制而非 product/test defect。
 - H5 恢复轮次：维护者指示继续；按最小授权解释为历史迁移/清退，不包含 H6、push、Release 或 Cloud。重读 README 与 ARCHITECTURE 后确认 trusted graph 和 Release 不变量不变。
 - 活动 task plan 已同步 H5 授权：允许在 immutable recovery 验证后清退角色窗口外历史文件并改写直接依赖；禁止改 production/contracts/package identity/当前 bootstrap、push、Release 和 Cloud。
 - 重读 DESIGN 与 ROADMAP；H5 仅作用于 Release-excluded governance/history zones，当前 candidate `0.3.2-dev`、accepted `v0.3.1` 与 rollback evidence chain 的角色事实不变。
@@ -44,6 +60,9 @@
 
 ## Current Handoff
 
-- H5 已完成：20 个路径均在删除前验证 recovery，当前树只保留 active planning、v0.3.1 accepted 与 v0.3.2 candidate 角色文件。
-- H5 聚焦测试 23/23 PASS，完整 Node regression 0 FAIL，source/bootstrap/static/link 检查 PASS。
-- 下一 gate 是 H6，仍需维护者评审授权；本轮创建本地恢复点后停止，不 push。
+- H0–H6 全部完成：当前树只保留 active planning、v0.3.1 accepted 与 v0.3.2 candidate 角色文件；20 个
+  退场路径均已在删除前验证可由 immutable refs 恢复。
+- authority、focused/full regression、deterministic development package、适用 source/platform/static gate
+  与 trusted boundary audit 均通过，source merge 建议 GO。
+- 本地关键恢复点提交完成后停止；不自动 merge/push，不创建 PR/tag/Release/asset，也不宣称 Cloud 或
+  rollback gate 已通过。
