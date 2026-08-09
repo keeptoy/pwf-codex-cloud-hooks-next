@@ -228,6 +228,7 @@ README 只维护稳定支持行为和用户/开发命令，不复制频繁变化
 | 当前唯一 Next Step、授权、禁止事项和停止条件 | `.planning/.active_plan` 指向的活动 `task_plan.md` |
 | baseline、upstream、overlay 和不可变资产从哪里来 | [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) |
 | 历史如何分层保留、planning/版本文件何时退场，以及怎样迁移到新项目 | [`仓库治理指南`](docs/repository-governance-guide.md) |
+| 已关闭 Product Phase 当时解决了什么、如何被后继阶段继承 | [`Phase 历史摘要`](docs/history/README.md)；完整原文仍从其中的 immutable links 恢复 |
 | 新维护者如何接手、避坑并解释能力检测结果 | [`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) |
 | 某次迁移、Cloud 或 Release 如何被验收 | 对应的 [`docs/`](docs/) 专项 runbook/acceptance |
 

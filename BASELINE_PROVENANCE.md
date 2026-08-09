@@ -51,7 +51,8 @@ successor remote：[`keeptoy/pwf-codex-cloud-hooks-next`](https://github.com/kee
 | M3 Cloud equivalence | [`39795283cd65f84547651d7bec816191fb5bfedf`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/39795283cd65f84547651d7bec816191fb5bfedf) | slim successor 的 Linux、Fresh/Resume、doctor 与 package 等价性 |
 | M4 repository cutover | [M4-A `cc9bc878ddc7d70c25156dd053e2874758f0814a`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/cc9bc878ddc7d70c25156dd053e2874758f0814a) → [M4-C `0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151) → [closure `c5236958b9830ee3695b0e81e1a0746707a6b8f9`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/c5236958b9830ee3695b0e81e1a0746707a6b8f9) | 完成 authority handoff、default/main/ruleset、旧仓库导航、accepted cutover 与 rollback 验收 |
 
-M2 排除的历史 planning、Phase/Round 文档和 snapshot prototype 仍可在旧仓库与 M1 exact ref 中追溯。
+M2 排除的历史 planning、Phase/Round 文档和 snapshot prototype 仍可在旧仓库与 M1 exact ref 中追溯；
+Phase 1～3 的精选导航见 [`docs/history/`](docs/history/README.md)，完整原文仍以 immutable ref 为准。
 三个 fixture rename 保持原字节：
 `adapter-output-managed-legacy.json`、`adapter-output-canonical-plan.json` 和
 `session-catchup-cloud-wrapper.jsonl`。

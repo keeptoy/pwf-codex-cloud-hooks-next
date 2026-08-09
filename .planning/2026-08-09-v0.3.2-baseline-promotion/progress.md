@@ -2,6 +2,29 @@
 
 ## 2026-08-09
 
+- 维护者批准继续建立 Phase 1～3 精选历史摘要；本轮重新使用 planning-with-files 恢复上下文，catch-up 无未同步输出，
+  工作树只有获准读取但不得修改或提交的 `临时文件/`。
+- 活动计划已新增 P2-P gate：范围仅为 `docs/history/` 索引、三份闭合 Phase capsule、最小权威入口与生命周期
+  guard；明确禁止复制临时资料、逐 Round 流水账、脚本/源码、无证据的 v0.2.2 细节或进入 P3。
+- 已建立 `docs/history/README.md` 与 Phase 1～3 三份统一模板摘要；内容只提炼历史位置、前置问题、核心决定、
+  已交付闭环、验收结论、非目标、后继继承和 immutable evidence，不复制测试计数、脚本、源码或验收全文。
+- 三份摘要分别冻结 inactive trusted inventory、owned catch-up 激活和 canonical owned-plan 激活；Phase 3 同时
+  区分 beta.1 功能闭环与 beta.2 行为不变的文档/独立资产重新封板。
+- README 文档地图和 provenance M2 已加入最小历史索引入口；CHANGELOG 只记录本次 Unreleased 治理 delta，
+  DESIGN 同步 repository guard 职责，没有改写已发布版本或当前 lifecycle 角色。
+- 可迁移治理指南新增 Phase capsule 准入/冻结合同：只收录已关闭且可 immutable 恢复的 Phase，一个 Phase
+  一份固定模板摘要，禁止 Round/候选版流水、源码/脚本/fixture/验收全文和当前状态进入 warm layer。
+- repository lifecycle guard 已补充数据驱动的 history 检查：索引必须覆盖目录内全部 capsule，每份文件名与
+  固定八段 anchor 合法、含 immutable source evidence、不得携带当前 Next Step/Status；不把整个 docs 路径
+  重新写成静态全仓库清单。
+- P2-P 首轮 focused suite 中 13 项通过，4 项在共同的 `trackedPaths()` 前置处因 Windows sandbox 禁止 Node
+  `spawnSync("git")` 返回 `status=null`；已分类为 platform limitation，将保持断言不变在沙箱外复跑。
+- 沙箱外同一 focused repository/architecture suite 17/17 PASS，新 capsule 的索引、八段模板、immutable
+  evidence、Release/trusted-graph exclusion 和治理指南合同均通过。
+- 完整 `npm test`：92 tests，80 PASS、12 个诚实的 Windows/POSIX SKIP、0 FAIL；importer integrity、
+  unstaged/staged diff checks 与 repository syntax 同时 PASS。
+- P2-P 已关闭；没有修改 production runtime、Host ABI、trusted graph、package/Release contract、bootstrap 或
+  已发布资产，也没有复制/暂存 `临时文件/` 或进入 P3。
 - 完整读取 planning-with-files skill，session catch-up 无未同步输出，初始工作树 clean。
 - 按新冻结的 Discussion-to-Implementation 规则，把维护者目标解释为关键 promotion/eviction Discovery，
   未直接修改 ROADMAP、版本 identity、文件窗口或外部状态。

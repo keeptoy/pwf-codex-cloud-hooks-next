@@ -19,6 +19,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   不修改或删除远端分支，也不授权用新字节重发 v0.3.2。
 - 维护者已明确授权读取未跟踪的 `临时文件/` 作为早期版本证据，并补全 CHANGELOG 中 v0.3.0-beta.1、
   v0.3.0-beta.2 与 v0.2.2 的历史定位；v0.2.2 具体特点等待维护者后续补充，不得无证据扩写。
+- 维护者已批准在 P2 内建立精选的 Phase 1～3 历史摘要：只从现有 work plan、Phase 专项文档、
+  beta acceptance 与 immutable refs 提炼，不复制临时目录、逐轮日志、脚本或历史源码，也不进入 P3。
 - P3 只记录为后续独立 gate；当前不修改 package、Release contract、bootstrap 或 `v0.3.3-dev` identity，
   不 seal、不发布、不部署新版本。
 - 已完成的 `2026-08-09-architecture-contract-retention` 三文件由 immutable commit `d4cc3b5` 保存，P2
@@ -26,8 +28,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Next Step
 
-停在 post-release 文档治理阶段，等待维护者后续补充 v0.2.2 的具体特点。beta.1/beta.2 以及 v0.2.2
-当前可证明的历史定位已进入 CHANGELOG；不得从后续 alpha/beta 反向猜测 v0.2.2，也不得进入 P3。
+停在 post-release 文档治理阶段，等待维护者后续补充 v0.2.2 的具体特点或另行授权新的 P2 gate。
+Phase 1～3 精选历史摘要已建立并验证；不得扩写无证据的 v0.2.2，也不得进入 P3。
 
 ## Gates
 
@@ -42,6 +44,7 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 - [x] P2-I — Historical cleanup：实施获批清退集合与 README 版本无关化，不开启新版本 identity。
 - [x] P2-G — Retirement governance：固化可迁移退役合同与版本无关自动化 guard。
 - [x] P2-H — Historical changelog recovery：从早期证据恢复 beta.1/beta.2/0.2.2 版本定位。
+- [x] P2-P — Phase history capsules：建立精选历史索引与 Phase 1～3 冻结摘要，固化边界 guard。
 - [ ] P3 — Successor train：另开 active scope 和 Discovery，建立获批的后继 machine identity。
 
 ## Stop Conditions
@@ -58,8 +61,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Status
 
-P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS；本地分支为 `0.3.2-post-release`，当前 HEAD 是 P3 前的
-unsealed governance transition。等待 v0.2.2 补充；P3 未授权。
+P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS。本地分支为 `0.3.2-post-release`，当前 HEAD
+是 P3 前的 unsealed governance transition。等待 v0.2.2 补充或新的 P2 授权；P3 未授权。
 
 ## Errors Encountered
 
@@ -76,3 +79,4 @@ unsealed governance transition。等待 v0.2.2 补充；P3 未授权。
 | P2 首轮 `rg` 把 PowerShell 不展开的 `*.md` 当作路径，返回 Windows illegal path | 1 | 前两段 inventory 已输出；后续改用 `rg ... . -g '*.md'`，不重复裸 shell glob |
 | 合并 inventory 命令最后的 moving-URL `rg` 因零匹配返回 exit 1 | 1 | 前置清单均成功；零匹配本身是 clean 结果，后续不把预期 no-match 与产品失败混为一谈 |
 | 组合读取 v0.2.2 证据与 beta tag 的命令因 successor 本地不存在 beta/v0.2.2 tags 返回 exit 1 | 1 | 文档片段已完整读取；改用可达 old-lineage commits、临时 exact tree 和现有 provenance，不伪造本地 tag |
+| P2-P focused test 在 Windows sandbox 内由 Node `spawnSync("git")` 返回 `status=null`，4 个依赖 trackedPaths 的 case 同点失败 | 1 | 分类为 sandbox platform limitation；13 个非 Git case 已通过，保持断言不变并在沙箱外重跑同一 focused suite |

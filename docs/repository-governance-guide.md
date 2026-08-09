@@ -145,6 +145,26 @@ iterations/<version>/tests
 
 活动 planning 是施工现场，不是永久档案馆。
 
+<a name="phase-history-capsules"></a>
+
+### 8.1 已完成 Phase 的精选摘要
+
+如果一个 Product Phase 跨多个版本或 Round，单看 CHANGELOG 很难恢复“为什么选择这条路线”；但把旧
+planning 和专项文档整体复制进 HEAD，又会把 cold history 重新变成当前树负担。可以在 warm layer 建立
+少量 **Phase capsule**，前提是同时满足：
+
+1. Phase 已关闭，并有 immutable commit/tag/Release/acceptance 可以恢复完整原文；
+2. 一个 Phase 只保留一份摘要，不按 Round、候选版本、测试批次或会话拆分；
+3. 使用固定结构记录历史位置、前置问题、核心决定、已交付闭环、验收结论、明确非目标、后继继承和
+   immutable evidence；
+4. 不复制 production source、脚本、fixture、验收全文、SHA 表、测试计数或旧 planning；
+5. 不维护当前 candidate/accepted/rollback、Next Step 或 PASS/PENDING 状态；
+6. 创建后冻结，只允许事实纠错或 immutable link repair；
+7. 所在目录被 Release、installer inventory、trusted graph 与 runtime dispatch 明确排除。
+
+Phase capsule 是精选历史导航，不是新的 architecture、programme、provenance 或 acceptance authority。
+没有长期解释价值的阶段不必收录；讨论中、施工中或只有原型结论的阶段不得提前进入该目录。
+
 ## 9. Provenance 的准入标准
 
 Provenance 是博物馆目录，不是逐版本流水账。只有以下变化进入里程碑：
@@ -233,6 +253,7 @@ contract/bootstrap 一致的 machine identity 后，才能进入 candidate seal�
 - 当前树不得包含第二套 production/runtime/contracts；
 - executable/trusted zones 必须 exact allowlisted；
 - docs/planning/experiments 必须被 Release 明确排除；
+- Phase history 只能包含被索引覆盖的冻结 Markdown capsule，不得成为源码、脚本或逐 Round archive；
 - 当前版本角色窗口不得超限；
 - 退役路径、旧原型和 moving artifact URL 必须被拒绝；
 - cross-document links 和显式稳定 anchors 必须有效；
@@ -267,6 +288,7 @@ commit、资产 hash 或“当前 PASS/PENDING”状态；candidate/accepted 文
 | eviction trigger | `<baseline promotion event>` |
 | retirement Definition of Done | `<role window / invariant migration / immutable recovery / validation>` |
 | publication oracle window | `<accepted + immediate fallback>` |
+| optional Phase capsule policy | `<closed phase / fixed summary schema / immutable evidence / Release exclusion>` |
 
 随后按顺序实施：authority map → failing-first guards → history migration → link rewrite → full validation。
 
@@ -288,6 +310,7 @@ commit、资产 hash 或“当前 PASS/PENDING”状态；candidate/accepted 文
 - 在 README、AGENTS 或通用 runbook 中逐版追加固定 bootstrap 文件名；
 - 为每个历史版本复制一整块 publication test，而不旋转 accepted/fallback 席位；
 - 创建 `archive/` 或 `old/` 把膨胀换一个目录继续累积；
+- 为每个 Round、测试批次或候选版复制一份“Phase 历史”，让精选摘要重新膨胀成流水账；
 - 复制整套源码到版本文件夹，再人工“合回主目录”；
 - 把普通 patch 写成 provenance 长篇里程碑；
 - 用静态全仓库文件清单同时治理 executable 与活动文档；

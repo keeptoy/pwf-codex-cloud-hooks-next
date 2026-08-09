@@ -123,6 +123,38 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(read("MAINTAINER_HANDOFF.md"), /\[[^\]]*仓库治理指南[^\]]*\]\(docs\/repository-governance-guide\.md\)/);
 });
 
+test("phase history is a closed indexed set of frozen Markdown capsules", () => {
+  const actual = trackedPaths();
+  const prefix = "docs/history/";
+  const historyPaths = actual.filter(item => item.startsWith(prefix));
+  const indexPath = `${prefix}README.md`;
+  const index = read(indexPath);
+  const capsules = historyPaths.filter(item => item !== indexPath);
+  const indexedCapsules = [...index.matchAll(/\]\((v\d+\.\d+\.\d+-phase-\d+-[A-Za-z0-9._-]+\.md)\)/g)]
+    .map(match => `${prefix}${match[1]}`).sort();
+
+  assert.equal(historyPaths.includes(indexPath), true);
+  assert.deepEqual(indexedCapsules, [...capsules].sort(), "history index must cover every capsule exactly once");
+  assert.match(index, /warm layer.*不是源码 archive.*当前 programme authority/s);
+  assert.match(index, /只允许事实纠错或修复.*immutable link/s);
+  assert.match(index, /不得进入 Release.*trusted graph.*runtime dispatch/s);
+
+  const requiredAnchors = [
+    "historical-position", "problem-before", "core-decisions", "completed-delivery",
+    "acceptance-conclusion", "explicit-non-goals", "successor-inheritance", "immutable-evidence",
+  ];
+  for (const relative of capsules) {
+    assert.match(relative, /^docs\/history\/v\d+\.\d+\.\d+-phase-\d+-[a-z0-9][a-z0-9.-]*\.md$/);
+    const content = read(relative);
+    for (const anchor of requiredAnchors) {
+      assert.match(content, new RegExp(`^<a name="${anchor}"><\\/a>$`, "m"), `${relative} lacks ${anchor}`);
+    }
+    assert.match(content, /https:\/\/github\.com\/[^/]+\/[^/]+\/blob\/[a-f0-9]{40}\//,
+      `${relative} lacks immutable source evidence`);
+    assert.doesNotMatch(content, /^## (Next Step|Status)$/m, `${relative} must not carry current lifecycle state`);
+  }
+});
+
 test("portable repository governance defines a closed retirement transaction", () => {
   const guide = read("docs/repository-governance-guide.md");
 
@@ -134,6 +166,10 @@ test("portable repository governance defines a closed retirement transaction", (
   assert.match(guide, /长期安全不变量已经迁入当前版本或版本无关测试/);
   assert.match(guide, /unsealed transition.*旧版本 bootstrap checksum/s);
   assert.match(guide, /不是第四种长期 baseline/);
+  assert.match(guide, /^<a name="phase-history-capsules"><\/a>$/m);
+  assert.match(guide, /一个 Phase 只保留一份摘要.*不按 Round.*测试批次/s);
+  assert.match(guide, /创建后冻结.*事实纠错.*immutable link repair/s);
+  assert.match(guide, /Phase capsule 是精选历史导航.*不是新的 architecture.*authority/s);
 });
 
 test("retired prototype conclusions remain covered by production safety tests", () => {

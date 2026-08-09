@@ -1,5 +1,34 @@
 # Findings: v0.3.2 Baseline Promotion and v0.3.3-dev Handoff
 
+## P2-P Phase History Capsules
+
+- Phase 1 的闭合边界是“可信来源与 inactive verified inventory”：冻结 upstream ownership、四项 overlay ledger、
+  adapter/runtime machine contracts、deterministic importer/install/package boundary；当时未激活 Hook runtime。
+- Phase 2 的闭合边界是 owned catch-up 激活：Managed policy 仍只注册 adapter；`owned-catchup.py` 独立校验
+  transcript 选择/身份/格式并监督 sibling runtime，global Skill 保持 pristine，UserPromptSubmit 仍未进入 Phase 3。
+- 历史 capsule 应记录当时问题、决定、交付、验收、非目标与后继继承，但不冻结测试数量、逐 Round 日志或
+  当前 lifecycle 角色；原始专项文档和 acceptance 只能作为 immutable evidence 链接。
+- Phase 3 闭合的是 canonical owned-plan 路径：thin adapter 对两个事件监督 `owned-plan.py`，SessionStart 再把
+  同一 exact project state 交给 `owned-catchup.py`；受控 private snapshot 复用 pristine resolver/injector，
+  删除 adapter 内平行 plan 算法，同时明确不启用 Phase 4 的 attestation/nonce/modes/ledger。
+- 现有治理指南已经定义 hot/warm/cold 与 provenance museum，但尚未定义“Phase capsule”这种 warm-layer
+  文档的准入、冻结和体积边界；应补充一小节，而不是另建 archive authority。
+- 当前 repository guard 已确保所有 `docs/` 不进入 Release，但没有限制 `docs/history/` 只能包含精选 Markdown、
+  固定索引覆盖和禁止 executable/source 副本；本轮可在同一 lifecycle test 中补足。
+- 三份临时 Phase 文档的 Git blob 与旧仓库 immutable commit `bbad3703...` 中对应路径逐字相同，因此
+  capsule 的“完整原文”可直接链接该 commit，不需要把临时副本纳入当前树；beta.1 acceptance 也在该 ref，
+  beta.2 exact acceptance 则由现有 provenance 指向 successor commit `cde4b15...`。
+- 适合的最小结构是 `docs/history/README.md` 加三份 `v0.3.0-phase-N-*.md`；索引声明这些文件是冻结的
+  warm-layer navigation，事实修正或 immutable link repair 之外不持续追加，并禁止用它承载当前状态。
+
+### P2-P Result
+
+- 最终采用四文件精选结构，而不是 `archive/old`：Phase 1～3 各一份 capsule，索引负责准入与阅读路由。
+- BASELINE_PROVENANCE 只提供博物馆入口，README 只提供问题导航；历史摘要本身不接管 provenance、
+  programme、architecture 或 acceptance authority。
+- 数据驱动 guard 校验索引覆盖、固定语义模板和 immutable evidence，允许未来按同一政策增加真正闭合的
+  Phase，同时拒绝未索引文件、源码副本和当前 lifecycle 状态渗入。
+
 ## Initial Question
 
 - 维护者希望当前树更清爽：v0.3.1 进入历史、v0.3.2 成为已完成基线，下一开发列车以 v0.3.3-dev
