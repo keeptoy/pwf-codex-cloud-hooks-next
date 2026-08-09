@@ -2,6 +2,17 @@
 
 ## 2026-08-09
 
+- 维护者授权读取新增临时 0.1.0/0.2.2 实现，并先把 0.1.0 理解写入 CHANGELOG；planning-with-files
+  catch-up 后起始工作树只有不得修改/提交的 `临时文件/`。
+- 完整读取 0.1.0 README/package/upstream manifest、adapter、installer 关键实现和两组 tests，确认它是
+  9-file B1 candidate：legacy hooks.json/config trust、单 adapter、direct global Skill catch-up 和 adapter
+  plan rendering，五个本地 fixture case，无 Cloud acceptance。
+- Git 审计确认两个快照均无 `.git`；0.1.0 没有可达 tag/commit。v0.2.2 则有 `3bfd3ba`→`2f9100b`
+  Git 链，但临时 24-file tree 只有 23 blobs 与 release source 相同，sealed bootstrap 替换了 zero hash。
+- CHANGELOG 已新增 v0.1.0 段，区分真实实现、尚未建立的现代安全边界和 source-only 证据等级；v0.2.2
+  段按本轮范围保持不动，未从临时快照提前扩写。
+- focused suite 17/17 PASS；完整 `npm test` 为 92 tests、80 PASS、12 个诚实 Windows/POSIX SKIP、0 FAIL；
+  `git diff --check` PASS。P2-H-010 已关闭，未进入 P3。
 - 维护者批准按最干净方案吸收 `phase-3-upstream-invocation-options`；planning-with-files catch-up 后工作树
   只有不得修改/提交的 `临时文件/`，本轮未进入 P3。
 - 已验证临时原文 blob `5e76f074...` 与 immutable `bbad3703...` 同路径文件完全一致；审计确认 Phase 3

@@ -1,5 +1,42 @@
 # Findings: v0.3.2 Baseline Promotion and v0.3.3-dev Handoff
 
+## P2-H-010 v0.1.0 Recovery
+
+- 临时 `pwf-codex-cloud-hooks-0.1.0` 是 9-file source snapshot，包含 README、package、upstream manifest、
+  installer、adapter 和两组 tests；目录内未发现 `.git` metadata。
+- README 将 0.1.0 定位为 B1 implementation candidate：目标是把 global PWF Skill 的两个只读 lifecycle
+  Hook 安装到 active `$CODEX_HOME`，SessionStart 做 optional upstream catch-up + plan injection，
+  UserPromptSubmit 做 plan/recent-progress injection，并保留 canary 观测。
+- 早期 trust 模型直接依赖全局 Skill 的 pinned canonical file hashes、`$CODEX_HOME/hooks.json` 和
+  `config.toml` precomputed trust；已具备 dry-run、backup、merge preservation、exclusive lock、atomic write、
+  doctor、uninstall ownership 和不使用 moving/latest artifact 的供应链意识。
+- manifest 固定 PWF v3.8.2、commit `b04ffd9...` 及 SKILL/resolver/session-catchup 三个 required files；
+  仍需读取 adapter/installer/tests 判断 README 中哪些能力是真实实现而非候选计划。
+- 实现交叉核验确认这是最早的 thin prototype，而非当前 trusted graph：installer 只复制一个
+  `hook_adapter.py`，向 legacy `$CODEX_HOME/hooks.json` 注册两个 handler，并在 `config.toml` 写 precomputed
+  trust hash；production runtime 仍从候选 global Skill 目录直接执行 upstream `session-catchup.py`。
+- adapter 自己实现 active pointer → newest scoped → root plan 选择，并直接读取 task/progress 渲染 context；
+  SessionStart 先调用 upstream catch-up。它尚无 repository-owned upstream bundle、owned-plan/owned-catchup、
+  request/result schema、transcript identity/immutable bytes、private snapshot 或 managed policy adapter-only graph。
+- 五个测试 case 真实覆盖：两个事件的 canary/plan 输出、无 plan 时 canary-only，以及 installer dry-run 和
+  install/merge/idempotence/doctor drift/uninstall ownership。它们是本地临时 fixture，不是 Cloud acceptance。
+- 当前两个临时快照都不含 `.git`。可达 refs/tags 中没有 v0.1.0，当前 object/ref topology 也找不到把该
+  9-file snapshot 绑定到 commit 的可审计路径；因此只能称为 source snapshot，不能宣称 immutable Release。
+- v0.2.2 有独立 Git 证据链：root commit `3bfd3ba` 经多次修复到 release commit `2f9100b`，当前由
+  `origin/audit/beta2-exact` 保持可达，但没有本地 `v0.2.2` tag，也不是当前 HEAD ancestor。
+- 临时 v0.2.2 共 24 个文件，与 `2f9100b` 的路径集合完全一致；23 个 blob 相同，唯一差异是 external
+  bootstrap：commit 保存 64 位 zero hash，临时快照写入 sealed SHA。因此该目录可帮助恢复发布字节，
+  但不能整体宣称是 release source commit 的 exact tree。
+
+### P2-H-010 Result
+
+- CHANGELOG 新增 v0.1.0 独立段，明确其 B1 candidate 身份、两个只读事件、canary、direct upstream
+  catch-up、adapter plan rendering 和 installer/trust/doctor/uninstall 初始闭环。
+- 同一段显式记录后续尚未建立的 owned runtime、Managed policy、machine contracts、transcript bytes 与
+  private snapshot，避免把当前架构反向投射到早期原型。
+- 证据等级保持诚实：五个本地 case 不冒充 Cloud acceptance，没有可达 tag/commit 就不宣称 immutable
+  publication。v0.2.2 的 Git/source-vs-sealed-bootstrap 发现只记录到 findings，等待后续独立补全 gate。
+
 ## P2-P-R Phase 3 Invocation Route Rationale
 
 - 临时 audit tree 的 `docs/phase-3-upstream-invocation-options.md` 与 immutable commit

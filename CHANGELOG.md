@@ -109,3 +109,19 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   behavior 与 historical fallback。
 - 本段目前只冻结上述可验证的版本角色；更细功能特点等待早期证据与维护者补充后再完善，不从后续
   alpha/beta 实现反向推断。
+
+## v0.1.0
+
+- 建立最早可恢复的 B1 implementation candidate：以个人 Codex Cloud installer 把 `SessionStart` 和
+  `UserPromptSubmit` 两个只读 PWF lifecycle Hook 安装到 active `$CODEX_HOME`，并用
+  `PWF_GLOBAL_HOOK_CANARY_V1` 观察新会话调用。
+- `SessionStart` 直接调用已校验 global Skill 中的 upstream `session-catchup.py`，随后由 adapter 选择并
+  渲染 active plan；`UserPromptSubmit` 注入 active plan 与 recent progress，无 plan 时只输出 canary。
+- installer 只部署一个 adapter，通过 legacy `hooks.json` 与 `config.toml` precomputed trust 注册两个
+  handler；已具备 upstream file hash pin、dry-run、备份、merge preservation、exclusive lock、atomic write、
+  idempotent install、doctor drift 检测和 ownership-aware uninstall 的初始治理闭环。
+- 该原型仍直接发现并执行 global Skill，plan 选择/文件读取/渲染也位于 adapter；尚未建立 repository-owned
+  runtime、Managed policy adapter-only graph、request/result contracts、transcript identity/immutable bytes
+  或 private snapshot 等后续安全边界。现存五个 case 只证明本地 fixture 行为，不构成 Cloud acceptance。
+- 当前可恢复证据是没有对应可达 tag/commit 的 source snapshot，因此本段不宣称 0.1.0 已完成 immutable
+  publication；后续版本的发布或验收结论也不能反向证明它。

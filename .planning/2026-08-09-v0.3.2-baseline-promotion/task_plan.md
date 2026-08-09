@@ -34,6 +34,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   由可复制模板恢复；测试不再冻结文件名、八段 anchor、证据数量或某个历史 Phase 的内容。
 - 维护者批准吸收 immutable `phase-3-upstream-invocation-options` 的关键架构选择：只补 Phase 3 的历史
   rationale 与 ARCHITECTURE 的长期边界，不复制旧 Round/测试/角色状态，也不扩写 BASELINE_PROVENANCE。
+- 维护者明确授权读取新增的临时 0.1.0/0.2.2 实现证据，先恢复 0.1.0 的关键文档和代码事实并补入
+  CHANGELOG；临时目录本身不得修改、暂存或复制进当前树，同时核对两个快照是否具有 Git 恢复链。
 - P3 只记录为后续独立 gate；当前不修改 package、Release contract、bootstrap 或 `v0.3.3-dev` identity，
   不 seal、不发布、不部署新版本。
 - 已完成的 `2026-08-09-architecture-contract-retention` 三文件由 immutable commit `d4cc3b5` 保存，P2
@@ -43,7 +45,7 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 停在 post-release 文档治理阶段，等待维护者后续补充 v0.2.2 的具体特点或另行授权新的 P2 gate。
 Provenance 已收口为冷证据账本，Phase 历史只由 README 的单一宏观入口进入，摘要格式由模板而非测试
-恢复；Phase 3 路线选择已按历史 rationale/当前架构边界分层吸收，不得进入 P3。
+恢复；0.1.0 candidate 历史已按实际实现与证据等级进入 CHANGELOG，不得进入 P3。
 
 ## Gates
 
@@ -65,6 +67,7 @@ Provenance 已收口为冷证据账本，Phase 历史只由 README 的单一宏�
 - [x] P2-P-E — Phase archive entrance：移除 CHANGELOG 的 Phase 3.5 特例，冻结 README 单一宏观入口。
 - [x] P2-P-T — Phase authoring template：生成恢复模板，移除格式型/历史内容型测试断言。
 - [x] P2-P-R — Phase 3 route rationale：提炼受控快照选择、后备与退休条件，保持 provenance 冷账本纯度。
+- [x] P2-H-010 — v0.1.0 recovery：交叉读取早期文档/实现/测试，恢复最早原型定位与 Git 证据边界。
 - [ ] P3 — Successor train：另开 active scope 和 Discovery，建立获批的后继 machine identity。
 
 ## Stop Conditions
@@ -82,8 +85,8 @@ Provenance 已收口为冷证据账本，Phase 历史只由 README 的单一宏�
 ## Status
 
 P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS，P2-P-A PASS，P2-P-M PASS，P2-P-B PASS，
-P2-P-E PASS，P2-P-T PASS，P2-P-R PASS。本地分支为 `0.3.2-post-release`，当前 HEAD 是 P3 前的
-unsealed governance transition；P3 未授权。
+P2-P-E PASS，P2-P-T PASS，P2-P-R PASS，P2-H-010 PASS。本地分支为 `0.3.2-post-release`，当前 HEAD
+是 P3 前的 unsealed governance transition；P3 未授权。
 
 ## Errors Encountered
 
@@ -105,3 +108,4 @@ unsealed governance transition；P3 未授权。
 | P2-P-M 第二轮 focused suite 16/17 PASS；新 capsule 的 cold-evidence 句式未使用既有统一模板 | 1 | 不放宽 guard；把“迁移闭环的历史来源”统一为“本文的历史来源”，保留后半句 exact-ref 分工后复跑 |
 | P2-P-B focused suite 在 Windows sandbox 内 13/17 PASS；4 项依赖 `spawnSync("git")` 的 tracked-path case 返回 `status=null` | 1 | 分类为既有 sandbox platform limitation；保持断言不变，在沙箱外复跑同一 suite 17/17 PASS |
 | PowerShell `rg` 再次收到未展开的 `.planning/.../*.md` 路径并返回 Windows illegal path | 1 | 所需测试片段已输出；后续继续使用显式文件或 `rg ... . -g '*.md'`，不重复裸 glob |
+| 首次用 PowerShell `foreach (...) { ... } | Format-Table` 比较 v0.2.2 历史 trees 时触发 empty pipe parser error | 1 | 没有修改文件；把循环结果先赋给 `$rows`，再单独格式化，成功比较五个 commits |
