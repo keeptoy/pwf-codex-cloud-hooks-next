@@ -185,6 +185,12 @@ Release 验证必须先按 checkout 前置条件分流，不能把所有测试�
 “完整 suite PASS”。完整 suite 仍是封板和 publication 审计的强制门槛，公开 URL、SHA 与 bootstrap
 默认下载链仍是 Published Release 通道的独立门槛。
 
+Published Release 的 bootstrap 可以使用临时目录并在 setup 结束后正常清理；后续 post-install 深度复验
+不得假设该目录或其中的维护工具继续存在，而应从同一 immutable URL 重新下载并校验 ZIP。复验必须使用
+ZIP 内经过 checksum/boundary 核验的 `install.js` 执行 doctor，并用同源 builder/importer、Python
+inventory/policy 断言和 snapshot residue 检查闭环；不得回退到 workspace 中的同名工具，否则公开资产
+通道会重新依赖可移动 source checkout。
+
 固定字节顺序：
 
 1. 冻结目标 version、source、contracts、tests 和 ZIP 精确 allowlist；

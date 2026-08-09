@@ -119,3 +119,17 @@
   immutable tag/历史 refs 的审计移动到 `published-release-oracles.test.js`。默认 `npm test` 仍运行两组；
   R5-SC 明确排除 publication-only 文件并要求其余 Linux tests `fail=0/skipped=0`，R5-PR 继续证明公开资产
   消费路径。测试语义不通过环境变量暗中降级。
+
+## R5 post-resume F 的工具来源分流
+
+- 维护者反馈 R5-SC setup 与 B～F 黑盒均可通过；正式证据摘要仍需冻结。R5-PR 设计审查发现当前 F
+  通过 workspace `git rev-parse` 定位 `install.js`，只适合 Source/Candidate，不满足公开资产通道的
+  workspace-independent 语义。
+- public bootstrap 用临时目录下载/解压 ZIP，并在 setup shell 退出时 cleanup；后续 agent task 不能依赖
+  该临时 `install.js` 仍存在。这是正常生命周期，不应通过阻止 cleanup 或依赖 Cloud 仓库 checkout 修补。
+- 决定把 F 拆为两个工具来源：R5-SC 继续使用精确 source checkout 的 workspace `install.js`；R5-PR
+  重新从固定 public ZIP URL 下载、校验 SHA、解压，并用该 ZIP 内的 builder check、importer check 和
+  `install.js doctor` 检查已经安装的 managed state。
+- R5-PR 的 Python 深断言继续核对 doctor healthy/repairable/errors/blockers、installer version、11 个
+  runtime payload 的 manifest/actual inventory 等价、两个事件各一个 adapter-only handler；最后独立检查
+  snapshot residue 为零。临时公开 ZIP/extraction 只服务本次验证，退出时清理。

@@ -324,6 +324,18 @@ test("change history, programme intent, current action, and immutable evidence h
   assert.match(acceptance032, /PENDING_R5_SC.*PENDING_R5_PR.*PENDING_R5/is);
   assert.match(acceptance032, /Fresh.*canonical.*long tail.*real Resume.*doctor/is);
   assert.match(acceptance032, /不授权.*Latest.*rollback/is);
+
+  const publishedFStart = acceptance032.indexOf("### 10.2 R5-PR");
+  const evidenceStart = acceptance032.indexOf("## 11.", publishedFStart);
+  assert.ok(publishedFStart >= 0 && evidenceStart > publishedFStart);
+  const publishedF = acceptance032.slice(publishedFStart, evidenceStart);
+  assert.match(publishedF, /releases\/download\/v0\.3\.2\/pwf-codex-cloud-hooks-v0\.3\.2\.zip/);
+  assert.match(publishedF, /b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081/);
+  assert.match(publishedF, /tools\/build_release\.py.*check/is);
+  assert.match(publishedF, /tools\/import_upstream_runtime\.py.*check/is);
+  assert.match(publishedF, /node "\$PACKAGE_ROOT\/install\.js" doctor/);
+  assert.match(publishedF, /SNAPSHOT_LEFTOVERS=0/);
+  assert.doesNotMatch(publishedF, /git rev-parse|workspace.*install\.js/is);
 });
 
 test("ROADMAP discovery governance separates new rounds from in-round safety gates", () => {
@@ -357,4 +369,6 @@ test("Release governance routes tests by checkout prerequisites without forging 
   assert.match(release, /不得.*创建.*tag.*伪造.*前置条件/is);
   assert.match(release, /完整.*suite.*封板.*publication/is);
   assert.match(release, /公开.*URL.*SHA.*默认.*下载/is);
+  assert.match(release, /bootstrap.*临时目录.*清理.*post-install.*重新下载.*ZIP/is);
+  assert.match(release, /ZIP 内.*install\.js.*doctor.*workspace/is);
 });

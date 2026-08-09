@@ -98,3 +98,16 @@
   87 tests、75 PASS、12 Windows/POSIX SKIP、0 FAIL；输出 `TAGLESS_NO_REMOTE=PASS`、
   `TAGLESS_NO_TAGS=PASS`、`TAGLESS_PORTABLE_SUITE=PASS`。首次 `--no-tags --local` 因本地优化仍复制 refs，
   fixture 已安全清理并改用显式删除临时 refs 的方法复验。
+- 维护者反馈修复后的 R5-SC setup 以及后续 B～F 均可通过，并指出 Published Release 的 F 不能从
+  workspace 获取 `install.js`：public bootstrap 正确清理了 setup 临时目录。当前进入 R5-PR post-resume
+  verification redesign，目标是重新下载/校验/解压 public ZIP 并只用其中的维护工具完成深度断言。
+- R5-PR F failing-first architecture governance 为 9 tests / 7 PASS / 2 expected FAIL，红项精确对应缺少
+  channel-specific 10.2 与 ROADMAP 未冻结 bootstrap-cleanup/post-install tool provenance。
+- runbook 第 10 节已拆成 10.1 R5-SC workspace 工具与 10.2 R5-PR public ZIP 工具；后者固定 URL/SHA/size，
+  重下载并解压 ZIP，执行 builder check、importer check、ZIP 内 `install.js doctor`、package/contract/
+  installed inventory/policy Python 深断言与 snapshot residue 检查，全程不读取 Git/workspace 工具。
+- ROADMAP 第 7 节新增长期规则：bootstrap setup 临时目录可以正常清理；post-install 必须重新取得同一
+  immutable ZIP 并使用其中的维护工具，禁止回退到可移动 workspace。
+- validation：更新后的 architecture governance 9/9 PASS；4 个 Bash blocks 均 `bash -n` PASS；完整
+  `npm test` 为 90 tests、78 PASS、12 Windows/POSIX SKIP、0 FAIL；`git diff --check` PASS；Release ZIP
+  仍为 23 entries、82,627 bytes、SHA-256 `b42aecaf...e5081`。
