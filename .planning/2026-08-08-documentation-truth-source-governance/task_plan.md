@@ -20,8 +20,8 @@ publication、tag、asset、Cloud、Product Phase 4 或 `0.3.2-dev-extend` 历�
 
 ## Next Step
 
-本计划没有剩余实施行动。将 D6.1 checkpoint push `0.3.2-dev` 后，后续历史版本文件归处/膨胀控制应
-在 `0.3.2-dev-extend` 另建活动 planning；Product Phase 4、Release 与 Cloud 仍需独立授权。
+本计划没有剩余行动；D6.1 checkpoint 已 push `0.3.2-dev`。后续历史版本文件归处/膨胀控制应在
+`0.3.2-dev-extend` 另建活动 planning；Product Phase 4、Release 与 Cloud 仍需独立授权。
 
 ## Current Phase
 
@@ -202,8 +202,8 @@ D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相
   test 文件或 case 数量。
 - [x] 运行 failing-first focused、文档链接/LF/fence/diff、完整 Windows suite；确认 DESIGN/tests 仍为
   ZIP-excluded，不需要重新 seal 或 Cloud gate。
-- [ ] 创建本地 checkpoint 并 push 当前 `0.3.2-dev`；不创建 PR、extend 分支或 Release。
-- **Status:** implementation validated / push pending
+- [x] 创建本地 checkpoint 并 push 当前 `0.3.2-dev`；不创建 PR、extend 分支或 Release。
+- **Status:** complete
 
 ## Release Identity Decision Gate
 

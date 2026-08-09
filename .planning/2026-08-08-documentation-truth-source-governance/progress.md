@@ -477,3 +477,6 @@
   runtime/contracts/package/历史 evidence。状态切换为 implementation validated / push pending。
 - D6.1 pre-commit audit PASS：changed paths 精确为五个授权文件；Markdown UTF-8/LF/final newline/fence、
   test syntax 与 `git diff --check` 全部通过。
+- D6.1 implementation checkpoint `77746e7`（`docs: add reverse test responsibility index`）已成功 push
+  `origin/0.3.2-dev`；未推 main，未创建 PR、extend 分支、tag、Release、asset 或 Cloud 变更。
+- D6.1 最后一项已勾选，状态 complete；本计划再次关闭，后续历史版本文档膨胀治理保持独立范围。
