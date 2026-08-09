@@ -193,6 +193,35 @@ test("ARCHITECTURE preserves system reasoning while DESIGN routes implementation
   assert.doesNotMatch(design, /ADAPTER_DEADLINE_SECONDS|20,000|50 \/ 20|当前生产回滚|GitHub `Latest`/);
 });
 
+test("DESIGN maps every test module back to the capability and boundary it protects", () => {
+  const design = readText("DESIGN.md");
+  const start = design.indexOf("### 6.1 测试职责反向索引");
+  const end = design.indexOf("## 7. 继续阅读", start);
+  assert.notEqual(start, -1, "DESIGN lacks the reverse test responsibility index");
+  assert.notEqual(end, -1, "DESIGN reverse test responsibility index has no section boundary");
+  const reverseIndex = design.slice(start, end);
+
+  for (const column of ["测试文件", "主要保护内容", "直接对象/边界", "平台属性"]) {
+    assert.match(reverseIndex, new RegExp(column));
+  }
+
+  const testModules = fs.readdirSync(path.join(root, "tests"), { withFileTypes: true })
+    .filter(entry => entry.isFile() && entry.name.endsWith(".test.js"))
+    .map(entry => entry.name)
+    .sort();
+  const documentedModules = [...reverseIndex.matchAll(/\]\(tests\/([^)]+\.test\.js)\)/g)]
+    .map(match => match[1])
+    .sort();
+  assert.deepEqual(documentedModules, testModules);
+  for (const module of testModules) {
+    const link = `](tests/${module})`;
+    assert.equal(reverseIndex.split(link).length - 1, 1, `${module}: expected one reverse-index row`);
+  }
+
+  assert.match(reverseIndex, /test title.*assertion/is);
+  assert.doesNotMatch(reverseIndex, /\b\d+\s+(?:tests?|cases?|passed|failed|skipped)\b/i);
+});
+
 test("change history, programme intent, current action, and immutable evidence have separate authorities", () => {
   const changelog = readText("CHANGELOG.md");
   const roadmap = readText("ROADMAP.md");

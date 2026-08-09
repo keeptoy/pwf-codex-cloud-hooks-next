@@ -125,6 +125,32 @@ contract 为准。
 跨层架构断言集中在 [`tests/architecture-contracts.test.js`](tests/architecture-contracts.test.js)；测试通过
 只证明当前合同，没有授予 seal、publication、Cloud、rollback 或下一 Product Phase。
 
+### 6.1 测试职责反向索引
+
+第 4～6 节回答“模块或变更 → 选择什么验证”；下表提供反向入口，回答“看到一个 test module → 它主要
+保护什么”。索引粒度是文件而不是单个 case，避免把测试源码复制成第二份可漂移清单。
+
+| 测试文件 | 主要保护内容 | 直接对象/边界 | 平台属性 |
+|---|---|---|---|
+| [`activation.test.js`](tests/activation.test.js) | production 事件顺序、plan/catch-up 组合和 child failure 降级 | adapter 与两个 owned runtime 的集成 seam | 组合断言跨平台；真实 runtime/cross-user case 需要 Linux |
+| [`architecture-contracts.test.js`](tests/architecture-contracts.test.js) | 文档 authority、稳定锚点、Architecture/Design 分工和 handoff 治理 | 根级文档与 machine/repository 边界 | 跨平台静态治理 |
+| [`cloud-fixtures.test.js`](tests/cloud-fixtures.test.js) | 带日期 Cloud lifecycle/Hook fixture 与 wrapper catch-up 兼容性 | Cloud-shaped fixture、owned catch-up | 跨平台重放；不替代 live Cloud gate |
+| [`contracts.test.js`](tests/contracts.test.js) | schema、manifest、overlay、runtime bundle 与 Release boundary 的关系 | machine contracts 与 integrity edges | 跨平台静态/关系断言 |
+| [`golden-output.test.js`](tests/golden-output.test.js) | managed-legacy composition 与 canonical plan 输出兼容性 | adapter output golden fixtures | 跨平台 golden replay |
+| [`hook-adapter.test.js`](tests/hook-adapter.test.js) | Host 输入、canary、event dispatch、plan authority 与结果组合 | `hook_adapter.py` 的协议边界 | 跨平台，使用受控 child doubles |
+| [`import-runtime.test.js`](tests/import-runtime.test.js) | pinned archive、allowlist、确定性 import 与 destination drift | importer、upstream manifest、owned copy | 跨平台临时 archive/workspace |
+| [`installer.test.js`](tests/installer.test.js) | install/doctor/repair/uninstall、TOML ownership、锁、备份和 drift | `install.js` 与 shared managed state | 主体跨平台；权限/cross-user case 需要 Linux |
+| [`owned-plan-runtime.test.js`](tests/owned-plan-runtime.test.js) | plan 选择、attachment、安全读取、private snapshot、timeout 与 cleanup | `owned-plan.py`、resolver/injector、plan contracts | 基础 schema 跨平台；文件/进程安全 case 需要 Linux |
+| [`owned-runtime.test.js`](tests/owned-runtime.test.js) | transcript 选择、identity、fallback、损坏输入与 diagnostic | `owned-catchup.py`、runtime contracts、Host data | 主体跨平台；linked-file case 需要 POSIX |
+| [`release-package.test.js`](tests/release-package.test.js) | development ZIP 确定性、历史 published oracle 与 candidate identity drift | Release builder、artifact contract、external bootstrap | 跨平台；本地结果不构成 publication |
+| [`repository-boundary.test.js`](tests/repository-boundary.test.js) | tracked inventory、archive 排除、退役原型隔离与安全结论承接 | Git repository、Release allowlist、runtime dispatch | 跨平台静态边界 |
+| [`runtime-supervisor.test.js`](tests/runtime-supervisor.test.js) | child result 校验、process supervision、sibling identity 与 producer/consumer seam | adapter supervisor、plan contracts、installed siblings | 主体跨平台；process-group timeout 需要 Linux |
+| [`skill-patch.test.js`](tests/skill-patch.test.js) | compatibility overlay 可复现性、bootstrap 安全和 global Skill pristine | patcher、bootstrap、pinned Skill archive | 跨平台 sandbox；不替代 Cloud install acceptance |
+
+同一能力可能被边界、seam、golden 和 activation 多层测试共同保护，因此这不是一一对应表。具体 case
+语义以测试源码中的 test title 与 assertion 为准，运行数量由 runner 提供；新增 test module 时必须在本
+节补一行，但不在 DESIGN 冻结 case 数。任何 PASS 都不能替代未执行的平台 gate 或扩大活动授权。
+
 ## 7. 继续阅读
 
 - 首次使用或寻找命令：回到 [`README.md`](README.md)。

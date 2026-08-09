@@ -14,22 +14,23 @@
 回滚点。D0/D1 探路与 R0 identity foundation 已完成；新 source/package/contract/bootstrap identity
 通过完整 Windows 回归、immutable v0.3.1/v0.3.0 oracle 和 deterministic ZIP 验证。D2 entry-point 与
 D3 implementation navigation、D4 lifecycle/provenance guards、D4.1 stable-anchor correction 与 D5
-maintainer entrypoint 与 D6 closure 已完成并经维护者复核。本计划关闭；授权
-不包含 seal、publication、tag、asset、push、remote ref、Cloud 或 Product Phase 4 变更。
+maintainer entrypoint、D6 closure 与 D6.1 test responsibility reverse index supplement 已完成。维护者把
+D6.1 明确归入 `0.3.2-dev` 的既有自解释目标并授权 push 当前里程碑分支；授权不包含 `main`、PR、seal、
+publication、tag、asset、Cloud、Product Phase 4 或 `0.3.2-dev-extend` 历史文档治理。
 
 ## Next Step
 
-本计划没有剩余行动。后续 `0.3.2-dev-extend` 文档精简分析应从已冻结的 `0.3.2-dev` 里程碑另建活动
-planning；Product Phase 4、seal、publication 与 Cloud 不因本计划关闭而自动授权。
+本计划没有剩余实施行动。将 D6.1 checkpoint push `0.3.2-dev` 后，后续历史版本文件归处/膨胀控制应
+在 `0.3.2-dev-extend` 另建活动 planning；Product Phase 4、Release 与 Cloud 仍需独立授权。
 
 ## Current Phase
 
-Complete — Documentation truth-source governance
+Complete — Documentation truth-source governance plus test traceability
 
 ## Status
 
-**COMPLETE.** D0/D1/R0/D2/D3/D4/D4.1/D5/D6 全部完成；D6 的全仓静态、focused、完整 suite 与
-deterministic package 验证已通过，有意摘要和历史快照白名单已记录，并经维护者确认关闭。
+**COMPLETE.** D0/D1/R0/D2/D3/D4/D4.1/D5/D6/D6.1 全部完成；DESIGN 已同时具备 module/change → test
+与 test → capability/boundary 双向入口，动态 guard 不冻结 test 文件或 case 数量。
 D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相称验证后可主动 commit，前一 gate 未通过
 不得进入下一 gate。Release seal/publication、push/remote/Cloud 和 Product Phase 4 仍需独立授权。
 
@@ -192,6 +193,17 @@ D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相
 - [x] 记录残留的有意摘要与历史快照白名单。
 - [x] 完成维护者复核后关闭计划，Product Phase 4 仍需独立授权。
 - **Status:** complete
+
+### D6.1 — Test responsibility reverse index supplement
+
+- [x] 在 DESIGN 验证路由后增加文件级反向索引，回答每个 test module 主要保护什么、直接对象/边界和
+  平台属性；不复制逐 test case 名称、运行计数或完整命令。
+- [x] 增加动态 governance guard：枚举 `tests/*.test.js`，要求每个文件在该索引精确出现一次；不冻结
+  test 文件或 case 数量。
+- [x] 运行 failing-first focused、文档链接/LF/fence/diff、完整 Windows suite；确认 DESIGN/tests 仍为
+  ZIP-excluded，不需要重新 seal 或 Cloud gate。
+- [ ] 创建本地 checkpoint 并 push 当前 `0.3.2-dev`；不创建 PR、extend 分支或 Release。
+- **Status:** implementation validated / push pending
 
 ## Release Identity Decision Gate
 

@@ -451,3 +451,29 @@
   `0.3.2-dev` 或 `0.3.2-dev-extend`，因此可从当前 closure commit 新建前者，不覆盖既有远端分支。
 - Plan closure audit PASS：changed paths 精确为 task plan/progress；两文件 UTF-8 no-BOM、LF、final
   newline、fence balance 与 `git diff --check` 全部通过。
+
+## 2026-08-09 — D6.1 test traceability supplement started
+
+- 维护者确认测试职责反向索引属于 `0.3.2-dev` 原文档自解释目标的补充，并授权实现后直接 push 当前
+  分支；`0.3.2-dev-extend` 继续保留给历史版本文件归处/膨胀控制议题。
+- Session catch-up 无未同步输出；起点分支 `0.3.2-dev` 与 `origin/0.3.2-dev` 同步且工作树干净。
+- GitHub CLI 仍以 `keeptoy` 认证，origin 目标未变；用户明确不要求 PR，因此本轮只 commit/push 当前
+  非默认分支。
+- D6.1 状态切换为 in progress；范围冻结为 DESIGN、focused governance test 与三份活动 planning，
+  不改 runtime/contracts/package/历史 evidence 或 Release/Cloud 状态。
+- D6.1 failing-first PASS（预期红）：focused architecture + repository 共 10 tests，9 pass / 1 fail；唯一
+  失败精确为 DESIGN 缺少 `6.1 测试职责反向索引`，既有 authority、handoff、architecture 与 repository
+  assertions 全部绿色。
+- DESIGN 实现完成：验证路由后新增文件级 test responsibility reverse index，覆盖 activation、文档治理、
+  Cloud fixture、contracts、golden、adapter、importer、installer、plan/catch-up runtime、package、repository、
+  supervision 与 patch/bootstrap；逐 case 语义继续归 test title/assertion，不冻结运行数量。
+- Dynamic guard + focused PASS：filesystem 动态发现的每个 `tests/*.test.js` 在 DESIGN 6.1 内精确链接一次，
+  10/10 focused tests 全绿；新增 test module 将要求同步补充职责行，但 guard 不写死文件/case count。
+- Static PASS：DESIGN 与三份 planning 均为 UTF-8 no-BOM、LF、final newline、fence balance；DESIGN 本地
+  targets、test syntax、`git diff --check` 通过，DESIGN 与 tests 继续被 Release artifact 排除。
+- Full Windows suite PASS：86 tests / 74 pass / 12 honest POSIX/Linux skips / 0 fail；新增 reverse-index
+  guard、current development package、published immutable oracles 与 runtime/installer seams 全部绿色。
+- D6.1 implementation exit PASS：变更仍精确为 DESIGN、focused governance test 和三份 planning；未改
+  runtime/contracts/package/历史 evidence。状态切换为 implementation validated / push pending。
+- D6.1 pre-commit audit PASS：changed paths 精确为五个授权文件；Markdown UTF-8/LF/final newline/fence、
+  test syntax 与 `git diff --check` 全部通过。

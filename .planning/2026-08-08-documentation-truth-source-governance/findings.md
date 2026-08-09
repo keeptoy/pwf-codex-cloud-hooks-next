@@ -485,3 +485,16 @@ tracked 文档，D5 会触碰历史/当前语义分界，D6 才能证明整体�
   收录的 upstream templates/references/docs 链接。该目录由其 README 明确为固定上游测试输入，且
   importer/repository tests 保护 inventory；D6 对它仍做 UTF-8/LF/fence 检查，只对白名单化的链接目标
   跳过存在性，不把 fixture 的上游文档树错误扩进本仓库。
+
+## D6.1 test traceability supplement
+
+- DESIGN 现有关系是 module/change target → preferred validation，缺少 test module → protected
+  capability/boundary 的反向入口；这是可追溯性缺口，不是测试覆盖缺口。
+- 反向索引应以 `tests/*.test.js` 文件为稳定粒度。逐 case 清单会复制测试源码并随名称/数量漂移；准确
+  case 语义继续由 test title 与 assertion 自解释，运行数量继续由 runner 提供。
+- 当前规模适合在 DESIGN `验证路由` 下增加一张表，不新建 TESTING authority。若未来测试体系需要独立
+  fixture/helper/platform policy，再评估拆分；本轮不为潜在增长先增加文档层级。
+- Guard 应从 filesystem 动态发现 test modules，并在 DESIGN 反向索引 section 内逐项要求唯一链接；
+  这既补齐 B → A，也避免在文档或测试中冻结当前文件计数。
+- 实施验证该粒度足够：一张表可以覆盖测试模块的主要能力、直接边界和平台属性，同时 case 细节继续
+  留在测试源码；无需新建 TESTING 文档，也没有把 runner 数字提升成文档合同。
