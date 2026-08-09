@@ -76,6 +76,7 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   const artifact = readJson("contracts/release-artifact-v1.json");
   const upstream = readJson("upstream-manifest.json");
   const architecture = readText("ARCHITECTURE.md");
+  const design = readText("DESIGN.md");
 
   assert.equal(request.properties.schema_version.const, 1);
   assert.equal(request.properties.runtime.const, "codex");
@@ -97,8 +98,22 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.match(architecture, /Plan runtime runs first for both `SessionStart` and `UserPromptSubmit`/);
   assert.match(architecture, /global PWF Skill 保持 pristine/);
   assert.match(architecture, /Managed policy 只认识 adapter/);
+  assert.match(architecture, /代码出现在上游或仓库.*前一层不能推导后一层/s);
   assert.match(architecture, /does not resolve planning files/);
   assert.match(architecture, /只有 `runtime\/upstream\/session-catchup\.py` 与 pristine upstream 不同/);
+  assert.match(architecture, /verified immutable bytes/);
+  assert.match(architecture, /不调用上游 `session-catchup\.py` 的 CLI `main\(\)`/);
+  assert.doesNotMatch(architecture, /run owned session-catchup\.py/);
+  assert.match(architecture, /validate, identity-check, and freeze transcript bytes \+ reuse pinned owned parser helpers/);
+  assert.match(design, /parser helpers（不调用 upstream CLI main）/);
+  assert.match(
+    design,
+    /transcript selection.*identity revalidation.*immutable byte capture.*Cloud event normalization\/dedup.*report rendering/s,
+  );
+  assert.match(
+    design,
+    /动态加载完整的 fixed owned `session-catchup\.py` module.*`same_project_path`.*`find_last_planning_update`.*`extract_messages_after`.*`text_content`.*不调用 CLI `main\(\)`/s,
+  );
   assert.match(architecture, /Release ZIP 的身份与内容由 machine contract/);
   assert.match(architecture, /已发布资产的精确身份与来源只在.*BASELINE_PROVENANCE/s);
 

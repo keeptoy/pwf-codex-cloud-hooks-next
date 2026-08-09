@@ -105,6 +105,9 @@ $CODEX_HOME/hooks/planning-with-files/
 ```
 
 Managed policy 只认识 adapter。child runtimes 是已安装 adapter 的 sibling，不能独立注册为 handler。
+代码出现在上游或仓库、被 importer 纳入、进入 Release ZIP、被 installer 安装、被 Managed policy
+注册、以及在当前 event dispatch 中可达，是彼此独立的状态；前一层不能推导后一层。当前 policy
+只注册 adapter，运行时也只允许 adapter 按已验证请求调用相邻 owned runtime。
 repository source、Release ZIP 与 installed layout 的逐层对应见
 [`DESIGN.md` 的“实现布局”](DESIGN.md#implementation-layout)。
 
@@ -162,7 +165,7 @@ hook_adapter.py
   |-- SessionStart only:
   |      forward the exact validated six-field project result
   |      to owned-catchup.py
-  |         `-- validate transcript + run owned session-catchup.py
+  |         `-- validate, identity-check, and freeze transcript bytes + reuse pinned owned parser helpers
   `-- compose canary, optional catch-up, optional plan
         |
         v
@@ -171,6 +174,10 @@ hookSpecificOutput.additionalContext
 
 Plan runtime runs first for both `SessionStart` and `UserPromptSubmit`. The adapter does not resolve planning files,
 does not read `task_plan.md`/`progress.md`, and contains no parallel plan-selection or injection algorithm.
+
+`owned-catchup.py` 不调用上游 `session-catchup.py` 的 CLI `main()`；它只从固定 owned module 复用
+project-path、planning-update、message extraction 与 text helpers。transcript 选择、identity 复核、
+normalization 和 report rendering 仍由 owned wrapper 负责。
 
 各模块的代码入口、直接依赖、变更影响和测试路由见
 [`DESIGN.md` 的“模块职责与依赖”](DESIGN.md#module-responsibilities)。
@@ -212,6 +219,9 @@ Transcript 选择顺序：
 4. 从 managed adapter 安装位置推导的 Codex home；
 5. 仅在明确允许时扫描 compatibility fallback roots。
 
+选择成功后，runtime 一次性读取并再次核对文件 identity；后续解析只使用 verified immutable bytes，
+不从 mutable path 重读。
+
 未知 JSONL record 可以诊断并退化到 event-only conversation；损坏、超限、身份不符或不可读数据不能
 产生 partial report。长 Cloud wrapper 按固定 head/tail budget 保留尾部 sentinel。
 
@@ -221,7 +231,7 @@ Transcript 选择顺序：
 |---|---|---|
 | Codex Hook stdin | untrusted Host data | exact schema/enum/path/identity validation |
 | workspace planning files | untrusted project data | contained safe read + private snapshot |
-| transcript JSONL | mutable Host data | contained file + session identity + bounded parser |
+| transcript JSONL | mutable Host data | contained file + identity revalidation + immutable verified bytes + bounded parser |
 | global PWF Skill | pristine reference | discovery/validation only，不直接执行 |
 | repository owned bundle | trusted after hash verification | importer/manifest/allowlist 固定 |
 | installed managed runtime | trusted after installer manifest | absolute sibling execution only |
