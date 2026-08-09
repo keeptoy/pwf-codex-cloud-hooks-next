@@ -78,7 +78,28 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 
 ## v0.3.0-beta.2
 
-- 冻结旧仓库中被 successor 迁移采用的产品基线和行为 oracle。
+- 在 beta.1 已完成 Phase 1～3 和 live Cloud A～F 的基础上完成发布维护与文档治理；production
+  hooks、runtime、installer、contracts 和 trusted graph 均未改变。
+- 统一 README、programme/Phase 状态、专项 acceptance、planning 交接与 Release/Cloud 停止条件，并提供
+  不依赖旧验收文档、可从零重放的 beta.2 hard-acceptance runbook。
+- 使用独立 immutable ZIP/bootstrap/version/SHA 重新完成 seal、公开下载、Fresh/Resume 和 doctor 验收，
+  成为当时 Phase 4～8 的 accepted rollback baseline，并冻结为 successor 迁移采用的产品/行为 oracle。
 - 其 source、双资产与验收字节保持不可变；精确身份见
   [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，历史验收见
   [immutable beta.2 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/cde4b15bba7ed8580cb774c8b8bb259c9174c3d0/docs/v0.3.0-beta.2-cloud-hard-acceptance.md)。
+
+## v0.3.0-beta.1
+
+- 作为 v0.3.0 路线的首个最小完整功能实现版，汇合 Phase 1 的可信来源/确定性打包与安装治理、Phase 2
+  的 owned catch-up/runtime 安全边界，以及 Phase 3 的 canonical owned-plan、薄 adapter 和统一 project state。
+- 封板并发布自校验 ZIP 与 ZIP 外 bootstrap，完成 startup、UserPrompt、canonical planning context、真实
+  Resume catch-up、post-resume doctor 和零 snapshot residue 的 Cloud A～F 验收，正式关闭 Phase 1～3。
+- beta.2 继承其 runtime 行为并替代当前 rollback 角色后，beta.1 保留为 immutable historical fallback；
+  完整证据见 [immutable beta.1 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks/blob/bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b/docs/v0.3.0-beta.1-cloud-hard-acceptance.md)。
+
+## v0.2.2
+
+- 建立 v0.3.0 路线之前最早的已发布 Cloud catch-up compatibility baseline，并作为后续版本的 golden
+  behavior 与 historical fallback。
+- 本段目前只冻结上述可验证的版本角色；更细功能特点等待早期证据与维护者补充后再完善，不从后续
+  alpha/beta 实现反向推断。

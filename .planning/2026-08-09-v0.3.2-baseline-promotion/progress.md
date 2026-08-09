@@ -89,3 +89,12 @@
 - CHANGELOG 的 v0.3.0 段已补充其来源：从冻结的 v0.3.0-beta.2 经 provenance 中 M1 exact mirror、M2
   slim transformation、M3 Cloud equivalence 与 M4 repository authority cutover 建立首个 stable baseline；
   精确 ref 与迁移证据仍只由 BASELINE_PROVENANCE 维护。
+- P2-H 已启动并获准读取 `临时文件/`；完整读完 beta.2 audit tree 的 `work_plan.md`，恢复出 v0.2.2
+  compatibility → alpha.1 Phase 1 → alpha.2 Phase 2 → beta.1 Phase 3 功能闭环 → beta.2 文档/发布治理链。
+- 完整读完 beta.1 与 beta.2 Cloud hard acceptance：前者证明 Phase 1～3 后 canonical 双 runtime 的首个
+  最小完整功能/Cloud A～F 基线，后者证明 runtime 行为不变但文档、独立资产和可重放验收治理重新封板。
+- 读取 PROJECT_UNDERSTANDING 的 v0.2.2 overlay/Cloud baseline 段，并以 Git diff 复核 beta.1→beta.2：
+  production paths 零变化，变化集中在文档、planning、versioned assets 与 Release tests。successor 没有
+  本地 beta/v0.2.2 tag，已记录并改用可达 immutable lineage commit，不创建或伪造 tags。
+- CHANGELOG 已新增 beta.1 独立段、扩充 beta.2 文档/发布治理段，并为 v0.2.2 建立最小已证实角色占位；
+  repository/architecture guards 16/16 PASS，`git diff --check` PASS。P2-H 关闭，v0.2.2 细节等待维护者补充。

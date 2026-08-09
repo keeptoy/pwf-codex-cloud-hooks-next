@@ -312,3 +312,42 @@ bootstrap/README 一并删除，则当前结论转为 `NO_GO`，必须等待 P3 
   发布，正确身份是新的 patch version（例如 v0.3.3），并重新执行 seal、checksum、下载和 Cloud acceptance。
 - `0.3.2-post.1` 之类 SemVer prerelease 在排序上早于稳定 v0.3.2；`0.3.2+post.1` build metadata 又常被
   工具忽略优先级，二者都不适合表达稳定版之后的新 rollback baseline。
+
+## P2-H Early Version Recovery
+
+### Work-plan evidence
+
+- 临时 beta.2 audit tree 的 `work_plan.md` 明确声明 Phase 1～3 已完成、Phase 4 未开始；beta.2 不改变
+  beta.1 已通过 live Fresh/Resume A～F 的 runtime 行为，只完成发布同步、封板和验收。
+- 发布路标把 v0.2.2 定位为“已发布 Cloud catch-up 兼容行为”的兼容基线；alpha.1 对应 Phase 1 可信来源/
+  打包/安装治理，alpha.2 对应 Phase 2 owned catch-up，beta.1 对应 Phase 3 canonical plan runtime。
+- beta.1 是 Phase 3 的完整功能/行为闭环：owned-plan、薄 adapter、统一 validated project state，以及
+  published + Cloud A～F PASS；因此可概括为 v0.3.0 路线的最小完整功能实现，而不是只有局部 prototype。
+- beta.2 属于 Phase 3 发布维护：继承 beta.1 同一 runtime 行为，增加最新 README/文档治理和独立不可变
+  ZIP/bootstrap/SHA，并成为当时 Phase 4～8 的 accepted rollback baseline。
+- v0.2.2 的更细功能特点目前只得到“Cloud catch-up compatibility baseline”这一证据；按维护者要求，
+  CHANGELOG 暂不自行扩写，等待后续补充。
+
+### Immutable acceptance evidence
+
+- beta.1 acceptance 的目的明确是封板 Phase 3 canonical owned-plan/owned-catchup 双 runtime；发布后 22-entry
+  ZIP、external bootstrap、Fresh/UserPrompt/canonical plan/real Resume catch-up/post-resume doctor A～F
+  全部 PASS。它整合了 Phase 1～3 后形成第一份最小完整功能基线。
+- beta.2 acceptance 冻结的 production 行为与 beta.1 相同：plan-first、owned plan authority、SessionStart
+  catch-up + plan、UserPrompt plan-only、child failure 降级、有界 snapshot/timeout/inventory 和只读 lifecycle。
+- beta.2 的新增价值位于发布/文档治理：独立 22-entry ZIP/bootstrap/SHA、可从零执行且不依赖旧验收文档的
+  standalone runbook、精确停止条件、证据模板、Phase 4 禁止边界，以及后续新仓库提取 Discovery 边界。
+- 两个 acceptance 都证明 beta.2 没有借同 runtime 行为复用 beta.1 资产；它使用独立 immutable identity
+  并重新完成 seal、下载、安装、Fresh/Resume 和 doctor 验收。
+
+### Cross-check and changelog boundary
+
+- `PROJECT_UNDERSTANDING` 进一步证明 v0.2.2 的已知角色是历史 Cloud compatibility overlay/baseline；
+  beta.1/beta.2 保留其 golden 作为回归证据，但 v0.3.0 不能继承 v0.2.2 的验收结论。
+- beta.1 release commit `068e44c...` 到 beta.2 release commit `bd26b1b...` 的 Git diff 没有 production
+  hooks/runtime/installer/contracts/patcher/importer 变化；变化集中在 README、programme/Phase/acceptance
+  文档、planning、package/bootstrap identity 和对应 Release tests，直接支持“行为不变、文档/发布治理”。
+- beta.1 acceptance 在 beta.2 exact lineage commit `bbad3703...` 中完整存在，可使用该 immutable old-repo
+  blob 链接；beta.2 exact acceptance 已由现有 provenance 链接到 successor immutable commit。
+- CHANGELOG 应新增 beta.1 独立段，概括 Phase 1～3 的三层能力与 A～F；beta.2 段强调继承行为、文档治理
+  和独立资产；v0.2.2 只写已证实的 early compatibility/golden/fallback 角色，等待维护者补充功能特点。
