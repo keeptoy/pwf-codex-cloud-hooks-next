@@ -274,7 +274,7 @@ test("change history, programme intent, current action, and immutable evidence h
   assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|Next Step|GitHub `Latest`|production rollback|\d+ registered/);
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 
-  assert.match(roadmap, /\| 当前开发列车 \| `v0\.3\.2` Release candidate.*published.*Cloud pending.*尚未 accepted/s);
+  assert.match(roadmap, /\| 当前开发列车 \| `v0\.3\.2` Release candidate.*published.*Cloud hard acceptance PASS.*尚未 promoted/s);
   assert.match(roadmap, /\| 当前已接受版本 \| `v0\.3\.1`/);
   assert.match(roadmap, /活动.*task_plan.*当前唯一 Next Step/s);
   assert.match(roadmap, /一个 active planning.*candidate.*accepted role window.*immutable/s);
@@ -307,7 +307,7 @@ test("change history, programme intent, current action, and immutable evidence h
   assert.equal(fs.existsSync(acceptance032Path), true);
   const acceptance032 = fs.readFileSync(acceptance032Path, "utf8");
   assert.match(acceptance032, /^# v0\.3\.2 Cloud hard acceptance$/m);
-  assert.match(acceptance032, /当前状态.*PUBLICATION-PASS.*Cloud.*PENDING/is);
+  assert.match(acceptance032, /当前状态.*CLOUD-HARD-ACCEPTANCE-PASS/is);
   assert.match(acceptance032, /b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081/);
   assert.doesNotMatch(acceptance032, /PENDING_R2|PENDING_R3_BOOTSTRAP_SHA256/);
   assert.match(acceptance032, /c68a53bdeab7c38badcfb4e2a733ddd851e498e4/);
@@ -321,7 +321,10 @@ test("change history, programme intent, current action, and immutable evidence h
   assert.match(acceptance032, /published-release-oracles\.test\.js/);
   assert.match(acceptance032, /tagless.*Source\/Candidate/is);
   assert.match(acceptance032, /V032_SC_EXCLUDED_TEST_SUITE=published-release-oracles\.test\.js/);
-  assert.match(acceptance032, /PENDING_R5_SC.*PENDING_R5_PR.*PENDING_R5/is);
+  assert.doesNotMatch(acceptance032, /PENDING_R5_SC|PENDING_R5_PR|PENDING_R5/);
+  assert.match(acceptance032, /R5-SC Source\/Candidate.*PASS.*232ccd6ec71dad35ab91d69ab7e4b4cb3b7ca1bd/is);
+  assert.match(acceptance032, /R5-PR Published Release.*PASS.*b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081/is);
+  assert.match(acceptance032, /## 12\. 最终执行结果[\s\S]*R5-SC.*PASS[\s\S]*R5-PR.*PASS[\s\S]*CLOUD-HARD-ACCEPTANCE-PASS/);
   assert.match(acceptance032, /Fresh.*canonical.*long tail.*real Resume.*doctor/is);
   assert.match(acceptance032, /不授权.*Latest.*rollback/is);
 

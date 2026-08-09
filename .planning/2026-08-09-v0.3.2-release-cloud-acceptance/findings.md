@@ -133,3 +133,15 @@
 - R5-PR 的 Python 深断言继续核对 doctor healthy/repairable/errors/blockers、installer version、11 个
   runtime payload 的 manifest/actual inventory 等价、两个事件各一个 adapter-only handler；最后独立检查
   snapshot residue 为零。临时公开 ZIP/extraction 只服务本次验证，退出时清理。
+
+## R5/R6 最终证据与结论
+
+- R5-SC 在独立 Fresh Cloud 绑定精确 source commit
+  `232ccd6ec71dad35ab91d69ab7e4b4cb3b7ca1bd`；portable Linux suite 87/87 PASS、0 skipped，双构建得到
+  固定 23-entry / 82,627-byte / `b42aecaf...e5081` ZIP，本地 override 安装与 B～F 均由维护者确认 PASS。
+- R5-PR 在另一个 Fresh Cloud 消费 immutable `v0.3.2` public bootstrap 默认下载链；B～E 由维护者确认
+  PASS。10.2 原始输出证明 public ZIP size/SHA、builder boundary、importer replay、ZIP 内 doctor、11-file
+  inventory、adapter-only policy 与零 snapshot residue 全部 PASS。
+- 两条证据绑定不同身份且没有混用环境或结果，因此 R5 可以关闭为
+  `CLOUD-HARD-ACCEPTANCE-PASS`。这只把 v0.3.2 确认为 Cloud-accepted Release candidate；v0.3.1 继续承担
+  production rollback/GitHub `Latest`，promotion 仍是独立且未授权的关键 gate。

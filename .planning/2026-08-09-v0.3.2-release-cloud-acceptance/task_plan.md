@@ -18,10 +18,9 @@ GitHub `Latest`。
 
 ## Next Step
 
-提交并 push R5-PR post-resume verification redesign 后，维护者在另一个 Fresh Cloud 从第 5 节完成
-公开 bootstrap 默认下载链，执行第 6～9 节黑盒，并只运行第 10.2 节：重新下载/校验/解压 public ZIP，
-用 ZIP 内 builder/importer/`install.js doctor` 和 Python/snapshot 深断言收口。回传第 11.2 节原始证据；
-R5-SC 的完整摘要在 R6 一并冻结，智能体不代跑 Cloud。
+R5-SC、R5-PR 与 R6 已关闭，没有剩余 Cloud acceptance 实施。保持 `v0.3.1` 为 production
+rollback/GitHub `Latest`，等待维护者另行决定是否开启 promotion Discovery/gate；在获得明确授权前不
+修改 Release、`Latest`、rollback 或 Product Phase 4 状态。
 
 ## Gates
 
@@ -30,11 +29,12 @@ R5-SC 的完整摘要在 R6 一并冻结，智能体不代跑 Cloud。
 - [x] R2 — Local seal candidate：完整 regression、平台检查、双构建、ZIP boundary 与 importer replay 全绿。
 - [x] R3 — Final bytes：计算 ZIP SHA，写入外部 bootstrap，复跑受影响验证并冻结双资产 identity。
 - [x] R4 — Immutable publication：创建 exact tag/Release，上传 ZIP 与 bootstrap，重新下载并逐字节核验。
-- [ ] R5-SC — Source/Candidate Cloud：精确 source commit 的 Linux 回归、双构建/本地 override 安装与
-  Fresh/Resume/doctor 黑盒，等待真实结果。
-- [ ] R5-PR — Published Release Cloud：独立 Fresh 环境消费公开 bootstrap 默认下载链并完整重跑
-  Fresh/Resume/doctor 黑盒；不得复用 R5-SC 证据。
-- [ ] R6 — Acceptance closure：只根据回传证据关闭 Cloud acceptance；Latest/rollback promotion 另行授权。
+- [x] R5-SC — Source/Candidate Cloud：精确 source commit 的 Linux 回归、双构建/本地 override 安装与
+  Fresh/Resume/doctor 黑盒全部 PASS。
+- [x] R5-PR — Published Release Cloud：独立 Fresh 环境消费公开 bootstrap 默认下载链并完整重跑
+  Fresh/Resume/doctor 黑盒，全部 PASS；未复用 R5-SC 证据。
+- [x] R6 — Acceptance closure：已只根据维护者回传证据关闭 Cloud acceptance；Latest/rollback promotion
+  仍须另行授权。
 
 ## Stop Conditions
 
@@ -46,9 +46,8 @@ R5-SC 的完整摘要在 R6 一并冻结，智能体不代跑 Cloud。
 
 ## Status
 
-R0–R4 PASS / R5-SC maintainer-reported PASS（formal summary pending freeze）/ R5-PR F redesign locally PASS,
-waiting for public Cloud run。当前 production rollback/`Latest` 仍为 `v0.3.1`；`v0.3.2` 已发布但尚未
-完成双通道 Cloud hard acceptance。
+R0–R6 PASS；`v0.3.2` publication 与双通道 Cloud hard acceptance 已关闭。当前 production
+rollback/`Latest` 仍为 `v0.3.1`；`v0.3.2` 是 Cloud-accepted、但尚未 promoted 的 Release candidate。
 
 ## Errors Encountered
 

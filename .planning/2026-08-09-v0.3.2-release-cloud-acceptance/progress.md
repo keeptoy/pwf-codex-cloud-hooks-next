@@ -111,3 +111,16 @@
 - validation：更新后的 architecture governance 9/9 PASS；4 个 Bash blocks 均 `bash -n` PASS；完整
   `npm test` 为 90 tests、78 PASS、12 Windows/POSIX SKIP、0 FAIL；`git diff --check` PASS；Release ZIP
   仍为 23 entries、82,627 bytes、SHA-256 `b42aecaf...e5081`。
+- R6 closure guard 的 failing-first 结果为 architecture governance 9 tests / 8 PASS / 1 expected FAIL；
+  红项只对应 ROADMAP/acceptance 尚未把维护者回传的最终 Cloud 状态从 pending 提升为 PASS。
+- 维护者确认 R5-SC 后续 B～F 全部 PASS；冻结身份为 source commit
+  `232ccd6ec71dad35ab91d69ab7e4b4cb3b7ca1bd`、portable Linux 87/87 PASS、23-entry / 82,627-byte /
+  `b42aecaf...e5081` candidate ZIP。
+- 维护者确认独立 R5-PR 的其余黑盒全部 PASS，并回传 10.2 原始结果：public ZIP checksum/size、23-entry
+  boundary、importer replay、healthy non-repairable doctor、0.3.2 installer、11-file inventory、adapter-only
+  policy 与零 snapshot residue 全部 PASS，最终 marker 为 `V032_PR_POST_RESUME=PASS`。
+- acceptance、ROADMAP 与活动 task plan 已据此关闭 R5-SC、R5-PR 和 R6；v0.3.2 当前是已完成 Cloud hard
+  acceptance 但尚未 promoted 的 Release candidate，v0.3.1 的 rollback/`Latest` 角色保持不变。
+- closure validation：architecture governance 9/9 PASS；完整 `npm test` 为 90 tests、78 PASS、12 个
+  Windows/POSIX SKIP、0 FAIL；`git diff --check` PASS。重新 build/check 的 Release ZIP 仍为 23 entries、
+  82,627 bytes、SHA-256 `b42aecaf...e5081`，证明本轮只冻结 ZIP 外治理证据，没有改写 sealed/public bytes。
