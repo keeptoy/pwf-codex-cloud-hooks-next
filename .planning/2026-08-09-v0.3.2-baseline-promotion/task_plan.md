@@ -68,8 +68,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Next Step
 
-完成 P2-PUSH：提交本 gate 的授权/preflight 记录，推送并设置 `origin/0.3.2-post-release` upstream，
-核对远端精确 commit 后记录结果；全过程不修改 `main` 或开启 P3。
+停在远端 `0.3.2-post-release` 已发布、但尚未合入 `main` 且 P3 未开启的状态。后续若要合入 main、
+创建 PR 或开始 successor train，必须由维护者另行明确授权具体 gate。
 
 ## Gates
 
@@ -98,7 +98,7 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   修正早期 CHANGELOG/Phase 0/provenance 语义。
 - [x] P2-H-VN — Version identity normalization：消除 CHANGELOG/Phase 0 的不完整产品版本简写，不扩大
   Phase 0 范围或改写 provenance identity。
-- [ ] P2-PUSH — Post-release branch publication：只发布同名远端运输分支并核对 exact commit，不触碰
+- [x] P2-PUSH — Post-release branch publication：只发布同名远端运输分支并核对 exact commit，不触碰
   `main`、`0.3.3-dev`、tag、Release 或 assets。
 - [x] P2-PROV — Early publication provenance backfill：核验并登记有证据的 v0.1.0、v0.2.2 与
   v0.3.0 alpha/beta 身份，缺证字段保持空缺。
@@ -122,7 +122,7 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS，P2-P-A PASS，P2-P-M PASS，P2-P-B PASS，
 P2-P-E PASS，P2-P-T PASS，P2-P-R PASS，P2-H-010 PASS，P2-PROV PASS，P2-P0 PASS，P2-H-021 PASS；
-P2-H-020 PASS；P2-H-VN PASS；P2-PUSH 正在进行。
+P2-H-020 PASS；P2-H-VN PASS；P2-PUSH PASS。
 本地分支为 `0.3.2-post-release`，当前 HEAD 是 P3 前的 unsealed governance transition；P3 未授权。
 
 ## Errors Encountered

@@ -256,3 +256,5 @@
   Windows/POSIX SKIP、0 FAIL。P2-H-VN 已关闭并重新停在 P3/push gate 前。
 - 2026-08-10：维护者授权将当前治理成果推送到远端同名 `0.3.2-post-release`；preflight 确认本地 HEAD
   `12cf20f`、目标远端分支不存在、远端 main 为 `4658f1a`，且未跟踪 `临时文件/` 不进入提交。
+- push checkpoint `5156e2a` 建立后，`git push -u origin 0.3.2-post-release` 成功；后置远端查询确认
+  同名分支精确指向该 commit、main 保持 `4658f1a`、`0.3.3-dev` 不存在。P2-PUSH 已关闭。

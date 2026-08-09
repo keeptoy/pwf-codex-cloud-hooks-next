@@ -733,3 +733,10 @@ bootstrap/README 一并删除，则当前结论转为 `NO_GO`，必须等待 P3 
   `refs/heads/0.3.2-post-release` 与 `refs/heads/0.3.3-dev` 均不存在，`main` 位于 `4658f1a`。
 - 预期操作是创建新远端分支并设置 upstream；后置验证必须确认远端 branch commit 与本地 HEAD 完全一致，
   且 `main` 指针保持不变。
+
+### P2-PUSH Result
+
+- `git push -u origin 0.3.2-post-release` 成功创建远端分支并设置 upstream；首次发布 commit 为
+  `5156e2ab73b82621e4fa020f3d793b3fa245083a`。
+- 独立 `ls-remote` 后置查询确认远端同名分支精确指向该 commit，`main` 仍为 preflight 的 `4658f1a`，
+  `0.3.3-dev` 仍不存在；没有创建 tag、Release、asset 或 P3 machine identity。
