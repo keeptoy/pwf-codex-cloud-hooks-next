@@ -40,6 +40,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   tests，把已证实的 v0.2.1 delta 写入 CHANGELOG；临时目录继续只读，不扩展到 P3 或当前 runtime。
 - 维护者纠正早期谱系：v0.1.0 的 legacy Hook trust 路线在 Cloud 中失败，v0.2.0 才是解决信任接入后
   最早成功的验证原型；授权据此修正 CHANGELOG、Phase 0、provenance 与活动证据，但不得虚构缺失验收。
+- 维护者批准 push 前的版本身份规范化：CHANGELOG 两处 `v0.1` 改为 `v0.1.0`，Phase 0 的 alpha/beta
+  简写改为完整 `v0.3.0-*` 身份；不得把 v0.3.1/v0.3.2 扩写进 Phase 0 或改变任何历史语义。
 - P3 只记录为后续独立 gate；当前不修改 package、Release contract、bootstrap 或 `v0.3.3-dev` identity，
   不 seal、不发布、不部署新版本。
 - 已完成的 `2026-08-09-architecture-contract-retention` 三文件由 immutable commit `d4cc3b5` 保存，P2
@@ -64,8 +66,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Next Step
 
-停在 post-release 文档治理阶段和 P3 前。v0.1.0 failure → v0.2.0 successful prototype → v0.2.1
-operational hardening → v0.2.2 Cloud baseline 的早期谱系已经恢复并验证；P3 继续等待维护者另行授权。
+停在 P3 和 push gate 前。版本身份规范化已经验证完成；如需发布当前治理成果，先由维护者明确授权
+`0.3.2-post-release` 远端分支或直接 `main` 的具体 push 路线。
 
 ## Gates
 
@@ -92,6 +94,8 @@ operational hardening → v0.2.2 Cloud baseline 的早期谱系已经恢复并�
   repair 与验收边界的准确版本 delta。
 - [x] P2-H-020 — v0.2.0 prototype correction：核验 legacy trust 失败到 system-managed 成功原型的转换，
   修正早期 CHANGELOG/Phase 0/provenance 语义。
+- [x] P2-H-VN — Version identity normalization：消除 CHANGELOG/Phase 0 的不完整产品版本简写，不扩大
+  Phase 0 范围或改写 provenance identity。
 - [x] P2-PROV — Early publication provenance backfill：核验并登记有证据的 v0.1.0、v0.2.2 与
   v0.3.0 alpha/beta 身份，缺证字段保持空缺。
 - [x] P2-P0 — Architecture lineage overview：建立回顾性 Phase 0，串联可行性、Cloud 功能基线、owned
@@ -114,7 +118,7 @@ operational hardening → v0.2.2 Cloud baseline 的早期谱系已经恢复并�
 
 P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS，P2-P-A PASS，P2-P-M PASS，P2-P-B PASS，
 P2-P-E PASS，P2-P-T PASS，P2-P-R PASS，P2-H-010 PASS，P2-PROV PASS，P2-P0 PASS，P2-H-021 PASS；
-P2-H-020 PASS。
+P2-H-020 PASS；P2-H-VN PASS。
 本地分支为 `0.3.2-post-release`，当前 HEAD 是 P3 前的 unsealed governance transition；P3 未授权。
 
 ## Errors Encountered
@@ -143,3 +147,4 @@ P2-H-020 PASS。
 | 当前 PowerShell/.NET 不提供静态 `SHA256.HashData`，归一化哈希辅助输出为空 | 1 | installer 的 `--ignore-cr-at-eol` diff 已成功；单独改用兼容的 `SHA256.Create().ComputeHash` 复核相同内容 |
 | Phase 0 时间线格式补丁误放进 CHANGELOG update 段，精确上下文校验拒绝应用 | 1 | 无部分修改；拆成 CHANGELOG 与 Phase 0 两个精确文件补丁 |
 | P2-H-020 清理旧 findings 时，首个补丁使用了概括后的句子而非文件中的精确换行 | 1 | 无部分修改；先读取真实行，再用精确上下文修正三处旧结论 |
+| 版本简写扫描使用 ripgrep 默认引擎不支持的 lookbehind/lookahead | 1 | status 已成功输出且文件未修改；改用 `rg --pcre2` 或无 lookaround 的精确模式，不重复默认引擎命令 |

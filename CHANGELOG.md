@@ -165,7 +165,7 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - 沿用 v0.2.0 已经成功的 `/etc/codex/requirements.toml` system-managed Hook 路线，并在不改变两个 Hook
   功能算法的前提下加固部署所有权；若管理员已有 `managed_dir` 不包含 owned adapter，仍然拒绝接管。
 - installed ownership manifest 从 schema v2 升级到 v3，记录 upstream、Skill/install paths、events、adapter
-  source hash，以及完整/非 owned requirements fingerprints；普通 install 可以清退 v0.1 legacy handler/
+  source hash，以及完整/非 owned requirements fingerprints；普通 install 可以清退 v0.1.0 legacy handler/
   trust entries，uninstall 只移除 owned policy/runtime，并保留第三方配置。
 - 新增 `errors`、`blockers` 与 `repairable` drift 分类及受限 `install --repair`：只修复已证明 owned 的 adapter
   或 Managed Hook definition；unowned requirements、manifest、path、upstream 或 unknown runtime drift
@@ -185,7 +185,7 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   v0.2.0 才是最早成功的 Cloud Hook 可行性原型。
 - installer 启用 `features.hooks`，建立或校验 `hooks.managed_dir`，以 absolute
   `/usr/bin/python3 <adapter> <event>` 注册两个只读事件，并在已有 managed root 不包含 owned adapter 时
-  fail closed；普通 install 同时清退 v0.1 留下的 owned legacy handler 与 trust entries。
+  fail closed；普通 install 同时清退 v0.1.0 留下的 owned legacy handler 与 trust entries。
 - installed manifest 使用 schema v2；dry-run、backup、merge-preserving managed install、doctor 与
   ownership-aware uninstall 已形成最小闭环，但尚无 v0.2.1 的 schema-v3 requirements fingerprints、
   `repairable/blockers` 分类、guarded repair 和 unknown-drift blocker。

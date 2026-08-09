@@ -705,3 +705,22 @@ bootstrap/README 一并删除，则当前结论转为 `NO_GO`，必须等待 P3 
   第一手历史确认，同时保留独立 acceptance 未恢复这一证据缺口。
 - focused repository/architecture suite 17/17 PASS；完整仓库回归 92 tests、80 PASS、12 个诚实的
   Windows/POSIX SKIP、0 FAIL；P3 未启动。
+
+## P2-H-VN Version Identity Normalization
+
+- 机器集合对账确认 CHANGELOG 标题与 provenance 身份行完全一致，均覆盖 11 个已发布产品身份；不存在
+  某个 Release 只出现在其中一份文档的实质遗漏。
+- CHANGELOG 仍有两处正文把 `v0.1.0` 简写成 `v0.1`；Phase 0 明确写出的完整身份缺少
+  `v0.3.0-alpha.1`、`v0.3.0-alpha.2`、`v0.3.0-beta.2`，原因是正文使用 alpha/beta 简写。
+- Phase 0 的范围有意结束在 successor stable v0.3.0；不出现 v0.3.1/v0.3.2 是 authority 边界，不是遗漏。
+  最小修复只展开已有简写，不新增版本叙事、Release 数据或当前 lifecycle。
+- 规范化后的机器复核结果：CHANGELOG 与 provenance 的 11 个正式身份集合差异为零；Phase 0 显式覆盖
+  自 v0.1.0 至 stable v0.3.0 的九个范围内产品身份；Phase 0 alpha/beta 简写和 CHANGELOG `vX.Y`
+  不完整写法均为零。
+
+### P2-H-VN Result
+
+- 只修改 CHANGELOG 和 Phase 0 的既有身份写法；BASELINE_PROVENANCE 的 exact identity、资产与 SHA 零改动，
+  Phase 0 仍有意不承担 v0.3.1/v0.3.2 的后续版本日志。
+- focused repository/architecture suite 17/17 PASS；完整仓库回归 92 tests、80 PASS、12 个诚实的
+  Windows/POSIX SKIP、0 FAIL。P2-H-VN 关闭，P3 与 push 均未启动。

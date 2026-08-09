@@ -247,3 +247,10 @@
 - 取证用 exact-tag 临时 clone 已在验证其位于系统 temp 且目录名匹配后删除；它可从公开 v0.2.0 tag 重建。
 - focused repository/architecture suite 17/17 PASS；完整 `npm test` 为 92 tests、80 PASS、12 个诚实的
   Windows/POSIX SKIP、0 FAIL；`git diff --check` PASS。P2-H-020 已关闭，活动计划重新停在 P3 前。
+- 2026-08-10：维护者批准 push 前版本身份规范化；P2-H-VN 已启动，只处理 CHANGELOG 的 `v0.1` 与
+  Phase 0 的 alpha/beta 简写，不扩张 Phase 0 到 v0.3.1/v0.3.2，不进入 P3 或执行 push。
+- CHANGELOG 两处 `v0.1` 已展开为 `v0.1.0`；Phase 0 的 alpha.1/alpha.2/beta.1/beta.2 已全部展开为
+  完整 `v0.3.0-*` identity。集合脚本确认 CHANGELOG/provenance 11 个身份完全一致、Phase 0 范围内九个
+  产品身份全部显式出现，残余简写为零；`git diff --check` PASS。
+- focused repository/architecture suite 17/17 PASS；完整 `npm test` 为 92 tests、80 PASS、12 个诚实的
+  Windows/POSIX SKIP、0 FAIL。P2-H-VN 已关闭并重新停在 P3/push gate 前。
