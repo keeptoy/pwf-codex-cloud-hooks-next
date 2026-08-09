@@ -129,7 +129,7 @@ test("cold history stays on immutable refs and outside runtime, Release, and ada
     assert.doesNotMatch(content, /docs\/phase-|\.planning\/2026-08-01/);
   }
   const artifact = JSON.parse(release);
-  assert.equal(artifact.package_version, "0.3.2-dev");
+  assert.equal(artifact.package_version, "0.3.2");
   assert.equal(artifact.entries.length, 23);
   assert.equal(artifact.entries.some(item => item.path === "patches/patch_planning_skill.py"), true);
   assert.equal(artifact.entries.some(item => item.path.startsWith("docs/") || item.path.startsWith("tests/")), false);

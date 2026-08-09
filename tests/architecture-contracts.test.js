@@ -247,20 +247,21 @@ test("change history, programme intent, current action, and immutable evidence h
   const artifact = readJson("contracts/release-artifact-v1.json");
 
   for (const heading of [
-    "## Unreleased — 0.3.2-dev", "## v0.3.1", "## v0.3.0", "## v0.3.0-beta.2",
+    "## v0.3.2", "## v0.3.1", "## v0.3.0", "## v0.3.0-beta.2",
   ]) assert.match(changelog, new RegExp(heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  for (const target of ["ROADMAP.md", "BASELINE_PROVENANCE.md", "docs/v0.3.1-cloud-hard-acceptance.md"]) {
+  for (const target of ["ROADMAP.md", "BASELINE_PROVENANCE.md", "docs/v0.3.2-cloud-hard-acceptance.md"]) {
     assert.match(changelog, new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
   assert.match(changelog, /trusted.*exact.*planning.*lifecycle/is);
   assert.match(changelog, /candidate.*accepted.*role window/is);
-  const extendStart = changelog.indexOf("## Unreleased — 0.3.2-dev-extend\n");
-  const baseDevStart = changelog.indexOf("## Unreleased — 0.3.2-dev\n");
-  assert.ok(extendStart >= 0 && baseDevStart > extendStart);
-  const extendSection = changelog.slice(extendStart, baseDevStart);
-  assert.match(extendSection, /trusted.*exact.*planning.*lifecycle/is);
-  assert.match(extendSection, /candidate.*accepted.*role window/is);
+  assert.doesNotMatch(changelog, /## Unreleased — 0\.3\.2-dev(?:-extend)?/);
+  const stable032Start = changelog.indexOf("## v0.3.2\n");
   const stable031Start = changelog.indexOf("## v0.3.1\n");
+  assert.ok(stable032Start >= 0 && stable031Start > stable032Start);
+  const stable032Section = changelog.slice(stable032Start, stable031Start);
+  assert.match(stable032Section, /trusted.*exact.*planning.*lifecycle/is);
+  assert.match(stable032Section, /candidate.*accepted.*role window/is);
+  assert.match(stable032Section, /没有改变.*runtime.*Host ABI.*trusted graph/is);
   const stable030Start = changelog.indexOf("## v0.3.0\n");
   assert.ok(stable031Start >= 0 && stable030Start > stable031Start);
   const stable031Section = changelog.slice(stable031Start, stable030Start);
@@ -272,7 +273,8 @@ test("change history, programme intent, current action, and immutable evidence h
   assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|Next Step|GitHub `Latest`|production rollback|\d+ registered/);
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 
-  assert.match(roadmap, /\| 当前开发列车 \| `0\.3\.2-dev-extend`；.*package.*`0\.3\.2-dev`/s);
+  assert.match(roadmap, /\| 当前开发列车 \| `v0\.3\.2` Release candidate.*尚未 accepted/s);
+  assert.match(roadmap, /\| 当前已接受版本 \| `v0\.3\.1`/);
   assert.match(roadmap, /活动.*task_plan.*当前唯一 Next Step/s);
   assert.match(roadmap, /一个 active planning.*candidate.*accepted role window.*immutable/s);
   assert.match(roadmap, /## 3\. 已完成的基线 `v0\.3\.1`/);
@@ -296,6 +298,17 @@ test("change history, programme intent, current action, and immutable evidence h
   }
   assert.match(agents, /当前版本角色只见 `ROADMAP\.md`/);
   assert.match(design, /CHANGELOG\.md/);
+
+  const acceptance032Path = path.join(root, "docs", "v0.3.2-cloud-hard-acceptance.md");
+  assert.equal(fs.existsSync(acceptance032Path), true);
+  const acceptance032 = fs.readFileSync(acceptance032Path, "utf8");
+  assert.match(acceptance032, /^# v0\.3\.2 Cloud hard acceptance$/m);
+  assert.match(acceptance032, /当前状态.*LOCAL-SEAL.*publication.*PENDING.*Cloud.*PENDING/is);
+  assert.match(acceptance032, /b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081/);
+  assert.doesNotMatch(acceptance032, /PENDING_R2|PENDING_R3_BOOTSTRAP_SHA256/);
+  assert.match(acceptance032, /releases\/download\/v0\.3\.2\/init-cloud-sandbox-v0\.3\.2\.bash/);
+  assert.match(acceptance032, /Fresh.*canonical.*long tail.*real Resume.*doctor/is);
+  assert.match(acceptance032, /不授权.*Latest.*rollback/is);
 });
 
 test("ROADMAP discovery governance separates new rounds from in-round safety gates", () => {

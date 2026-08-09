@@ -170,7 +170,7 @@ test("machine contracts freeze provenance, overlays, Host protocol, and artifact
 
   assert.equal(artifact.archive_root, "pwf-codex-cloud-hooks/");
   assert.equal(artifact.package_name, "pwf-codex-cloud-hooks");
-  assert.equal(artifact.package_version, "0.3.2-dev");
+  assert.equal(artifact.package_version, "0.3.2");
   assert.equal(artifact.ordering, "lexicographic_by_utf8_path");
   assert.equal(artifact.external_release_assets.length, 1);
   assert.equal(artifact.external_release_assets[0].path, "init-cloud-sandbox-v0.3.2.bash");

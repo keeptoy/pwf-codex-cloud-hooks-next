@@ -57,7 +57,7 @@
       },
       "release_artifact": {
         "path": "contracts/release-artifact-v1.json",
-        "sha256": "d71aa79a877c4b28e820a36bbc7d8238281206a2ba5d4f2234379a676a17648c"
+        "sha256": "eccaaed7f16a6702885cdd9778ae0bd9ef55e5bd9c9d04fc4ad6925c28f0c212"
       }
     },
     "importer": {

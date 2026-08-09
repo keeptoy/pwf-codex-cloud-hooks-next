@@ -18,6 +18,7 @@ const bash = process.env.BASH || (process.platform === "win32" ? "D:\\Program Fi
 const bootstrap031 = path.join(root, "init-cloud-sandbox-v0.3.1.bash");
 const bootstrap032 = path.join(root, "init-cloud-sandbox-v0.3.2.bash");
 const sealedCandidateZipSha256 = "f097b04015b1a3847ca5a24b9236f882c5a008b22033793b5661e282c39131f9";
+const sealed032ZipSha256 = "b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081";
 const zeroSha256 = "0".repeat(64);
 
 function bashPath(value) {
@@ -126,13 +127,19 @@ test("v0.3.1 sealed bootstrap pins both archives and removes remote Node tooling
   assert.match(zeroOverride.stderr, /HOOKS_SHA256 is still a placeholder/);
 });
 
-test("v0.3.2 development bootstrap pins its future identity and fails closed on the zero hash", () => {
+test("v0.3.2 sealed bootstrap pins the exact ZIP and rejects a zero override", () => {
   const bootstrap = fs.readFileSync(bootstrap032, "utf8");
   assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.2\}"/);
-  assert.match(bootstrap, /HOOKS_SHA256="\$\{HOOKS_SHA256:-0{64}\}"/);
-  const developmentGate = runBash('source "$1"\nassert_hooks_checksum_configured', [bootstrap032]);
-  assert.equal(developmentGate.status, 1, developmentGate.stdout);
-  assert.match(developmentGate.stderr, /HOOKS_SHA256 is still a placeholder/);
+  assert.match(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${sealed032ZipSha256}\\}"`));
+  const sealedGate = runBash('source "$1"\nassert_hooks_checksum_configured', [bootstrap032]);
+  assert.equal(sealedGate.status, 0, sealedGate.stderr);
+  const zeroOverride = runBash(
+    'source "$1"\nassert_hooks_checksum_configured',
+    [bootstrap032],
+    { HOOKS_SHA256: zeroSha256 },
+  );
+  assert.equal(zeroOverride.status, 1, zeroOverride.stdout);
+  assert.match(zeroOverride.stderr, /HOOKS_SHA256 is still a placeholder/);
 });
 
 test("v0.3.2 bootstrap rejects Node below 18 and accepts supported platform majors", () => {
