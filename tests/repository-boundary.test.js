@@ -8,63 +8,42 @@ const test = require("node:test");
 
 const root = path.resolve(__dirname, "..");
 const read = relative => fs.readFileSync(path.join(root, relative), "utf8");
+const trustedPrefixes = ["contracts/", "hooks/", "patches/", "runtime/", "tools/"];
+const trustedRootPaths = new Set(["install.js", "package.json", "upstream-manifest.json"]);
+const planningFiles = ["findings.md", "progress.md", "task_plan.md"];
 
-const expectedPaths = [
-  ".gitattributes", ".gitignore", ".planning/.active_plan",
-  ".planning/2026-08-05-slim-repository-migration/findings.md",
-  ".planning/2026-08-05-slim-repository-migration/progress.md",
-  ".planning/2026-08-05-slim-repository-migration/task_plan.md",
-  ".planning/2026-08-06-v0.3.0-stable-release/findings.md",
-  ".planning/2026-08-06-v0.3.0-stable-release/progress.md",
-  ".planning/2026-08-06-v0.3.0-stable-release/task_plan.md",
-  ".planning/2026-08-06-v0.3.1-security-fix-discovery/findings.md",
-  ".planning/2026-08-06-v0.3.1-security-fix-discovery/progress.md",
-  ".planning/2026-08-06-v0.3.1-security-fix-discovery/task_plan.md",
-  ".planning/2026-08-08-documentation-truth-source-governance/findings.md",
-  ".planning/2026-08-08-documentation-truth-source-governance/progress.md",
-  ".planning/2026-08-08-documentation-truth-source-governance/task_plan.md",
-  "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md", "LICENSE",
-  "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "THIRD_PARTY_NOTICES.md",
-  "contracts/adapter-plan-context-request-v1.schema.json",
-  "contracts/adapter-runtime-request-v1.schema.json",
-  "contracts/compatibility-overlays-v1.json",
-  "contracts/plan-context-result-v1.schema.json",
-  "contracts/release-artifact-v1.json", "contracts/runtime-bundle-v1.json",
-  "contracts/runtime-result-v1.schema.json", "docs/beta3-dev-m3-cloud-equivalence.md",
-  "docs/beta3-dev-m4-cutover-plan.md",
-  "docs/git-file-modes.md",
-  "docs/v0.3.0-beta.2-cloud-hard-acceptance.md", "hooks/hook_adapter.py",
-  "docs/v0.3.0-cloud-hard-acceptance.md",
-  "docs/v0.3.1-cloud-hard-acceptance.md",
-  "init-cloud-sandbox-v0.3.0.bash", "init-cloud-sandbox-v0.3.1.bash",
-  "init-cloud-sandbox-v0.3.2.bash", "install.js", "package.json",
-  "patches/patch_planning_skill.py", "runtime/owned-catchup.py", "runtime/owned-plan.py",
-  "runtime/upstream/inject-plan.sh", "runtime/upstream/ledger-summary.sh",
-  "runtime/upstream/resolve-plan-dir.sh", "runtime/upstream/session-catchup.py",
-  "tests/activation.test.js", "tests/architecture-contracts.test.js",
-  "tests/cloud-fixtures.test.js", "tests/contracts.test.js",
-  "tests/fixtures/cloud/hook-observations-v1.json",
-  "tests/fixtures/cloud/session-catchup-cloud-wrapper.jsonl",
-  "tests/fixtures/golden/adapter-output-canonical-plan.json",
-  "tests/fixtures/golden/adapter-output-managed-legacy.json",
-  "tests/fixtures/planning-with-files/README.md", "tests/fixtures/planning-with-files/SKILL.md",
-  "tests/fixtures/planning-with-files/scripts/resolve-plan-dir.sh",
-  "tests/fixtures/planning-with-files/scripts/session-catchup.py",
-  "tests/golden-output.test.js", "tests/hook-adapter.test.js", "tests/import-runtime.test.js",
-  "tests/installer.test.js", "tests/owned-plan-runtime.test.js", "tests/owned-runtime.test.js",
-  "tests/release-package.test.js", "tests/repository-boundary.test.js",
-  "tests/runtime-supervisor.test.js", "tests/skill-patch.test.js",
-  "tools/build_release.py", "tools/import_upstream_runtime.py", "upstream-manifest.json",
-].sort();
-
-test("slim repository has the exact current allowlist and no archived path aliases", () => {
+function trackedPaths() {
   const result = spawnSync("git", ["-c", "core.quotepath=false", "ls-files"], {
     cwd: root, encoding: "utf8",
   });
   assert.equal(result.status, 0, result.stderr);
-  const actual = result.stdout.trim().split(/\r?\n/).filter(Boolean).map(value => value.replaceAll("\\", "/")).sort();
-  assert.equal(expectedPaths.length, 76);
-  assert.deepEqual(actual, expectedPaths);
+  return result.stdout.trim().split(/\r?\n/).filter(Boolean)
+    .map(value => value.replaceAll("\\", "/")).sort();
+}
+
+function isTrustedSource(relative) {
+  return trustedRootPaths.has(relative) || trustedPrefixes.some(prefix => relative.startsWith(prefix));
+}
+
+test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
+  const actual = trackedPaths();
+  const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
+  const releasePaths = artifact.entries.map(item => item.path);
+  const expectedTrusted = releasePaths.filter(isTrustedSource).sort();
+  const actualTrusted = actual.filter(isTrustedSource).sort();
+
+  assert.deepEqual(actualTrusted, expectedTrusted);
+  for (const relative of [...releasePaths, ...artifact.external_release_assets.map(item => item.path)]) {
+    assert.equal(actual.includes(relative), true, relative);
+  }
+  for (const required of [
+    "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
+    "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "docs/repository-governance-guide.md",
+  ]) assert.equal(actual.includes(required), true, required);
+  for (const prefix of [".planning/", "docs/", "tests/"]) {
+    assert.equal(artifact.excluded_prefixes.includes(prefix), true, prefix);
+    assert.equal(releasePaths.some(item => item.startsWith(prefix)), false, prefix);
+  }
   for (const forbidden of [
     "PROJECT_UNDERSTANDING.md", "work_plan.md", "黑盒验证.md", "snapshot-prototype/",
     "tests/phase3-contracts.test.js", "tests/snapshot-prototype-handoff.test.js",
@@ -72,6 +51,46 @@ test("slim repository has the exact current allowlist and no archived path alias
     "tests/fixtures/golden/adapter-output-v0.3.0-beta.1.json",
     "tests/fixtures/cloud/session-catchup-v0.2.2.jsonl",
   ]) assert.equal(actual.some(item => item === forbidden || item.startsWith(forbidden)), false, forbidden);
+});
+
+test("planning lifecycle has one valid active pointer and complete scoped records", () => {
+  const actual = trackedPaths();
+  const activePlan = read(".planning/.active_plan").trim();
+  const scopeFiles = new Map();
+
+  assert.match(activePlan, /^\d{4}-\d{2}-\d{2}-[a-z0-9][a-z0-9.-]*$/);
+  for (const relative of actual.filter(item => item.startsWith(".planning/") && item !== ".planning/.active_plan")) {
+    const match = relative.match(/^\.planning\/(\d{4}-\d{2}-\d{2}-[a-z0-9][a-z0-9.-]*)\/(findings\.md|progress\.md|task_plan\.md)$/);
+    assert.ok(match, `unexpected planning lifecycle path: ${relative}`);
+    const [, scope, file] = match;
+    if (!scopeFiles.has(scope)) scopeFiles.set(scope, []);
+    scopeFiles.get(scope).push(file);
+  }
+
+  assert.equal(scopeFiles.has(activePlan), true, `active planning scope is not tracked: ${activePlan}`);
+  for (const [scope, files] of scopeFiles) {
+    assert.deepEqual(files.sort(), [...planningFiles].sort(), `incomplete planning scope: ${scope}`);
+  }
+
+  const activeTask = read(`.planning/${activePlan}/task_plan.md`);
+  for (const heading of ["Authorization", "Next Step", "Stop Conditions"]) {
+    assert.match(activeTask, new RegExp(`^## ${heading}$`, "m"), `active task plan lacks ${heading}`);
+  }
+});
+
+test("documentation lifecycle paths stay portable and outside the Release artifact", () => {
+  const actual = trackedPaths();
+  const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
+  const releasePaths = artifact.entries.map(item => item.path);
+  const docs = actual.filter(item => item.startsWith("docs/"));
+
+  assert.equal(artifact.excluded_prefixes.includes("docs/"), true);
+  for (const relative of docs) {
+    assert.match(relative, /^docs\/(?:[A-Za-z0-9][A-Za-z0-9._-]*\/)*[A-Za-z0-9][A-Za-z0-9._-]*\.md$/);
+    assert.equal(releasePaths.includes(relative), false, relative);
+  }
+  assert.match(read("docs/repository-governance-guide.md"), /^<a name="repository-governance-guide"><\/a>$/m);
+  assert.match(read("MAINTAINER_HANDOFF.md"), /\[[^\]]*仓库治理指南[^\]]*\]\(docs\/repository-governance-guide\.md\)/);
 });
 
 test("retired prototype conclusions remain covered by production safety tests", () => {

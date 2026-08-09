@@ -75,6 +75,23 @@ graph、Release/rollback mechanism、长期基线晋级。普通 patch、文案�
   Release exclusion。
 - 当前 `expectedPaths` 把两类边界混为一体；它能发现 drift，但会把正常活动 planning 当作全仓库身份
   变化。H4 应保留安全 exactness，同时消除对 completed scope 名单的无限追加。
+- H4 复核确认 Release machine contract 已精确列出 23 个 ZIP entries、当前外部 bootstrap 和排除前缀；
+  repository guard 无需再用第二份全仓库清单复制这项精确性。
+- 新 guard 应独立保护三件事：trusted/source zone 的精确路径集合、planning/docs lifecycle 的结构规则、
+  已退役路径不得回流。合法治理文档出现时只要满足 lifecycle policy 就不应触发 trusted-zone drift。
+- 当前 tracked tree 有 6 个完整 planning scopes；H4 不删除它们。lifecycle guard 先验证 scope 命名、固定
+  三文件结构、单一有效 active pointer 与 Release exclusion；“当前树只剩活动 scope”由获批后的 H5
+  迁移执行并再收紧数量/角色断言。
+- 通用指南把 `docs/`、planning、runbook/acceptance 定义为 lifecycle zones，把 production entrypoints、
+  runtime、contracts、installer 和 Release allowlist 定义为 exact zones；测试实现应直接体现这条边界。
+- `contracts.test.js` 和 `release-package.test.js` 已分别保护 candidate artifact 的 23-entry machine contract、
+  external bootstrap 与 excluded prefixes；repository guard 应消费该 authority 来核对 tracked source，避免
+  复制第二份 Release entry count/全路径表。
+- 当前测试集中没有 repository-level planning 生命周期断言；H4 需要新增 active pointer、scope triplet、
+  允许文件名和 Release exclusion 的直接检查，同时保留退役原型/历史路径拒绝断言。
+- Release contract tests 已核对 entry 唯一性、数量、当前 external bootstrap、source 存在性和 excluded
+  prefix 不进入 artifact；H4 的 repository test 只需补充“trusted namespace 没有 contract 外 tracked file”
+  与生命周期区结构，不再冻结全部 repository paths。
 
 ## Candidate Migration Order
 

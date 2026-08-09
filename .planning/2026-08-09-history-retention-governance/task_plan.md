@@ -15,8 +15,8 @@ trusted graph、Release 不可变性和历史可追溯性的前提下，让当�
 
 ## Next Step
 
-先提交已经通过评审的治理模型作为独立恢复点，再把 repository-boundary 的全仓库静态清单重构为
-可信区域 exact guard 与治理文档 lifecycle guard；不进入 H5 清退。
+等待维护者评审 H4 结果并决定是否授权 H5。任何清退前先冻结 immutable recovery/link rewrite 清单，
+不因 guard 已绿色就直接删除历史文件。
 
 ## Phases
 
@@ -24,14 +24,14 @@ trusted graph、Release 不可变性和历史可追溯性的前提下，让当�
 - [x] H1 — 量化历史膨胀来源，形成热/温/冷分层、三类基线和角色窗口草案。
 - [x] H2 — 生成可迁移的仓库治理指南，并加入维护者接手入口。
 - [x] H3 — 维护者评审并冻结 retention contract、版本窗口与退出条件。
-- [ ] H4 — failing-first 重构 repository governance guards；不先删文件追求绿色。
+- [x] H4 — failing-first 重构 repository governance guards；不先删文件追求绿色。
 - [ ] H5 — 迁移 completed planning、旧 acceptance/runbook/bootstrap 和历史 oracle 引用。
 - [ ] H6 — 同步唯一 authority、运行完整 regression/package/platform gate，形成合并建议。
 
 ## Status
 
-H0–H3 完成，治理模型已获批，H4 已授权并即将开始。当前分支继承一个已确认的 governance test
-failure，production/runtime/Release contracts 未发现由此产生的行为变化；H5–H6 尚未授权。
+H0–H4 完成：治理模型已获批，repository guard 已分为 exact trusted-source、planning lifecycle、docs
+lifecycle 与 retired-path protection；聚焦和完整 Node regression 已通过。H5–H6 尚未授权。
 
 ## Provisional Exit Conditions
 
@@ -65,3 +65,4 @@ failure，production/runtime/Release contracts 未发现由此产生的行为变
 |---|---:|---|
 | Windows `rg` 接收未展开的 `init-cloud-sandbox-v0.3.*.bash` glob，返回路径语法错误 | 1 | 后续使用 `git ls-files` 或 PowerShell 枚举后传精确路径，不重复原命令 |
 | 提交后 repository inventory 与静态 `expectedPaths` 不一致 | 1 | 已保存原始失败并冻结为 H4 首个 failing-first 输入；本轮不弱化断言或伪报绿色 |
+| 新 documentation lifecycle test 把 handoff 链接标签误写成不含反引号的精确文本 | 1 | 分类为 test defect；改为验证标签包含目标语义且链接目的地精确，不改生产或文档内容 |

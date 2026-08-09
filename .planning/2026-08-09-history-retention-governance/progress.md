@@ -21,11 +21,14 @@
 - 聚焦运行 `tests/architecture-contracts.test.js` 与 `tests/repository-boundary.test.js`：10 项中 9 PASS、1 FAIL。
 - 唯一 FAIL 是继承的 repository exact-inventory 红项：前一提交已跟踪的 3 个 architecture planning 文件未列入静态 `expectedPaths`。本轮新增指南和 planning 尚未跟踪，不是该失败的新增触发因素。
 - 暂存治理模型后再次运行同一聚焦测试：仍为 10 项中 9 PASS、1 FAIL；失败 diff 现在精确列出 6 个合法 planning scope 文件和 1 个治理指南路径，证明单个静态全仓库清单同时误拒绝生命周期文档与新增治理文档。
+- 首次运行重构后 guard：12 项中 11 PASS、1 FAIL；exact trusted 与 planning lifecycle 两项已通过，唯一失败是测试正则没有容纳 handoff 链接标签现有的 Markdown code span，分类为 test defect。
+- 修正测试自身的链接标签匹配后，聚焦 architecture/repository governance 测试 12/12 PASS；原静态全仓库 `expectedPaths` 已不再存在。
+- 完整 `npm test`：88 tests，76 PASS、12 Windows/POSIX SKIP、0 FAIL；SKIP 与既有平台边界一致。
 - 该失败已分类为验证时序缺陷与脆弱治理策略，是 H4 的 failing-first 输入；本轮 guide-only gate 不通过扩张静态清单伪装绿色。
 - 完整 suite、package 与平台 gate 留到 retention contract 获批并完成 H4 实施之后。
 
 ## Current Handoff
 
-- 当前 gate：H4，治理模型与指南已通过维护者评审。
-- 下一动作：先提交治理模型恢复点，再重构分区治理 guard；不进行任何历史迁移或删除。
-- 当前工作区将在本地提交但不推送；没有历史文件被移动或删除。
+- H4 已完成：trusted source exact guard、planning lifecycle guard、documentation lifecycle guard 与 retired-path protection 均已落地。
+- 下一 gate 是 H5，仍需维护者明确授权；此前不进行任何历史迁移或删除。
+- 治理模型恢复点为本地 commit `7cb68ca`；H4 验证完成后创建第二个本地恢复点，不推送。
