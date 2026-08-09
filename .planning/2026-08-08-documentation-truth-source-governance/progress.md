@@ -19,7 +19,7 @@
 - D3: complete
 - D4: complete
 - D5: complete
-- D6: validation complete / awaiting maintainer review
+- D6: complete
 
 ## Validation record
 
@@ -440,3 +440,14 @@
   最后一项“复核后关闭计划”保持未勾选。
 - D6 pre-commit planning audit PASS：changed paths 精确为 task plan/findings/progress；三文件 UTF-8
   no-BOM、LF、final newline、fence balance 与 `git diff --check` 全部通过。
+
+## 2026-08-09 — Maintainer review approved and publication scope
+
+- 维护者确认 D6 closure 结果并批准关闭本计划；D6 最后一项已勾选，计划状态改为 complete。
+- 维护者授权把当前里程碑 push 到 GitHub `0.3.2-dev` 分支；不推 `main`、不创建 tag/Release/asset/PR，
+  也不修改 Cloud。后续 `0.3.2-dev-extend` 将从该里程碑另建，用于继续分析和精简文档，不在本计划展开。
+- Publish prerequisites PASS：GitHub CLI 可用并以 `keeptoy` 认证；origin 为
+  `keeptoy/pwf-codex-cloud-hooks-next`，远端默认分支为 `main`。只读 refs 检查确认远端尚无
+  `0.3.2-dev` 或 `0.3.2-dev-extend`，因此可从当前 closure commit 新建前者，不覆盖既有远端分支。
+- Plan closure audit PASS：changed paths 精确为 task plan/progress；两文件 UTF-8 no-BOM、LF、final
+  newline、fence balance 与 `git diff --check` 全部通过。
