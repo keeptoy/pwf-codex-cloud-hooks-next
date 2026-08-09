@@ -18,8 +18,8 @@ GitHub `Latest`。
 
 ## Next Step
 
-执行 R4 immutable publication：提交并推送 sealed source，创建 exact lightweight `v0.3.2` tag，发布
-恰好 ZIP 与 bootstrap 两个资产；随后从公开 URL 重新下载并逐项核验，禁止设置 Latest。
+维护者按 `docs/v0.3.2-cloud-hard-acceptance.md` 第 4～10 节执行 R5：全新 Cloud public setup、Fresh、
+canonical planning、long tail、real Resume 与 doctor；回传原始输出。智能体等待证据，不代跑 Cloud。
 
 ## Gates
 
@@ -27,7 +27,7 @@ GitHub `Latest`。
 - [x] R1 — Stable identity：将获批文件从 `0.3.2-dev` 晋级到 `0.3.2`，生成 Cloud hard acceptance 骨架。
 - [x] R2 — Local seal candidate：完整 regression、平台检查、双构建、ZIP boundary 与 importer replay 全绿。
 - [x] R3 — Final bytes：计算 ZIP SHA，写入外部 bootstrap，复跑受影响验证并冻结双资产 identity。
-- [ ] R4 — Immutable publication：创建 exact tag/Release，上传 ZIP 与 bootstrap，重新下载并逐字节核验。
+- [x] R4 — Immutable publication：创建 exact tag/Release，上传 ZIP 与 bootstrap，重新下载并逐字节核验。
 - [ ] R5 — Cloud handoff：交付维护者可复制的 Fresh/Resume/doctor/rollback 测试步骤，等待真实结果。
 - [ ] R6 — Acceptance closure：只根据回传证据关闭 Cloud acceptance；Latest/rollback promotion 另行授权。
 
@@ -41,8 +41,8 @@ GitHub `Latest`。
 
 ## Status
 
-R0–R3 PASS / R4 in progress。当前 production rollback/`Latest` 仍为 `v0.3.1`；`v0.3.2` 尚未 tag、
-发布或通过 Cloud hard acceptance。
+R0–R4 PASS / R5 waiting for maintainer Cloud evidence。当前 production rollback/`Latest` 仍为 `v0.3.1`；
+`v0.3.2` 已发布但尚未通过 Cloud hard acceptance。
 
 ## Errors Encountered
 
@@ -54,3 +54,4 @@ R0–R3 PASS / R4 in progress。当前 production rollback/`Latest` 仍为 `v0.3
 | 当前 Windows PowerShell/.NET 不支持静态 `SHA256.HashData` 与 `Convert.ToHexString` | 1 | 改用兼容的 `SHA256.Create().ComputeHash()` 与逐字节 hex；ledger SHA 成功冻结 |
 | 初次 Bash 探测只检查 C: 固定路径，漏掉测试实际使用的 D: Git Bash | 1 | 读取测试 resolver 后使用 `D:\Program Files\Git\bin\bash.exe`，不再把它记为缺失 |
 | Git Bash 在沙箱内 `bash -n` 因 signal pipe Win32 error 5 退出 | 1 | 分类为 sandbox execution limitation；获批后在沙箱外以同一命令复跑，两个 bootstrap 均 PASS |
+| downloaded importer probe 把尚未创建的 extraction path 设为 shell cwd，Windows 启动前报 error 267 | 1 | 从现有仓库 cwd 解压，再在命令内部 Push-Location；extracted importer check PASS |

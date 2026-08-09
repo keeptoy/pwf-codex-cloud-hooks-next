@@ -23,7 +23,24 @@
 公开下载、最终双资产与 Cloud A～F 证据由
 [`docs/v0.3.1-cloud-hard-acceptance.md`](docs/v0.3.1-cloud-hard-acceptance.md) 冻结。
 
-### 1.2 历史发布里程碑
+### 1.2 v0.3.2 immutable publication
+
+| 项目 | 值 |
+|---|---|
+| tag / Release | [`v0.3.2`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/tag/v0.3.2) |
+| exact release source commit | [`c68a53bdeab7c38badcfb4e2a733ddd851e498e4`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/c68a53bdeab7c38badcfb4e2a733ddd851e498e4) |
+| ZIP | `pwf-codex-cloud-hooks-v0.3.2.zip` |
+| ZIP entries / size | 23 / 82,627 bytes |
+| ZIP SHA-256 | `b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081` |
+| external bootstrap | `init-cloud-sandbox-v0.3.2.bash` |
+| bootstrap size | 21,565 bytes |
+| bootstrap SHA-256 | `aa2c1fd64bfc8ee3804d5f4bf39f7816a2ca9ad9a96949336ec94a6c20f8f77c` |
+
+公开下载与后续 Cloud 证据由
+[`docs/v0.3.2-cloud-hard-acceptance.md`](docs/v0.3.2-cloud-hard-acceptance.md) 冻结；programme/角色状态只见
+[`ROADMAP.md`](ROADMAP.md)。
+
+### 1.3 历史发布里程碑
 
 历史版本退出当前角色窗口后，只在这里保留精确身份和永久意义；逐次命令与验收现场通过 immutable
 commit/tag/Release 恢复，不在 HEAD 保留全文副本。

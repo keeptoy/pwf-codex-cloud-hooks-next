@@ -44,6 +44,13 @@
   0 FAIL；v0.3.2 bootstrap 的沙箱外 `bash -n` PASS。
 - exact-name final ZIP build/check 仍为 23 entries、82,627 bytes、SHA-256 `b42aecaf...e5081`；R3 关闭，
   进入 R4 immutable publication，仍不授权 Latest/rollback promotion。
+- 创建 sealed commit `c68a53b` 后从 clean worktree 重建同名 ZIP，双资产 size/SHA 均未变化；branch 已
+  fast-forward push，lightweight `v0.3.2` tag 已首次创建并推送。
+- GitHub Release v0.3.2 已创建为非 draft/非 prerelease 且 `latest=false`，恰好上传 ZIP 与 bootstrap。
+- 公开 URL 重新下载核验 PASS：ZIP 82,627 / `b42aecaf...e5081`，bootstrap 21,565 / `aa2c1fd6...8f77c`；
+  builder check、extracted importer replay PASS，Latest 仍为 v0.3.1。
+- R4 evidence failing-first：architecture/release 13 tests 中 12 PASS、1 FAIL；v0.3.2 tag oracle 已绿色，
+  唯一红项是 ROADMAP/Provenance/acceptance 尚未写回已发生 publication，现已同步。
 
 ## Validation Status
 

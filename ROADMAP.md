@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.2` Release candidate；stable package identity 已冻结，尚未 accepted |
+| 当前开发列车 | `v0.3.2` Release candidate；published；Cloud pending；尚未 accepted |
 | 当前已接受版本 | `v0.3.1`；production rollback 与 GitHub `Latest` |
 | 回退证据链 | immutable `v0.3.0` → immutable `v0.3.0-beta.2` oracle |
 | 当前 programme 边界 | Product Phase 4 未授权 |
@@ -57,6 +57,8 @@ source/资产身份与 predecessor 迁移链见 [`BASELINE_PROVENANCE.md`](BASEL
 理由、实现导航、实际版本变化、programme 路线、当前行动和不可变证据分别只有一个主维护位置。
 该候选没有 production runtime、Host ABI、trusted graph 或 Hook 行为变化；seal、publication、Cloud
 acceptance 和 rollback/Latest promotion 仍是相互独立的 gate，Product Phase 4 仍未授权。
+当前 immutable publication 与公开下载双资产复核已经 PASS；下一 gate 是维护者执行
+[`v0.3.2 Cloud hard acceptance`](docs/v0.3.2-cloud-hard-acceptance.md)，在它关闭前仍不是 accepted baseline。
 
 该列车的仓库生命周期治理保持一个 active planning，并以 candidate + accepted role window 控制当前
 bootstrap/acceptance；更早历史退出 HEAD 后由 immutable commit、tag 和 Release 恢复。trusted/Release
@@ -72,7 +74,7 @@ pre-release；多个低风险 Phase 也只有在独立评审后才能进入同�
 | 6 | `0.6.0-*` | selective tool/permission hooks | 逐事件测量 latency/token/噪声；先 advisory、后扩展 | pending |
 | 7 | `0.7.0-*` | advisory completion | bounded、non-recursive、无 plan 时安静 | pending |
 | 8 | `0.8.0-*` | optional hard gating | 明确 Stop contract、上限、逃生路径、rollback 与隔离 Cloud | pending |
-| 9 | 当前列车的 `rc.N` → stable | 完整矩阵、最终字节、canary retirement、正式发布 | RC 与最终资产分别验收；重新下载双资产；可逆 | in progress — `v0.3.2` Release authorized；Cloud/promotion pending |
+| 9 | 当前列车的 `rc.N` → stable | 完整矩阵、最终字节、canary retirement、正式发布 | RC 与最终资产分别验收；重新下载双资产；可逆 | in progress — `v0.3.2` publication PASS；Cloud/promotion pending |
 
 Phase 9 是 Release 收口，不机械等于 `0.9.0`。例如只完成 Phase 4 时，它可以封板 `0.4.0`；如果多个
 Phase 经独立 gate 后被明确合并，则封板当时获批的同一版本列车。

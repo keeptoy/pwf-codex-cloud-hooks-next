@@ -80,3 +80,14 @@
   v0.3.2 bootstrap `bash -n` PASS，exact-name ZIP build/check/hash PASS。
 - R3 结论：`GO` 进入 R4。R4 只能 fast-forward sealed source、创建新 tag/Release 和两个新资产；不得
   改 ZIP/bootstrap 字节、设为 Latest、覆盖旧资产或把 publication 冒充 Cloud acceptance。
+
+## R4 Immutable Publication
+
+- sealed source `c68a53bdeab7c38badcfb4e2a733ddd851e498e4` 已 fast-forward push；新 lightweight tag
+  `v0.3.2` 精确指向该 commit。
+- GitHub Release `v0.3.2` 非 draft、非 prerelease，显式 `latest=false`，恰好包含 82,627-byte ZIP 与
+  21,565-byte bootstrap；服务端 digest 与本地冻结 SHA 一致。
+- 从固定公开 URL 重新下载双资产后，filename/size/SHA、23-entry builder check 和 extracted importer
+  replay 全部 PASS；GitHub `Latest` 复核仍为 `v0.3.1`。
+- R4 结论：`GO` 进入 R5 Cloud handoff。publication 只建立不可变候选，不等于 Cloud accepted，也不
+  授权 rollback/Latest promotion。

@@ -21,7 +21,9 @@ const stableBootstrapSha256 = "ab334f0367d948fa29a2bdd37bff0c220929aeb320fdf59db
 const release031Commit = "9aa2148886e499f9f45594f7ae4f7681f1045de2";
 const release031ZipSha256 = "f097b04015b1a3847ca5a24b9236f882c5a008b22033793b5661e282c39131f9";
 const release031BootstrapSha256 = "ce31a32002aea46bbf3f9baf9a0e93451d24c3b3653952e425d1e1ff6960a5e8";
+const release032Commit = "c68a53bdeab7c38badcfb4e2a733ddd851e498e4";
 const release032ZipSha256 = "b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081";
+const release032BootstrapSha256 = "aa2c1fd64bfc8ee3804d5f4bf39f7816a2ca9ad9a96949336ec94a6c20f8f77c";
 const zeroSha256 = "0".repeat(64);
 
 function run(command, archive, contractPath = contract, builderPath = builder, cwd = root) {
@@ -122,6 +124,46 @@ test("v0.3.2 sealed ZIP is deterministic, self-contained, and keeps its bootstra
     }));
     assert.deepEqual([...eolByPath.keys()].sort(), [...releasePaths].sort());
     for (const releasePath of releasePaths) assert.equal(eolByPath.get(releasePath), "lf", releasePath);
+  } finally {
+    fs.rmSync(workspace, { recursive: true, force: true });
+  }
+});
+
+test("published v0.3.2 source/tag oracle retains its immutable Release identity", () => {
+  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-release-v032-"));
+  try {
+    const tagResult = spawnSync("git", ["rev-parse", "--verify", "v0.3.2^{commit}"], {
+      cwd: root,
+      encoding: "utf8",
+    });
+    assert.equal(tagResult.status, 0, tagResult.stderr);
+    assert.equal(tagResult.stdout.trim(), release032Commit);
+
+    const sourceArchive = path.join(workspace, "v0.3.2-source.zip");
+    let result = spawnSync("git", ["archive", "--format=zip", `--output=${sourceArchive}`, release032Commit], {
+      cwd: root,
+      encoding: "utf8",
+    });
+    assert.equal(result.status, 0, result.stderr);
+    const releaseRoot = path.join(workspace, "source");
+    extractZip(sourceArchive, releaseRoot);
+    const releaseArtifact = JSON.parse(fs.readFileSync(path.join(releaseRoot, "contracts", "release-artifact-v1.json"), "utf8"));
+    const releasePackage = JSON.parse(fs.readFileSync(path.join(releaseRoot, "package.json"), "utf8"));
+    assert.equal(releasePackage.version, "0.3.2");
+    assert.equal(releaseArtifact.entries.length, 23);
+    assert.deepEqual(releaseArtifact.external_release_assets.map(entry => entry.path), ["init-cloud-sandbox-v0.3.2.bash"]);
+
+    const releaseZip = path.join(workspace, "pwf-codex-cloud-hooks-v0.3.2.zip");
+    result = run(
+      "build",
+      releaseZip,
+      path.join(releaseRoot, "contracts", "release-artifact-v1.json"),
+      path.join(releaseRoot, "tools", "build_release.py"),
+      releaseRoot,
+    );
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(sha256(releaseZip), release032ZipSha256);
+    assert.equal(sha256(path.join(releaseRoot, "init-cloud-sandbox-v0.3.2.bash")), release032BootstrapSha256);
   } finally {
     fs.rmSync(workspace, { recursive: true, force: true });
   }
