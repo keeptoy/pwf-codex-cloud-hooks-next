@@ -23,7 +23,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   列车；稳定文档采用版本无关 guard，publication oracle 固定为 accepted + immediate fallback 两席轮换。
 - 新增 Phase 1～3 与 successor 迁移 interlude 的精选历史摘要：用统一冻结模板提炼问题、决定、交付、
   非目标与继承关系；README 维护唯一宏观入口，每份摘要只保留一个 cold source snapshot，不把旧设计/
-  验收重新提升为当前 authority，也不把旧 planning、脚本、源码或测试流水带回当前树。
+  验收重新提升为当前 authority，也不把旧 planning、脚本、源码或测试流水带回当前树。摘要写作结构
+  转交可复制模板维护，不再由 repository guard 固化。
 - 将 BASELINE_PROVENANCE 明确为持续维护的冷证据账本：已发布身份采用统一、角色无关的登记结构；索引
   可以新增或轮换精选入口，但已登记 immutable identity 不随 ROADMAP lifecycle 变化而改写。
 

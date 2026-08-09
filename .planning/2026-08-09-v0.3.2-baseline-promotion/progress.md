@@ -2,6 +2,16 @@
 
 ## 2026-08-09
 
+- 维护者批准 P2-P-T：Phase 摘要格式不再由测试断言，改用可复制模板帮助上下文丢失后的恢复；本轮使用
+  planning-with-files catch-up，起始工作树只有不得修改/提交的 `临时文件/`。
+- 新增 `docs/phase-history-template.md`，包含证据恢复顺序、归档准入、写作边界和建议八段骨架；明确模板
+  不是 machine contract，不能据此猜测历史事实，调整模板也不批量重写已冻结摘要。
+- 历史索引加入模板入口；治理指南只保留 closed/evidence/frozen/Release-excluded 等生命周期边界，文件名、
+  章节顺序和提示语交由模板维护。DESIGN/CHANGELOG 同步职责分层。
+- repository guard 已删除 capsule 枚举、文件名、八个 anchor、证据数量、Phase 1/3.5 内容和治理指南格式
+  断言；仅保留 README 单一宏观入口、history index advisory 与 Release/trusted-graph exclusion。
+- focused suite 17/17 PASS；完整 `npm test` 为 92 tests、80 PASS、12 个诚实 Windows/POSIX SKIP、0 FAIL；
+  Node syntax、格式型断言零匹配与 `git diff --check` PASS。P2-P-T 已关闭，未进入 P3。
 - 维护者批准 P2-P-E：CHANGELOG 不再提及或链接 Phase 3.5，迁移来源改回 BASELINE_PROVENANCE，并把
   Phase 历史收口为 README 唯一宏观入口；工作树起点只有不得修改/提交的 `临时文件/`。
 - CHANGELOG 的 Unreleased 摘要已移除 Phase 3.5 名称及 deep-link，v0.3.0 改链 provenance 的稳定

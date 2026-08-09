@@ -1,5 +1,22 @@
 # Findings: v0.3.2 Baseline Promotion and v0.3.3-dev Handoff
 
+## P2-P-T Phase Authoring Template
+
+- 单一宏观入口收口后，repository test 仍逐份读取 Phase capsule，冻结文件名、八个 anchor、exact link 数量
+  和 Phase 3.5/Phase 1 具体叙事；这属于写作格式与历史内容，不是可信执行或 repository boundary。
+- 长期机器 guard 应保护高风险关系：历史目录只有一个宏观入口、不能进入 Release/trusted graph、不能
+  冒充当前 authority。编辑结构变化不会跨越这些边界，不需要每次修改测试。
+- 上下文恢复仍需要统一提示，因此把现有八段结构降级为可复制 authoring template 更合适：模板说明证据
+  恢复顺序、准入、非目标、冻结规则和建议骨架，但明确不是 machine contract。
+
+### P2-P-T Result
+
+- 新增 `docs/phase-history-template.md`；历史索引和治理指南均把它作为写作/恢复工具，同时明确模板变化
+  不要求批量改写已冻结摘要。
+- repository test 不再枚举 capsule、匹配文件名/anchor/link 数量，也不断言任何具体历史 Phase 内容；
+  只保留历史索引的 advisory/Release 边界和 README 单一宏观入口。
+- DESIGN 的测试职责改为“历史归档单入口”，CHANGELOG 记录格式责任从 guard 转交模板。
+
 ## P2-P-E Phase Archive Entrance
 
 - CHANGELOG 直接 deep-link Phase 3.5 是 README 单一历史入口的唯一宏观例外；即使只允许一条，也会让

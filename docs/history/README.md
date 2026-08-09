@@ -35,3 +35,6 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 先用本索引定位 Phase，并直接阅读摘要。末尾的 source snapshot 只是 cold evidence，不是当前 authority；
 需要审计历史来源时才进入该 commit。如果摘要与不可变历史字节冲突，通过新的事实纠错提交修复摘要；
 不得把旧设计重新提升为当前规范，也不得改写旧 commit、tag、Release 或 acceptance。
+
+新增摘要或在上下文丢失后恢复写作边界时，复制 [`Phase 历史摘要模板`](../phase-history-template.md)。模板
+只提供写作提示，不是 machine contract；现有摘要不会因为模板文字调整而被批量重写。

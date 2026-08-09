@@ -151,20 +151,19 @@ iterations/<version>/tests
 
 如果一个 Product Phase 跨多个版本或 Round，单看 CHANGELOG 很难恢复“为什么选择这条路线”；但把旧
 planning 和专项文档整体复制进 HEAD，又会把 cold history 重新变成当前树负担。可以在 warm layer 建立
-少量 **Phase capsule**，前提是同时满足：
+少量 **Phase capsule**。治理层只冻结生命周期和 authority 边界：
 
 1. Phase 已关闭，并有 immutable commit/tag/Release/acceptance 可以恢复完整原文；
-2. 一个 Phase 只保留一份摘要，文件名使用版本无关的 `phase-<number>[.<interlude>]-<topic>.md`；不按
-   Round、候选版本、测试批次或会话拆分；小数编号只能作为明确标注的回顾性 interlude，不能伪造原 programme
-   的 Product Phase 或产生新授权；
-3. 使用固定结构记录历史位置、前置问题、核心决定、已交付闭环、验收结论、明确非目标、后继继承和
-   immutable evidence；
-4. 不复制 production source、脚本、fixture、验收全文、SHA 表、测试计数或旧 planning；
-5. 不维护当前 candidate/accepted/rollback、Next Step 或 PASS/PENDING 状态；
-6. 创建后冻结，只允许事实纠错或 immutable link repair；
-7. 所在目录被 Release、installer inventory、trusted graph 与 runtime dispatch 明确排除。
-8. 摘要正文应可独立阅读；默认只保留一个 immutable source snapshot，不直接把旧设计文档或验收全文
-   链接成解释当前实现的第二套 authority。
+2. 一个闭合阶段只保留一份精选摘要，不按 Round、候选版本、测试批次或会话拆分；
+3. 不复制 production source、脚本、fixture、验收全文、SHA 表、测试计数或旧 planning，也不维护当前
+   candidate/accepted/rollback、Next Step 或 PASS/PENDING 状态；
+4. 摘要正文可以独立理解，完整历史仍从 immutable ref 恢复；
+5. 创建后冻结，只允许有证据的事实纠错或 immutable link repair；
+6. 所在目录被 Release、installer inventory、trusted graph 与 runtime dispatch 明确排除。
+
+文件名、章节顺序和写作提示统一从 [`Phase 历史摘要模板`](phase-history-template.md) 复制；它们是帮助
+上下文恢复的维护约定，不是 repository test 或 machine contract。模板可以随写作经验改进，不要求为此
+批量改写已经冻结的摘要。
 
 Phase capsule 是精选历史导航，不是新的 architecture、programme、provenance 或 acceptance authority。
 没有长期解释价值的阶段不必收录；讨论中、施工中或只有原型结论的阶段不得提前进入该目录。
@@ -295,7 +294,7 @@ commit、资产 hash 或“当前 PASS/PENDING”状态；candidate/accepted 文
 | eviction trigger | `<baseline promotion event>` |
 | retirement Definition of Done | `<role window / invariant migration / immutable recovery / validation>` |
 | publication oracle window | `<accepted + immediate fallback>` |
-| optional Phase capsule policy | `<closed phase / fixed summary schema / immutable evidence / Release exclusion>` |
+| optional Phase capsule policy | `<closed phase / authoring template / immutable evidence / Release exclusion>` |
 
 随后按顺序实施：authority map → failing-first guards → history migration → link rewrite → full validation。
 

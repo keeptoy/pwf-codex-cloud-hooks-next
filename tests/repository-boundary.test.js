@@ -123,62 +123,21 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(read("MAINTAINER_HANDOFF.md"), /\[[^\]]*仓库治理指南[^\]]*\]\(docs\/repository-governance-guide\.md\)/);
 });
 
-test("phase history is a closed indexed set of frozen Markdown capsules", () => {
-  const actual = trackedPaths();
-  const prefix = "docs/history/";
-  const historyPaths = actual.filter(item => item.startsWith(prefix));
-  const indexPath = `${prefix}README.md`;
-  const index = read(indexPath);
-  const capsules = historyPaths.filter(item => item !== indexPath);
-  const indexedCapsules = [...index.matchAll(/\]\((phase-\d+(?:\.\d+)?-[A-Za-z0-9._-]+\.md)\)/g)]
-    .map(match => `${prefix}${match[1]}`).sort();
-
-  assert.equal(historyPaths.includes(indexPath), true);
-  assert.deepEqual(indexedCapsules, [...capsules].sort(), "history index must cover every capsule exactly once");
+test("historical documents have one macro entrance and remain advisory", () => {
+  const index = read("docs/history/README.md");
   assert.match(index, /warm layer.*不是源码 archive.*当前\s+programme authority/s);
   assert.match(index, /只允许事实纠错或修复.*immutable link/s);
-  assert.match(index, /理解其结论不需要继续打开旧 Phase\/Round 文档/s);
-  assert.match(index, /source snapshot 只是 cold evidence，不是当前 authority/s);
   assert.match(index, /不得进入 Release.*trusted graph.*runtime dispatch/s);
 
   const readme = read("README.md");
   assert.match(readme, /\]\(docs\/history\/README\.md\)/);
   assert.equal((readme.match(/docs\/history\//g) || []).length, 1,
-    "README must expose exactly one Phase-history directory entrance");
+    "README must expose exactly one historical-document entrance");
   for (const macroDoc of [
     "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
     "MAINTAINER_HANDOFF.md", "ROADMAP.md",
-  ]) assert.doesNotMatch(read(macroDoc), /docs\/history\//, `${macroDoc} must not create a second Phase-history entrance`);
-
-  const requiredAnchors = [
-    "historical-position", "problem-before", "core-decisions", "completed-delivery",
-    "acceptance-conclusion", "explicit-non-goals", "successor-inheritance", "immutable-evidence",
-  ];
-  for (const relative of capsules) {
-    assert.match(relative, /^docs\/history\/phase-\d+(?:\.\d+)?-[a-z0-9][a-z0-9.-]*\.md$/);
-    const content = read(relative);
-    for (const anchor of requiredAnchors) {
-      assert.match(content, new RegExp(`^<a name="${anchor}"><\\/a>$`, "m"), `${relative} lacks ${anchor}`);
-    }
-    const externalLinks = [...content.matchAll(/https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/(?:commit|blob)\/[^)]+/g)];
-    assert.equal(externalLinks.length, 1, `${relative} must retain exactly one cold source link`);
-    assert.match(externalLinks[0][0], /\/commit\/[a-f0-9]{40}$/,
-      `${relative} cold evidence must be an immutable source snapshot`);
-    assert.match(content, /^## Cold evidence \(not current authority\)$/m);
-    assert.match(content, /只证明本文的历史来源，不解释当前实现/);
-    assert.doesNotMatch(content, /\/blob\/[a-f0-9]{40}\/docs\/(?:phase-|v[^/]+-cloud-hard-acceptance)/,
-      `${relative} must not promote retired design or acceptance documents`);
-    assert.doesNotMatch(content, /^## (Next Step|Status)$/m, `${relative} must not carry current lifecycle state`);
-  }
-
-  const migration = read("docs/history/phase-3.5-successor-migration.md");
-  const phaseOne = read("docs/history/phase-1-runtime-provenance.md");
-  assert.match(migration, /回顾性治理标签.*不是当时 programme 正式授权的 Product Phase/s);
-  assert.match(migration, /M1 — exact mirror.*M2 — slim transformation.*M3 — Cloud equivalence.*M4 — repository authority cutover/s);
-  assert.match(migration, /不修改 production runtime.*不授权.*Phase 4/s);
-  assert.match(phaseOne, /\]\(phase-3\.5-successor-migration\.md\).*完成 M1～M4/s);
-  assert.doesNotMatch(phaseOne, /BASELINE_PROVENANCE\.md/,
-    "Phase 1 must route migration narrative to Phase 3.5 rather than the exact-evidence ledger");
+  ]) assert.doesNotMatch(read(macroDoc), /docs\/history\//,
+    `${macroDoc} must not create a second historical-document entrance`);
 });
 
 test("portable repository governance defines a closed retirement transaction", () => {
@@ -192,14 +151,6 @@ test("portable repository governance defines a closed retirement transaction", (
   assert.match(guide, /长期安全不变量已经迁入当前版本或版本无关测试/);
   assert.match(guide, /unsealed transition.*旧版本 bootstrap checksum/s);
   assert.match(guide, /不是第四种长期 baseline/);
-  assert.match(guide, /^<a name="phase-history-capsules"><\/a>$/m);
-  assert.match(guide, /一个 Phase 只保留一份摘要.*不按\s+Round.*测试批次/s);
-  assert.match(guide, /创建后冻结.*事实纠错.*immutable link repair/s);
-  assert.match(guide, /Phase capsule 是精选历史导航.*不是新的 architecture.*authority/s);
-  assert.match(guide, /摘要正文应可独立阅读.*一个 immutable source snapshot.*第二套 authority/s);
-  assert.match(guide, /小数编号只能作为.*回顾性 interlude.*不能伪造原 programme/s);
-  assert.match(guide, /README\/文档地图.*唯一宏观入口.*只链接 Phase 目录索引/s);
-  assert.match(guide, /CHANGELOG、ROADMAP、provenance.*不得直接链接具体 capsule/s);
 });
 
 test("retired prototype conclusions remain covered by production safety tests", () => {
@@ -300,7 +251,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(design, /CHANGELOG\.md/);
   assert.match(changelog,
     /\[`BASELINE_PROVENANCE\.md` 的 Successor 迁移不可变证据\]\(BASELINE_PROVENANCE\.md#successor-migration-evidence\)/);
-  assert.doesNotMatch(changelog, /Phase 3\.5|phase-3\.5|docs\/history\//);
+  assert.doesNotMatch(changelog, /docs\/history\//);
   assert.doesNotMatch(changelog, /Successor 迁移来源链/);
 
   assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));
