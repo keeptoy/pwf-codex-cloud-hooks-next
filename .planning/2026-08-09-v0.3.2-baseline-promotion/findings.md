@@ -598,3 +598,14 @@ bootstrap/README 一并删除，则当前结论转为 `NO_GO`，必须等待 P3 
   blob 链接；beta.2 exact acceptance 已由现有 provenance 链接到 successor immutable commit。
 - CHANGELOG 应新增 beta.1 独立段，概括 Phase 1～3 的三层能力与 A～F；beta.2 段强调继承行为、文档治理
   和独立资产；v0.2.2 只写已证实的 early compatibility/golden/fallback 角色，等待维护者补充功能特点。
+
+## v0.2.2 Package-contained Bootstrap Evidence
+
+- 重新下载公开 `v0.2.2` Release ZIP 并校验既有 package identity：ZIP 含 23 entries，其中
+  `pwf-codex-cloud-hooks/init-cloud-sandbox-v0.2.2.bash` 为 18,691 bytes，SHA-256
+  `28861dc61b8ba292d37b804d7cd2f542929dac73bbe35860be64eab0ae1fa095`。
+- 因而早期账本中的“未发布独立 bootstrap asset”只能解释为没有第二个外部 Release asset，不能解释为
+  package 中没有 bootstrap。v0.2.2 是单一 ZIP 运输；ZIP 外独立 bootstrap 边界从 alpha.1 建立。
+- `临时文件/` 中同名副本也是 18,691 bytes，但 SHA-256 为
+  `b1cc8c5677504ab65a6a2a85d7ba1162f4f7aa624a2be1e1dbf544c0ea59f3a9`，不等于公开 Release 字节；它可供
+  历史理解，但不能覆盖 immutable provenance，且本轮未修改该目录。

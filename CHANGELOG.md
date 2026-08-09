@@ -151,6 +151,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   Resume unsynced sentinel、owned repair、unknown drift fail-closed 与最终 healthy doctor。
 - installer 已具备 `/etc/codex/requirements.toml` managed policy、absolute adapter、manifest inventory、
   backup、dry-run、doctor、guarded repair 和 ownership-aware uninstall，证明产品目标可以在 Cloud 中可靠运行。
+- 当时仍采用单一 package 运输：`init-cloud-sandbox-v0.2.2.bash` 包含在 Release ZIP 内，并没有作为第二个
+  独立 Release asset 发布；“contract-driven ZIP + ZIP 外 bootstrap”的边界从 v0.3.0-alpha.1 才建立。
 - 但它仍是过渡架构：bootstrap 在安装现场 patch global Skill，adapter 直接执行该 Skill 的
   `session-catchup.py`，并自行承担 plan resolution/rendering；它是后续版本的 golden behavior 与 historical
   fallback，不是当前 owned canonical architecture 的最小实现。

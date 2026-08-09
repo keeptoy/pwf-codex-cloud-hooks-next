@@ -219,3 +219,9 @@
   本地 beta/v0.2.2 tag，已记录并改用可达 immutable lineage commit，不创建或伪造 tags。
 - CHANGELOG 已新增 beta.1 独立段、扩充 beta.2 文档/发布治理段，并为 v0.2.2 建立最小已证实角色占位；
   repository/architecture guards 16/16 PASS，`git diff --check` PASS。P2-H 关闭，v0.2.2 细节等待维护者补充。
+- 公开 v0.2.2 Release ZIP 已重新下载并核验：23 entries，包内 bootstrap 为 18,691 bytes、SHA-256
+  `28861dc6...a095`；临时目录同名副本与发布字节不一致，因此 provenance 只采用公开资产证据。
+- BASELINE_PROVENANCE、CHANGELOG 与 Phase 0 已同步“v0.2.2 单一 ZIP/包内 bootstrap → alpha.1 ZIP 外独立
+  bootstrap”的发布边界演进；未改 production、contracts、当前 lifecycle、Release 或 P3 状态。
+- 最终 repository/architecture focused tests 17/17 PASS；完整 `npm test` 为 92 tests、80 PASS、12 个
+  Windows/POSIX SKIP、0 FAIL；`git diff --check` PASS。

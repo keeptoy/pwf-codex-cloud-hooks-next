@@ -52,11 +52,12 @@ v0.2.2 旧过渡架构
   -> v0.3.0：在 next 仓库发布 stable
 ```
 
-- `v0.2.2` 的 bootstrap 在安装现场修改 global Skill；adapter 调用 global Skill 的
-  `session-catchup.py`，并保留自己的 plan resolution/rendering。它建立可靠功能基线，但不是当前 trusted
-  graph。
+- `v0.2.2` 使用单一 Release ZIP，bootstrap 作为包内文件随 installer/runtime 一起运输，并在安装现场修改
+  global Skill；adapter 调用 global Skill 的 `session-catchup.py`，并保留自己的 plan resolution/rendering。
+  它建立可靠功能基线，但不是当前 trusted graph。
 - alpha.1 建立 owned runtime、machine contracts、deterministic import/install/package 和 exact inventory，
-  但 runtime 只是 inactive verified inventory，没有切换 production dispatch。
+  同时把 bootstrap 外置为独立 Release asset；但 runtime 只是 inactive verified inventory，没有切换
+  production dispatch。
 - alpha.2 是第一次真正的 production architecture 切换：global Skill 恢复 pristine，SessionStart catch-up
   由 repository-owned wrapper 承担，Managed policy 继续只注册 adapter。
 - beta.1 完成最后一块：`owned-plan.py` 成为唯一 plan authority，SessionStart 与 UserPromptSubmit 共用同一
