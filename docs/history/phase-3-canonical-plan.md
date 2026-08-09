@@ -24,6 +24,12 @@ Phase 2 激活 catch-up 后，adapter 内仍保留自己的 plan resolution/rend
   exact-v1 project state 交给 `owned-catchup.py`。
 - pristine resolver/injector 只能在 private bounded snapshot 中调用：先对真实项目做 contained safe read，
   再只投影 task/progress，清除 ambient mode inputs，并严格验证 timeout、framing、UTF-8 与总预算。
+- 在当时比较的多目标 overlay、受控快照、上游正式协议、Host-native IR、OS 虚拟化和官方原生支持中，
+  选择受控快照作为可立即落地的路线：它保持 resolver/injector pristine，又不把 Phase 4 marker 或第二个
+  upstream patch point 带入当前 trusted graph。多目标 overlay 只在快照无法满足真实文件语义、权限或清理
+  要求时重新打开。
+- 上游结构化调用协议或 Codex Cloud 原生 Skill Hook 是快照层的明确迁移/退休条件；单一 PWF 样本不足以
+  证明通用 Driver manifest 或 Host-native IR，OS 级虚拟化也不能在平台能力未形成合同时成为默认前提。
 - 只有 `context_emitted` 可以注入；race、symlink/hard-link、invalid input、child failure、timeout 或 oversized
   output 都保留 canary、整段不注入。
 - 激活时删除 adapter 的平行 plan algorithm；machine schemas 保持 exact v1，生命周期晋级本身不改协议名。
@@ -63,6 +69,8 @@ resume catch-up、UserPrompt plan-only、failure degradation、doctor 和 snapsh
 Phase 3 固定的 thin adapter、owned-plan、owned-catchup、single project state、private snapshot 与 fail-open loop/
 fail-closed injection 语义成为 stable v0.3.0 的 canonical runtime。后续 successor 迁移只通过 M1 exact mirror、
 M2 slim transformation、M3 Cloud equivalence 与 M4 authority cutover 改变仓库归属，没有重新定义该行为。
+Private snapshot 是当前 PWF integration driver 的实现策略，不是通用 Host ABI；只有第二个只读集成或上游/
+Host 正式协议提供新证据后，才重新决定抽象、替换或退休边界。
 
 <a name="immutable-evidence"></a>
 
@@ -70,4 +78,5 @@ M2 slim transformation、M3 Cloud equivalence 与 M4 authority cutover 改变仓
 
 - [Immutable source snapshot](https://github.com/keeptoy/pwf-codex-cloud-hooks/commit/bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b)
 
-该链接只证明本文的历史来源，不解释当前实现；当前 contract 与行为以当前仓库 authority 为准。
+该 snapshot 中的 `docs/phase-3-upstream-invocation-options.md` 保存 A～F 原始路线比较；它只证明本文的历史
+来源，不解释当前实现。当前 contract 与行为以当前仓库 authority 为准。

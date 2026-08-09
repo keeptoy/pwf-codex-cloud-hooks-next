@@ -1,5 +1,28 @@
 # Findings: v0.3.2 Baseline Promotion and v0.3.3-dev Handoff
 
+## P2-P-R Phase 3 Invocation Route Rationale
+
+- 临时 audit tree 的 `docs/phase-3-upstream-invocation-options.md` 与 immutable commit
+  `bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b` 中同路径 blob 均为
+  `5e76f074c80872c0f31958cf824b1ab5892ba381`，可以作为可信历史来源。
+- 当前 Phase 3 capsule 已保存最终闭环（owned-plan、private snapshot、pristine resolver/injector、失败语义），
+  但没有保存 A～F 路线取舍、overlay 后备、上游/Host 原生协议退休条件和“不要从单一插件泛化”的理由。
+- 原文混有 beta.2 当前角色、旧 ZIP entry/test count、Round 3/4 状态等时间数据，不能整篇复制到当前宏观
+  文档；这些现场数据继续只留在 immutable source。
+- 最小分层是：Phase 3 capsule 保存历史选择与 rejected/fallback/retirement rationale；ARCHITECTURE 只保存
+  仍成立的 Driver/Host 边界；BASELINE_PROVENANCE 继续只做冷证据账本，不新增第二份设计叙事。
+
+### P2-P-R Result
+
+- Phase 3 capsule 已补齐路线选择：受控快照为首选、多目标 overlay 为条件后备、上游结构化协议/Cloud
+  原生支持为退休条件，Host-native IR 与 OS 虚拟化因证据/平台合同不足不进入当前路线。
+- capsule 明确 private snapshot 是 PWF integration driver 策略而非通用 Host ABI，并在既有 immutable
+  source snapshot 下记录原始决策文档路径；没有新增第二个外部 evidence link。
+- ARCHITECTURE 新增 upstream invocation strategy boundary，只保存仍成立的 pristine/overlay/retirement/
+  generalization/Discovery 不变量，不复制 A～F 历史全文或旧测试流水。
+- `BASELINE_PROVENANCE.md` 零改动；临时原文、旧发布角色、Round 状态、测试计数和旧 ZIP identity 均未
+  进入当前稳定文档。
+
 ## P2-P-T Phase Authoring Template
 
 - 单一宏观入口收口后，repository test 仍逐份读取 Phase capsule，冻结文件名、八个 anchor、exact link 数量

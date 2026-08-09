@@ -2,6 +2,16 @@
 
 ## 2026-08-09
 
+- 维护者批准按最干净方案吸收 `phase-3-upstream-invocation-options`；planning-with-files catch-up 后工作树
+  只有不得修改/提交的 `临时文件/`，本轮未进入 P3。
+- 已验证临时原文 blob `5e76f074...` 与 immutable `bbad3703...` 同路径文件完全一致；审计确认 Phase 3
+  capsule 已有最终实现，但缺少 A～F 路线 rationale、后备和退休条件。
+- Phase 3 capsule 已提炼受控快照首选、多目标 overlay 后备、上游/Cloud 原生退休条件，以及 IR/OS
+  virtualization 的拒绝/暂缓理由；cold evidence 仅注明原始文档路径，继续复用一个 immutable snapshot。
+- ARCHITECTURE 新增 integration-specific upstream invocation 边界，明确 snapshot 不是通用 Host ABI，
+  路线切换必须重新进入 Discovery；BASELINE_PROVENANCE 保持零改动。
+- focused suite 17/17 PASS；完整 `npm test` 为 92 tests、80 PASS、12 个诚实 Windows/POSIX SKIP、0 FAIL；
+  旧角色/测试/ZIP 数量未回流扫描与 `git diff --check` PASS。P2-P-R 已关闭。
 - 维护者批准 P2-P-T：Phase 摘要格式不再由测试断言，改用可复制模板帮助上下文丢失后的恢复；本轮使用
   planning-with-files catch-up，起始工作树只有不得修改/提交的 `临时文件/`。
 - 新增 `docs/phase-history-template.md`，包含证据恢复顺序、归档准入、写作边界和建议八段骨架；明确模板

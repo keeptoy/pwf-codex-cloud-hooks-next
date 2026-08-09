@@ -206,6 +206,26 @@ normalization 和 report rendering 仍由 owned wrapper 负责。
 Adapter 只接受完整、关系一致、位于 request root 下的 exact-v1 result。失败或 `inject=false` 时不做
 filesystem fallback。
 
+### 5.1 Upstream invocation strategy boundary
+
+对当前 pinned PWF v3.8.2，private snapshot 是 `owned-plan.py` 内部的 integration-specific 调用策略，
+不是 Codex Host ABI，也不是已证明可复用于任意 Skill 的 Driver contract。选择它是为了在不增加第二个
+managed upstream patch point 的情况下保持 resolver/injector pristine，并通过最小文件投影和环境清洗
+强制 `managed_legacy`；安全读取、权限、预算、超时和清理成本由 owned runtime 明确承担。
+
+该选择的长期边界固定为：
+
+- 只有 Cloud/Linux 证据证明快照无法满足真实文件语义、权限或有界清理时，才重新评估多目标 overlay；
+- 上游提供稳定结构化调用协议，或 Codex Cloud 原生承担同等 Skill Hook 模型时，优先迁移并删除对应
+  snapshot/compatibility layer；
+- 第二个只读 integration 出现前，不把 PWF 的 snapshot、overlay 或字段集合提升为通用 Driver manifest、
+  Host-native IR 或转换器承诺；
+- OS namespace、bind mount、FUSE 或外部 sandbox capability 未成为 Host contract 前，不作为 production
+  正确性的必要条件。
+
+任何路线切换都会改变 upstream invocation、trusted graph 或兼容层退休方式，必须重新进入 Discovery，
+复核 contracts、Release boundary、Linux/Cloud evidence 与 rollback，不得在局部 runtime 修复中隐式替换。
+
 ## 6. Catch-up contract
 
 `SessionStart` 才调用 `owned-catchup.py`。输入项目状态必须来自已验证 plan result，而不是 adapter
