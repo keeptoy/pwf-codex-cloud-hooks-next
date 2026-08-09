@@ -12,6 +12,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   release commit、资产 hash 或某次状态；candidate/accepted 文件窗口改由 ROADMAP 角色动态派生。
 - 当前树继续只保留一个 active planning scope；已完成的 Release/Cloud scope 由 Git 历史恢复，不作为
   永久工作区档案。
+- Discovery 明确区分讨论态、决策态与实施态；探索性疑问和单点历史残留先触发只读全局盘点，不能在
+  范围与清退方案尚未冻结时直接演变为批量删改。
 
 ## v0.3.2
 

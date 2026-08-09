@@ -254,6 +254,9 @@ test("ROADMAP discovery governance separates new rounds from in-round safety gat
   assert.match(discovery, /本地测试.*Cloud.*回滚.*GO.*CONDITIONAL_GO.*NO_GO/is);
   assert.match(discovery, /暂停.*production dispatch.*发布哈希.*外部.*不变/is);
   assert.match(discovery, /实现正确.*架构方向错/is);
+  assert.match(discovery, /讨论态.*疑问.*例子.*只读.*不.*实施授权/is);
+  assert.match(discovery, /决策态.*GO.*实施态.*明确.*实施/is);
+  assert.match(discovery, /单点.*同类.*全仓库.*inventory.*分类.*清退.*停止条件/is);
 });
 
 test("Release governance routes tests by checkout prerequisites without forging refs", () => {

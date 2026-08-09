@@ -75,3 +75,18 @@
   冷历史隔离、publication oracle 和精选 tombstone 继续由各自层级保护。
 - 这次不旋转 v0.3.0 publication oracle，因为它仍在 ROADMAP 回退证据链中；该决策留给未来完整的
   promotion + eviction 事务，避免普通文档整理隐式改变审计强度。
+
+## G4 Discussion-to-Implementation Rule
+
+- 维护者指出：讨论中的疑问、例子和“是否还有”表示方案尚未落地，不应自动解释为立即 patch/删除。
+  本次已完成删改无需回滚，但必须把教训提升为长期 Discovery 规则。
+- 不能只按标点判断。默认把探索性问题视为讨论态，只授权只读恢复、扫描和方案比较；明确冻结 GO 后
+  进入决策态，维护者再以“按方案继续/实施/删改”等指令进入实施态。
+- 若单点发现可能揭示同类仓库问题，继续局部修改会产生“局部正确、整体策略未定”的风险，因此命中
+  Discovery：先全仓库盘点、按 hot/warm/cold 与 exact/lifecycle 分类、确认 immutable 恢复路径、比较
+  整体/分批/保留方案并冻结停止条件。
+- 普通事实问答或已冻结方案内的局部修复无需新增正式 Round；只有范围/架构/信任/Release/回滚改变才
+  正式加 Round，否则可在当前 gate 内设置只读 Discovery 子门槛。
+- 主 authority 选择 ROADMAP 第 6 节，因为这条规则决定 programme/gate 如何从讨论进入实施；不把同一
+  完整规则复制到治理指南或 AGENTS。architecture governance test 只保护其存在，活动 planning 记录本次
+  现场应用。

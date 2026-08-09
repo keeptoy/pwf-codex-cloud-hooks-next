@@ -16,8 +16,8 @@
 
 ## Next Step
 
-本 scope 已完成，没有剩余实施。保持 v0.3.0 publication oracle 与精选 tombstone 不变；未来只有在
-新的 baseline promotion + eviction gate 明确授权时，才依据届时 ROADMAP 角色旋转 published oracle。
+本 scope 已完成，没有剩余实施。今后探索性疑问或单点残留可能扩展为同类仓库问题时，先按 ROADMAP
+6.1/6.3 进入只读 Discovery 并冻结整体方案；只有明确进入实施态后才执行删改。
 
 ## Gates
 
@@ -25,6 +25,7 @@
 - [x] G1 — Failing-first：增加职责边界 guard，证明架构测试不得继续冻结版本身份/专项 acceptance。
 - [x] G2 — Refactor：迁移或收敛断言，同步 DESIGN reverse index 与治理说明。
 - [x] G3 — Validation：focused/full suite、repository boundary、ZIP identity 与 diff 检查全绿。
+- [x] G4 — Discussion-to-implementation gate：冻结“讨论态 → 决策态 → 实施态”与仓库级清退前盘点规则。
 
 ## Stop Conditions
 
@@ -35,8 +36,8 @@
 
 ## Status
 
-G0–G3 PASS。architecture contracts 已版本无关；当前文档角色窗口由 repository lifecycle 动态治理；
-旧 Release/Cloud planning 已退出当前树。v0.3.2 Release、rollback/`Latest` 与 Product Phase 状态未改变。
+G0–G4 PASS。architecture contracts 已版本无关；当前文档角色窗口由 repository lifecycle 动态治理；
+讨论到实施的授权转换已冻结。本轮未回滚已完成删改，也未改变 Release/rollback 状态。
 
 ## Errors Encountered
 

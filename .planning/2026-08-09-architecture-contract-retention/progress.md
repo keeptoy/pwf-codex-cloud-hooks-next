@@ -32,3 +32,11 @@
   12 个 Windows/POSIX SKIP、0 FAIL。
 - deterministic ZIP build/check 仍为 23 entries、82,627 bytes、SHA-256 `b42aecaf...e5081`；sealed inputs
   staged diff 为空，`git diff --check` PASS。G3 关闭。
+- 维护者追加长期习惯：讨论性疑问不能自动当作实施授权；单点历史残留可能引出同类问题时，应先整体
+  规划再删减。本次已完成变更不回滚，当前进入 G4 仅补 ROADMAP Discovery 规则与 guard。
+- G4 failing-first 聚焦测试按预期 1/1 FAIL，红项只对应 ROADMAP 尚未定义讨论态/决策态/实施态和
+  仓库级 inventory 前置条件。
+- ROADMAP 6.1 已增加讨论语义与同类问题触发条件、三态授权转换；6.3 已把全量 inventory、生命周期
+  分类、immutable 恢复证据、清退集合与停止条件列为批量历史治理的最低产物。
+- G4 聚焦测试恢复 1/1 PASS；architecture + repository governance 15/15 PASS；完整 `npm test` 为
+  91 tests、79 PASS、12 个 Windows/POSIX SKIP、0 FAIL。G4 关闭。
