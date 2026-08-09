@@ -42,6 +42,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   最早成功的验证原型；授权据此修正 CHANGELOG、Phase 0、provenance 与活动证据，但不得虚构缺失验收。
 - 维护者批准 push 前的版本身份规范化：CHANGELOG 两处 `v0.1` 改为 `v0.1.0`，Phase 0 的 alpha/beta
   简写改为完整 `v0.3.0-*` 身份；不得把 v0.3.1/v0.3.2 扩写进 Phase 0 或改变任何历史语义。
+- 维护者明确授权把本地 `0.3.2-post-release` 发布到远端同名分支；不得直接推 `main`，不得创建
+  `0.3.3-dev`，不得借运输分支建立新 machine identity、Release、seal 或 P3 授权。
 - P3 只记录为后续独立 gate；当前不修改 package、Release contract、bootstrap 或 `v0.3.3-dev` identity，
   不 seal、不发布、不部署新版本。
 - 已完成的 `2026-08-09-architecture-contract-retention` 三文件由 immutable commit `d4cc3b5` 保存，P2
@@ -66,8 +68,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Next Step
 
-停在 P3 和 push gate 前。版本身份规范化已经验证完成；如需发布当前治理成果，先由维护者明确授权
-`0.3.2-post-release` 远端分支或直接 `main` 的具体 push 路线。
+完成 P2-PUSH：提交本 gate 的授权/preflight 记录，推送并设置 `origin/0.3.2-post-release` upstream，
+核对远端精确 commit 后记录结果；全过程不修改 `main` 或开启 P3。
 
 ## Gates
 
@@ -96,6 +98,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   修正早期 CHANGELOG/Phase 0/provenance 语义。
 - [x] P2-H-VN — Version identity normalization：消除 CHANGELOG/Phase 0 的不完整产品版本简写，不扩大
   Phase 0 范围或改写 provenance identity。
+- [ ] P2-PUSH — Post-release branch publication：只发布同名远端运输分支并核对 exact commit，不触碰
+  `main`、`0.3.3-dev`、tag、Release 或 assets。
 - [x] P2-PROV — Early publication provenance backfill：核验并登记有证据的 v0.1.0、v0.2.2 与
   v0.3.0 alpha/beta 身份，缺证字段保持空缺。
 - [x] P2-P0 — Architecture lineage overview：建立回顾性 Phase 0，串联可行性、Cloud 功能基线、owned
@@ -118,7 +122,7 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS，P2-P-A PASS，P2-P-M PASS，P2-P-B PASS，
 P2-P-E PASS，P2-P-T PASS，P2-P-R PASS，P2-H-010 PASS，P2-PROV PASS，P2-P0 PASS，P2-H-021 PASS；
-P2-H-020 PASS；P2-H-VN PASS。
+P2-H-020 PASS；P2-H-VN PASS；P2-PUSH 正在进行。
 本地分支为 `0.3.2-post-release`，当前 HEAD 是 P3 前的 unsealed governance transition；P3 未授权。
 
 ## Errors Encountered

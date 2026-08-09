@@ -254,3 +254,5 @@
   产品身份全部显式出现，残余简写为零；`git diff --check` PASS。
 - focused repository/architecture suite 17/17 PASS；完整 `npm test` 为 92 tests、80 PASS、12 个诚实的
   Windows/POSIX SKIP、0 FAIL。P2-H-VN 已关闭并重新停在 P3/push gate 前。
+- 2026-08-10：维护者授权将当前治理成果推送到远端同名 `0.3.2-post-release`；preflight 确认本地 HEAD
+  `12cf20f`、目标远端分支不存在、远端 main 为 `4658f1a`，且未跟踪 `临时文件/` 不进入提交。

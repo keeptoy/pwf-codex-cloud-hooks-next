@@ -724,3 +724,12 @@ bootstrap/README 一并删除，则当前结论转为 `NO_GO`，必须等待 P3 
   Phase 0 仍有意不承担 v0.3.1/v0.3.2 的后续版本日志。
 - focused repository/architecture suite 17/17 PASS；完整仓库回归 92 tests、80 PASS、12 个诚实的
   Windows/POSIX SKIP、0 FAIL。P2-H-VN 关闭，P3 与 push 均未启动。
+
+## P2-PUSH Post-release Branch Publication
+
+- 维护者选择先发布远端同名 `0.3.2-post-release`，不直接更新 `main`，也不提前创建 `0.3.3-dev`。
+  该分支只承载已验证的 post-release governance transition，不改变 package/bootstrap/Release identity。
+- push 前本地 HEAD 为 `12cf20f`，工作树除维护者未跟踪的 `临时文件/` 外干净；远端只读查询确认
+  `refs/heads/0.3.2-post-release` 与 `refs/heads/0.3.3-dev` 均不存在，`main` 位于 `4658f1a`。
+- 预期操作是创建新远端分支并设置 upstream；后置验证必须确认远端 branch commit 与本地 HEAD 完全一致，
+  且 `main` 指针保持不变。
