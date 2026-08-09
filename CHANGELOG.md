@@ -149,8 +149,9 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - 通过 pinned PWF v3.8.2 和四项窄 compatibility patch 解决 explicit Codex runtime、Cloud session store、
   scoped planning state 与长 wrapper 尾部保留；Cloud A～F 覆盖 startup/UserPrompt、planning context、真实
   Resume unsynced sentinel、owned repair、unknown drift fail-closed 与最终 healthy doctor。
-- installer 已具备 `/etc/codex/requirements.toml` managed policy、absolute adapter、manifest inventory、
-  backup、dry-run、doctor、guarded repair 和 ownership-aware uninstall，证明产品目标可以在 Cloud 中可靠运行。
+- 沿用 v0.2.1 已建立的 `/etc/codex/requirements.toml` Managed policy、absolute adapter、manifest
+  inventory、backup、doctor、guarded repair 与 ownership-aware uninstall，并把这些运维边界纳入完整
+  Cloud 功能验收。
 - 当时仍采用单一 package 运输：`init-cloud-sandbox-v0.2.2.bash` 包含在 Release ZIP 内，并没有作为第二个
   独立 Release asset 发布；“contract-driven ZIP + ZIP 外 bootstrap”的边界从 v0.3.0-alpha.1 才建立。
 - 但它仍是过渡架构：bootstrap 在安装现场 patch global Skill，adapter 直接执行该 Skill 的
@@ -158,6 +159,25 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   fallback，不是当前 owned canonical architecture 的最小实现。
 - [old-repository `v0.2.2` Release](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/tag/v0.2.2)
   保留最终 ZIP、发布校验和与可恢复的历史身份；CHANGELOG 不复制资产 SHA。
+
+## v0.2.1
+
+- 在不改变两个 Hook 的功能算法前提下，把 v0.1.0 的 legacy `hooks.json` + `config.toml` precomputed trust
+  部署切换为 `/etc/codex/requirements.toml` system-managed Hook：启用 `features.hooks`，建立或校验
+  `hooks.managed_dir`，并以 absolute `/usr/bin/python3 <adapter> <event>` 注册两个只读事件；若管理员已有
+  `managed_dir` 不包含 owned adapter，则拒绝接管。
+- installed ownership manifest 升级到 schema v3，记录 upstream、Skill/install paths、events、adapter
+  source hash，以及完整/非 owned requirements fingerprints；普通 install 可以清退 v0.1 legacy handler/
+  trust entries，uninstall 只移除 owned policy/runtime，并保留第三方配置。
+- 新增 `errors`、`blockers` 与 `repairable` drift 分类及受限 `install --repair`：只修复已证明 owned 的 adapter
+  或 Managed Hook definition；unowned requirements、manifest、path、upstream 或 unknown runtime drift
+  一律以 `REPAIR_BLOCKED_UNKNOWN_DRIFT` fail closed。备份范围扩展到 system requirements 和全部既有
+  managed files，并用 byte-for-byte restoration 测试闭环。
+- `hook_adapter.py`、三个 Hook 行为测试和 PWF v3.8.2 pristine pin 与 v0.1.0 逐字不变，因此该版本建立的
+  是部署、所有权、doctor/repair 与运维安全基线，不是新的 planning/catch-up 算法。README 当时只记录
+  startup/resume 已配置验证，forced compaction 与后续 v0.2.2 完成的 Cloud A～F 不属于本版本结论。
+- [old-repository `v0.2.1` Release](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/tag/v0.2.1)
+  保留单一 ZIP 与发布校验和；当时没有 ZIP 外独立 bootstrap asset，CHANGELOG 不复制资产 SHA。
 
 ## v0.1.0
 

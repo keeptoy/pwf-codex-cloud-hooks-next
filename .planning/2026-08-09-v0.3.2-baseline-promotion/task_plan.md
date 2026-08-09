@@ -36,6 +36,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   rationale 与 ARCHITECTURE 的长期边界，不复制旧 Round/测试/角色状态，也不扩写 BASELINE_PROVENANCE。
 - 维护者明确授权读取新增的临时 0.1.0/0.2.2 实现证据，先恢复 0.1.0 的关键文档和代码事实并补入
   CHANGELOG；临时目录本身不得修改、暂存或复制进当前树，同时核对两个快照是否具有 Git 恢复链。
+- 维护者随后补充本地 v0.2.1 snapshot，并授权比较 v0.1.0/v0.2.1/v0.2.2 的 README、manifest、实现与
+  tests，把已证实的 v0.2.1 delta 写入 CHANGELOG；临时目录继续只读，不扩展到 P3 或当前 runtime。
 - P3 只记录为后续独立 gate；当前不修改 package、Release contract、bootstrap 或 `v0.3.3-dev` identity，
   不 seal、不发布、不部署新版本。
 - 已完成的 `2026-08-09-architecture-contract-retention` 三文件由 immutable commit `d4cc3b5` 保存，P2
@@ -60,9 +62,9 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Next Step
 
-停在 post-release 文档治理阶段和 P3 前。早期 publication provenance 与回顾性 Phase 0 架构谱系均已
-按证据闭合；Phase 历史仍只由 README 的单一宏观入口进入，overview 不取代详细 Phase capsules。
-P3 继续等待维护者另行授权。
+停在 post-release 文档治理阶段和 P3 前。v0.2.1 已通过三个 early-version snapshots 的逐文件 hash/diff
+恢复到 CHANGELOG；早期 publication provenance 与 Phase 0 架构谱系保持原有 authority 分层。P3 继续
+等待维护者另行授权。
 
 ## Gates
 
@@ -85,6 +87,8 @@ P3 继续等待维护者另行授权。
 - [x] P2-P-T — Phase authoring template：生成恢复模板，移除格式型/历史内容型测试断言。
 - [x] P2-P-R — Phase 3 route rationale：提炼受控快照选择、后备与退休条件，保持 provenance 冷账本纯度。
 - [x] P2-H-010 — v0.1.0 recovery：交叉读取早期文档/实现/测试，恢复最早原型定位与 Git 证据边界。
+- [x] P2-H-021 — v0.2.1 recovery：比较 v0.1.0/v0.2.1/v0.2.2，恢复 Managed policy、ownership、doctor/
+  repair 与验收边界的准确版本 delta。
 - [x] P2-PROV — Early publication provenance backfill：核验并登记有证据的 v0.1.0、v0.2.2 与
   v0.3.0 alpha/beta 身份，缺证字段保持空缺。
 - [x] P2-P0 — Architecture lineage overview：建立回顾性 Phase 0，串联可行性、Cloud 功能基线、owned
@@ -106,8 +110,8 @@ P3 继续等待维护者另行授权。
 ## Status
 
 P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS，P2-P-A PASS，P2-P-M PASS，P2-P-B PASS，
-P2-P-E PASS，P2-P-T PASS，P2-P-R PASS，P2-H-010 PASS，P2-PROV PASS，P2-P0 PASS。本地分支为 `0.3.2-post-release`，当前 HEAD
-是 P3 前的 unsealed governance transition；P3 未授权。
+P2-P-E PASS，P2-P-T PASS，P2-P-R PASS，P2-H-010 PASS，P2-PROV PASS，P2-P0 PASS，P2-H-021 PASS。
+本地分支为 `0.3.2-post-release`，当前 HEAD 是 P3 前的 unsealed governance transition；P3 未授权。
 
 ## Errors Encountered
 

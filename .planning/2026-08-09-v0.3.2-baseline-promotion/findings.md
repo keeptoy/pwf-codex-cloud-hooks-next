@@ -609,3 +609,55 @@ bootstrap/README 一并删除，则当前结论转为 `NO_GO`，必须等待 P3 
 - `临时文件/` 中同名副本也是 18,691 bytes，但 SHA-256 为
   `b1cc8c5677504ab65a6a2a85d7ba1162f4f7aa624a2be1e1dbf544c0ea59f3a9`，不等于公开 Release 字节；它可供
   历史理解，但不能覆盖 immutable provenance，且本轮未修改该目录。
+
+## Early-version v0.2.1 Comparison Scope
+
+- 维护者要求只读分析本地三个早期版本，重点恢复 v0.2.1 相对相邻版本的实际变化，并把已证实结论写入
+  CHANGELOG；`临时文件/` 仍是用户提供的 historical source snapshot，不作为当前 runtime authority。
+- 当前 ROADMAP 仍把 HEAD 定义为 P3 前的 unsealed governance transition，Product Phase 4 与后继 machine
+  identity 均未授权。本轮只允许历史证据/版本 delta 补录，不修改 production、contracts、Release、
+  rollback、当前 lifecycle 或临时目录。
+- 既有 provenance 调研已从 v0.2.1 Release notes 恢复出候选 delta：guarded `install --repair`、manifest
+  schema v3、doctor 的 `repairable/blockers` 分类、unknown drift fail-closed 与 backup byte restoration。
+  这些结论必须再与本地 v0.1.0/v0.2.1/v0.2.2 源码、测试和文档逐项交叉验证，不能只凭后继版本反推。
+- 本地 historical snapshots 恰为 `0.1.0`、`0.2.1`、`0.2.2`：0.1.0 有 9 个文件；0.2.1 增加
+  `tests/fixtures/planning-with-files/` 的固定 Skill fixture；0.2.2 再增加包内 bootstrap、
+  `patch_planning_skill.py`、`skill-patch.test.js` 与 `黑盒验证.md`。这是候选演进线索，最终 delta 仍以
+  README/package/manifest、production 实现和 tests 的逐项差异为准。
+- README 候选定位显示：v0.1.0 使用 `$CODEX_HOME/hooks.json` + `config.toml` precomputed trust；v0.2.1
+  改为 `/etc/codex/requirements.toml` system-managed Hook、absolute adapter path 与 guarded repair，且
+  startup/resume 已配置验证但 forced compaction 尚未测试。v0.2.2 才声明四项 Cloud catch-up compatibility
+  patch 与完整 A～F Cloud functional acceptance。
+- 三版都 pin 同一 PWF v3.8.2 archive/commit 与三个 canonical Skill 文件。v0.1.0 和 v0.2.1 的
+  `upstream-manifest.json` 均为 schema 1 且逐字同结构；v0.2.2 才升级为 schema 2，增加 managed post-patch
+  hashes 与 compatibility-patch ledger。README 所说的“schema-v3”是 installed ownership manifest，不能与
+  upstream-manifest schema 混为一谈。
+- SHA-256 交叉核验确认 v0.1.0 → v0.2.1 的 `hook_adapter.py`、三个 adapter tests 和
+  `upstream-manifest.json` 逐字不变；因此 v0.2.1 没有改变 SessionStart/UserPromptSubmit 的功能算法，主要
+  是 install/ownership plane 换代。
+- v0.2.1 installer 从 legacy `hooks.json` + `config.toml` trust 改为 Managed requirements：设置
+  `features.hooks`、校验/建立 `hooks.managed_dir`、注册 absolute `/usr/bin/python3 <adapter> <event>`，并在
+  升级时清退旧 owned handler/trust entries。installed manifest 升到 schema 3，记录完整/非 owned
+  requirements hashes、events、paths 与 adapter source hash。
+- v0.2.1 新增 `inspectInstallation` 的 `errors/blockers/repairable` 分类和窄 `install --repair`：只允许修复
+  owned adapter 或 owned managed definitions；unowned requirements、manifest、path、runtime inventory、
+  upstream 等未知 drift 均阻断。installer tests 从 2 项扩到 6 项，并加入 managed_dir fail-closed、repair
+  正反矩阵和全部既有 managed files 的 byte-for-byte backup restoration。
+- v0.2.1 → v0.2.2 的 installer diff 只有 Skill 校验从 pristine `required_skill_files` 切到优先使用
+  `managed_skill_files`；adapter diff 只有为 catch-up child 显式传 `PWF_RUNTIME=codex`，并在 Hook 环境缺少
+  `CODEX_HOME` 时从 installed adapter path 推导。v0.2.2 的主要新增面因此是 deterministic patcher、包内
+  guarded bootstrap、compatibility tests/planning/runbook 和 Cloud A～F acceptance，而不是再次重做
+  v0.2.1 的 managed ownership/repair 模型。
+- v0.2.2 Cloud evidence 明确冻结 A～F：安装/doctor、startup/UserPrompt canary、planning context、真实
+  Resume catch-up、owned drift repair、unknown runtime drift fail-closed，以及最终 healthy doctor；Resume
+  还观察到 `Runtime: codex`、planning update、unsynced messages 和长 Cloud wrapper 尾部 sentinel。
+- v0.2.1 没有同等级 hard-acceptance 文件或本地黑盒 runbook。它的 README 只宣称 startup/resume 已配置
+  验证且 forced compaction 尚未执行。因此 CHANGELOG 可以把 v0.2.1 记为 deployment/ownership baseline，
+  但不能赋予 v0.2.2 才闭合的完整 Cloud A～F 身份。
+
+### P2-H-021 Result
+
+- CHANGELOG 新增 v0.2.1 独立段，并把 v0.2.2 的 installer 描述改为显式继承 v0.2.1 运维治理基线；三版
+  现在分别对应可行性原型、Managed deployment/repair 基线和完整 Cloud catch-up 功能基线。
+- 未修改 provenance exact identities、Phase 0、当前 architecture/contracts、production、ROADMAP、
+  Release 或临时 snapshots；P2-H-021 关闭后重新停在 P3 前。

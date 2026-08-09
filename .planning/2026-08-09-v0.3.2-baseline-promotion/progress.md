@@ -225,3 +225,12 @@
   bootstrap”的发布边界演进；未改 production、contracts、当前 lifecycle、Release 或 P3 状态。
 - 最终 repository/architecture focused tests 17/17 PASS；完整 `npm test` 为 92 tests、80 PASS、12 个
   Windows/POSIX SKIP、0 FAIL；`git diff --check` PASS。
+- 2026-08-10：维护者新增 v0.2.1 historical snapshot，并授权比较本地 v0.1.0/v0.2.1/v0.2.2 后补写
+  CHANGELOG；planning-with-files catch-up 无未同步输出，当前授权仍只限 P2 历史文档，不进入 P3。
+- 三版 inventory/hash/source diff 已完成：v0.1.0→v0.2.1 的 adapter、三个 Hook tests 与 upstream manifest
+  逐字不变，变化集中在 Managed requirements、installed manifest schema v3、doctor/repair/drift/backup；
+  v0.2.1→v0.2.2 才加入 patched Skill hash、runtime/CODEX_HOME compatibility 与 Cloud A～F 证据面。
+- CHANGELOG 已新增 v0.2.1 独立段，并把 v0.2.2 的 installer 描述改为继承 v0.2.1 运维治理基线；三个
+  historical snapshots 的 Node/Python 静态检查全部 PASS，临时目录保持未修改/未暂存。
+- repository/architecture focused suite 17/17 PASS；完整 `npm test` 为 92 tests、80 PASS、12 个诚实的
+  Windows/POSIX SKIP、0 FAIL；`git diff --check` PASS。P2-H-021 已关闭，活动计划重新停在 P3 前。
