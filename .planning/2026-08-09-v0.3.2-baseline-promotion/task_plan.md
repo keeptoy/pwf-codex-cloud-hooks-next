@@ -19,18 +19,18 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Next Step
 
-执行 P1：在已通过公开资产 preflight 的前提下仅移动 GitHub `Latest` pointer，立即重新查询；成功后
-把 promotion evidence 写入 v0.3.2 acceptance，并同步 ROADMAP/provenance/CHANGELOG 的当前角色，
-随后运行 lifecycle、publication、ZIP identity 与完整回归。P1 关闭后才进入 P2 全仓只读 inventory。
+执行 P2-D 全仓只读 inventory：以 v0.3.1、已退役版本/路径、历史 acceptance/bootstrap/oracle、版本化
+测试断言和文档链接为入口，按 hot/warm/cold 与 sealed-input/lifecycle 分类；把旧 retention scope 中仍
+有效的结论吸收到当前 findings，冻结保留、迁移、删除集合和停止条件，再请求 P2-I 实施授权。
 
 ## Gates
 
 - [x] D0 — Discovery：全仓库 inventory、外部事实、恢复链、测试影响与候选路线。
 - [x] D1 — Decision：维护者冻结 P1 → P2 → P3 三段式；P1 获得明确 GO，P2 先 Discovery，P3 未授权。
 - [x] P1-A — Preflight：Latest=v0.3.1；v0.3.2 为非 draft/prerelease，双资产 size/digest 与 acceptance 一致。
-- [ ] P1-B — Pointer promotion：仅把 GitHub Latest 指向 v0.3.2，并完成独立后置查询。
-- [ ] P1-C — Evidence and authority：写入 v0.3.2 promotion evidence，旋转 ROADMAP/provenance/CHANGELOG 角色。
-- [ ] P1-D — Validation：focused/full suite、published oracle、sealed ZIP identity、链接与 diff 全绿。
+- [x] P1-B — Pointer promotion：仅把 GitHub Latest 指向 v0.3.2，并完成独立后置查询。
+- [x] P1-C — Evidence and authority：写入 v0.3.2 promotion evidence，旋转 ROADMAP/CHANGELOG 角色；provenance 按职责不复制当前角色。
+- [x] P1-D — Validation：focused/full suite、published oracle、sealed ZIP identity、链接与 diff 全绿。
 - [ ] P2-D — Deep-clean Discovery：恢复旧 retention 结论，全仓扫描并冻结 hot/warm/cold inventory、删除集合、
   断言迁移、immutable 恢复链和停止条件；未获新 GO 前不删除。
 - [ ] P2-I — Historical cleanup：只实施 P2-D 后明确批准的清退集合，不开启新版本 identity。
@@ -47,9 +47,9 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Status
 
-P1-A PASS，P1-B in progress。维护者已把原两段式修正为 P1 promotion、P2 深度历史清理、P3 后继列车；
-P1 获得明确 GO，P2 只获 Discovery 授权，P3 未授权。当前外部事实仍是 Latest=v0.3.1，直至 P1-B
-后置查询证明切换成功。
+P1 PASS，P2-D in progress。GitHub Latest/production rollback baseline 已由 v0.3.1 晋级到 v0.3.2，四个
+公开资产 identity 未改变，authority 与证据已同步并通过完整本地回归。当前只做 P2 全仓 Discovery；
+具体删除未授权，P3 未授权。
 
 ## Errors Encountered
 
@@ -60,3 +60,6 @@ P1 获得明确 GO，P2 只获 Discovery 授权，P3 未授权。当前外部事
 | 沙箱外 guard 首次执行报告 active planning scope 未 tracked | 1 | 这是新 scope 尚未进入 Git index 的预期 checkpoint 状态；先显式 stage 仅 planning 轮换文件，再复跑 guard 后提交 |
 | 沙箱内 `git add` 无法创建 `.git/index.lock` | 1 | 工作区未受损；按既有关键 checkpoint 自动 commit 授权，仅对 planning rotation 请求沙箱外 Git 写入 |
 | 重写三段式活动计划的大块补丁因旧段落精确换行不匹配被拒绝 | 1 | 未产生部分修改；改用 UTF-8 复读后按标题分段应用，不重复原补丁 |
+| P1 focused 20/20 PASS 后 `git diff --check` 报 acceptance 新增行 trailing whitespace | 1 | 只移除该行末空格，不修改证据内容；随后重跑 diff/full suite |
+| PowerShell 环境没有全局 `bash` 命令，两条直接 `bash -n` 未执行 | 1 | 完整 suite 的 bootstrap 行为用例已 PASS；改用测试固定的 Git Bash 绝对路径做独立语法检查 |
+| Git Bash 在沙箱内创建 signal pipe 失败，Win32 error 5 | 1 | 分类为 sandbox permission limitation；仅将两个只读 `-n` 检查移到沙箱外，均 PASS |

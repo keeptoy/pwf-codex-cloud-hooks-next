@@ -22,51 +22,46 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.2` Release candidate；published；Cloud hard acceptance PASS；尚未 promoted |
-| 当前已接受版本 | `v0.3.1`；production rollback 与 GitHub `Latest` |
-| 回退证据链 | immutable `v0.3.0` → immutable `v0.3.0-beta.2` oracle |
+| 当前开发列车 | `v0.3.2`；published；Cloud hard acceptance PASS；已完成 baseline promotion；后继列车尚未开启 |
+| 当前已接受版本 | `v0.3.2`；production rollback 与 GitHub `Latest` |
+| P2 历史清理过渡 | `v0.3.1`；仅保留当前树副本供全仓 Discovery，具体清退集合尚未授权 |
+| 回退证据链 | immutable `v0.3.1` → immutable `v0.3.0` → immutable `v0.3.0-beta.2` oracle |
 | 当前 programme 边界 | Product Phase 4 未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
-`v0.3.1` tag 中的 README 和资产仍是 sealed 历史输入；当前 main 属于后续 development source，不反向
-改写已发布版本。版本 delta 见 [`CHANGELOG.md`](CHANGELOG.md)，精确 source/资产/SHA 见
-[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，最终验收见
-[`docs/v0.3.1-cloud-hard-acceptance.md`](docs/v0.3.1-cloud-hard-acceptance.md)。
+`v0.3.2` 已在独立 P1 gate 完成 pointer-only promotion；两个已发布版本的 tag、README 和资产仍是
+sealed 历史输入，不因角色轮换而改写。版本 delta 见 [`CHANGELOG.md`](CHANGELOG.md)，精确
+source/资产/SHA 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，最终验收与晋级证据见
+[`docs/v0.3.2-cloud-hard-acceptance.md`](docs/v0.3.2-cloud-hard-acceptance.md)。
 
-## 3. 已完成的基线 `v0.3.1`
+## 3. 已完成的基线 `v0.3.2`
 
-`v0.3.1` 是 Product Phase 4 前的兼容与供应链安全基线；它没有新增 Hook、Host ABI 或 trusted graph，
-而是在同一 `0.3` 行为合同内关闭旧安全审计确认的四类问题：
+`v0.3.2` 是 Product Phase 4 前当前已接受的兼容、供应链与仓库治理基线。它继承 v0.3.1 的全部安全
+边界，没有新增 Hook、Host ABI、trusted graph 或安装行为，并在同一 `0.3` 行为合同内完成以下收口：
 
 | 问题域 | 已完成结果 |
 |---|---|
-| shared admin state | 收紧 Managed TOML ownership boundary，避免 repair/uninstall 吸收第三方配置；把 real install/repair 的 read/classify/propose/backup/write 纳入同一 lock transaction，并检测非协作并发漂移 |
-| mutable Host data | transcript 选择、身份复核与解析绑定到同一份已验证 immutable bytes；Host input 使用精确 byte budget，异常输入只退化为 canary-only |
-| bootstrap supply chain | 移除 root `curl | bash` NVM、floating Node 和 root `npx skills` 路径；改为验证平台 Node `>=18`，并从固定 SHA 的 PWF archive 只安装 pristine Skill subtree |
-| Release maintenance | Release ZIP 纳入 importer 的直接 patcher 依赖，使 extracted ZIP importer check 可以 self-contained 运行；bootstrap 继续保持在 ZIP 外 |
+| inherited security baseline | 保留 v0.3.1 已关闭的 Managed TOML ownership/locking、immutable transcript bytes、bounded Host input、固定 PWF archive 与无远程 root Node tooling 等边界 |
+| documentation authority | README、ARCHITECTURE、DESIGN、CHANGELOG、ROADMAP、active planning 与 provenance/acceptance 各自只有一个职责权威 |
+| repository lifecycle | trusted/Release zones 继续 exact；planning/docs 按生命周期治理；当前树保持一个 active planning，并以机器可解析角色窗口控制版本文件 |
+| Release maintenance | importer 与直接 patcher 依赖继续 self-contained 进入精确 23-entry ZIP；Source/Candidate 与 Published Release 两条 Cloud 通道独立 PASS |
 
-该基线随后完成 immutable publication、公开下载字节复核、Fresh/Resume/doctor Cloud 验收和显式 baseline
-promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta 见 [`CHANGELOG.md`](CHANGELOG.md)，精确
-source/资产身份与 predecessor 迁移链见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，完整阶段
-证据见 [`docs/v0.3.1-cloud-hard-acceptance.md`](docs/v0.3.1-cloud-hard-acceptance.md)。
+该基线已完成 immutable publication、公开下载字节复核、Fresh/Resume/doctor 双通道 Cloud 验收和显式
+baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta 见 [`CHANGELOG.md`](CHANGELOG.md)，
+精确 source/资产身份与 predecessor 迁移链见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，完整
+阶段与晋级证据见 [`docs/v0.3.2-cloud-hard-acceptance.md`](docs/v0.3.2-cloud-hard-acceptance.md)。
 
 ## 4. 当前开发列车与 Product Phase 路线
 
-`v0.3.2` 是当前获批的 Release candidate，由 `0.3.2-dev-extend` source/governance 列车收敛而来，不需要
-合回 predecessor `0.3.2-dev` 分支。它的宏观目标是完成文档真理源与仓库生命周期治理：稳定行为、架构
-理由、实现导航、实际版本变化、programme 路线、当前行动和不可变证据分别只有一个主维护位置。
-该候选没有 production runtime、Host ABI、trusted graph 或 Hook 行为变化；seal、publication、Cloud
-acceptance 和 rollback/Latest promotion 仍是相互独立的 gate，Product Phase 4 仍未授权。
-当前 immutable publication、公开下载双资产复核与
-[`v0.3.2 Cloud hard acceptance`](docs/v0.3.2-cloud-hard-acceptance.md) 均已 PASS。Cloud gate 由相互
-独立的 Source/Candidate 源码构建与本地 override 黑盒通道，以及 Published Release 公开默认下载黑盒
-通道共同关闭，两套证据没有混用。下一 gate 仅可能是另行授权的 rollback/`Latest` promotion；在该
-决策发生前，v0.3.2 是已完成 Cloud hard acceptance、但尚未晋级的 Release candidate，当前已接受版本
-仍为 v0.3.1。
+`v0.3.2` 列车已完成，当前 package/Release contract/bootstrap 仍保持其 sealed machine identity。
+`0.3.2-dev-extend` source/governance 分支只执行 P2 历史深度清理：先全仓 inventory，再由维护者批准
+具体保留、迁移和删除集合。P2 不修改 production runtime、Host ABI、trusted graph、Hook 行为或任何
+sealed v0.3.2 ZIP input，也不建立 `v0.3.3-dev` 身份。后继列车属于独立 P3 Discovery，尚未授权。
 
-该列车的仓库生命周期治理保持一个 active planning，并以 candidate + accepted role window 控制当前
-bootstrap/acceptance；更早历史退出 HEAD 后由 immutable commit、tag 和 Release 恢复。trusted/Release
-zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。
+仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
+bootstrap/acceptance；P1 后两项角色同为 v0.3.2，v0.3.1 仅通过显式 P2 清理过渡角色暂留。更早历史
+退出 HEAD 后由 immutable commit、tag 和 Release 恢复。trusted/Release zones 继续 exact，
+docs/planning zones 按 lifecycle policy 验证。
 
 下表是未来 Discovery 的候选，不是发布承诺，也不自动授权下一 Phase。一个 Phase 可以有多个
 pre-release；多个低风险 Phase 也只有在独立评审后才能进入同一版本列车。
@@ -78,7 +73,7 @@ pre-release；多个低风险 Phase 也只有在独立评审后才能进入同�
 | 6 | `0.6.0-*` | selective tool/permission hooks | 逐事件测量 latency/token/噪声；先 advisory、后扩展 | pending |
 | 7 | `0.7.0-*` | advisory completion | bounded、non-recursive、无 plan 时安静 | pending |
 | 8 | `0.8.0-*` | optional hard gating | 明确 Stop contract、上限、逃生路径、rollback 与隔离 Cloud | pending |
-| 9 | 当前列车的 `rc.N` → stable | 完整矩阵、最终字节、canary retirement、正式发布 | RC 与最终资产分别验收；重新下载双资产；可逆 | in progress — `v0.3.2` publication + dual-channel Cloud PASS；promotion pending |
+| 9 | 当前列车的 `rc.N` → stable | 完整矩阵、最终字节、canary retirement、正式发布 | RC 与最终资产分别验收；重新下载双资产；可逆 | complete — `v0.3.2` publication、dual-channel Cloud 与 baseline promotion PASS |
 
 Phase 9 是 Release 收口，不机械等于 `0.9.0`。例如只完成 Phase 4 时，它可以封板 `0.4.0`；如果多个
 Phase 经独立 gate 后被明确合并，则封板当时获批的同一版本列车。

@@ -125,3 +125,25 @@
 - v0.3.2 Release 为 non-draft、non-prerelease；bootstrap/ZIP size 与 digest 为 21,565 / 82,627 bytes，
   `aa2c1fd6...8f77c` / `b42aecaf...e5081`，与已关闭的 Cloud acceptance 和 provenance 一致。
 - P1 可以只移动 Latest pointer；不得上传、替换或编辑两个 immutable assets。
+
+## P1 Promotion Result and Transitional Role
+
+- `gh release edit v0.3.2 --latest` 成功；独立 `releases/latest` 后置查询返回 v0.3.2，v0.3.2 与 v0.3.1
+  四个资产的 filename/size/server digest 均与 preflight 相同。P1 是纯 pointer 写入。
+- P1 后 candidate/source package 与 accepted baseline 都是 v0.3.2，但 P2 尚未批准删除 v0.3.1 当前树
+  bootstrap/acceptance。若只旋转 ROADMAP 两个主角色，repository lifecycle 会正确把 v0.3.1 判为越窗。
+- 因此 P1-C 在 ROADMAP 声明一个显式、可解析的 `P2 历史清理过渡` 角色；repository guard 只在
+  candidate=accepted 且 retained predecessor 与 accepted 不同时允许它，并继续精确派生文件集合。
+  P2 收口时删除该角色与获批旧文件，不用宽泛 allowlist 或永久例外。
+- BASELINE_PROVENANCE 按自身 authority 只维护不可变身份，不复制当前角色或 Latest 状态，所以 P1
+  不修改它；当前 lifecycle 只在 ROADMAP，精确 promotion evidence 只在 v0.3.2 acceptance。
+
+## P1 Validation Result
+
+- Focused architecture/repository/release-package/published-oracle：20/20 PASS；v0.3.2 HEAD 双构建仍精确
+  等于 sealed ZIP SHA `b42aecaf...e5081`，v0.3.2/v0.3.1/v0.3.0 immutable source oracle 均通过。
+- 完整 `npm test`：91 tests，79 PASS，12 个 Windows/POSIX SKIP，0 FAIL；importer check、Python 编译、
+  `install.js` syntax、两个 bootstrap 的 Git Bash `-n` 与 `git diff --check` 均 PASS。
+- P1 没有修改 package、Release contract、README、bootstrap、production runtime、Host ABI、trusted
+  graph、tag 或 asset。唯一外部变化是 Latest pointer；唯一当前树变化是 lifecycle authority、证据与
+  精确 transitional-role guard。

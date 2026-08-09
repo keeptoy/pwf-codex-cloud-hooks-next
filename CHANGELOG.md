@@ -14,6 +14,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   永久工作区档案。
 - Discovery 明确区分讨论态、决策态与实施态；探索性疑问和单点历史残留先触发只读全局盘点，不能在
   范围与清退方案尚未冻结时直接演变为批量删改。
+- 在独立 gate 复核公开双资产不变性后，将已发布并完成 Cloud hard acceptance 的 v0.3.2 晋级为新的
+  accepted baseline；v0.3.1 的当前树清退与后继开发列车继续保持为两个后续独立 gate。
 
 ## v0.3.2
 

@@ -36,3 +36,14 @@
   acceptance 精确一致，允许进入 pointer-only promotion。
 - 三段式计划重排后的 repository-boundary guard 7/7 PASS，`git diff --check` PASS；P1 设计 checkpoint
   可以在移动外部 pointer 前提交。
+- P1-B 已执行：GitHub Latest 从 v0.3.1 移到 v0.3.2；独立后置查询确认 v0.3.2/v0.3.1 四个资产的
+  filename、size 与 digest 未变化，没有重发或改写历史资产。
+- P1-C 开始同步：acceptance 追加独立 promotion 证据；ROADMAP 把 v0.3.2 设为 completed/accepted，
+  并用显式 P2 清理过渡角色精确容纳尚未获批删除的 v0.3.1 当前树副本；CHANGELOG 只记已发生 delta。
+- P1 focused architecture/repository/release-package/published-oracle 20/20 PASS；`git diff --check` 唯一红项
+  是 acceptance 新增行末空格，已做纯格式修复，未改变证据语义。
+- 完整 `npm test` 为 91 tests、79 PASS、12 个 Windows/POSIX SKIP、0 FAIL；importer、Python 编译、
+  Node syntax 与 diff PASS。PowerShell 无全局 bash，显式 Git Bash 在沙箱内又被 signal-pipe 权限阻止；
+  转到沙箱外后两个 bootstrap `bash -n` 均 PASS。
+- P1-A～P1-D 全部关闭；外部 Latest、ROADMAP、CHANGELOG、v0.3.2 acceptance 与 transitional lifecycle
+  guard 一致。下一步进入 P2-D 只读深度清理 inventory，不自动删除或开启 P3。
