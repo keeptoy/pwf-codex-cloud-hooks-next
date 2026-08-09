@@ -303,3 +303,12 @@ bootstrap/README 一并删除，则当前结论转为 `NO_GO`，必须等待 P3 
   应替换 accepted/fallback 行，而不是继续复制历史 test block。
 - 不需要新增 lifecycle JSON、archive 目录或第四类 baseline；ROADMAP 继续是当前角色 authority，指南只
   提供可迁移方法，tests 负责执行约束。
+
+## Post-release Branch Identity
+
+- `0.3.2-post-release` 只表示 v0.3.2 发布后的治理/source 运输分支，不是 tag、package version、Release
+  identity 或可安装 candidate；因此当前无需修改 package/contract/bootstrap。
+- immutable v0.3.2 tag/asset 不能出现第二套不同字节。若 post-release 变化以后需要作为公开 ZIP/bootstrap
+  发布，正确身份是新的 patch version（例如 v0.3.3），并重新执行 seal、checksum、下载和 Cloud acceptance。
+- `0.3.2-post.1` 之类 SemVer prerelease 在排序上早于稳定 v0.3.2；`0.3.2+post.1` build metadata 又常被
+  工具忽略优先级，二者都不适合表达稳定版之后的新 rollback baseline。

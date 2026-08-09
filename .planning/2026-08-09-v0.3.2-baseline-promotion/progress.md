@@ -84,3 +84,5 @@
   0 FAIL。CHANGELOG、DESIGN test map 与 ROADMAP 状态同步后，稳定文档无固定 bootstrap 版本扫描、
   `git diff --check` 和最终 focused 19/19 再次 PASS。
 - P2-G 已关闭；活动计划重新停在 P3 前，未创建新 scope、machine identity、ZIP、seal、Release 或部署。
+- 本地分支已从 `0.3.2-dev-extend` 改名为 `0.3.2-post-release` 并解除旧 upstream；远端分支未修改或删除。
+  ROADMAP 与活动 planning 已同步，package/contract/bootstrap 仍保持最后发布的 v0.3.2 identity。

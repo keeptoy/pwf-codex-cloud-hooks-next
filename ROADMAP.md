@@ -53,7 +53,7 @@ baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta
 ## 4. 当前开发列车与 Product Phase 路线
 
 `v0.3.2` 列车已经发布并验收；package、Release contract 与根目录 v0.3.2 bootstrap 继续保存最后一个
-已发布 machine identity，但不把 P2 后的 HEAD 认证为相同发布源码。`0.3.2-dev-extend` 已完成 P2 历史
+已发布 machine identity，但不把 P2 后的 HEAD 认证为相同发布源码。`0.3.2-post-release` 已完成 P2 历史
 深度清理与 retirement contract 固化，期间没有修改 production runtime、Host ABI、trusted graph、Hook
 行为或任何已发布资产；但
 README 作为 ZIP input 已经版本无关化，所以当前 HEAD 构建只是 deterministic unsealed transition bytes，

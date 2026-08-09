@@ -15,6 +15,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   固定版本命令改为可执行的版本无关循环；P2 完成后停在 P3 前讨论。
 - 维护者已批准 P2-G 治理加固：把本轮经验吸收到可迁移 Repository Governance Guide，并将一次性的旧版
   禁止断言升级为版本无关 retirement guards；仍不得进入 P3 或建立新版本 identity。
+- 维护者已批准把本地 post-release 治理分支改名为 `0.3.2-post-release`；该名称不建立新 machine identity，
+  不修改或删除远端分支，也不授权用新字节重发 v0.3.2。
 - P3 只记录为后续独立 gate；当前不修改 package、Release contract、bootstrap 或 `v0.3.3-dev` identity，
   不 seal、不发布、不部署新版本。
 - 已完成的 `2026-08-09-architecture-contract-retention` 三文件由 immutable commit `d4cc3b5` 保存，P2
@@ -52,7 +54,8 @@ governance 均已关闭；当前不得创建 P3 scope、`v0.3.3-dev` identity、
 
 ## Status
 
-P1 PASS，P2-I PASS，P2-G PASS；当前 HEAD 是 P3 前的 unsealed governance transition。P3 未授权。
+P1 PASS，P2-I PASS，P2-G PASS；本地分支为 `0.3.2-post-release`，当前 HEAD 是 P3 前的 unsealed
+governance transition。P3 未授权。
 
 ## Errors Encountered
 
