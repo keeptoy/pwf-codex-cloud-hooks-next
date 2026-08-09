@@ -28,6 +28,8 @@
   programme、architecture 或 acceptance authority。
 - 数据驱动 guard 校验索引覆盖、固定语义模板和 immutable evidence，允许未来按同一政策增加真正闭合的
   Phase，同时拒绝未索引文件、源码副本和当前 lifecycle 状态渗入。
+- Phase capsule 的文件身份属于 programme 阶段而不是发布版本；采用 `phase-<number>-<topic>.md` 可避免把
+  一个跨 alpha/beta/stable 的 Phase 错看成某个版本的附属归档，具体版本关系继续写在 Historical position。
 
 ## Initial Question
 

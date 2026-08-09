@@ -21,9 +21,9 @@ immutable link。
 
 | Phase | 当时的交付闭环 | 精选摘要 |
 |---|---|---|
-| Phase 1 | 固定来源、ownership/contracts、可复现 import/install/package；runtime 仅作为 inactive verified inventory | [`v0.3.0-phase-1-runtime-provenance.md`](v0.3.0-phase-1-runtime-provenance.md) |
-| Phase 2 | 激活 adapter 监督的 owned catch-up，建立 transcript 与 global Skill 安全边界 | [`v0.3.0-phase-2-owned-catchup.md`](v0.3.0-phase-2-owned-catchup.md) |
-| Phase 3 | 激活 canonical owned-plan，删除 adapter 平行 plan 算法并完成 beta Cloud 闭环 | [`v0.3.0-phase-3-canonical-plan.md`](v0.3.0-phase-3-canonical-plan.md) |
+| Phase 1 | 固定来源、ownership/contracts、可复现 import/install/package；runtime 仅作为 inactive verified inventory | [`phase-1-runtime-provenance.md`](phase-1-runtime-provenance.md) |
+| Phase 2 | 激活 adapter 监督的 owned catch-up，建立 transcript 与 global Skill 安全边界 | [`phase-2-owned-catchup.md`](phase-2-owned-catchup.md) |
+| Phase 3 | 激活 canonical owned-plan，删除 adapter 平行 plan 算法并完成 beta Cloud 闭环 | [`phase-3-canonical-plan.md`](phase-3-canonical-plan.md) |
 
 ## 阅读方式
 

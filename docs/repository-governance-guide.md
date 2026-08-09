@@ -154,7 +154,8 @@ planning 和专项文档整体复制进 HEAD，又会把 cold history 重新变�
 少量 **Phase capsule**，前提是同时满足：
 
 1. Phase 已关闭，并有 immutable commit/tag/Release/acceptance 可以恢复完整原文；
-2. 一个 Phase 只保留一份摘要，不按 Round、候选版本、测试批次或会话拆分；
+2. 一个 Phase 只保留一份摘要，文件名使用版本无关的 `phase-<number>-<topic>.md`；不按 Round、候选版本、
+   测试批次或会话拆分；
 3. 使用固定结构记录历史位置、前置问题、核心决定、已交付闭环、验收结论、明确非目标、后继继承和
    immutable evidence；
 4. 不复制 production source、脚本、fixture、验收全文、SHA 表、测试计数或旧 planning；

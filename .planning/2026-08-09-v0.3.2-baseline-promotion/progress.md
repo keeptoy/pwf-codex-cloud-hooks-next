@@ -25,6 +25,10 @@
   unstaged/staged diff checks 与 repository syntax 同时 PASS。
 - P2-P 已关闭；没有修改 production runtime、Host ABI、trusted graph、package/Release contract、bootstrap 或
   已发布资产，也没有复制/暂存 `临时文件/` 或进入 P3。
+- 维护者后续要求 Phase capsule 文件名去版本前缀；三份文件已统一改为 `phase-1-*`、`phase-2-*`、
+  `phase-3-*`，索引、可迁移治理规则和数据驱动 guard 同步采用版本无关命名，正文继续保留历史版本位置。
+- 重命名后的 repository/architecture focused suite 17/17 PASS，旧 `v0.3.0-phase-*` 引用扫描为零，Node
+  syntax 与 diff check PASS；production、Release 和 immutable evidence 未变化。
 - 完整读取 planning-with-files skill，session catch-up 无未同步输出，初始工作树 clean。
 - 按新冻结的 Discussion-to-Implementation 规则，把维护者目标解释为关键 promotion/eviction Discovery，
   未直接修改 ROADMAP、版本 identity、文件窗口或外部状态。

@@ -130,7 +130,7 @@ test("phase history is a closed indexed set of frozen Markdown capsules", () => 
   const indexPath = `${prefix}README.md`;
   const index = read(indexPath);
   const capsules = historyPaths.filter(item => item !== indexPath);
-  const indexedCapsules = [...index.matchAll(/\]\((v\d+\.\d+\.\d+-phase-\d+-[A-Za-z0-9._-]+\.md)\)/g)]
+  const indexedCapsules = [...index.matchAll(/\]\((phase-\d+-[A-Za-z0-9._-]+\.md)\)/g)]
     .map(match => `${prefix}${match[1]}`).sort();
 
   assert.equal(historyPaths.includes(indexPath), true);
@@ -144,7 +144,7 @@ test("phase history is a closed indexed set of frozen Markdown capsules", () => 
     "acceptance-conclusion", "explicit-non-goals", "successor-inheritance", "immutable-evidence",
   ];
   for (const relative of capsules) {
-    assert.match(relative, /^docs\/history\/v\d+\.\d+\.\d+-phase-\d+-[a-z0-9][a-z0-9.-]*\.md$/);
+    assert.match(relative, /^docs\/history\/phase-\d+-[a-z0-9][a-z0-9.-]*\.md$/);
     const content = read(relative);
     for (const anchor of requiredAnchors) {
       assert.match(content, new RegExp(`^<a name="${anchor}"><\\/a>$`, "m"), `${relative} lacks ${anchor}`);
