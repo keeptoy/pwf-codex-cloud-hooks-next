@@ -110,7 +110,10 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   }
   assert.deepEqual(rootBootstraps, roleVersions.map(version => `init-cloud-sandbox-${version}.bash`));
   assert.deepEqual(acceptanceDocs, roleVersions.map(version => `docs/${version}-cloud-hard-acceptance.md`));
-  assert.doesNotMatch(read("README.md"), /init-cloud-sandbox-v0\.3\.1\.bash/);
+  const fixedBootstrapName = /init-cloud-sandbox-v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\.bash/;
+  for (const stableDoc of ["README.md", "AGENTS.md", "docs/repository-governance-guide.md"]) {
+    assert.doesNotMatch(read(stableDoc), fixedBootstrapName, `${stableDoc} must use a version-neutral bootstrap command`);
+  }
   assert.match(read("README.md"), /for bootstrap in init-cloud-sandbox-v\*\.bash; do/);
   for (const retired of [
     "docs/beta3-dev-m3-cloud-equivalence.md",
@@ -118,6 +121,19 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   ]) assert.equal(actual.includes(retired), false, retired);
   assert.match(read("docs/repository-governance-guide.md"), /^<a name="repository-governance-guide"><\/a>$/m);
   assert.match(read("MAINTAINER_HANDOFF.md"), /\[[^\]]*仓库治理指南[^\]]*\]\(docs\/repository-governance-guide\.md\)/);
+});
+
+test("portable repository governance defines a closed retirement transaction", () => {
+  const guide = read("docs/repository-governance-guide.md");
+
+  assert.match(guide, /^<a name="retirement-definition-of-done"><\/a>$/m);
+  assert.match(guide, /同一次 lifecycle rotation.*不要求.*同一个 commit.*实施 gate/s);
+  assert.match(guide, /eviction.*关闭前不得开启下一开发列车/s);
+  assert.match(guide, /candidate \+ accepted 角色窗口/);
+  assert.match(guide, /accepted \+ immediate fallback 两个席位/);
+  assert.match(guide, /长期安全不变量已经迁入当前版本或版本无关测试/);
+  assert.match(guide, /unsealed transition.*旧版本 bootstrap checksum/s);
+  assert.match(guide, /不是第四种长期 baseline/);
 });
 
 test("retired prototype conclusions remain covered by production safety tests", () => {
@@ -200,7 +216,6 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.doesNotMatch(macroDoc, /当前生产回滚|当前回退层级|GitHub `Latest`|production rollback/);
   }
   assert.match(agents, /当前版本角色只见 `ROADMAP\.md`/);
-  assert.doesNotMatch(agents, /init-cloud-sandbox-v0\.3\.1\.bash/);
   assert.match(agents, /for bootstrap in init-cloud-sandbox-v\*\.bash; do/);
   assert.match(design, /CHANGELOG\.md/);
 

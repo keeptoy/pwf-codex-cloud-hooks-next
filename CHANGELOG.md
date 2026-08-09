@@ -19,6 +19,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - 完成独立 P2 历史清理：v0.3.1 bootstrap 与验收全文退出当前树，通用供应链断言迁移到当前版本，
   默认 publication oracle 只保留 accepted baseline 与 immediate fallback；后继开发列车仍留给 P3。
 - README 与智能体入口的 bootstrap 语法检查改为版本无关循环，避免每次角色轮换继续累积固定版本命令。
+- 固化 promotion + eviction 的 retirement contract：两者可分 gate 审查，但旧角色未关闭前不得开启下一
+  列车；稳定文档采用版本无关 guard，publication oracle 固定为 accepted + immediate fallback 两席轮换。
 
 ## v0.3.2
 

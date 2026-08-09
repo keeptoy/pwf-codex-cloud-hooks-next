@@ -74,3 +74,13 @@
   `bash -n` 循环与 staged diff 全部 PASS。
 - P2-I 已关闭：活动计划 Next Step 已切换为 P3 前讨论；没有创建 successor scope、0.3.3-dev machine
   identity、candidate ZIP、seal、Release 或部署。
+- 维护者批准在 P3 前继续 P2-G；只读对照治理指南后确认无需重构，实施范围冻结为 retirement DoD、
+  两阶段事务说明、版本无关稳定文档 guard 与 accepted/immediate-fallback 两席 oracle。
+- 治理指南第 12～14、16 节已补入 lifecycle transaction 语义、8 项 retirement DoD、unsealed transition
+  fail-closed 规则、新项目 adoption 字段和反模式；没有新增文档 authority 或长期 baseline 类型。
+- repository lifecycle guard 已从单独禁止 v0.3.1 升级为禁止稳定文档中的任意固定版本 bootstrap 文件名；
+  publication oracle 已改为数据驱动的 accepted + immediate-fallback 两席表，并增加精确席位断言。
+- P2-G focused tests 首轮 19/19 PASS；完整 `npm test` 为 91 tests、79 PASS、12 个 Windows/POSIX SKIP、
+  0 FAIL。CHANGELOG、DESIGN test map 与 ROADMAP 状态同步后，稳定文档无固定 bootstrap 版本扫描、
+  `git diff --check` 和最终 focused 19/19 再次 PASS。
+- P2-G 已关闭；活动计划重新停在 P3 前，未创建新 scope、machine identity、ZIP、seal、Release 或部署。

@@ -187,6 +187,10 @@ Release notes；不要提前创建大量按版本 archive 文件。
 
 ## 12. Promotion 与 eviction 是一个事务
 
+这里的“一个事务”是指同一次 lifecycle rotation，不要求 promotion 与 eviction 位于同一个 commit、PR
+或实施 gate。高风险项目可以先完成 pointer/rollback promotion，再用独立 gate 做历史清退；但 eviction
+关闭前不得开启下一开发列车，否则临时兼容副本会被下一轮继续继承。
+
 每次 baseline promotion 都应同时完成清退：
 
 1. 确认新版本的 source/release/rollback 角色；
@@ -201,6 +205,28 @@ Release notes；不要提前创建大量按版本 archive 文件。
 
 只 promotion 不 eviction，会产生持续膨胀；只 eviction 不验证 immutable refs，会损坏回滚和审计。
 
+<a name="retirement-definition-of-done"></a>
+
+### 12.1 Retirement Definition of Done
+
+旧角色只有同时满足以下条件才算退出当前树：
+
+1. 当前树的版本化 bootstrap、acceptance 和运维入口重新精确等于 candidate + accepted 角色窗口；
+2. immediate fallback 默认只由 immutable source、tag、Release、acceptance 和 oracle 恢复；确有离线需求时，
+   本地副本必须有 owner、预算和退出条件；
+3. README、AGENTS 和可迁移治理指南中的常用命令使用版本无关的发现方式或占位符，不按发布轮次累积
+   固定版本文件名；machine contract、bootstrap、provenance 和 acceptance 仍应精确固定其身份；
+4. 旧版测试承载的长期安全不变量已经迁入当前版本或版本无关测试，删除旧用例不会删除安全边界；
+5. publication oracle 已旋转为 accepted + immediate fallback 两个席位，更早版本退出默认 suite，转由
+   provenance、immutable Release 和周期性外部审计保存；
+6. 带时间语义的 CHANGELOG、验收和迁移证据保持原义，当前文档只通过 immutable link 引用退役全文；
+7. repository、package、publication 和目标平台 gate 全部通过，且当前树不再存在未分类的旧版本引用；
+8. 如果 eviction 已改变 Release input，而下一 machine identity 尚未建立，HEAD 必须显式标记为
+   unsealed transition；不得用旧版本 bootstrap checksum 安装从该 HEAD 临时重建的 ZIP。
+
+最后一项是临时 fail-closed 状态，不是第四种长期 baseline。下一列车必须重新建立 version/package/
+contract/bootstrap 一致的 machine identity 后，才能进入 candidate seal。
+
 ## 13. 推荐的治理测试
 
 - active pointer 必须解析到唯一存在的 planning scope；
@@ -211,6 +237,9 @@ Release notes；不要提前创建大量按版本 archive 文件。
 - 退役路径、旧原型和 moving artifact URL 必须被拒绝；
 - cross-document links 和显式稳定 anchors 必须有效；
 - published identity oracle 与当前 candidate tests 分开；
+- 稳定文档不得出现具体版本 bootstrap 文件名；使用版本 pattern 检查规则，而不是逐个禁止旧版本；
+- 默认 publication oracle 必须恰好覆盖 accepted 与 immediate fallback 两个角色，晋级时替换席位而不是
+  复制第三、第四个历史用例；
 - Windows/Linux/Cloud 缺失证据必须诚实标记，不得互相替代。
 
 测试应保护规则，而不是冻结某次运行数量或无限增长的历史文件名列表。
@@ -236,6 +265,8 @@ commit、资产 hash 或“当前 PASS/PENDING”状态；candidate/accepted 文
 | Release excluded prefixes | `<paths>` |
 | promotion gates | `<tests/platform/approval>` |
 | eviction trigger | `<baseline promotion event>` |
+| retirement Definition of Done | `<role window / invariant migration / immutable recovery / validation>` |
+| publication oracle window | `<accepted + immediate fallback>` |
 
 随后按顺序实施：authority map → failing-first guards → history migration → link rewrite → full validation。
 
@@ -254,6 +285,8 @@ commit、资产 hash 或“当前 PASS/PENDING”状态；candidate/accepted 文
 ## 16. 常见反模式
 
 - 在当前树保留每次 planning、每版 acceptance 和每个 bootstrap；
+- 在 README、AGENTS 或通用 runbook 中逐版追加固定 bootstrap 文件名；
+- 为每个历史版本复制一整块 publication test，而不旋转 accepted/fallback 席位；
 - 创建 `archive/` 或 `old/` 把膨胀换一个目录继续累积；
 - 复制整套源码到版本文件夹，再人工“合回主目录”；
 - 把普通 patch 写成 provenance 长篇里程碑；

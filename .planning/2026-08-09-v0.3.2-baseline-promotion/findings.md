@@ -281,3 +281,25 @@ bootstrap/README 一并删除，则当前结论转为 `NO_GO`，必须等待 P3 
 - 当前 source 双构建测试已改为要求“确定且不等于 published v0.3.2”，并要求 ROADMAP 显式声明
   unsealed governance transition 与 P3-before-seal。这不是放松 Release 断言；published v0.3.2 仍由
   独立 immutable tag oracle 精确等值验证。
+
+## P2-G Guide Reconciliation
+
+- Repository Governance Guide 已完整覆盖 hot/warm/cold、角色窗口、immutable 恢复、exact/lifecycle
+  分区、promotion + eviction 和 architecture/history test 分层，不需要新增 authority 或 machine contract。
+- 缺口集中在“原则如何收口”：没有明确说明 promotion/eviction 可拆成独立 gate 但下一列车必须等待两者
+  关闭；没有 retirement Definition of Done；也未直接禁止稳定文档与 oracle 用例按版本复制累积。
+- 最小加固应落在指南第 12～14 节和现有 repository/publication tests：稳定文档使用通用 filename pattern，
+  publication oracle 固定为 accepted + immediate fallback 两席，更早历史转 provenance/周期审计。
+- 如果 eviction 改变 Release input 而新 identity 尚未建立，必须显式标记 unsealed transition；这是本轮
+  从 sealed-source coupling 得到的可迁移 fail-closed 结论，不应增加第四种长期 baseline。
+
+## P2-G Result
+
+- 指南现在把 promotion + eviction 定义为同一次 lifecycle transaction，但允许分 commit/PR/gate 审查；
+  eviction 未关闭前禁止开启下一开发列车。
+- retirement DoD 覆盖角色文件窗口、immutable fallback、稳定文档、长期断言迁移、两席 oracle、时间语义、
+  完整验证和 unsealed transition，足以解释本次残留成因并约束下一次版本轮换。
+- 自动化已从单一旧版本 tombstone 升级为通用规则；publication test 只有一个两席数据表，因此以后晋级
+  应替换 accepted/fallback 行，而不是继续复制历史 test block。
+- 不需要新增 lifecycle JSON、archive 目录或第四类 baseline；ROADMAP 继续是当前角色 authority，指南只
+  提供可迁移方法，tests 负责执行约束。

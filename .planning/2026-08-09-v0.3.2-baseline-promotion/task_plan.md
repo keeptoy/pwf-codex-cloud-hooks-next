@@ -13,6 +13,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 - 维护者把 P2 定义为独立深度清理：目标是归档 v0.3.1，并扫描 `architecture-contracts.test.js` 一类隐藏
   历史残留。P2-D inventory 后已明确授权 P2-I，并补充允许删除 root v0.3.1 bootstrap、把 README/AGENTS
   固定版本命令改为可执行的版本无关循环；P2 完成后停在 P3 前讨论。
+- 维护者已批准 P2-G 治理加固：把本轮经验吸收到可迁移 Repository Governance Guide，并将一次性的旧版
+  禁止断言升级为版本无关 retirement guards；仍不得进入 P3 或建立新版本 identity。
 - P3 只记录为后续独立 gate；当前不修改 package、Release contract、bootstrap 或 `v0.3.3-dev` identity，
   不 seal、不发布、不部署新版本。
 - 已完成的 `2026-08-09-architecture-contract-retention` 三文件由 immutable commit `d4cc3b5` 保存，P2
@@ -20,9 +22,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Next Step
 
-停在 P3 前与维护者共同讨论 successor train Discovery：先评估新的版本/machine identity、开发 bootstrap、
-Release contract、验收骨架和退出条件，再决定是否授权创建独立 P3 scope。当前不得创建 P3 scope、
-`v0.3.3-dev` identity、candidate ZIP、seal、Release 或部署。
+停在 P3 前讨论 successor train Discovery。P1 promotion、P2 historical cleanup 与 P2-G retirement
+governance 均已关闭；当前不得创建 P3 scope、`v0.3.3-dev` identity、candidate ZIP、seal、Release 或部署。
 
 ## Gates
 
@@ -35,6 +36,7 @@ Release contract、验收骨架和退出条件，再决定是否授权创建独�
 - [x] P2-D — Deep-clean Discovery：恢复旧 retention 结论，全仓扫描并冻结 hot/warm/cold inventory、删除集合、
   断言迁移、immutable 恢复链和停止条件；未获新 GO 前不删除。
 - [x] P2-I — Historical cleanup：实施获批清退集合与 README 版本无关化，不开启新版本 identity。
+- [x] P2-G — Retirement governance：固化可迁移退役合同与版本无关自动化 guard。
 - [ ] P3 — Successor train：另开 active scope 和 Discovery，建立获批的后继 machine identity。
 
 ## Stop Conditions
@@ -50,9 +52,7 @@ Release contract、验收骨架和退出条件，再决定是否授权创建独�
 
 ## Status
 
-P1 PASS，P2 PASS；当前 HEAD 是 P3 前的 unsealed governance transition。v0.3.1 当前树副本已清退，
-immediate fallback 仍由 immutable source/asset/acceptance oracle 保护；published v0.3.2 精确字节仍由
-tag oracle 保护。P3 未授权，等待共同讨论。
+P1 PASS，P2-I PASS，P2-G PASS；当前 HEAD 是 P3 前的 unsealed governance transition。P3 未授权。
 
 ## Errors Encountered
 
