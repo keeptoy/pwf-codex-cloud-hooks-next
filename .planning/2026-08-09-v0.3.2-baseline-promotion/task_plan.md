@@ -20,9 +20,9 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Next Step
 
-实施 P2-I：归档 v0.3.1 bootstrap/acceptance，迁移通用供应链断言，泛化版本边界，轮出 v0.3.0 默认
-publication oracle，更新 immutable links 与 lifecycle authority；把当前 HEAD 明确标记为 P3 前治理
-过渡态。完成完整验证与本地 checkpoint 后停止，不创建 P3 scope 或新 machine identity。
+停在 P3 前与维护者共同讨论 successor train Discovery：先评估新的版本/machine identity、开发 bootstrap、
+Release contract、验收骨架和退出条件，再决定是否授权创建独立 P3 scope。当前不得创建 P3 scope、
+`v0.3.3-dev` identity、candidate ZIP、seal、Release 或部署。
 
 ## Gates
 
@@ -34,7 +34,7 @@ publication oracle，更新 immutable links 与 lifecycle authority；把当前 
 - [x] P1-D — Validation：focused/full suite、published oracle、sealed ZIP identity、链接与 diff 全绿。
 - [x] P2-D — Deep-clean Discovery：恢复旧 retention 结论，全仓扫描并冻结 hot/warm/cold inventory、删除集合、
   断言迁移、immutable 恢复链和停止条件；未获新 GO 前不删除。
-- [ ] P2-I — Historical cleanup：实施获批清退集合与 README 版本无关化，不开启新版本 identity。
+- [x] P2-I — Historical cleanup：实施获批清退集合与 README 版本无关化，不开启新版本 identity。
 - [ ] P3 — Successor train：另开 active scope 和 Discovery，建立获批的后继 machine identity。
 
 ## Stop Conditions
@@ -50,9 +50,9 @@ publication oracle，更新 immutable links 与 lifecycle authority；把当前 
 
 ## Status
 
-P1 PASS，P2-I in progress。维护者已授权完整清退 v0.3.1 当前树 bootstrap/acceptance，并允许 README
-脱离 sealed v0.3.2 字节，条件是当前 HEAD 明确停在 P3 前、不得冒充 candidate 或立即重建 Release。
-P3 未授权。
+P1 PASS，P2 PASS；当前 HEAD 是 P3 前的 unsealed governance transition。v0.3.1 当前树副本已清退，
+immediate fallback 仍由 immutable source/asset/acceptance oracle 保护；published v0.3.2 精确字节仍由
+tag oracle 保护。P3 未授权，等待共同讨论。
 
 ## Errors Encountered
 

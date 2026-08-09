@@ -267,3 +267,17 @@ bootstrap/README 一并删除，则当前结论转为 `NO_GO`，必须等待 P3 
   直接执行，又由当前角色文件集合决定检查对象，不冻结具体版本号。
 - `release-package.test.js` 应继续证明 current source 双构建确定、contract boundary/self-contained 成立，
   同时明确 current SHA 不等于 published v0.3.2；精确 published v0.3.2 SHA 只由 tag oracle证明。
+
+## P2-I Implementation Findings
+
+- 删除 v0.3.1 当前树 bootstrap/acceptance 后，保留的 v0.3.1 引用全部落在三种合法语义：v0.3.2
+  acceptance 的时间证据、CHANGELOG/provenance 的历史身份、以及 immediate-fallback publication oracle。
+  README、AGENTS、当前 lifecycle 文件窗口和 current-source 测试均不再依赖旧副本。
+- `architecture-contracts.test.js` 无需修改；全仓复扫再次证明它没有版本号、acceptance 路径、commit 或
+  asset SHA。真正的隐藏历史耦合位于 release-package、contracts、skill-patch 与 publication oracle，
+  已按 P2-D 分别泛化、迁移或轮出。
+- 通用 bootstrap 供应链性质现统一由 v0.3.2 case 证明；v0.3.1 oracle 只从 immutable source 重建并校验
+  双资产，不再与 HEAD 文件做 hash seam。v0.3.0/beta.2 退出默认 suite，但完整身份仍在 provenance。
+- 当前 source 双构建测试已改为要求“确定且不等于 published v0.3.2”，并要求 ROADMAP 显式声明
+  unsealed governance transition 与 P3-before-seal。这不是放松 Release 断言；published v0.3.2 仍由
+  独立 immutable tag oracle 精确等值验证。

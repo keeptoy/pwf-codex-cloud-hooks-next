@@ -62,3 +62,15 @@
   将 README/AGENTS syntax 改为版本无关循环；完成后必须停在 P3 前，不创建新 identity 或 Release。
 - 已冻结过渡语义：published v0.3.2 只由 immutable tag oracle 证明；P2 后 HEAD 只验证 deterministic
   unsealed source ZIP 且必须与 published v0.3.2 SHA 不同，直到 P3 建立新 candidate identity。
+- P2-I 第一批改动完成：删除 root v0.3.1 bootstrap 与当前树 acceptance；README/AGENTS 改用版本无关
+  bootstrap syntax 循环；provenance 将 v0.3.1 移入精选历史并链接 exact `435f830...` acceptance。
+- 测试职责已旋转：通用供应链断言迁入 v0.3.2 skill-patch case；Release contract 的 bootstrap exclusion
+  改为 pattern；current-source ZIP 必须 deterministic 且不得等于 published v0.3.2；v0.3.1 oracle 只读
+  immutable source，v0.3.0/beta.2 默认 oracle 退出。
+- 全仓复扫确认剩余 v0.3.1 文本均属于时间证据、精选历史或 immediate fallback；没有 README/AGENTS、
+  lifecycle window 或 current-source 依赖残留。四个 focused suite 共 11/11 PASS。
+- 暂存删除后的 repository/architecture guards 15/15 PASS；完整 `npm test` 为 89 tests、77 PASS、12 个
+  Windows/POSIX SKIP、0 FAIL。importer integrity、Python compile、`install.js` syntax、版本无关 bootstrap
+  `bash -n` 循环与 staged diff 全部 PASS。
+- P2-I 已关闭：活动计划 Next Step 已切换为 P3 前讨论；没有创建 successor scope、0.3.3-dev machine
+  identity、candidate ZIP、seal、Release 或部署。

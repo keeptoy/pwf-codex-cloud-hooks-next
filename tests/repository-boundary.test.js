@@ -30,20 +30,13 @@ function currentRoleWindow() {
   const roadmap = read("ROADMAP.md");
   const candidateMatch = roadmap.match(new RegExp("^\\| 当前开发列车 \\| `(" + versionPattern + ")`", "m"));
   const acceptedMatch = roadmap.match(new RegExp("^\\| 当前已接受版本 \\| `(" + versionPattern + ")`", "m"));
-  const retainedMatch = roadmap.match(new RegExp("^\\| P2 历史清理过渡 \\| `(" + versionPattern + ")`", "m"));
   assert.ok(candidateMatch, "ROADMAP lacks a parseable current candidate role");
   assert.ok(acceptedMatch, "ROADMAP lacks a parseable accepted baseline role");
   const candidate = candidateMatch[1];
   const accepted = acceptedMatch[1];
   const packageVersion = JSON.parse(read("package.json")).version;
   assert.equal(candidate, `v${packageVersion}`, "package identity must match the current candidate role");
-  const retained = retainedMatch?.[1];
-  if (retained) {
-    assert.equal(candidate, accepted, "a retained predecessor is allowed only after candidate promotion");
-    assert.notEqual(retained, accepted, "the cleanup predecessor must not duplicate the accepted role");
-    assert.match(roadmap, /P2.*历史.*清理.*Discovery/is);
-  }
-  return { accepted, candidate, retained, roadmap };
+  return { accepted, candidate, roadmap };
 }
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
@@ -105,8 +98,8 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
   const releasePaths = artifact.entries.map(item => item.path);
   const docs = actual.filter(item => item.startsWith("docs/"));
-  const { accepted, candidate, retained } = currentRoleWindow();
-  const roleVersions = [...new Set([accepted, candidate, retained].filter(Boolean))].sort();
+  const { accepted, candidate } = currentRoleWindow();
+  const roleVersions = [...new Set([accepted, candidate])].sort();
   const rootBootstraps = actual.filter(item => /^init-cloud-sandbox-v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\.bash$/.test(item));
   const acceptanceDocs = docs.filter(item => /^docs\/v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?-cloud-hard-acceptance\.md$/.test(item));
 
@@ -117,6 +110,8 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   }
   assert.deepEqual(rootBootstraps, roleVersions.map(version => `init-cloud-sandbox-${version}.bash`));
   assert.deepEqual(acceptanceDocs, roleVersions.map(version => `docs/${version}-cloud-hard-acceptance.md`));
+  assert.doesNotMatch(read("README.md"), /init-cloud-sandbox-v0\.3\.1\.bash/);
+  assert.match(read("README.md"), /for bootstrap in init-cloud-sandbox-v\*\.bash; do/);
   for (const retired of [
     "docs/beta3-dev-m3-cloud-equivalence.md",
     "docs/beta3-dev-m4-cutover-plan.md",
@@ -174,7 +169,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   const design = read("DESIGN.md");
   const agents = read("AGENTS.md");
   const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
-  const { accepted, candidate, retained, roadmap } = currentRoleWindow();
+  const { accepted, candidate, roadmap } = currentRoleWindow();
   const acceptancePath = `docs/${candidate}-cloud-hard-acceptance.md`;
   const acceptance = read(acceptancePath);
   const escapedCandidate = candidate.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -195,7 +190,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotMatch(roadmap, /## 3\. 已完成的仓库迁移|M1 exact mirror|M2 slim transformation/);
   assert.equal((roadmap.match(/GitHub `Latest`/g) || []).length, 1);
 
-  for (const roleVersion of new Set([candidate, accepted, retained].filter(Boolean))) {
+  for (const roleVersion of new Set([candidate, accepted])) {
     assert.match(provenance, new RegExp(roleVersion.replaceAll(".", "\\.")));
   }
   assert.match(provenance, /## 2\. Successor 迁移来源链/);
@@ -205,6 +200,8 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.doesNotMatch(macroDoc, /当前生产回滚|当前回退层级|GitHub `Latest`|production rollback/);
   }
   assert.match(agents, /当前版本角色只见 `ROADMAP\.md`/);
+  assert.doesNotMatch(agents, /init-cloud-sandbox-v0\.3\.1\.bash/);
+  assert.match(agents, /for bootstrap in init-cloud-sandbox-v\*\.bash; do/);
   assert.match(design, /CHANGELOG\.md/);
 
   assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));

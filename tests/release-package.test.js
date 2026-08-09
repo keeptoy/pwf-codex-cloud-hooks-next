@@ -13,8 +13,6 @@ const builder = path.join(root, "tools", "build_release.py");
 const contract = path.join(root, "contracts", "release-artifact-v1.json");
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 const sha256 = file => crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
-const stableZipSha256 = "f245a554210c7f8d07eebbb775faa7b1482fea5d363ee6fa7578c9bbd98ad9af";
-const release031ZipSha256 = "f097b04015b1a3847ca5a24b9236f882c5a008b22033793b5661e282c39131f9";
 const release032ZipSha256 = "b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081";
 
 function run(command, archive, contractPath = contract, builderPath = builder, cwd = root) {
@@ -47,7 +45,7 @@ function extractZip(archive, destination) {
   assert.equal(result.status, 0, result.stderr);
 }
 
-test("v0.3.2 sealed ZIP is deterministic, self-contained, and keeps its bootstrap external", () => {
+test("post-promotion source ZIP is deterministic, self-contained, externalizes bootstrap, and cannot impersonate published v0.3.2", () => {
   const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-release-candidate-"));
   const first = path.join(workspace, "first.zip"), second = path.join(workspace, "second.zip");
   try {
@@ -57,9 +55,7 @@ test("v0.3.2 sealed ZIP is deterministic, self-contained, and keeps its bootstra
     const secondResult = JSON.parse(result.stdout);
     assert.equal(sha256(first), sha256(second));
     assert.equal(firstResult.sha256, secondResult.sha256);
-    assert.equal(firstResult.sha256, release032ZipSha256);
-    assert.notEqual(firstResult.sha256, stableZipSha256);
-    assert.notEqual(firstResult.sha256, release031ZipSha256);
+    assert.notEqual(firstResult.sha256, release032ZipSha256);
     assert.equal(firstResult.entries, 23);
     assert.ok(firstResult.size > 0);
     result = run("check", first); assert.equal(result.status, 0, result.stderr);
@@ -89,6 +85,9 @@ test("v0.3.2 sealed ZIP is deterministic, self-contained, and keeps its bootstra
     assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.2\}"/);
     assert.match(bootstrap, /keeptoy\/pwf-codex-cloud-hooks-next\/releases\/download/);
     assert.match(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${release032ZipSha256}\\}"`));
+    const roadmap = fs.readFileSync(path.join(root, "ROADMAP.md"), "utf8");
+    assert.match(roadmap, /P3.*新.*machine identity.*seal/is);
+    assert.match(roadmap, /unsealed governance transition/i);
 
     const extracted = path.join(workspace, "extracted");
     extractZip(first, extracted);

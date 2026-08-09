@@ -22,16 +22,15 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.2`；published；Cloud hard acceptance PASS；已完成 baseline promotion；后继列车尚未开启 |
+| 当前开发列车 | `v0.3.2`；published 与 Cloud hard acceptance 已完成；当前分支是 P3 前的 unsealed governance transition，后继列车尚未开启 |
 | 当前已接受版本 | `v0.3.2`；production rollback 与 GitHub `Latest` |
-| P2 历史清理过渡 | `v0.3.1`；仅保留当前树副本供全仓 Discovery，具体清退集合尚未授权 |
-| 回退证据链 | immutable `v0.3.1` → immutable `v0.3.0` → immutable `v0.3.0-beta.2` oracle |
+| 回退证据链 | immutable `v0.3.1` immediate fallback；更早发布里程碑见 provenance museum |
 | 当前 programme 边界 | Product Phase 4 未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
-`v0.3.2` 已在独立 P1 gate 完成 pointer-only promotion；两个已发布版本的 tag、README 和资产仍是
-sealed 历史输入，不因角色轮换而改写。版本 delta 见 [`CHANGELOG.md`](CHANGELOG.md)，精确
-source/资产/SHA 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，最终验收与晋级证据见
+`v0.3.2` 已在独立 P1 gate 完成 pointer-only promotion；P2 随后把 v0.3.1 当前树副本归档到 immutable
+ref，没有改写任何已发布 tag、source、README 或资产字节。版本 delta 见 [`CHANGELOG.md`](CHANGELOG.md)，
+精确 source/资产/SHA 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，最终验收与晋级证据见
 [`docs/v0.3.2-cloud-hard-acceptance.md`](docs/v0.3.2-cloud-hard-acceptance.md)。
 
 ## 3. 已完成的基线 `v0.3.2`
@@ -53,15 +52,20 @@ baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta
 
 ## 4. 当前开发列车与 Product Phase 路线
 
-`v0.3.2` 列车已完成，当前 package/Release contract/bootstrap 仍保持其 sealed machine identity。
-`0.3.2-dev-extend` source/governance 分支只执行 P2 历史深度清理：先全仓 inventory，再由维护者批准
-具体保留、迁移和删除集合。P2 不修改 production runtime、Host ABI、trusted graph、Hook 行为或任何
-sealed v0.3.2 ZIP input，也不建立 `v0.3.3-dev` 身份。后继列车属于独立 P3 Discovery，尚未授权。
+`v0.3.2` 列车已经发布并验收；package、Release contract 与根目录 v0.3.2 bootstrap 继续保存最后一个
+已发布 machine identity，但不把 P2 后的 HEAD 认证为相同发布源码。`0.3.2-dev-extend` 已完成 P2 历史
+深度清理，期间没有修改 production runtime、Host ABI、trusted graph、Hook 行为或任何已发布资产；但
+README 作为 ZIP input 已经版本无关化，所以当前 HEAD 构建只是 deterministic unsealed transition bytes，
+不等于 published v0.3.2 ZIP，也不是新的 candidate。
+
+下一步必须先进入独立 P3 Discovery，再建立新的 machine identity 和 fail-closed bootstrap，之后才允许
+seal 新候选字节；P3 目前未授权。当前状态明确是 **unsealed governance transition**，不得用 v0.3.2
+bootstrap 的已发布 checksum 安装从 HEAD 临时重建的 ZIP。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
-bootstrap/acceptance；P1 后两项角色同为 v0.3.2，v0.3.1 仅通过显式 P2 清理过渡角色暂留。更早历史
-退出 HEAD 后由 immutable commit、tag 和 Release 恢复。trusted/Release zones 继续 exact，
-docs/planning zones 按 lifecycle policy 验证。
+bootstrap/acceptance；当前两项角色同为 v0.3.2，因此当前树只保留这一套入口。v0.3.1 作为 immediate
+fallback 由 immutable commit、tag、Release 与 exact acceptance 恢复；更早历史只留在精选 provenance。
+trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。
 
 下表是未来 Discovery 的候选，不是发布承诺，也不自动授权下一 Phase。一个 Phase 可以有多个
 pre-release；多个低风险 Phase 也只有在独立评审后才能进入同一版本列车。

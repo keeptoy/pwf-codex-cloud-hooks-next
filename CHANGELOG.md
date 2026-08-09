@@ -15,7 +15,10 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - Discovery 明确区分讨论态、决策态与实施态；探索性疑问和单点历史残留先触发只读全局盘点，不能在
   范围与清退方案尚未冻结时直接演变为批量删改。
 - 在独立 gate 复核公开双资产不变性后，将已发布并完成 Cloud hard acceptance 的 v0.3.2 晋级为新的
-  accepted baseline；v0.3.1 的当前树清退与后继开发列车继续保持为两个后续独立 gate。
+  accepted baseline。
+- 完成独立 P2 历史清理：v0.3.1 bootstrap 与验收全文退出当前树，通用供应链断言迁移到当前版本，
+  默认 publication oracle 只保留 accepted baseline 与 immediate fallback；后继开发列车仍留给 P3。
+- README 与智能体入口的 bootstrap 语法检查改为版本无关循环，避免每次角色轮换继续累积固定版本命令。
 
 ## v0.3.2
 
@@ -59,7 +62,7 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - 所有修复均位于同一 `0.3` 行为合同内，没有新增 Hook、Host ABI 或 trusted graph；生产 runtime 的入口
   与激活图不变。
 - 精确身份见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，最终字节与 Cloud A～F 证据见
-  [`docs/v0.3.1-cloud-hard-acceptance.md`](docs/v0.3.1-cloud-hard-acceptance.md)。
+  [immutable v0.3.1 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/435f830577ded23f8509a7befb95e8ba5128924f/docs/v0.3.1-cloud-hard-acceptance.md)。
 
 ## v0.3.0
 

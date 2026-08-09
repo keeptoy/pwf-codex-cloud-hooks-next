@@ -178,9 +178,7 @@ test("machine contracts freeze provenance, overlays, Host protocol, and artifact
   assert.equal(new Set(artifactPaths).size, artifactPaths.length);
   assert.equal(artifactPaths.length, 23);
   assert.equal(artifactPaths.includes("patches/patch_planning_skill.py"), true);
-  assert.equal(artifactPaths.includes("init-cloud-sandbox-v0.3.0.bash"), false);
-  assert.equal(artifactPaths.includes("init-cloud-sandbox-v0.3.1.bash"), false);
-  assert.equal(artifactPaths.includes("init-cloud-sandbox-v0.3.2.bash"), false);
+  assert.equal(artifactPaths.some(item => item.startsWith("init-cloud-sandbox-")), false);
   for (const entry of artifact.entries.filter(entry => entry.state === "present")) {
     assert.equal(fs.existsSync(path.join(root, entry.path)), true, entry.path);
   }
