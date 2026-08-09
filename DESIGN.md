@@ -149,7 +149,7 @@ report rendering。它动态加载完整的 fixed owned `session-catchup.py` mod
 | [`owned-plan-runtime.test.js`](tests/owned-plan-runtime.test.js) | plan 选择、attachment、安全读取、private snapshot、timeout 与 cleanup | `owned-plan.py`、resolver/injector、plan contracts | 基础 schema 跨平台；文件/进程安全 case 需要 Linux |
 | [`owned-runtime.test.js`](tests/owned-runtime.test.js) | transcript 选择、identity、fallback、损坏输入与 diagnostic | `owned-catchup.py`、runtime contracts、Host data | 主体跨平台；linked-file case 需要 POSIX |
 | [`release-package.test.js`](tests/release-package.test.js) | development ZIP 确定性、历史 published oracle 与 candidate identity drift | Release builder、artifact contract、external bootstrap | 跨平台；本地结果不构成 publication |
-| [`repository-boundary.test.js`](tests/repository-boundary.test.js) | tracked inventory、archive 排除、退役原型隔离与安全结论承接 | Git repository、Release allowlist、runtime dispatch | 跨平台静态边界 |
+| [`repository-boundary.test.js`](tests/repository-boundary.test.js) | trusted source exact inventory、planning/docs 生命周期、角色窗口与退役路径隔离 | Git repository、Release allowlist、runtime dispatch | 跨平台静态边界 |
 | [`runtime-supervisor.test.js`](tests/runtime-supervisor.test.js) | child result 校验、process supervision、sibling identity 与 producer/consumer seam | adapter supervisor、plan contracts、installed siblings | 主体跨平台；process-group timeout 需要 Linux |
 | [`skill-patch.test.js`](tests/skill-patch.test.js) | compatibility overlay 可复现性、bootstrap 安全和 global Skill pristine | patcher、bootstrap、pinned Skill archive | 跨平台 sandbox；不替代 Cloud install acceptance |
 

@@ -45,10 +45,9 @@ M1～M4 建立了独立 successor 的来源、历史、Cloud 等价性和源码�
 | M3 Cloud equivalence | Linux/Fresh/Resume/doctor/ZIP 等价性 | complete |
 | M4 repository cutover | default/main/ruleset、旧仓库导航与 rollback | complete |
 
-不可变 refs 和可重放证据只保留在 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)、
-[`docs/beta3-dev-m3-cloud-equivalence.md`](docs/beta3-dev-m3-cloud-equivalence.md) 与
-[`docs/beta3-dev-m4-cutover-plan.md`](docs/beta3-dev-m4-cutover-plan.md)。后续 main 提交不能冒充这些旧 gate
-的 accepted input。
+不可变 refs 和可重放证据只由 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 索引；M3/M4 完整
+runbook 已退出当前树，并通过其中的 exact-commit links 恢复。后续 main 提交不能冒充这些旧 gate 的
+accepted input。
 
 ## 4. 当前开发列车与 Product Phase 路线
 

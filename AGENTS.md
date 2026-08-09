@@ -76,7 +76,6 @@ python3 tools/import_upstream_runtime.py check
 npm test
 python3 -c "from pathlib import Path; [compile(p.read_text(encoding='utf-8'), str(p), 'exec') for p in map(Path, ['hooks/hook_adapter.py','runtime/owned-plan.py','runtime/owned-catchup.py'])]"
 node --check install.js
-bash -n init-cloud-sandbox-v0.3.0.bash
 bash -n init-cloud-sandbox-v0.3.1.bash
 bash -n init-cloud-sandbox-v0.3.2.bash
 git diff --check

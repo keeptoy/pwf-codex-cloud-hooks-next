@@ -68,6 +68,7 @@ test("planning lifecycle has one valid active pointer and complete scoped record
   }
 
   assert.equal(scopeFiles.has(activePlan), true, `active planning scope is not tracked: ${activePlan}`);
+  assert.deepEqual([...scopeFiles.keys()], [activePlan], "completed planning scopes must leave the current tree");
   for (const [scope, files] of scopeFiles) {
     assert.deepEqual(files.sort(), [...planningFiles].sort(), `incomplete planning scope: ${scope}`);
   }
@@ -83,12 +84,21 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
   const releasePaths = artifact.entries.map(item => item.path);
   const docs = actual.filter(item => item.startsWith("docs/"));
+  const rootBootstraps = actual.filter(item => /^init-cloud-sandbox-v\d+\.\d+\.\d+\.bash$/.test(item));
 
   assert.equal(artifact.excluded_prefixes.includes("docs/"), true);
   for (const relative of docs) {
     assert.match(relative, /^docs\/(?:[A-Za-z0-9][A-Za-z0-9._-]*\/)*[A-Za-z0-9][A-Za-z0-9._-]*\.md$/);
     assert.equal(releasePaths.includes(relative), false, relative);
   }
+  assert.deepEqual(rootBootstraps, ["init-cloud-sandbox-v0.3.1.bash", "init-cloud-sandbox-v0.3.2.bash"]);
+  for (const retired of [
+    "docs/beta3-dev-m3-cloud-equivalence.md",
+    "docs/beta3-dev-m4-cutover-plan.md",
+    "docs/v0.3.0-beta.2-cloud-hard-acceptance.md",
+    "docs/v0.3.0-cloud-hard-acceptance.md",
+    "init-cloud-sandbox-v0.3.0.bash",
+  ]) assert.equal(actual.includes(retired), false, retired);
   assert.match(read("docs/repository-governance-guide.md"), /^<a name="repository-governance-guide"><\/a>$/m);
   assert.match(read("MAINTAINER_HANDOFF.md"), /\[[^\]]*仓库治理指南[^\]]*\]\(docs\/repository-governance-guide\.md\)/);
 });
@@ -108,14 +118,12 @@ test("retired prototype conclusions remain covered by production safety tests", 
   assert.match(catchupTests, /owned runtime distinguishes planning\/update\/output-budget skip reasons/);
 });
 
-test("archived prototype and history remain outside runtime, Release, and adapter dispatch", () => {
+test("cold history stays on immutable refs and outside runtime, Release, and adapter dispatch", () => {
   const runtime = read("contracts/runtime-bundle-v1.json");
   const release = read("contracts/release-artifact-v1.json");
   const adapter = read("hooks/hook_adapter.py");
   const installer = read("install.js");
-  const m3Runbook = read("docs/beta3-dev-m3-cloud-equivalence.md");
-  const m4Runbook = read("docs/beta3-dev-m4-cutover-plan.md");
-  const stableRunbook = read("docs/v0.3.0-cloud-hard-acceptance.md");
+  const provenance = read("BASELINE_PROVENANCE.md");
   for (const content of [runtime, release, adapter]) {
     assert.doesNotMatch(content, /snapshot-prototype|prototype_snapshot_runner/);
     assert.doesNotMatch(content, /docs\/phase-|\.planning\/2026-08-01/);
@@ -128,13 +136,10 @@ test("archived prototype and history remain outside runtime, Release, and adapte
   assert.deepEqual(artifact.external_release_assets.map(item => item.path), ["init-cloud-sandbox-v0.3.2.bash"]);
   assert.match(installer, /\[\[hooks\.SessionStart\.hooks\]\]/);
   assert.match(installer, /\[\[hooks\.UserPromptSubmit\.hooks\]\]/);
-  assert.match(m3Runbook, /event_groups = policy\["hooks"\]\[event\]/);
-  assert.match(m3Runbook, /handlers = event_groups\[0\]\["hooks"\]/);
-  assert.doesNotMatch(m3Runbook, /handlers\[0\]\["command"\]/);
-  assert.match(m4Runbook, /M4A_SUCCESSOR_AUTHORITY_CUTOVER=PASS/);
-  assert.match(m4Runbook, /M4B_ARCHIVE_PROVENANCE_HANDOFF=PASS/);
-  assert.match(m4Runbook, /M4C_CUTOVER_ROLLBACK_ACCEPTANCE=PASS/);
-  assert.match(m4Runbook, /M4 不发布 beta\.3/);
-  assert.doesNotMatch(stableRunbook, /item\["relative"\]/);
-  assert.equal((stableRunbook.match(/item\["path"\]/g) || []).length, 2);
+  for (const immutable of [
+    "39795283cd65f84547651d7bec816191fb5bfedf",
+    "0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151",
+    "1454c9224c83d11c073b05baf6e536a11c3bb0e5",
+    "bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b",
+  ]) assert.match(provenance, new RegExp(immutable));
 });

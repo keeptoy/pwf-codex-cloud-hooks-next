@@ -10,13 +10,15 @@ trusted graph、Release 不可变性和历史可追溯性的前提下，让当�
 - 当前工作分支固定为 `governance/history-retention`，基点是已推送的 `cde4b15`。
 - 已授权创建本 planning scope、通用仓库治理指南和最小新人入口链接；治理模型已经维护者评审通过。
 - 已授权 H4：以 failing-first 方式重构 repository governance guard，并在关键恢复点自动创建本地 commit。
-- 仍不删除或迁移历史文件，不修改 production、contracts、package identity、Release inputs 或 Cloud。
-- 不 push、创建 PR/tag/Release/asset；H5 历史迁移仍须维护者再次确认。
+- 已授权 H5：验证 immutable recovery 后，移除 completed planning、角色窗口外的历史 acceptance/runbook/
+  bootstrap，并同步直接链接、历史 oracle 和治理测试；必要的 README/DESIGN/ROADMAP 路由更新属于 H5。
+- H5 不修改 production、contracts、package identity、当前 `v0.3.2` bootstrap、Release contract 或 Cloud。
+- 不 push、创建 PR/tag/Release/asset；H6 合并建议和平台/Release 收口仍须维护者再次确认。
 
 ## Next Step
 
-等待维护者评审 H4 结果并决定是否授权 H5。任何清退前先冻结 immutable recovery/link rewrite 清单，
-不因 guard 已绿色就直接删除历史文件。
+等待维护者评审 H5 的 recovery、角色窗口、删除清单和验证结果；获批后再决定是否进入 H6 的最终
+authority/package/platform 收口与合并建议，不自动 push 或发布。
 
 ## Phases
 
@@ -25,13 +27,13 @@ trusted graph、Release 不可变性和历史可追溯性的前提下，让当�
 - [x] H2 — 生成可迁移的仓库治理指南，并加入维护者接手入口。
 - [x] H3 — 维护者评审并冻结 retention contract、版本窗口与退出条件。
 - [x] H4 — failing-first 重构 repository governance guards；不先删文件追求绿色。
-- [ ] H5 — 迁移 completed planning、旧 acceptance/runbook/bootstrap 和历史 oracle 引用。
+- [x] H5 — 迁移 completed planning、旧 acceptance/runbook/bootstrap 和历史 oracle 引用。
 - [ ] H6 — 同步唯一 authority、运行完整 regression/package/platform gate，形成合并建议。
 
 ## Status
 
-H0–H4 完成：治理模型已获批，repository guard 已分为 exact trusted-source、planning lifecycle、docs
-lifecycle 与 retired-path protection；聚焦和完整 Node regression 已通过。H5–H6 尚未授权。
+H0–H5 完成：20 个历史路径经 immutable recovery 验证后退出当前树，直接依赖已改为当前角色入口或
+exact-commit links，聚焦/完整回归与静态检查通过。H6 尚未授权。
 
 ## Provisional Exit Conditions
 
@@ -66,3 +68,5 @@ lifecycle 与 retired-path protection；聚焦和完整 Node regression 已通�
 | Windows `rg` 接收未展开的 `init-cloud-sandbox-v0.3.*.bash` glob，返回路径语法错误 | 1 | 后续使用 `git ls-files` 或 PowerShell 枚举后传精确路径，不重复原命令 |
 | 提交后 repository inventory 与静态 `expectedPaths` 不一致 | 1 | 已保存原始失败并冻结为 H4 首个 failing-first 输入；本轮不弱化断言或伪报绿色 |
 | 新 documentation lifecycle test 把 handoff 链接标签误写成不含反引号的精确文本 | 1 | 分类为 test defect；改为验证标签包含目标语义且链接目的地精确，不改生产或文档内容 |
+| PowerShell 环境中直接调用 `bash -n` 时找不到 `bash` | 1 | 分类为 platform limitation；不重复原命令，使用测试套件已采用的 Git for Windows Bash 探测路径，若不存在则诚实 SKIP |
+| 仓库 Markdown link probe 把裁剪后的 upstream Skill fixture 当作完整文档检查 | 1 | 分类为 fixture scope error；排除 `tests/fixtures/` 后检查 repository-owned Markdown，fixture 完整性继续由其专属 import/runtime tests 负责 |

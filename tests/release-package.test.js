@@ -231,19 +231,12 @@ test("published v0.3.0 source/tag oracle and external bootstrap retain their imm
     assert.equal(result.status, 0, result.stderr);
     assert.equal(sha256(stableZip), stableZipSha256);
     assert.equal(sha256(path.join(stableRoot, "init-cloud-sandbox-v0.3.0.bash")), stableBootstrapSha256);
-    assert.equal(sha256(path.join(root, "init-cloud-sandbox-v0.3.0.bash")), stableBootstrapSha256);
     assert.notEqual(stableBootstrapSha256, betaBootstrapSha256);
 
-    const betaAcceptance = fs.readFileSync(
-      path.join(root, "docs", "v0.3.0-beta.2-cloud-hard-acceptance.md"),
-      "utf8",
-    );
-    assert.doesNotMatch(betaAcceptance, /__PWF_BETA2_/);
-    assert.match(betaAcceptance, new RegExp(betaZipSha256, "g"));
-    assert.match(betaAcceptance, new RegExp(betaBootstrapSha256, "g"));
     const provenance = fs.readFileSync(path.join(root, "BASELINE_PROVENANCE.md"), "utf8");
     assert.match(provenance, new RegExp(betaZipSha256, "g"));
     assert.match(provenance, new RegExp(betaBootstrapSha256, "g"));
+    assert.match(provenance, /blob\/cde4b15bba7ed8580cb774c8b8bb259c9174c3d0\/docs\/v0\.3\.0-beta\.2-cloud-hard-acceptance\.md/);
   } finally {
     fs.rmSync(workspace, { recursive: true, force: true });
   }

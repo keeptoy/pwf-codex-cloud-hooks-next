@@ -2,6 +2,21 @@
 
 ## 2026-08-09
 
+- H5 恢复轮次：维护者指示继续；按最小授权解释为历史迁移/清退，不包含 H6、push、Release 或 Cloud。重读 README 与 ARCHITECTURE 后确认 trusted graph 和 Release 不变量不变。
+- 活动 task plan 已同步 H5 授权：允许在 immutable recovery 验证后清退角色窗口外历史文件并改写直接依赖；禁止改 production/contracts/package identity/当前 bootstrap、push、Release 和 Cloud。
+- 重读 DESIGN 与 ROADMAP；H5 仅作用于 Release-excluded governance/history zones，当前 candidate `0.3.2-dev`、accepted `v0.3.1` 与 rollback evidence chain 的角色事实不变。
+- H5 recovery probe：20/20 拟清退路径可从已推送 `cde4b15bba7ed8580cb774c8b8bb259c9174c3d0` 恢复；v0.3.0 acceptance/bootstrap 另由 immutable `v0.3.0` tag commit 二次验证。
+- H5 failing-first repository test：5 tests 中 3 PASS、2 FAIL；红项精确对应 5 个 completed planning scopes 与角色窗口外 v0.3.0 root bootstrap，trusted-source 和 immutable-ref guard 保持绿色。
+- 已应用 H5 migration：删除 15 个 completed planning 文件、4 份冷历史 runbook/acceptance 和 v0.3.0 root bootstrap；保留 active scope、v0.3.1 accepted 与 v0.3.2 candidate 文件。
+- BASELINE_PROVENANCE 已压缩旧版本为 milestone catalog，README/AGENTS/ROADMAP/CHANGELOG/DESIGN/v0.3.1 acceptance 和三组治理/历史 oracle tests 已改路由；剩余旧路径字符串均为 immutable URL、tag archive 或 negative assertion。
+- 暂存候选 inventory 后运行 H5 聚焦测试：architecture、repository boundary、release package、skill patch 共 23/23 PASS；单一 active planning、v0.3.1 + v0.3.2 role window 与 immutable cold-history 路由闭合。
+- 完整 `npm test`：87 tests，75 PASS、12 Windows/POSIX SKIP、0 FAIL；相较 H4 少 1 项是已明确退休的 v0.3.0 current-tree bootstrap replay，v0.3.0 tag archive oracle 仍通过。
+- 独立 importer check、Python compile 和 `node --check install.js` 已先通过；PowerShell PATH 无 `bash`，直接 bootstrap `bash -n` 分类为平台限制，改用仓库测试已采用的 Bash 探测路径，不重复原命令。
+- 使用 Git for Windows Bash 后，保留的 v0.3.1/v0.3.2 bootstrap `bash -n` 均 PASS。
+- 首次 Markdown link probe 只发现裁剪 upstream Skill fixture 中未随 fixture 带入的模板/参考链接；分类为 fixture scope error，repository-owned 文档检查将排除 `tests/fixtures/` 后重跑。
+- 排除受专属 tests 管理的 upstream fixture 后，15 个 repository-owned Markdown 文件的相对链接检查 PASS。
+- H5 候选 tracked inventory：63 paths；planning 4 files、docs 3 files、root bootstraps 2 files，符合单一 active scope 与 candidate + accepted 角色窗口。
+- 严格 UTF-8/LF、Markdown fences、四个 upstream `100755` modes、staged/unstaged `git diff --check`：PASS。
 - 本轮恢复后重读 README 与 ARCHITECTURE；稳定运行边界、trusted graph 和 Release 不变量未发生变化。本轮仍只处理仓库治理 guard。
 - 重读 DESIGN 与 ROADMAP；本次重构属于 `0.3.2-dev` 文档/治理检查范围，不改变 runtime、Host ABI、trusted graph 或 Release lifecycle。
 - 维护者通过治理模型并授权 H4 guard 重构，以及在关键恢复点自动创建本地 commit；H5 历史迁移和远端写入仍未授权。
@@ -29,6 +44,6 @@
 
 ## Current Handoff
 
-- H4 已完成：trusted source exact guard、planning lifecycle guard、documentation lifecycle guard 与 retired-path protection 均已落地。
-- 下一 gate 是 H5，仍需维护者明确授权；此前不进行任何历史迁移或删除。
-- 治理模型恢复点为本地 commit `7cb68ca`；H4 验证完成后创建第二个本地恢复点，不推送。
+- H5 已完成：20 个路径均在删除前验证 recovery，当前树只保留 active planning、v0.3.1 accepted 与 v0.3.2 candidate 角色文件。
+- H5 聚焦测试 23/23 PASS，完整 Node regression 0 FAIL，source/bootstrap/static/link 检查 PASS。
+- 下一 gate 是 H6，仍需维护者评审授权；本轮创建本地恢复点后停止，不 push。

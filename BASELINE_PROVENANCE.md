@@ -2,7 +2,8 @@
 
 本文件只回答“代码与不可变资产从哪里来、如何复现”。版本变化摘要见
 [`CHANGELOG.md`](CHANGELOG.md)，当前 programme/lifecycle 见 [`ROADMAP.md`](ROADMAP.md)，逐次验收过程见
-对应 `docs/` acceptance。这里不维护当前开发目标、版本角色、Next Step 或测试流水账。
+当前 acceptance 或下文的 immutable evidence link。这里不维护当前开发目标、版本角色、Next Step 或
+测试流水账，也不为每个普通 patch 无限追加资产表。
 
 ## 1. 已发布身份索引
 
@@ -22,41 +23,15 @@
 公开下载、最终双资产与 Cloud A～F 证据由
 [`docs/v0.3.1-cloud-hard-acceptance.md`](docs/v0.3.1-cloud-hard-acceptance.md) 冻结。
 
-### 1.2 v0.3.0
+### 1.2 历史发布里程碑
 
-| 项目 | 值 |
-|---|---|
-| tag / Release | [`v0.3.0`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/tag/v0.3.0) |
-| exact release source commit | [`1454c9224c83d11c073b05baf6e536a11c3bb0e5`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/1454c9224c83d11c073b05baf6e536a11c3bb0e5) |
-| ZIP | `pwf-codex-cloud-hooks-v0.3.0.zip` |
-| ZIP entries / size | 22 / 75,386 bytes |
-| ZIP SHA-256 | `f245a554210c7f8d07eebbb775faa7b1482fea5d363ee6fa7578c9bbd98ad9af` |
-| external bootstrap | `init-cloud-sandbox-v0.3.0.bash` |
-| bootstrap size | 17,423 bytes |
-| bootstrap SHA-256 | `ab334f0367d948fa29a2bdd37bff0c220929aeb320fdf59dbacbd5a4021b39c0` |
-| behavior delta | none；保留 canonical runtime 与 `PWF_GLOBAL_HOOK_CANARY_V1` |
+历史版本退出当前角色窗口后，只在这里保留精确身份和永久意义；逐次命令与验收现场通过 immutable
+commit/tag/Release 恢复，不在 HEAD 保留全文副本。
 
-最终 source、tag、双资产与 Cloud 证据由
-[`docs/v0.3.0-cloud-hard-acceptance.md`](docs/v0.3.0-cloud-hard-acceptance.md) 冻结。
-
-### 1.3 v0.3.0-beta.2
-
-| 项目 | 值 |
-|---|---|
-| 旧仓库 | [`keeptoy/pwf-codex-cloud-hooks`](https://github.com/keeptoy/pwf-codex-cloud-hooks) |
-| tag / Release | [`v0.3.0-beta.2`](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/tag/v0.3.0-beta.2) |
-| source/audit commit | [`bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b`](https://github.com/keeptoy/pwf-codex-cloud-hooks/commit/bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b) |
-| source/audit tree | `ff49c3c6656386e94450ccb24437a1c2d1c50e95` |
-| ZIP | [`pwf-codex-cloud-hooks-v0.3.0-beta.2.zip`](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/download/v0.3.0-beta.2/pwf-codex-cloud-hooks-v0.3.0-beta.2.zip) |
-| ZIP entries / size | 22 / 84,572 bytes |
-| ZIP SHA-256 | `812cc9cdcafa93b5fcc47cc763fd743f11be77958b75eea1fa4cf0508dd391ab` |
-| bootstrap | [`init-cloud-sandbox-v0.3.0.bash`](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/download/v0.3.0-beta.2/init-cloud-sandbox-v0.3.0.bash) |
-| bootstrap size | 17,425 bytes |
-| bootstrap SHA-256 | `d572b77d920b34c34c7912ba364376ae3668216f00ce350251bd7c8b336abcd6` |
-
-资产下载、prepublication seal、Fresh/Resume A～F 和 post-resume doctor 证据由
-[`docs/v0.3.0-beta.2-cloud-hard-acceptance.md`](docs/v0.3.0-beta.2-cloud-hard-acceptance.md)
-冻结。successor 不重新发布或改写相同 identity。
+| 里程碑 | source 与验收 | ZIP identity | bootstrap identity | 永久意义 |
+|---|---|---|---|---|
+| `v0.3.0` | [Release](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/tag/v0.3.0)；[source `1454c9224c83d11c073b05baf6e536a11c3bb0e5`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/1454c9224c83d11c073b05baf6e536a11c3bb0e5)；[exact acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/1454c9224c83d11c073b05baf6e536a11c3bb0e5/docs/v0.3.0-cloud-hard-acceptance.md) | `pwf-codex-cloud-hooks-v0.3.0.zip`；22 entries；75,386 bytes；SHA-256 `f245a554210c7f8d07eebbb775faa7b1482fea5d363ee6fa7578c9bbd98ad9af` | `init-cloud-sandbox-v0.3.0.bash`；17,423 bytes；SHA-256 `ab334f0367d948fa29a2bdd37bff0c220929aeb320fdf59dbacbd5a4021b39c0` | successor 首个 stable；保留 canonical runtime 与 `PWF_GLOBAL_HOOK_CANARY_V1` |
+| `v0.3.0-beta.2` | [旧仓库 Release](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/tag/v0.3.0-beta.2)；[source `bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b`](https://github.com/keeptoy/pwf-codex-cloud-hooks/commit/bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b)；tree `ff49c3c6656386e94450ccb24437a1c2d1c50e95`；[exact acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/cde4b15bba7ed8580cb774c8b8bb259c9174c3d0/docs/v0.3.0-beta.2-cloud-hard-acceptance.md) | [`pwf-codex-cloud-hooks-v0.3.0-beta.2.zip`](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/download/v0.3.0-beta.2/pwf-codex-cloud-hooks-v0.3.0-beta.2.zip)；22 entries；84,572 bytes；SHA-256 `812cc9cdcafa93b5fcc47cc763fd743f11be77958b75eea1fa4cf0508dd391ab` | [`init-cloud-sandbox-v0.3.0.bash`](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/download/v0.3.0-beta.2/init-cloud-sandbox-v0.3.0.bash)；17,425 bytes；SHA-256 `d572b77d920b34c34c7912ba364376ae3668216f00ce350251bd7c8b336abcd6` | successor 迁移采用的产品基线与行为 oracle；不重新发布或改写相同 identity |
 
 ## 2. Successor 迁移来源链
 
@@ -76,8 +51,8 @@ snapshot prototype 仍可在旧仓库与 audit ref 中追溯。三个 fixture re
 
 可重放的迁移证据见：
 
-- [`docs/beta3-dev-m3-cloud-equivalence.md`](docs/beta3-dev-m3-cloud-equivalence.md)；
-- [`docs/beta3-dev-m4-cutover-plan.md`](docs/beta3-dev-m4-cutover-plan.md)。
+- [M3 exact runbook](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/39795283cd65f84547651d7bec816191fb5bfedf/docs/beta3-dev-m3-cloud-equivalence.md)；
+- [M4 exact runbook](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151/docs/beta3-dev-m4-cutover-plan.md)。
 
 ## 3. 上游来源
 

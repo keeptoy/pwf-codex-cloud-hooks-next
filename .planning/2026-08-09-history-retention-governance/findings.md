@@ -103,9 +103,49 @@ graph、Release/rollback mechanism、长期基线晋级。普通 patch、文案�
 6. 同步 AGENTS/README/DESIGN/ROADMAP/handoff 与治理测试，再跑完整 validation。
 7. v0.3.2 真正晋级后执行第二次角色旋转：当前树只保留 v0.3.2 的 active assets/evidence。
 
+## H5 Recovery Inventory
+
+- 本地 refs 已确认：`v0.3.0` 指向 `1454c9224c83d11c073b05baf6e536a11c3bb0e5`，`v0.3.1`
+  指向 `9aa2148886e499f9f45594f7ae4f7681f1045de2`；`origin/0.3.2-dev` 指向已推送的 `cde4b15`。
+- 拟清退 20 个路径：5 个 completed planning scopes（15 files）、M3/M4 runbook、beta.2/v0.3.0
+  acceptance 和 v0.3.0 bootstrap。当前 active scope、v0.3.1 acceptance/bootstrap 与 v0.3.2 bootstrap 保留。
+- 所有拟清退路径必须先通过 `cde4b15:<path>` object lookup；v0.3.0 bootstrap/acceptance 还应由
+  `v0.3.0` tag 二次证明。当前文档链接统一改为 exact commit/tag URL，不新增 `archive/` 副本。
+- Recovery probe 已通过：20/20 路径存在于远端跟踪提交
+  `cde4b15bba7ed8580cb774c8b8bb259c9174c3d0`；v0.3.0 acceptance/bootstrap 2/2 还存在于 tag commit
+  `1454c9224c83d11c073b05baf6e536a11c3bb0e5`。origin 是
+  `keeptoy/pwf-codex-cloud-hooks-next`，可生成 exact-commit GitHub blob 链接。
+- 直接依赖已定位在 BASELINE_PROVENANCE、CHANGELOG、ROADMAP、README、AGENTS、v0.3.1 acceptance，
+  以及 repository/release-package/skill-patch tests；删除前必须逐一改路由或退休 current-tree oracle。
+- Provenance 不能删除已发布 identity 的 filename/size/SHA，因为根级 Release 规则仍要求这些精确事实只在
+  provenance 维护；H5 将把 v0.3.0/beta.2 压成 milestone catalog 并把 acceptance 改为 exact-commit URL，
+  而不是丢失身份或继续保留 current-tree acceptance 全文。
+- CHANGELOG 的旧版本摘要可以继续保留，但历史 acceptance 链接必须改为 immutable commit URL；v0.3.1
+  仍是 accepted role，因此其 current-tree acceptance 链接保持不变。
+- M3、M4、v0.3.0 和 beta.2 四份待清退文档已分别在它们的 exact evidence/source commit 上通过 object
+  lookup，可安全改成 GitHub `blob/<40-char-commit>/<path>` 链接。
+- README 与 AGENTS 只需把常用语法检查收缩为 accepted v0.3.1 + candidate v0.3.2；v0.3.1 acceptance
+  内部对 v0.3.0 的相对链接必须改成 exact v0.3.0 commit URL。
+- `release-package.test.js` 的 v0.3.0 tag archive 已能独立重建并核对历史 ZIP/bootstrap；应移除对当前根
+  v0.3.0 bootstrap 和 beta.2 acceptance 副本的依赖，只保留 tag oracle + provenance identity 检查。
+- `skill-patch.test.js` 的 v0.3.0 bootstrap case 是冷历史重放；当前 v0.3.1/v0.3.2 tests 已覆盖 pristine
+  Skill、archive pin 与 bootstrap supply-chain 边界，因此该 current-tree 历史 case 可以退休。
+- `architecture-contracts.test.js` 只要求 provenance 保留三代关键 identity，并不要求旧 acceptance 留在
+  current tree；exact-commit external Markdown links 不进入本地 fragment checker，适合 H5 路由。
+- `repository-boundary.test.js` 最后一项仍直接读取 M3/M4/v0.3.0 冷历史文档；H5 应把历史结论承接改为
+  current production safety tests + provenance exact refs，并把 planning scopes 收紧为只允许 active scope，
+  同时显式冻结 current bootstrap role window 为 v0.3.1 + v0.3.2。
+- 应用 link rewrite 与删除后，旧路径剩余引用只属于四类合法用途：exact-commit/Release URL、历史 tag
+  archive 内部断言、current contract 的 negative assertion、repository retired-path assertion；不存在指向
+  已删除 current-tree 文件的相对 Markdown 链接或 runtime import。
+- H5 候选 index 收缩到 63 tracked paths：`.planning` 只剩 active pointer + 当前 scope 三文件，`docs/`
+  只剩 mode 指南、通用治理指南和 v0.3.1 accepted acceptance，根级 bootstrap 只剩 v0.3.1/v0.3.2。
+- H5 当前 diff 为 33 files、约 8,857 行净删除；这是 current-tree eviction，不重写任何 commit/tag/Release，
+  20 个删除路径的原字节仍由已验证 refs 保存。
+
 ## Non-Goals for Current Gate
 
-- 不删除任何历史文件。
+- 不删除 accepted `v0.3.1` 或 candidate `v0.3.2-dev` 当前角色所需文件；H5 只删除已验证可从 immutable ref 恢复且已退出角色窗口的历史文件。
 - 不改变 package/version、Release ZIP allowlist、bootstrap hash 或 published identity。
 - 不宣称 `governance/history-retention` 已成为 source/release/rollback baseline。
 - 不执行 Cloud、seal、publication、rollback promotion 或 push；本地关键恢复点 commit 已获授权。

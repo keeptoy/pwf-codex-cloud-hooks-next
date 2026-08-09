@@ -34,11 +34,11 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - 建立 successor 仓库的首个稳定版本，保留已验收 canonical runtime 和 canary 行为。
 - 发布 contract-driven ZIP 与独立 bootstrap，并完成最终下载资产和 Cloud 验收。
 - 精确身份见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，验收证据见
-  [`docs/v0.3.0-cloud-hard-acceptance.md`](docs/v0.3.0-cloud-hard-acceptance.md)。
+  [immutable v0.3.0 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/1454c9224c83d11c073b05baf6e536a11c3bb0e5/docs/v0.3.0-cloud-hard-acceptance.md)。
 
 ## v0.3.0-beta.2
 
 - 冻结旧仓库中被 successor 迁移采用的产品基线和行为 oracle。
 - 其 source、双资产与验收字节保持不可变；精确身份见
   [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，历史验收见
-  [`docs/v0.3.0-beta.2-cloud-hard-acceptance.md`](docs/v0.3.0-beta.2-cloud-hard-acceptance.md)。
+  [immutable beta.2 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/cde4b15bba7ed8580cb774c8b8bb259c9174c3d0/docs/v0.3.0-beta.2-cloud-hard-acceptance.md)。
