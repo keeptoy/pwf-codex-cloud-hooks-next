@@ -1,10 +1,10 @@
 <a name="phase-history-index"></a>
 
-# Product Phase 历史摘要
+# Product Phase 与架构谱系历史摘要
 
-这里保存已经闭合 Product Phase，以及明确标注的回顾性迁移 interlude 的精选摘要，帮助维护者理解“当时
-为什么这样走、交付了什么、哪些能力留给后继阶段”。它属于 warm layer 导览，不是源码 archive、当前
-programme authority 或验收原文。
+这里保存已经闭合 Product Phase，以及明确标注的回顾性 architecture-lineage overview / 迁移 interlude
+的精选摘要，帮助维护者理解“当时为什么这样走、交付了什么、哪些能力留给后继阶段”。它属于 warm layer
+导览，不是源码 archive、当前 programme authority 或验收原文。
 
 每份摘要已经从 cold evidence 中提炼并独立成文，理解其结论不需要继续打开旧 Phase/Round 文档。完整历史
 字节仍由 immutable Git commit、tag 与 Release 保存，但只用于来源审计，不解释当前实现。当前现实以根级
@@ -15,6 +15,8 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 
 - 只收录已经关闭并有不可变证据的 Product Phase；回顾性 interlude 必须明确声明不是原 programme 的正式
   Phase，也不产生新授权。讨论中、施工中或只有原型结论的阶段不进入这里。
+- 跨多个已关闭阶段的回顾性 overview 只负责组织已经证实的历史关系，必须明确不是正式 Phase，并链接而不
+  取代各段详细摘要；不能借 overview 把原型推断成验收、把功能模型推断成当前架构。
 - 每个 Phase 只保留一份摘要，不按 Round、测试批次、候选版本或会话继续拆文件。
 - 不复制 production source、脚本、fixture、验收全文、SHA 表、测试计数或旧 planning。
 - 摘要不维护当前 candidate、accepted、rollback、PASS/PENDING 或下一步状态。
@@ -25,6 +27,7 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 
 | Phase | 当时的交付闭环 | 精选摘要 |
 |---|---|---|
+| Phase 0 | 回顾性架构谱系：区分可行性原型、Cloud 功能基线、owned architecture 完成与 successor authority 迁移；不是正式 Product Phase | [`phase-0-architecture-lineage.md`](phase-0-architecture-lineage.md) |
 | Phase 1 | 固定来源、ownership/contracts、可复现 import/install/package；runtime 仅作为 inactive verified inventory | [`phase-1-runtime-provenance.md`](phase-1-runtime-provenance.md) |
 | Phase 2 | 激活 adapter 监督的 owned catch-up，建立 transcript 与 global Skill 安全边界 | [`phase-2-owned-catchup.md`](phase-2-owned-catchup.md) |
 | Phase 3 | 激活 canonical owned-plan，删除 adapter 平行 plan 算法并完成 beta Cloud 闭环 | [`phase-3-canonical-plan.md`](phase-3-canonical-plan.md) |

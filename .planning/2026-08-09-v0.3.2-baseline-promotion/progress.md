@@ -1,5 +1,15 @@
 # Progress: v0.3.2 Baseline Promotion and v0.3.3-dev Handoff
 
+- 2026-08-10：维护者授权 P2-P0，把跨版本核心理解整理为回顾性 Phase 0 架构谱系；已读取
+  planning-with-files skill、活动计划、Phase 历史索引/模板及 Phase 1/3.5 摘要，冻结“不冒充正式 Phase、
+  不复制当前 authority、不进入 P3”的写作边界。
+- 新增 `docs/history/phase-0-architecture-lineage.md`：保存四阶段定位表、架构/仓库两条换代主线、完整
+  alpha/beta/successor 时间线、大白话结论、非目标与详细 Phase 下钻入口；未复制 SHA、验收全文或当前状态。
+- 历史索引新增回顾性 overview 准入边界与 Phase 0 行；CHANGELOG 仅记录 overview 类型扩充，README 的
+  单一宏观入口、provenance 和 ROADMAP 均未改变。
+- 新文件进入 Git index 后，focused architecture/repository suite 17/17 PASS；完整回归 92 tests、80 PASS、
+  12 个 Windows/POSIX SKIP、0 FAIL；cached diff check PASS。P2-P0 已关闭，仍停在 P3 前。
+
 - 2026-08-10：维护者授权 P2-PROV，补齐早期 `BASELINE_PROVENANCE`；已读取 planning-with-files skill、
   恢复活动计划，并冻结“只填可验证事实、缺证留空、不进入 P3”的取证边界。
 - GitHub API 核验旧仓库八个 tag/Release 的 source commit、资产 filename/bytes/server digest 与平台

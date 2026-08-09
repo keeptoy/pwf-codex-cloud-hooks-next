@@ -49,11 +49,20 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   标记未恢复，不从后续版本反向推断，也不修改任何历史 tag、Release 或资产。
 - 本 gate 仍属于 P2 post-release 文档治理，不建立 P3 scope、candidate identity、ZIP、seal、Release 或部署。
 
+## P2-P0 Authorization
+
+- 维护者已授权把 v0.1.0 → v0.2.2 → alpha.1/alpha.2/beta.1 → beta.2 → successor stable v0.3.0 的核心
+  理解组织为 `Phase 0` 架构历史。
+- `Phase 0` 必须明确是后续建立的 architecture-lineage overview，不是原 programme 的正式 Product Phase、
+  版本或 Release identity；它只解释架构换代与仓库换代的区别，不取代 Phase 1～3/3.5 摘要。
+- 本 gate 只修改历史摘要、历史索引、CHANGELOG 最小治理记录和活动 planning；不修改 provenance exact
+  identity、当前 architecture/contracts、production、Release、ROADMAP 或 P3 状态。
+
 ## Next Step
 
-停在 post-release 文档治理阶段和 P3 前。早期 publication provenance 已按现有证据补齐；缺少独立
-bootstrap/acceptance、或存在 alpha.1 smoke/asset 不一致的字段均保持显式缺口，不再无证据扩写。
-Phase 历史仍只由 README 的单一宏观入口进入；P3 继续等待维护者另行授权。
+停在 post-release 文档治理阶段和 P3 前。早期 publication provenance 与回顾性 Phase 0 架构谱系均已
+按证据闭合；Phase 历史仍只由 README 的单一宏观入口进入，overview 不取代详细 Phase capsules。
+P3 继续等待维护者另行授权。
 
 ## Gates
 
@@ -78,6 +87,8 @@ Phase 历史仍只由 README 的单一宏观入口进入；P3 继续等待维护
 - [x] P2-H-010 — v0.1.0 recovery：交叉读取早期文档/实现/测试，恢复最早原型定位与 Git 证据边界。
 - [x] P2-PROV — Early publication provenance backfill：核验并登记有证据的 v0.1.0、v0.2.2 与
   v0.3.0 alpha/beta 身份，缺证字段保持空缺。
+- [x] P2-P0 — Architecture lineage overview：建立回顾性 Phase 0，串联可行性、Cloud 功能基线、owned
+  architecture 完成与 successor authority 迁移，且保持详细 Phase authority 分层。
 - [ ] P3 — Successor train：另开 active scope 和 Discovery，建立获批的后继 machine identity。
 
 ## Stop Conditions
@@ -95,7 +106,7 @@ Phase 历史仍只由 README 的单一宏观入口进入；P3 继续等待维护
 ## Status
 
 P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS，P2-P-A PASS，P2-P-M PASS，P2-P-B PASS，
-P2-P-E PASS，P2-P-T PASS，P2-P-R PASS，P2-H-010 PASS，P2-PROV PASS。本地分支为 `0.3.2-post-release`，当前 HEAD
+P2-P-E PASS，P2-P-T PASS，P2-P-R PASS，P2-H-010 PASS，P2-PROV PASS，P2-P0 PASS。本地分支为 `0.3.2-post-release`，当前 HEAD
 是 P3 前的 unsealed governance transition；P3 未授权。
 
 ## Errors Encountered

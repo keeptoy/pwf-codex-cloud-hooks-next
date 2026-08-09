@@ -1,5 +1,29 @@
 # Findings: v0.3.2 Baseline Promotion and v0.3.3-dev Handoff
 
+## P2-P0 Architecture Lineage Overview
+
+- 维护者要求持久化的核心不是第五份实现设计，而是跨版本认知框架：v0.1.0 证明可行，v0.2.2 证明 Cloud
+  可可靠运行，alpha.1～beta.1 完成 owned canonical architecture，beta.2 重新封板治理/资产，后续 M1～M4
+  只迁移 successor authority。
+- `Phase 0` 并非当时 programme 阶段，也不在 Phase 1 之前承担真实 gate；最安全定位是回顾性
+  architecture-lineage overview。它可以用表格和时间线组织已有结论，但不得复制 SHA、验收全文、测试计数
+  或当前 lifecycle。
+- overview 应保持两条明确主线：架构换代是 v0.2.2 → alpha.1 → alpha.2 → beta.1；仓库换代是 beta.2 →
+  successor migration interlude → next 的 stable v0.3.0。详细技术分别由 Phase 1～3 与 Phase 3.5 摘要承担。
+- 采用 `phase-0-architecture-lineage.md`：正文遵循历史模板，但 Historical position 明确编号只是回顾性
+  记忆入口；核心表格冻结“定位/已证明/未证明”，时间线冻结 alpha.1 inactive、alpha.2 catch-up activation、
+  beta.1 canonical completion、beta.2 governance reseal 和 M1～M4 authority migration 的边界。
+- 历史索引扩充准入规则，允许跨多个已关闭阶段的 overview，但要求只组织已证实事实、链接而不取代详细
+  capsules；CHANGELOG 只记录新增 architecture-lineage overview，不创建第二个历史目录入口。
+
+### P2-P0 Result
+
+- Phase 0 已作为回顾性架构谱系总览进入 warm history layer，保存维护者要求的四阶段定位表、大白话结论、
+  架构换代与仓库换代两条主线，以及 v0.2.2 → alpha.1 → alpha.2 → beta.1 → beta.2 → successor 的细分。
+- README 仍是唯一宏观入口；历史索引标题/准入规则容纳 overview，Phase 0 内部只相对链接 Phase 1～3/3.5，
+  不链接验收全文、不复制 provenance SHA，也不解释当前实现。
+- 当前 architecture、contracts、ROADMAP、BASELINE_PROVENANCE、production 与 Release 零改动；P3 未授权。
+
 ## P2-PROV Early Publication Provenance Backfill
 
 - 维护者提供旧仓库 `v0.1.0` tag 后，GitHub 只读 API 已纠正此前“临时快照没有 `.git`，因此没有可达
