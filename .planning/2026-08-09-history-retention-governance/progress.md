@@ -16,6 +16,9 @@
   SKIP、0 FAIL。
 - push 前远端只读检查确认 `0.3.2-dev` 仍为 `cde4b15`，`0.3.2-dev-extend` 尚不存在；可用普通
   non-force first push 建立同名 upstream。
+- 创建本地恢复点 `c330070` 后，以普通 non-force push 建立远端 `origin/0.3.2-dev-extend` 并设置
+  upstream；没有删除、覆盖或推进 `origin/0.3.2-dev`。
+- H7 完成状态写回后最终 focused governance 复跑 12/12 PASS。
 - H6 恢复轮次：维护者明确授权最终本地收口；工作区从 H5 commit `435f830` 干净开始。重读 README/ARCHITECTURE 后确认 H6 只需 authority/package/platform evidence，不改变 trusted graph 或 runtime。
 - 重读 DESIGN/ROADMAP；H6 的适用验证是文档 authority、repository guard、完整本地 regression 与 deterministic development package。没有 production/contract/Host ABI 变化，不触发新的 live Cloud/rollback gate。
 - H6 authority failing-first：architecture governance 7 tests 中 5 PASS、2 FAIL；缺口精确落在 README 未导航治理指南，以及 CHANGELOG/ROADMAP 未提升已发生的 exact-vs-lifecycle 与 role-window 结论。
@@ -74,7 +77,8 @@
 
 ## Current Handoff
 
-- H0–H6 已完成并具有 source-merge GO；H7 本地分支/CHANGELOG/空目录迁移与回归均已完成，等待创建
-  本地恢复点并首次推送同名 `0.3.2-dev-extend`。
-- 只授权普通 non-force push；`0.3.2-dev` 必须保持不变，不自动 merge 或创建 PR。
+- H0–H7 已完成并具有 source-merge GO；本地/远端 extension 分支均为 `0.3.2-dev-extend`，原
+  `0.3.2-dev` 保持在 `cde4b15`。
+- CHANGELOG delta 已独立分层，旧空 planning 目录已删除，focused/full regression 均为 0 FAIL。
+- 不自动 merge 或创建 PR；后续 source merge、Release、Cloud 和 rollback 都需要新的明确授权。
 - 不创建 tag/Release/asset，也不宣称 Cloud 或 rollback gate 已通过。

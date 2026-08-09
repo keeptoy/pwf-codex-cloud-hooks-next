@@ -23,8 +23,8 @@ trusted graph、Release 不可变性和历史可追溯性的前提下，让当�
 
 ## Next Step
 
-完成 branch/changelog/planning-directory 迁移，运行 focused governance checks，创建本地关键恢复点并
-推送同名远端 `0.3.2-dev-extend`；不合并回 `0.3.2-dev`。
+H0–H7 已完成，远端 `0.3.2-dev-extend` 已建立且原 `0.3.2-dev` 保持不变。等待维护者另行决定是否
+评审/合并 extension；不自动创建 PR、merge、Release 或 Cloud gate。
 
 ## Phases
 
@@ -35,12 +35,12 @@ trusted graph、Release 不可变性和历史可追溯性的前提下，让当�
 - [x] H4 — failing-first 重构 repository governance guards；不先删文件追求绿色。
 - [x] H5 — 迁移 completed planning、旧 acceptance/runbook/bootstrap 和历史 oracle 引用。
 - [x] H6 — 同步唯一 authority、运行完整 regression/package/platform gate，形成合并建议。
-- [ ] H7 — 分离 extension 分支与 CHANGELOG delta，清理空 planning 目录并推送同名远端分支。
+- [x] H7 — 分离 extension 分支与 CHANGELOG delta，清理空 planning 目录并推送同名远端分支。
 
 ## Status
 
-H0–H6 完成；H7 已获批并进入分支/CHANGELOG 身份分离。只授权推送新 extension 分支，不授权 merge、
-PR、Release、Cloud 或 rollback。
+H0–H7 完成；本地 `0.3.2-dev-extend` 跟踪远端同名分支，`0.3.2-dev` 未改变。没有授权 merge、PR、
+Release、Cloud 或 rollback。
 
 ## Merge Recommendation
 
