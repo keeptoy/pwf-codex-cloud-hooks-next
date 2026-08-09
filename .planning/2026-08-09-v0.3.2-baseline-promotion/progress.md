@@ -1,5 +1,14 @@
 # Progress: v0.3.2 Baseline Promotion and v0.3.3-dev Handoff
 
+- 2026-08-10：维护者授权 P2-PROV，补齐早期 `BASELINE_PROVENANCE`；已读取 planning-with-files skill、
+  恢复活动计划，并冻结“只填可验证事实、缺证留空、不进入 P3”的取证边界。
+- GitHub API 核验旧仓库八个 tag/Release 的 source commit、资产 filename/bytes/server digest 与平台
+  immutable 状态；历史 tag tree/acceptance 复核区分 hard acceptance、pre-release smoke、planning 验收和缺证。
+- `BASELINE_PROVENANCE.md` 已补齐七个早期身份：alpha.2/beta.1 资产与验收闭合；alpha.1 bootstrap
+  smoke/Release digest 不一致被显式记录；v0.1/v0.2 缺少的 acceptance/独立 bootstrap 保持空缺语义。
+- focused architecture/repository suite 17/17 PASS；完整回归 92 tests、80 PASS、12 个 Windows/POSIX SKIP、
+  0 FAIL；`git diff --check` PASS。P2-PROV 已关闭，仍停在 P3 前。
+
 ## 2026-08-09
 
 - 维护者授权读取新增临时 0.1.0/0.2.2 实现，并先把 0.1.0 理解写入 CHANGELOG；planning-with-files

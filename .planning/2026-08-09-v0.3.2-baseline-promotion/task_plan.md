@@ -41,11 +41,19 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 - 已完成的 `2026-08-09-architecture-contract-retention` 三文件由 immutable commit `d4cc3b5` 保存，P2
   可读取并吸收有效结论，但不作为第二个长期 `.planning` scope 重新进入当前树。
 
+## P2-PROV Authorization
+
+- 维护者已授权继续补齐 `BASELINE_PROVENANCE.md` 的早期已发布身份；只采用旧仓库 tag、Release API、
+  资产 digest、历史 acceptance 和可达 Git object 能直接证明的事实。
+- 已证实字段按冷证据账本的统一结构登记；缺少 source、asset、bootstrap 或 acceptance 证据时显式留空/
+  标记未恢复，不从后续版本反向推断，也不修改任何历史 tag、Release 或资产。
+- 本 gate 仍属于 P2 post-release 文档治理，不建立 P3 scope、candidate identity、ZIP、seal、Release 或部署。
+
 ## Next Step
 
-停在 post-release 文档治理阶段，等待维护者后续补充 v0.2.2 的具体特点或另行授权新的 P2 gate。
-Provenance 已收口为冷证据账本，Phase 历史只由 README 的单一宏观入口进入，摘要格式由模板而非测试
-恢复；0.1.0 candidate 历史已按实际实现与证据等级进入 CHANGELOG，不得进入 P3。
+停在 post-release 文档治理阶段和 P3 前。早期 publication provenance 已按现有证据补齐；缺少独立
+bootstrap/acceptance、或存在 alpha.1 smoke/asset 不一致的字段均保持显式缺口，不再无证据扩写。
+Phase 历史仍只由 README 的单一宏观入口进入；P3 继续等待维护者另行授权。
 
 ## Gates
 
@@ -68,6 +76,8 @@ Provenance 已收口为冷证据账本，Phase 历史只由 README 的单一宏�
 - [x] P2-P-T — Phase authoring template：生成恢复模板，移除格式型/历史内容型测试断言。
 - [x] P2-P-R — Phase 3 route rationale：提炼受控快照选择、后备与退休条件，保持 provenance 冷账本纯度。
 - [x] P2-H-010 — v0.1.0 recovery：交叉读取早期文档/实现/测试，恢复最早原型定位与 Git 证据边界。
+- [x] P2-PROV — Early publication provenance backfill：核验并登记有证据的 v0.1.0、v0.2.2 与
+  v0.3.0 alpha/beta 身份，缺证字段保持空缺。
 - [ ] P3 — Successor train：另开 active scope 和 Discovery，建立获批的后继 machine identity。
 
 ## Stop Conditions
@@ -85,13 +95,14 @@ Provenance 已收口为冷证据账本，Phase 历史只由 README 的单一宏�
 ## Status
 
 P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS，P2-P-A PASS，P2-P-M PASS，P2-P-B PASS，
-P2-P-E PASS，P2-P-T PASS，P2-P-R PASS，P2-H-010 PASS。本地分支为 `0.3.2-post-release`，当前 HEAD
+P2-P-E PASS，P2-P-T PASS，P2-P-R PASS，P2-H-010 PASS，P2-PROV PASS。本地分支为 `0.3.2-post-release`，当前 HEAD
 是 P3 前的 unsealed governance transition；P3 未授权。
 
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
 |---|---:|---|
+| P2-PROV 收口补丁因计划正文是 `0.1.0`、预期上下文误写成 `v0.1.0` 而拒绝应用 | 1 | 无部分修改；读取真实段落后使用精确上下文重试 |
 | Web open 拒绝直接访问 GitHub API URL，返回 unsafe/internal error | 1 | 改用获批的只读 `gh api` 查询同一官方 Release API，不重复 web open |
 | Windows sandbox 中 `node --test tests/repository-boundary.test.js` 在 runner 隔离进程处 `spawn EPERM` | 1 | 分类为 platform limitation；改用 `--test-isolation=none` 在同一进程执行同一测试文件，不修改断言 |
 | 沙箱外 guard 首次执行报告 active planning scope 未 tracked | 1 | 这是新 scope 尚未进入 Git index 的预期 checkpoint 状态；先显式 stage 仅 planning 轮换文件，再复跑 guard 后提交 |

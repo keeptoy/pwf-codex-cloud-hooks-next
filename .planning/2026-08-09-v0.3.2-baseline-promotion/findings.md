@@ -1,5 +1,54 @@
 # Findings: v0.3.2 Baseline Promotion and v0.3.3-dev Handoff
 
+## P2-PROV Early Publication Provenance Backfill
+
+- 维护者提供旧仓库 `v0.1.0` tag 后，GitHub 只读 API 已纠正此前“临时快照没有 `.git`，因此没有可达
+  publication”的局部结论：临时目录本身确实没有 Git metadata，但旧仓库存在 tag、Release 和资产 digest；
+  source snapshot 无 `.git` 不能再被当作远端 tag 不存在的证据。
+- 架构换代并非 successor 迁移：v0.2.2 是已完成 Cloud 黑盒验收的过渡功能基线；alpha.1 建立 inactive
+  owned inventory/contracts，alpha.2 激活 owned catch-up，beta.1 完成 canonical owned-plan，beta.2 保持
+  production behavior 不变并重新封板治理/资产；M1～M4 只迁移仓库来源与 authority。
+- 本 gate 将按已发布身份账本字段逐版本核对 tag/source、Release assets、external bootstrap 与 acceptance；
+  任何无法由旧仓库 API、可达 Git object 或历史文件直接证明的字段保持空缺。
+- 2026-08-10 GitHub Release/tag API 证明旧仓库连续存在 `v0.1.0`、`v0.2.0`、`v0.2.1`、`v0.2.2`、
+  `v0.3.0-alpha.1`、`v0.3.0-alpha.2`、`v0.3.0-beta.1`、`v0.3.0-beta.2` 八个 tag/Release；每个 tag
+  都解析到 commit，可作为 source 入口。
+- `v0.1.0` 发布单一 TGZ（9,914 bytes）；`v0.2.0` 发布单一 TGZ（33,840 bytes）；`v0.2.1` 发布单一
+  ZIP（41,031 bytes）；`v0.2.2` 发布单一 ZIP（105,741 bytes）。四项 server digest 与 Release body
+  记录的 checksum 一致；没有独立 bootstrap asset，不能为其虚构 bootstrap identity。
+- `v0.3.0-alpha.1`、alpha.2、beta.1、beta.2 均发布 ZIP 与独立 `init-cloud-sandbox-v0.3.0.bash`；
+  Release API 已提供各自 filename、size、server digest 和直接下载 URL，可完整回填双资产身份。
+- `v0.2.1` Release notes 直接证明：引入 guarded `install --repair`、manifest schema v3、增强 doctor 的
+  `repairable/blockers` 分类、unknown drift fail-closed 与 backup byte-restore tests。v0.2.0 Release body
+  只有资产 checksum，行为意义暂不从 v0.2.1 的升级说明反推。
+- tag tree 盘点显示：v0.1.0/v0.2.0/v0.2.1 没有 acceptance 文档；v0.2.2 保留完整 planning/Cloud
+  黑盒记录但没有独立命名的 acceptance；alpha.1 只有 `cloud-smoke`；alpha.2、beta.1、beta.2 均有明确
+  hard-acceptance 文档。
+- alpha.2 acceptance 明确最终 PASS，且 ZIP/bootstrap digest 与 Release API 一致；beta.1 acceptance 明确
+  A～F PASS、22-entry ZIP、外部 bootstrap、11 runtime payload 与零 snapshot residue，其双资产 digest 也
+  与 Release API 一致；beta.2 同样一致并明确行为继承 beta.1、仅重新冻结独立身份。
+- alpha.1 的 ZIP digest 在 smoke 文档与 Release API 间一致，但 smoke 文档记录的 bootstrap SHA 与当前
+  Release asset server digest 不一致。该版本只能登记 GitHub 当前可下载资产的实际 identity，并把验收列
+  标记为“pre-release smoke；非 exact acceptance”，不能用不一致文档为 bootstrap 背书。
+- v0.2.2 tag tree 的 `.planning/.../progress.md` 明确记录完整 Cloud A～F 已通过；随后文档变化要求重新
+  build/pin 最终 ZIP。当前 tag/Release 已保存最终发布 commit 和 server digest，因此可把 exact tag progress
+  作为功能验收证据、Release API 作为最终资产证据，但不能把 progress 中的非最终测试包 SHA 当成发布 SHA。
+- provenance table header 可从“ZIP identity”收敛为“package identity”，以诚实容纳 v0.1.0/v0.2.0 的 TGZ；
+  repository guard 不冻结表头。旧版本 entry count 没有稳定直接证据时省略，只登记 filename、bytes、digest。
+- GitHub API 显示旧仓库八个 Release 的平台 `immutable` 标志全部为 `false`。因此冷账本必须同时冻结 exact
+  commit、asset URL、bytes 和 digest，并声明未来远端漂移是供应链事件，不能把新观察静默覆盖到旧行；
+  “未恢复”只说明当前证据缺口，不证明历史事实绝对不存在。
+
+### P2-PROV Result
+
+- 已发布身份账本新增 beta.1、alpha.2、alpha.1、v0.2.2、v0.2.1、v0.2.0 与 v0.1.0，并把资产列扩展为
+  可容纳 ZIP/TGZ 的 package identity；每行只使用 GitHub tag/Release API、exact commit 或历史验收直接证据。
+- alpha.2/beta.1 使用 exact hard acceptance；v0.2.2 使用 exact tag planning 中的 Cloud A～F 功能验收记录；
+  alpha.1 只登记 pre-release smoke 并显式暴露 bootstrap digest 不一致；v0.1/v0.2 缺少的 acceptance 或独立
+  bootstrap 保持“未恢复/未发布”。
+- 冷账本新增旧 Release 非平台锁定说明：exact bytes/digest 由本账本冻结，未来漂移按供应链事件处理，
+  不能静默覆盖。没有修改旧 tag、Release、asset、当前 lifecycle 或 P3 状态。
+
 ## P2-H-010 v0.1.0 Recovery
 
 - 临时 `pwf-codex-cloud-hooks-0.1.0` 是 9-file source snapshot，包含 README、package、upstream manifest、
