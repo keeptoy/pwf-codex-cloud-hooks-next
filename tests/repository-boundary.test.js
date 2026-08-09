@@ -11,6 +11,7 @@ const read = relative => fs.readFileSync(path.join(root, relative), "utf8");
 const trustedPrefixes = ["contracts/", "hooks/", "patches/", "runtime/", "tools/"];
 const trustedRootPaths = new Set(["install.js", "package.json", "upstream-manifest.json"]);
 const planningFiles = ["findings.md", "progress.md", "task_plan.md"];
+const versionPattern = "v\\d+\\.\\d+\\.\\d+(?:-[A-Za-z0-9.]+)?";
 
 function trackedPaths() {
   const result = spawnSync("git", ["-c", "core.quotepath=false", "ls-files"], {
@@ -23,6 +24,19 @@ function trackedPaths() {
 
 function isTrustedSource(relative) {
   return trustedRootPaths.has(relative) || trustedPrefixes.some(prefix => relative.startsWith(prefix));
+}
+
+function currentRoleWindow() {
+  const roadmap = read("ROADMAP.md");
+  const candidateMatch = roadmap.match(new RegExp("^\\| 当前开发列车 \\| `(" + versionPattern + ")`", "m"));
+  const acceptedMatch = roadmap.match(new RegExp("^\\| 当前已接受版本 \\| `(" + versionPattern + ")`", "m"));
+  assert.ok(candidateMatch, "ROADMAP lacks a parseable current candidate role");
+  assert.ok(acceptedMatch, "ROADMAP lacks a parseable accepted baseline role");
+  const candidate = candidateMatch[1];
+  const accepted = acceptedMatch[1];
+  const packageVersion = JSON.parse(read("package.json")).version;
+  assert.equal(candidate, `v${packageVersion}`, "package identity must match the current candidate role");
+  return { accepted, candidate, roadmap };
 }
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
@@ -84,20 +98,21 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
   const releasePaths = artifact.entries.map(item => item.path);
   const docs = actual.filter(item => item.startsWith("docs/"));
-  const rootBootstraps = actual.filter(item => /^init-cloud-sandbox-v\d+\.\d+\.\d+\.bash$/.test(item));
+  const { accepted, candidate } = currentRoleWindow();
+  const roleVersions = [...new Set([accepted, candidate])].sort();
+  const rootBootstraps = actual.filter(item => /^init-cloud-sandbox-v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\.bash$/.test(item));
+  const acceptanceDocs = docs.filter(item => /^docs\/v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?-cloud-hard-acceptance\.md$/.test(item));
 
   assert.equal(artifact.excluded_prefixes.includes("docs/"), true);
   for (const relative of docs) {
     assert.match(relative, /^docs\/(?:[A-Za-z0-9][A-Za-z0-9._-]*\/)*[A-Za-z0-9][A-Za-z0-9._-]*\.md$/);
     assert.equal(releasePaths.includes(relative), false, relative);
   }
-  assert.deepEqual(rootBootstraps, ["init-cloud-sandbox-v0.3.1.bash", "init-cloud-sandbox-v0.3.2.bash"]);
+  assert.deepEqual(rootBootstraps, roleVersions.map(version => `init-cloud-sandbox-${version}.bash`));
+  assert.deepEqual(acceptanceDocs, roleVersions.map(version => `docs/${version}-cloud-hard-acceptance.md`));
   for (const retired of [
     "docs/beta3-dev-m3-cloud-equivalence.md",
     "docs/beta3-dev-m4-cutover-plan.md",
-    "docs/v0.3.0-beta.2-cloud-hard-acceptance.md",
-    "docs/v0.3.0-cloud-hard-acceptance.md",
-    "init-cloud-sandbox-v0.3.0.bash",
   ]) assert.equal(actual.includes(retired), false, retired);
   assert.match(read("docs/repository-governance-guide.md"), /^<a name="repository-governance-guide"><\/a>$/m);
   assert.match(read("MAINTAINER_HANDOFF.md"), /\[[^\]]*仓库治理指南[^\]]*\]\(docs\/repository-governance-guide\.md\)/);
@@ -124,16 +139,17 @@ test("cold history stays on immutable refs and outside runtime, Release, and ada
   const adapter = read("hooks/hook_adapter.py");
   const installer = read("install.js");
   const provenance = read("BASELINE_PROVENANCE.md");
+  const { candidate } = currentRoleWindow();
   for (const content of [runtime, release, adapter]) {
     assert.doesNotMatch(content, /snapshot-prototype|prototype_snapshot_runner/);
     assert.doesNotMatch(content, /docs\/phase-|\.planning\/2026-08-01/);
   }
   const artifact = JSON.parse(release);
-  assert.equal(artifact.package_version, "0.3.2");
+  assert.equal(artifact.package_version, candidate.slice(1));
   assert.equal(artifact.entries.length, 23);
   assert.equal(artifact.entries.some(item => item.path === "patches/patch_planning_skill.py"), true);
   assert.equal(artifact.entries.some(item => item.path.startsWith("docs/") || item.path.startsWith("tests/")), false);
-  assert.deepEqual(artifact.external_release_assets.map(item => item.path), ["init-cloud-sandbox-v0.3.2.bash"]);
+  assert.deepEqual(artifact.external_release_assets.map(item => item.path), [`init-cloud-sandbox-${candidate}.bash`]);
   assert.match(installer, /\[\[hooks\.SessionStart\.hooks\]\]/);
   assert.match(installer, /\[\[hooks\.UserPromptSubmit\.hooks\]\]/);
   for (const immutable of [
@@ -142,4 +158,73 @@ test("cold history stays on immutable refs and outside runtime, Release, and ada
     "1454c9224c83d11c073b05baf6e536a11c3bb0e5",
     "bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b",
   ]) assert.match(provenance, new RegExp(immutable));
+});
+
+test("change history, programme, provenance, and current acceptance keep separate lifecycle authorities", () => {
+  const changelog = read("CHANGELOG.md");
+  const provenance = read("BASELINE_PROVENANCE.md");
+  const architecture = read("ARCHITECTURE.md");
+  const design = read("DESIGN.md");
+  const agents = read("AGENTS.md");
+  const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
+  const { accepted, candidate, roadmap } = currentRoleWindow();
+  const acceptancePath = `docs/${candidate}-cloud-hard-acceptance.md`;
+  const acceptance = read(acceptancePath);
+  const escapedCandidate = candidate.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+  const changelogVersions = [...changelog.matchAll(new RegExp(`^## (${versionPattern})$`, "gm"))]
+    .map(match => match[1]);
+  assert.equal(changelogVersions[0], candidate, "CHANGELOG must lead with the current package version");
+  assert.equal(changelogVersions.includes(accepted), true, "CHANGELOG must retain the accepted baseline delta");
+  for (const target of ["ROADMAP.md", "BASELINE_PROVENANCE.md", acceptancePath]) {
+    assert.match(changelog, new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  }
+  assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|Next Step|GitHub `Latest`|production rollback|\d+ registered/);
+  assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
+
+  assert.match(roadmap, /活动.*task_plan.*当前唯一 Next Step/s);
+  assert.match(roadmap, /一个 active planning.*candidate.*accepted role window.*immutable/s);
+  assert.match(roadmap, new RegExp("## 3\\. 已完成的基线 `" + accepted.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "`"));
+  assert.doesNotMatch(roadmap, /## 3\. 已完成的仓库迁移|M1 exact mirror|M2 slim transformation/);
+  assert.equal((roadmap.match(/GitHub `Latest`/g) || []).length, 1);
+
+  for (const roleVersion of [candidate, accepted]) assert.match(provenance, new RegExp(roleVersion.replaceAll(".", "\\.")));
+  assert.match(provenance, /## 2\. Successor 迁移来源链/);
+  assert.doesNotMatch(provenance, /当前源码权威|current lifecycle role|GitHub `Latest`|\d+ registered/);
+
+  for (const macroDoc of [architecture, design, agents]) {
+    assert.doesNotMatch(macroDoc, /当前生产回滚|当前回退层级|GitHub `Latest`|production rollback/);
+  }
+  assert.match(agents, /当前版本角色只见 `ROADMAP\.md`/);
+  assert.match(design, /CHANGELOG\.md/);
+
+  assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));
+  assert.match(acceptance, /R5-SC.*Source\/Candidate.*HOOKS_URL.*HOOKS_SHA256/is);
+  assert.match(acceptance, /R5-PR.*Published Release.*默认.*下载/is);
+  assert.match(acceptance, /两条通道不得共用容器、安装状态或 B～F 结果/);
+  assert.match(acceptance, /不授权.*Latest.*rollback/is);
+  if (roadmap.includes("Cloud hard acceptance PASS")) {
+    assert.match(acceptance, /CLOUD-HARD-ACCEPTANCE-PASS/);
+    assert.doesNotMatch(acceptance, /PENDING_R5_SC|PENDING_R5_PR|PENDING_R5/);
+  }
+
+  const publishedFStart = acceptance.indexOf("### 10.2 R5-PR");
+  const evidenceStart = acceptance.indexOf("## 11.", publishedFStart);
+  assert.ok(publishedFStart >= 0 && evidenceStart > publishedFStart);
+  const publishedF = acceptance.slice(publishedFStart, evidenceStart);
+  assert.match(publishedF, new RegExp(`releases/download/${escapedCandidate}/pwf-codex-cloud-hooks-${escapedCandidate}\\.zip`));
+  assert.match(publishedF, /tools\/build_release\.py.*check/is);
+  assert.match(publishedF, /tools\/import_upstream_runtime\.py.*check/is);
+  assert.match(publishedF, /node "\$PACKAGE_ROOT\/install\.js" doctor/);
+  assert.match(publishedF, /SNAPSHOT_LEFTOVERS=0/);
+  assert.doesNotMatch(publishedF, /git rev-parse|workspace.*install\.js/is);
+});
+
+test("stable architecture contracts do not freeze version history", () => {
+  const architectureContracts = read("tests/architecture-contracts.test.js");
+
+  assert.doesNotMatch(architectureContracts, /docs\/v\d+\.\d+\.\d+[^"']*cloud-hard-acceptance\.md/i);
+  assert.doesNotMatch(architectureContracts, /\bv\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\b/);
+  assert.doesNotMatch(architectureContracts, /\b[a-f0-9]{40,64}\b/i);
+  assert.doesNotMatch(architectureContracts, /artifact\.entries\.length/);
 });

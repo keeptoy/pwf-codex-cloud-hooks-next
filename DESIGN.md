@@ -139,7 +139,7 @@ report rendering。它动态加载完整的 fixed owned `session-catchup.py` mod
 | 测试文件 | 主要保护内容 | 直接对象/边界 | 平台属性 |
 |---|---|---|---|
 | [`activation.test.js`](tests/activation.test.js) | production 事件顺序、plan/catch-up 组合和 child failure 降级 | adapter 与两个 owned runtime 的集成 seam | 组合断言跨平台；真实 runtime/cross-user case 需要 Linux |
-| [`architecture-contracts.test.js`](tests/architecture-contracts.test.js) | 文档 authority、稳定锚点、Architecture/Design 分工和 handoff 治理 | 根级文档与 machine/repository 边界 | 跨平台静态治理 |
+| [`architecture-contracts.test.js`](tests/architecture-contracts.test.js) | 版本无关的文档 authority、稳定锚点、Architecture/Design 分工和 handoff 治理 | 根级稳定文档与 machine/architecture 边界；不得冻结版本 acceptance、commit 或资产 hash | 跨平台静态治理 |
 | [`cloud-fixtures.test.js`](tests/cloud-fixtures.test.js) | 带日期 Cloud lifecycle/Hook fixture 与 wrapper catch-up 兼容性 | Cloud-shaped fixture、owned catch-up | 跨平台重放；不替代 live Cloud gate |
 | [`contracts.test.js`](tests/contracts.test.js) | schema、manifest、overlay、runtime bundle 与 Release boundary 的关系 | machine contracts 与 integrity edges | 跨平台静态/关系断言 |
 | [`golden-output.test.js`](tests/golden-output.test.js) | managed-legacy composition 与 canonical plan 输出兼容性 | adapter output golden fixtures | 跨平台 golden replay |
@@ -150,7 +150,7 @@ report rendering。它动态加载完整的 fixed owned `session-catchup.py` mod
 | [`owned-runtime.test.js`](tests/owned-runtime.test.js) | transcript 选择、identity、fallback、损坏输入与 diagnostic | `owned-catchup.py`、runtime contracts、Host data | 主体跨平台；linked-file case 需要 POSIX |
 | [`published-release-oracles.test.js`](tests/published-release-oracles.test.js) | 已发布 tag/source、历史 ZIP 与 external bootstrap 的 immutable oracle | 本地 Git tag/history、sealed source、历史 Release identity | 需要具备对应 refs/objects 的 publication 审计 checkout；不得放入 tagless Source/Candidate Cloud suite |
 | [`release-package.test.js`](tests/release-package.test.js) | 当前 candidate ZIP 确定性、自包含边界与 package/contract identity drift | Release builder、artifact contract、external bootstrap boundary | tagless checkout 可执行；本地结果不构成 publication |
-| [`repository-boundary.test.js`](tests/repository-boundary.test.js) | trusted source exact inventory、planning/docs 生命周期、角色窗口与退役路径隔离 | Git repository、Release allowlist、runtime dispatch | 跨平台静态边界 |
+| [`repository-boundary.test.js`](tests/repository-boundary.test.js) | trusted source exact inventory、planning/docs 生命周期、动态 candidate/accepted 角色窗口与退役路径隔离 | Git repository、Release allowlist、当前 acceptance、runtime dispatch | 跨平台静态边界 |
 | [`runtime-supervisor.test.js`](tests/runtime-supervisor.test.js) | child result 校验、process supervision、sibling identity 与 producer/consumer seam | adapter supervisor、plan contracts、installed siblings | 主体跨平台；process-group timeout 需要 Linux |
 | [`skill-patch.test.js`](tests/skill-patch.test.js) | compatibility overlay 可复现性、bootstrap 安全和 global Skill pristine | patcher、bootstrap、pinned Skill archive | 跨平台 sandbox；不替代 Cloud install acceptance |
 

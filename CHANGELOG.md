@@ -4,6 +4,15 @@
 [`ROADMAP.md`](ROADMAP.md)；当前唯一行动与授权边界见活动 `task_plan.md`；精确 source、资产、大小和
 SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 acceptance。
 
+## Unreleased
+
+### Changed
+
+- 将稳定 architecture contract 与版本 lifecycle/history oracle 分层：架构测试不再冻结具体 acceptance、
+  release commit、资产 hash 或某次状态；candidate/accepted 文件窗口改由 ROADMAP 角色动态派生。
+- 当前树继续只保留一个 active planning scope；已完成的 Release/Cloud scope 由 Git 历史恢复，不作为
+  永久工作区档案。
+
 ## v0.3.2
 
 ### Changed

@@ -215,6 +215,11 @@ Release notes；不要提前创建大量按版本 archive 文件。
 
 测试应保护规则，而不是冻结某次运行数量或无限增长的历史文件名列表。
 
+稳定架构测试与 lifecycle/历史测试也必须分层：稳定架构测试不得嵌入具体版本 acceptance 路径、发布
+commit、资产 hash 或“当前 PASS/PENDING”状态；candidate/accepted 文件窗口由 lifecycle test 根据唯一
+角色 authority 派生，精确已发布字节由 publication oracle 验证。角色旋转时替换窗口断言，不在稳定
+架构测试中继续追加旧版本；退役路径负断言只保留仍有现实复发风险的精选 tombstone。
+
 ## 14. 新项目采用清单
 
 复制本指南后，先填写：

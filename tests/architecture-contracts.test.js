@@ -32,7 +32,8 @@ test("cross-document fragments use stable explicit anchors", () => {
     }
   }
 
-  assert.equal(discovered.length, 9, `unexpected root authority fragment inventory: ${discovered.join(", ")}`);
+  assert.ok(discovered.length > 0, "expected at least one cross-document authority fragment");
+  assert.equal(new Set(discovered).size, discovered.length, `duplicate authority fragments: ${discovered.join(", ")}`);
 });
 
 test("MAINTAINER_HANDOFF is a triage desk, not another mutable runbook", () => {
@@ -123,7 +124,6 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.equal(artifact.entries.some(item => item.path === "contracts/adapter-plan-context-request-v1.schema.json"), true);
   assert.equal(artifact.entries.some(item => item.path === "contracts/plan-context-result-v1.schema.json"), true);
   assert.equal(artifact.entries.some(item => item.path === "patches/patch_planning_skill.py"), true);
-  assert.equal(artifact.entries.length, 23);
 
   const adapter = readText("hooks/hook_adapter.py");
   assert.match(adapter, /"plan": "owned-plan\.py"/);
@@ -161,7 +161,7 @@ test("README owns the document map while DESIGN owns the repository implementati
   ]) assert.match(readme, new RegExp(authority.replace(".", "\\.")));
   assert.doesNotMatch(readme, /当前源码\/package 身份|当前已接受的 rollback|previous fallback/);
   assert.doesNotMatch(readme, /## 仓库地图/);
-  assert.doesNotMatch(readme, /构建当前 0\.3\.1 候选 ZIP|当前 ZIP 必须包含精确 23 entries/);
+  assert.doesNotMatch(readme, /构建当前 .*候选 ZIP|当前 ZIP 必须包含精确 \d+ entries/);
 
   assert.match(design, /^# 仓库实现设计/m);
   assert.match(design, /## 1\. 文档定位/);
@@ -236,109 +236,6 @@ test("DESIGN maps every test module back to the capability and boundary it prote
 
   assert.match(reverseIndex, /test title.*assertion/is);
   assert.doesNotMatch(reverseIndex, /\b\d+\s+(?:tests?|cases?|passed|failed|skipped)\b/i);
-});
-
-test("change history, programme intent, current action, and immutable evidence have separate authorities", () => {
-  const changelog = readText("CHANGELOG.md");
-  const roadmap = readText("ROADMAP.md");
-  const provenance = readText("BASELINE_PROVENANCE.md");
-  const architecture = readText("ARCHITECTURE.md");
-  const design = readText("DESIGN.md");
-  const agents = readText("AGENTS.md");
-  const artifact = readJson("contracts/release-artifact-v1.json");
-
-  for (const heading of [
-    "## v0.3.2", "## v0.3.1", "## v0.3.0", "## v0.3.0-beta.2",
-  ]) assert.match(changelog, new RegExp(heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  for (const target of ["ROADMAP.md", "BASELINE_PROVENANCE.md", "docs/v0.3.2-cloud-hard-acceptance.md"]) {
-    assert.match(changelog, new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  }
-  assert.match(changelog, /trusted.*exact.*planning.*lifecycle/is);
-  assert.match(changelog, /candidate.*accepted.*role window/is);
-  assert.doesNotMatch(changelog, /## Unreleased — 0\.3\.2-dev(?:-extend)?/);
-  const stable032Start = changelog.indexOf("## v0.3.2\n");
-  const stable031Start = changelog.indexOf("## v0.3.1\n");
-  assert.ok(stable032Start >= 0 && stable031Start > stable032Start);
-  const stable032Section = changelog.slice(stable032Start, stable031Start);
-  assert.match(stable032Section, /trusted.*exact.*planning.*lifecycle/is);
-  assert.match(stable032Section, /candidate.*accepted.*role window/is);
-  assert.match(stable032Section, /没有改变.*runtime.*Host ABI.*trusted graph/is);
-  const stable030Start = changelog.indexOf("## v0.3.0\n");
-  assert.ok(stable031Start >= 0 && stable030Start > stable031Start);
-  const stable031Section = changelog.slice(stable031Start, stable030Start);
-  assert.match(
-    stable031Section,
-    /Managed TOML.*lock transaction.*transcript.*immutable bytes.*byte budget.*Node.*fixed SHA.*patcher/is,
-  );
-  assert.doesNotMatch(stable031Section, /\b[a-f0-9]{40,64}\b|GitHub `Latest`|production rollback|M[1-4]/);
-  assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|Next Step|GitHub `Latest`|production rollback|\d+ registered/);
-  assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
-
-  assert.match(roadmap, /\| 当前开发列车 \| `v0\.3\.2` Release candidate.*published.*Cloud hard acceptance PASS.*尚未 promoted/s);
-  assert.match(roadmap, /\| 当前已接受版本 \| `v0\.3\.1`/);
-  assert.match(roadmap, /活动.*task_plan.*当前唯一 Next Step/s);
-  assert.match(roadmap, /一个 active planning.*candidate.*accepted role window.*immutable/s);
-  assert.match(roadmap, /## 3\. 已完成的基线 `v0\.3\.1`/);
-  assert.match(roadmap, /Managed TOML.*lock.*transcript.*Host input.*bootstrap.*patcher/is);
-  assert.doesNotMatch(roadmap, /## 3\. 已完成的仓库迁移|M1 exact mirror|M2 slim transformation/);
-  assert.equal((roadmap.match(/GitHub `Latest`/g) || []).length, 1);
-
-  for (const identity of [
-    "v0.3.2", "c68a53bdeab7c38badcfb4e2a733ddd851e498e4",
-    "b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081",
-    "aa2c1fd64bfc8ee3804d5f4bf39f7816a2ca9ad9a96949336ec94a6c20f8f77c",
-    "v0.3.1", "9aa2148886e499f9f45594f7ae4f7681f1045de2",
-    "v0.3.0", "1454c9224c83d11c073b05baf6e536a11c3bb0e5",
-    "v0.3.0-beta.2", "bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b",
-  ]) assert.match(provenance, new RegExp(identity.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.match(provenance, /## 2\. Successor 迁移来源链[\s\S]*`v0\.3\.0-beta\.2`\s*→\s*`v0\.3\.0`/);
-  assert.match(provenance, /M1 exact mirror.*M2 slim transformation.*M3 Cloud equivalence.*M4 repository cutover/is);
-  assert.match(provenance, /3234e4e02090c838f5ee260cd8f2d99daf358d65/);
-  assert.match(provenance, /c5236958b9830ee3695b0e81e1a0746707a6b8f9/);
-  assert.doesNotMatch(provenance, /当前源码权威|current lifecycle role|GitHub `Latest`|\d+ registered/);
-
-  for (const macroDoc of [architecture, design, agents]) {
-    assert.doesNotMatch(macroDoc, /当前生产回滚|当前回退层级|GitHub `Latest`|production rollback/);
-  }
-  assert.match(agents, /当前版本角色只见 `ROADMAP\.md`/);
-  assert.match(design, /CHANGELOG\.md/);
-
-  const acceptance032Path = path.join(root, "docs", "v0.3.2-cloud-hard-acceptance.md");
-  assert.equal(fs.existsSync(acceptance032Path), true);
-  const acceptance032 = fs.readFileSync(acceptance032Path, "utf8");
-  assert.match(acceptance032, /^# v0\.3\.2 Cloud hard acceptance$/m);
-  assert.match(acceptance032, /当前状态.*CLOUD-HARD-ACCEPTANCE-PASS/is);
-  assert.match(acceptance032, /b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081/);
-  assert.doesNotMatch(acceptance032, /PENDING_R2|PENDING_R3_BOOTSTRAP_SHA256/);
-  assert.match(acceptance032, /c68a53bdeab7c38badcfb4e2a733ddd851e498e4/);
-  assert.match(acceptance032, /R4 immutable publication \| `PASS`/);
-  assert.match(acceptance032, /releases\/download\/v0\.3\.2\/init-cloud-sandbox-v0\.3\.2\.bash/);
-  assert.match(acceptance032, /R5-SC.*Source\/Candidate.*HOOKS_URL.*HOOKS_SHA256/is);
-  assert.match(acceptance032, /R5-PR.*Published Release.*默认.*下载/is);
-  assert.match(acceptance032, /两条通道不得共用容器、安装状态或 B～F 结果/);
-  assert.match(acceptance032, /V032_SOURCE_CANDIDATE_SETUP=PASS/);
-  assert.match(acceptance032, /V032_PUBLIC_RELEASE_SETUP=PASS/);
-  assert.match(acceptance032, /published-release-oracles\.test\.js/);
-  assert.match(acceptance032, /tagless.*Source\/Candidate/is);
-  assert.match(acceptance032, /V032_SC_EXCLUDED_TEST_SUITE=published-release-oracles\.test\.js/);
-  assert.doesNotMatch(acceptance032, /PENDING_R5_SC|PENDING_R5_PR|PENDING_R5/);
-  assert.match(acceptance032, /R5-SC Source\/Candidate.*PASS.*232ccd6ec71dad35ab91d69ab7e4b4cb3b7ca1bd/is);
-  assert.match(acceptance032, /R5-PR Published Release.*PASS.*b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081/is);
-  assert.match(acceptance032, /## 12\. 最终执行结果[\s\S]*R5-SC.*PASS[\s\S]*R5-PR.*PASS[\s\S]*CLOUD-HARD-ACCEPTANCE-PASS/);
-  assert.match(acceptance032, /Fresh.*canonical.*long tail.*real Resume.*doctor/is);
-  assert.match(acceptance032, /不授权.*Latest.*rollback/is);
-
-  const publishedFStart = acceptance032.indexOf("### 10.2 R5-PR");
-  const evidenceStart = acceptance032.indexOf("## 11.", publishedFStart);
-  assert.ok(publishedFStart >= 0 && evidenceStart > publishedFStart);
-  const publishedF = acceptance032.slice(publishedFStart, evidenceStart);
-  assert.match(publishedF, /releases\/download\/v0\.3\.2\/pwf-codex-cloud-hooks-v0\.3\.2\.zip/);
-  assert.match(publishedF, /b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081/);
-  assert.match(publishedF, /tools\/build_release\.py.*check/is);
-  assert.match(publishedF, /tools\/import_upstream_runtime\.py.*check/is);
-  assert.match(publishedF, /node "\$PACKAGE_ROOT\/install\.js" doctor/);
-  assert.match(publishedF, /SNAPSHOT_LEFTOVERS=0/);
-  assert.doesNotMatch(publishedF, /git rev-parse|workspace.*install\.js/is);
 });
 
 test("ROADMAP discovery governance separates new rounds from in-round safety gates", () => {
