@@ -273,6 +273,7 @@ test("change history, programme intent, current action, and immutable evidence h
     "v0.3.0", "1454c9224c83d11c073b05baf6e536a11c3bb0e5",
     "v0.3.0-beta.2", "bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b",
   ]) assert.match(provenance, new RegExp(identity.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(provenance, /## 2\. Successor 迁移来源链[\s\S]*`v0\.3\.0-beta\.2`\s*→\s*`v0\.3\.0`/);
   assert.doesNotMatch(provenance, /当前源码权威|current lifecycle role|GitHub `Latest`|\d+ registered/);
 
   for (const macroDoc of [architecture, design, agents]) {

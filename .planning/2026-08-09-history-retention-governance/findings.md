@@ -192,3 +192,11 @@ graph、Release/rollback mechanism、长期基线晋级。普通 patch、文案�
   `0.3.2-dev`；package、Release contract 和 bootstrap candidate identity 仍是 `0.3.2-dev`。
 - 当前 programme 状态只应修改 ROADMAP；CHANGELOG 已按 extension/base 分章，README/AGENTS 继续只提供
   authority 路由，production/Release 文件不应为话术变化产生字节漂移。
+
+## H9 Successor Migration Semantics
+
+- `BASELINE_PROVENANCE.md` 的 Successor 迁移来源链已列出 M1–M4，但缺少版本级总述；读者可能误把它
+  理解为贯穿 v0.3.1/0.3.2 的通用迭代流水。
+- 该链的精确语义是：以旧仓库 `v0.3.0-beta.2` 产品基线为输入，经 exact mirror、slim root、Cloud
+  equivalence 和 authority cutover，最终建立 successor `v0.3.0` stable。
+- 补充应只解释既有 immutable refs 的关系，不修改任何 ref、SHA、资产 identity 或当前 lifecycle。

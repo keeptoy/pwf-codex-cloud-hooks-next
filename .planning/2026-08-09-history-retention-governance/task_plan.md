@@ -24,11 +24,15 @@ trusted graph、Release 不可变性和历史可追溯性的前提下，让当�
   source/governance 话术；`0.3.2-dev` 保留为 predecessor branch 和 package/Release candidate identity。
 - H8 只修改本地 current-state authority、活动 planning 和治理断言；不 push，不改 package/contracts/
   bootstrap，不创建 PR/tag/Release/asset，也不运行 Cloud 或 rollback。
+- 已授权 H9：在 provenance 的 Successor 迁移来源链中明确该链描述 `v0.3.0-beta.2 → v0.3.0` 的
+  迭代/迁移过程，并补相应治理断言。
+- H9 只修改 provenance、活动 planning 和文档治理测试；不 push，不改历史 ref、资产身份、production、
+  contracts、bootstrap、Release 或 Cloud。
 
 ## Next Step
 
-H0–H8 已完成；`0.3.2-dev-extend` 是当前 source/governance 开发列车且不计划合回 `0.3.2-dev`。
-等待维护者授权新的治理任务或 Product Phase Discovery；不自动 push、PR、Release 或 Cloud gate。
+H0–H9 已完成；等待维护者提出下一项仓库补充或授权新的 Product Phase Discovery。不自动 push、PR、
+Release 或 Cloud gate。
 
 ## Phases
 
@@ -41,10 +45,11 @@ H0–H8 已完成；`0.3.2-dev-extend` 是当前 source/governance 开发列车�
 - [x] H6 — 同步唯一 authority、运行完整 regression/package/platform gate，形成合并建议。
 - [x] H7 — 分离 extension 分支与 CHANGELOG delta，清理空 planning 目录并推送同名远端分支。
 - [x] H8 — 将 extension 确立为当前开发列车话术，明确不 merge，并保持 package/Release identity 不变。
+- [x] H9 — 明确 Successor 迁移来源链是 `v0.3.0-beta.2 → v0.3.0` 的迭代过程。
 
 ## Status
 
-H0–H8 完成；current-state authority 和治理断言已同步。明确不 merge，且没有授权 push、PR、Release、
+H0–H9 完成；provenance 历史语义和治理断言已同步。明确不 merge，且没有授权 push、PR、Release、
 Cloud 或 rollback。
 
 ## Branch Disposition

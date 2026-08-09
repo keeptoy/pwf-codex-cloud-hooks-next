@@ -35,6 +35,10 @@ commit/tag/Release 恢复，不在 HEAD 保留全文副本。
 
 ## 2. Successor 迁移来源链
 
+本节记录 `v0.3.0-beta.2` → `v0.3.0` 的迭代与迁移过程：以旧仓库冻结的 beta.2 产品基线为输入，
+依次完成 exact mirror、slim root、Cloud equivalence 和 repository authority cutover，最终建立 successor
+仓库的首个 stable `v0.3.0`。它不是 v0.3.1 以后常规版本更新的流水账。
+
 successor remote：[`keeptoy/pwf-codex-cloud-hooks-next`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next)。
 
 | 迁移证据 | 不可变 ref | 证明范围 |

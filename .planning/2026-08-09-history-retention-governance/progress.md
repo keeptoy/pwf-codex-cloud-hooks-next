@@ -2,6 +2,14 @@
 
 ## 2026-08-09
 
+- H9 获批：维护者要求在 Successor 迁移来源链明确这是 `v0.3.0-beta.2 → v0.3.0` 的迭代过程；
+  当前分支已由维护者推送，本轮从 clean tracking state 开始且不自动 push。
+- H9 provenance failing-first：architecture governance 7 tests 中 6 PASS、1 FAIL；唯一红项是迁移章节
+  尚未出现明确的 `v0.3.0-beta.2 → v0.3.0` 总述。
+- 已在 Successor 迁移来源链开头补充版本范围与 M1–M4 收敛语义，并明确它不是 v0.3.1 以后常规更新
+  流水账；focused governance 12/12 PASS，`git diff --check` PASS。
+- `BASELINE_PROVENANCE.md` 不在 Release ZIP allowlist，本轮没有 candidate/package 字节变化，不需要
+  重新构建 development ZIP；历史 ref、SHA 与资产 identity 均未修改。
 - H8 获批：维护者决定不 merge，并要求把本地仓库当前开发列车话术改为 `0.3.2-dev-extend`；明确
   package/Release candidate identity `0.3.2-dev` 不变，本轮不 push。
 - H8 current-state failing-first：architecture governance 7 tests 中 6 PASS、1 FAIL；唯一红项是 ROADMAP
@@ -85,9 +93,10 @@
 
 ## Current Handoff
 
-- H0–H8 已完成；本地/远端 extension 分支均为 `0.3.2-dev-extend`，原 `0.3.2-dev` 保持在
+- H0–H9 已完成；本地/远端 extension 分支均为 `0.3.2-dev-extend`，原 `0.3.2-dev` 保持在
   `cde4b15`，维护者明确决定不 merge。
 - 当前开发列车话术是 `0.3.2-dev-extend`；底层 package/Release candidate identity 仍为 `0.3.2-dev`。
 - CHANGELOG delta 已独立分层，旧空 planning 目录已删除，focused/full regression 均为 0 FAIL。
-- 本轮只创建本地关键恢复点，不 push 或创建 PR；后续 Release、Cloud 和 rollback 都需要新的明确授权。
+- Successor 迁移来源链已明确为 `v0.3.0-beta.2 → v0.3.0`；本轮只创建本地关键恢复点，不 push 或
+  创建 PR，后续 Release、Cloud 和 rollback 都需要新的明确授权。
 - 不创建 tag/Release/asset，也不宣称 Cloud 或 rollback gate 已通过。
