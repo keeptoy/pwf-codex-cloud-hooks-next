@@ -54,9 +54,23 @@
 
 ## Validation Status
 
-- Pending R0.
+- R0–R4 PASS；R5 runbook 正在补齐 Source/Candidate + Published Release 双通道，尚无 Cloud PASS。
 
 ## Current Handoff
 
 - 当前执行 R0 Release Discovery；v0.3.2 尚未 seal、tag、发布或通过 Cloud。
 - `v0.3.1` 仍是唯一 accepted rollback/`Latest`。
+- 维护者要求把 v0.3.2 Cloud hard acceptance 拆成两步：先源码构建/本地 override 安装并跑黑盒，再在
+  独立 Fresh Cloud 中用公开 bootstrap 默认下载链重跑黑盒；两条证据不得混用。
+- 已把 runbook 重构为 R5-SC 与 R5-PR：新增完整 Source/Candidate Linux 回归、双构建、精确 ZIP
+  identity、本地 `file://` override 安装脚本；Published Release 保留固定 public bootstrap URL/SHA，
+  且明确不设置 override。B～F 成为两条通道各自完整重跑的冻结 fixture。
+- ROADMAP 与活动 task plan 已同步双通道 lifecycle；总 R5 只有在两条通道各自 PASS 后才能关闭，
+  Latest/rollback 仍未授权。
+- architecture contract test 已增加双通道 guard：保护 R5-SC/R5-PR 身份、显式 override/公开默认下载、
+  容器与 B～F 证据隔离、两个 setup marker 以及三层 pending 状态。
+- validation：更新后的 architecture/release focused tests 13/13 PASS；runbook 内 3 个 Bash code block 均
+  经 Git Bash `bash -n` PASS；`git diff --check` PASS，未发现旧章节引用。
+- 从当前树重新 build/check Release ZIP 仍为 23 entries、82,627 bytes、SHA-256
+  `b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081`；本轮仅修改 ZIP 外的
+  docs/planning/test guard，sealed tag/source、bootstrap 与公开 Release 资产不变。

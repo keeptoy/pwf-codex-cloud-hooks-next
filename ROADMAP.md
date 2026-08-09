@@ -58,7 +58,9 @@ source/资产身份与 predecessor 迁移链见 [`BASELINE_PROVENANCE.md`](BASEL
 该候选没有 production runtime、Host ABI、trusted graph 或 Hook 行为变化；seal、publication、Cloud
 acceptance 和 rollback/Latest promotion 仍是相互独立的 gate，Product Phase 4 仍未授权。
 当前 immutable publication 与公开下载双资产复核已经 PASS；下一 gate 是维护者执行
-[`v0.3.2 Cloud hard acceptance`](docs/v0.3.2-cloud-hard-acceptance.md)，在它关闭前仍不是 accepted baseline。
+[`v0.3.2 Cloud hard acceptance`](docs/v0.3.2-cloud-hard-acceptance.md)。该 gate 依次要求独立的
+Source/Candidate 源码构建与本地 override 黑盒通道，以及 Published Release 公开默认下载黑盒通道；
+两套证据不得混用，在它们全部关闭前 v0.3.2 仍不是 accepted baseline。
 
 该列车的仓库生命周期治理保持一个 active planning，并以 candidate + accepted role window 控制当前
 bootstrap/acceptance；更早历史退出 HEAD 后由 immutable commit、tag 和 Release 恢复。trusted/Release

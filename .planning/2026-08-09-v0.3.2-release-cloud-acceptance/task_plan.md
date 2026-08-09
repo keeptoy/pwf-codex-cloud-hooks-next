@@ -18,8 +18,10 @@ GitHub `Latest`。
 
 ## Next Step
 
-维护者按 `docs/v0.3.2-cloud-hard-acceptance.md` 第 4～10 节执行 R5：全新 Cloud public setup、Fresh、
-canonical planning、long tail、real Resume 与 doctor；回传原始输出。智能体等待证据，不代跑 Cloud。
+维护者按 `docs/v0.3.2-cloud-hard-acceptance.md` 执行 R5 双通道：先在 Fresh Cloud 从第 4 节完成
+R5-SC 源码回归、双构建、本地 override 安装及第 6～10 节黑盒；保存证据并弃用环境后，再在另一个
+Fresh Cloud 从第 5 节完成 R5-PR 公开 bootstrap 默认下载链及完整第 6～10 节黑盒。回传第 11 节两套
+原始证据；智能体不代跑 Cloud。
 
 ## Gates
 
@@ -28,7 +30,10 @@ canonical planning、long tail、real Resume 与 doctor；回传原始输出。�
 - [x] R2 — Local seal candidate：完整 regression、平台检查、双构建、ZIP boundary 与 importer replay 全绿。
 - [x] R3 — Final bytes：计算 ZIP SHA，写入外部 bootstrap，复跑受影响验证并冻结双资产 identity。
 - [x] R4 — Immutable publication：创建 exact tag/Release，上传 ZIP 与 bootstrap，重新下载并逐字节核验。
-- [ ] R5 — Cloud handoff：交付维护者可复制的 Fresh/Resume/doctor/rollback 测试步骤，等待真实结果。
+- [ ] R5-SC — Source/Candidate Cloud：精确 source commit 的 Linux 回归、双构建/本地 override 安装与
+  Fresh/Resume/doctor 黑盒，等待真实结果。
+- [ ] R5-PR — Published Release Cloud：独立 Fresh 环境消费公开 bootstrap 默认下载链并完整重跑
+  Fresh/Resume/doctor 黑盒；不得复用 R5-SC 证据。
 - [ ] R6 — Acceptance closure：只根据回传证据关闭 Cloud acceptance；Latest/rollback promotion 另行授权。
 
 ## Stop Conditions
@@ -41,8 +46,8 @@ canonical planning、long tail、real Resume 与 doctor；回传原始输出。�
 
 ## Status
 
-R0–R4 PASS / R5 waiting for maintainer Cloud evidence。当前 production rollback/`Latest` 仍为 `v0.3.1`；
-`v0.3.2` 已发布但尚未通过 Cloud hard acceptance。
+R0–R4 PASS / R5-SC + R5-PR waiting for maintainer Cloud evidence。当前 production rollback/`Latest`
+仍为 `v0.3.1`；`v0.3.2` 已发布但尚未通过 Cloud hard acceptance。
 
 ## Errors Encountered
 
@@ -55,3 +60,6 @@ R0–R4 PASS / R5 waiting for maintainer Cloud evidence。当前 production roll
 | 初次 Bash 探测只检查 C: 固定路径，漏掉测试实际使用的 D: Git Bash | 1 | 读取测试 resolver 后使用 `D:\Program Files\Git\bin\bash.exe`，不再把它记为缺失 |
 | Git Bash 在沙箱内 `bash -n` 因 signal pipe Win32 error 5 退出 | 1 | 分类为 sandbox execution limitation；获批后在沙箱外以同一命令复跑，两个 bootstrap 均 PASS |
 | downloaded importer probe 把尚未创建的 extraction path 设为 shell cwd，Windows 启动前报 error 267 | 1 | 从现有仓库 cwd 解压，再在命令内部 Push-Location；extracted importer check PASS |
+| Windows sandbox 内直接以两个 test file 调用 `node --test` 时 child runner `spawn EPERM` | 1 | 分类为 sandbox process limitation；改在沙箱外以相同 focused test 命令复跑，不修改断言 |
+| acceptance Bash block lint 在沙箱内再次触发 Git Bash signal-pipe Win32 error 5；沙箱外 `bash -n -c <PowerShell string>` 又因 Windows native argument quoting 丢失嵌套引号 | 2 | 不把 argument-transport 错误当作脚本语法错误；改为沙箱外通过 stdin 向 `bash -n` 传递每个原始代码块 |
+| sandbox 内 `git add` 无法创建 `.git/index.lock`，返回 permission denied | 1 | `.git` 在当前权限配置中只读；保留工作树改动，改为获批后在沙箱外提交同一精确文件集 |

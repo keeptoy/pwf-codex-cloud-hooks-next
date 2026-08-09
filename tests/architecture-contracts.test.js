@@ -312,6 +312,12 @@ test("change history, programme intent, current action, and immutable evidence h
   assert.match(acceptance032, /c68a53bdeab7c38badcfb4e2a733ddd851e498e4/);
   assert.match(acceptance032, /R4 immutable publication \| `PASS`/);
   assert.match(acceptance032, /releases\/download\/v0\.3\.2\/init-cloud-sandbox-v0\.3\.2\.bash/);
+  assert.match(acceptance032, /R5-SC.*Source\/Candidate.*HOOKS_URL.*HOOKS_SHA256/is);
+  assert.match(acceptance032, /R5-PR.*Published Release.*默认.*下载/is);
+  assert.match(acceptance032, /两条通道不得共用容器、安装状态或 B～F 结果/);
+  assert.match(acceptance032, /V032_SOURCE_CANDIDATE_SETUP=PASS/);
+  assert.match(acceptance032, /V032_PUBLIC_RELEASE_SETUP=PASS/);
+  assert.match(acceptance032, /PENDING_R5_SC.*PENDING_R5_PR.*PENDING_R5/is);
   assert.match(acceptance032, /Fresh.*canonical.*long tail.*real Resume.*doctor/is);
   assert.match(acceptance032, /不授权.*Latest.*rollback/is);
 });

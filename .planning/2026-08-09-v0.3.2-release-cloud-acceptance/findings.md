@@ -91,3 +91,16 @@
   replay 全部 PASS；GitHub `Latest` 复核仍为 `v0.3.1`。
 - R4 结论：`GO` 进入 R5 Cloud handoff。publication 只建立不可变候选，不等于 Cloud accepted，也不
   授权 rollback/Latest promotion。
+
+## R5 双通道验收模型
+
+- v0.3.1 已冻结 Source/Candidate 与 Published Release 两条 Cloud 验收通道；当前 v0.3.2 runbook
+  只有 Published Release 入口，遗漏了源码构建/本地 override 的独立证明。
+- R5 应拆成有序的 `R5-SC` 与 `R5-PR`：前者把 PASS 绑定到运行时输出的完整 source commit，并从该
+  checkout 完成 Linux 回归、双构建/check、显式 `file://` ZIP override 安装及 B～F；后者在另一个
+  Fresh/Reset Cloud 环境中只消费 fixed public bootstrap URL+SHA，让 bootstrap 使用自身默认 ZIP URL，
+  再完整重跑同一套冻结 B～F。
+- 两条通道验证不同身份，不能共用容器、安装状态或 B～F 结果：分支只是运输 Source/Candidate runbook
+  的入口；Published Release PASS 只属于 `v0.3.2` tag、公开双资产字节与 checksum。
+- v0.3.2 相对 v0.3.1 没有 production runtime 行为变化，可以复用同一套黑盒 fixture，但风险较低不等于
+  可以省略任一身份通道。只有 `R5-SC PASS` 与 `R5-PR PASS` 同时成立，R5 才可关闭。
