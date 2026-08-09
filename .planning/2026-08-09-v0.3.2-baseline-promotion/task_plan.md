@@ -11,7 +11,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 - 维护者已经明确授权 P1：把 GitHub `Latest`/production rollback baseline 从 v0.3.1 晋级到 v0.3.2，
   并同步相应 acceptance 与 lifecycle authority；不得重发或改写任何 tag/asset/SHA。
 - 维护者把 P2 定义为独立深度清理：目标是归档 v0.3.1，并扫描 `architecture-contracts.test.js` 一类隐藏
-  历史残留。P2 当前先授权全仓只读 inventory、分类与方案冻结；具体删除集合在 Discovery 后另行 GO。
+  历史残留。P2-D inventory 后已明确授权 P2-I，并补充允许删除 root v0.3.1 bootstrap、把 README/AGENTS
+  固定版本命令改为可执行的版本无关循环；P2 完成后停在 P3 前讨论。
 - P3 只记录为后续独立 gate；当前不修改 package、Release contract、bootstrap 或 `v0.3.3-dev` identity，
   不 seal、不发布、不部署新版本。
 - 已完成的 `2026-08-09-architecture-contract-retention` 三文件由 immutable commit `d4cc3b5` 保存，P2
@@ -19,9 +20,9 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Next Step
 
-等待维护者确认 P2-I：按 findings 的冻结集合归档 v0.3.1 acceptance、迁移通用 bootstrap 断言、泛化
-Release 边界断言、轮出 v0.3.0 默认 publication oracle，并把唯一不能删除的 v0.3.1 bootstrap 明确降格为
-P3 sealed-source residue。未收到 GO 前不修改上述文件。
+实施 P2-I：归档 v0.3.1 bootstrap/acceptance，迁移通用供应链断言，泛化版本边界，轮出 v0.3.0 默认
+publication oracle，更新 immutable links 与 lifecycle authority；把当前 HEAD 明确标记为 P3 前治理
+过渡态。完成完整验证与本地 checkpoint 后停止，不创建 P3 scope 或新 machine identity。
 
 ## Gates
 
@@ -33,7 +34,7 @@ P3 sealed-source residue。未收到 GO 前不修改上述文件。
 - [x] P1-D — Validation：focused/full suite、published oracle、sealed ZIP identity、链接与 diff 全绿。
 - [x] P2-D — Deep-clean Discovery：恢复旧 retention 结论，全仓扫描并冻结 hot/warm/cold inventory、删除集合、
   断言迁移、immutable 恢复链和停止条件；未获新 GO 前不删除。
-- [ ] P2-I — Historical cleanup：只实施 P2-D 后明确批准的清退集合，不开启新版本 identity。
+- [ ] P2-I — Historical cleanup：实施获批清退集合与 README 版本无关化，不开启新版本 identity。
 - [ ] P3 — Successor train：另开 active scope 和 Discovery，建立获批的后继 machine identity。
 
 ## Stop Conditions
@@ -41,14 +42,17 @@ P3 sealed-source residue。未收到 GO 前不修改上述文件。
 - 无法证明 v0.3.1 tag/Release/acceptance/bootstrap 可从 immutable ref 恢复。
 - P1 前置或后置查询显示 v0.3.2 资产 identity 漂移、Release draft/prerelease、或 Latest 未按预期切换。
 - 需要改写 v0.3.1/v0.3.2 tag、Release、asset、SHA 或 acceptance。
-- P2 拟删除内容属于 sealed v0.3.2 ZIP input、当前 rollback 必需资产、唯一恢复证据，或需要先开启新
-  machine identity；该项应保留或推迟到 P3，不能为了“清爽”突破边界。
+- 修改或重新发布 v0.3.1/v0.3.2 immutable tag、Release、asset、URL、SHA 或历史 acceptance。
+- P2 后 current HEAD 仍被测试或文档宣称可以逐字重建 published v0.3.2，或被赋予新的 candidate/
+  installable bootstrap 身份；它必须显式停在 P3 前的 unsealed governance transition。
+- P2 删除唯一 immutable 恢复链、削弱 v0.3.1 immediate-fallback oracle 或丢失通用 bootstrap 安全断言。
 - 任何 promotion/eviction 会削弱当前回滚能力、publication oracle 或 Release gate。
 
 ## Status
 
-P1 PASS，P2-D `CONDITIONAL_GO`。全仓 inventory、恢复链、保留/迁移/删除集合和 P3 延后项已冻结；
-等待维护者授权 P2-I。当前没有执行历史文件删除，P3 未授权。
+P1 PASS，P2-I in progress。维护者已授权完整清退 v0.3.1 当前树 bootstrap/acceptance，并允许 README
+脱离 sealed v0.3.2 字节，条件是当前 HEAD 明确停在 P3 前、不得冒充 candidate 或立即重建 Release。
+P3 未授权。
 
 ## Errors Encountered
 

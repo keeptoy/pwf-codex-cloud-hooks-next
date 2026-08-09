@@ -58,3 +58,7 @@
 - P2-D 已冻结 delete/generalize/relink/keep 四类集合并得出 `CONDITIONAL_GO`；未执行删除，等待维护者
   授权 P2-I。旧 retention 三文件的有效结论已全部吸收，未恢复第二个 tracked planning scope。
 - P2 Discovery checkpoint 的 repository-boundary guard 7/7 PASS，`git diff --check` PASS；可本地提交。
+- 维护者明确 GO P2-I，并补充允许 README 离开 sealed v0.3.2 bytes：P2 可删除 root v0.3.1 bootstrap，
+  将 README/AGENTS syntax 改为版本无关循环；完成后必须停在 P3 前，不创建新 identity 或 Release。
+- 已冻结过渡语义：published v0.3.2 只由 immutable tag oracle 证明；P2 后 HEAD 只验证 deterministic
+  unsealed source ZIP 且必须与 published v0.3.2 SHA 不同，直到 P3 建立新 candidate identity。

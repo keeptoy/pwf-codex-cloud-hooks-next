@@ -253,3 +253,17 @@
 `CONDITIONAL_GO`。上述 change set 可以在不修改 sealed v0.3.2 ZIP inputs、production runtime、Host ABI、
 trusted graph、tag/asset 或 P3 identity 的情况下实施。维护者需明确授权 P2-I；若要求连 root v0.3.1
 bootstrap/README 一并删除，则当前结论转为 `NO_GO`，必须等待 P3 新 source identity。
+
+## Maintainer Override: README May Leave the Sealed v0.3.2 Tree
+
+- 维护者明确授权 P2 同时删除 root v0.3.1 bootstrap，并把 README 的固定版本 syntax 命令改为版本无关
+  占位/循环；理由是后续 P3 会重建新 ZIP，P2 不需要继续让 HEAD 逐字等于已发布 v0.3.2。
+- 这项授权推翻了 P2-D 的单一 deferred residue 结论，但没有授权复用 v0.3.2 identity 重发 ZIP，也没有
+  授权建立 v0.3.3-dev。published v0.3.2 继续由 immutable tag/source oracle 证明。
+- P2 后 package/contract 仍为 0.3.2，root v0.3.2 bootstrap 仍是 published asset；但当前 HEAD 的 README
+  bytes 已变化，因此从 HEAD 构建的 ZIP 只能称为 deterministic unsealed transition bytes，不能称为
+  candidate 或 published v0.3.2。下一次 seal 前 P3 必须建立新 machine identity 与 fail-closed bootstrap。
+- README/AGENTS 采用 `for bootstrap in init-cloud-sandbox-v*.bash; do bash -n "$bootstrap"; done`，既可
+  直接执行，又由当前角色文件集合决定检查对象，不冻结具体版本号。
+- `release-package.test.js` 应继续证明 current source 双构建确定、contract boundary/self-contained 成立，
+  同时明确 current SHA 不等于 published v0.3.2；精确 published v0.3.2 SHA 只由 tag oracle证明。
