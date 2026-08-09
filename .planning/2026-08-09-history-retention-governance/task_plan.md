@@ -7,7 +7,7 @@ trusted graph、Release 不可变性和历史可追溯性的前提下，让当�
 
 ## Authorization
 
-- 当前工作分支固定为 `governance/history-retention`，基点是已推送的 `cde4b15`。
+- H0–H6 在 `governance/history-retention` 上完成，基点是已推送的 `cde4b15`。
 - 已授权创建本 planning scope、通用仓库治理指南和最小新人入口链接；治理模型已经维护者评审通过。
 - 已授权 H4：以 failing-first 方式重构 repository governance guard，并在关键恢复点自动创建本地 commit。
 - 已授权 H5：验证 immutable recovery 后，移除 completed planning、角色窗口外的历史 acceptance/runbook/
@@ -15,12 +15,16 @@ trusted graph、Release 不可变性和历史可追溯性的前提下，让当�
 - H5 不修改 production、contracts、package identity、当前 `v0.3.2` bootstrap、Release contract 或 Cloud。
 - 已授权 H6：同步唯一 authority，运行完整本地 regression、deterministic development package 与适用
   Windows checks，形成 source-merge 建议并创建本地关键恢复点。
-- 不 push、合并分支、创建 PR/tag/Release/asset，不运行 live Cloud 或 rollback promotion。
+- 已授权 H7：保留本地/远端 `0.3.2-dev` 不变，把当前分支改名为 `0.3.2-dev-extend` 并以同名推送；
+  将本轮治理 delta 从 CHANGELOG 的 `0.3.2-dev` 章节迁入独立 extension 章节；删除经核验为空的旧
+  `.planning` 子目录。
+- H7 不 merge、创建 PR/tag/Release/asset，不运行 live Cloud 或 rollback promotion，也不改变 package
+  identity `0.3.2-dev`。
 
 ## Next Step
 
-H0–H6 已完成，当前分支具备合回 `0.3.2-dev` 的 source-merge GO 建议；等待维护者另行授权实际 merge/
-push。未来 Release、Cloud 或 rollback gate 必须在对应活动计划中重新授权和验证，不能继承本结论。
+完成 branch/changelog/planning-directory 迁移，运行 focused governance checks，创建本地关键恢复点并
+推送同名远端 `0.3.2-dev-extend`；不合并回 `0.3.2-dev`。
 
 ## Phases
 
@@ -31,14 +35,16 @@ push。未来 Release、Cloud 或 rollback gate 必须在对应活动计划中�
 - [x] H4 — failing-first 重构 repository governance guards；不先删文件追求绿色。
 - [x] H5 — 迁移 completed planning、旧 acceptance/runbook/bootstrap 和历史 oracle 引用。
 - [x] H6 — 同步唯一 authority、运行完整 regression/package/platform gate，形成合并建议。
+- [ ] H7 — 分离 extension 分支与 CHANGELOG delta，清理空 planning 目录并推送同名远端分支。
 
 ## Status
 
-H0–H6 完成；本地 source candidate 建议 GO。尚未授权 push、merge、PR、Release、Cloud 或 rollback。
+H0–H6 完成；H7 已获批并进入分支/CHANGELOG 身份分离。只授权推送新 extension 分支，不授权 merge、
+PR、Release、Cloud 或 rollback。
 
 ## Merge Recommendation
 
-- **GO（仅 source merge）**：当前治理分支可在维护者评审后合回 `0.3.2-dev`。
+- **GO（仅 source merge）**：`0.3.2-dev-extend` 可在维护者后续评审后合回 `0.3.2-dev`。
 - authority 已同步到 README 文档地图、CHANGELOG Unreleased 与 ROADMAP programme 摘要；ARCHITECTURE/
   DESIGN 无需复制第二份治理规则。
 - 完整本地 regression 为 87 tests、75 PASS、12 Windows/POSIX SKIP、0 FAIL；适用 source/static/
@@ -86,3 +92,4 @@ H0–H6 完成；本地 source candidate 建议 GO。尚未授权 push、merge�
 | PowerShell 环境中直接调用 `bash -n` 时找不到 `bash` | 1 | 分类为 platform limitation；不重复原命令，使用测试套件已采用的 Git for Windows Bash 探测路径，若不存在则诚实 SKIP |
 | 仓库 Markdown link probe 把裁剪后的 upstream Skill fixture 当作完整文档检查 | 1 | 分类为 fixture scope error；排除 `tests/fixtures/` 后检查 repository-owned Markdown，fixture 完整性继续由其专属 import/runtime tests 负责 |
 | 沙箱内最终 Node 聚焦测试无法创建 worker，两个文件均报 `spawn EPERM` | 1 | 分类为 sandbox execution limitation；获批后在沙箱外以同一命令复跑，12/12 PASS |
+| CHANGELOG test 用 base header 的裸前缀定位时会命中未来 extension header | 1 | 在迁移正文前识别为 test defect；改用包含行尾的完整 Markdown header 定位 |

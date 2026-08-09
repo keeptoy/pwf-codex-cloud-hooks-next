@@ -147,7 +147,7 @@ graph、Release/rollback mechanism、长期基线晋级。普通 patch、文案�
 
 - 不删除 accepted `v0.3.1` 或 candidate `v0.3.2-dev` 当前角色所需文件；H5 只删除已验证可从 immutable ref 恢复且已退出角色窗口的历史文件。
 - 不改变 package/version、Release ZIP allowlist、bootstrap hash 或 published identity。
-- 不宣称 `governance/history-retention` 已成为 source/release/rollback baseline。
+- 不宣称 `0.3.2-dev-extend` 已成为 source/release/rollback baseline。
 - 不执行 Cloud、seal、publication、rollback promotion 或 push；本地关键恢复点 commit 已获授权。
 
 ## H6 Authority Audit
@@ -171,3 +171,16 @@ graph、Release/rollback mechanism、长期基线晋级。普通 patch、文案�
   变化，它们不阻塞 source merge；但也不能替代未来 Release/Cloud gate 的 Linux 和 live-host 证据。
 - 综合 authority、regression、package、静态检查与边界审计，H6 对 source merge 给出 GO；对 Release、
   Cloud、publication 和 rollback 不作 GO 结论。
+
+## H7 Branch and Changelog Identity
+
+- `0.3.2-dev` 继续承担原开发列车/基线分支角色；治理成果在独立 `0.3.2-dev-extend` 分支保存，避免
+  未评审 merge 直接改动原分支。
+- `0.3.2-dev-extend` 只是 branch/extension track 名称；`package.json`、Release contract 与 bootstrap
+  继续使用 `0.3.2-dev`，不能从分支名推导新的 package、tag 或 Release identity。
+- CHANGELOG 应把 H4–H6 的治理指南、exact-vs-lifecycle guard 和 role-window rotation 移到独立 extension
+  章节；原 `0.3.2-dev` 章节只保留在基点已经发生的源码/package 身份和文档真理源 delta。
+- `.planning` 中 5 个旧 scope 目录均为零 entry 的本地残留；Git 不跟踪空目录。按精确路径非递归删除
+  不改变任何 commit 内容、recovery ref 或当前 active scope。
+- 远端只存在 `0.3.2-dev@cde4b15`，尚无 `0.3.2-dev-extend`；因此首次同名 push 不需要覆盖、删除或
+  force-update 任何远端 ref。

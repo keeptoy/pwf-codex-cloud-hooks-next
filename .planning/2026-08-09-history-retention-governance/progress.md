@@ -2,6 +2,20 @@
 
 ## 2026-08-09
 
+- H7 获批：维护者要求保留 `0.3.2-dev`，把治理分支改名并推送为 `0.3.2-dev-extend`，将治理 delta
+  迁入独立 CHANGELOG extension 章节，并删除 `.planning` 下已验证为空的旧目录。
+- 当前工作区从 H6 commit `b9e4892` 干净开始；原本地 governance 分支没有 upstream，远端未发现同名
+  分支，现有 `0.3.2-dev` 仍停在 `cde4b15`。5 个旧 planning scope 目录逐项确认 entry count 为 0。
+- CHANGELOG extension failing-first：architecture governance 7 tests 中 6 PASS、1 FAIL，唯一红项是尚无
+  `0.3.2-dev-extend` 独立章节；测试标题定位同时改用带换行的完整 header，避免 base 名称误匹配
+  extension 前缀。
+- 已把两项治理 delta 迁入独立 `0.3.2-dev-extend` 章节，并明确它只是 source branch/extension track；
+  原 `0.3.2-dev` 章节保留基点 delta，package identity 不变。focused governance 12/12 PASS。
+- 5 个经核验为空的旧 planning 目录已按精确路径非递归删除；Git 不产生删除 diff，当前只剩 active scope。
+- 当前本地分支已改名为 `0.3.2-dev-extend`；完整 `npm test` 为 87 tests、75 PASS、12 Windows/POSIX
+  SKIP、0 FAIL。
+- push 前远端只读检查确认 `0.3.2-dev` 仍为 `cde4b15`，`0.3.2-dev-extend` 尚不存在；可用普通
+  non-force first push 建立同名 upstream。
 - H6 恢复轮次：维护者明确授权最终本地收口；工作区从 H5 commit `435f830` 干净开始。重读 README/ARCHITECTURE 后确认 H6 只需 authority/package/platform evidence，不改变 trusted graph 或 runtime。
 - 重读 DESIGN/ROADMAP；H6 的适用验证是文档 authority、repository guard、完整本地 regression 与 deterministic development package。没有 production/contract/Host ABI 变化，不触发新的 live Cloud/rollback gate。
 - H6 authority failing-first：architecture governance 7 tests 中 5 PASS、2 FAIL；缺口精确落在 README 未导航治理指南，以及 CHANGELOG/ROADMAP 未提升已发生的 exact-vs-lifecycle 与 role-window 结论。
@@ -60,9 +74,7 @@
 
 ## Current Handoff
 
-- H0–H6 全部完成：当前树只保留 active planning、v0.3.1 accepted 与 v0.3.2 candidate 角色文件；20 个
-  退场路径均已在删除前验证可由 immutable refs 恢复。
-- authority、focused/full regression、deterministic development package、适用 source/platform/static gate
-  与 trusted boundary audit 均通过，source merge 建议 GO。
-- 本地关键恢复点提交完成后停止；不自动 merge/push，不创建 PR/tag/Release/asset，也不宣称 Cloud 或
-  rollback gate 已通过。
+- H0–H6 已完成并具有 source-merge GO；H7 本地分支/CHANGELOG/空目录迁移与回归均已完成，等待创建
+  本地恢复点并首次推送同名 `0.3.2-dev-extend`。
+- 只授权普通 non-force push；`0.3.2-dev` 必须保持不变，不自动 merge 或创建 PR。
+- 不创建 tag/Release/asset，也不宣称 Cloud 或 rollback gate 已通过。

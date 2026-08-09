@@ -254,6 +254,12 @@ test("change history, programme intent, current action, and immutable evidence h
   }
   assert.match(changelog, /trusted.*exact.*planning.*lifecycle/is);
   assert.match(changelog, /candidate.*accepted.*role window/is);
+  const extendStart = changelog.indexOf("## Unreleased — 0.3.2-dev-extend\n");
+  const baseDevStart = changelog.indexOf("## Unreleased — 0.3.2-dev\n");
+  assert.ok(extendStart >= 0 && baseDevStart > extendStart);
+  const extendSection = changelog.slice(extendStart, baseDevStart);
+  assert.match(extendSection, /trusted.*exact.*planning.*lifecycle/is);
+  assert.match(extendSection, /candidate.*accepted.*role window/is);
   assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|Next Step|GitHub `Latest`|production rollback|\d+ registered/);
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 
