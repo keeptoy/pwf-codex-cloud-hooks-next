@@ -28,3 +28,11 @@
 - 沙箱内 stage 因 `.git/index.lock` 权限被拒绝，未发生部分 index 写入；按最小范围转为沙箱外 stage/commit。
 - planning rotation 暂存后，沙箱外 `node --test --test-isolation=none tests/repository-boundary.test.js`
   7/7 PASS，`git diff --cached --check` PASS；D0 checkpoint 可提交。
+- 维护者把路线重排为 P1 promotion、P2 历史深度清理、P3 后继列车；P1 明确授权，P2 先 Discovery，
+  P3 不在当前范围。活动计划已按三个独立 gate 重写。
+- 重新读取 commit `d4cc3b5` 中已完成 retention 三文件；决定把其有效结论吸收到 P2 findings，而不永久
+  恢复第二个 `.planning` scope，以保持 one-active-scope repository contract。
+- P1 公开 preflight PASS：Latest=v0.3.1；v0.3.2 Release 非 draft/prerelease，双资产 size/digest 与
+  acceptance 精确一致，允许进入 pointer-only promotion。
+- 三段式计划重排后的 repository-boundary guard 7/7 PASS，`git diff --check` PASS；P1 设计 checkpoint
+  可以在移动外部 pointer 前提交。

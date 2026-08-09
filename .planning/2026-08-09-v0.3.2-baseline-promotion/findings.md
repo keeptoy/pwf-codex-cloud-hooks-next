@@ -102,3 +102,26 @@
   清退当前树中的 v0.3.1 副本与默认依赖。
 
 在这两项确认前，ROADMAP、package/contract/bootstrap、tests 与 GitHub Release 状态保持不变。
+
+## Maintainer Decision: Three Independent Gates
+
+- 维护者否决“P2 同时诞生 0.3.3-dev”的合并做法，冻结为 P1 promotion → P2 historical deep-clean →
+  P3 successor train。这样 P2 可以把注意力全部放在隐藏历史残留、断言职责与恢复链，不把新版本脚手架
+  混入清理 diff。
+- P1 已获得明确实施授权；P2 当前只授权 Discovery，不能从 `architecture-contracts.test.js` 这个例子
+  直接推导批量删除；P3 不在当前授权范围。
+- 旧 `2026-08-09-architecture-contract-retention` 三文件对 P2 的价值在于：它们已证明 architecture test
+  应保持版本无关、repository lifecycle 管当前角色、published oracle 管不可变字节，并指出 v0.3.0 oracle
+  当时因仍在 rollback evidence chain 而暂缓轮出。
+- 这些文件已由 commit `d4cc3b5` 完整保存。把同一已完成 scope 永久恢复到 `.planning` 会让当前树出现
+  两个 planning scope，直接违反 repository-boundary 的“completed planning scopes must leave the current
+  tree”合同，也重新制造本项目刚治理掉的膨胀。因此 P2 应从该 commit 读取并把有效结论吸收到当前
+  findings，而不是恢复第二套长期文件；如果维护者确实要求改变“一 active scope”政策，应另开治理决策。
+
+## P1 Preflight Revalidation
+
+- 2026-08-09 P1 前置查询确认 GitHub Latest 仍为 v0.3.1；其 bootstrap/ZIP size 与 digest 分别为
+  21,565 / 82,725 bytes，`ce31a320...60a5e8` / `f097b040...39131f9`。
+- v0.3.2 Release 为 non-draft、non-prerelease；bootstrap/ZIP size 与 digest 为 21,565 / 82,627 bytes，
+  `aa2c1fd6...8f77c` / `b42aecaf...e5081`，与已关闭的 Cloud acceptance 和 provenance 一致。
+- P1 可以只移动 Latest pointer；不得上传、替换或编辑两个 immutable assets。
