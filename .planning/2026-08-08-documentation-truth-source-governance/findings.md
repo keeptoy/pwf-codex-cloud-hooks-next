@@ -466,3 +466,22 @@ tracked 文档，D5 会触碰历史/当前语义分界，D6 才能证明整体�
   七份扩为八份 root authority docs，精确 inventory 由六条增为九条。
 - 新 focused guard 同时约束“必须具备的导诊能力”和“禁止再次长成 runbook 的内容”，使后续维护者若
   重新写入 mutable facts、hash/count、命令块或旧流程标题会直接收到测试失败，而不是依赖人工记忆。
+
+## D6 closure audit
+
+- 有意保留的稳定摘要冻结为四类：README 的首次使用/稳定行为，AGENTS 的 agent-only trust/Release
+  边界，ARCHITECTURE 的 bootstrap/ZIP 等系统理由，handoff 的接手/误判/检测分流。它们与 authority
+  回答不同层次问题，不属于 harmful mutable duplication。
+- 历史快照白名单冻结为：三个版本 hard-acceptance 的 source/asset/SHA/Attempt，M1/M3/M4 accepted
+  commit 与当时 Cloud/授权语境，已完成 planning 的逐 gate/error 流水，以及 immutable tag 中的 sealed
+  README。D6 只验证它们仍被隔离为历史证据，不批量“当前化”。
+- D6 验证顺序采用：全仓 Markdown/local link/explicit fragment/encoding/fence 与重复事实扫描 → focused
+  governance/repository checks → importer/production syntax/Git mode/bootstrap Bash syntax → full Windows
+  suite → 两个独立 development ZIP build/check/byte comparison。任一步发现 identity 或 evidence 冲突即停。
+- 虽然 D5 与 D6 本身不改 ZIP allowlist 输入，但本列车早期已改变 README/package identity；最终 closure
+  仍应重跑完整 suite 和双 deterministic ZIP，证明当前 HEAD 的 development package 与 published oracle
+  同时闭合。该证据不构成 seal、publication 或 Cloud acceptance。
+- Markdown link check 的唯一例外是 `tests/fixtures/planning-with-files/SKILL.md` 中 10 个未随最小 fixture
+  收录的 upstream templates/references/docs 链接。该目录由其 README 明确为固定上游测试输入，且
+  importer/repository tests 保护 inventory；D6 对它仍做 UTF-8/LF/fence 检查，只对白名单化的链接目标
+  跳过存在性，不把 fixture 的上游文档树错误扩进本仓库。

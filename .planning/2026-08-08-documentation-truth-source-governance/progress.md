@@ -19,7 +19,7 @@
 - D3: complete
 - D4: complete
 - D5: complete
-- D6: ready / authorized after D5 exit
+- D6: validation complete / awaiting maintainer review
 
 ## Validation record
 
@@ -393,3 +393,50 @@
 - Pre-commit static 复跑 PASS：四份 changed Markdown 均为 UTF-8 no-BOM、LF、final newline 且 fences
   平衡；handoff 全部本地 targets 存在，focused test 可解析，`git diff --check` 通过，其他 root authority
   与历史 `docs/` 仍为零 diff。
+
+## 2026-08-09 — D6 validation and closure started
+
+- 维护者授权继续 D6；按 `planning-with-files` 恢复流程运行 session catch-up，无未同步输出。
+- 起点工作树干净，HEAD 为 D5 checkpoint `8d8923f`，分支相对 `origin/main` ahead 11；未发现需要保护的
+  用户改动。
+- 重新读取 README 与 ARCHITECTURE：D6 仍只负责验证文档治理和 development package 可复现性；本地
+  绿色结果不构成 seal、publication、Cloud acceptance 或 rollback 晋级，也不授权 Product Phase 4。
+- 重新读取 DESIGN 与 ROADMAP 并恢复活动 planning：D6 需要覆盖 focused governance、repository
+  inventory、所有 Markdown link/anchor/encoding/fence、完整 Windows suite、importer/语法、显式 Git Bash
+  bootstrap syntax 以及双 deterministic development ZIP；不运行 Release seal 或 Cloud gate。
+- D6 状态切换为 in progress；若发现 identity、inventory、历史证据或 authority 冲突，立即停止闭环并
+  增加修复回合，不用弱化测试换取绿色结果。
+- 复核 package/tests：当前 source 与 artifact contract 均为 `0.3.2-dev`，npm 全量入口为
+  `node --test tests/*.test.js`；release tests 已同时保护 current deterministic development ZIP 和
+  published v0.3.1/v0.3.0 immutable oracles，repository test 保护精确 tracked inventory 与 ZIP exclusion。
+- 首次全仓 Markdown static 在链接阶段失败：`tests/fixtures/planning-with-files/SKILL.md` 指向未随 fixture
+  收录的 `templates/task_plan.md`。encoding/LF/fence 检查已先经过该文件；下一步审计 fixture inventory，
+  将“故意裁剪的外部输入 fixture”与仓库维护文档分开验证，而不是伪造缺失模板或放宽生产文档链接。
+- 缺失链接收集确认全部 10 个引用都来自同一 pinned upstream Skill fixture，目标为未收录的 templates、
+  references 与上游 docs；没有仓库维护文档缺链。该诊断命令末尾一次 `rg tests\*` 在 Windows 因路径
+  glob 语法无效返回 exit 1，前面的缺失链接清单和 fixture 文件枚举已正常完成；后续改用目录参数。
+- Fixture provenance 复核 PASS：fixture README 声明其为固定 upstream release 的自包含测试子集，实际
+  仅收录 README、SKILL 与两个 scripts，并被 import/repository tests 消费；因此 10 个上游文档链接是
+  明确的 fixture-only exception，不是仓库维护文档缺陷。
+- Markdown static PASS：29 个 tracked Markdown 全部 UTF-8 no-BOM、LF、final newline、fence balance；
+  125 个本地 targets 存在，10 个 pinned-fixture 链接按精确文件/计数白名单跳过，`git diff --check` 通过。
+- Focused governance/repository PASS：9/9；九条根级跨文档 fragment 全部使用显式稳定 anchor，handoff
+  导诊正反约束、authority 分层、精确 tracked inventory、archive/Release exclusion 全部保持绿色。
+- Duplicate-fact scan PASS：非 ROADMAP 宏观文档不存在 `Latest`/production rollback/current fallback
+  完整角色副本，ROADMAP 保持单一 current-role marker；handoff 继续无 semver、长 hex、fence 或完整
+  build/hash/reset 命令。
+- Source/static PASS：pinned importer `healthy=true`；三份 production Python compile、`node --check
+  install.js` 通过；Git index 中恰好四个 `runtime/upstream/*` 为 `100755`，没有其他 executable path。
+- Git Bash syntax PASS：显式 `D:\Program Files\Git\bin\bash.exe` 为 GNU Bash 5.3.15，对三个 bootstrap
+  逐文件 `-n` 全部 exit 0；未使用异步 launcher 或 PATH-only 推断。
+- Full Windows suite PASS：85 tests / 73 pass / 12 honest POSIX/Linux skips / 0 fail；current
+  `0.3.2-dev` candidate、published v0.3.1/v0.3.0 immutable oracle、installer/runtime/trust seams 与全部
+  文档治理 guards 同时绿色。12 个 SKIP 不替代 Linux/Cloud gate。
+- Deterministic package PASS：两个独立临时 build/check 均为 23 entries / 82,554 bytes / SHA-256
+  `87aaccd6...f6bb2`，逐字节相同；两个临时 ZIP 已从系统 temp 清理。该结果只证明 development source
+  可复现，不写入 bootstrap、不构成 seal、publication、Cloud acceptance 或 rollback 晋级。
+- D6 technical exit PASS：未发现需要修复的 authority、identity、inventory、runtime 或历史 evidence
+  冲突；本轮精确变更仅为三份活动 planning。状态切换为 validation complete / awaiting maintainer review，
+  最后一项“复核后关闭计划”保持未勾选。
+- D6 pre-commit planning audit PASS：changed paths 精确为 task plan/findings/progress；三文件 UTF-8
+  no-BOM、LF、final newline、fence balance 与 `git diff --check` 全部通过。

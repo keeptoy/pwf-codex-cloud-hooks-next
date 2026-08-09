@@ -14,22 +14,22 @@
 回滚点。D0/D1 探路与 R0 identity foundation 已完成；新 source/package/contract/bootstrap identity
 通过完整 Windows 回归、immutable v0.3.1/v0.3.0 oracle 和 deterministic ZIP 验证。D2 entry-point 与
 D3 implementation navigation、D4 lifecycle/provenance guards、D4.1 stable-anchor correction 与 D5
-maintainer entrypoint 已完成；下一 gate 为 D6 validation and closure。授权
+maintainer entrypoint 已完成；D6 全量验证已通过，等待维护者复核后关闭本计划。授权
 不包含 seal、publication、tag、asset、push、remote ref、Cloud 或 Product Phase 4 变更。
 
 ## Next Step
 
-实施 D6：运行全量文档治理、repository boundary、完整 suite 与 deterministic package 收口验证，记录
-有意摘要/历史快照白名单并提交维护者复核；不进入 Product Phase 4 或任何 Release/Cloud 操作。
+维护者复核 D6 closure 证据；确认后关闭本计划。Product Phase 4、seal、publication、push/remote 与
+Cloud 仍未授权，不因文档治理完成而自动开始。
 
 ## Current Phase
 
-D6 — Validation and closure
+D6 — Maintainer review and closure
 
 ## Status
 
-**GO.** D0/D1/R0/D2/D3/D4/D4.1/D5 已完成，`0.3.2-dev` development identity、文档入口、实现导航、
-change/lifecycle/provenance 权威分层、stable fragment guard 与 handoff 导诊入口已建立。
+**REVIEW READY.** D0/D1/R0/D2/D3/D4/D4.1/D5 已完成；D6 的全仓静态、focused、完整 suite 与
+deterministic package 验证已通过，有意摘要和历史快照白名单已记录。
 D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相称验证后可主动 commit，前一 gate 未通过
 不得进入下一 gate。Release seal/publication、push/remote/Cloud 和 Product Phase 4 仍需独立授权。
 
@@ -186,12 +186,12 @@ D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相
 
 ### D6 — Validation and closure
 
-- [ ] 运行链接、标题锚点、UTF-8/LF、Markdown fence、重复事实和 repository-boundary 检查。
-- [ ] 运行 focused governance tests；若 package/Release identity 变化则运行 full suite、deterministic ZIP
+- [x] 运行链接、标题锚点、UTF-8/LF、Markdown fence、重复事实和 repository-boundary 检查。
+- [x] 运行 focused governance tests；若 package/Release identity 变化则运行 full suite、deterministic ZIP
   和对应 Release gate。
-- [ ] 记录残留的有意摘要与历史快照白名单。
+- [x] 记录残留的有意摘要与历史快照白名单。
 - [ ] 完成维护者复核后关闭计划，Product Phase 4 仍需独立授权。
-- **Status:** ready / authorized after D5 exit
+- **Status:** validation complete / awaiting maintainer review
 
 ## Release Identity Decision Gate
 
