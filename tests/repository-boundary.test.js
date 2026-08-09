@@ -141,13 +141,12 @@ test("phase history is a closed indexed set of frozen Markdown capsules", () => 
   assert.match(index, /source snapshot 只是 cold evidence，不是当前 authority/s);
   assert.match(index, /不得进入 Release.*trusted graph.*runtime dispatch/s);
 
-  assert.match(read("README.md"), /\]\(docs\/history\/README\.md\)/);
-  const changelog = read("CHANGELOG.md");
-  assert.equal((changelog.match(/\]\(docs\/history\/phase-[^)]+\.md\)/g) || []).length, 1,
-    "CHANGELOG may deep-link exactly one migration capsule");
-  assert.match(changelog, /\]\(docs\/history\/phase-3\.5-successor-migration\.md\)/);
+  const readme = read("README.md");
+  assert.match(readme, /\]\(docs\/history\/README\.md\)/);
+  assert.equal((readme.match(/docs\/history\//g) || []).length, 1,
+    "README must expose exactly one Phase-history directory entrance");
   for (const macroDoc of [
-    "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "DESIGN.md",
+    "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
     "MAINTAINER_HANDOFF.md", "ROADMAP.md",
   ]) assert.doesNotMatch(read(macroDoc), /docs\/history\//, `${macroDoc} must not create a second Phase-history entrance`);
 
@@ -199,7 +198,8 @@ test("portable repository governance defines a closed retirement transaction", (
   assert.match(guide, /Phase capsule 是精选历史导航.*不是新的 architecture.*authority/s);
   assert.match(guide, /摘要正文应可独立阅读.*一个 immutable source snapshot.*第二套 authority/s);
   assert.match(guide, /小数编号只能作为.*回顾性 interlude.*不能伪造原 programme/s);
-  assert.match(guide, /CHANGELOG 可以.*deep-link 一份精确 capsule.*不得.*第二份 Phase 目录/s);
+  assert.match(guide, /README\/文档地图.*唯一宏观入口.*只链接 Phase 目录索引/s);
+  assert.match(guide, /CHANGELOG、ROADMAP、provenance.*不得直接链接具体 capsule/s);
 });
 
 test("retired prototype conclusions remain covered by production safety tests", () => {
@@ -298,7 +298,9 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(agents, /当前版本角色只见 `ROADMAP\.md`/);
   assert.match(agents, /for bootstrap in init-cloud-sandbox-v\*\.bash; do/);
   assert.match(design, /CHANGELOG\.md/);
-  assert.match(changelog, /\[Phase 3\.5：Successor 仓库迁移\]\(docs\/history\/phase-3\.5-successor-migration\.md\)/);
+  assert.match(changelog,
+    /\[`BASELINE_PROVENANCE\.md` 的 Successor 迁移不可变证据\]\(BASELINE_PROVENANCE\.md#successor-migration-evidence\)/);
+  assert.doesNotMatch(changelog, /Phase 3\.5|phase-3\.5|docs\/history\//);
   assert.doesNotMatch(changelog, /Successor 迁移来源链/);
 
   assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));

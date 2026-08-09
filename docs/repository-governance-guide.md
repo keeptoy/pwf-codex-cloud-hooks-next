@@ -168,8 +168,9 @@ planning 和专项文档整体复制进 HEAD，又会把 cold history 重新变�
 
 Phase capsule 是精选历史导航，不是新的 architecture、programme、provenance 或 acceptance authority。
 没有长期解释价值的阶段不必收录；讨论中、施工中或只有原型结论的阶段不得提前进入该目录。
-README/文档地图应维护唯一通用索引；CHANGELOG 可以从相关版本 delta deep-link 一份精确 capsule，但不得
-复制第二份 Phase 目录或把回顾性标签写成当前 programme 状态。
+README/文档地图应维护唯一宏观入口，并只链接 Phase 目录索引；CHANGELOG、ROADMAP、provenance 和其他
+宏观文档不得直接链接具体 capsule。Capsule 为解释阶段继承关系可以使用目录内相对链接，但不能借此创建
+第二份历史索引或把回顾性标签写成当前 programme 状态。
 
 ## 9. Provenance 的准入标准
 

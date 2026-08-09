@@ -1,5 +1,21 @@
 # Findings: v0.3.2 Baseline Promotion and v0.3.3-dev Handoff
 
+## P2-P-E Phase Archive Entrance
+
+- CHANGELOG 直接 deep-link Phase 3.5 是 README 单一历史入口的唯一宏观例外；即使只允许一条，也会让
+  版本日志兼任 Phase 目录导航，并使归档 capsule 重新靠近当前文档权威。
+- 最小闭环是 README → `docs/history/README.md` → capsules；Phase 文件内部可用相对链接说明继承，
+  但 CHANGELOG、ROADMAP、provenance 等宏观文档不直接链接具体 capsule。
+- CHANGELOG 的 v0.3.0 仍需证明 M1～M4 来源，因此应链接 provenance 中带稳定英文 anchor 的 exact-evidence
+  章节，而不是删除来源链或复制 refs。
+
+### P2-P-E Result
+
+- CHANGELOG 已不含 `Phase 3.5`、`phase-3.5` 或 `docs/history/`；v0.3.0 改指 provenance 的
+  `successor-migration-evidence` 稳定 anchor。
+- 可迁移治理指南与 repository guard 已从“允许一个 CHANGELOG 特例”升级为 README 单一宏观入口；
+  静态扫描确认其他宏观文档没有 `docs/history/` 引用。
+
 ## P2-P-B Provenance Cold Ledger
 
 - `BASELINE_PROVENANCE.md` 同时被稳定文档、machine contract、repository guard 和活动 planning 引用；

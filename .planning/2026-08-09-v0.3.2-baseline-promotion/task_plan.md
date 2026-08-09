@@ -28,6 +28,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 - 维护者已批准在 P2 内把 `BASELINE_PROVENANCE.md` 收口为持续维护的冷证据账本：文件名保留，已登记
   immutable entry 不改写，当前 lifecycle 角色仍只由 ROADMAP 维护；第 5、6 节原样保留，只把 Phase 1
   的 M1～M4 叙述改指 Phase 3.5，ROADMAP 不因本 gate 修改。
+- 维护者随后批准收紧 Phase 历史入口：CHANGELOG 不再提及或链接 Phase 3.5，v0.3.0 迁移来源改指
+  BASELINE_PROVENANCE 的 exact-evidence anchor；README 是宏观文档中唯一 `docs/history/` 入口。
 - P3 只记录为后续独立 gate；当前不修改 package、Release contract、bootstrap 或 `v0.3.3-dev` identity，
   不 seal、不发布、不部署新版本。
 - 已完成的 `2026-08-09-architecture-contract-retention` 三文件由 immutable commit `d4cc3b5` 保存，P2
@@ -36,7 +38,7 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 ## Next Step
 
 停在 post-release 文档治理阶段，等待维护者后续补充 v0.2.2 的具体特点或另行授权新的 P2 gate。
-Provenance 已收口为冷证据账本，M1～M4 叙事已进入回顾性 Phase 3.5；不得进入 P3。
+Provenance 已收口为冷证据账本，Phase 历史只由 README 的单一宏观入口进入；不得进入 P3。
 
 ## Gates
 
@@ -55,6 +57,7 @@ Provenance 已收口为冷证据账本，M1～M4 叙事已进入回顾性 Phase 
 - [x] P2-P-A — Phase authority tightening：单一 README 入口、正文自洽、旧文档证据降级与防回流 guard。
 - [x] P2-P-M — Migration capsule：将 M1～M4 叙事整理为回顾性 Phase 3.5，provenance 保留 exact refs。
 - [x] P2-P-B — Provenance cold ledger：统一已发布身份账本、移除角色态措辞并补 hot-state 防回流 guard。
+- [x] P2-P-E — Phase archive entrance：移除 CHANGELOG 的 Phase 3.5 特例，冻结 README 单一宏观入口。
 - [ ] P3 — Successor train：另开 active scope 和 Discovery，建立获批的后继 machine identity。
 
 ## Stop Conditions
@@ -71,8 +74,9 @@ Provenance 已收口为冷证据账本，M1～M4 叙事已进入回顾性 Phase 
 
 ## Status
 
-P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS，P2-P-A PASS，P2-P-M PASS，P2-P-B PASS。
-本地分支为 `0.3.2-post-release`，当前 HEAD 是 P3 前的 unsealed governance transition；P3 未授权。
+P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS，P2-P-A PASS，P2-P-M PASS，P2-P-B PASS，
+P2-P-E PASS。本地分支为 `0.3.2-post-release`，当前 HEAD 是 P3 前的 unsealed governance transition；
+P3 未授权。
 
 ## Errors Encountered
 

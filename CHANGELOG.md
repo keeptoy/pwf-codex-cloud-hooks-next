@@ -21,10 +21,9 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - README 与智能体入口的 bootstrap 语法检查改为版本无关循环，避免每次角色轮换继续累积固定版本命令。
 - 固化 promotion + eviction 的 retirement contract：两者可分 gate 审查，但旧角色未关闭前不得开启下一
   列车；稳定文档采用版本无关 guard，publication oracle 固定为 accepted + immediate fallback 两席轮换。
-- 新增 Phase 1～3 与回顾性 Phase 3.5 精选历史摘要：用统一冻结模板提炼问题、决定、交付、非目标与继承
-  关系；README 维护通用索引，CHANGELOG 只在相关版本 delta 中 deep-link 精确 capsule。每份摘要只保留
-  一个 cold source snapshot，不把旧设计/验收重新提升为当前 authority，也不把旧 planning、脚本、源码
-  或测试流水带回当前树。
+- 新增 Phase 1～3 与 successor 迁移 interlude 的精选历史摘要：用统一冻结模板提炼问题、决定、交付、
+  非目标与继承关系；README 维护唯一宏观入口，每份摘要只保留一个 cold source snapshot，不把旧设计/
+  验收重新提升为当前 authority，也不把旧 planning、脚本、源码或测试流水带回当前树。
 - 将 BASELINE_PROVENANCE 明确为持续维护的冷证据账本：已发布身份采用统一、角色无关的登记结构；索引
   可以新增或轮换精选入口，但已登记 immutable identity 不随 ROADMAP lifecycle 变化而改写。
 
@@ -74,9 +73,9 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 
 ## v0.3.0
 
-- 由回顾性 [Phase 3.5：Successor 仓库迁移](docs/history/phase-3.5-successor-migration.md) 从冻结的
-  `v0.3.0-beta.2` 出发，依次完成 M1 exact mirror、M2 slim transformation、M3 Cloud equivalence 与 M4
-  repository authority cutover，建立 successor 仓库的首个 stable baseline。
+- 由 [`BASELINE_PROVENANCE.md` 的 Successor 迁移不可变证据](BASELINE_PROVENANCE.md#successor-migration-evidence)
+  从冻结的 `v0.3.0-beta.2` 出发，依次完成 M1 exact mirror、M2 slim transformation、M3 Cloud equivalence
+  与 M4 repository authority cutover，建立 successor 仓库的首个 stable baseline。
 - 固化迁移后已验收的 canonical runtime 和 canary 行为。
 - 发布 contract-driven ZIP 与独立 bootstrap，并完成最终下载资产和 Cloud 验收。
 - 精确身份见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，验收证据见

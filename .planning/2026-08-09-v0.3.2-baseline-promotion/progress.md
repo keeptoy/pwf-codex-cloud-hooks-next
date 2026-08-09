@@ -2,6 +2,15 @@
 
 ## 2026-08-09
 
+- 维护者批准 P2-P-E：CHANGELOG 不再提及或链接 Phase 3.5，迁移来源改回 BASELINE_PROVENANCE，并把
+  Phase 历史收口为 README 唯一宏观入口；工作树起点只有不得修改/提交的 `临时文件/`。
+- CHANGELOG 的 Unreleased 摘要已移除 Phase 3.5 名称及 deep-link，v0.3.0 改链 provenance 的稳定
+  `successor-migration-evidence` anchor；完整 M1～M4 exact refs 仍由 provenance 保存。
+- 治理指南和 repository guard 已删除“CHANGELOG 可 deep-link 一个 capsule”的例外：README 只能有一个
+  `docs/history/` 入口，其他宏观文档一律不得直链；capsule 内部继承链接继续允许。
+- 扫描确认宏观文档只有 README 引用 `docs/history/README.md`，CHANGELOG 中 `Phase 3.5`、`phase-3.5` 和
+  `docs/history/` 均为零。focused suite 17/17 PASS；完整 `npm test` 为 92 tests、80 PASS、12 SKIP、
+  0 FAIL；Node syntax 与 `git diff --check` PASS。P2-P-E 已关闭，未进入 P3。
 - 维护者批准 P2-P-B provenance 收口，并明确两个例外：第 5、6 节不动；引用调整只改 Phase 1 指向
   Phase 3.5，ROADMAP 保留现状。planning-with-files catch-up 后工作树仍只有不得修改/提交的 `临时文件/`。
 - 全仓 tracked 引用复核确认 BASELINE_PROVENANCE 被 14 个其他文件引用，因此保留稳定文件名；正文将其
