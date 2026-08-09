@@ -66,10 +66,8 @@ M2 slim transformation、M3 Cloud equivalence 与 M4 authority cutover 改变仓
 
 <a name="immutable-evidence"></a>
 
-## Immutable evidence
+## Cold evidence (not current authority)
 
-- [Phase 3 完整专项文档（immutable source）](https://github.com/keeptoy/pwf-codex-cloud-hooks/blob/bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b/docs/phase-3-canonical-plan-context.md)
-- [v0.3.0-beta.1 Cloud hard acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks/blob/bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b/docs/v0.3.0-beta.1-cloud-hard-acceptance.md)
-- [v0.3.0-beta.2 Cloud hard acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks/blob/bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b/docs/v0.3.0-beta.2-cloud-hard-acceptance.md)
+- [Immutable source snapshot](https://github.com/keeptoy/pwf-codex-cloud-hooks/commit/bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b)
 
-本文是冻结摘要；协议、Round、Cloud 与资产细节以 immutable source/acceptance 为准。
+该链接只证明本文的历史来源，不解释当前实现；当前 contract 与行为以当前仓库 authority 为准。

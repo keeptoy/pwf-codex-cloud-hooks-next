@@ -64,9 +64,8 @@ v0.3.0 最终通过 `BASELINE_PROVENANCE.md` 的 M1～M4 迁移链进入 success
 
 <a name="immutable-evidence"></a>
 
-## Immutable evidence
+## Cold evidence (not current authority)
 
-- [Phase 1 完整专项文档（immutable source）](https://github.com/keeptoy/pwf-codex-cloud-hooks/blob/bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b/docs/phase-1-runtime-contracts.md)
-- [v0.3.0-beta.2 source lineage](https://github.com/keeptoy/pwf-codex-cloud-hooks/commit/bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b)
+- [Immutable source snapshot](https://github.com/keeptoy/pwf-codex-cloud-hooks/commit/bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b)
 
-本文是冻结摘要；逐 Round 细节、精确 machine contracts 与当时命令输出以 immutable source 为准。
+该链接只证明本文的历史来源，不解释当前实现；当前 contract 与行为以当前仓库 authority 为准。

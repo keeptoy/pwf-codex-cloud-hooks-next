@@ -29,6 +29,16 @@
   `phase-3-*`，索引、可迁移治理规则和数据驱动 guard 同步采用版本无关命名，正文继续保留历史版本位置。
 - 重命名后的 repository/architecture focused suite 17/17 PASS，旧 `v0.3.0-phase-*` 引用扫描为零，Node
   syntax 与 diff check PASS；production、Release 和 immutable evidence 未变化。
+- 维护者授权继续收紧 Phase authority；本轮重新读取 planning-with-files skill，catch-up 无未同步输出，
+  工作树仍只有不得修改/提交的 `临时文件/`。P2-P-A 已启动，P3 保持未授权。
+- 已移除 BASELINE_PROVENANCE 对 Phase 索引的第二入口；README 唯一入口改为明确 cold audit 语义，三份
+  capsule 删除旧 Phase/acceptance 直链并各自只保留一个 immutable source commit。
+- 治理指南和数据驱动 guard 已同步：摘要必须自洽，宏观文档不得创建第二入口，每份 capsule 恰好一个
+  commit evidence，并禁止 retired design/acceptance blob link 回流。
+- 静态扫描确认宏观文档仅 README 引用 `docs/history/`，capsule 旧 Phase/acceptance blob link 为零；Node
+  syntax 与 diff check PASS。focused repository/architecture suite 17/17 PASS。
+- 完整 `npm test`：92 tests，80 PASS、12 个诚实 Windows/POSIX SKIP、0 FAIL。P2-P-A 已关闭；没有修改
+  production、Release、immutable assets、`临时文件/` 或 P3 状态。
 - 完整读取 planning-with-files skill，session catch-up 无未同步输出，初始工作树 clean。
 - 按新冻结的 Discussion-to-Implementation 规则，把维护者目标解释为关键 promotion/eviction Discovery，
   未直接修改 ROADMAP、版本 identity、文件窗口或外部状态。

@@ -137,7 +137,15 @@ test("phase history is a closed indexed set of frozen Markdown capsules", () => 
   assert.deepEqual(indexedCapsules, [...capsules].sort(), "history index must cover every capsule exactly once");
   assert.match(index, /warm layer.*不是源码 archive.*当前 programme authority/s);
   assert.match(index, /只允许事实纠错或修复.*immutable link/s);
+  assert.match(index, /理解其结论不需要继续打开旧 Phase\/Round 文档/s);
+  assert.match(index, /source snapshot 只是 cold evidence，不是当前 authority/s);
   assert.match(index, /不得进入 Release.*trusted graph.*runtime dispatch/s);
+
+  assert.match(read("README.md"), /\]\(docs\/history\/README\.md\)/);
+  for (const macroDoc of [
+    "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
+    "MAINTAINER_HANDOFF.md", "ROADMAP.md",
+  ]) assert.doesNotMatch(read(macroDoc), /docs\/history\//, `${macroDoc} must not create a second Phase-history entrance`);
 
   const requiredAnchors = [
     "historical-position", "problem-before", "core-decisions", "completed-delivery",
@@ -149,8 +157,14 @@ test("phase history is a closed indexed set of frozen Markdown capsules", () => 
     for (const anchor of requiredAnchors) {
       assert.match(content, new RegExp(`^<a name="${anchor}"><\\/a>$`, "m"), `${relative} lacks ${anchor}`);
     }
-    assert.match(content, /https:\/\/github\.com\/[^/]+\/[^/]+\/blob\/[a-f0-9]{40}\//,
-      `${relative} lacks immutable source evidence`);
+    const externalLinks = [...content.matchAll(/https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/(?:commit|blob)\/[^)]+/g)];
+    assert.equal(externalLinks.length, 1, `${relative} must retain exactly one cold source link`);
+    assert.match(externalLinks[0][0], /\/commit\/[a-f0-9]{40}$/,
+      `${relative} cold evidence must be an immutable source snapshot`);
+    assert.match(content, /^## Cold evidence \(not current authority\)$/m);
+    assert.match(content, /只证明本文的历史来源，不解释当前实现/);
+    assert.doesNotMatch(content, /\/blob\/[a-f0-9]{40}\/docs\/(?:phase-|v[^/]+-cloud-hard-acceptance)/,
+      `${relative} must not promote retired design or acceptance documents`);
     assert.doesNotMatch(content, /^## (Next Step|Status)$/m, `${relative} must not carry current lifecycle state`);
   }
 });
@@ -170,6 +184,7 @@ test("portable repository governance defines a closed retirement transaction", (
   assert.match(guide, /一个 Phase 只保留一份摘要.*不按 Round.*测试批次/s);
   assert.match(guide, /创建后冻结.*事实纠错.*immutable link repair/s);
   assert.match(guide, /Phase capsule 是精选历史导航.*不是新的 architecture.*authority/s);
+  assert.match(guide, /摘要正文应可独立阅读.*一个 immutable source snapshot.*第二套 authority/s);
 });
 
 test("retired prototype conclusions remain covered by production safety tests", () => {

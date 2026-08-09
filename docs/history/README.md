@@ -5,9 +5,10 @@
 这里保存已经闭合 Product Phase 的精选摘要，帮助维护者理解“当时为什么这样走、交付了什么、哪些能力
 留给后继阶段”。它属于 warm layer 导览，不是源码 archive、当前 programme authority 或验收原文。
 
-完整历史字节、逐轮计划、命令输出和专项验收仍由 immutable Git commit、tag 与 Release 保存；当前版本角色、
-授权和 Next Step 只读 `ROADMAP.md` 与活动 planning。这里的文件创建后原则上冻结，只允许事实纠错或修复
-immutable link。
+每份摘要已经从 cold evidence 中提炼并独立成文，理解其结论不需要继续打开旧 Phase/Round 文档。完整历史
+字节仍由 immutable Git commit、tag 与 Release 保存，但只用于来源审计，不解释当前实现。当前现实以根级
+README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning 为准。这里的文件创建后原则上
+冻结，只允许事实纠错或修复 immutable link。
 
 ## 收录边界
 
@@ -15,6 +16,7 @@ immutable link。
 - 每个 Phase 只保留一份摘要，不按 Round、测试批次、候选版本或会话继续拆文件。
 - 不复制 production source、脚本、fixture、验收全文、SHA 表、测试计数或旧 planning。
 - 摘要不维护当前 candidate、accepted、rollback、PASS/PENDING 或下一步状态。
+- 每份摘要最多保留一个 immutable source snapshot，不直接链接旧 Phase/Round 设计文档或验收全文。
 - `docs/history/` 整体不得进入 Release、installer inventory、trusted graph 或 runtime dispatch。
 
 ## 已收录 Phase
@@ -27,6 +29,6 @@ immutable link。
 
 ## 阅读方式
 
-先用本索引定位 Phase，再从摘要末尾的 immutable evidence 进入当时的完整专项文档和验收。如果摘要与
-不可变原文冲突，以原文为历史证据，并通过新的事实纠错提交修复摘要；不得改写旧 commit、tag、Release
-或 acceptance。
+先用本索引定位 Phase，并直接阅读摘要。末尾的 source snapshot 只是 cold evidence，不是当前 authority；
+需要审计历史来源时才进入该 commit。如果摘要与不可变历史字节冲突，通过新的事实纠错提交修复摘要；
+不得把旧设计重新提升为当前规范，也不得改写旧 commit、tag、Release 或 acceptance。

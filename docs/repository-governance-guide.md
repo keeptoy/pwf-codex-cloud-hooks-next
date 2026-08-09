@@ -162,6 +162,8 @@ planning 和专项文档整体复制进 HEAD，又会把 cold history 重新变�
 5. 不维护当前 candidate/accepted/rollback、Next Step 或 PASS/PENDING 状态；
 6. 创建后冻结，只允许事实纠错或 immutable link repair；
 7. 所在目录被 Release、installer inventory、trusted graph 与 runtime dispatch 明确排除。
+8. 摘要正文应可独立阅读；默认只保留一个 immutable source snapshot，不直接把旧设计文档或验收全文
+   链接成解释当前实现的第二套 authority。
 
 Phase capsule 是精选历史导航，不是新的 architecture、programme、provenance 或 acceptance authority。
 没有长期解释价值的阶段不必收录；讨论中、施工中或只有原型结论的阶段不得提前进入该目录。

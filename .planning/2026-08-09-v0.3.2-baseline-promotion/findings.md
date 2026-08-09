@@ -30,6 +30,17 @@
   Phase，同时拒绝未索引文件、源码副本和当前 lifecycle 状态渗入。
 - Phase capsule 的文件身份属于 programme 阶段而不是发布版本；采用 `phase-<number>-<topic>.md` 可避免把
   一个跨 alpha/beta/stable 的 Phase 错看成某个版本的附属归档，具体版本关系继续写在 Historical position。
+- 当前 Phase 内容入口不只 README：BASELINE_PROVENANCE 仍反向链接索引，三份 capsule 又分别直链旧仓库的
+  Phase 专项文档与 acceptance；前者制造第二入口，后者容易让旧设计文本重新获得解释当前现实的权威感。
+- Governance Guide、DESIGN 和 repository test 对 Phase capsule 的提及只是分类与 guard，不是内容入口，
+  应保留；最小收紧是 README 单一导航、capsule self-contained、每份只留一个 immutable source snapshot。
+
+### P2-P-A Result
+
+- README 现在是宏观文档中唯一 `docs/history/` 入口；provenance 回到只维护来源/迁移证据，不反向导航 capsule。
+- 每份 capsule 删除旧 Phase 专项设计和 acceptance 直链，只保留同一个 immutable source commit，并把段名
+  改为 `Cold evidence (not current authority)`；历史摘要可以独立阅读，current contract 不由旧文档解释。
+- 通用治理方法与 repository guard 继续保留，因为它们只约束 lifecycle，不承担 Phase 内容 authority。
 
 ## Initial Question
 

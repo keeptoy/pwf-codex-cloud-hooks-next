@@ -21,6 +21,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   v0.3.0-beta.2 与 v0.2.2 的历史定位；v0.2.2 具体特点等待维护者后续补充，不得无证据扩写。
 - 维护者已批准在 P2 内建立精选的 Phase 1～3 历史摘要：只从现有 work plan、Phase 专项文档、
   beta acceptance 与 immutable refs 提炼，不复制临时目录、逐轮日志、脚本或历史源码，也不进入 P3。
+- 维护者已批准继续收紧 Phase authority：README 保留唯一面向当前树的 Phase 导航；provenance 不反向链接
+  capsule；摘要正文自洽，旧 Phase/acceptance 文档不再作为直接解释入口，只保留明确降级的 cold source evidence。
 - P3 只记录为后续独立 gate；当前不修改 package、Release contract、bootstrap 或 `v0.3.3-dev` identity，
   不 seal、不发布、不部署新版本。
 - 已完成的 `2026-08-09-architecture-contract-retention` 三文件由 immutable commit `d4cc3b5` 保存，P2
@@ -29,7 +31,7 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 ## Next Step
 
 停在 post-release 文档治理阶段，等待维护者后续补充 v0.2.2 的具体特点或另行授权新的 P2 gate。
-Phase 1～3 精选历史摘要已建立并验证；不得扩写无证据的 v0.2.2，也不得进入 P3。
+Phase authority 已收紧为 README 单一入口与 cold-evidence-only；不得进入 P3。
 
 ## Gates
 
@@ -45,6 +47,7 @@ Phase 1～3 精选历史摘要已建立并验证；不得扩写无证据的 v0.2
 - [x] P2-G — Retirement governance：固化可迁移退役合同与版本无关自动化 guard。
 - [x] P2-H — Historical changelog recovery：从早期证据恢复 beta.1/beta.2/0.2.2 版本定位。
 - [x] P2-P — Phase history capsules：建立精选历史索引与 Phase 1～3 冻结摘要，固化边界 guard。
+- [x] P2-P-A — Phase authority tightening：单一 README 入口、正文自洽、旧文档证据降级与防回流 guard。
 - [ ] P3 — Successor train：另开 active scope 和 Discovery，建立获批的后继 machine identity。
 
 ## Stop Conditions
@@ -61,8 +64,9 @@ Phase 1～3 精选历史摘要已建立并验证；不得扩写无证据的 v0.2
 
 ## Status
 
-P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS。本地分支为 `0.3.2-post-release`，当前 HEAD
-是 P3 前的 unsealed governance transition。等待 v0.2.2 补充或新的 P2 授权；P3 未授权。
+P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS，P2-P-A PASS。本地分支为
+`0.3.2-post-release`，当前 HEAD 是 P3 前的 unsealed governance transition。等待 v0.2.2 补充或新的
+P2 授权；P3 未授权。
 
 ## Errors Encountered
 

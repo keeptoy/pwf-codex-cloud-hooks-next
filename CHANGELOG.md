@@ -21,8 +21,9 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - README 与智能体入口的 bootstrap 语法检查改为版本无关循环，避免每次角色轮换继续累积固定版本命令。
 - 固化 promotion + eviction 的 retirement contract：两者可分 gate 审查，但旧角色未关闭前不得开启下一
   列车；稳定文档采用版本无关 guard，publication oracle 固定为 accepted + immediate fallback 两席轮换。
-- 新增 Phase 1～3 精选历史摘要：用统一冻结模板提炼问题、决定、交付、非目标与继承关系，完整 Phase/Round
-  原文和验收继续通过 immutable refs 恢复，不把旧 planning、脚本、源码或测试流水重新带回当前树。
+- 新增 Phase 1～3 精选历史摘要：用统一冻结模板提炼问题、决定、交付、非目标与继承关系；README 是唯一
+  导航，每份摘要只保留一个 cold source snapshot，不把旧设计/验收重新提升为当前 authority，也不把旧
+  planning、脚本、源码或测试流水带回当前树。
 
 ## v0.3.2
 
