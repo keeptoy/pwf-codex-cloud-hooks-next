@@ -47,3 +47,14 @@
   转到沙箱外后两个 bootstrap `bash -n` 均 PASS。
 - P1-A～P1-D 全部关闭；外部 Latest、ROADMAP、CHANGELOG、v0.3.2 acceptance 与 transitional lifecycle
   guard 一致。下一步进入 P2-D 只读深度清理 inventory，不自动删除或开启 P3。
+- P2 首轮全仓版本/退役路径扫描完成：architecture-contracts 已版本无关；v0.3.1 实体与引用面集中在
+  bootstrap/acceptance、文档 authority 和三类测试。一次裸 `*.md` PowerShell glob 失败已改为 `-g`。
+- 确认 P2 不能删除 root v0.3.1 bootstrap：sealed v0.3.2 README 仍引用它；该单一 residue 必须透明
+  延后到 P3。其余 acceptance/link/assertion/oracle/tombstone 进入第二轮职责与恢复链审计。
+- P2 隐藏常量扫描发现 release-package 的 v0.3.0/v0.3.1 冗余 SHA `notEqual`、contracts 的逐版本
+  bootstrap 负清单、skill-patch 的旧 identity + 通用安全断言混合，以及 v0.3.0/beta.2 默认 oracle。
+- 核验 v0.3.1 acceptance 当前/immutable blob 均为 `e70265e...6f77`，v0.3.1 bootstrap 当前/v0.3.2 tag
+  blob 均为 `2e470386...65c`；moving Release URL 扫描零匹配。
+- P2-D 已冻结 delete/generalize/relink/keep 四类集合并得出 `CONDITIONAL_GO`；未执行删除，等待维护者
+  授权 P2-I。旧 retention 三文件的有效结论已全部吸收，未恢复第二个 tracked planning scope。
+- P2 Discovery checkpoint 的 repository-boundary guard 7/7 PASS，`git diff --check` PASS；可本地提交。

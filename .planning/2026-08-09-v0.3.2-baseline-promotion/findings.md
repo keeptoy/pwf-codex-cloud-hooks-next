@@ -147,3 +147,109 @@
 - P1 没有修改 package、Release contract、README、bootstrap、production runtime、Host ABI、trusted
   graph、tag 或 asset。唯一外部变化是 Latest pointer；唯一当前树变化是 lifecycle authority、证据与
   精确 transitional-role guard。
+
+## P2 Initial Repository Inventory
+
+### Confirmed Clean
+
+- `tests/architecture-contracts.test.js` 已经没有具体 v0.3.x、版本 acceptance 路径、commit、asset SHA
+  或固定历史测试计数；它只保护稳定 authority、Architecture/Design 分工、Discovery/Release 规则与
+  test reverse index。维护者举出的文件是本轮扫描入口，但不是当前仍需删除的残留。
+- 当前 HEAD 相对 immutable `v0.3.2` tag 的 Release ZIP inputs diff 为空；P1 后仍能精确重建 sealed ZIP。
+- 当前树只有一个 tracked active planning scope。旧 retention 三文件可从 `d4cc3b5` 精确读取，内容已
+  恢复进本轮判断，不需要恢复第二个 scope。
+
+### v0.3.1 Reference Surface
+
+- 当前树实体：`init-cloud-sandbox-v0.3.1.bash` 与 `docs/v0.3.1-cloud-hard-acceptance.md`。
+- 稳定/治理文档：README、AGENTS、ROADMAP、CHANGELOG、BASELINE_PROVENANCE、v0.3.2 acceptance。
+- tests：`skill-patch.test.js`、`published-release-oracles.test.js`、`contracts.test.js`；repository lifecycle
+  当前通过显式 P2 transition 派生 v0.3.1 两个实体。
+- v0.3.2 acceptance 中的 v0.3.1 文字主要是带时间语义的 R4/R5 与 promotion 前后证据，不是残留，
+  应原样保留。
+- CHANGELOG 的 v0.3.1 delta 和 ROADMAP v0.3.2 的 inherited-security 摘要仍有当前解释价值；不能把
+  “出现旧版本号”直接等同于应删除。
+
+### Hard Coupling That Defers One File to P3
+
+- `README.md` 是 sealed v0.3.2 ZIP input，并仍包含 `bash -n init-cloud-sandbox-v0.3.1.bash`。P2 若删除
+  root v0.3.1 bootstrap 而不改 README，会留下坏命令；若修改 README，则 HEAD 不再精确复现 v0.3.2
+  published ZIP。两条路都违反当前 gate。
+- 因此 root v0.3.1 bootstrap 必须在 P2 后暂留，并降格为显式 sealed-source residue；P3 开启新的
+  machine/source identity 后才能同时修改 README 并删除该文件。该项不是无限历史保留许可。
+
+### Candidate P2 Cleanup, Pending Deeper Audit
+
+- 可删除候选：当前树 v0.3.1 acceptance；前提是 provenance/CHANGELOG 改为 exact immutable commit
+  `435f8305...924f` URL，并验证该 blob 含最终 promotion 证据。
+- 可迁移候选：`skill-patch` 中 v0.3.1 专属用例承载的通用 bootstrap 安全断言转到 v0.3.2；
+  `contracts.test.js` 的 v0.3.1 文件名负断言改为版本无关边界。
+- 需重新决策：v0.3.1/v0.3.0 publication oracle 是否仍承担 immediate fallback 角色；不能只为减少测试
+  数量删除 immutable audit。应先把 ROADMAP 的 immediate fallback 与更深 museum evidence 分开。
+- 精选 tombstone 候选：repository-boundary 中旧 prototype/fixture/runbook 路径只是不允许回流的负断言，
+  不是当前历史文件；需比较保留精选列表与版本无关模式，不能机械删除。
+
+## P2 Deep Audit: Hidden Test History
+
+- `tests/release-package.test.js` 除精确 v0.3.2 sealed SHA 外，还保存 v0.3.0/v0.3.1 ZIP SHA 并只做
+  `notEqual`。精确等于 v0.3.2 已经逻辑蕴含不等于旧 SHA，这两项是无新增安全价值的隐藏历史常量。
+- `tests/contracts.test.js` 逐项写死 v0.3.0/v0.3.1/v0.3.2 bootstrap 均不在 ZIP；真正合同是所有
+  `init-cloud-sandbox-*` 都是 external asset，应用版本无关 pattern 断言替代三行累积名单。
+- `tests/skill-patch.test.js` 的 v0.3.1 case 同时测试旧版 identity 与长期有效的供应链性质。应删除旧版
+  identity 部分，把 PWF archive pin/SHA、pristine subtree、Node >=18、无 NVM/npx/npm/curl-pipe-bash、
+  安装顺序与 checksum gate 全部并入 v0.3.2 accepted bootstrap case；不能随旧用例一起丢掉。
+- `tests/published-release-oracles.test.js` 当前重建 v0.3.2、v0.3.1、v0.3.0，并在 v0.3.0 case 中顺带
+  固定 beta.2 identity。v0.3.2 是 accepted，v0.3.1 是 immediate fallback，仍承担角色；v0.3.0/beta.2
+  已可由 provenance + immutable tag/Release/acceptance 周期审计，应退出默认 suite。
+- v0.3.1 publication oracle 暂留，并继续证明 tag/source ZIP 与当前 root residue bootstrap 字节；P3 删除
+  root copy 时再去掉最后一个 current-tree hash seam，但保留是否周期审计由 P3 Discovery 决定。
+- `repository-boundary.test.js` 的 prototype/fixture/runbook tombstones 是精选防回流断言，旧 retention
+  scope 已明确决定保留；本轮没有出现新增证据推翻该结论。
+
+## Exact Recovery and Size Evidence
+
+- v0.3.1 acceptance：686 行 / 35,588 bytes；当前 blob 与可达 ancestor commit
+  `435f830577ded23f8509a7befb95e8ba5128924f` 中 blob 均为
+  `e70265e2913070cc7cd8f76fa0d590a33dba6f77`，可安全从 exact URL 恢复。
+- v0.3.1 bootstrap：750 行 / 21,565 bytes；当前 blob 与 immutable v0.3.2 tag tree 中 blob 均为
+  `2e470386a29ebe6fd9e78b05c736a24fd010565c`。README blob 也与 v0.3.2 tag 精确相同，证明该依赖属于
+  sealed source，不是可以在 P2 单独删掉的普通文档残留。
+- 全仓 moving Release URL 扫描零匹配；当前历史链接均使用 exact tag/commit/Release，不依赖
+  `latest/download`、moving branch blob 或 `refs/heads`。
+
+## Frozen P2-I Change Set
+
+### Delete / rotate out
+
+1. 删除当前树 `docs/v0.3.1-cloud-hard-acceptance.md`，把 provenance/CHANGELOG 链接改为 exact
+   `435f830...` immutable URL。
+2. 删除 `published-release-oracles.test.js` 的 v0.3.0/beta.2 默认重建 block 与其专属常量；v0.3.0 和
+   beta.2 继续留在 curated provenance/CHANGELOG museum，不删除历史。
+3. 删除 `release-package.test.js` 的 v0.3.0/v0.3.1 SHA `notEqual` 常量/断言。
+4. 删除 `skill-patch.test.js` 的 v0.3.1 专属 identity case/constant，但先把全部通用供应链断言迁入
+   v0.3.2 case。
+5. 删除 AGENTS 中重复的 v0.3.1 syntax 命令；README 同名命令因 sealed-input 约束暂留。
+
+### Generalize / relink
+
+1. `contracts.test.js` 用版本无关 bootstrap pattern 证明所有 bootstrap 不进入 ZIP。
+2. BASELINE_PROVENANCE 将 v0.3.2 作为当前已发布 identity 条目；v0.3.1 降到精选历史里程碑，保留完整
+   tag/source/asset identity 与永久安全意义，并链接 exact acceptance。
+3. ROADMAP 把 rollback evidence 分为 v0.3.1 immediate fallback 与 provenance museum；P2 transition
+   收口为 bootstrap-only `sealed source residue`，明确 P3 删除条件。
+4. repository lifecycle 分别派生 active bootstrap/acceptance 与 bootstrap-only sealed residue，不使用
+   宽泛 allowlist；P2 完成后当前 acceptance 只剩 v0.3.2。
+
+### Keep
+
+- v0.3.1 root bootstrap 与 README v0.3.1 syntax 行：直到 P3 建立新 machine identity 后一起删除。
+- v0.3.1 publication oracle：作为 immediate fallback 与 root residue 字节证明。
+- v0.3.2 acceptance 中所有 v0.3.1 时间语义、CHANGELOG v0.3.1 delta、ROADMAP 的 inherited-security
+  摘要、provenance v0.3.1 精选身份。
+- `architecture-contracts.test.js`、repository 精选 tombstones、v0.3.0/beta.2 provenance/CHANGELOG。
+
+## P2-D Conclusion
+
+`CONDITIONAL_GO`。上述 change set 可以在不修改 sealed v0.3.2 ZIP inputs、production runtime、Host ABI、
+trusted graph、tag/asset 或 P3 identity 的情况下实施。维护者需明确授权 P2-I；若要求连 root v0.3.1
+bootstrap/README 一并删除，则当前结论转为 `NO_GO`，必须等待 P3 新 source identity。

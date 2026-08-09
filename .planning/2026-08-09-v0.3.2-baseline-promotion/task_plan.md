@@ -19,9 +19,9 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Next Step
 
-执行 P2-D 全仓只读 inventory：以 v0.3.1、已退役版本/路径、历史 acceptance/bootstrap/oracle、版本化
-测试断言和文档链接为入口，按 hot/warm/cold 与 sealed-input/lifecycle 分类；把旧 retention scope 中仍
-有效的结论吸收到当前 findings，冻结保留、迁移、删除集合和停止条件，再请求 P2-I 实施授权。
+等待维护者确认 P2-I：按 findings 的冻结集合归档 v0.3.1 acceptance、迁移通用 bootstrap 断言、泛化
+Release 边界断言、轮出 v0.3.0 默认 publication oracle，并把唯一不能删除的 v0.3.1 bootstrap 明确降格为
+P3 sealed-source residue。未收到 GO 前不修改上述文件。
 
 ## Gates
 
@@ -31,7 +31,7 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 - [x] P1-B — Pointer promotion：仅把 GitHub Latest 指向 v0.3.2，并完成独立后置查询。
 - [x] P1-C — Evidence and authority：写入 v0.3.2 promotion evidence，旋转 ROADMAP/CHANGELOG 角色；provenance 按职责不复制当前角色。
 - [x] P1-D — Validation：focused/full suite、published oracle、sealed ZIP identity、链接与 diff 全绿。
-- [ ] P2-D — Deep-clean Discovery：恢复旧 retention 结论，全仓扫描并冻结 hot/warm/cold inventory、删除集合、
+- [x] P2-D — Deep-clean Discovery：恢复旧 retention 结论，全仓扫描并冻结 hot/warm/cold inventory、删除集合、
   断言迁移、immutable 恢复链和停止条件；未获新 GO 前不删除。
 - [ ] P2-I — Historical cleanup：只实施 P2-D 后明确批准的清退集合，不开启新版本 identity。
 - [ ] P3 — Successor train：另开 active scope 和 Discovery，建立获批的后继 machine identity。
@@ -47,9 +47,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Status
 
-P1 PASS，P2-D in progress。GitHub Latest/production rollback baseline 已由 v0.3.1 晋级到 v0.3.2，四个
-公开资产 identity 未改变，authority 与证据已同步并通过完整本地回归。当前只做 P2 全仓 Discovery；
-具体删除未授权，P3 未授权。
+P1 PASS，P2-D `CONDITIONAL_GO`。全仓 inventory、恢复链、保留/迁移/删除集合和 P3 延后项已冻结；
+等待维护者授权 P2-I。当前没有执行历史文件删除，P3 未授权。
 
 ## Errors Encountered
 
@@ -63,3 +62,5 @@ P1 PASS，P2-D in progress。GitHub Latest/production rollback baseline 已由 v
 | P1 focused 20/20 PASS 后 `git diff --check` 报 acceptance 新增行 trailing whitespace | 1 | 只移除该行末空格，不修改证据内容；随后重跑 diff/full suite |
 | PowerShell 环境没有全局 `bash` 命令，两条直接 `bash -n` 未执行 | 1 | 完整 suite 的 bootstrap 行为用例已 PASS；改用测试固定的 Git Bash 绝对路径做独立语法检查 |
 | Git Bash 在沙箱内创建 signal pipe 失败，Win32 error 5 | 1 | 分类为 sandbox permission limitation；仅将两个只读 `-n` 检查移到沙箱外，均 PASS |
+| P2 首轮 `rg` 把 PowerShell 不展开的 `*.md` 当作路径，返回 Windows illegal path | 1 | 前两段 inventory 已输出；后续改用 `rg ... . -g '*.md'`，不重复裸 shell glob |
+| 合并 inventory 命令最后的 moving-URL `rg` 因零匹配返回 exit 1 | 1 | 前置清单均成功；零匹配本身是 clean 结果，后续不把预期 no-match 与产品失败混为一谈 |
