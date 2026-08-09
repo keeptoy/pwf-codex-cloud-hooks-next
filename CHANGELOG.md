@@ -68,7 +68,10 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 
 ## v0.3.0
 
-- 建立 successor 仓库的首个稳定版本，保留已验收 canonical runtime 和 canary 行为。
+- 由 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 的 **Successor 迁移来源链**从冻结的
+  `v0.3.0-beta.2` 出发，依次完成 M1 exact mirror、M2 slim transformation、M3 Cloud equivalence 与
+  M4 repository authority cutover，建立 successor 仓库的首个 stable baseline。
+- 固化迁移后已验收的 canonical runtime 和 canary 行为。
 - 发布 contract-driven ZIP 与独立 bootstrap，并完成最终下载资产和 Cloud 验收。
 - 精确身份见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，验收证据见
   [immutable v0.3.0 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/1454c9224c83d11c073b05baf6e536a11c3bb0e5/docs/v0.3.0-cloud-hard-acceptance.md)。

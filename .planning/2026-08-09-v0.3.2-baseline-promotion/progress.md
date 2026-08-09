@@ -86,3 +86,6 @@
 - P2-G 已关闭；活动计划重新停在 P3 前，未创建新 scope、machine identity、ZIP、seal、Release 或部署。
 - 本地分支已从 `0.3.2-dev-extend` 改名为 `0.3.2-post-release` 并解除旧 upstream；远端分支未修改或删除。
   ROADMAP 与活动 planning 已同步，package/contract/bootstrap 仍保持最后发布的 v0.3.2 identity。
+- CHANGELOG 的 v0.3.0 段已补充其来源：从冻结的 v0.3.0-beta.2 经 provenance 中 M1 exact mirror、M2
+  slim transformation、M3 Cloud equivalence 与 M4 repository authority cutover 建立首个 stable baseline；
+  精确 ref 与迁移证据仍只由 BASELINE_PROVENANCE 维护。
