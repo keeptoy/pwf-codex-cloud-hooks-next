@@ -13,23 +13,23 @@
 维护者已明确采用 `0.3.2-dev` 文档治理身份路线，并允许在关键 gate 主动创建本地 Git commit 作为
 回滚点。D0/D1 探路与 R0 identity foundation 已完成；新 source/package/contract/bootstrap identity
 通过完整 Windows 回归、immutable v0.3.1/v0.3.0 oracle 和 deterministic ZIP 验证。D2 entry-point 与
-D3 implementation navigation、D4 lifecycle/provenance guards 与 D4.1 stable-anchor correction 已完成并
-通过完整回归；下一 gate 为 D5 handoff maintainer entrypoint。授权
+D3 implementation navigation、D4 lifecycle/provenance guards、D4.1 stable-anchor correction 与 D5
+maintainer entrypoint 已完成；下一 gate 为 D6 validation and closure。授权
 不包含 seal、publication、tag、asset、push、remote ref、Cloud 或 Product Phase 4 变更。
 
 ## Next Step
 
-实施 D5：将 `MAINTAINER_HANDOFF.md` 收口为新人最短接手路径、踩坑摘要与能力检测结果分流；可漂移
-事实和完整步骤只链接 D4/D4.1 已稳定的 authority，不复制第二份 runbook。
+实施 D6：运行全量文档治理、repository boundary、完整 suite 与 deterministic package 收口验证，记录
+有意摘要/历史快照白名单并提交维护者复核；不进入 Product Phase 4 或任何 Release/Cloud 操作。
 
 ## Current Phase
 
-D5 — MAINTAINER_HANDOFF maintainer entrypoint
+D6 — Validation and closure
 
 ## Status
 
-**GO.** D0/D1/R0/D2/D3/D4/D4.1 已完成，`0.3.2-dev` development identity、文档入口、实现导航、
-change/lifecycle/provenance 权威分层与 stable fragment guard 已建立。
+**GO.** D0/D1/R0/D2/D3/D4/D4.1/D5 已完成，`0.3.2-dev` development identity、文档入口、实现导航、
+change/lifecycle/provenance 权威分层、stable fragment guard 与 handoff 导诊入口已建立。
 D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相称验证后可主动 commit，前一 gate 未通过
 不得进入下一 gate。Release seal/publication、push/remote/Cloud 和 Product Phase 4 仍需独立授权。
 
@@ -171,18 +171,18 @@ D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相
 
 ### D5 — MAINTAINER_HANDOFF maintainer entrypoint
 
-- [ ] 建立 `MAINTAINER_HANDOFF.md` 逐节迁移矩阵：事实/完整步骤迁入明确 authority；有价值的接手路标、
+- [x] 建立 `MAINTAINER_HANDOFF.md` 逐节迁移矩阵：事实/完整步骤迁入明确 authority；有价值的接手路标、
   常见误判和失败分类压缩成稳定摘要并链接。
-- [ ] 保留“接手前最短路径”，但命令详情链接 README，当前授权链接活动 task plan，系统边界链接
+- [x] 保留“接手前最短路径”，但命令详情链接 README，当前授权链接活动 task plan，系统边界链接
   ARCHITECTURE，模块变更/验证选择链接 DESIGN，lifecycle 链接 ROADMAP，来源/资产链接
   BASELINE_PROVENANCE 与版本 acceptance。
-- [ ] 增加能力检测反馈矩阵：检测什么、PASS/repairable/blocker/platform limitation 分别意味着什么、
+- [x] 增加能力检测反馈矩阵：检测什么、PASS/repairable/blocker/platform limitation 分别意味着什么、
   下一步去哪个 authority；不得在 handoff 复制完整命令或修复 runbook。
-- [ ] 保留少量高价值踩坑提示：版本字段不等于 Release、Windows SKIP 不替代 Linux/Cloud、global Skill
+- [x] 保留少量高价值踩坑提示：版本字段不等于 Release、Windows SKIP 不替代 Linux/Cloud、global Skill
   必须 pristine、unknown drift 不可伪装 repair、当前 gate 只读活动 plan；每项都链接完整解释。
-- [ ] 验证 handoff 无 current version/hash/test-count/逐 gate 状态，无第二份 Release/rollback 流程，且
+- [x] 验证 handoff 无 current version/hash/test-count/逐 gate 状态，无第二份 Release/rollback 流程，且
   所有链接有效。
-- **Status:** ready / authorized after D4.1 exit
+- **Status:** complete
 
 ### D6 — Validation and closure
 
@@ -191,7 +191,7 @@ D4–D6 在本计划冻结范围内按 gate 顺序实施；每一 gate 通过相
   和对应 Release gate。
 - [ ] 记录残留的有意摘要与历史快照白名单。
 - [ ] 完成维护者复核后关闭计划，Product Phase 4 仍需独立授权。
-- **Status:** pending / authorized after D5 exit
+- **Status:** ready / authorized after D5 exit
 
 ## Release Identity Decision Gate
 

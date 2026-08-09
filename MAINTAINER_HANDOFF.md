@@ -1,165 +1,83 @@
-# 维护者交割手册
+# 维护者接手导诊
 
-## 1. 接手前五分钟
+本文件只负责新人接手顺序、常见误判和检测结果分流，不保存当前版本、提交、资产身份、逐 gate 状态，
+也不提供第二份安装、Release 或回滚 runbook。先从
+[README 的开发状态与文档地图](README.md#documentation-map)找到每类问题的唯一权威；本文件只告诉你
+“先去哪一科、何时必须停”。
 
-1. 确认仓库、branch 和 dirty state：`git status --short --branch`。
-2. 按 `AGENTS.md` 阅读 README、ARCHITECTURE、ROADMAP。
-3. 打开 `.planning/.active_plan` 指向的三份 planning 文件。
-4. 运行 `python3 tools/import_upstream_runtime.py check`。
-5. 运行与平台相符的 suite，确认没有未知 cache/drift。
+## 1. 新人五分钟接手
 
-不要从旧对话、Release filename 或 upstream 脚本存在性推断当前授权和支持范围。
+1. **先保护现场。** 只读确认仓库、分支和 dirty state；不能解释的未提交内容视为 unknown state，
+   不覆盖、不清理，也不假设它属于上一位维护者。
+2. **确认文档权威。** 按 README 的地图区分稳定行为、架构、实现设计、programme、变更历史和不可变
+   证据，不从文件名或旧对话推断状态。
+3. **确认本轮授权。** 打开 [.planning/.active_plan](.planning/.active_plan)，读取它指向的 task plan、
+   findings 和 progress。只有活动 task plan 能回答当前 Next Step、允许事项、禁止事项和停止条件。
+4. **定位改动边界。** 用
+   [DESIGN 的模块职责与依赖](DESIGN.md#module-responsibilities)找到源码落点和验证路由，再用
+   [ARCHITECTURE](ARCHITECTURE.md)复核系统职责、Host contract、trusted graph 与失败语义。
+5. **先检测，再解释。** 从
+   [README 的本地开发入口](README.md#local-development)选择相称检查；结果必须按本文第 4 节分类，
+   绿色结果只是证据，不会自动扩大授权。
 
-## 2. 当前事实
+## 2. 高频情形导诊
 
-- 产品 rollback/`Latest`：published/accepted `v0.3.1`；v0.3.0 为不可变 immediate previous fallback，
-  beta.2 为更早的不可变 fallback oracle。
-- 当前稳定身份：`v0.3.1` tag 精确指向 `9aa2148...`，两个资产、Cloud setup、Fresh、canonical、
-  real Resume、doctor、11 payload 和零 residue 全部 PASS。
-- 当前版本路线：stable Release 已关闭；Product Phase 4 前另行授权的 0.3.1 security-fix train 已完成
-  S1、S2 Linux/Cloud hard acceptance、S3-A 本地 seal、S3-B publication 与 S3-C 公开下载/final Cloud
-  acceptance，并已完成 rollback/Latest promotion。
-- 当前仓库迁移：M1/M2/M3/M4 complete。M3 实际行为测试 HEAD 为
-  `39795283cd65f84547651d7bec816191fb5bfedf`，ZIP SHA-256 为
-  `82770964b938b14eea74394a4e99957e0b3f63e0a4477fbea49fd3730a31e508`；M3-B setup、Fresh、
-  canonical、Resume 和 doctor 全部 PASS。M4-C no-live cutover/rollback 验收 HEAD 是
-  `main@0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151`；development/audit evidence refs
-  未移动，两个 active integrity ruleset 只禁止 deletion 与 non-fast-forward。successor 已成为
-  后续源码维护权威；旧仓库继续承载不可变 beta.2 fallback oracle。Product Phase 4 仍未授权。
-- M1 audit branch：`audit/beta2-exact`，不得移动或重写。
-- Product Phase 4：未开始、未授权；0.3.1 安全修复列车的关闭不自动授权下一 Phase。
-- 生产集成：只支持 PWF v3.8.2 的两个 Managed Hook events。
-
-## 3. 日常健康检查
-
-```bash
-git status --short --branch
-python3 tools/import_upstream_runtime.py check
-node --check install.js
-python3 -c "from pathlib import Path; [compile(p.read_text(encoding='utf-8'), str(p), 'exec') for p in map(Path, ['hooks/hook_adapter.py','runtime/owned-plan.py','runtime/owned-catchup.py'])]"
-npm test
-git diff --check
-```
-
-Linux/Cloud 再加：
-
-```bash
-bash -n init-cloud-sandbox-v0.3.0.bash
-bash -n init-cloud-sandbox-v0.3.1.bash
-git ls-files --stage runtime/upstream
-```
-
-四个 upstream runtime 必须是 `100755`。Windows 修复方法见 `docs/git-file-modes.md`。
-
-## 4. 变更分类
-
-| 类型 | 典型文件 | 最小验证 |
+| 你遇到的情形 | 阅读顺序 | 要回答的问题 |
 |---|---|---|
-| 文档-only | README、ARCHITECTURE、ROADMAP | UTF-8、links、fences、`git diff --check`、相关 doc contract tests |
-| fixture/test name | `tests/fixtures`、test modules | fixture hash/bytes、focused tests、full suite |
-| provenance metadata | overlay、manifest、baseline | JSON parse、hash chain、contracts/importer/patcher/installer tests |
-| installer | `install.js`、manifest/inventory | full installer/doctor/repair/uninstall + isolated install |
-| runtime/schema | adapter、owned children、schemas | focused safety tests + full suite + Linux/Cloud gate |
-| Release | allowlist、builder、bootstrap、version | deterministic double build + asset/hash + fresh Cloud |
-| activation/cutover | policy/event/branch/main/Release | Discovery checkpoint + explicit maintainer authorization |
+| 收到源码或文档变更请求 | 活动 task plan → [DESIGN](DESIGN.md) → ARCHITECTURE | 这轮是否获准、改动落在哪个模块、是否触碰系统安全边界 |
+| 安装、doctor 或 repair 异常 | [README](README.md) → ARCHITECTURE → 相关 contract/tests | 稳定操作入口是什么、结果属于 owned drift 还是未知现场 |
+| 版本、Release 或回滚问题 | [ROADMAP](ROADMAP.md) → [CHANGELOG](CHANGELOG.md) → [BASELINE_PROVENANCE](BASELINE_PROVENANCE.md) | 当前角色、已发生 delta 与不可变身份是否被分开解释 |
+| Cloud 事实或历史验收争议 | BASELINE_PROVENANCE → [docs 专项证据](docs/) | 争议属于当前 programme，还是带日期的 acceptance/runbook 快照 |
 
-如果变更跨 schema、Host ABI、trusted graph、timeout、process、permission 或 rollback，先停下来做
-Discovery，不以“顺便改完”代替设计审批。
+这张表不是第二份文档地图。若问题继续下钻，以目标 authority、machine contract、源码和测试为准，
+并把本轮研究与验证分别记入活动 findings 和 progress。
 
-## 5. Source/runtime 更新
+## 3. 常见安全误判
 
-1. 固定新的 upstream release/commit/archive SHA；
-2. 审计 canonical scripts 和 direct dependencies；
-3. 更新 runtime bundle 与 overlay anchors；
-4. 用 importer 在临时 destination 复现；
-5. 只接受 allowlist 文件，拒绝 unknown destination content；
-6. 更新 upstream manifest 的全部受影响 hashes；
-7. 跑 patcher/importer/contracts/installer/runtime suite；
-8. Linux/Cloud 验证 mode、permission、process-group 和真实 Host data。
+- **源码 checkout、版本字段或本地 package 不等于 Release。** Release 身份和可回退资产必须由
+  ROADMAP、provenance、对应 acceptance 与 machine contract 共同闭合。
+- **本地检查或测试 PASS 不等于下一 gate 获准。** 它只满足当前 task plan 中明确的一项证据要求；
+  activation、cutover、发布和回滚仍要单独授权。
+- **Windows 的 platform limitation 或 SKIP 不替代 Linux/Cloud。** 保留诚实平台结论，把缺失的
+  POSIX、权限、进程或真实 Host data 证据交给指定平台 gate。
+- **global Skill 必须 pristine。** pinned upstream 中存在某文件，不代表它已被 importer 接纳、installer
+  安装、Managed policy 注册或在 production 激活；完整信任边界见 ARCHITECTURE。
+- **repairable 不等于所有 drift 都可修。** 只有已识别、owned 且可预览的差异才能进入 repair；
+  blocker、身份不符或 unknown drift 必须保留现场并停止。
+- **历史记录不是当前授权。** 旧对话、旧 runbook、旧 branch 名或曾经通过的 gate 都不能替代活动
+  task plan；历史文档只证明当时发生过什么。
 
-不要直接编辑 `runtime/upstream/` 后把新字节当成来源；它必须能从 pinned archive 重建。
+## 4. 能力与健康检测结果分流
 
-## 6. Installer/doctor 处理
+| 信号 | 它意味着什么 | 能否继续 | 下一站 |
+|---|---|---|---|
+| unknown dirty state | 现场归属和意图尚不清楚 | 否；先保护现场并确认所有者 | 活动 task plan / 维护者 |
+| importer failure | pinned 来源、overlay、manifest 或目标 inventory 至少一处不闭合 | 否；不要手改 imported runtime 掩盖错误 | DESIGN、provenance、相关 contract/tests |
+| doctor healthy | 已检查的 installed managed state 满足该 doctor contract | 仅可继续当前已授权工作 | README、活动 task plan |
+| doctor repairable | 差异已被识别为 owned 且存在受控修复路径 | 只有 task plan 允许并完成预览后 | README、ARCHITECTURE |
+| doctor blocker / unknown drift | 现场超出受控 repair 边界，或身份无法可信解释 | 否；不得覆盖 | ARCHITECTURE、活动 findings |
+| tests PASS | 已运行断言在当前平台和输入上通过 | 仅作为当前 gate 的一份证据 | DESIGN 验证路由、活动 progress |
+| test failure | 失败尚未完成 product defect、test defect 或 fixture drift 分类 | 否；先用只读证据分类 | 相关源码、contract/tests、活动 findings |
+| platform limitation / SKIP | 当前平台不能提供所需 primitive；并不证明产品通过或失败 | 可继续无关工作，缺失 gate 仍未完成 | README、ROADMAP、活动 task plan |
+| deterministic package 或 Cloud gate PASS | 指定输入或平台证据已闭合 | 只推进明确授权的对应 gate | ROADMAP、provenance、专项 acceptance |
 
-Doctor 输出先分类：
+分类时先保留原始输出和平台条件。不得为了绿色摘要把 product defect 改名为 platform limitation，
+也不得用 test defect 或 fixture drift 弱化 identity、containment、timeout、cleanup 等安全断言。
 
-- `healthy=true`：记录版本、events、inventory；
-- `repairable=true`：只预览 owned repair，再执行；
-- blockers/unknown drift：停止，不覆盖现场；
-- manifest owner/version/schema 不符：按 upgrade/rollback 设计处理，不伪装为 repair。
+## 5. 停止条件与接手完成标准
 
-安装测试必须覆盖 dry-run、merge、idempotence、cross-user read、repair boundary、backup 和 uninstall。
+出现以下任一情况时停止实施，先记录证据并请求维护者决策：
 
-## 7. 测试失败分类
+- dirty/unowned state 无法解释，或拟修改内容与用户已有改动重叠；
+- README、ARCHITECTURE、DESIGN、ROADMAP、provenance、contract 或活动 plan 对同一事实给出冲突答案；
+- 变更触碰 schema、Host ABI、trusted graph、安全模型、timeout、权限、进程或数据边界；
+- activation、迁移、root commit、push、cutover、Release、rollback 或 Cloud 操作缺少明确授权；
+- 当前 programme 判断与带日期的历史 acceptance/runbook 不一致，且无法确认是事实冲突还是时间语义。
 
-1. Product defect：实现没有满足 contract/security goal；修实现并补回归。
-2. Test defect：断言误把 reporter/platform/zombie 等表象当产品语义；先用只读证据证明。
-3. Platform limitation：Windows 无 POSIX primitive；诚实 SKIP，交给 Linux/Cloud gate。
-4. Fixture drift：fixture 与冻结 Host/schema 不一致；验证来源后更新 fixture/contract。
+完成接手不要求背诵某个版本或 hash，而是能够：
 
-不得仅为 test count 或绿色结果弱化 identity、containment、hard-link、race、timeout、cleanup、drift
-或 output-budget 断言。
-
-## 8. Candidate/Release ZIP
-
-```bash
-ZIP="$(mktemp --suffix=.zip)"
-python3 tools/build_release.py build --output "$ZIP"
-python3 tools/build_release.py check --archive "$ZIP"
-unzip -Z1 "$ZIP"
-sha256sum "$ZIP"
-```
-
-当前 published v0.3.1：exact source `9aa2148...`；23 entries、82,725 bytes、ZIP SHA-256
-`f097b040...31f9`；固定 package
-identity/root/order/mode/metadata，importer 与 patcher 同时存在，bootstrap external。bootstrap 已固定
-该 ZIP，21,565 bytes、SHA-256 `ce31a320...a5e8`。S3-B 已上传恰好这两项资产并核对服务端 digest，
-S3-C 已完成下载字节/Cloud 验收，现为 accepted rollback/`Latest`。任何字节问题必须使用新身份，
-不得原位替换资产。已发布 v0.3.0 仍是独立的 22-entry immutable immediate previous fallback，
-不从当前工作树重建或覆盖。
-
-## 9. 正式 Release
-
-只有 ROADMAP/task plan 明确授权时：
-
-1. 冻结 version、source、contracts、tests 和 ZIP allowlist；
-2. Linux/Windows/Cloud gate 全绿；
-3. 构建两次 ZIP 并证明字节一致；
-4. 计算 ZIP SHA，写入外部 bootstrap；
-5. 计算 bootstrap SHA；
-6. 在已验收的 exact release source 创建新的 tag/Release，上传两个独立资产；
-7. 从 Release 页面重新下载并核对 SHA；
-8. fresh Cloud install、Fresh/UserPrompt、real Resume、doctor；
-9. 记录 immutable acceptance 文档和 rollback。
-
-不要重用 beta.2 asset name/hash，也不要用 moving branch/latest URL。
-
-## 9.1 M4 仓库切换
-
-M4 的完成证据在 `docs/beta3-dev-m4-cutover-plan.md`。实际 accepted main 是 `0b4bd7d...`；
-Cloud-tested development 与 audit refs 保持不动，旧仓库继续承载 beta.2 Release/fallback oracle。
-后续正常 main 治理提交不会改写这次 accepted SHA；若要重新执行历史 M4-C 唯一脚本，应使用记录的
-验收 commit，而不是把新 main HEAD 冒充成旧验收输入。
-
-## 10. 回滚
-
-迁移/开发失败：保持 M1 audit oracle；移除的只能是已验证的临时 worktree/local unpublished branch，
-禁止 `git reset --hard` audit ref。
-
-Production 回滚：优先使用 successor 已发布/接受的不可变 v0.3.1 ZIP/bootstrap，并按其
-hard-acceptance 复核。需要退一级时使用不可变 v0.3.0；需要再退一级时，使用旧仓库 beta.2 不可变
-资产、重新核验两个 SHA，并按对应 acceptance 执行 install/doctor/Fresh/Resume。回滚不得依赖 moving
-branch 或未发布工作树先被修好。
-
-## 11. 交接完成标准
-
-新人应能回答：
-
-- 当前唯一 Next Step 在哪里？
-- 哪个版本是 production rollback，哪个只是 dev？
-- global Skill 与 owned runtime 的边界是什么？
-- overlay 如何从 upstream 复现？
-- 什么情况可以 repair，什么情况必须 blocker？
-- 为什么 bootstrap 在 ZIP 外？
-- 哪些 case 必须在 Linux/Cloud 验证？
-- 如何在不移动 audit ref 的情况下回滚迁移？
+- 从 README 地图找到问题的唯一 authority，并从活动 plan 找到当前行动边界；
+- 把请求映射到 DESIGN 中的模块，再用 ARCHITECTURE 说明为什么不能越过信任边界；
+- 区分 repository source、Release artifact 与 installed managed runtime；
+- 正确解释 doctor、importer、test、package 和平台结果，知道哪些只是一份局部证据；
+- 在未知现场、authority 冲突或关键 gate 未授权时主动停止，并把证据送到正确文档。

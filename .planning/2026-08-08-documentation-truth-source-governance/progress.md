@@ -18,8 +18,8 @@
 - D2: complete
 - D3: complete
 - D4: complete
-- D5: ready / authorized after D4 checkpoint
-- D6: pending / authorized after D5 exit
+- D5: complete
+- D6: ready / authorized after D5 exit
 
 ## Validation record
 
@@ -363,3 +363,33 @@
   guard；尚未编辑 handoff、tests 或权威文档，等待维护者确认细节后再把 D5 切换为 in progress。
 - 维护者已确认按该方案继续；先将讨论结论形成独立 planning checkpoint，随后以 failing-first guard
   启动 D5 实施，便于在重写 handoff 前单独回退方案决策。
+
+## 2026-08-09 — D5 maintainer entrypoint implementation started
+
+- 已创建方案 checkpoint `a4ccbec`（`docs: plan maintainer handoff triage`），提交仅包含 findings/progress，
+  handoff 与测试仍保持旧状态。
+- D5 切换为 in progress；实施范围冻结为 `MAINTAINER_HANDOFF.md`、focused governance test 与活动
+  planning，README/DESIGN/ARCHITECTURE/ROADMAP/provenance 和历史 `docs/` 保持零改动。
+- 实施中一次 `apply_patch` 因 JavaScript template literal 将正则中的 `${}` 误作插值而在执行前解析失败；
+  仓库未产生该次变更。测试改用只转义目标字符串中句点的 `replaceAll`，降低转义复杂度。
+- D5 failing-first PASS（预期红）：focused architecture + repository boundary 共 9 tests，7 pass / 2 fail；
+  一项精确指出 fragment inventory 仍为旧的 6 而非 handoff 加入后的 9，另一项从首标题开始拒绝旧的
+  “交割手册”。其余既有 architecture/change-authority/repository-boundary assertions 全部保持绿色。
+- D5 实现完成：handoff 收口为 83 行、五节的“维护者接手导诊”，包含五分钟路径、四类高频导诊、
+  安全误判、九类能力/健康反馈和停止/完成标准；旧 current facts、完整命令、Release/rollback/M4 流程
+  全部退出，README/DESIGN/ARCHITECTURE/ROADMAP/provenance/history 保持零 diff。
+- Governance guard 已把 handoff 纳入 root authority fragment 扫描，新增三条链接只使用 D4.1 已建立的
+  `documentation-map`、`local-development`、`module-responsibilities` 显式锚点；另增 handoff 正反约束，
+  禁止 semver、长 hex、计数、mutable lifecycle、code fence 和完整 build/hash/reset runbook。
+- Focused D5 PASS：architecture + repository boundary 9/9。Static PASS：handoff UTF-8 no-BOM、LF、final
+  newline、零 fence、全部本地 link targets 存在、83 行未超预算；`node --check`、`git diff --check` 通过，
+  其他 root authority 与历史 `docs/` 零 diff。
+- D5 exit PASS；D6 validation and closure 成为下一 gate，本轮未运行 D6 的 full suite/deterministic package，
+  也未 push、tag、seal、发布、修改 remote ref 或 Cloud。
+- D5 pre-commit focused 复验 PASS：最终 planning 状态切换后 architecture + repository boundary 仍为
+  9/9，工作树精确包含 handoff、focused test 与三份活动 planning，未混入其他 authority 或产品文件。
+- 首次 pre-commit static 聚合命令在执行检查前被 PowerShell parser 拒绝：错误字符串中的 `$file:` 被
+  解释为带 drive qualifier 的变量引用；仓库未被该命令修改。复跑改用 `${file}` 显式变量边界。
+- Pre-commit static 复跑 PASS：四份 changed Markdown 均为 UTF-8 no-BOM、LF、final newline 且 fences
+  平衡；handoff 全部本地 targets 存在，focused test 可解析，`git diff --check` 通过，其他 root authority
+  与历史 `docs/` 仍为零 diff。

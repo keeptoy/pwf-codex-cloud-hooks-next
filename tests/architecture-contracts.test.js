@@ -12,7 +12,7 @@ const readText = relative => fs.readFileSync(path.join(root, relative), "utf8");
 test("cross-document fragments use stable explicit anchors", () => {
   const authorityDocs = [
     "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md",
-    "DESIGN.md", "README.md", "ROADMAP.md",
+    "DESIGN.md", "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md",
   ];
   const discovered = [];
 
@@ -32,7 +32,41 @@ test("cross-document fragments use stable explicit anchors", () => {
     }
   }
 
-  assert.equal(discovered.length, 6, `unexpected root authority fragment inventory: ${discovered.join(", ")}`);
+  assert.equal(discovered.length, 9, `unexpected root authority fragment inventory: ${discovered.join(", ")}`);
+});
+
+test("MAINTAINER_HANDOFF is a triage desk, not another mutable runbook", () => {
+  const handoff = readText("MAINTAINER_HANDOFF.md");
+  const artifact = readJson("contracts/release-artifact-v1.json");
+
+  for (const heading of [
+    "# 维护者接手导诊",
+    "## 1. 新人五分钟接手",
+    "## 2. 高频情形导诊",
+    "## 3. 常见安全误判",
+    "## 4. 能力与健康检测结果分流",
+    "## 5. 停止条件与接手完成标准",
+  ]) assert.match(handoff, new RegExp(`^${heading.replaceAll(".", "\\.")}$`, "m"));
+
+  for (const target of [
+    "README.md#documentation-map", "README.md#local-development",
+    "DESIGN.md#module-responsibilities", "ARCHITECTURE.md", "ROADMAP.md", "CHANGELOG.md",
+    "BASELINE_PROVENANCE.md", ".planning/.active_plan", "docs/",
+  ]) assert.match(handoff, new RegExp(target.replaceAll(".", "\\.")));
+
+  for (const signal of [
+    "healthy", "repairable", "blocker", "platform limitation",
+    "product defect", "test defect", "fixture drift",
+  ]) assert.match(handoff, new RegExp(signal, "i"));
+
+  assert.doesNotMatch(handoff, /```/);
+  assert.doesNotMatch(handoff, /\bv?\d+\.\d+\.\d+(?:[-.][A-Za-z0-9.]+)?\b/);
+  assert.doesNotMatch(handoff, /\b[a-f0-9]{7,64}\b/i);
+  assert.doesNotMatch(handoff, /GitHub `Latest`|当前事实|Product Phase \d+/);
+  assert.doesNotMatch(handoff, /\b\d+\s+(?:entries|bytes|tests?|passed|failed|skipped|PASS|FAIL|SKIP)\b/i);
+  assert.doesNotMatch(handoff, /build_release\.py build|sha256sum|mktemp|git reset/);
+  assert.doesNotMatch(handoff, /^## .*?(?:Source\/runtime 更新|Candidate\/Release ZIP|正式 Release|M4 仓库切换|回滚)$/m);
+  assert.equal(artifact.entries.some(entry => entry.path === "MAINTAINER_HANDOFF.md"), false);
 });
 
 test("canonical plan-context architecture is exact, plan-first, and adapter-thin", () => {

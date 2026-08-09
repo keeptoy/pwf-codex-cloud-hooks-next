@@ -454,3 +454,15 @@ tracked 文档，D5 会触碰历史/当前语义分界，D6 才能证明整体�
   文件级链接。因为 handoff 仍为 tracked、ZIP-excluded 原路径，repository inventory 与 package contract
   无需变化，D5 最小验证可为 failing-first focused + links/fragments/LF/fences/diff；完整 suite/package
   留给 D6 总收口。
+
+## D5 maintainer entrypoint — implemented conclusion
+
+- “导诊台而非病历”可以在不改其他 authority 的前提下闭合：README 已拥有完整文档地图，DESIGN 已拥有
+  模块/验证路由，ROADMAP/CHANGELOG/provenance/acceptance 已分别拥有 lifecycle、delta 与不可变证据；
+  handoff 的独有价值只剩接手顺序、误判解释和检测分流。
+- 最终 handoff 采用五节、83 行、零 code fence 的稳定结构；没有具体版本、commit/hash、asset/test count、
+  逐 gate 历史或完整 Release/rollback 操作。版本角色变化不再要求同步修改 handoff。
+- handoff 的三个跨文档 fragment 全部复用 D4.1 的显式英文 anchors；generic fragment guard 扫描范围由
+  七份扩为八份 root authority docs，精确 inventory 由六条增为九条。
+- 新 focused guard 同时约束“必须具备的导诊能力”和“禁止再次长成 runbook 的内容”，使后续维护者若
+  重新写入 mutable facts、hash/count、命令块或旧流程标题会直接收到测试失败，而不是依赖人工记忆。
