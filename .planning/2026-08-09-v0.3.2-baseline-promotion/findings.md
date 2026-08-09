@@ -42,6 +42,24 @@
   改为 `Cold evidence (not current authority)`；历史摘要可以独立阅读，current contract 不由旧文档解释。
 - 通用治理方法与 repository guard 继续保留，因为它们只约束 lifecycle，不承担 Phase 内容 authority。
 
+## P2-P-M Migration Capsule
+
+- M1～M4 发生在 Phase 3 功能闭环之后、successor stable v0.3.0 之前，适合用 `Phase 3.5` 作为回顾性
+  迁移标签；必须显式声明它不是当时正式 Product Phase、没有新增 runtime/ABI/trusted graph 或授权 Phase 4。
+- 迁移故事与精确证据应分层：`phase-3.5-successor-migration.md` 讲问题、四步路线、验收与继承；
+  BASELINE_PROVENANCE 只保存 M1～M4 exact refs、fixture identity 和可重放 runbook。
+- CHANGELOG v0.3.0 可以 deep-link 这一份具体 capsule，因为它解释该版本如何建立；README 仍是唯一通用
+  Phase 索引，CHANGELOG 的单项上下文链接不是第二份历史目录，其他宏观文档不得复制入口。
+
+### P2-P-M Result
+
+- `Phase 3.5` 采用明确的 retrospective interlude 语义，既把 M1～M4 从版本 CHANGELOG/provenance 长叙事中
+  提炼出来，又不回写原 programme 或制造新的 Product Phase authorization。
+- README 仍是通用 Phase index；CHANGELOG v0.3.0 只有一条精确 capsule deep-link；provenance 不链接
+  `docs/history/`，只维护 per-gate immutable refs 和重放证据。
+- Decimal filename、八段模板、单一 closure snapshot、M1～M4 顺序、非目标和 exact-ref retention 均由
+  repository lifecycle guard 自动验证。
+
 ## Initial Question
 
 - 维护者希望当前树更清爽：v0.3.1 进入历史、v0.3.2 成为已完成基线，下一开发列车以 v0.3.3-dev

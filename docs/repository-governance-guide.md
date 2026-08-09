@@ -154,8 +154,9 @@ planning 和专项文档整体复制进 HEAD，又会把 cold history 重新变�
 少量 **Phase capsule**，前提是同时满足：
 
 1. Phase 已关闭，并有 immutable commit/tag/Release/acceptance 可以恢复完整原文；
-2. 一个 Phase 只保留一份摘要，文件名使用版本无关的 `phase-<number>-<topic>.md`；不按 Round、候选版本、
-   测试批次或会话拆分；
+2. 一个 Phase 只保留一份摘要，文件名使用版本无关的 `phase-<number>[.<interlude>]-<topic>.md`；不按
+   Round、候选版本、测试批次或会话拆分；小数编号只能作为明确标注的回顾性 interlude，不能伪造原 programme
+   的 Product Phase 或产生新授权；
 3. 使用固定结构记录历史位置、前置问题、核心决定、已交付闭环、验收结论、明确非目标、后继继承和
    immutable evidence；
 4. 不复制 production source、脚本、fixture、验收全文、SHA 表、测试计数或旧 planning；
@@ -167,6 +168,8 @@ planning 和专项文档整体复制进 HEAD，又会把 cold history 重新变�
 
 Phase capsule 是精选历史导航，不是新的 architecture、programme、provenance 或 acceptance authority。
 没有长期解释价值的阶段不必收录；讨论中、施工中或只有原型结论的阶段不得提前进入该目录。
+README/文档地图应维护唯一通用索引；CHANGELOG 可以从相关版本 delta deep-link 一份精确 capsule，但不得
+复制第二份 Phase 目录或把回顾性标签写成当前 programme 状态。
 
 ## 9. Provenance 的准入标准
 

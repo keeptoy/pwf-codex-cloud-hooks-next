@@ -35,12 +35,10 @@ commit/tag/Release 恢复，不在 HEAD 保留全文副本。
 | `v0.3.0` | [Release](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/tag/v0.3.0)；[source `1454c9224c83d11c073b05baf6e536a11c3bb0e5`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/1454c9224c83d11c073b05baf6e536a11c3bb0e5)；[exact acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/1454c9224c83d11c073b05baf6e536a11c3bb0e5/docs/v0.3.0-cloud-hard-acceptance.md) | `pwf-codex-cloud-hooks-v0.3.0.zip`；22 entries；75,386 bytes；SHA-256 `f245a554210c7f8d07eebbb775faa7b1482fea5d363ee6fa7578c9bbd98ad9af` | `init-cloud-sandbox-v0.3.0.bash`；17,423 bytes；SHA-256 `ab334f0367d948fa29a2bdd37bff0c220929aeb320fdf59dbacbd5a4021b39c0` | successor 首个 stable；保留 canonical runtime 与 `PWF_GLOBAL_HOOK_CANARY_V1` |
 | `v0.3.0-beta.2` | [旧仓库 Release](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/tag/v0.3.0-beta.2)；[source `bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b`](https://github.com/keeptoy/pwf-codex-cloud-hooks/commit/bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b)；tree `ff49c3c6656386e94450ccb24437a1c2d1c50e95`；[exact acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/cde4b15bba7ed8580cb774c8b8bb259c9174c3d0/docs/v0.3.0-beta.2-cloud-hard-acceptance.md) | [`pwf-codex-cloud-hooks-v0.3.0-beta.2.zip`](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/download/v0.3.0-beta.2/pwf-codex-cloud-hooks-v0.3.0-beta.2.zip)；22 entries；84,572 bytes；SHA-256 `812cc9cdcafa93b5fcc47cc763fd743f11be77958b75eea1fa4cf0508dd391ab` | [`init-cloud-sandbox-v0.3.0.bash`](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/download/v0.3.0-beta.2/init-cloud-sandbox-v0.3.0.bash)；17,425 bytes；SHA-256 `d572b77d920b34c34c7912ba364376ae3668216f00ce350251bd7c8b336abcd6` | successor 迁移采用的产品基线与行为 oracle；不重新发布或改写相同 identity |
 
-## 2. Successor 迁移来源链
+## 2. Successor 迁移不可变证据
 
-本节记录 `v0.3.0-beta.2` → `v0.3.0` 的迭代与迁移过程：以旧仓库冻结的 beta.2 产品基线为输入，
-依次完成 exact mirror、slim root、Cloud equivalence 和 repository authority cutover，最终建立 successor
-仓库的首个 stable `v0.3.0`。M1～M4 本身没有发布 beta.3、写入 live `/opt/codex`、改变 production
-behavior 或授权 Product Phase 4；它也不是 v0.3.1 以后常规版本更新的流水账。
+本节只固定 `v0.3.0-beta.2` → `v0.3.0` 的 M1～M4 exact refs 与可重放证据，不承担迁移叙事，也不解释
+当前 runtime。M1～M4 没有发布 beta.3、改变 production behavior 或授权 Product Phase 4。
 
 successor remote：[`keeptoy/pwf-codex-cloud-hooks-next`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next)。
 

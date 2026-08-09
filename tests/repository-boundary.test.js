@@ -130,20 +130,24 @@ test("phase history is a closed indexed set of frozen Markdown capsules", () => 
   const indexPath = `${prefix}README.md`;
   const index = read(indexPath);
   const capsules = historyPaths.filter(item => item !== indexPath);
-  const indexedCapsules = [...index.matchAll(/\]\((phase-\d+-[A-Za-z0-9._-]+\.md)\)/g)]
+  const indexedCapsules = [...index.matchAll(/\]\((phase-\d+(?:\.\d+)?-[A-Za-z0-9._-]+\.md)\)/g)]
     .map(match => `${prefix}${match[1]}`).sort();
 
   assert.equal(historyPaths.includes(indexPath), true);
   assert.deepEqual(indexedCapsules, [...capsules].sort(), "history index must cover every capsule exactly once");
-  assert.match(index, /warm layer.*不是源码 archive.*当前 programme authority/s);
+  assert.match(index, /warm layer.*不是源码 archive.*当前\s+programme authority/s);
   assert.match(index, /只允许事实纠错或修复.*immutable link/s);
   assert.match(index, /理解其结论不需要继续打开旧 Phase\/Round 文档/s);
   assert.match(index, /source snapshot 只是 cold evidence，不是当前 authority/s);
   assert.match(index, /不得进入 Release.*trusted graph.*runtime dispatch/s);
 
   assert.match(read("README.md"), /\]\(docs\/history\/README\.md\)/);
+  const changelog = read("CHANGELOG.md");
+  assert.equal((changelog.match(/\]\(docs\/history\/phase-[^)]+\.md\)/g) || []).length, 1,
+    "CHANGELOG may deep-link exactly one migration capsule");
+  assert.match(changelog, /\]\(docs\/history\/phase-3\.5-successor-migration\.md\)/);
   for (const macroDoc of [
-    "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
+    "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "DESIGN.md",
     "MAINTAINER_HANDOFF.md", "ROADMAP.md",
   ]) assert.doesNotMatch(read(macroDoc), /docs\/history\//, `${macroDoc} must not create a second Phase-history entrance`);
 
@@ -152,7 +156,7 @@ test("phase history is a closed indexed set of frozen Markdown capsules", () => 
     "acceptance-conclusion", "explicit-non-goals", "successor-inheritance", "immutable-evidence",
   ];
   for (const relative of capsules) {
-    assert.match(relative, /^docs\/history\/phase-\d+-[a-z0-9][a-z0-9.-]*\.md$/);
+    assert.match(relative, /^docs\/history\/phase-\d+(?:\.\d+)?-[a-z0-9][a-z0-9.-]*\.md$/);
     const content = read(relative);
     for (const anchor of requiredAnchors) {
       assert.match(content, new RegExp(`^<a name="${anchor}"><\\/a>$`, "m"), `${relative} lacks ${anchor}`);
@@ -167,6 +171,11 @@ test("phase history is a closed indexed set of frozen Markdown capsules", () => 
       `${relative} must not promote retired design or acceptance documents`);
     assert.doesNotMatch(content, /^## (Next Step|Status)$/m, `${relative} must not carry current lifecycle state`);
   }
+
+  const migration = read("docs/history/phase-3.5-successor-migration.md");
+  assert.match(migration, /回顾性治理标签.*不是当时 programme 正式授权的 Product Phase/s);
+  assert.match(migration, /M1 — exact mirror.*M2 — slim transformation.*M3 — Cloud equivalence.*M4 — repository authority cutover/s);
+  assert.match(migration, /不修改 production runtime.*不授权.*Phase 4/s);
 });
 
 test("portable repository governance defines a closed retirement transaction", () => {
@@ -181,10 +190,12 @@ test("portable repository governance defines a closed retirement transaction", (
   assert.match(guide, /unsealed transition.*旧版本 bootstrap checksum/s);
   assert.match(guide, /不是第四种长期 baseline/);
   assert.match(guide, /^<a name="phase-history-capsules"><\/a>$/m);
-  assert.match(guide, /一个 Phase 只保留一份摘要.*不按 Round.*测试批次/s);
+  assert.match(guide, /一个 Phase 只保留一份摘要.*不按\s+Round.*测试批次/s);
   assert.match(guide, /创建后冻结.*事实纠错.*immutable link repair/s);
   assert.match(guide, /Phase capsule 是精选历史导航.*不是新的 architecture.*authority/s);
   assert.match(guide, /摘要正文应可独立阅读.*一个 immutable source snapshot.*第二套 authority/s);
+  assert.match(guide, /小数编号只能作为.*回顾性 interlude.*不能伪造原 programme/s);
+  assert.match(guide, /CHANGELOG 可以.*deep-link 一份精确 capsule.*不得.*第二份 Phase 目录/s);
 });
 
 test("retired prototype conclusions remain covered by production safety tests", () => {
@@ -226,6 +237,9 @@ test("cold history stays on immutable refs and outside runtime, Release, and ada
     "0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151",
     "1454c9224c83d11c073b05baf6e536a11c3bb0e5",
     "bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b",
+    "3234e4e02090c838f5ee260cd8f2d99daf358d65",
+    "cc9bc878ddc7d70c25156dd053e2874758f0814a",
+    "c5236958b9830ee3695b0e81e1a0746707a6b8f9",
   ]) assert.match(provenance, new RegExp(immutable));
 });
 
@@ -260,7 +274,8 @@ test("change history, programme, provenance, and current acceptance keep separat
   for (const roleVersion of new Set([candidate, accepted])) {
     assert.match(provenance, new RegExp(roleVersion.replaceAll(".", "\\.")));
   }
-  assert.match(provenance, /## 2\. Successor 迁移来源链/);
+  assert.match(provenance, /## 2\. Successor 迁移不可变证据/);
+  assert.doesNotMatch(provenance, /## 2\. Successor 迁移来源链/);
   assert.doesNotMatch(provenance, /当前源码权威|current lifecycle role|GitHub `Latest`|\d+ registered/);
 
   for (const macroDoc of [architecture, design, agents]) {
@@ -269,6 +284,8 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(agents, /当前版本角色只见 `ROADMAP\.md`/);
   assert.match(agents, /for bootstrap in init-cloud-sandbox-v\*\.bash; do/);
   assert.match(design, /CHANGELOG\.md/);
+  assert.match(changelog, /\[Phase 3\.5：Successor 仓库迁移\]\(docs\/history\/phase-3\.5-successor-migration\.md\)/);
+  assert.doesNotMatch(changelog, /Successor 迁移来源链/);
 
   assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));
   assert.match(acceptance, /R5-SC.*Source\/Candidate.*HOOKS_URL.*HOOKS_SHA256/is);

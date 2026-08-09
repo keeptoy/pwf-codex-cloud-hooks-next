@@ -39,6 +39,20 @@
   syntax 与 diff check PASS。focused repository/architecture suite 17/17 PASS。
 - 完整 `npm test`：92 tests，80 PASS、12 个诚实 Windows/POSIX SKIP、0 FAIL。P2-P-A 已关闭；没有修改
   production、Release、immutable assets、`临时文件/` 或 P3 状态。
+- 维护者批准将 M1～M4 迁移叙事整理为回顾性 Phase 3.5；本轮重新读取 planning-with-files skill，catch-up
+  无未同步输出，工作树仍只有不得修改/提交的 `临时文件/`。P2-P-M 已启动，P3 保持未授权。
+- 已新增 `phase-3.5-successor-migration.md`：用统一八段模板概括 M1 exact mirror、M2 slim transformation、
+  M3 Cloud equivalence 与 M4 authority cutover，并明确它是回顾性标签、没有新产品行为或 Phase 4 授权。
+- CHANGELOG v0.3.0 的迁移叙事已改指 Phase 3.5；provenance 第 2 节改为“不可变证据”并保留全部 per-gate
+  refs/runbook，README/历史索引和通用治理规则已容纳明确标注的 decimal interlude。
+- P2-P-M 首轮 focused suite 14/17 PASS；3 个失败分别是两个跨行 regex 使用固定空格、一个 CHANGELOG
+  link label 多包反引号，已分类为 formatting defect；Phase 3.5 内容、exact refs 和 authority 分层没有失败。
+- 修复跨行 regex 与 link label 后第二轮 focused suite 16/17 PASS；唯一失败是新 capsule 的 cold-evidence
+  句式偏离统一模板，决定修改文档而不放宽 guard。
+- 统一 cold-evidence 模板后 focused repository/architecture suite 17/17 PASS；完整 `npm test` 为 92 tests、
+  80 PASS、12 个诚实 Windows/POSIX SKIP、0 FAIL。
+- P2-P-M 已关闭；没有修改 production runtime、Host ABI、trusted graph、package/Release contract、bootstrap、
+  immutable assets、`临时文件/` 或 P3 状态。
 - 完整读取 planning-with-files skill，session catch-up 无未同步输出，初始工作树 clean。
 - 按新冻结的 Discussion-to-Implementation 规则，把维护者目标解释为关键 promotion/eviction Discovery，
   未直接修改 ROADMAP、版本 identity、文件窗口或外部状态。

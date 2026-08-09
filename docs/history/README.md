@@ -2,8 +2,9 @@
 
 # Product Phase 历史摘要
 
-这里保存已经闭合 Product Phase 的精选摘要，帮助维护者理解“当时为什么这样走、交付了什么、哪些能力
-留给后继阶段”。它属于 warm layer 导览，不是源码 archive、当前 programme authority 或验收原文。
+这里保存已经闭合 Product Phase，以及明确标注的回顾性迁移 interlude 的精选摘要，帮助维护者理解“当时
+为什么这样走、交付了什么、哪些能力留给后继阶段”。它属于 warm layer 导览，不是源码 archive、当前
+programme authority 或验收原文。
 
 每份摘要已经从 cold evidence 中提炼并独立成文，理解其结论不需要继续打开旧 Phase/Round 文档。完整历史
 字节仍由 immutable Git commit、tag 与 Release 保存，但只用于来源审计，不解释当前实现。当前现实以根级
@@ -12,7 +13,8 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 
 ## 收录边界
 
-- 只收录已经关闭并有不可变证据的 Product Phase；讨论中、施工中或只有原型结论的阶段不进入这里。
+- 只收录已经关闭并有不可变证据的 Product Phase；回顾性 interlude 必须明确声明不是原 programme 的正式
+  Phase，也不产生新授权。讨论中、施工中或只有原型结论的阶段不进入这里。
 - 每个 Phase 只保留一份摘要，不按 Round、测试批次、候选版本或会话继续拆文件。
 - 不复制 production source、脚本、fixture、验收全文、SHA 表、测试计数或旧 planning。
 - 摘要不维护当前 candidate、accepted、rollback、PASS/PENDING 或下一步状态。
@@ -26,6 +28,7 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 | Phase 1 | 固定来源、ownership/contracts、可复现 import/install/package；runtime 仅作为 inactive verified inventory | [`phase-1-runtime-provenance.md`](phase-1-runtime-provenance.md) |
 | Phase 2 | 激活 adapter 监督的 owned catch-up，建立 transcript 与 global Skill 安全边界 | [`phase-2-owned-catchup.md`](phase-2-owned-catchup.md) |
 | Phase 3 | 激活 canonical owned-plan，删除 adapter 平行 plan 算法并完成 beta Cloud 闭环 | [`phase-3-canonical-plan.md`](phase-3-canonical-plan.md) |
+| Phase 3.5 | 回顾性迁移标签：M1～M4 将 beta.2 产品基线迁入 successor 并完成 authority cutover；不是正式 Product Phase | [`phase-3.5-successor-migration.md`](phase-3.5-successor-migration.md) |
 
 ## 阅读方式
 
