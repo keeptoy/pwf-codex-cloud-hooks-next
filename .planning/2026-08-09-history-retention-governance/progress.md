@@ -2,6 +2,21 @@
 
 ## 2026-08-09
 
+- H10 获批：维护者要求把 ROADMAP 的 completed migration 移入 provenance，并以旧规划中已解决的问题
+  重写 ROADMAP 第 3 节为 v0.3.1 已完成基线；本轮不 push。
+- 工作区恢复时 tracked tree clean、分支相对远端 ahead 1；发现用户新增 untracked `临时文件/`，已明确
+  保护。三份 v0.3.1 planning 与 `cde4b15` 历史 blobs 精确一致。
+- 历史核验定位 M2 root `3234e4e...` 与 M4 closure `c523695...`；旧风险表恢复出 H1/H2/M1/M2/M3/L1/L2，
+  可按四个长期问题域提升到 ROADMAP，不复制逐 gate 流水。
+- H10 authority failing-first：architecture governance 7 tests 中 6 PASS、1 FAIL；首个红项是 ROADMAP
+  仍保留 completed migration 章节，尚无 v0.3.1 已完成基线及四类问题摘要。
+- 应用迁移后 focused governance 为 11/12 PASS；唯一红项是 v0.3.1 第 3 节再次写入 `GitHub Latest`，
+  与第 2 节唯一 current-role authority 重复。已改为历史 baseline promotion 摘要并回链第 2 节。
+- authority 去重后 focused governance 12/12 PASS。M1–M4 的阶段、结果与精确 refs 现只在 provenance
+  维护；ROADMAP 第 3 节把旧规划的七项 findings 压缩为四个长期问题域，不复制逐 gate 流水。
+- H10 最终边界检查：`git diff --check` PASS；trusted/runtime/contracts/bootstrap diff 为空；ROADMAP 与
+  provenance 均不在 Release ZIP allowlist；三份 `临时文件/` 旧规划仍为 untracked，且各自 blob hash
+  与 `cde4b15` 历史版本逐一相同。最终 focused governance 12/12 PASS。
 - H9 获批：维护者要求在 Successor 迁移来源链明确这是 `v0.3.0-beta.2 → v0.3.0` 的迭代过程；
   当前分支已由维护者推送，本轮从 clean tracking state 开始且不自动 push。
 - H9 provenance failing-first：architecture governance 7 tests 中 6 PASS、1 FAIL；唯一红项是迁移章节
@@ -93,10 +108,11 @@
 
 ## Current Handoff
 
-- H0–H9 已完成；本地/远端 extension 分支均为 `0.3.2-dev-extend`，原 `0.3.2-dev` 保持在
+- H0–H10 已完成；本地/远端 extension 分支均为 `0.3.2-dev-extend`，原 `0.3.2-dev` 保持在
   `cde4b15`，维护者明确决定不 merge。
 - 当前开发列车话术是 `0.3.2-dev-extend`；底层 package/Release candidate identity 仍为 `0.3.2-dev`。
 - CHANGELOG delta 已独立分层，旧空 planning 目录已删除，focused/full regression 均为 0 FAIL。
-- Successor 迁移来源链已明确为 `v0.3.0-beta.2 → v0.3.0`；本轮只创建本地关键恢复点，不 push 或
-  创建 PR，后续 Release、Cloud 和 rollback 都需要新的明确授权。
+- Successor 迁移来源链已明确为 `v0.3.0-beta.2 → v0.3.0`，并完整接收原 ROADMAP M1–M4 证据；
+  ROADMAP 第 3 节现记录 v0.3.1 已关闭的四类问题。本轮只创建本地关键恢复点，不 push 或创建 PR，
+  后续 Release、Cloud 和 rollback 都需要新的明确授权。
 - 不创建 tag/Release/asset，也不宣称 Cloud 或 rollback gate 已通过。

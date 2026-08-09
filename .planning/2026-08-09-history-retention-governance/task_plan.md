@@ -28,11 +28,15 @@ trusted graph、Release 不可变性和历史可追溯性的前提下，让当�
   迭代/迁移过程，并补相应治理断言。
 - H9 只修改 provenance、活动 planning 和文档治理测试；不 push，不改历史 ref、资产身份、production、
   contracts、bootstrap、Release 或 Cloud。
+- 已授权 H10：把 ROADMAP 第 3 节的 M1–M4 completed migration 整合进 provenance 的 Successor 来源链，
+  并把 ROADMAP 第 3 节改为已完成的 `v0.3.1` 基线问题摘要；可只读参考用户提供的旧 planning 临时文件。
+- H10 不跟踪、修改或删除 `临时文件/`，不改历史 ref/资产、CHANGELOG delta、production、contracts、
+  bootstrap、Release 或 Cloud，也不自动 push。
 
 ## Next Step
 
-H0–H9 已完成；等待维护者提出下一项仓库补充或授权新的 Product Phase Discovery。不自动 push、PR、
-Release 或 Cloud gate。
+H0–H10 已完成；等待维护者给出下一项仓库补充任务。后续仍不自动 merge、push、创建 PR/Release、
+运行 Cloud 或执行 rollback。
 
 ## Phases
 
@@ -46,11 +50,12 @@ Release 或 Cloud gate。
 - [x] H7 — 分离 extension 分支与 CHANGELOG delta，清理空 planning 目录并推送同名远端分支。
 - [x] H8 — 将 extension 确立为当前开发列车话术，明确不 merge，并保持 package/Release identity 不变。
 - [x] H9 — 明确 Successor 迁移来源链是 `v0.3.0-beta.2 → v0.3.0` 的迭代过程。
+- [x] H10 — 将 M1–M4 迁移证据归入 provenance，并以 v0.3.1 已解决问题重写 ROADMAP 第 3 节。
 
 ## Status
 
-H0–H9 完成；provenance 历史语义和治理断言已同步。明确不 merge，且没有授权 push、PR、Release、
-Cloud 或 rollback。
+H0–H10 完成；迁移历史 authority 已集中到 provenance，ROADMAP 第 3 节只保留 v0.3.1 已解决问题的
+programme 摘要。明确不 merge，且没有授权 push、PR、Release、Cloud 或 rollback。
 
 ## Branch Disposition
 
@@ -105,3 +110,4 @@ Cloud 或 rollback。
 | 仓库 Markdown link probe 把裁剪后的 upstream Skill fixture 当作完整文档检查 | 1 | 分类为 fixture scope error；排除 `tests/fixtures/` 后检查 repository-owned Markdown，fixture 完整性继续由其专属 import/runtime tests 负责 |
 | 沙箱内最终 Node 聚焦测试无法创建 worker，两个文件均报 `spawn EPERM` | 1 | 分类为 sandbox execution limitation；获批后在沙箱外以同一命令复跑，12/12 PASS |
 | CHANGELOG test 用 base header 的裸前缀定位时会命中未来 extension header | 1 | 在迁移正文前识别为 test defect；改用包含行尾的完整 Markdown header 定位 |
+| ROADMAP v0.3.1 基线摘要重复写入 `GitHub Latest`，使 current lifecycle 出现第二份陈述 | 1 | 分类为 documentation authority duplication；保留历史 promotion 语义，当前角色只回链第 2 节 |

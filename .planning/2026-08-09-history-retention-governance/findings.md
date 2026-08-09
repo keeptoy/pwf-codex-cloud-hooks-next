@@ -200,3 +200,20 @@ graph、Release/rollback mechanism、长期基线晋级。普通 patch、文案�
 - 该链的精确语义是：以旧仓库 `v0.3.0-beta.2` 产品基线为输入，经 exact mirror、slim root、Cloud
   equivalence 和 authority cutover，最终建立 successor `v0.3.0` stable。
 - 补充应只解释既有 immutable refs 的关系，不修改任何 ref、SHA、资产 identity 或当前 lifecycle。
+
+## H10 Migration Authority and v0.3.1 Baseline
+
+- 用户提供的 `临时文件/2026-08-06-v0.3.1-security-fix-discovery/{task_plan,findings,progress}.md` 与
+  `cde4b15` 中已退场 planning 的三个 Git blob hash 逐一相同，可作为本轮只读恢复材料；目录保持
+  untracked，不进入提交。
+- ROADMAP 第 3 节当前复制 M1–M4 gate 摘要，而 provenance 已拥有同一迁移链和精确 refs；应把迁移
+  阶段/结果完整归入 provenance，ROADMAP 不再维护第二份 gate 表。
+- M2 parentless slim root 的精确 commit 是 `3234e4e02090c838f5ee260cd8f2d99daf358d65`；M4 最终关闭
+  commit 是 `c5236958b9830ee3695b0e81e1a0746707a6b8f9`。M1 应从 moving branch URL 改为 exact
+  `bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b` commit URL。
+- 旧 v0.3.1 方案冻结了七项 findings；ROADMAP 应按长期问题域压成四组：shared Managed TOML ownership
+  与 lock transaction、transcript TOCTOU 与 Host input budget、bootstrap 未固定 root remote execution、
+  extracted ZIP importer 缺 patcher 的 self-containment。
+- v0.3.1 的宏观完成意义是：在不新增 Hook/Host ABI/trusted graph 的同一 0.3 行为合同内关闭上述兼容/
+  供应链问题，并完成 immutable publication、public-byte Cloud acceptance 与 rollback/Latest promotion。
+  具体 delta 仍由 CHANGELOG、精确资产由 provenance、逐步验收由 v0.3.1 acceptance 负责。

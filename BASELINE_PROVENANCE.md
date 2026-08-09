@@ -37,19 +37,20 @@ commit/tag/Release 恢复，不在 HEAD 保留全文副本。
 
 本节记录 `v0.3.0-beta.2` → `v0.3.0` 的迭代与迁移过程：以旧仓库冻结的 beta.2 产品基线为输入，
 依次完成 exact mirror、slim root、Cloud equivalence 和 repository authority cutover，最终建立 successor
-仓库的首个 stable `v0.3.0`。它不是 v0.3.1 以后常规版本更新的流水账。
+仓库的首个 stable `v0.3.0`。M1～M4 本身没有发布 beta.3、写入 live `/opt/codex`、改变 production
+behavior 或授权 Product Phase 4；它也不是 v0.3.1 以后常规版本更新的流水账。
 
 successor remote：[`keeptoy/pwf-codex-cloud-hooks-next`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next)。
 
 | 迁移证据 | 不可变 ref | 证明范围 |
 |---|---|---|
-| M1 exact mirror | [`audit/beta2-exact@bbad3703...`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/tree/audit/beta2-exact) | 与 beta.2 commit/tree、资产和 runtime bytes 等价 |
+| M1 exact mirror | [`bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b) | 与 beta.2 commit/tree、资产和 runtime bytes 等价 |
+| M2 slim transformation | [`3234e4e02090c838f5ee260cd8f2d99daf358d65`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/3234e4e02090c838f5ee260cd8f2d99daf358d65) | 从 M1 audit tree 选择性构造 parentless slim root，冻结稳定文档边界、repository-wide LF 和四个 executable runtime |
 | M3 Cloud equivalence | [`39795283cd65f84547651d7bec816191fb5bfedf`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/39795283cd65f84547651d7bec816191fb5bfedf) | slim successor 的 Linux、Fresh/Resume、doctor 与 package 等价性 |
-| M4-A authority cutover | [`cc9bc878ddc7d70c25156dd053e2874758f0814a`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/cc9bc878ddc7d70c25156dd053e2874758f0814a) | successor authority handoff 输入 |
-| M4-C accepted cutover | [`0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151) | repository cutover 与 rollback 验收输入 |
+| M4 repository cutover | [M4-A `cc9bc878ddc7d70c25156dd053e2874758f0814a`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/cc9bc878ddc7d70c25156dd053e2874758f0814a) → [M4-C `0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/0b4bd7d4b688f60bcd72a03ae5ebe6db129e5151) → [closure `c5236958b9830ee3695b0e81e1a0746707a6b8f9`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/c5236958b9830ee3695b0e81e1a0746707a6b8f9) | 完成 authority handoff、default/main/ruleset、旧仓库导航、accepted cutover 与 rollback 验收 |
 
-M2 从 M1 audit tree 选择性构造 parentless slim root；被排除的历史 planning、Phase/Round 文档和
-snapshot prototype 仍可在旧仓库与 audit ref 中追溯。三个 fixture rename 保持原字节：
+M2 排除的历史 planning、Phase/Round 文档和 snapshot prototype 仍可在旧仓库与 M1 exact ref 中追溯。
+三个 fixture rename 保持原字节：
 `adapter-output-managed-legacy.json`、`adapter-output-canonical-plan.json` 和
 `session-catchup-cloud-wrapper.jsonl`。
 

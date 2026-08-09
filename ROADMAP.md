@@ -33,21 +33,22 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，最终验收见
 [`docs/v0.3.1-cloud-hard-acceptance.md`](docs/v0.3.1-cloud-hard-acceptance.md)。
 
-## 3. 已完成的仓库迁移
+## 3. 已完成的基线 `v0.3.1`
 
-M1～M4 建立了独立 successor 的来源、历史、Cloud 等价性和源码权威，没有发布 beta.3、写入 live
-`/opt/codex`、改变 production behavior 或授权 Product Phase 4。
+`v0.3.1` 是 Product Phase 4 前的兼容与供应链安全基线；它没有新增 Hook、Host ABI 或 trusted graph，
+而是在同一 `0.3` 行为合同内关闭旧安全审计确认的四类问题：
 
-| Gate | 冻结结果 | 状态 |
-|---|---|---|
-| M1 exact mirror | beta.2 commit/tree/资产 oracle 的 exact mirror | complete |
-| M2 slim transformation | parentless slim root、稳定文档边界、repository-wide LF、固定 executable runtime | complete |
-| M3 Cloud equivalence | Linux/Fresh/Resume/doctor/ZIP 等价性 | complete |
-| M4 repository cutover | default/main/ruleset、旧仓库导航与 rollback | complete |
+| 问题域 | 已完成结果 |
+|---|---|
+| shared admin state | 收紧 Managed TOML ownership boundary，避免 repair/uninstall 吸收第三方配置；把 real install/repair 的 read/classify/propose/backup/write 纳入同一 lock transaction，并检测非协作并发漂移 |
+| mutable Host data | transcript 选择、身份复核与解析绑定到同一份已验证 immutable bytes；Host input 使用精确 byte budget，异常输入只退化为 canary-only |
+| bootstrap supply chain | 移除 root `curl | bash` NVM、floating Node 和 root `npx skills` 路径；改为验证平台 Node `>=18`，并从固定 SHA 的 PWF archive 只安装 pristine Skill subtree |
+| Release maintenance | Release ZIP 纳入 importer 的直接 patcher 依赖，使 extracted ZIP importer check 可以 self-contained 运行；bootstrap 继续保持在 ZIP 外 |
 
-不可变 refs 和可重放证据只由 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 索引；M3/M4 完整
-runbook 已退出当前树，并通过其中的 exact-commit links 恢复。后续 main 提交不能冒充这些旧 gate 的
-accepted input。
+该基线随后完成 immutable publication、公开下载字节复核、Fresh/Resume/doctor Cloud 验收和显式 baseline
+promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta 见 [`CHANGELOG.md`](CHANGELOG.md)，精确
+source/资产身份与 predecessor 迁移链见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，完整阶段
+证据见 [`docs/v0.3.1-cloud-hard-acceptance.md`](docs/v0.3.1-cloud-hard-acceptance.md)。
 
 ## 4. 当前开发列车与 Product Phase 路线
 

@@ -266,6 +266,9 @@ test("change history, programme intent, current action, and immutable evidence h
   assert.match(roadmap, /\| 当前开发列车 \| `0\.3\.2-dev-extend`；.*package.*`0\.3\.2-dev`/s);
   assert.match(roadmap, /活动.*task_plan.*当前唯一 Next Step/s);
   assert.match(roadmap, /一个 active planning.*candidate.*accepted role window.*immutable/s);
+  assert.match(roadmap, /## 3\. 已完成的基线 `v0\.3\.1`/);
+  assert.match(roadmap, /Managed TOML.*lock.*transcript.*Host input.*bootstrap.*patcher/is);
+  assert.doesNotMatch(roadmap, /## 3\. 已完成的仓库迁移|M1 exact mirror|M2 slim transformation/);
   assert.equal((roadmap.match(/GitHub `Latest`/g) || []).length, 1);
 
   for (const identity of [
@@ -274,6 +277,9 @@ test("change history, programme intent, current action, and immutable evidence h
     "v0.3.0-beta.2", "bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b",
   ]) assert.match(provenance, new RegExp(identity.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(provenance, /## 2\. Successor 迁移来源链[\s\S]*`v0\.3\.0-beta\.2`\s*→\s*`v0\.3\.0`/);
+  assert.match(provenance, /M1 exact mirror.*M2 slim transformation.*M3 Cloud equivalence.*M4 repository cutover/is);
+  assert.match(provenance, /3234e4e02090c838f5ee260cd8f2d99daf358d65/);
+  assert.match(provenance, /c5236958b9830ee3695b0e81e1a0746707a6b8f9/);
   assert.doesNotMatch(provenance, /当前源码权威|current lifecycle role|GitHub `Latest`|\d+ registered/);
 
   for (const macroDoc of [architecture, design, agents]) {
