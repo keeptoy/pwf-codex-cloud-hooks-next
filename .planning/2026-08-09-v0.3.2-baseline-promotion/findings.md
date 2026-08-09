@@ -2,9 +2,10 @@
 
 ## P2-P0 Architecture Lineage Overview
 
-- 维护者要求持久化的核心不是第五份实现设计，而是跨版本认知框架：v0.1.0 证明可行，v0.2.2 证明 Cloud
-  可可靠运行，alpha.1～beta.1 完成 owned canonical architecture，beta.2 重新封板治理/资产，后续 M1～M4
-  只迁移 successor authority。
+- 维护者要求持久化的核心不是第五份实现设计，而是跨版本认知框架：v0.1.0 记录 legacy Hook trust
+  路线在 Cloud 失败，v0.2.0 才证明可行，v0.2.2 证明旧过渡模型能在 Cloud 可靠运行，
+  alpha.1～beta.1 完成 owned canonical architecture，beta.2 重新封板治理/资产，后续 M1～M4 只迁移
+  successor authority。
 - `Phase 0` 并非当时 programme 阶段，也不在 Phase 1 之前承担真实 gate；最安全定位是回顾性
   architecture-lineage overview。它可以用表格和时间线组织已有结论，但不得复制 SHA、验收全文、测试计数
   或当前 lifecycle。
@@ -103,8 +104,10 @@
 
 ### P2-H-010 Result
 
-- CHANGELOG 新增 v0.1.0 独立段，明确其 B1 candidate 身份、两个只读事件、canary、direct upstream
-  catch-up、adapter plan rendering 和 installer/trust/doctor/uninstall 初始闭环。
+- CHANGELOG 新增 v0.1.0 独立段，明确其 B1 candidate 实现、两个只读事件、canary、direct upstream
+  catch-up、adapter plan rendering 和 installer/trust/doctor/uninstall 初始闭环；P2-H-020 根据维护者补充
+  和 v0.2.0 exact-tag 差异进一步纠正：该 legacy trust 路线在 Cloud 失败，不能把本地闭环写成
+  “可行性已证明”。
 - 同一段显式记录后续尚未建立的 owned runtime、Managed policy、machine contracts、transcript bytes 与
   private snapshot，避免把当前架构反向投射到早期原型。
 - 证据等级保持诚实：五个本地 case 不冒充 Cloud acceptance，没有可达 tag/commit 就不宣称 immutable
@@ -657,7 +660,48 @@ bootstrap/README 一并删除，则当前结论转为 `NO_GO`，必须等待 P3 
 
 ### P2-H-021 Result
 
-- CHANGELOG 新增 v0.2.1 独立段，并把 v0.2.2 的 installer 描述改为显式继承 v0.2.1 运维治理基线；三版
-  现在分别对应可行性原型、Managed deployment/repair 基线和完整 Cloud catch-up 功能基线。
+- CHANGELOG 新增 v0.2.1 独立段，并把 v0.2.2 的 installer 描述改为显式继承 v0.2.1 运维治理基线；
+  P2-H-020 补回 v0.2.0 后，四个早期角色分别是：v0.1.0 Cloud trust 失败尝试、v0.2.0 首个成功原型、
+  v0.2.1 Managed deployment/repair 基线、v0.2.2 完整 Cloud catch-up 功能基线。
 - 未修改 provenance exact identities、Phase 0、当前 architecture/contracts、production、ROADMAP、
   Release 或临时 snapshots；P2-H-021 关闭后重新停在 P3 前。
+
+## v0.2.0 Successful Prototype Correction
+
+- 维护者补充第一手历史事实：v0.1.0 的实现代码虽然能在本地 fixture 串联，但 Cloud 模型的 Hook trust
+  无法解决，因此它是失败的部署尝试；v0.2.0 改变信任/接入路线后才真正成功，是最早经过 Cloud 验证的
+  可行原型。tag/Release 的存在不能把 v0.1.0 失败路线提升为成功原型。
+- 受影响的当前权威包括 CHANGELOG 的 v0.1.0 定位与缺失 v0.2.0 章节、Phase 0 的 Historical position/
+  Problem/table/conclusion/non-goal、provenance 两行的持久意义，以及 history index 的 Phase 0 摘要。
+- 本轮必须先核验 exact v0.2.0 source 对 trust/deployment 的实际改变；没有独立 acceptance 文档仍应如实
+  保留，不把“维护者确认成功”扩写成未恢复的 Fresh/Resume A～F hard acceptance。
+- successor 当前 Git object database 不含 provenance 登记的 v0.1.0/v0.2.0/v0.2.1 commit objects，不能
+  直接 `git show`/`ls-tree`；后续取证改用旧仓库 exact tag/source archive，不创建本地 tag 或 remote。
+- 从旧仓库 exact `v0.2.0` tag 克隆得到 source commit `eaa0da3abf4f4c8166b6663935e14bf9018c9c51`。
+  该 tree 有 12 个产品/fixture 文件，README 明确改用 `/etc/codex/requirements.toml` system-managed Hook，
+  不再依赖 interactive `/hooks` approval；installer 已设置 `features.hooks`、建立/校验 `hooks.managed_dir`、
+  注册 absolute adapter，并在不兼容 managed root 时 fail closed。
+- v0.2.0 已有 dry-run、managed install/doctor/uninstall 与三个 installer tests，但没有 v0.2.1 新增的
+  schema-v3 fingerprints、`repairable/blockers` 分类、guarded `install --repair`、unknown-drift blocker 和
+  全量 byte-restoration 测试。因此成功原型与运维加固应分别归属 v0.2.0 和 v0.2.1。
+- exact v0.2.0 README 仍称 managed-Hook implementation candidate，并把 fresh Cloud canary observation 列为
+  后续步骤；当前没有独立 acceptance 文档。故“Cloud trust 路线实际成功”以维护者第一手历史确认为准，
+  同时保留“formal acceptance 未恢复”，不能写成 v0.2.2 式 A～F hard acceptance。
+- CRLF-insensitive installer diff 确认 v0.1.0→v0.2.0 的实质变化是 Managed requirements、absolute commands、
+  managed_dir containment、manifest schema 2、managed doctor/uninstall 与 legacy owned trust 清退；
+  v0.2.0→v0.2.1 才加入 schema 3 fingerprints、结构化 drift 分类和 guarded repair。
+- LF-normalized SHA-256 进一步确认 v0.1.0/v0.2.0/v0.2.1 的 `hook_adapter.py`、三个 Hook behavior tests 与
+  `upstream-manifest.json` 三版完全相同。v0.2.0 的成功来自 trust/registration plane 切换，不是 Hook 功能
+  算法变化；v0.2.1 则是在成功 Managed route 上增加运维安全。
+- 全仓 current-authority 扫描确认修正集合为 CHANGELOG、Phase 0 capsule、history index 与 provenance
+  两个 early-version 意义字段；tests 没有冻结 v0.1.0/v0.2.0 内容。README、ARCHITECTURE、DESIGN、
+  ROADMAP、production、contracts 与 Release 均无需修改。
+
+### P2-H-020 Result
+
+- 早期历史已收敛为四个不同结论：v0.1.0 是 Cloud trust 失败尝试；v0.2.0 是 system-managed 路线的首个
+  成功原型；v0.2.1 加固 ownership/doctor/repair；v0.2.2 才完成兼容性修复与 Cloud A～F hard acceptance。
+- exact publication identity、资产与 SHA 未被改写；只纠正其长期意义。v0.2.0 的“成功”明确引用维护者
+  第一手历史确认，同时保留独立 acceptance 未恢复这一证据缺口。
+- focused repository/architecture suite 17/17 PASS；完整仓库回归 92 tests、80 PASS、12 个诚实的
+  Windows/POSIX SKIP、0 FAIL；P3 未启动。

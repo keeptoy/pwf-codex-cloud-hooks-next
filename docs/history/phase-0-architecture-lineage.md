@@ -5,8 +5,9 @@
 ## Historical position
 
 `Phase 0` 是后续整理历史时建立的 architecture-lineage overview，不是当时 programme 正式授权的 Product
-Phase，也不是版本或 Release identity。它跨越旧仓库的 `v0.1.0` 可行性原型、`v0.2.2` Cloud 功能基线、
-v0.3.0 Phase 1～3 的 owned architecture 建设、beta.2 重新封板，以及 successor stable `v0.3.0` 的建立。
+Phase，也不是版本或 Release identity。它跨越旧仓库的 `v0.1.0` trust 路线失败、`v0.2.0` 成功原型、
+`v0.2.2` Cloud 功能基线、v0.3.0 Phase 1～3 的 owned architecture 建设、beta.2 重新封板，以及 successor
+stable `v0.3.0` 的建立。
 
 这个编号只提供一个易恢复的历史入口：先理解“功能可行、Cloud 可用、架构完成、仓库迁移”是四种不同
 结论，再下钻正式 Phase 摘要。它不把后来的知识反向写成早期 programme 授权。
@@ -15,10 +16,11 @@ v0.3.0 Phase 1～3 的 owned architecture 建设、beta.2 重新封板，以及 
 
 ## Problem before
 
-早期版本同时发生产品验证、运行时 ownership 重构和仓库迁移，容易产生三个误读：把 `v0.1.0` 的可执行
-原型说成 Cloud 已验收产品；把 `v0.2.2` 的可靠功能链说成今天的 owned architecture；把 beta.2 到 stable
-`v0.3.0` 的 successor 迁移说成一次运行时架构换代。这样会混淆“已经证明能工作”“已经建立安全边界”
-和“只是更换 source authority”。
+早期版本同时发生产品验证、信任通道切换、运行时 ownership 重构和仓库迁移，容易把 `v0.1.0` 的本地
+可执行代码误写成成功原型、把 `v0.2.0` 的成功验证误写成完整 hard acceptance、把 `v0.2.2` 的可靠功能链
+说成今天的 owned architecture，或把 beta.2 到 stable `v0.3.0` 的 successor 迁移说成运行时架构换代。
+这些说法会混淆“本地逻辑可运行”“Cloud 信任路线成功”“完整功能验收”“安全边界完成”和“只更换 source
+authority”。
 
 <a name="core-decisions"></a>
 
@@ -28,7 +30,9 @@ v0.3.0 Phase 1～3 的 owned architecture 建设、beta.2 重新封板，以及 
 
 | 阶段 | 更准确的定位 | 已经证明什么 | 尚未证明什么 |
 |---|---|---|---|
-| `v0.1.0` | 可执行的可行性原型 / B1 candidate | 两个 lifecycle Hook、canary、plan 注入和 installer 生命周期可以串联 | 没有 Fresh/Resume Cloud hard acceptance，也没有 owned runtime 等后续安全边界 |
+| `v0.1.0` | legacy Hook trust 的失败 B1 尝试 | 本地 fixture 证明两个 Hook、canary、plan/catch-up 代码可以串联，也证明 tag/Release 可以形成 | precomputed trust 无法在 Cloud 落地，不能称为成功原型 |
+| `v0.2.0` | 第一个成功的 Cloud Hook 可行性原型 | system-managed requirements、absolute adapter 与同一 Hook 行为可以在 Cloud 信任通道中工作 | 独立 acceptance 未恢复，也没有 v0.2.1 的 guarded repair 或 v0.2.2 的 A～F 闭环 |
+| `v0.2.1` | 成功 Managed 路线的运维安全加固 | schema-v3 fingerprints、结构化 drift 分类、guarded repair 与 backup byte restoration 已形成 | 尚未解决 v0.2.2 的 Cloud catch-up compatibility，也没有完整 A～F 闭环 |
 | `v0.2.2` | 第一个经过 Cloud 验收的最小可部署功能模型 | 安装、Managed policy、真实 Resume catch-up、repair、drift fail-closed 和 A～F 黑盒链路可以工作 | 仍是过渡架构：现场 patch global Skill、adapter 自己处理 plan，并直接调用 Skill runtime |
 | `v0.3.0-beta.1` | 当前 canonical architecture 的第一个最小完整实现 | Phase 1～3 闭环：owned runtime、owned catch-up、canonical owned-plan、thin adapter、确定性发布和 Cloud 验收 | 文档治理、独立发布资产与可重放验收随后由 beta.2 重新封板 |
 | Phase 3.5 | 仓库权威迁移，不是运行时架构换代 | 从旧仓库 exact mirror，经 slim transformation、Cloud equivalence，最终切换 successor authority | 没有重新设计或改变 Phase 3 production behavior |
@@ -43,7 +47,10 @@ authority 是否迁移。任何一条轴的 PASS 都不能自动替另外两条�
 架构换代是逐段完成的，不是 beta.1 单次重写：
 
 ```text
-v0.2.2 旧过渡架构
+v0.1.0 legacy Hook trust 尝试在 Cloud 失败
+  -> v0.2.0：切换 system-managed trust/registration，建立首个成功原型
+  -> v0.2.1：增加 schema-v3 fingerprints、doctor/drift 分类与 guarded repair
+  -> v0.2.2：补 Cloud catch-up compatibility，完成 A～F，并形成旧过渡架构
   -> alpha.1 / Phase 1：建立 owned runtime、contracts 与供应链边界，但尚未激活
   -> alpha.2 / Phase 2：切换到 repository-owned catch-up
   -> beta.1 / Phase 3：切换到 canonical owned-plan + thin adapter
@@ -52,6 +59,10 @@ v0.2.2 旧过渡架构
   -> v0.3.0：在 next 仓库发布 stable
 ```
 
+- `v0.1.0` 的 adapter/本地 fixture 已能执行，但 legacy `hooks.json` + `config.toml` precomputed trust 无法在
+  Cloud 落地；其 tag/Release 是失败候选的可恢复字节，不是成功证明。
+- `v0.2.0` 保持同一 Hook 算法，改由 `/etc/codex/requirements.toml` system-managed policy 注册 absolute
+  adapter；维护者确认这条路线实际成功。v0.2.1 随后增加更严格的 manifest/doctor/repair 治理。
 - `v0.2.2` 使用单一 Release ZIP，bootstrap 作为包内文件随 installer/runtime 一起运输，并在安装现场修改
   global Skill；adapter 调用 global Skill 的 `session-catchup.py`，并保留自己的 plan resolution/rendering。
   它建立可靠功能基线，但不是当前 trusted graph。
@@ -71,12 +82,13 @@ v0.2.2 旧过渡架构
 
 ## Acceptance conclusion
 
-一句大白话是：`v0.1.0` 证明“这件事能做”；`v0.2.2` 证明“这件事能在 Cloud 上可靠运行”；
-`v0.3.0-beta.1` 才建立“今天这套 owned canonical architecture”；Phase 3.5 只是把已经完成的架构安全搬进
-next 仓库。
+一句大白话是：`v0.1.0` 证明“这条 trust 路线走不通”；`v0.2.0` 才证明“这件事能做”；`v0.2.2` 证明
+“这件事能在 Cloud 上可靠运行”；`v0.3.0-beta.1` 才建立“今天这套 owned canonical architecture”；
+Phase 3.5 只是把已经完成的架构安全搬进 next 仓库。
 
-因此最准确的两条历史主线是：
+因此最准确的三条历史主线是：
 
+- **可行性验证**：v0.1.0 trust failure → v0.2.0 successful prototype → v0.2.1 operational hardening → v0.2.2 Cloud A～F。
 - **架构换代**：`v0.2.2` → alpha.1 → alpha.2 → beta.1。
 - **仓库换代**：beta.2 → Phase 3.5 → next 仓库的 stable `v0.3.0`。
 
@@ -85,7 +97,8 @@ next 仓库。
 ## Explicit non-goals
 
 - 不把 `Phase 0` 写回原 programme，不新增 Phase 授权，也不改变现有版本编号。
-- 不用早期 tag/Release 代替缺失的 Cloud acceptance，不把 v0.1.0 提升为已验收产品。
+- 不用早期 tag/Release 代替缺失的 Cloud acceptance，不把 v0.1.0 提升为成功原型，也不把维护者确认的
+  v0.2.0 成功验证扩写成尚未恢复的 A～F hard acceptance。
 - 不把 v0.2.2 的功能可靠性解释为 owned runtime 已完成，也不把 alpha.1 的 inactive inventory 解释为已激活。
 - 不把 successor migration 解释为新 runtime contract，不复制资产 SHA、测试计数、验收全文或当前状态。
 - 不用本摘要解释当前实现；当前 architecture、contracts、programme 与 source identity 仍由各自 authority 管理。

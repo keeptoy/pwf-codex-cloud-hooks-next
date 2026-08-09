@@ -162,38 +162,56 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 
 ## v0.2.1
 
-- 在不改变两个 Hook 的功能算法前提下，把 v0.1.0 的 legacy `hooks.json` + `config.toml` precomputed trust
-  部署切换为 `/etc/codex/requirements.toml` system-managed Hook：启用 `features.hooks`，建立或校验
-  `hooks.managed_dir`，并以 absolute `/usr/bin/python3 <adapter> <event>` 注册两个只读事件；若管理员已有
-  `managed_dir` 不包含 owned adapter，则拒绝接管。
-- installed ownership manifest 升级到 schema v3，记录 upstream、Skill/install paths、events、adapter
+- 沿用 v0.2.0 已经成功的 `/etc/codex/requirements.toml` system-managed Hook 路线，并在不改变两个 Hook
+  功能算法的前提下加固部署所有权；若管理员已有 `managed_dir` 不包含 owned adapter，仍然拒绝接管。
+- installed ownership manifest 从 schema v2 升级到 v3，记录 upstream、Skill/install paths、events、adapter
   source hash，以及完整/非 owned requirements fingerprints；普通 install 可以清退 v0.1 legacy handler/
   trust entries，uninstall 只移除 owned policy/runtime，并保留第三方配置。
 - 新增 `errors`、`blockers` 与 `repairable` drift 分类及受限 `install --repair`：只修复已证明 owned 的 adapter
   或 Managed Hook definition；unowned requirements、manifest、path、upstream 或 unknown runtime drift
   一律以 `REPAIR_BLOCKED_UNKNOWN_DRIFT` fail closed。备份范围扩展到 system requirements 和全部既有
   managed files，并用 byte-for-byte restoration 测试闭环。
-- `hook_adapter.py`、三个 Hook 行为测试和 PWF v3.8.2 pristine pin 与 v0.1.0 逐字不变，因此该版本建立的
-  是部署、所有权、doctor/repair 与运维安全基线，不是新的 planning/catch-up 算法。README 当时只记录
+- `hook_adapter.py`、三个 Hook 行为测试和 PWF v3.8.2 pristine pin 在 v0.1.0、v0.2.0、v0.2.1 之间逐字
+  不变；因此该版本建立的是部署、所有权、doctor/repair 与运维安全基线，不是新的 planning/catch-up
+  算法。README 当时只记录
   startup/resume 已配置验证，forced compaction 与后续 v0.2.2 完成的 Cloud A～F 不属于本版本结论。
 - [old-repository `v0.2.1` Release](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/tag/v0.2.1)
   保留单一 ZIP 与发布校验和；当时没有 ZIP 外独立 bootstrap asset，CHANGELOG 不复制资产 SHA。
 
+## v0.2.0
+
+- 放弃 v0.1.0 在 Codex Cloud 无法落地的 legacy `hooks.json` + `config.toml` precomputed trust 路线，改用
+  `/etc/codex/requirements.toml` system-managed Hook；维护者确认这条新信任/注册路线实际成功，因此
+  v0.2.0 才是最早成功的 Cloud Hook 可行性原型。
+- installer 启用 `features.hooks`，建立或校验 `hooks.managed_dir`，以 absolute
+  `/usr/bin/python3 <adapter> <event>` 注册两个只读事件，并在已有 managed root 不包含 owned adapter 时
+  fail closed；普通 install 同时清退 v0.1 留下的 owned legacy handler 与 trust entries。
+- installed manifest 使用 schema v2；dry-run、backup、merge-preserving managed install、doctor 与
+  ownership-aware uninstall 已形成最小闭环，但尚无 v0.2.1 的 schema-v3 requirements fingerprints、
+  `repairable/blockers` 分类、guarded repair 和 unknown-drift blocker。
+- Hook adapter、三个行为测试与 PWF v3.8.2 pin 仍和 v0.1.0 相同，所以成功点是 Cloud trust/registration
+  plane，而不是 planning/catch-up 算法。独立 acceptance 文档尚未恢复；维护者确认的成功原型不能扩写成
+  v0.2.2 后来完成的 Fresh/Resume A～F hard acceptance。
+- [old-repository `v0.2.0` Release](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/tag/v0.2.0)
+  保留单一 TGZ 与发布校验和；当时没有 ZIP 外独立 bootstrap asset，CHANGELOG 不复制资产 SHA。
+
 ## v0.1.0
 
-- 建立最早可恢复的 B1 implementation candidate：以个人 Codex Cloud installer 把 `SessionStart` 和
+- 这是最早可恢复、但未能在 Cloud 落地的 B1 implementation attempt：尝试以个人 installer 把 `SessionStart` 和
   `UserPromptSubmit` 两个只读 PWF lifecycle Hook 安装到 active `$CODEX_HOME`，并用
   `PWF_GLOBAL_HOOK_CANARY_V1` 观察新会话调用。
 - `SessionStart` 直接调用已校验 global Skill 中的 upstream `session-catchup.py`，随后由 adapter 选择并
   渲染 active plan；`UserPromptSubmit` 注入 active plan 与 recent progress，无 plan 时只输出 canary。
 - installer 只部署一个 adapter，通过 legacy `hooks.json` 与 `config.toml` precomputed trust 注册两个
   handler；已具备 upstream file hash pin、dry-run、备份、merge preservation、exclusive lock、atomic write、
-  idempotent install、doctor drift 检测和 ownership-aware uninstall 的初始治理闭环。
-- 该原型仍直接发现并执行 global Skill，plan 选择/文件读取/渲染也位于 adapter；尚未建立 repository-owned
+  idempotent install、doctor drift 检测和 ownership-aware uninstall 的本地实现，但这套 Hook 信任链在
+  Codex Cloud 无法解决，因而没有形成成功原型。
+- 该失败尝试仍直接发现并执行 global Skill，plan 选择/文件读取/渲染也位于 adapter；尚未建立 repository-owned
   runtime、Managed policy adapter-only graph、request/result contracts、transcript identity/immutable bytes
-  或 private snapshot 等后续安全边界。现存五个 case 只证明本地 fixture 行为，不构成 Cloud acceptance。
+  或 private snapshot 等后续安全边界。现存五个 case 只证明本地 fixture 行为，既不构成 Cloud acceptance，
+  也不能覆盖实际 Cloud trust 失败。
 - 后续核对旧仓库确认其历史身份并非只有无 Git 元数据的 source snapshot：[`v0.1.0` tag](https://github.com/keeptoy/pwf-codex-cloud-hooks/tree/v0.1.0)
   当前指向 commit `49c2709b3522aada53fbc97ae71d020d6619bb0e`，[对应 Release](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/tag/v0.1.0)
   保留发布 TGZ 与校验和；CHANGELOG 不复制资产 SHA。
-  这些证据证明原型曾被打包发布，但 README 当时仍把 fresh Cloud canary observation 列为后续步骤，不能把
-  “存在 tag/Release”升级解释为已完成 Cloud hard acceptance。
+  这些证据只证明失败候选曾被打包发布；README 当时仍把 fresh Cloud canary observation 列为后续步骤，
+  不能把“存在 tag/Release”升级解释为成功原型或 Cloud hard acceptance。

@@ -234,3 +234,16 @@
   historical snapshots 的 Node/Python 静态检查全部 PASS，临时目录保持未修改/未暂存。
 - repository/architecture focused suite 17/17 PASS；完整 `npm test` 为 92 tests、80 PASS、12 个诚实的
   Windows/POSIX SKIP、0 FAIL；`git diff --check` PASS。P2-H-021 已关闭，活动计划重新停在 P3 前。
+- 2026-08-10：维护者纠正早期谱系：v0.1.0 的 legacy Hook trust 路线在 Cloud 失败，v0.2.0 改用
+  system-managed requirements 后才成为首个成功验证原型；P2-H-020 已启动，P3 保持未授权。
+- 从旧仓库 exact `v0.2.0` tag 只读恢复源码并与 v0.1.0/v0.2.1 比较：三版 adapter、Hook tests 与
+  upstream pin 在 LF 归一化后逐字一致；v0.1.0→v0.2.0 的实质变化集中在 system-managed policy、
+  absolute commands、`hooks.managed_dir`、schema-v2 安装生命周期和 legacy trust 清理。
+- v0.2.0→v0.2.1 才加入 schema-v3 fingerprints、`repairable`/`blockers`、guarded repair 与 unknown-drift
+  fail-closed。正式独立 acceptance 尚未恢复，因此文档把“成功”标为维护者一手历史确认，不冒充
+  v0.2.2 的 Cloud A～F hard acceptance。
+- CHANGELOG、BASELINE_PROVENANCE、Phase 0 摘要/索引和活动 findings 已同步失败尝试→成功原型→运维加固
+  →可靠 Cloud baseline 的四段角色；未修改 production、contracts、Release、当前 lifecycle 或临时文件。
+- 取证用 exact-tag 临时 clone 已在验证其位于系统 temp 且目录名匹配后删除；它可从公开 v0.2.0 tag 重建。
+- focused repository/architecture suite 17/17 PASS；完整 `npm test` 为 92 tests、80 PASS、12 个诚实的
+  Windows/POSIX SKIP、0 FAIL；`git diff --check` PASS。P2-H-020 已关闭，活动计划重新停在 P3 前。

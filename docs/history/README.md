@@ -27,7 +27,7 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 
 | Phase | 当时的交付闭环 | 精选摘要 |
 |---|---|---|
-| Phase 0 | 回顾性架构谱系：区分可行性原型、Cloud 功能基线、owned architecture 完成与 successor authority 迁移；不是正式 Product Phase | [`phase-0-architecture-lineage.md`](phase-0-architecture-lineage.md) |
+| Phase 0 | 回顾性架构谱系：区分失败尝试、成功原型、Cloud 功能基线、owned architecture 完成与 successor authority 迁移；不是正式 Product Phase | [`phase-0-architecture-lineage.md`](phase-0-architecture-lineage.md) |
 | Phase 1 | 固定来源、ownership/contracts、可复现 import/install/package；runtime 仅作为 inactive verified inventory | [`phase-1-runtime-provenance.md`](phase-1-runtime-provenance.md) |
 | Phase 2 | 激活 adapter 监督的 owned catch-up，建立 transcript 与 global Skill 安全边界 | [`phase-2-owned-catchup.md`](phase-2-owned-catchup.md) |
 | Phase 3 | 激活 canonical owned-plan，删除 adapter 平行 plan 算法并完成 beta Cloud 闭环 | [`phase-3-canonical-plan.md`](phase-3-canonical-plan.md) |

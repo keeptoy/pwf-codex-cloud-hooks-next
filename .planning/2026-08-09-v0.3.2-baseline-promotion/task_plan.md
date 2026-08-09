@@ -38,6 +38,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   CHANGELOG；临时目录本身不得修改、暂存或复制进当前树，同时核对两个快照是否具有 Git 恢复链。
 - 维护者随后补充本地 v0.2.1 snapshot，并授权比较 v0.1.0/v0.2.1/v0.2.2 的 README、manifest、实现与
   tests，把已证实的 v0.2.1 delta 写入 CHANGELOG；临时目录继续只读，不扩展到 P3 或当前 runtime。
+- 维护者纠正早期谱系：v0.1.0 的 legacy Hook trust 路线在 Cloud 中失败，v0.2.0 才是解决信任接入后
+  最早成功的验证原型；授权据此修正 CHANGELOG、Phase 0、provenance 与活动证据，但不得虚构缺失验收。
 - P3 只记录为后续独立 gate；当前不修改 package、Release contract、bootstrap 或 `v0.3.3-dev` identity，
   不 seal、不发布、不部署新版本。
 - 已完成的 `2026-08-09-architecture-contract-retention` 三文件由 immutable commit `d4cc3b5` 保存，P2
@@ -53,8 +55,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## P2-P0 Authorization
 
-- 维护者已授权把 v0.1.0 → v0.2.2 → alpha.1/alpha.2/beta.1 → beta.2 → successor stable v0.3.0 的核心
-  理解组织为 `Phase 0` 架构历史。
+- 维护者已授权把 v0.1.0 failure → v0.2.0 successful prototype → v0.2.2 Cloud baseline →
+  alpha.1/alpha.2/beta.1 → beta.2 → successor stable v0.3.0 的核心理解组织为 `Phase 0` 架构历史。
 - `Phase 0` 必须明确是后续建立的 architecture-lineage overview，不是原 programme 的正式 Product Phase、
   版本或 Release identity；它只解释架构换代与仓库换代的区别，不取代 Phase 1～3/3.5 摘要。
 - 本 gate 只修改历史摘要、历史索引、CHANGELOG 最小治理记录和活动 planning；不修改 provenance exact
@@ -62,9 +64,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Next Step
 
-停在 post-release 文档治理阶段和 P3 前。v0.2.1 已通过三个 early-version snapshots 的逐文件 hash/diff
-恢复到 CHANGELOG；早期 publication provenance 与 Phase 0 架构谱系保持原有 authority 分层。P3 继续
-等待维护者另行授权。
+停在 post-release 文档治理阶段和 P3 前。v0.1.0 failure → v0.2.0 successful prototype → v0.2.1
+operational hardening → v0.2.2 Cloud baseline 的早期谱系已经恢复并验证；P3 继续等待维护者另行授权。
 
 ## Gates
 
@@ -89,6 +90,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 - [x] P2-H-010 — v0.1.0 recovery：交叉读取早期文档/实现/测试，恢复最早原型定位与 Git 证据边界。
 - [x] P2-H-021 — v0.2.1 recovery：比较 v0.1.0/v0.2.1/v0.2.2，恢复 Managed policy、ownership、doctor/
   repair 与验收边界的准确版本 delta。
+- [x] P2-H-020 — v0.2.0 prototype correction：核验 legacy trust 失败到 system-managed 成功原型的转换，
+  修正早期 CHANGELOG/Phase 0/provenance 语义。
 - [x] P2-PROV — Early publication provenance backfill：核验并登记有证据的 v0.1.0、v0.2.2 与
   v0.3.0 alpha/beta 身份，缺证字段保持空缺。
 - [x] P2-P0 — Architecture lineage overview：建立回顾性 Phase 0，串联可行性、Cloud 功能基线、owned
@@ -110,7 +113,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 ## Status
 
 P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS，P2-P-A PASS，P2-P-M PASS，P2-P-B PASS，
-P2-P-E PASS，P2-P-T PASS，P2-P-R PASS，P2-H-010 PASS，P2-PROV PASS，P2-P0 PASS，P2-H-021 PASS。
+P2-P-E PASS，P2-P-T PASS，P2-P-R PASS，P2-H-010 PASS，P2-PROV PASS，P2-P0 PASS，P2-H-021 PASS；
+P2-H-020 PASS。
 本地分支为 `0.3.2-post-release`，当前 HEAD 是 P3 前的 unsealed governance transition；P3 未授权。
 
 ## Errors Encountered
@@ -135,3 +139,7 @@ P2-P-E PASS，P2-P-T PASS，P2-P-R PASS，P2-H-010 PASS，P2-PROV PASS，P2-P0 P
 | P2-P-B focused suite 在 Windows sandbox 内 13/17 PASS；4 项依赖 `spawnSync("git")` 的 tracked-path case 返回 `status=null` | 1 | 分类为既有 sandbox platform limitation；保持断言不变，在沙箱外复跑同一 suite 17/17 PASS |
 | PowerShell `rg` 再次收到未展开的 `.planning/.../*.md` 路径并返回 Windows illegal path | 1 | 所需测试片段已输出；后续继续使用显式文件或 `rg ... . -g '*.md'`，不重复裸 glob |
 | 首次用 PowerShell `foreach (...) { ... } | Format-Table` 比较 v0.2.2 历史 trees 时触发 empty pipe parser error | 1 | 没有修改文件；把循环结果先赋给 `$rows`，再单独格式化，成功比较五个 commits |
+| 当前 successor object database 不含 v0.1.0/v0.2.0/v0.2.1 的旧仓库 commit objects，`git cat-file` 三项均失败 | 1 | 不创建/伪造本地 refs 或 remote；改从旧仓库 exact tag/source archive 做只读比较 |
+| 当前 PowerShell/.NET 不提供静态 `SHA256.HashData`，归一化哈希辅助输出为空 | 1 | installer 的 `--ignore-cr-at-eol` diff 已成功；单独改用兼容的 `SHA256.Create().ComputeHash` 复核相同内容 |
+| Phase 0 时间线格式补丁误放进 CHANGELOG update 段，精确上下文校验拒绝应用 | 1 | 无部分修改；拆成 CHANGELOG 与 Phase 0 两个精确文件补丁 |
+| P2-H-020 清理旧 findings 时，首个补丁使用了概括后的句子而非文件中的精确换行 | 1 | 无部分修改；先读取真实行，再用精确上下文修正三处旧结论 |
