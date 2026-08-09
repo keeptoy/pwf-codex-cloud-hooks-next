@@ -96,8 +96,51 @@ trusted graph、rollback 和 Cloud 评审。
 
 ## 6. Discovery 与 gate 晋级模型
 
-每个新 Product Phase 的第一轮必须是 Discovery：恢复当前 upstream/Host/Cloud 事实，比较路线与代价，
-冻结不变量、失败矩阵、轮次、测试、Cloud/rollback 计划，并给出 `GO`、`CONDITIONAL_GO` 或 `NO_GO`。
+本项目采用“先探路、再实施”的动态轮次治理。Discovery 不是固定的 Phase 编号，而是在继续实现可能
+导致“实现正确，但架构方向错了”时主动暂停并恢复证据的设计 gate。
+
+### 6.1 Discovery 触发条件
+
+以下情况必须先进入 Discovery：
+
+- **进入新 Product Phase**：第一轮恢复前序证据，扫描当前代码、文档、upstream、Host 与 Cloud 事实，
+  复核旧假设、重估轮次并冻结退出条件；原则上不直接切换生产行为。
+- **进入关键 gate**：激活、迁移、删除旧生产路径、cutover、schema、Host ABI、trusted graph、Release、
+  rollback 或安全边界变化前，必须设置可审查的设计检查点。
+- **实施中出现实质偏差**：Cloud 与本地证据冲突、测试推翻设计假设、出现两条以上代价明显不同的
+  路线，或 timeout、权限、进程、identity 与数据安全模型变化时，暂停当前实施并重新探路。
+
+触发 Discovery 后，活动 task plan 必须把实施状态标为暂停，并把证据恢复和路线决策设为唯一 Next
+Step。结论冻结前，production dispatch、发布哈希和外部部署保持不变；允许的活动仅限获批的只读恢复、
+探针、测试/fixture 和设计文档，不得用生产改动代替架构决策。
+
+### 6.2 正式加 Round 与 Round 内子门槛
+
+按变化影响选择治理粒度，而不是为了维持旧轮次数字硬塞风险：
+
+| 变化类型 | 治理动作 |
+|---|---|
+| 改变架构、契约、Product Phase 范围、信任边界、Release 边界或回滚方式 | 正式增加可独立审查的 Discovery Round |
+| 架构不变，只需把已选方案拆成安全的实施、隔离和验证顺序 | 使用当前 Round 内 A/B/C 子门槛 |
+| 普通测试补漏、文档同步或已冻结方案内的局部 bug 修复 | 不单独增加探路轮，但仍受当前 task plan、边界测试和停止条件约束 |
+
+关键 gate 不因“仍在同一 Phase”而豁免设计检查；反过来，局部实现拆分也不应虚增 programme Round。
+
+### 6.3 Discovery 最低产物与结论
+
+每次 Discovery 至少冻结：
+
+1. 新证据与旧计划的差异，以及哪些假设仍成立或已失效；
+2. 可选路线、各自代价、最终选择和选择理由；
+3. 不变量、非目标、实施边界、停止条件与需要维护者决定的事项；
+4. 本地测试、Linux/Cloud 验收、失败矩阵与回滚方案；
+5. 明确的 `GO`、`CONDITIONAL_GO` 或 `NO_GO` 结论。
+
+`GO` 只授权进入已冻结的下一 gate；`CONDITIONAL_GO` 必须先满足并核验列明条件；`NO_GO` 停止该路线。
+任何结论都不自动授权后续激活、Release、部署或 rollback。若路线选择会改变上述边界，智能体应先提供
+证据、选项与代价，再请求维护者授权。
+
+### 6.4 标准晋级链
 
 标准晋级链为：
 
@@ -114,13 +157,8 @@ Discovery
   -> rollback-baseline promotion
 ```
 
-每个箭头都是独立 gate；前一 gate PASS 不自动授权后一 gate。出现以下情况必须暂停并增加探路轮或
-Round 内子 gate：
-
-- Cloud 与本地证据冲突；
-- schema、Host ABI、trusted graph、安全或 rollback 变化；
-- timeout、进程组、权限、identity 或数据安全模型变化；
-- 两条路线代价显著不同，继续实现可能“代码正确但方向错误”。
+每个箭头都是独立 gate；前一 gate PASS 不自动授权后一 gate。任一步出现 6.1 的触发条件，都回到
+Discovery，按 6.2 决定增加正式 Round 或 Round 内子门槛，再按 6.3 重新冻结结论。
 
 ## 7. Release 授权与封板顺序
 

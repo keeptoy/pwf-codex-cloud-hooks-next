@@ -297,3 +297,21 @@ test("change history, programme intent, current action, and immutable evidence h
   assert.match(agents, /当前版本角色只见 `ROADMAP\.md`/);
   assert.match(design, /CHANGELOG\.md/);
 });
+
+test("ROADMAP discovery governance separates new rounds from in-round safety gates", () => {
+  const roadmap = readText("ROADMAP.md");
+  const discoveryStart = roadmap.indexOf("## 6. Discovery 与 gate 晋级模型\n");
+  const releaseStart = roadmap.indexOf("## 7. Release 授权与封板顺序\n");
+  assert.ok(discoveryStart >= 0 && releaseStart > discoveryStart);
+  const discovery = roadmap.slice(discoveryStart, releaseStart);
+
+  assert.match(discovery, /新 Product Phase.*第一轮.*Discovery/is);
+  assert.match(discovery, /激活.*迁移.*删除旧.*schema.*Host ABI.*trusted graph.*Release.*rollback/is);
+  assert.match(discovery, /架构.*契约.*Phase 范围.*信任.*Release.*回滚.*正式增加.*Round/is);
+  assert.match(discovery, /架构不变.*Round 内.*A\/B\/C.*子门槛/is);
+  assert.match(discovery, /测试补漏.*文档同步.*局部 bug.*不.*增加.*探路轮/is);
+  assert.match(discovery, /新证据.*差异.*可选路线.*代价.*不变量.*非目标.*停止条件/is);
+  assert.match(discovery, /本地测试.*Cloud.*回滚.*GO.*CONDITIONAL_GO.*NO_GO/is);
+  assert.match(discovery, /暂停.*production dispatch.*发布哈希.*外部.*不变/is);
+  assert.match(discovery, /实现正确.*架构方向错/is);
+});

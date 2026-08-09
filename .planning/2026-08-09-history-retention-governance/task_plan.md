@@ -36,10 +36,14 @@ trusted graph、Release 不可变性和历史可追溯性的前提下，让当�
   transcript/Host input、bootstrap supply chain 与 Release importer self-containment；不复制 provenance、
   acceptance 或当前 lifecycle 内容。
 - H11 不修改已发布资产、历史 ref、production、contracts、bootstrap、Release 或 Cloud，也不自动 push。
+- 已授权 H12：评估并吸收早期“全局探路与动态加轮”设计，完善 ROADMAP 第 6 节的 Discovery 触发、
+  Round/sub-gate 分流、最低产物、冻结前禁区和维护者决策边界。
+- H12 只修改 programme authority、活动 planning 和治理断言；不改 AGENTS 执行入口、production、
+  contracts、bootstrap、Release 或 Cloud，也不自动 push。
 
 ## Next Step
 
-H0–H11 已完成；等待维护者给出下一项仓库补充任务。后续仍不自动 merge、push、创建 PR/Release、
+H0–H12 已完成；等待维护者给出下一项仓库补充任务。后续仍不自动 merge、push、创建 PR/Release、
 运行 Cloud 或执行 rollback。
 
 ## Phases
@@ -56,11 +60,12 @@ H0–H11 已完成；等待维护者给出下一项仓库补充任务。后续�
 - [x] H9 — 明确 Successor 迁移来源链是 `v0.3.0-beta.2 → v0.3.0` 的迭代过程。
 - [x] H10 — 将 M1–M4 迁移证据归入 provenance，并以 v0.3.1 已解决问题重写 ROADMAP 第 3 节。
 - [x] H11 — 补全 CHANGELOG 的 v0.3.1 实际版本变化，并保持 change/provenance/lifecycle 权威分离。
+- [x] H12 — 完善 Discovery 与动态加轮模型，冻结触发、分流、产物和实施暂停规则。
 
 ## Status
 
-H0–H11 完成；v0.3.1 CHANGELOG 已覆盖四类实际修复，并保持精确身份、验收证据和当前 lifecycle 的
-独立权威。明确不 merge，且没有授权 push、PR、Release、Cloud 或 rollback。
+H0–H12 完成；ROADMAP 已形成完整的 Discovery 触发、Round/sub-gate 分流、最低产物、三态结论和
+freeze-before-mutation 模型。明确不 merge，且没有授权 push、PR、Release、Cloud 或 rollback。
 
 ## Branch Disposition
 
@@ -116,3 +121,4 @@ H0–H11 完成；v0.3.1 CHANGELOG 已覆盖四类实际修复，并保持精确
 | 沙箱内最终 Node 聚焦测试无法创建 worker，两个文件均报 `spawn EPERM` | 1 | 分类为 sandbox execution limitation；获批后在沙箱外以同一命令复跑，12/12 PASS |
 | CHANGELOG test 用 base header 的裸前缀定位时会命中未来 extension header | 1 | 在迁移正文前识别为 test defect；改用包含行尾的完整 Markdown header 定位 |
 | ROADMAP v0.3.1 基线摘要重复写入 `GitHub Latest`，使 current lifecycle 出现第二份陈述 | 1 | 分类为 documentation authority duplication；保留历史 promotion 语义，当前角色只回链第 2 节 |
+| H12 边界复核时此前 untracked 的 `临时文件/` 已不存在，哈希命令报告路径缺失 | 1 | 分类为外部工作区状态变化；本轮没有删除且不擅自恢复，改以 Git status 确认不存在待提交路径 |

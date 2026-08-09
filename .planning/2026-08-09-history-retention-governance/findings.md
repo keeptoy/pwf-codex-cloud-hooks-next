@@ -226,3 +226,16 @@ graph、Release/rollback mechanism、长期基线晋级。普通 patch、文案�
   M1–M4、精确 SHA、Cloud A～F 流水或当前 accepted/rollback 角色。
 - 最小完整结构是 Fixed、Security and packaging、Compatibility；四个问题域均可从这里理解，精确身份和
   逐步验收继续分别链接 provenance 与 v0.3.1 acceptance。
+
+## H12 Discovery and Dynamic Round Governance
+
+- 早期文本的长期价值不在“第一轮先探路”这一句，而在完整闭环：三类触发、正式 Round 与 Round 内
+  sub-gate 的影响分流、Discovery 最低产物、冻结前暂停实施，以及由证据驱动的维护者授权边界。
+- 当前 ROADMAP 第 6 节已经有新 Phase Discovery、部分偏差触发、标准晋级链和 GO 三态，但没有明确
+  “普通补漏不加轮”、正式加 Round 与 A/B/C 子门槛的判据，也没有集中列出 Discovery 必交付物。
+- ROADMAP 应维护 programme/gate 模型；AGENTS 继续只维护智能体恢复、暂停和关键 gate 的执行约束。
+  可以语义一致，但不应在两个文件维护逐字相同的第二份完整规则。
+- 吸收策略：保留现有晋级链，在其前补触发与分流，在其后补最低产物和 freeze-before-mutation；将
+  “实现可能正确但架构方向可能错误”保留为便于维护者判断的停止口诀。
+- 最终模型还明确：新 Phase 与关键 gate 都能触发 Discovery，但是否新增 programme Round 取决于影响；
+  普通补漏不虚增加轮，且任何 `GO` 都只授权已冻结的下一 gate，不自动越过激活/Release/部署/rollback。

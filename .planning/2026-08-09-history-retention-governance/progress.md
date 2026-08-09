@@ -2,6 +2,18 @@
 
 ## 2026-08-09
 
+- H12 获批：维护者提供早期“全局探路与动态加轮”设计，要求评估并完善 ROADMAP 第 6 节；本轮不改
+  production/Release/Cloud，也不 push。
+- 已完整读取 planning-with-files skill 并执行 session catch-up；没有未同步输出。
+- H12 failing-first：architecture authority 8 tests 中 7 PASS、1 FAIL；首个红项确认现有 ROADMAP 未把
+  激活、迁移、删除旧路径等关键 gate 纳入完整 Discovery 触发条件，后续 Round/sub-gate 与产物断言也
+  尚未满足。
+- ROADMAP 第 6 节已重构为四段：Discovery 触发、正式 Round/子门槛分流、最低产物与三态结论、标准
+  晋级链；冻结前明确保持 production dispatch、发布哈希和外部部署不变。
+- H12 focused governance 13/13 PASS；新增断言独立保护触发条件、Round/sub-gate 判据、普通补漏豁免、
+  最低产物、三态结论与 freeze-before-mutation 禁区。
+- H12 边界审计：`git diff --check` PASS，trusted/production diff 为空，ROADMAP 仍在 Release ZIP 外。
+  此前 untracked 的 `临时文件/` 已不在工作区；本轮未删除，也不擅自恢复。
 - H11 获批：维护者要求补充完善 CHANGELOG 的 v0.3.1；本轮只修改 change-history authority、活动
   planning 与治理断言，不改 production/Release/Cloud，也不 push。
 - H11 failing-first：architecture authority 7 tests 中 6 PASS、1 FAIL；红项确认 v0.3.1 章节只有
@@ -116,7 +128,7 @@
 
 ## Current Handoff
 
-- H0–H11 已完成；本地/远端 extension 分支均为 `0.3.2-dev-extend`，原 `0.3.2-dev` 保持在
+- H0–H12 已完成；本地/远端 extension 分支均为 `0.3.2-dev-extend`，原 `0.3.2-dev` 保持在
   `cde4b15`，维护者明确决定不 merge。
 - 当前开发列车话术是 `0.3.2-dev-extend`；底层 package/Release candidate identity 仍为 `0.3.2-dev`。
 - CHANGELOG delta 已独立分层，旧空 planning 目录已删除，focused/full regression 均为 0 FAIL。
