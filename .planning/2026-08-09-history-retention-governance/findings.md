@@ -184,3 +184,11 @@ graph、Release/rollback mechanism、长期基线晋级。普通 patch、文案�
   不改变任何 commit 内容、recovery ref 或当前 active scope。
 - 远端只存在 `0.3.2-dev@cde4b15`，尚无 `0.3.2-dev-extend`；因此首次同名 push 不需要覆盖、删除或
   force-update 任何远端 ref。
+
+## H8 Current Development Train
+
+- 维护者明确选择不 merge，取代 H7 结束时“等待是否合回 `0.3.2-dev`”的临时 disposition。
+- 当前状态需要区分三种身份：source/governance 开发列车是 `0.3.2-dev-extend`；predecessor branch 是
+  `0.3.2-dev`；package、Release contract 和 bootstrap candidate identity 仍是 `0.3.2-dev`。
+- 当前 programme 状态只应修改 ROADMAP；CHANGELOG 已按 extension/base 分章，README/AGENTS 继续只提供
+  authority 路由，production/Release 文件不应为话术变化产生字节漂移。

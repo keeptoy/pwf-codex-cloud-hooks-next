@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `0.3.2-dev`；文档治理与自解释入口收口，不改变 runtime、Host ABI 或 trusted graph |
+| 当前开发列车 | `0.3.2-dev-extend`；当前 source/governance track，package/Release candidate identity 仍为 `0.3.2-dev` |
 | 当前已接受版本 | `v0.3.1`；production rollback 与 GitHub `Latest` |
 | 回退证据链 | immutable `v0.3.0` → immutable `v0.3.0-beta.2` oracle |
 | 当前 programme 边界 | Product Phase 4 未授权 |
@@ -51,9 +51,11 @@ accepted input。
 
 ## 4. 当前开发列车与 Product Phase 路线
 
-`0.3.2-dev` 的宏观目标是完成文档真理源治理：稳定行为、架构理由、实现导航、实际版本变化、programme
-路线、当前行动和不可变证据分别只有一个主维护位置。该列车当前只改变 development 文档与治理检查，
-不授权 seal、publication、Cloud acceptance、行为变化或 Product Phase 4。
+`0.3.2-dev-extend` 是当前 source/governance 开发列车，继承 `0.3.2-dev` 的 package/Release candidate
+identity。它的宏观目标是完成文档真理源治理：稳定行为、架构理由、实现导航、实际版本变化、programme
+路线、当前行动和不可变证据分别只有一个主维护位置。该列车只改变 development 文档与治理检查，
+不授权 seal、publication、Cloud acceptance、行为变化或 Product Phase 4，也不计划合回
+`0.3.2-dev` 分支。
 
 该列车的仓库生命周期治理保持一个 active planning，并以 candidate + accepted role window 控制当前
 bootstrap/acceptance；更早历史退出 HEAD 后由 immutable commit、tag 和 Release 恢复。trusted/Release

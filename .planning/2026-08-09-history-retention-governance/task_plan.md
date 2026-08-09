@@ -20,11 +20,15 @@ trusted graph、Release 不可变性和历史可追溯性的前提下，让当�
   `.planning` 子目录。
 - H7 不 merge、创建 PR/tag/Release/asset，不运行 live Cloud 或 rollback promotion，也不改变 package
   identity `0.3.2-dev`。
+- 已授权 H8：明确不把 extension 合回 `0.3.2-dev`，将 `0.3.2-dev-extend` 提升为仓库当前开发列车的
+  source/governance 话术；`0.3.2-dev` 保留为 predecessor branch 和 package/Release candidate identity。
+- H8 只修改本地 current-state authority、活动 planning 和治理断言；不 push，不改 package/contracts/
+  bootstrap，不创建 PR/tag/Release/asset，也不运行 Cloud 或 rollback。
 
 ## Next Step
 
-H0–H7 已完成，远端 `0.3.2-dev-extend` 已建立且原 `0.3.2-dev` 保持不变。等待维护者另行决定是否
-评审/合并 extension；不自动创建 PR、merge、Release 或 Cloud gate。
+H0–H8 已完成；`0.3.2-dev-extend` 是当前 source/governance 开发列车且不计划合回 `0.3.2-dev`。
+等待维护者授权新的治理任务或 Product Phase Discovery；不自动 push、PR、Release 或 Cloud gate。
 
 ## Phases
 
@@ -36,15 +40,17 @@ H0–H7 已完成，远端 `0.3.2-dev-extend` 已建立且原 `0.3.2-dev` 保持
 - [x] H5 — 迁移 completed planning、旧 acceptance/runbook/bootstrap 和历史 oracle 引用。
 - [x] H6 — 同步唯一 authority、运行完整 regression/package/platform gate，形成合并建议。
 - [x] H7 — 分离 extension 分支与 CHANGELOG delta，清理空 planning 目录并推送同名远端分支。
+- [x] H8 — 将 extension 确立为当前开发列车话术，明确不 merge，并保持 package/Release identity 不变。
 
 ## Status
 
-H0–H7 完成；本地 `0.3.2-dev-extend` 跟踪远端同名分支，`0.3.2-dev` 未改变。没有授权 merge、PR、
-Release、Cloud 或 rollback。
+H0–H8 完成；current-state authority 和治理断言已同步。明确不 merge，且没有授权 push、PR、Release、
+Cloud 或 rollback。
 
-## Merge Recommendation
+## Branch Disposition
 
-- **GO（仅 source merge）**：`0.3.2-dev-extend` 可在维护者后续评审后合回 `0.3.2-dev`。
+- **不 merge（维护者决定）**：`0.3.2-dev-extend` 独立承担当前 source/governance 开发列车；
+  `0.3.2-dev` 保留为 predecessor branch 和底层 package/Release candidate identity。
 - authority 已同步到 README 文档地图、CHANGELOG Unreleased 与 ROADMAP programme 摘要；ARCHITECTURE/
   DESIGN 无需复制第二份治理规则。
 - 完整本地 regression 为 87 tests、75 PASS、12 Windows/POSIX SKIP、0 FAIL；适用 source/static/
@@ -53,6 +59,7 @@ Release、Cloud 或 rollback。
   可确定性重建，不建立 seal 或 Release identity。
 - 相对 `0.3.2-dev@cde4b15`，候选没有 hooks、runtime、contracts、installer、importer/patcher、package
   contract 或当前 v0.3.1/v0.3.2 bootstrap 漂移；变化局限于治理、文档、planning 与治理测试。
+- H6 的 source-merge GO 只保留为代码质量证据，不再代表计划中的下一动作。
 - **非 Release/Cloud GO**：12 个 POSIX/Linux-only case 在 Windows 上诚实 SKIP，且本轮未运行 live Cloud、
   publication、rollback 或最终资产验收；后续相关 gate 必须重新执行平台证据。
 

@@ -263,7 +263,7 @@ test("change history, programme intent, current action, and immutable evidence h
   assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|Next Step|GitHub `Latest`|production rollback|\d+ registered/);
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 
-  assert.match(roadmap, /\| 当前开发列车 \| `0\.3\.2-dev`；文档治理/);
+  assert.match(roadmap, /\| 当前开发列车 \| `0\.3\.2-dev-extend`；.*package.*`0\.3\.2-dev`/s);
   assert.match(roadmap, /活动.*task_plan.*当前唯一 Next Step/s);
   assert.match(roadmap, /一个 active planning.*candidate.*accepted role window.*immutable/s);
   assert.equal((roadmap.match(/GitHub `Latest`/g) || []).length, 1);

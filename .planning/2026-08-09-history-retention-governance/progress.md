@@ -2,6 +2,14 @@
 
 ## 2026-08-09
 
+- H8 获批：维护者决定不 merge，并要求把本地仓库当前开发列车话术改为 `0.3.2-dev-extend`；明确
+  package/Release candidate identity `0.3.2-dev` 不变，本轮不 push。
+- H8 current-state failing-first：architecture governance 7 tests 中 6 PASS、1 FAIL；唯一红项是 ROADMAP
+  仍把当前开发列车写作 `0.3.2-dev`，证明需要在 programme authority 更新，而不是改 package/contracts。
+- ROADMAP 已把当前 source/governance 开发列车更新为 `0.3.2-dev-extend`，并明确不计划 merge；
+  `0.3.2-dev` 继续作为 predecessor branch 和 package/Release candidate identity。
+- H8 focused governance 12/12 PASS；`git diff --check` PASS，package 与 Release contract 版本均仍为
+  `0.3.2-dev`，trusted/runtime/contracts/bootstrap diff 为空。
 - H7 获批：维护者要求保留 `0.3.2-dev`，把治理分支改名并推送为 `0.3.2-dev-extend`，将治理 delta
   迁入独立 CHANGELOG extension 章节，并删除 `.planning` 下已验证为空的旧目录。
 - 当前工作区从 H6 commit `b9e4892` 干净开始；原本地 governance 分支没有 upstream，远端未发现同名
@@ -77,8 +85,9 @@
 
 ## Current Handoff
 
-- H0–H7 已完成并具有 source-merge GO；本地/远端 extension 分支均为 `0.3.2-dev-extend`，原
-  `0.3.2-dev` 保持在 `cde4b15`。
+- H0–H8 已完成；本地/远端 extension 分支均为 `0.3.2-dev-extend`，原 `0.3.2-dev` 保持在
+  `cde4b15`，维护者明确决定不 merge。
+- 当前开发列车话术是 `0.3.2-dev-extend`；底层 package/Release candidate identity 仍为 `0.3.2-dev`。
 - CHANGELOG delta 已独立分层，旧空 planning 目录已删除，focused/full regression 均为 0 FAIL。
-- 不自动 merge 或创建 PR；后续 source merge、Release、Cloud 和 rollback 都需要新的明确授权。
+- 本轮只创建本地关键恢复点，不 push 或创建 PR；后续 Release、Cloud 和 rollback 都需要新的明确授权。
 - 不创建 tag/Release/asset，也不宣称 Cloud 或 rollback gate 已通过。
