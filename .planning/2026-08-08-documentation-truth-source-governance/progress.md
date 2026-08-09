@@ -345,3 +345,21 @@
   planning，没有 runtime/contract/bootstrap 字节变化。
 - D4.1 已用 `docs: stabilize cross-document anchors` 本地 checkpoint 收口；未 push、tag、seal、发布或
   修改 Cloud。D5 maintainer entrypoint 重新成为当前 Next Step。
+
+## 2026-08-09 — D5 maintainer entrypoint discussion started
+
+- 维护者要求先讨论 D5 修改细节，确认 handoff 是“导诊台而非另一份病历”的模型；本轮不编辑 handoff
+  或其他权威文档，只更新活动 planning 的讨论结论。
+- session catch-up 无未同步输出；起点工作树干净，HEAD 为 D4.1 checkpoint `543ed6b`，分支相对
+  `origin/main` ahead 9。D5 保持 ready，尚未切换 in progress。
+- 完整读取现有 handoff、README、ARCHITECTURE、DESIGN 后形成首轮逐节迁移草案：保留/压缩 §1、§6、
+  §7、§11；§2 current facts 整节退出；§3/§4 改为导诊；§5/§8/§9/§9.1/§10 删除正文并链接 authority。
+- 完整复核 ROADMAP 与 BASELINE_PROVENANCE：D4 已为旧 handoff 敏感内容建立足够承接点，D5 不需要
+  改写这些 authority；推荐最小范围收敛为 handoff、focused governance test 和 planning。
+- 完成现有引用/测试审计：README、DESIGN、ROADMAP 已把 handoff 定位为接手/分流入口；尚无 D5
+  mutable-fact guard。旧 handoff 明确含 current version/Latest/rollback、full hashes/counts、code fences、
+  source/Release/rollback 步骤和 M4 快照，适合先写失败测试再整体重写，不适合逐句修补。
+- 讨论草案冻结为五节导诊结构、四条高频路径、五组踩坑、九类检测信号和无 current facts/完整 runbook
+  guard；尚未编辑 handoff、tests 或权威文档，等待维护者确认细节后再把 D5 切换为 in progress。
+- 维护者已确认按该方案继续；先将讨论结论形成独立 planning checkpoint，随后以 failing-first guard
+  启动 D5 实施，便于在重写 handoff 前单独回退方案决策。

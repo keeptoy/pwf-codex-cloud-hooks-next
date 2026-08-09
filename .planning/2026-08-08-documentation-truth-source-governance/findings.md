@@ -404,3 +404,53 @@ tracked 文档，D5 会触碰历史/当前语义分界，D6 才能证明整体�
 - D4.1 已按该策略完成：`documentation-map`、`local-development`、`cloud-lifecycle`、
   `implementation-layout`、`module-responsibilities` 成为稳定链接合同；可见标题继续保留原编号和中文，
   二者不再耦合。AGENTS 记录规则，focused test 负责 machine enforcement。
+
+## D5 handoff section audit — discussion draft
+
+- 现有 handoff 有 11 个主/子节，混合了 onboarding、current lifecycle、完整命令、模块变更表、source
+  更新 runbook、doctor/test triage、Release/rollback runbook 和历史 M4 快照，已是第二份综合手册。
+- §1“接手前五分钟”保留价值最高，但应从执行命令清单改成五步阅读/判断路径；补入 DESIGN，命令只链接
+  README，当前授权只链接 active task plan。
+- §2“当前事实”应整节删除：current version/Latest/rollback/Phase 属于 ROADMAP，actual delta 属于
+  CHANGELOG，commit/hash/资产属于 provenance/acceptance；handoff 不保留其摘要数字。
+- §3“日常健康检查”中的完整 code fences 与 mode 命令已由 README 维护；handoff 只保留“先看 clean/
+  importer/doctor/test/platform 四类信号，再去哪解释”的导诊顺序。
+- §4“变更分类”完整文件/验证表已由 DESIGN 的 change target 与 validation routing 承接；handoff 可保留
+  一个更窄的“你现在要改什么 → 首先去哪一科”路由表，不复制文件清单或测试组合。
+- §5 source/runtime 更新、§8 candidate ZIP、§9正式 Release、§9.1 M4、§10 rollback 均应删除正文并分别
+  链接 DESIGN/provenance、README/Release contract、ROADMAP/版本 acceptance、M4 runbook 与 rollback
+  authority；不在导诊台保留可执行步骤。
+- §6 doctor 与 §7 test failure 是 handoff 的核心独有价值，但应合并成“能力/健康检测反馈矩阵”：信号、
+  意味着什么、是否可继续、下一 authority；不复制 repair 命令和测试断言清单。
+- §11 应从“能背出当前版本答案”改为 onboarding exit：新人能定位 authority、解释安全边界、正确分类
+  检测结果并知道何时停止；不要求记忆当前版本或具体 rollback 层级。
+- ROADMAP §2 已完整承接 current source/development/accepted/fallback/Phase 角色，§6–§8 承接 Discovery、
+  Release 和 rollback 晋级规则；provenance §1–§2 已承接三版 immutable identity 与 M1–M4 refs，专项
+  acceptance/runbook 承接精确执行证据。旧 handoff 的 §2/§8/§9/§9.1/§10 无需再“迁移正文”，直接
+  删除并链接即可。
+- D5 最小 authority 变更建议仅为 handoff + focused test + planning；README/DESIGN/ROADMAP/ARCHITECTURE/
+  provenance 当前入口均已正确，不为导诊台再增加重复导航段。handoff 优先使用文件级链接或 D4.1 已有
+  stable anchors，避免顺手扩大新的 deep-link contract。
+- 推荐新 handoff 采用“定位声明 + 五节正文”，约 80–110 行、零 code fence、零具体版本/hash/count：
+  1) 五分钟接手；2) 四类高频情形导诊；3) 五类安全误判；4) 能力/健康检测反馈矩阵；5) 停止条件与
+  接手完成标准。README 的完整文档地图不在 handoff 复制。
+- 五分钟路径建议固定为：保护现场/识别 dirty state → 从 README 文档地图确认 authority → 从 active
+  task plan 确认授权 → 用 DESIGN/ARCHITECTURE 判断改动落点与边界 → 按 README 选择验证并用 handoff
+  矩阵解释结果。只写动作语义，不复制完整命令。
+- 高频导诊只保留四条场景链：变更请求（task plan → DESIGN → ARCHITECTURE）、安装/doctor 异常
+  （README → ARCHITECTURE）、版本/Release/rollback 问题（ROADMAP → CHANGELOG → provenance/
+  acceptance）、Cloud/历史事实争议（provenance → `docs/` 专项证据）。它不是第二张 authority 总表。
+- 安全误判保留五组：本地/测试绿色不等于 Release 或下一 gate 授权；Windows SKIP 不替代 Linux/Cloud；
+  global Skill 必须 pristine 且 upstream 文件存在不等于已激活；repairable 不等于 unknown drift；当前
+  授权只认 active task plan，不认旧对话/文件名/历史 runbook。
+- 检测矩阵建议覆盖：unknown dirty state、importer failure、doctor healthy、doctor repairable、doctor
+  blocker/unknown drift、tests PASS、test failure 待分 product/test/fixture/platform、platform limitation/
+  SKIP、deterministic package 或 Cloud gate PASS。每行只回答“意味着什么、能否继续、下一 authority”。
+- D5 guard 应断言：存在五分钟/导诊/踩坑/检测/停止与完成五类内容；链接 README、DESIGN、ARCHITECTURE、
+  ROADMAP、CHANGELOG、provenance、active planning 与 `docs/`；包含 healthy/repairable/blocker/platform
+  limitation/product defect/test defect/fixture drift 语义；不含具体 semver、7+ hex、asset 大小/entry/
+  test 数、`Latest`、逐 gate 历史、code fence、构建/hash/reset 命令或完整 Release/rollback 标题。
+- D4.1 fragment guard 应在 D5 把 `MAINTAINER_HANDOFF.md` 纳入扫描；handoff 只使用已有稳定 anchors 或
+  文件级链接。因为 handoff 仍为 tracked、ZIP-excluded 原路径，repository inventory 与 package contract
+  无需变化，D5 最小验证可为 failing-first focused + links/fragments/LF/fences/diff；完整 suite/package
+  留给 D6 总收口。
