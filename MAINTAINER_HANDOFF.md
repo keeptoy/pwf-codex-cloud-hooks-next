@@ -10,7 +10,8 @@
 1. **先保护现场。** 只读确认仓库、分支和 dirty state；不能解释的未提交内容视为 unknown state，
    不覆盖、不清理，也不假设它属于上一位维护者。
 2. **确认文档权威。** 按 README 的地图区分稳定行为、架构、实现设计、programme、变更历史和不可变
-   证据，不从文件名或旧对话推断状态。
+   证据，不从文件名或旧对话推断状态。涉及历史归处、planning 退场、版本窗口或新项目移植时，先读
+   [`仓库治理指南`](docs/repository-governance-guide.md)。
 3. **确认本轮授权。** 打开 [.planning/.active_plan](.planning/.active_plan)，读取它指向的 task plan、
    findings 和 progress。只有活动 task plan 能回答当前 Next Step、允许事项、禁止事项和停止条件。
 4. **定位改动边界。** 用
