@@ -32,10 +32,14 @@ trusted graph、Release 不可变性和历史可追溯性的前提下，让当�
   并把 ROADMAP 第 3 节改为已完成的 `v0.3.1` 基线问题摘要；可只读参考用户提供的旧 planning 临时文件。
 - H10 不跟踪、修改或删除 `临时文件/`，不改历史 ref/资产、CHANGELOG delta、production、contracts、
   bootstrap、Release 或 Cloud，也不自动 push。
+- 已授权 H11：按已恢复的 v0.3.1 问题域补全 CHANGELOG 的实际版本变化，使其覆盖 Managed TOML、
+  transcript/Host input、bootstrap supply chain 与 Release importer self-containment；不复制 provenance、
+  acceptance 或当前 lifecycle 内容。
+- H11 不修改已发布资产、历史 ref、production、contracts、bootstrap、Release 或 Cloud，也不自动 push。
 
 ## Next Step
 
-H0–H10 已完成；等待维护者给出下一项仓库补充任务。后续仍不自动 merge、push、创建 PR/Release、
+H0–H11 已完成；等待维护者给出下一项仓库补充任务。后续仍不自动 merge、push、创建 PR/Release、
 运行 Cloud 或执行 rollback。
 
 ## Phases
@@ -51,11 +55,12 @@ H0–H10 已完成；等待维护者给出下一项仓库补充任务。后续�
 - [x] H8 — 将 extension 确立为当前开发列车话术，明确不 merge，并保持 package/Release identity 不变。
 - [x] H9 — 明确 Successor 迁移来源链是 `v0.3.0-beta.2 → v0.3.0` 的迭代过程。
 - [x] H10 — 将 M1–M4 迁移证据归入 provenance，并以 v0.3.1 已解决问题重写 ROADMAP 第 3 节。
+- [x] H11 — 补全 CHANGELOG 的 v0.3.1 实际版本变化，并保持 change/provenance/lifecycle 权威分离。
 
 ## Status
 
-H0–H10 完成；迁移历史 authority 已集中到 provenance，ROADMAP 第 3 节只保留 v0.3.1 已解决问题的
-programme 摘要。明确不 merge，且没有授权 push、PR、Release、Cloud 或 rollback。
+H0–H11 完成；v0.3.1 CHANGELOG 已覆盖四类实际修复，并保持精确身份、验收证据和当前 lifecycle 的
+独立权威。明确不 merge，且没有授权 push、PR、Release、Cloud 或 rollback。
 
 ## Branch Disposition
 

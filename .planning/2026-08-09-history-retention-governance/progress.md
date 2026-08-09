@@ -2,6 +2,14 @@
 
 ## 2026-08-09
 
+- H11 获批：维护者要求补充完善 CHANGELOG 的 v0.3.1；本轮只修改 change-history authority、活动
+  planning 与治理断言，不改 production/Release/Cloud，也不 push。
+- H11 failing-first：architecture authority 7 tests 中 6 PASS、1 FAIL；红项确认 v0.3.1 章节只有
+  bootstrap/patcher，缺少 Managed TOML 与 transcript/Host input 两类实际修复。
+- v0.3.1 章节已按 Fixed、Security and packaging、Compatibility 重写，覆盖四个问题域，同时继续把
+  精确身份和 Cloud 验收路由给 provenance/acceptance。
+- H11 focused governance 12/12 PASS；CHANGELOG 不含精确 SHA、M1–M4 或 current lifecycle 角色，且仍在
+  Release ZIP 外。
 - H10 获批：维护者要求把 ROADMAP 的 completed migration 移入 provenance，并以旧规划中已解决的问题
   重写 ROADMAP 第 3 节为 v0.3.1 已完成基线；本轮不 push。
 - 工作区恢复时 tracked tree clean、分支相对远端 ahead 1；发现用户新增 untracked `临时文件/`，已明确
@@ -108,7 +116,7 @@
 
 ## Current Handoff
 
-- H0–H10 已完成；本地/远端 extension 分支均为 `0.3.2-dev-extend`，原 `0.3.2-dev` 保持在
+- H0–H11 已完成；本地/远端 extension 分支均为 `0.3.2-dev-extend`，原 `0.3.2-dev` 保持在
   `cde4b15`，维护者明确决定不 merge。
 - 当前开发列车话术是 `0.3.2-dev-extend`；底层 package/Release candidate identity 仍为 `0.3.2-dev`。
 - CHANGELOG delta 已独立分层，旧空 planning 目录已删除，focused/full regression 均为 0 FAIL。

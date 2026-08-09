@@ -217,3 +217,12 @@ graph、Release/rollback mechanism、长期基线晋级。普通 patch、文案�
 - v0.3.1 的宏观完成意义是：在不新增 Hook/Host ABI/trusted graph 的同一 0.3 行为合同内关闭上述兼容/
   供应链问题，并完成 immutable publication、public-byte Cloud acceptance 与 rollback/Latest promotion。
   具体 delta 仍由 CHANGELOG、精确资产由 provenance、逐步验收由 v0.3.1 acceptance 负责。
+
+## H11 v0.3.1 Change History
+
+- 现有 CHANGELOG v0.3.1 只记录 bootstrap 来源固定和 ZIP patcher 自包含，遗漏 Managed TOML ownership/
+  lock transaction 与 transcript immutable-bytes/Host-input-budget 两类已发布修复。
+- CHANGELOG 应记录用户或维护者可理解的实际 delta：触发问题、完成的修复和兼容边界；不复制风险编号、
+  M1–M4、精确 SHA、Cloud A～F 流水或当前 accepted/rollback 角色。
+- 最小完整结构是 Fixed、Security and packaging、Compatibility；四个问题域均可从这里理解，精确身份和
+  逐步验收继续分别链接 provenance 与 v0.3.1 acceptance。

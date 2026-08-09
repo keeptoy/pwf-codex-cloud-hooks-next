@@ -260,6 +260,15 @@ test("change history, programme intent, current action, and immutable evidence h
   const extendSection = changelog.slice(extendStart, baseDevStart);
   assert.match(extendSection, /trusted.*exact.*planning.*lifecycle/is);
   assert.match(extendSection, /candidate.*accepted.*role window/is);
+  const stable031Start = changelog.indexOf("## v0.3.1\n");
+  const stable030Start = changelog.indexOf("## v0.3.0\n");
+  assert.ok(stable031Start >= 0 && stable030Start > stable031Start);
+  const stable031Section = changelog.slice(stable031Start, stable030Start);
+  assert.match(
+    stable031Section,
+    /Managed TOML.*lock transaction.*transcript.*immutable bytes.*byte budget.*Node.*fixed SHA.*patcher/is,
+  );
+  assert.doesNotMatch(stable031Section, /\b[a-f0-9]{40,64}\b|GitHub `Latest`|production rollback|M[1-4]/);
   assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|Next Step|GitHub `Latest`|production rollback|\d+ registered/);
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 

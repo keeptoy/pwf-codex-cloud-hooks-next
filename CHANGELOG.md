@@ -39,9 +39,23 @@ Release 或 acceptance identity；package identity 仍为 `0.3.2-dev`。
 
 ## v0.3.1
 
-- 在同一 `0.3` 行为合同内完成兼容与供应链安全修复，没有新增 Hook、Host ABI 或 trusted graph。
-- 外部 bootstrap 增加平台 Node.js 版本检查，并对 pristine PWF archive/subtree 执行固定来源校验。
-- Release ZIP 加入 importer 的直接 patcher 依赖，使解压后的维护检查可以自包含运行；生产 runtime
+### Fixed
+
+- 收紧 Managed TOML ownership boundary，避免 repair/uninstall 把后续第三方 array tables 吸收到受管块；
+  real install/repair 的 read/classify/propose/backup/write 进入同一 lock transaction，并拒绝覆盖锁外漂移。
+- catch-up 将 transcript 选择、身份校验与解析绑定到同一份 verified immutable bytes，关闭校验后重新打开
+  路径造成的 TOCTOU；Host input 同时采用精确 byte budget，未知、损坏或超限输入安全退化为 canary-only。
+
+### Security and packaging
+
+- 外部 bootstrap 不再通过 root NVM、floating Node 或 root `npx skills` 执行远程安装；改为验证平台
+  Node.js `>=18`，并按 fixed SHA-256 校验 PWF archive 后只安装 pristine Skill subtree。
+- Release ZIP 加入 importer 的直接 patcher 依赖，使解压后的 importer `check` 可以 self-contained 运行；
+  bootstrap 继续保持在 ZIP 外。
+
+### Compatibility
+
+- 所有修复均位于同一 `0.3` 行为合同内，没有新增 Hook、Host ABI 或 trusted graph；生产 runtime 的入口
   与激活图不变。
 - 精确身份见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，最终字节与 Cloud A～F 证据见
   [`docs/v0.3.1-cloud-hard-acceptance.md`](docs/v0.3.1-cloud-hard-acceptance.md)。
