@@ -25,6 +25,9 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   capsule；摘要正文自洽，旧 Phase/acceptance 文档不再作为直接解释入口，只保留明确降级的 cold source evidence。
 - 维护者已批准把 M1～M4 的迁移叙事整理为回顾性 `Phase 3.5` capsule：CHANGELOG v0.3.0 改指该摘要，
   provenance 只保留精确迁移 refs；Phase 3.5 不是原 programme 的正式 Product Phase，也不授权 Phase 4。
+- 维护者已批准在 P2 内把 `BASELINE_PROVENANCE.md` 收口为持续维护的冷证据账本：文件名保留，已登记
+  immutable entry 不改写，当前 lifecycle 角色仍只由 ROADMAP 维护；第 5、6 节原样保留，只把 Phase 1
+  的 M1～M4 叙述改指 Phase 3.5，ROADMAP 不因本 gate 修改。
 - P3 只记录为后续独立 gate；当前不修改 package、Release contract、bootstrap 或 `v0.3.3-dev` identity，
   不 seal、不发布、不部署新版本。
 - 已完成的 `2026-08-09-architecture-contract-retention` 三文件由 immutable commit `d4cc3b5` 保存，P2
@@ -33,7 +36,7 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 ## Next Step
 
 停在 post-release 文档治理阶段，等待维护者后续补充 v0.2.2 的具体特点或另行授权新的 P2 gate。
-M1～M4 叙事已进入回顾性 Phase 3.5，provenance 只保留 exact evidence；不得进入 P3。
+Provenance 已收口为冷证据账本，M1～M4 叙事已进入回顾性 Phase 3.5；不得进入 P3。
 
 ## Gates
 
@@ -51,6 +54,7 @@ M1～M4 叙事已进入回顾性 Phase 3.5，provenance 只保留 exact evidence
 - [x] P2-P — Phase history capsules：建立精选历史索引与 Phase 1～3 冻结摘要，固化边界 guard。
 - [x] P2-P-A — Phase authority tightening：单一 README 入口、正文自洽、旧文档证据降级与防回流 guard。
 - [x] P2-P-M — Migration capsule：将 M1～M4 叙事整理为回顾性 Phase 3.5，provenance 保留 exact refs。
+- [x] P2-P-B — Provenance cold ledger：统一已发布身份账本、移除角色态措辞并补 hot-state 防回流 guard。
 - [ ] P3 — Successor train：另开 active scope 和 Discovery，建立获批的后继 machine identity。
 
 ## Stop Conditions
@@ -67,9 +71,8 @@ M1～M4 叙事已进入回顾性 Phase 3.5，provenance 只保留 exact evidence
 
 ## Status
 
-P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS，P2-P-A PASS，P2-P-M PASS。本地分支为
-`0.3.2-post-release`，当前 HEAD 是 P3 前的 unsealed governance transition。等待 v0.2.2 补充或新的
-P2 授权；P3 未授权。
+P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS，P2-P-A PASS，P2-P-M PASS，P2-P-B PASS。
+本地分支为 `0.3.2-post-release`，当前 HEAD 是 P3 前的 unsealed governance transition；P3 未授权。
 
 ## Errors Encountered
 
@@ -89,3 +92,4 @@ P2 授权；P3 未授权。
 | P2-P focused test 在 Windows sandbox 内由 Node `spawnSync("git")` 返回 `status=null`，4 个依赖 trackedPaths 的 case 同点失败 | 1 | 分类为 sandbox platform limitation；13 个非 Git case 已通过，保持断言不变并在沙箱外重跑同一 focused suite |
 | P2-P-M focused suite 14/17 PASS；3 项因 Markdown 换行被固定空格 regex 拒绝、CHANGELOG link label 多包反引号 | 1 | 分类为 test/document formatting defect；保留 Phase 3.5 语义断言，改用 `\s+` 接受合法换行并移除链接标签反引号后复跑 |
 | P2-P-M 第二轮 focused suite 16/17 PASS；新 capsule 的 cold-evidence 句式未使用既有统一模板 | 1 | 不放宽 guard；把“迁移闭环的历史来源”统一为“本文的历史来源”，保留后半句 exact-ref 分工后复跑 |
+| P2-P-B focused suite 在 Windows sandbox 内 13/17 PASS；4 项依赖 `spawnSync("git")` 的 tracked-path case 返回 `status=null` | 1 | 分类为既有 sandbox platform limitation；保持断言不变，在沙箱外复跑同一 suite 17/17 PASS |

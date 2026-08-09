@@ -16,7 +16,7 @@ contract 或测试中的字段级行为。
 | 已发布版本与 Unreleased 已经改变了什么 | [`CHANGELOG.md`](CHANGELOG.md) |
 | 当前 programme、版本列车与 Release/rollback 状态 | [`ROADMAP.md`](ROADMAP.md) |
 | 当前唯一 Next Step 与授权边界 | `.planning/.active_plan` 指向的活动 `task_plan.md` |
-| upstream、overlay 与不可变资产的精确来源 | [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) |
+| 已发布身份、迁移 refs、upstream/overlay 与不可变资产的精确来源 | [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) |
 
 DESIGN 只提供实现层导航。函数、schema 字段、hash、allowlist 和测试结果必须回到相邻源码、contracts
 与 tests；带时间的验收事实必须回到对应专项文档。
@@ -35,7 +35,7 @@ DESIGN 只提供实现层导航。函数、schema 字段、hash、allowlist 和�
 | [`patches/patch_planning_skill.py`](patches/patch_planning_skill.py) | owned catch-up compatibility overlay 复现 |
 | [`tools/build_release.py`](tools/build_release.py) | contract-driven deterministic ZIP build/check |
 | [`tests/`](tests/) | production、安全、供应链、安装和仓库边界回归 |
-| [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) | baseline、上游 archive、overlay 与不可变资产来源链 |
+| [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) | 持续维护的冷证据账本：已发布身份、迁移 refs、上游 archive、overlay 与不可变资产来源链 |
 | [`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) | 新维护者最短接手路径、踩坑摘要与检测结果分流 |
 
 <a name="implementation-layout"></a>

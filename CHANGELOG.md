@@ -25,6 +25,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   关系；README 维护通用索引，CHANGELOG 只在相关版本 delta 中 deep-link 精确 capsule。每份摘要只保留
   一个 cold source snapshot，不把旧设计/验收重新提升为当前 authority，也不把旧 planning、脚本、源码
   或测试流水带回当前树。
+- 将 BASELINE_PROVENANCE 明确为持续维护的冷证据账本：已发布身份采用统一、角色无关的登记结构；索引
+  可以新增或轮换精选入口，但已登记 immutable identity 不随 ROADMAP lifecycle 变化而改写。
 
 ## v0.3.2
 

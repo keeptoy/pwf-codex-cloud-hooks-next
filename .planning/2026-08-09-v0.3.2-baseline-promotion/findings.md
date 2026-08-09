@@ -1,5 +1,26 @@
 # Findings: v0.3.2 Baseline Promotion and v0.3.3-dev Handoff
 
+## P2-P-B Provenance Cold Ledger
+
+- `BASELINE_PROVENANCE.md` 同时被稳定文档、machine contract、repository guard 和活动 planning 引用；
+  适合保留稳定文件名，避免为了定位调整制造大规模链接迁移。
+- “冷”描述的是证据语义和修改纪律，不表示索引永远不增长：新 publication/迁移证据可以新增或轮换，
+  但已经登记的 tag、source、资产字节、SHA 与 acceptance identity 不得被当前角色变化改写。
+- 当前第 1 节把 v0.3.2 单列为 publication、再把旧版本列为 history，并在 v0.3.1 永久意义里写入
+  `immediate fallback`，把 immutable identity 与 ROADMAP 的热角色混在了一起；应统一为角色无关账本。
+- 第 2 节已经保存 M1～M4 exact refs，不需要反向链接 Phase 3.5；Phase 1 只需把迁移叙事入口改到
+  Phase 3.5。第 5、6 节继续保留现有 Cloud/验证证据路由，不在本 gate 搬迁。
+
+### P2-P-B Result
+
+- 保留稳定文件名；第 1 节改成一张角色无关的已发布身份账本，v0.3.2 与精选早期身份采用同一结构，
+  v0.3.1 不再携带 `immediate fallback` 这类 ROADMAP 热角色。
+- README/DESIGN 只同步“冷证据账本”导航；ROADMAP 零改动，provenance 第 5、6 节与本 gate 前逐字相同。
+- Phase 1 的唯一叙事改动是把 M1～M4 指向 Phase 3.5；provenance 第 2 节继续独立保存 exact refs，未增加
+  反向 Phase-history 入口。
+- repository guard 现在同时冻结冷账本声明、统一身份结构、Phase 1 路由，并拒绝已发布身份区重新出现
+  candidate/accepted/immediate-fallback 等热角色标签。
+
 ## P2-P Phase History Capsules
 
 - Phase 1 的闭合边界是“可信来源与 inactive verified inventory”：冻结 upstream ownership、四项 overlay ledger、

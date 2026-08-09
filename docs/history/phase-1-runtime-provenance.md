@@ -60,7 +60,8 @@ hash、adapter-only command boundary 和简化兼容 smoke 可以成立。该结
 
 Phase 2 继承这套来源、安装和 request/result 边界并激活 owned catch-up；Phase 3 再用同一 ownership 模型
 加入 canonical owned-plan。随后 beta.1 完成 Phase 1～3 功能闭环，beta.2 重新封板文档与独立资产，stable
-v0.3.0 最终通过 `BASELINE_PROVENANCE.md` 的 M1～M4 迁移链进入 successor 仓库。
+v0.3.0 最终通过回顾性 [Phase 3.5：Successor 仓库迁移](phase-3.5-successor-migration.md) 完成 M1～M4
+并进入 successor 仓库。
 
 <a name="immutable-evidence"></a>
 

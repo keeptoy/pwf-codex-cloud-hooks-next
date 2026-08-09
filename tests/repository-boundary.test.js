@@ -173,9 +173,13 @@ test("phase history is a closed indexed set of frozen Markdown capsules", () => 
   }
 
   const migration = read("docs/history/phase-3.5-successor-migration.md");
+  const phaseOne = read("docs/history/phase-1-runtime-provenance.md");
   assert.match(migration, /回顾性治理标签.*不是当时 programme 正式授权的 Product Phase/s);
   assert.match(migration, /M1 — exact mirror.*M2 — slim transformation.*M3 — Cloud equivalence.*M4 — repository authority cutover/s);
   assert.match(migration, /不修改 production runtime.*不授权.*Phase 4/s);
+  assert.match(phaseOne, /\]\(phase-3\.5-successor-migration\.md\).*完成 M1～M4/s);
+  assert.doesNotMatch(phaseOne, /BASELINE_PROVENANCE\.md/,
+    "Phase 1 must route migration narrative to Phase 3.5 rather than the exact-evidence ledger");
 });
 
 test("portable repository governance defines a closed retirement transaction", () => {
@@ -274,9 +278,19 @@ test("change history, programme, provenance, and current acceptance keep separat
   for (const roleVersion of new Set([candidate, accepted])) {
     assert.match(provenance, new RegExp(roleVersion.replaceAll(".", "\\.")));
   }
+  assert.match(provenance, /^## 1\. 已发布身份账本$/m);
+  assert.match(provenance, /持续维护的\*\*冷证据账本\*\*/);
+  assert.match(provenance, /索引可以在新证据闭合后新增或轮换精选入口/);
+  assert.match(provenance, /已经登记的 tag、source、ZIP\/bootstrap 字节、SHA 和 acceptance identity 不得.*改写/s);
+  assert.match(provenance, /架构共识.*ARCHITECTURE\.md.*machine contracts.*programme\/lifecycle 角色只见.*ROADMAP\.md/s);
+  assert.doesNotMatch(provenance, /^### 1\.[12] /m,
+    "published identities must share one role-neutral ledger instead of current/history subsections");
+  const publishedLedger = provenance.slice(0, provenance.indexOf("## 2. Successor 迁移不可变证据"));
+  assert.doesNotMatch(publishedLedger, /\b(?:candidate|accepted)\b|immediate fallback/,
+    "published identity entries must not inherit ROADMAP role labels");
   assert.match(provenance, /## 2\. Successor 迁移不可变证据/);
   assert.doesNotMatch(provenance, /## 2\. Successor 迁移来源链/);
-  assert.doesNotMatch(provenance, /当前源码权威|current lifecycle role|GitHub `Latest`|\d+ registered/);
+  assert.doesNotMatch(provenance, /当前源码权威|current lifecycle role|GitHub `Latest`|Next Step|\d+ registered/);
 
   for (const macroDoc of [architecture, design, agents]) {
     assert.doesNotMatch(macroDoc, /当前生产回滚|当前回退层级|GitHub `Latest`|production rollback/);

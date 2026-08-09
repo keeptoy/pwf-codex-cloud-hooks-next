@@ -2,6 +2,17 @@
 
 ## 2026-08-09
 
+- 维护者批准 P2-P-B provenance 收口，并明确两个例外：第 5、6 节不动；引用调整只改 Phase 1 指向
+  Phase 3.5，ROADMAP 保留现状。planning-with-files catch-up 后工作树仍只有不得修改/提交的 `临时文件/`。
+- 全仓 tracked 引用复核确认 BASELINE_PROVENANCE 被 14 个其他文件引用，因此保留稳定文件名；正文将其
+  定位为可新增/轮换精选入口、但已登记 identity 不可改写的冷证据账本。
+- 已发布身份从 current/history 两段改为单一角色无关账本，删除 v0.3.1 的 immediate-fallback 热状态；
+  README/DESIGN 同步入口措辞，CHANGELOG 记录治理 delta。
+- Phase 1 的 M1～M4 叙事已改指 Phase 3.5；ROADMAP diff 为空，provenance 第 5、6 节与修改前逐字一致。
+- repository guard 新增冷账本合同、统一身份结构、角色标签防回流与 Phase 1 路由断言。沙箱内 focused
+  suite 13/17，其余 4 项因既有 `spawnSync("git")` 限制失败；沙箱外同一 suite 17/17 PASS。
+- 完整 `npm test`：92 tests，80 PASS、12 个诚实 Windows/POSIX SKIP、0 FAIL；Node syntax 与
+  `git diff --check` 同时 PASS。P2-P-B 已关闭，未进入 P3。
 - 维护者批准继续建立 Phase 1～3 精选历史摘要；本轮重新使用 planning-with-files 恢复上下文，catch-up 无未同步输出，
   工作树只有获准读取但不得修改或提交的 `临时文件/`。
 - 活动计划已新增 P2-P gate：范围仅为 `docs/history/` 索引、三份闭合 Phase capsule、最小权威入口与生命周期
