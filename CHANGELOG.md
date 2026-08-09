@@ -77,7 +77,10 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - 由 [`BASELINE_PROVENANCE.md` 的 Successor 迁移不可变证据](BASELINE_PROVENANCE.md#successor-migration-evidence)
   从冻结的 `v0.3.0-beta.2` 出发，依次完成 M1 exact mirror、M2 slim transformation、M3 Cloud equivalence
   与 M4 repository authority cutover，建立 successor 仓库的首个 stable baseline。
-- 固化迁移后已验收的 canonical runtime 和 canary 行为。
+- 本次迁移没有重新设计 production runtime、Host ABI、trusted graph 或 Hook behavior；stable 版本继承 beta.1
+  已完成、beta.2 已重新验收的 canonical runtime，只把 source、Release 与治理 authority 收敛到 successor。
+- 因而 `v0.3.0` 表示“既有新架构在 successor 的首个 stable 身份”，不是从旧架构切换到新架构的版本；
+  实际架构换代发生在 `v0.3.0-alpha.1`～`v0.3.0-beta.1`。
 - 发布 contract-driven ZIP 与独立 bootstrap，并完成最终下载资产和 Cloud 验收。
 - 精确身份见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，验收证据见
   [immutable v0.3.0 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/1454c9224c83d11c073b05baf6e536a11c3bb0e5/docs/v0.3.0-cloud-hard-acceptance.md)。
@@ -96,19 +99,62 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 
 ## v0.3.0-beta.1
 
-- 作为 v0.3.0 路线的首个最小完整功能实现版，汇合 Phase 1 的可信来源/确定性打包与安装治理、Phase 2
-  的 owned catch-up/runtime 安全边界，以及 Phase 3 的 canonical owned-plan、薄 adapter 和统一 project state。
+- 作为 v0.3.0 路线和当前 canonical architecture 的首个最小完整功能实现版，汇合 Phase 1 的可信来源/
+  确定性打包与安装治理、Phase 2 的 owned catch-up/runtime 安全边界，以及 Phase 3 的 canonical
+  owned-plan、薄 adapter 和统一 project state；它是渐进式架构换代的完成点，不是全部改造的起点。
+- 将 `owned-plan.py` 确立为两个 Hook 事件唯一的 plan authority；`SessionStart` 把同一份 exact project
+  state 继续交给 `owned-catchup.py`，并删除 adapter 中旧的平行 plan resolution/rendering 路径。
+- 通过 bounded private snapshot 复用 pinned pristine resolver/injector，同时隔离尚未授权的 mode、
+  attestation、nonce、smart injection 与 ledger 输入；Managed policy 仍然只注册 absolute adapter。
 - 封板并发布自校验 ZIP 与 ZIP 外 bootstrap，完成 startup、UserPrompt、canonical planning context、真实
   Resume catch-up、post-resume doctor 和零 snapshot residue 的 Cloud A～F 验收，正式关闭 Phase 1～3。
 - beta.2 继承其 runtime 行为并替代当前 rollback 角色后，beta.1 保留为 immutable historical fallback；
   完整证据见 [immutable beta.1 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks/blob/bbad3703fe2bc3f34bda6ec350f8cfea6f7a159b/docs/v0.3.0-beta.1-cloud-hard-acceptance.md)。
 
+## v0.3.0-alpha.2
+
+- 在 alpha.1 已安装但尚未激活的 verified inventory 上首次切换 production catch-up：`SessionStart` 不再从
+  global Skill 执行可变脚本，而由 thin adapter 监督 sibling `owned-catchup.py`；Managed policy 仍然只认识
+  `hook_adapter.py`，child runtime 不是平台 handler。
+- owned wrapper 负责 transcript 选择、allowed-root/regular-file/identity 校验、immutable bytes、严格
+  UTF-8/JSONL、消息归一化、预算和 report rendering；它只复用 pinned owned upstream 中少量 parser/
+  extraction helpers，不调用 upstream CLI `main()`。
+- bootstrap 停止现场 patch global Skill，要求全局 PWF v3.8.2 保持 pristine；installer/manifest 接管 owned
+  runtime 的 hash、mode、inventory、doctor 与 repair，形成 repository-owned trusted execution graph。
+- 对 runtime integrity 和内容注入 fail closed；advisory catch-up failure 对 Codex loop fail open，并且不能
+  吞掉 canary 或已验证的 plan context。此版本完成 owned catch-up 的 Cloud 闭环，但 canonical owned-plan
+  尚未激活，adapter 中的旧 plan 路径仍等待 Phase 3 退休。
+- 历史身份见 [old-repository `v0.3.0-alpha.2` Release](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/tag/v0.3.0-alpha.2)。
+
+## v0.3.0-alpha.1
+
+- 针对 v0.2.2“可运行但仍从可变 global Skill 执行脚本”的边界，建立 v0.3.0 系列的新架构地基：固定
+  PWF v3.8.2 archive 来源，把 runtime 分为 pristine upstream、单目标 compatibility overlay、
+  repository-owned 与 deferred 四类，并明确“上游存在”不等于“获准导入、安装或激活”。
+- 新增 machine-readable runtime bundle、overlay ledger、adapter/runtime request/result 与 Release artifact
+  contracts；importer/patcher 依精确 allowlist、anchor、hash、mode 和 inventory 确定性重建 owned runtime，
+  unknown path、hash、anchor、mode 或 symlink drift 一律 fail closed。
+- 固定“contract-driven ZIP + ZIP 外独立 bootstrap”的发布边界，并把 installed manifest、doctor、repair、
+  第三方声明和 deterministic package 纳入同一 ownership 模型。
+- 该检查点只安装 inactive verified inventory，没有切换当时 Hook 的 production dispatch；因此 alpha.1
+  建立的是供应链、契约和可信执行边界，真正的运行路径切换从 alpha.2 开始。
+- 历史身份见 [old-repository `v0.3.0-alpha.1` Release](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/tag/v0.3.0-alpha.1)。
+
 ## v0.2.2
 
-- 建立 v0.3.0 路线之前最早的已发布 Cloud catch-up compatibility baseline，并作为后续版本的 golden
-  behavior 与 historical fallback。
-- 本段目前只冻结上述可验证的版本角色；更细功能特点等待早期证据与维护者补充后再完善，不从后续
-  alpha/beta 实现反向推断。
+- 建立 v0.3.0 路线之前最早经过完整 Cloud 黑盒验收的最小可部署功能模型：安装两个只读事件，
+  `SessionStart` 提供 resume catch-up、active plan 与 recent progress，`UserPromptSubmit` 提供 plan/progress，
+  两者均保留 `PWF_GLOBAL_HOOK_CANARY_V1`。
+- 通过 pinned PWF v3.8.2 和四项窄 compatibility patch 解决 explicit Codex runtime、Cloud session store、
+  scoped planning state 与长 wrapper 尾部保留；Cloud A～F 覆盖 startup/UserPrompt、planning context、真实
+  Resume unsynced sentinel、owned repair、unknown drift fail-closed 与最终 healthy doctor。
+- installer 已具备 `/etc/codex/requirements.toml` managed policy、absolute adapter、manifest inventory、
+  backup、dry-run、doctor、guarded repair 和 ownership-aware uninstall，证明产品目标可以在 Cloud 中可靠运行。
+- 但它仍是过渡架构：bootstrap 在安装现场 patch global Skill，adapter 直接执行该 Skill 的
+  `session-catchup.py`，并自行承担 plan resolution/rendering；它是后续版本的 golden behavior 与 historical
+  fallback，不是当前 owned canonical architecture 的最小实现。
+- [old-repository `v0.2.2` Release](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/tag/v0.2.2)
+  保留最终 ZIP、发布校验和与可恢复的历史身份；CHANGELOG 不复制资产 SHA。
 
 ## v0.1.0
 
@@ -123,5 +169,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - 该原型仍直接发现并执行 global Skill，plan 选择/文件读取/渲染也位于 adapter；尚未建立 repository-owned
   runtime、Managed policy adapter-only graph、request/result contracts、transcript identity/immutable bytes
   或 private snapshot 等后续安全边界。现存五个 case 只证明本地 fixture 行为，不构成 Cloud acceptance。
-- 当前可恢复证据是没有对应可达 tag/commit 的 source snapshot，因此本段不宣称 0.1.0 已完成 immutable
-  publication；后续版本的发布或验收结论也不能反向证明它。
+- 后续核对旧仓库确认其历史身份并非只有无 Git 元数据的 source snapshot：[`v0.1.0` tag](https://github.com/keeptoy/pwf-codex-cloud-hooks/tree/v0.1.0)
+  当前指向 commit `49c2709b3522aada53fbc97ae71d020d6619bb0e`，[对应 Release](https://github.com/keeptoy/pwf-codex-cloud-hooks/releases/tag/v0.1.0)
+  保留发布 TGZ 与校验和；CHANGELOG 不复制资产 SHA。
+  这些证据证明原型曾被打包发布，但 README 当时仍把 fresh Cloud canary observation 列为后续步骤，不能把
+  “存在 tag/Release”升级解释为已完成 Cloud hard acceptance。
