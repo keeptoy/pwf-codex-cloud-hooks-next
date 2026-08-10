@@ -13,6 +13,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   programme/lifecycle 见 [`ROADMAP.md`](ROADMAP.md)，已发布 v0.3.2 immutable identity
   见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，候选 Cloud gate 见
   [`docs/v0.3.3-cloud-hard-acceptance.md`](docs/v0.3.3-cloud-hard-acceptance.md)。
+- 发布 stable `v0.3.3` exact tag、21-entry ZIP 与外部 bootstrap，并从公开 URL 重新下载复核；Published
+  Release Cloud 通道和 baseline/Latest promotion 仍作为独立 gate。
 - 退休已不可达的 catch-up compatibility supply-chain：四个 pinned upstream runtime 文件全部恢复 pristine，
   importer 不再加载 patcher/overlay ledger，installed inventory 与 Release allowlist 同步收窄；
   `owned-catchup.py` 继续拥有 transcript/identity/immutable bytes/normalization/rendering，只通过显式

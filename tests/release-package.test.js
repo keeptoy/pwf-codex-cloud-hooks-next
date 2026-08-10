@@ -90,7 +90,7 @@ test("v0.3.3 seal candidate ZIP is deterministic, self-contained, externalizes i
     assert.match(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${release033ZipSha256}\\}"`));
     const roadmap = fs.readFileSync(path.join(root, "ROADMAP.md"), "utf8");
     assert.match(roadmap, /v0\.3\.3.*R5-SC.*PASS/is);
-    assert.match(roadmap, /local seal \/ publication in progress/i);
+    assert.match(roadmap, /published candidate \/ R5-PR ready/i);
 
     const extracted = path.join(workspace, "extracted");
     extractZip(first, extracted);

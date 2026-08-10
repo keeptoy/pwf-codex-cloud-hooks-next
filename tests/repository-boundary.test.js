@@ -305,7 +305,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, /### 8\.2 E2：real Resume[\s\S]*Unsynced messages[\s\S]*Catch-up 位于 planning context 之前/);
   assert.match(acceptance, /## 9\. F：Source\/Candidate post-resume[\s\S]*INSTALLED_RUNTIME_FILES=10[\s\S]*UPSTREAM_PRISTINE_FILES=4[\s\S]*OWNED_CATCHUP_HELPERS=4[\s\S]*GLOBAL_SKILL_PRISTINE=PASS/s);
   assert.match(acceptance, /### 11\.1 R5-SC Source\/Candidate[\s\S]*V033_DEV_SC_B_POST_INSTALL_RESUME=PASS[\s\S]*V033_DEV_SC_CLOUD_CHANNEL=PASS/);
-  assert.match(acceptance, /### 11\.2 R5-PR Published Release[\s\S]*BLOCKED_BY_PUBLICATION[\s\S]*V033_PR_B_FRESH_STARTUP=PASS/);
+  assert.match(acceptance, /### 11\.2 R5-PR Published Release[\s\S]*READY_FOR_R5_PR[\s\S]*V033_PR_B_FRESH_STARTUP=PASS/);
   if (roadmap.includes("Cloud hard acceptance PASS")) {
     assert.match(acceptance, /CLOUD-HARD-ACCEPTANCE-PASS/);
     assert.doesNotMatch(acceptance, /PENDING_R5_SC|PENDING_R5_PR|PENDING_R5/);
@@ -321,7 +321,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(publishedF, /node "\$PACKAGE_ROOT\/install\.js" doctor/);
   assert.match(publishedF, /SNAPSHOT_LEFTOVERS=0/);
   assert.doesNotMatch(publishedF, /git rev-parse|workspace.*install\.js/is);
-  if (acceptance.includes("PENDING_R5_PR")) {
+  if (acceptance.includes("BLOCKED_BY_PUBLICATION")) {
     assert.match(publishedF, /__PUBLICATION_TAG__/);
     assert.match(publishedF, /__PACKAGE_VERSION__/);
     assert.match(publishedF, /__ZIP_NAME__/);
@@ -331,6 +331,8 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.doesNotMatch(publishedF, new RegExp(`releases/download/${escapedCandidate}/`));
   } else {
     assert.doesNotMatch(publishedF, /__[A-Z0-9_]+__/);
+    assert.match(publishedF, new RegExp(`readonly PUBLICATION_TAG="${escapedCandidate}"`));
+    assert.match(publishedF, new RegExp(`readonly ZIP_NAME="pwf-codex-cloud-hooks-${escapedCandidate}\\.zip"`));
   }
 });
 

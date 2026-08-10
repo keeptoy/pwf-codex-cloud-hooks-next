@@ -15,6 +15,7 @@
 
 | 发布身份 | source 与验收 | package identity | bootstrap identity | 持久证据意义 |
 |---|---|---|---|---|
+| `v0.3.3` | [Release](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/tag/v0.3.3)；[source `a1b9f4548e3b6e071fee611270365c8ecf3f8d13`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/a1b9f4548e3b6e071fee611270365c8ecf3f8d13)；[publication identity 与 R5-PR runbook](docs/v0.3.3-cloud-hard-acceptance.md) | `pwf-codex-cloud-hooks-v0.3.3.zip`；21 entries；74,198 bytes；SHA-256 `2b2dca5c5894a2297a6f2ccc5fb190878c3c920b71148719a4873326b4ccb352` | `init-cloud-sandbox-v0.3.3.bash`；21,565 bytes；SHA-256 `236e364bde8397b04c9d7ebfa121fa96963055d77b56e6299e6b9c9aad6c887e` | 退休不可达 catch-up overlay supply-chain；公开双资产已复核，R5-PR Cloud 与 baseline promotion 尚待完成 |
 | `v0.3.2` | [Release](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/tag/v0.3.2)；[source `c68a53bdeab7c38badcfb4e2a733ddd851e498e4`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/c68a53bdeab7c38badcfb4e2a733ddd851e498e4)；[exact acceptance](docs/v0.3.2-cloud-hard-acceptance.md) | `pwf-codex-cloud-hooks-v0.3.2.zip`；23 entries；82,627 bytes；SHA-256 `b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081` | `init-cloud-sandbox-v0.3.2.bash`；21,565 bytes；SHA-256 `aa2c1fd64bfc8ee3804d5f4bf39f7816a2ca9ad9a96949336ec94a6c20f8f77c` | 完成兼容、供应链和仓库治理收口，并冻结双通道 Cloud hard acceptance |
 | `v0.3.1` | [Release](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/tag/v0.3.1)；[source `9aa2148886e499f9f45594f7ae4f7681f1045de2`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/9aa2148886e499f9f45594f7ae4f7681f1045de2)；[exact acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/435f830577ded23f8509a7befb95e8ba5128924f/docs/v0.3.1-cloud-hard-acceptance.md) | `pwf-codex-cloud-hooks-v0.3.1.zip`；23 entries；82,725 bytes；SHA-256 `f097b04015b1a3847ca5a24b9236f882c5a008b22033793b5661e282c39131f9` | `init-cloud-sandbox-v0.3.1.bash`；21,565 bytes；SHA-256 `ce31a32002aea46bbf3f9baf9a0e93451d24c3b3653952e425d1e1ff6960a5e8` | 建立兼容与供应链安全基线；完整字节继续由 immutable Release 恢复 |
 | `v0.3.0` | [Release](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/tag/v0.3.0)；[source `1454c9224c83d11c073b05baf6e536a11c3bb0e5`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/1454c9224c83d11c073b05baf6e536a11c3bb0e5)；[exact acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/1454c9224c83d11c073b05baf6e536a11c3bb0e5/docs/v0.3.0-cloud-hard-acceptance.md) | `pwf-codex-cloud-hooks-v0.3.0.zip`；22 entries；75,386 bytes；SHA-256 `f245a554210c7f8d07eebbb775faa7b1482fea5d363ee6fa7578c9bbd98ad9af` | `init-cloud-sandbox-v0.3.0.bash`；17,423 bytes；SHA-256 `ab334f0367d948fa29a2bdd37bff0c220929aeb320fdf59dbacbd5a4021b39c0` | successor 首个 stable；保留 canonical runtime 与 `PWF_GLOBAL_HOOK_CANARY_V1` |
@@ -75,9 +76,9 @@ M2 排除的历史 planning、Phase/Round 文档和 snapshot prototype 仍可在
 pristine/managed hashes 和 deferred candidates。`tools/import_upstream_runtime.py` 只接受该 allowlist，
 验证 archive、license、pristine source hash、mode 和 destination inventory。
 
-`v0.3.3-dev` 是 `v0.3.3` 的 Source/Candidate 运输身份；当前 local seal bytes 已冻结，但尚未完成 immutable
-publication，因此仍不进入第 1 节已发布身份账本。R4 关闭后必须以新的 tag、资产字节、SHA 和 acceptance 独立登记，
-不能继承 v0.3.2 的 overlay package identity。
+`v0.3.3-dev` 是 `v0.3.3` 的 Source/Candidate 运输身份；R4 已把新的 tag、资产字节、SHA 和 publication
+runbook 独立登记到第 1 节。它不继承 v0.3.2 的 overlay package identity，也不因 publication 自动取得
+accepted/Latest/rollback 角色。
 
 ## 4. Published v0.3.2 owned compatibility overlay（冷证据）
 

@@ -141,3 +141,17 @@
   `236e364bde8397b04c9d7ebfa121fa96963055d77b56e6299e6b9c9aad6c887e`。
 - `bash` 不在 PowerShell PATH 的第一次语法命令属于 platform invocation error；改用本机
   `D:\Program Files\Git\bin\bash.exe -n` 后 PASS。
+- seal commit `a1b9f4548e3b6e071fee611270365c8ecf3f8d13` 已 push，轻量 tag `v0.3.3` 精确指向该 commit。
+- GitHub Release `v0.3.3` 已创建为 non-draft/non-prerelease 且显式 `--latest=false`；只有 ZIP 与 external
+  bootstrap 两项资产，服务器 digest/size 与 local seal 一致，Latest 仍为 v0.3.2。
+- 从公开 Release URL 下载全新副本后，ZIP SHA/size、bootstrap SHA/size、21-entry builder check、解压后
+  importer check 与下载版 bootstrap `bash -n` 全部 PASS；临时验证目录经边界检查后清理。
+- G9 publication gate 已关闭；停在 `PUBLICATION_PASS / R5_PR_READY`，不预填 R5-PR Cloud PASS，也不执行
+  Latest/rollback promotion。
+- publication 回写后的首次 full suite 出现 2 个 governance FAIL：ROADMAP 当前行不再显式写 `R5-SC`，
+  以及新 guard 错把变量化 Release URL 当作必须展开的字面 URL。前者补回 lifecycle 事实；后者改为同时
+  冻结 exact `PUBLICATION_TAG`/`ZIP_NAME` 常量与既有 URL 组合式，不弱化公开资产身份。
+- 随后的 focused run 又暴露 release-package test 仍冻结中间态 `local seal / publication in progress`；
+  将该 lifecycle 断言替换为真实的 `published candidate / R5-PR ready`，不改 ZIP 或 bootstrap 字节。
+- 修正后 focused publication/governance tests 12/12 PASS；最终完整 suite 96 tests：84 PASS、12
+  Windows/POSIX SKIP、0 FAIL。
