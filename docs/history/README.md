@@ -32,6 +32,7 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 | Phase 2 | 激活 adapter 监督的 owned catch-up，建立 transcript 与 global Skill 安全边界 | [`phase-2-owned-catchup.md`](phase-2-owned-catchup.md) |
 | Phase 3 | 激活 canonical owned-plan，删除 adapter 平行 plan 算法并完成 beta Cloud 闭环 | [`phase-3-canonical-plan.md`](phase-3-canonical-plan.md) |
 | Phase 3.5 | 回顾性迁移标签：M1～M4 将 beta.2 产品基线迁入 successor 并完成 authority cutover；不是正式 Product Phase | [`phase-3.5-successor-migration.md`](phase-3.5-successor-migration.md) |
+| Phase 3.6 | 回顾性架构迁移标签：v0.3.2 → v0.3.3-dev 退休不可达 catch-up overlay supply-chain，收敛为四文件 pristine upstream + owned boundary；只关闭本地 source migration，不宣称 Cloud/Release | [`phase-3.6-pristine-catchup-migration.md`](phase-3.6-pristine-catchup-migration.md) |
 
 ## 阅读方式
 
