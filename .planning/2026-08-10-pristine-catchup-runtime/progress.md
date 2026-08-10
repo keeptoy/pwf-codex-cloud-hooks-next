@@ -60,3 +60,19 @@
 - 对应 architecture guard 18/18 PASS；完整 `npm test` 为 96 tests、84 PASS、12 个 Windows/POSIX 诚实 SKIP、
   0 FAIL；`tools/import_upstream_runtime.py check` 与 `git diff --check` PASS。审计结论：ARCHITECTURE 与当前
   v0.3.3-dev source/contracts 统一，状态仍为 `LOCAL_PASS / CLOUD_PENDING`。
+- 2026-08-10：维护者授权清理 `.planning` 历史空目录并重做本地发布前测试。盘点确认四个历史 scope 完全
+  为空，活动 scope 保留；新增 G6，只生成本地 development candidate，不授权 seal/tag/Release。
+- 已对四个目标逐项执行 absolute containment、direct-item count 检查后删除；复核 `.planning` 只剩活动
+  `2026-08-10-pristine-catchup-runtime`，其三份 tracked planning 文件与 `.active_plan` 均保留。
+- G6 第一轮并行检查因 PowerShell `PATH` 中不存在裸 `bash` 命令而整体未产出可审计汇总；暂不采信同轮
+  其他并行子项，先定位显式 Git Bash 路径后整轮重跑。该错误不涉及源码、ZIP 或测试断言修改。
+- 显式定位 Git Bash 后的检查确认：importer integrity、三个 Python entrypoint compile、`install.js` syntax 与
+  `git diff --check` PASS；沙箱内 `npm test` 全部停在 runner `spawn EPERM`，Git Bash 停在 signal pipe
+  Win32 error 5，均未进入产品断言，按既有 platform limitation 在沙箱外原样复验。
+- 沙箱外完整 `npm test` 实际执行 96 tests：84 PASS、12 个 Windows/POSIX 诚实 SKIP、0 FAIL；两个 current
+  bootstrap 的 `bash -n` 均 PASS。首次 ZIP 双构建脚本因 PowerShell 泛型方法语法解析失败，任何 build/check
+  尚未执行，改用非泛型 structural byte comparison 后重试。
+- G6 ZIP gate PASS：两次独立 build/check 均为 21 entries、74,206 bytes、SHA-256
+  `40e3e134aa4d9a7f452a2447f4aa9026af479882c9b7f78074fc9e3370646182`，byte-for-byte 一致；已删除比较副本，
+  只保留 ignored `dist/pwf-codex-cloud-hooks-v0.3.3-dev.zip`。这只是 development candidate，不写 bootstrap
+  hash、不 seal、不 tag、不发布，状态保持 `LOCAL_PASS / CLOUD_PENDING`。

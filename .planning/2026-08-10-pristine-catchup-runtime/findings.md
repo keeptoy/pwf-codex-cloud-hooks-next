@@ -26,6 +26,18 @@ provenance 与 immutable refs，不在 current tree 保存可执行博物馆副�
 - `skill-patch.test.js` 的通用 bootstrap/global-Skill 安全断言已迁入 `bootstrap.test.js`；patch-specific 行为由
   importer fail-closed 与新的 pristine helper boundary 取代，不保留可执行历史 fixture。
 
+## G6 pre-release inventory（2026-08-10）
+
+- `.planning` 下四个历史 scope 目录的 direct item 与 recursive file 计数均为 0：
+  `2026-08-09-architecture-contract-retention`、`2026-08-09-history-retention-governance`、
+  `2026-08-09-v0.3.2-baseline-promotion`、`2026-08-09-v0.3.2-release-cloud-acceptance`。
+- 唯一活动 scope `2026-08-10-pristine-catchup-runtime` 含 `task_plan.md`、`findings.md`、`progress.md`，不得删除。
+- 本轮只删除上述已验证空目录，并重新生成未封板的本地 development ZIP；不写入 bootstrap checksum，
+  不创建 tag/Release，也不改变 accepted/rollback 角色。
+- G6 双构建均产生 21 entries、74,206 bytes、SHA-256
+  `40e3e134aa4d9a7f452a2447f4aa9026af479882c9b7f78074fc9e3370646182`；结构化 byte-array 比较为 true，
+  两次 contract check 均 `healthy=true`。只保留 `dist/pwf-codex-cloud-hooks-v0.3.3-dev.zip`。
+
 ## Post-gate ARCHITECTURE ↔ source audit（2026-08-10）
 
 - 本轮只审计当前 `ARCHITECTURE.md` 是否准确描述 v0.3.3-dev source、contracts、installed layout、runtime
