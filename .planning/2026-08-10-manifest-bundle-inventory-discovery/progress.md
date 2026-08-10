@@ -77,3 +77,28 @@
 - I2 focused 最终 53 PASS/1 Windows SKIP；完整 `npm test` 为 114 PASS/12 Windows SKIP；v0.3.3 bad-upgrade
   fail-closed、valid candidate→immutable v0.3.3 rollback、deterministic candidate ZIP 与 Phase 4 exact negative guard 均通过。
 - JSON/Node/Python syntax、importer check、`git diff --check` 全绿；I2 闭合并停止，Linux/Cloud I3 尚未执行。
+- 维护者明确授权继续 I3；活动计划同步为 local/Linux/Source-Candidate Cloud 验证，继续禁止 Phase 4、Release、
+  publication 与 push。
+- I3 Windows focused 为 61 PASS/1 Linux-only SKIP，完整 suite 为 114 PASS/12 POSIX/Linux SKIP、0 FAIL；首次
+  沙箱内 runner 因 `spawn EPERM` 未执行断言，获准在沙箱外重跑后通过。
+- importer、Node/Python/JSON/Bash syntax、manifest integrity hashes、四项 exact `100755` 与 LF 全部通过；一次
+  Bash loop 引号错误和一次 PowerShell generic method parse error 均在未执行目标动作前修正并成功重跑。
+- 两次 deterministic ZIP 逐字一致：21 entries、77,782 bytes、SHA-256 `87bff3eddb8c8f6431ddfd55f707e6ba02c31cf8c2d9fc822709b3967d10de09`；
+  bootstrap ZIP 外边界及 extracted builder/importer self-check PASS。
+- Linux 探针确认 WSL distribution 与 container runtime 均不存在；Git Bash 只能做语法检查。远端复核确认
+  `origin/main=0377453` 不含 `59395e7`，且没有 `origin/0.3.4-dev`；因 push 未授权、Cloud environment ID 未取得，
+  Linux/Source-Candidate Cloud 保持 PENDING，I3 不闭合。
+- 维护者授权 push 并由其自行执行 Cloud 黑盒；首次 push 的自动审批复核超时、命令未执行，按工具指引只重试
+  一次后成功创建远端 `0.3.4-dev`，exact head 为 `59395e7`。当前未提交 planning/acceptance evidence 未混入候选。
+- 审计 template 与 v0.3.3 acceptance：确认 B-SC/C/D/E1/E2 行为提示词无需改变；v0.3.3 的旧 source 脚本仍读取
+  已退休 `manifest.managed_runtime.files`，不能复用。模板 9.1 原有 installed snapshot→disk 自洽检查还不足以
+  单独证明 bundle authority。
+- 为 template 增加稳定英文 anchors 与显式 `PWF_ACCEPTANCE_NODE_MAJOR` 输入；4.1 新增 schema-2 exact manifest、
+  raw bundle SHA、retired mirror 与 Phase 4 negative admission 断言，9.1 新增 bundle-derived inventory、installed
+  snapshot、disk actual 三方相等。v0.3.4-dev 改为薄执行入口，只维护分支输入、架构 delta、模板步骤链接与原始
+  证据回传清单，不复制稳定提示词或预填动态 status/hash/test count。
+- 模板嵌入 Python 共三段 syntax PASS，authority block 在当前树执行输出 `MANIFEST_BUNDLE_AUTHORITY=PASS`；
+  bundle-derived installed inventory 为 exact 10 payload。四段嵌入 Bash 经 stdin `bash -n -s` 全部 syntax PASS。
+- architecture/repository focused governance 17/17 PASS，stable cross-document anchors、dev zero-hash/无 sealed
+  identity、current acceptance lifecycle 与 Phase 4 boundary 均保持；`git diff --check` PASS。黑盒交付就绪，
+  I3 等待维护者真实 Cloud 输出，不预填通过状态。

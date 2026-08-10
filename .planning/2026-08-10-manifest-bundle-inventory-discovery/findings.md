@@ -286,3 +286,32 @@ trusted Git/ZIP bytes
   allowlist 继续独立保留。
 - stable docs 已统一为 `manifest integrity index → verified bundle authority → installed snapshot/Release allowlist`
   分层；CHANGELOG/ROADMAP 只记录当前兼容列车已发生的 scope，不把 I2 写成 Phase 4 或 Release 完成。
+
+## I3 verification evidence
+
+- Windows focused 供应链集合为 61 PASS/1 Linux-only SKIP，完整 suite 为 114 PASS/12 POSIX/Linux SKIP；所有
+  skip 都保留平台标签，0 FAIL。v0.3.3 bundle-drift 写前拒绝与正常 candidate→immutable v0.3.3 rollback 均 PASS。
+- importer check、Node/Python/JSON/Bash syntax、manifest integrity refs、四项且仅四项 `100755`、四项 LF 全部
+  PASS。Git Bash 仅提供 Bash parse，不具有 Linux 权限、用户或进程语义，不能替代 Linux gate。
+- 两次独立候选 ZIP 逐字一致：21 entries、77,782 bytes、SHA-256
+  `87bff3eddb8c8f6431ddfd55f707e6ba02c31cf8c2d9fc822709b3967d10de09`；bootstrap 未进入 ZIP，解包后 builder
+  与 importer 自检 PASS。该 identity 未 seal，Release input 变化即失效。
+- 当前主机没有 WSL distribution，也没有 Docker/Podman/nerdctl，因而 Linux 0-skip、cross-user 和真实权限
+  证据不可在本机产生。分类为 platform limitation，不是 product defect，也不允许用 Windows PASS 顶替。
+- Source/Candidate Cloud 还缺 exact transport：`origin/main=0377453` 不包含本地 I2 commit `59395e7`，且远端没有
+  `0.3.4-dev`；task plan 未授权 push。Cloud CLI 可读取既有任务，但未返回提交所需 environment ID。因此 I3
+  只能冻结为 local PASS / Linux+Cloud pending，等待维护者授权 branch push 并提供/选择 environment ID。
+
+## I3 maintainer black-box handoff design
+
+- v0.3.3 的 B-SC/C/D/E1/E2 仍与当前行为合同一致：本次只迁移 source/install inventory authority，没有改变
+  Hook events、canary、plan-first、catch-up、Resume source 或 planning injection，所以这些观察提示词不应复制后改名。
+- v0.3.3 旧 4.1 脚本不能复用：它直接读取 `manifest.managed_runtime.files` 并逐项与 bundle 对比；schema 2
+  已删除该 mirror。正确调用链是 manifest 固定 bundle path/SHA → raw bytes 校验 → strict bundle parse。
+- current template 的 4.1 已通过 importer 与 portable suite覆盖该信任边，但 9.1 的 expected inventory 仍先取
+  `installed-manifest.runtime_files`，再与磁盘比较，只能证明安装快照自洽。为验证本次迁移，应额外从 bundle
+  `local_files/files/installed_contracts[*].installed_path` 加 adapter/notice envelope 推导 expected set，并同时要求
+  bundle-derived、installed snapshot 与 disk actual 三者相等。
+- 推荐不再把整份稳定 B～E 提示词复制进 v0.3.4-dev：给 template 增加稳定英文 anchors，让版本专项文件只
+  冻结 branch transport、未授权边界、架构 delta 与执行顺序；Node major 作为每次运行显式输入，不在协议中冻结。
+  动态 HEAD、测试数量、ZIP size/hash 与模型原始输出由脚本打印并在实际回传后记录，不预填 PASS/PENDING ledger。
