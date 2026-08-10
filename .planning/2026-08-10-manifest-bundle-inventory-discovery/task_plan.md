@@ -17,8 +17,12 @@ authority 迁移设计。
 - 维护者接受 bundle authority 推荐路线，并授权第一轮 I0 failing-first guards：允许只修改最近边界测试与
   planning，预先冻结 manifest→bundle integrity、严格 bundle validation、Phase 4 负向准入和 v0.3.3
   升级/回滚要求。
-- 本轮不授权修改 importer、installer、machine contracts、runtime、Release allowlist/hash、production dispatch，
-  也不授权 seal、publication、push、Cloud 部署或 Phase 4 激活。
+- 维护者在 I0 闭合后授权继续 I1：允许修改 importer、installer、配套测试，以及同步 importer integrity hash；
+  两个 consumer 必须先验证 manifest→bundle 原始 SHA，再严格解析并消费 bundle。
+- 维护者在 I1 闭合并明确停在 I2 前后要求“继续”，据此授权 I2 atomic mirror removal：允许把 nested
+  `managed_runtime` 升到 schema 2、删除已由 bundle 独占的 mirrors，并同步 consumer、tests、integrity hash、
+  稳定 authority 文档和 Unreleased changelog。
+- 本轮仍不授权 I3、runtime、Release allowlist、production dispatch、seal、publication、push、Cloud 部署或 Phase 4 激活。
 
 ## Invariants
 
@@ -38,18 +42,19 @@ authority 迁移设计。
 - [x] D5 — Phase 3.7 clarification：用可读时间线补足 staged-admission ledger 的产生、消费和退休原因。
 - [x] I0 — Failing-first guards：先写并执行供应链完整性、非法 bundle、Phase 4 负向准入及跨版本往返测试；
   预期只因尚未实施 I1/I2 而红，不得修改 production 使其变绿。
-- [ ] I1 — Verified bundle consumers：未授权。
-- [ ] I2 — Atomic mirror removal：未授权。
+- [x] I1 — Verified bundle consumers：实现 manifest→bundle raw SHA、严格 bundle validator 与 importer/installer
+  单一 inventory consumption；保持 manifest schema 1/mirrors 供 I2 原子删除。
+- [x] I2 — Atomic mirror removal：nested schema 2、mirror 删除、consumer/tests/docs/hash 同步并完成本地回归。
 - [ ] I3 — Local/Linux/Cloud verification：未授权。
 
 ## Next Step
 
-I0 failing-first guards 已闭合并按预期保持红灯；停止并等待维护者明确授权 I1。保持 production、machine
-contracts、Release bytes 与 Phase 4 不变，不提前进入 I1/I2/I3。
+I2 已闭合。停止并等待 I3 授权；不得把本地全量回归冒充 Linux/Cloud supply-chain verification，
+也不提前进入 Phase 4、seal、publication 或 push。
 
 ## Decision
 
-`I0_FAILING_FIRST_COMPLETE / I1_I2_I3_NOT_AUTHORIZED / PHASE4_NOT_AUTHORIZED`
+`I2_ATOMIC_MIRROR_REMOVAL_COMPLETE / I3_NOT_AUTHORIZED / PHASE4_NOT_AUTHORIZED`
 
 进入实施的条件：
 
@@ -72,3 +77,7 @@ contracts、Release bytes 与 Phase 4 不变，不提前进入 I1/I2/I3。
 | Phase 3.7 focused tests 在受限 Windows sandbox 中因 `spawn EPERM` 未执行断言 | 1 | 在获准的沙箱外重跑同一只读命令，17/17 PASS |
 | 尝试读取不存在的 `tests/helpers/published-release.js` | 1 | 确认 publication helpers 全部内联在 `published-release-oracles.test.js`，直接复用并扩展该文件 |
 | I0 focused suite 返回非零 | 1 | 属于授权目标：新 guards 精确命中 I1/I2 尚未实现的缺口；既有测试与正常 v0.3.3 往返继续通过 |
+| I1 Node 回归在受限 Windows sandbox 中因 `spawn EPERM` 未执行断言 | 1 | 在获准的沙箱外重跑同一命令；focused 47 PASS/1 SKIP，全量非 I2 suite 110 PASS/12 SKIP |
+| I2 旧字段扫描把多个含括号 pattern 拼成一个 `rg` 正则，触发 `unopened group` | 1 | 改用多个 `rg -e` 固定 pattern 分别扫描，不重复原命令；manifest JSON 解析本身已通过 |
+| I2 固定 pattern 扫描中的 Python 双引号被 PowerShell 拆成路径参数 | 2 | 移除该脆弱 pattern，分别扫描 `schema_version` 与已退休字段；已有命中仅为 schema-2/负向测试 |
+| I2 focused 中 unsafe bundle reference 的产品拒绝正确，但 importer 错误标签从 `runtime bundle` 漂成 `runtime_bundle` | 1 | 分类为诊断文本回归；contract ref validator 使用人类可读 label，保留既有 domain error 合同后重跑 |

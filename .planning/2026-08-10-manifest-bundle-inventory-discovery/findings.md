@@ -252,3 +252,37 @@ trusted Git/ZIP bytes
   inventory；现有 exact 4 upstream + 2 local + 2 installed-contract 断言继续通过，没有为制造红灯弱化安全边界。
 - publication oracle 新增两条 v0.3.3 路径：带 bundle drift 的 candidate 当前错误地接受升级，因此红；未变造
   candidate 的 v0.3.3 → v0.3.4-dev → immutable v0.3.3 install/doctor 往返当前已经通过，作为 I1/I2 的兼容护栏。
+
+## I1 verified-consumer evidence
+
+- importer 现在把 manifest 作为 bundle 的信任入口：先校验 manifest 中的 safe relative path，再读取 bundle
+  原始字节并核对 SHA-256；只有通过后才进行 UTF-8/JSON 解析和 inventory 使用。显式 `--bundle` 也不能绕开
+  manifest anchor，只允许指向同一个已固定文件。
+- installer 在模块加载阶段完成同一条 `manifest → raw bundle SHA → strict parse` 链，并在 acquire、backup、
+  requirements 或 runtime 写入前失败。它的 runtime source projection 只来自 bundle 的 `local_files`、`files`
+  与 `installed_contracts`；adapter 和 notice 仍属于 installer envelope。
+- 两个 consumer 都校验 bundle 的完整顶层结构、schema/contract identity、provenance、safe roots/path、跨分区唯一
+  id/package/installed path、mode/hash/origin、overlay 与 dependency graph。importer 虽然只复制四个 upstream runtime，
+  也不能忽略其他 bundle 分区的非法内容；runtime id 只能使用规范小写标识符，Node 侧还以 fatal UTF-8 解码拒绝
+  replacement-character 宽松解析。
+- 正向测试故意破坏 manifest 的 `package_root/local_package_root/local_files/files`，并删除两个 mirrored installed
+  contract projections，installer 仍按 bundle 精确安装成功；这证明 I1 已切断对 mirrors 的消费，而不是仅增加旁路校验。
+- I1 没有删除 manifest mirrors，也没有把 nested schema 1 改成 2；因此最终 authority guard 仍精确报告七项 I2
+  待办。这是原子迁移边界，不是 I1 产品缺陷。
+- installed-manifest `runtime_files` 状态快照、Release artifact ZIP allowlist、runtime bytes/layout、Host ABI 与
+  production dispatch 均未改变；Phase 4 文件的 exact negative admission guard 继续通过。
+
+## I2 atomic mirror-removal evidence
+
+- `upstream-manifest.json.managed_runtime` 已升为 schema 2，顶层只允许 `schema_version/contracts/importer/
+  license_provenance`；contracts 只保留 bundle、非安装态 ABI 和 Release integrity references。四个 package/inventory
+  mirrors 与两个 bundle-owned installed-contract projections 已一次性删除。
+- importer 与 installer 都严格拒绝 schema 2 中重新出现的旧 mirror 或未知 nested 字段；这避免“仓库文件删掉了，
+  consumer 却继续容忍双写合同”的半迁移状态。runtime bundle 自身仍保持 schema 1 和原字节，职责没有混淆。
+- manifest 从 HEAD 的 4,974 bytes 缩到 1,982 bytes，实际减少 2,992 bytes；Discovery 阶段约 1.3 KiB 的机械估算
+  低估了完整 arrays 与 installed-contract projections 的体积，但不影响以单一 authority 为依据的路线选择。
+- runtime bundle SHA 仍为 `d707a65d6f0d6c5229cd9b4a03c76a2377b97a14411a8a2c5ecf76432d7e3567`；runtime、
+  Host adapter、Release artifact allowlist 与四个 upstream Git modes 均未变化。installed manifest snapshot 和 ZIP
+  allowlist 继续独立保留。
+- stable docs 已统一为 `manifest integrity index → verified bundle authority → installed snapshot/Release allowlist`
+  分层；CHANGELOG/ROADMAP 只记录当前兼容列车已发生的 scope，不把 I2 写成 Phase 4 或 Release 完成。

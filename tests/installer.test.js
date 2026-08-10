@@ -158,6 +158,7 @@ test("managed install rejects an unverified or invalid runtime bundle before any
     { name: "raw bundle hash mismatch", anchor: false, raw: bundle => `${JSON.stringify(bundle, null, 2)}\n ` },
     { name: "invalid JSON", raw: () => "{\n" },
     { name: "unsupported schema", mutate: bundle => { bundle.schema_version = 999; return bundle; } },
+    { name: "retired manifest inventory mirror", mutate: bundle => bundle, mutateManifest: manifest => { manifest.managed_runtime.package_root = "runtime/upstream"; } },
     { name: "unsafe bundle reference", mutate: bundle => bundle, mutateManifest: manifest => { manifest.managed_runtime.contracts.runtime_bundle.path = "../runtime-bundle-v1.json"; } },
     { name: "unsafe package path", mutate: bundle => { bundle.local_files[0].package_path = "../owned-catchup.py"; return bundle; } },
     { name: "unsafe installed path", mutate: bundle => { bundle.installed_contracts[0].installed_path = "../adapter-plan-context-request-v1.schema.json"; return bundle; } },
@@ -165,6 +166,7 @@ test("managed install rejects an unverified or invalid runtime bundle before any
     { name: "duplicate installed path", mutate: bundle => { bundle.installed_contracts[1].installed_path = bundle.installed_contracts[0].installed_path; return bundle; } },
     { name: "duplicate runtime id", mutate: bundle => { bundle.files[1].id = bundle.files[0].id; return bundle; } },
     { name: "duplicate cross-section id", mutate: bundle => { bundle.local_files[0].id = bundle.files[0].id; return bundle; } },
+    { name: "malformed runtime id", mutate: bundle => { bundle.local_files[0].id = "Phase-4"; return bundle; } },
     { name: "invalid mode", mutate: bundle => { bundle.files[0].mode = "0777"; return bundle; } },
     { name: "invalid content hash", mutate: bundle => { bundle.local_files[0].sha256 = "not-a-sha256"; return bundle; } },
     { name: "unknown dependency", mutate: bundle => { bundle.local_files[0].direct_file_dependencies[0].id = "not_admitted"; return bundle; } },
@@ -192,6 +194,26 @@ test("managed install rejects an unverified or invalid runtime bundle before any
         fs.rmSync(home, { recursive: true, force: true });
       }
     });
+  }
+});
+
+test("managed install uses the verified bundle with no manifest inventory mirrors", async () => {
+  const home = fixture();
+  try {
+    const manifest = JSON.parse(fs.readFileSync(path.join(cliWorkspace, "upstream-manifest.json"), "utf8"));
+    assert.deepEqual(Object.keys(manifest.managed_runtime).sort(),
+      ["contracts", "importer", "license_provenance", "schema_version"]);
+    const result = run(home, "install");
+    assert.equal(result.status, 0, result.stderr);
+    assert.deepEqual(runtimeFiles(home), expectedRuntimeFiles);
+    const installed = JSON.parse(fs.readFileSync(
+      path.join(home, "hooks", "planning-with-files", "installed-manifest.json"),
+      "utf8",
+    ));
+    assert.deepEqual(installed.runtime_files.map(item => item.path).sort(),
+      expectedRuntimeFiles.filter(item => item !== "installed-manifest.json").sort());
+  } finally {
+    fs.rmSync(home, { recursive: true, force: true });
   }
 });
 

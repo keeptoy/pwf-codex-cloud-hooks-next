@@ -54,3 +54,26 @@
   installer 复验仍为 14 项全部精准红、既有 12 项 PASS、Windows-only 1 项诚实 SKIP。I0 闭合并停在 I1 授权前。
 - 最终 repository/architecture 治理复验 17/17 PASS；四个修改测试文件 syntax、diff/whitespace 检查均 PASS，
   工作树只包含 planning 与 tests，没有 production、machine contract、runtime、Release 或文档 authority 改动。
+- 维护者在 I0 闭合后授权 I1；实现 importer/installer 共用的 manifest→bundle raw SHA 信任边，并让两者在解析、
+  inventory 消费及任何安装写入前严格拒绝 missing/tampered/invalid bundle。
+- importer 新增 manifest loader 与全 bundle validator；installer 的 `sourceRuntimeFiles()` 改由 bundle 的两类 runtime
+  和 installed contracts 派生。新增正向证明：即使 manifest mirrors 被破坏/删除，安装仍从已验证 bundle 得到精确 inventory。
+- 同步 `upstream-manifest.json` 中 importer integrity hash；未改 bundle bytes、runtime files、Release allowlist、
+  bootstrap、nested manifest schema 或 mirrors。
+- 静态/自检通过：`node --check install.js`、Python compile、`python tools/import_upstream_runtime.py check`、
+  `git diff --check`。
+- I1 focused 回归 47 PASS/1 Windows SKIP；全量排除唯一 I2 终态 contract 的 suite 为 110 PASS/12 Windows SKIP；
+  contract/architecture 为 9 PASS/1 expected FAIL，唯一红灯逐项列出 schema 1、四个 inventory mirrors 和两个
+  installed-contract mirrors。v0.3.3 bad-upgrade fail-closed 与 valid candidate→v0.3.3 rollback 均通过。
+- I1 闭合并停止；I2/I3、Phase 4、commit/push、Cloud、seal/publication 均未进入。
+- 维护者在 I1 闭合并明确停在 I2 前后要求继续；授权 I2 atomic mirror removal，I3/Phase 4/Release/Cloud/push
+  继续保持未授权。
+- 将 `managed_runtime` 升至 schema 2，删除 `package_root/local_package_root/local_files/files` 与两个已由 bundle
+  独占的 installed-contract projections；manifest 从 4,974 bytes 缩至 1,982 bytes。
+- importer/installer 同步严格验证 schema 2 的 exact nested fields，并拒绝旧 mirror 回流；runtime bundle 原始 SHA、
+  runtime/installed inventory、Release allowlist、Host ABI、production dispatch 与 upstream Git modes 均未改变。
+- 同步 contracts/architecture/importer/installer tests，以及 README、ARCHITECTURE、DESIGN、AGENTS、CHANGELOG、
+  ROADMAP 的稳定 authority 表述；importer integrity hash 更新为当前源码字节。
+- I2 focused 最终 53 PASS/1 Windows SKIP；完整 `npm test` 为 114 PASS/12 Windows SKIP；v0.3.3 bad-upgrade
+  fail-closed、valid candidate→immutable v0.3.3 rollback、deterministic candidate ZIP 与 Phase 4 exact negative guard 均通过。
+- JSON/Node/Python syntax、importer check、`git diff --check` 全绿；I2 闭合并停止，Linux/Cloud I3 尚未执行。

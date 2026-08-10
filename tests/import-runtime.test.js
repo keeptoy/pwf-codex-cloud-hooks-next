@@ -82,6 +82,8 @@ function createFixture() {
   const contract = path.join(workspace, "runtime-bundle.json");
   fs.writeFileSync(contract, `${JSON.stringify(bundle, null, 2)}\n`);
   const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  manifest.release_archive_sha256 = bundle.upstream.release_archive_sha256;
+  manifest.managed_runtime.license_provenance.upstream_sha256 = bundle.upstream.license_sha256;
   manifest.managed_runtime.contracts.runtime_bundle.path = path.basename(contract);
   manifest.managed_runtime.contracts.runtime_bundle.sha256 = sha256(fs.readFileSync(contract));
   const manifestContract = path.join(workspace, "upstream-manifest.json");
@@ -94,11 +96,22 @@ function runImporter(fixture, command, extra = []) {
     importer,
     command,
     "--destination", fixture.destination,
+    "--manifest", fixture.manifest,
     "--bundle", fixture.contract,
     ...extra,
   ];
   if (command === "import") args.push("--archive", fixture.archive);
   return spawnSync(python, args, { encoding: "utf8" });
+}
+
+function writeAnchoredBundle(fixture, bundle) {
+  const bytes = Buffer.from(`${JSON.stringify(bundle, null, 2)}\n`, "utf8");
+  fs.writeFileSync(fixture.contract, bytes);
+  const manifest = JSON.parse(fs.readFileSync(fixture.manifest, "utf8"));
+  manifest.release_archive_sha256 = bundle.upstream.release_archive_sha256;
+  manifest.managed_runtime.license_provenance.upstream_sha256 = bundle.upstream.license_sha256;
+  manifest.managed_runtime.contracts.runtime_bundle.sha256 = sha256(bytes);
+  fs.writeFileSync(fixture.manifest, `${JSON.stringify(manifest, null, 2)}\n`);
 }
 
 function runAnchoredImporter(fixture, command) {
@@ -123,6 +136,68 @@ test("runtime importer verifies the manifest-to-bundle raw SHA before parsing or
     assert.equal(fs.existsSync(fixture.destination), false);
   } finally {
     fs.rmSync(fixture.workspace, { recursive: true, force: true });
+  }
+});
+
+test("runtime importer validates bundle sections that are not part of its upstream copy projection", async t => {
+  const scenarios = [
+    {
+      name: "unsafe manifest bundle reference",
+      mutateManifest: manifest => { manifest.managed_runtime.contracts.runtime_bundle.path = "../runtime-bundle.json"; },
+      expected: /unsafe relative path for runtime bundle/,
+    },
+    {
+      name: "unsupported bundle schema",
+      mutateBundle: bundle => { bundle.schema_version = 999; },
+      expected: /unsupported runtime bundle schema/,
+    },
+    {
+      name: "retired manifest inventory mirror",
+      mutateManifest: manifest => { manifest.managed_runtime.package_root = "runtime/upstream"; },
+      expected: /invalid fields for managed runtime manifest/,
+    },
+    {
+      name: "unsafe local package path",
+      mutateBundle: bundle => { bundle.local_files[0].package_path = "../owned-catchup.py"; },
+      expected: /unsafe relative path|escapes expected root/,
+    },
+    {
+      name: "duplicate cross-section id",
+      mutateBundle: bundle => { bundle.local_files[0].id = bundle.files[0].id; },
+      expected: /duplicate or invalid runtime file id/,
+    },
+    {
+      name: "malformed runtime id",
+      mutateBundle: bundle => { bundle.local_files[0].id = "Phase-4"; },
+      expected: /invalid identifier/,
+    },
+    {
+      name: "unknown local dependency",
+      mutateBundle: bundle => { bundle.local_files[0].direct_file_dependencies[0].id = "not_admitted"; },
+      expected: /unknown dependency/,
+    },
+  ];
+  for (const scenario of scenarios) {
+    await t.test(scenario.name, () => {
+      const fixture = createFixture();
+      try {
+        if (scenario.mutateManifest) {
+          const manifest = JSON.parse(fs.readFileSync(fixture.manifest, "utf8"));
+          scenario.mutateManifest(manifest);
+          fs.writeFileSync(fixture.manifest, `${JSON.stringify(manifest, null, 2)}\n`);
+        } else {
+          const bundle = JSON.parse(fs.readFileSync(fixture.contract, "utf8"));
+          scenario.mutateBundle(bundle);
+          writeAnchoredBundle(fixture, bundle);
+        }
+        const result = runAnchoredImporter(fixture, "check");
+        assert.equal(result.status, 1);
+        assert.match(result.stderr, scenario.expected);
+        assert.equal(fs.existsSync(fixture.destination), false);
+      } finally {
+        fs.rmSync(fixture.workspace, { recursive: true, force: true });
+      }
+    });
   }
 });
 
@@ -177,7 +252,7 @@ test("runtime import rejects archive checksum and pristine source drift", () => 
   try {
     let bundle = JSON.parse(fs.readFileSync(fixture.contract, "utf8"));
     bundle.upstream.release_archive_sha256 = "0".repeat(64);
-    fs.writeFileSync(fixture.contract, `${JSON.stringify(bundle, null, 2)}\n`);
+    writeAnchoredBundle(fixture, bundle);
     let result = runImporter(fixture, "import");
     assert.equal(result.status, 1);
     assert.match(result.stderr, /release archive SHA-256 mismatch/);
@@ -194,7 +269,7 @@ test("runtime import rejects archive checksum and pristine source drift", () => 
         item.managed_sha256 = item.pristine_sha256;
       }
     }
-    fs.writeFileSync(fixture.contract, `${JSON.stringify(bundle, null, 2)}\n`);
+    writeAnchoredBundle(fixture, bundle);
     result = runImporter(fixture, "import");
     assert.equal(result.status, 1);
     assert.match(result.stderr, /pristine SHA-256 mismatch for session_catchup/);
@@ -213,7 +288,7 @@ test("runtime import rejects overlay, non-pristine origin, and divergent managed
     ]) {
       const bundle = JSON.parse(fs.readFileSync(bundlePath, "utf8"));
       mutate(bundle.files[0]);
-      fs.writeFileSync(fixture.contract, `${JSON.stringify(bundle, null, 2)}\n`);
+      writeAnchoredBundle(fixture, bundle);
       const result = runImporter(fixture, "check");
       assert.equal(result.status, 1);
       assert.match(result.stderr, expected);

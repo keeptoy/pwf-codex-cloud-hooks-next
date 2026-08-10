@@ -95,18 +95,11 @@ test("machine contracts freeze provenance, pristine runtime, Host protocol, and 
   assert.equal(Object.hasOwn(upstream, "historical_patched_skill_files"), false);
   assert.equal(Object.hasOwn(upstream.managed_runtime.contracts, "compatibility_overlays"), false);
 
-  assert.equal(upstream.managed_runtime.schema_version, 1);
-  assert.equal(upstream.managed_runtime.package_root, bundle.package_root);
-  assert.deepEqual(
-    upstream.managed_runtime.files.map(item => item.id),
-    bundle.files.map(item => item.id),
-  );
-  for (const managed of upstream.managed_runtime.files) {
-    const frozen = files.get(managed.id);
-    for (const key of ["source_path", "package_path", "mode", "origin", "pristine_sha256", "managed_sha256"]) {
-      assert.equal(managed[key], frozen[key], `${managed.id}.${key}`);
-    }
-    assert.equal(fileHash(path.join(root, managed.package_path)), managed.managed_sha256, managed.id);
+  assert.equal(upstream.managed_runtime.schema_version, 2);
+  assert.deepEqual(Object.keys(upstream.managed_runtime).sort(),
+    ["contracts", "importer", "license_provenance", "schema_version"]);
+  for (const frozen of files.values()) {
+    assert.equal(fileHash(path.join(root, frozen.package_path)), frozen.managed_sha256, frozen.id);
   }
   for (const contract of Object.values(upstream.managed_runtime.contracts)) {
     assert.equal(fileHash(path.join(root, contract.path)), contract.sha256, contract.path);
@@ -125,22 +118,11 @@ test("machine contracts freeze provenance, pristine runtime, Host protocol, and 
       `${local.id} must not carry historical programme phase metadata`);
     assert.equal(fileHash(path.join(root, local.package_path)), local.sha256, local.id);
   }
-  assert.deepEqual(upstream.managed_runtime.local_files.map(item => item.id), ["owned_catchup", "owned_plan"]);
-  for (const managed of upstream.managed_runtime.local_files) {
-    const frozen = localFiles.get(managed.id);
-    for (const key of ["package_path", "mode", "origin", "sha256"]) {
-      assert.equal(managed[key], frozen[key], `${managed.id}.${key}`);
-    }
-  }
   assert.deepEqual(
     bundle.installed_contracts.map(item => item.id),
     ["adapter_plan_context_request", "plan_context_result"],
   );
   for (const installed of bundle.installed_contracts) {
-    const managed = upstream.managed_runtime.contracts[installed.id];
-    assert.equal(managed.path, installed.package_path);
-    assert.equal(managed.installed_path, installed.installed_path);
-    assert.equal(managed.sha256, installed.sha256);
     assert.equal(fileHash(path.join(root, installed.package_path)), installed.sha256);
   }
   assert.equal(fileHash(path.join(root, upstream.managed_runtime.importer.path)), upstream.managed_runtime.importer.sha256);

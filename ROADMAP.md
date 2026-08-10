@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.4-dev`；只清理 runtime contract 中不参与执行的历史 programme metadata，当前为 zero-hash Source/Candidate |
+| 当前开发列车 | `v0.3.4-dev`；清理 runtime contract 的历史 programme metadata，并把重复 manifest inventory 收敛到 verified bundle authority；当前为 zero-hash Source/Candidate |
 | 当前已接受版本 | `v0.3.3`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.2` immediate fallback |
 | 回退证据链 | immutable `v0.3.1` deeper fallback；更早发布里程碑见 provenance museum |
@@ -54,8 +54,9 @@ baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta
 
 ## 4. 当前开发列车与 Product Phase 路线
 
-`v0.3.4-dev` 是 v0.3.3 accepted baseline 之上的兼容维护列车，只把历史 programme annotation 从 runtime
-machine contract 迁出，并以 exact current inventory guard 继续阻止未授权脚本准入。它不改变 production
+`v0.3.4-dev` 是 v0.3.3 accepted baseline 之上的兼容维护列车：把历史 programme annotation 从 runtime
+machine contract 迁出，并把 manifest 的重复 source/install projection 收敛到经 SHA 验证的 runtime bundle；
+exact current inventory guard 继续阻止未授权脚本准入。它不改变 production
 dispatch、Host ABI、trusted graph、installed inventory 或 upstream runtime bytes，也不授权 Phase 4。
 Phase 4 仍停在 Discovery authorization 之前，尚未建立 `0.4.0-*` machine identity、开发分支或实现 gate。
 
