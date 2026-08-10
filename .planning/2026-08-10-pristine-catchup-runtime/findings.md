@@ -110,20 +110,18 @@ provenance 与 immutable refs，不在 current tree 保存可执行博物馆副�
 - ROADMAP §7 已正确覆盖 Published Release 身份、公开 URL、重新下载、ZIP 内工具和 Fresh/Resume/doctor
   分流。本次不把上游提示词转义扩大为 repository contract 或新的 hardening gate；操作经验是执行型代码块
   应优先从 raw source 提取，而不是执行被富文本转义的复制副本。
-- 远端审计确认 GitHub Release 只有 `v0.3.0`、`v0.3.1`、`v0.3.2`，其中 `v0.3.2` 仍为 Latest；本地与
-  fetched refs 均不存在 `v0.3.3` tag，目标 identity 未被占用。
-- `origin/0.3.3-dev` 与本地分支无分叉，本地仅领先已验证的 G8 commit；当前 package/Release contract/
-  bootstrap identity 均仍为 `0.3.3-dev`，external bootstrap 仍是 `init-cloud-sandbox-v0.3.3-dev.bash`，
-  因而必须先完成 stable identity migration，不能直接上传 development ZIP。
-- v0.3.2 的已验证封板结构是单个 `release: seal` commit 冻结 stable package/contract/bootstrap/acceptance，
-  tag 指向该 exact commit；Release 为非 draft、非 prerelease，恰好上传 ZIP 与外部 bootstrap，并在 notes 中
-  明确 Cloud hard acceptance pending、未晋级 rollback/Latest。v0.3.3 沿用该边界，但 current 21-entry
-  pristine package、10-file installed inventory 与 B-SC/B-PR 分流不能回抄旧数字。
-- 当前 `gh` 不提供 `isLatest` view 字段；Latest 继续由 `gh release list` 的明确标记核验，单个 Release view
-  只读取 tag/name/draft/prerelease/immutable/target/assets/body 等支持字段。
-- Stable ZIP 输入冻结后的两次独立构建逐字一致：21 entries、74,198 bytes、SHA-256
-  `2b2dca5c5894a2297a6f2ccc5fb190878c3c920b71148719a4873326b4ccb352`。该值已写入 external bootstrap；
-  bootstrap 自身 size/SHA、完整回归和 publication audit 尚待关闭。
+
+## G10 acceptance consolidation decision（2026-08-10）
+
+- 维护者确认完整 R5-PR 已 PASS。当前问题不是产品或验收缺口，而是版本 acceptance 把可复用行为提示词、
+  版本资产输入和动态 gate 状态混在同一线性章节中，导致每轮要机械改版本、marker 和状态。
+- B～E 的 lifecycle/canonical/tail/resume 行为不依赖 package version，应改用稳定语义 sentinel，不再在提示词
+  中自称某版本测试，也不观察没有判定价值的 `Phase 4 marker`。
+- Published setup 的最小可信输入不是“只有 ZIP SHA”：必须先有 immutable bootstrap URL 与 bootstrap SHA，
+  校验 bootstrap 字节后由其内嵌默认 ZIP URL/SHA 安装。Published F 的最小外部输入可以收敛为 immutable
+  ZIP URL + ZIP SHA；filename、package version、size 与 inventory 从已验证 ZIP/contracts/manifest 派生。
+- v0.3.3 的 tag/source/asset identities、Cloud PASS 和回传 marker 仍是历史证据，不应从 acceptance 删除；
+  它们只留在 identity/result ledger。通用黑盒正文不再随候选版本或当前 lifecycle 状态频繁改写。
 
 ## Post-gate ARCHITECTURE ↔ source audit（2026-08-10）
 

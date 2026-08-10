@@ -14,7 +14,7 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，候选 Cloud gate 见
   [`docs/v0.3.3-cloud-hard-acceptance.md`](docs/v0.3.3-cloud-hard-acceptance.md)。
 - 发布 stable `v0.3.3` exact tag、21-entry ZIP 与外部 bootstrap，并从公开 URL 重新下载复核；Published
-  Release Cloud 通道和 baseline/Latest promotion 仍作为独立 gate。
+  Release Cloud 通道随后在独立 Fresh 环境完成，baseline/Latest promotion 仍作为独立 gate。
 - 退休已不可达的 catch-up compatibility supply-chain：四个 pinned upstream runtime 文件全部恢复 pristine，
   importer 不再加载 patcher/overlay ledger，installed inventory 与 Release allowlist 同步收窄；
   `owned-catchup.py` 继续拥有 transcript/identity/immutable bytes/normalization/rendering，只通过显式
@@ -44,14 +44,18 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   转交可复制模板维护，不再由 repository guard 固化。
 - 将 BASELINE_PROVENANCE 明确为持续维护的冷证据账本：已发布身份采用统一、角色无关的登记结构；索引
   可以新增或轮换精选入口，但已登记 immutable identity 不随 ROADMAP lifecycle 变化而改写。
-- 将 v0.3.3-dev Cloud hard acceptance 从目标摘要扩展为可重放双通道手册：Source/Candidate 完整覆盖
-  portable Linux suite、双构建/override 安装、Fresh、canonical planning、long-tail/real Resume 与
-  post-resume deep assertion；Published Release 在 seal 前使用 fail-closed placeholder，避免虚构公开身份。
-  Repository lifecycle guard 同步冻结这套骨架，防止后续手册再次退化成不可执行摘要。
+- 将 v0.3.3-dev Cloud hard acceptance 从目标摘要扩展为可重放双通道手册并完成两条 Cloud 通道：
+  Source/Candidate 覆盖 portable Linux suite、双构建/override 安装、post-install Resume、canonical
+  planning、long-tail/real Resume 与 deep assertion；Published Release 从公开 bootstrap 默认链完成 Fresh
+  startup，并从重新校验的 ZIP 内工具完成 post-resume 复验。
+- 把可复用黑盒协议与版本证据分层：B～E 提示词只描述 lifecycle 和 observable behavior，删除无行为意义
+  的阶段 marker；Published setup 仅替换 bootstrap URL/SHA，post-resume deep check 仅替换 ZIP URL/SHA，
+  其余 version、size 与 inventory 从已校验产物派生。精确 tag、资产字节和最终 PASS 只保留在冻结证据表。
 - 根据实际 Cloud lifecycle 修正双通道 B gate：agent prompt 内安装的 Source/Candidate 验证 post-install
   Resume，environment setup 内安装的 Published Release 才验证 Fresh startup；B 的模型汇总恢复为
-  SessionStart/UserPromptSubmit 与 planning 原始输出锚点，catch-up 和 Phase 4 负向断言分别留给 E2、D 与
-  portable suite。ARCHITECTURE 同步区分冷任务与 cached environment 的 checkout/setup 时序。
+  SessionStart/UserPromptSubmit 与 planning 原始输出锚点，catch-up 留给 E2，内部 supply-chain 语义由
+  portable suite 与 post-resume inventory 断言证明。ARCHITECTURE 同步区分冷任务与 cached environment
+  的 checkout/setup 时序。
 
 ## v0.3.2
 

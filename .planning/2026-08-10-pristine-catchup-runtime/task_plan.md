@@ -13,8 +13,8 @@
   bytes/contracts/importer/installer/Release allowlist/tests/docs，并进行本地完整验证。
 - 维护者在 R5-SC 全部 Cloud 黑盒通过后，明确授权 push 当前分支，并把该列车封板、tag、发布为
   immutable `v0.3.3` 双资产；授权包含 publication 后公开重新下载复核。
-- 本 gate 仍不授权 GitHub Latest/rollback baseline promotion、Published Release Cloud PASS 的预填、外部
-  deployment 或 Product Phase 4 功能。
+- 维护者已回传完整 Published Release Cloud PASS，并授权将事实写回 acceptance/lifecycle 文档；本 gate
+  仍不授权 GitHub Latest/rollback baseline promotion、外部 deployment 或 Product Phase 4 功能。
 - 已发布 v0.3.2 的 tag、ZIP/bootstrap、SHA、acceptance、patcher/overlay identity 不得改写；历史恢复只走
   immutable refs 与 `BASELINE_PROVENANCE.md`。
 
@@ -53,11 +53,13 @@
 - [x] G9 — v0.3.3 immutable publication：记录 R5-SC lifecycle PASS，核对远端 refs/Release 与身份窗口；
   push 当前 Cloud-passed source；冻结 stable package/contracts/bootstrap/acceptance，双构建/check、完整回归、
   publication audit；创建 immutable tag/Release 双资产并从公开 URL 重新下载复核。发布后停在 R5-PR Cloud。
+- [x] G10 — Cloud acceptance consolidation：记录完整 R5-PR PASS；把 Published setup/F 分别并入 4.2/9.2；
+  删除无意义的 Phase 4 marker 观察；将 B～E 提示词改为版本无关协议，并把 Published 脚本输入收敛为
+  immutable asset URL + SHA。同步 lifecycle guard、ROADMAP/provenance 与活动证据，不改已发布资产。
 ## Next Step
 
-继续收集 R5-PR 其余 Cloud 证据：10.2 post-resume 深度复验已经 PASS；若 B-PR～E 与 v0.3.2 immutable
-oracle 已在同一独立 Fresh environment 完成，则回传其 exact markers 关闭完整 channel。仍不晋级
-Latest/rollback。
+停在 `CLOUD_HARD_ACCEPTANCE_PASS / PROMOTION_NOT_AUTHORIZED`，等待维护者另行决定是否开启 Latest/
+rollback baseline promotion gate；不改写 v0.3.3 tag、ZIP/bootstrap 或 seal source。
 
 ## Stop Conditions
 
@@ -86,6 +88,8 @@ G9 immutable publication PASS：`v0.3.3` tag 指向 exact seal source，双资�
 复核；Latest/accepted 仍为 v0.3.2。当前状态为 `PUBLICATION_PASS / R5_PR_READY`。
 R5-PR 10.2 首次执行因提示词转义在下载前停止；直接获取原始 acceptance 并提取同一脚本后完整 PASS，
 确认 repository/runbook 无缺陷。当前状态为 `PUBLICATION_PASS / R5_PR_F_PASS / R5_PR_CHANNEL_PENDING`。
+维护者随后确认完整 Published Release Cloud channel 已验收通过，并授权只做手册/guard 通用化收口；当前
+状态为 `CLOUD_HARD_ACCEPTANCE_PASS / PROMOTION_NOT_AUTHORIZED`。
 
 ## Errors Encountered
 

@@ -46,7 +46,7 @@ function extractZip(archive, destination) {
   assert.equal(result.status, 0, result.stderr);
 }
 
-test("v0.3.3 seal candidate ZIP is deterministic, self-contained, externalizes its bootstrap, and cannot impersonate published v0.3.2", () => {
+test("published v0.3.3 ZIP is deterministic, self-contained, externalizes its bootstrap, and cannot impersonate published v0.3.2", () => {
   const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-release-candidate-"));
   const first = path.join(workspace, "first.zip"), second = path.join(workspace, "second.zip");
   try {
@@ -90,7 +90,7 @@ test("v0.3.3 seal candidate ZIP is deterministic, self-contained, externalizes i
     assert.match(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${release033ZipSha256}\\}"`));
     const roadmap = fs.readFileSync(path.join(root, "ROADMAP.md"), "utf8");
     assert.match(roadmap, /v0\.3\.3.*R5-SC.*PASS/is);
-    assert.match(roadmap, /published candidate \/ R5-PR ready/i);
+    assert.match(roadmap, /Cloud-accepted published\s+candidate \/ promotion pending/i);
 
     const extracted = path.join(workspace, "extracted");
     extractZip(first, extracted);

@@ -166,3 +166,25 @@
   不修改 ROADMAP 发布规则，不重建或改写 v0.3.3 Release。
 - Acceptance 已记录 R5-PR F deep check PASS，同时保留 B-PR～E 与 immutable oracle pending；repository
   lifecycle focused test 10/10 PASS，`git diff --check` PASS。
+
+### 2026-08-10 G10 Cloud acceptance consolidation
+
+- 维护者确认同一独立 Fresh Published Release Cloud 的 environment setup、B-PR～E、post-resume F 与
+  immutable oracle 已全部 PASS；acceptance、ROADMAP 与 provenance 已同步为
+  `CLOUD_HARD_ACCEPTANCE_PASS / PROMOTION_NOT_AUTHORIZED`。
+- Published setup 从旧 10.1 移至 4.2，只保留 immutable bootstrap URL + bootstrap SHA-256 两项外部输入；
+  bootstrap 校验后仍使用自身内嵌的 ZIP URL/SHA，未弱化公开默认下载链。
+- Published post-resume deep check 从旧 10.2 移至 9.2，只保留 immutable ZIP URL + ZIP SHA-256；package
+  version、Release entries、upstream/runtime inventory 均从通过 SHA 与 builder contract 校验的 ZIP 派生。
+- B～E 改用 `PWF_CLOUD_ACCEPTANCE_*` 稳定语义 fixture，提示词不再自称某个版本或动态验收状态；全文删除
+  `Phase 4 marker`，最终版本身份、资产大小/SHA 与 PASS 只在冻结证据区登记。
+- repository lifecycle guard 已同步验证 4.2/9.2 位置、两项输入边界、版本中立 sentinel、动态 inventory
+  派生、双通道 PASS 与 marker absence；已发布 v0.3.3 tag、ZIP/bootstrap 和 seal source 未改写。
+- 首次完整回归唯一失败是 `release-package.test.js` 仍冻结中间态短语
+  `published candidate / R5-PR ready`；产品与产物断言均已通过。将该 lifecycle guard 更新为真实状态
+  `Cloud-accepted published candidate / promotion pending` 后重跑完整 suite：96 tests，84 PASS、12 个
+  Windows/POSIX 诚实 SKIP、0 FAIL；测试内的双构建仍精确得到已发布 v0.3.3 ZIP SHA，证明本轮文档/guard
+  变更没有改写 Release 字节。
+- `python tools/import_upstream_runtime.py check`、两个修改测试文件的 Node syntax、`git diff --check`、手册
+  四段 Bash `bash -n` 与三段 Python heredoc compile 全部 PASS。Git Bash 在受限沙箱内仍因 signal pipe
+  Win32 error 5 无法启动，按既有分类在沙箱外原样校验，无需放宽脚本断言。

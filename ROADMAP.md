@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.3`；R5-SC、stable seal、immutable publication 与公开下载复核已 PASS；R5-PR 尚未执行，不是 accepted baseline |
+| 当前开发列车 | `v0.3.3`；R5-SC、stable seal、immutable publication、公开下载复核与 R5-PR Cloud hard acceptance 已 PASS；尚未晋级 accepted baseline |
 | 当前已接受版本 | `v0.3.2`；production rollback 与 GitHub `Latest` |
 | 回退证据链 | immutable `v0.3.1` immediate fallback；更早发布里程碑见 provenance museum |
 | 当前 programme 边界 | Product Phase 4 未授权 |
@@ -58,8 +58,9 @@ baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta
 
 维护者随后授权 P3 successor critical gate，仓库先建立 `v0.3.3-dev` machine identity 和 zero-hash
 development bootstrap。该列车只退休不可达 compatibility supply-chain，不新增 Hook、Host ABI 或 Product
-Phase 4 行为。Source/Candidate Cloud 已全部 PASS，stable `v0.3.3` 已完成 exact tag、双资产 Release 与公开
-重新下载复核；当前状态为 **published candidate / R5-PR ready**，R5-PR 与 baseline promotion 尚未发生。
+Phase 4 行为。Source/Candidate Cloud 已全部 PASS，stable `v0.3.3` 已完成 exact tag、双资产 Release、公开
+重新下载复核与独立 Published Release Cloud hard acceptance；当前状态为 **Cloud-accepted published
+candidate / promotion pending**，baseline promotion 尚未发生。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
 bootstrap/acceptance；当前窗口为 v0.3.3 candidate + v0.3.2 accepted。v0.3.1 作为 immediate
@@ -227,7 +228,10 @@ Published Release 的 bootstrap 可以使用临时目录并在 setup 结束后�
 不得假设该目录或其中的维护工具继续存在，而应从同一 immutable URL 重新下载并校验 ZIP。复验必须使用
 ZIP 内经过 checksum/boundary 核验的 `install.js` 执行 doctor，并用同源 builder/importer、Python
 inventory/policy 断言和 snapshot residue 检查闭环；不得回退到 workspace 中的同名工具，否则公开资产
-通道会重新依赖可移动 source checkout。
+通道会重新依赖可移动 source checkout。可复用 setup 只接受 immutable bootstrap URL + bootstrap
+SHA-256，由已校验 bootstrap 内嵌 ZIP URL/SHA；post-resume 复验只接受 immutable ZIP URL + ZIP SHA-256，
+version、size、entry/runtime inventory 从已校验 ZIP 的 package/contracts 派生。黑盒提示词只冻结 lifecycle
+与 observable behavior，不嵌入产品版本、验收状态或无行为意义的阶段 marker。
 
 固定字节顺序：
 
