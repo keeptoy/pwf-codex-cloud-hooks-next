@@ -85,6 +85,14 @@ sudo node install.js uninstall --json --codex-home /opt/codex
 `repair` 只修复 installer 明确拥有的 adapter 和 managed definition drift。未知 runtime、manifest、
 requirements 或第三方管理员变更会 fail closed，不会被静默吸收。
 
+### Pre-1.0 支持与升级边界
+
+本项目在 `1.0.0` 前只支持 clean install 和当前 contracts/tests 明确覆盖的 managed 状态；不保证从早期
+原型、无 ownership marker 或身份不明的旧安装直接升级。旧 tag/Release/acceptance 可用于审计和 rollback，
+不等于当前 installer 承诺迁移其 installed state。遇到 unknown drift 时先保存 doctor/backup 证据，再按
+明确卸载/清理流程重新安装；兼容例外的准入条件见
+[`ROADMAP` 的 Pre-1.0 compatibility policy](ROADMAP.md#pre-1-compatibility-admission)。
+
 ### Doctor 判定
 
 健康安装应返回：

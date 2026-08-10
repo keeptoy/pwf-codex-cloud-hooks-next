@@ -183,6 +183,31 @@ Discovery，按 6.2 决定增加正式 Round 或 Round 内子门槛，再按 6.3
 才允许封板。稳定构建/验证命令由 [`README.md`](README.md) 管理，精确版本步骤和资产证据由相应版本
 acceptance 管理；[`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) 只提供维护者接手和结果分流入口。
 
+<a name="pre-1-compatibility-admission"></a>
+
+### 7.1 Pre-1.0 compatibility 与历史债准入
+
+本仓库目前仍是 `1.0.0` 前的内部验证线，但“pre-1.0”本身不能代替明确的支持合同。默认支持面只包括
+clean install，以及当前 installer、machine contracts 和行为测试明确覆盖的 managed install/doctor/repair/
+uninstall 状态与转换；不默认承诺从任意早期原型、未知 manifest/runtime、无 ownership marker 的 Hook/TOML、
+被现场修改的 global Skill 或其他未分类 shared state 直接就地升级。
+
+必须区分两类责任：
+
+- **历史可恢复性**：已发布 tag、source、ZIP/bootstrap、SHA、acceptance 与 accepted + immediate fallback
+  oracle 必须保持可审计和可恢复；
+- **installed-state 升级兼容性**：只有当前 contract 和端到端迁移证据明确列入的来源状态才受支持。
+
+前者不自动产生后者。accepted + immediate fallback 是 publication/rollback 资产席位，不是跨版本 installer
+migration contract。遇到来源、ownership 或字节身份无法证明的旧状态时，installer/repair 必须 fail closed；
+维护者应先保存诊断和备份，按明确卸载/清理流程回到 clean install，而不能猜测迁移、吸收 unknown drift
+或让新旧 handler 并存。
+
+任何例外兼容都必须先进入独立 Discovery/compatibility gate，至少冻结：精确来源版本/状态窗口、owner、
+migration contract、fail-closed 边界、端到端升级与回滚测试、Linux/Cloud 验收，以及 sunset/retirement
+condition。条件未闭合的 compatibility code 不得因为“以后也许需要”进入 Release；删除已支持路径同样必须
+经过 retirement inventory，不能借本政策绕过现有用户状态和已发布资产证据。
+
 Release 验证必须先按 checkout 前置条件分流，不能把所有测试机械塞进每个环境：
 
 | 通道 | 可依赖的 checkout 事实 | 应执行的验证 | 不得冒充的结论 |

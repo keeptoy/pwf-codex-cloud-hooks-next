@@ -273,6 +273,7 @@ test("ROADMAP discovery governance separates new rounds from in-round safety gat
 
 test("Release governance routes tests by checkout prerequisites without forging refs", () => {
   const roadmap = readText("ROADMAP.md");
+  const readme = readText("README.md");
   const releaseStart = roadmap.indexOf("## 7. Release 授权与封板顺序\n");
   const retentionStart = roadmap.indexOf("## 8.", releaseStart);
   assert.ok(releaseStart >= 0 && retentionStart > releaseStart);
@@ -286,4 +287,13 @@ test("Release governance routes tests by checkout prerequisites without forging 
   assert.match(release, /公开.*URL.*SHA.*默认.*下载/is);
   assert.match(release, /bootstrap.*临时目录.*清理.*post-install.*重新下载.*ZIP/is);
   assert.match(release, /ZIP 内.*install\.js.*doctor.*workspace/is);
+  assert.match(release, /^<a name="pre-1-compatibility-admission"><\/a>$/m);
+  assert.match(release, /pre-1\.0.*不能代替明确的支持合同/is);
+  assert.match(release, /clean install.*machine contracts.*行为测试.*managed install\/doctor\/repair\/\s*uninstall/is);
+  assert.match(release, /历史可恢复性.*installed-state 升级兼容性.*前者不自动产生后者/is);
+  assert.match(release, /accepted \+ immediate fallback.*不是跨版本 installer.*contract/is);
+  assert.match(release, /Discovery\/compatibility gate.*来源版本\/状态窗口.*owner.*端到端升级.*回滚测试.*Linux\/Cloud.*sunset\/retirement/s);
+  assert.match(readme, /Pre-1\.0 支持与升级边界/);
+  assert.match(readme, /旧 tag\/Release\/acceptance.*不等于.*installer.*installed state/s);
+  assert.match(readme, /ROADMAP\.md#pre-1-compatibility-admission/);
 });
