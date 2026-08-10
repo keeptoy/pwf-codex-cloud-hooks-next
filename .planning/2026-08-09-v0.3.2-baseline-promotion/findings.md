@@ -872,3 +872,43 @@ bootstrap/README 一并删除，则当前结论转为 `NO_GO`，必须等待 P3 
 结论为 **CONDITIONAL_GO**：低风险 dead-code/fixture/governance hygiene 已有足够证据进入独立实施 gate；v0.1
 迁移策略必须由维护者先选定；overlay retirement 虽有强证据，但属于 trusted graph/Release 关键变更，必须在后继
 machine identity 的专项 Discovery 与 Cloud gate 中实施。P2-CRD-D 本身停在讨论点，不自动进入任何实施或 P3。
+
+## P2-CRD-I Maintainer Decision
+
+- 维护者确认仓库仍处于内测原型阶段，Phase 9 尚未完成；当前 installer 不需要承担 v0.1 或其他历史版本
+  的直接升级兼容。因此旧 hooks.json/config trust/manifest entries 的 migration cleanup 可以完整删除，不需要
+  再建立 direct-upgrade fixture、sunset 或 remediation 分支。
+- 这一决定不允许弱化当前 managed requirements、runtime inventory、manifest、doctor/repair/uninstall 的
+  ownership 与 fail-closed 语义；只删除 current installer 已不再产生或承诺接收的历史状态面。
+- overlay/patcher retirement 继续保持未授权：尽管静态证据很强，它改变 trusted graph 与 Release inputs，必须
+  留给后续独立关键 gate。
+- installer 的历史兼容面还包括两处早于当前 ownership contract 的宽容：无 marker 的 owned requirements
+  会由 `removeLegacyRequirements()` 猜测并迁移，existing runtime manifest 的 schema 小于当前值时仍可能进入
+  replacement。既然不支持历史升级，这两项不应继续“自动修复”；应删除迁移算法，并在遇到 unmarked owned
+  command 或非当前 manifest schema/owner 时明确 fail closed，防止旧 handler 与当前 managed handler 并存。
+- `config.toml`、`hooks.json` 当前只因 v0.1 cleanup 被纳入 paths、concurrency capture 与 backup。删除历史升级
+  后 installer 应完全停止读取、写入和备份这两个非当前 ownership 文件；tests 继续构造它们，但应断言 install/
+  uninstall 前后逐字不变，而不是从 installer backup 恢复。
+- 当前 managed requirements 的 marker validation、第三方 requirements preservation、runtime exact inventory、
+  doctor/repair 和 byte-for-byte owned backup 仍是现行安全边界，必须保留并补相应回归。
+- golden cleanup 只替换不参与 schema/dispatch 的 provenance-era labels：fixture ID/description、beta virtual
+  plan/session/sentinel 与测试局部变量；`managed_legacy`、`legacy_root` 和 Phase 文本示例仍代表当前行为/普通
+  plan data，不按字符串误删。managed fixture 的 whole-file SHA 将由新 bytes 重新计算并继续固定。
+- repository guard 只把三个逐版本 fixture tombstone 改成覆盖 `tests/fixtures/**` filename 的产品版本 pattern；
+  beta 文档 tombstone 与 thin-adapter retired-symbol guard 仍保护现实复发风险，本 gate 不扩大重构。
+- CHANGELOG Unreleased 应记录已经实施的 ownership 收窄与版本无关 guard；DESIGN 的 installer/test 职责无需
+  改写架构，只需保持“installer 只拥有 managed runtime/requirements”这一现行表述一致。
+
+### P2-CRD-I Result
+
+- 实施后的 non-Markdown 全仓复扫不再出现 v0.1/v0.2.2/beta.1 product token、dead helper/alias、beta golden
+  marker 或历史 migration 文案；当前 ABI `managed_legacy`/`legacy_root` 与 upstream overlay 保持原样。
+- Installer 现在只 capture/backup/write managed requirements、managed runtime 与 manifest；unmanaged
+  config/hooks 由回归测试证明 install/uninstall 前后 byte-identical。无 marker owned handler 与非 schema-3/current
+  owner manifest 统一 `BLOCKED_*` fail closed，不执行历史猜测迁移。
+- focused suite 37 PASS、1 个 Linux-only SKIP；完整 suite 93 tests、81 PASS、12 个 Windows/POSIX SKIP、
+  0 FAIL。Importer integrity、Python compile、Node syntax 与 diff check PASS；两次 23-entry source ZIP 字节一致，
+  SHA-256 `3a1cbba8b0a8d906b194d0cb242cedf5526b9afdbb0d7f59d971cf2d2574b4fe`。该 hash 只证明当前
+  unsealed source 可复现，不建立新 Release identity。
+- P2-CRD-I 可以 PASS；下一步重新停在 overlay/patcher trusted-graph Discovery 前，不自动进入 P3、seal、
+  Release 或 Cloud deployment。

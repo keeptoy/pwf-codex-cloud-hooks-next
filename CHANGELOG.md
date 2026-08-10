@@ -21,6 +21,11 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - README 与智能体入口的 bootstrap 语法检查改为版本无关循环，避免每次角色轮换继续累积固定版本命令。
 - 固化 promotion + eviction 的 retirement contract：两者可分 gate 审查，但旧角色未关闭前不得开启下一
   列车；稳定文档采用版本无关 guard，publication oracle 固定为 accepted + immediate fallback 两席轮换。
+- 收紧内测原型的 installer ownership：不再迁移或清退 v0.1 legacy hooks/trust/manifest 状态，不再读取、
+  写入或备份非 managed 的 `config.toml`/`hooks.json`；无 marker owned handler 与非当前 manifest identity
+  统一 fail closed，同时删除不可达 adapter/installer compatibility helper。
+- golden fixture 的版本/Round 施工标记改为语义 identity；repository guard 改用通用产品版本 pattern，
+  防止后续 fixture 再按历史版本累计 tombstone。治理指南同步 compatibility code 的支持窗口与退休合同。
 - 新增跨版本 architecture-lineage overview、Phase 1～3 与 successor 迁移 interlude 的精选历史摘要：
   用统一冻结模板提炼问题、决定、交付、
   非目标与继承关系；README 维护唯一宏观入口，每份摘要只保留一个 cold source snapshot，不把旧设计/

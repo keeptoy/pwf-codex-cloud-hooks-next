@@ -61,10 +61,11 @@ test("trusted source zones are exact while repository governance paths remain li
   for (const forbidden of [
     "PROJECT_UNDERSTANDING.md", "work_plan.md", "黑盒验证.md", "snapshot-prototype/",
     "tests/phase3-contracts.test.js", "tests/snapshot-prototype-handoff.test.js",
-    "tests/fixtures/golden/adapter-output-v0.2.2.json",
-    "tests/fixtures/golden/adapter-output-v0.3.0-beta.1.json",
-    "tests/fixtures/cloud/session-catchup-v0.2.2.jsonl",
   ]) assert.equal(actual.some(item => item === forbidden || item.startsWith(forbidden)), false, forbidden);
+  for (const relative of actual.filter(item => item.startsWith("tests/fixtures/"))) {
+    assert.doesNotMatch(relative, new RegExp(versionPattern, "i"),
+      `test fixture path must use a semantic identity: ${relative}`);
+  }
 });
 
 test("planning lifecycle has one valid active pointer and complete scoped records", () => {
@@ -151,6 +152,8 @@ test("portable repository governance defines a closed retirement transaction", (
   assert.match(guide, /长期安全不变量已经迁入当前版本或版本无关测试/);
   assert.match(guide, /unsealed transition.*旧版本 bootstrap checksum/s);
   assert.match(guide, /不是第四种长期 baseline/);
+  assert.match(guide, /compatibility code.*支持来源窗口.*owner.*行为测试.*retirement condition/s);
+  assert.match(guide, /machine contract.*Phase\/Round.*运行时、构建或验证语义/s);
 });
 
 test("retired prototype conclusions remain covered by production safety tests", () => {

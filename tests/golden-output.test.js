@@ -18,7 +18,7 @@ const canonicalPlanFixture = JSON.parse(fs.readFileSync(canonicalPlanPath, "utf8
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 
 assert.equal(crypto.createHash("sha256").update(managedLegacyBytes).digest("hex"),
-  "b39361dcde9c412ed7e4a1b4e8d3060ff92b45894a327a6509a9c7eff368718a");
+  "f0b80777699a26ed273bff3b98a701efb4718e1f625c5fd1a67b42e2ff27b9da");
 assert.equal(managedLegacyFixture.schema_version, 1);
 assert.equal(managedLegacyFixture.scenarios.length, 6);
 assert.equal(canonicalPlanFixture.schema_version, 1);
@@ -94,14 +94,14 @@ function runScenario(scenario, expected, label) {
         fs.utimesSync(path.join(project, ...relative.split("/")), seconds, seconds);
       }
       const marker = expected.split("\n\n", 1)[0];
-      const historicalContext = expected.length > marker.length ? expected.slice(marker.length + 2) : "";
+      const fixtureContext = expected.length > marker.length ? expected.slice(marker.length + 2) : "";
       let scope = scenario.plan_scope;
       let relative = scenario.plan_relative;
-      if (!scope && historicalContext) {
+      if (!scope && fixtureContext) {
         scope = scenario.id === "user_prompt_legacy_root" ? "legacy_root" : "scoped";
         relative = scenario.id === "user_prompt_newest_scoped" ? ".planning/newest" : ".planning/active";
       }
-      const resultValue = planResult(project, scenario.event, scope || "none", relative || ".", scenario.plan_context ?? historicalContext);
+      const resultValue = planResult(project, scenario.event, scope || "none", relative || ".", scenario.plan_context ?? fixtureContext);
       fs.writeFileSync(path.join(managed, "owned-plan.py"), [
         "import json,os",
         "print(json.dumps(json.loads(os.environ['PWF_TEST_PLAN_RESULT'])))",

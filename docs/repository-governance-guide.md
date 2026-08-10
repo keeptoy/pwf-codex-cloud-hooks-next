@@ -253,6 +253,27 @@ Release notes；不要提前创建大量按版本 archive 文件。
 最后一项是临时 fail-closed 状态，不是第四种长期 baseline。下一列车必须重新建立 version/package/
 contract/bootstrap 一致的 machine identity 后，才能进入 candidate seal。
 
+### 12.2 Compatibility code 的退休合同
+
+兼容代码不是默认永久资产。只有当前产品明确支持对应来源状态时，compatibility code 才能留在 current
+tree；每条路径必须同时登记支持来源窗口、owner、行为测试、fail-closed 语义和 retirement condition。
+其中任何一项缺失，都应先进入 Discovery，不能因为函数名带有 `legacy` 就盲删，也不能因为代码仍可运行
+就无限期保留。
+
+原型或内测项目可以明确不支持历史版本直接升级。作出该决定后，应同时删除旧迁移算法、历史 manifest/
+fixture 分支和不再拥有的 shared-state 读写；遇到无法证明属于当前 ownership contract 的状态时应拒绝接管，
+不能猜测迁移或让新旧 handler 并存。Git/tag/Release 继续承担历史恢复，不要求 current installer 重放所有
+早期部署路径。
+
+对 pinned upstream 的 patch/overlay 还应额外检查生产调用图：只有当前 trusted behavior 确实依赖 patched
+symbol 时，转换链才应继续进入 active source、contract 和 Release。若 owned wrapper 已接管对应职责，只复用
+pristine parser helper，则应通过独立 trusted-graph gate 评估恢复 pristine bytes，而不是把旧 overlay 当成
+来源证明永久保留。
+
+machine contract 只保存机器实际消费的身份、hash、inventory、ABI 和失败语义。仅用于回忆施工先后的
+Phase/Round 元数据，如果不参与运行时、构建或验证语义，应迁往 ROADMAP、CHANGELOG 或精选 history capsule，
+不能由 contract test 自我引用后变成永久机器事实。
+
 ## 13. 推荐的治理测试
 
 - active pointer 必须解析到唯一存在的 planning scope；

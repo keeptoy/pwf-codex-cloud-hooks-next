@@ -27,7 +27,6 @@ function canonical(value) {
   return JSON.stringify(value);
 }
 function quoteCommand(value) { return `"${String(value).replace(/(["\\$`])/g, "\\$1")}"`; }
-function tomlEscape(value) { return String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"'); }
 function setTestHooks(value) { TEST_HOOKS = value && typeof value === "object" ? value : null; }
 function runTestHook(name, payload) { if (typeof TEST_HOOKS?.[name] === "function") TEST_HOOKS[name](payload); }
 function statFingerprint(file) {
@@ -78,8 +77,6 @@ function pathsFor(codexHome, requirementsPath = "/etc/codex/requirements.toml") 
   if (!path.isAbsolute(requirementsPath)) throw new Error("--managed-requirements must be an absolute path");
   return {
     home,
-    config: path.join(home, "config.toml"),
-    hooks: path.join(home, "hooks.json"),
     requirements: path.resolve(requirementsPath),
     runtime: path.join(home, "hooks", "planning-with-files"),
     adapter: path.join(home, "hooks", "planning-with-files", "hook_adapter.py"),
@@ -187,14 +184,6 @@ function resolveSkill(explicit, codexHome) {
   }
   return skill;
 }
-function requiredHooks(adapter) {
-  const command = event => `python3 ${quoteCommand(adapter)} ${event}`;
-  return {
-    SessionStart: [{ matcher: "startup|resume|clear|compact", hooks: [{ type: "command", command: command("SessionStart"), timeout: 30, statusMessage: "Loading planning context" }] }],
-    UserPromptSubmit: [{ hooks: [{ type: "command", command: command("UserPromptSubmit"), timeout: 30, statusMessage: "Refreshing planning context" }] }],
-  };
-}
-
 function tomlLines(text) {
   const records = String(text || "").match(/[^\n]*(?:\n|$)/g) || [];
   if (records.at(-1) === "") records.pop();
@@ -283,42 +272,14 @@ function removeMarkedRequirements(records) {
   return records.slice(0, begin).concat(records.slice(end + 1)).map(line => line.raw).join("");
 }
 
-function removeLegacyRequirements(records) {
-  if (!records.some(line => line.body.includes(OWNED_SEGMENT))) return records.map(line => line.raw).join("");
-  const relevant = new Set([
-    "hooks.SessionStart", "hooks.SessionStart.hooks",
-    "hooks.UserPromptSubmit", "hooks.UserPromptSubmit.hooks",
-  ]);
-  const headers = [];
-  for (let index = 0; index < records.length; index++) {
-    const header = tomlHeader(records[index].body);
-    if (header?.invalid) continue;
-    if (header) headers.push({ index, header });
-  }
-  const owned = headers.filter(item => item.header.array && relevant.has(item.header.inner));
-  if (owned.length !== 4) blockedRequirements("legacy owned handlers are not unique");
-  const firstHeaderIndex = headers.findIndex(item => item === owned[0]);
-  if (firstHeaderIndex < 0 || headers.slice(firstHeaderIndex, firstHeaderIndex + 4).some((item, index) => item !== owned[index])) {
-    blockedRequirements("legacy owned handlers are not contiguous");
-  }
-  let boundary = records.length;
-  const nextHeader = headers[firstHeaderIndex + 4];
-  if (nextHeader) boundary = nextHeader.index;
-  const sectionRecords = records.slice(owned[0].index, boundary);
-  const positions = owned.map(item => item.index - owned[0].index);
-  validateOwnedSections(sectionRecords, positions);
-  let end = owned[3].index + 1;
-  for (let index = owned[3].index + 1; index < boundary; index++) {
-    const body = records[index].body.trim();
-    if (body && !body.startsWith("#")) end = index + 1;
-  }
-  return records.slice(0, owned[0].index).concat(records.slice(end)).map(line => line.raw).join("");
-}
-
 function removeOwnedRequirements(text) {
   const records = tomlLines(text);
   const marked = removeMarkedRequirements(records);
-  return marked === null ? removeLegacyRequirements(records) : marked;
+  if (marked !== null) return marked;
+  if (records.some(line => line.body.includes(OWNED_SEGMENT))) {
+    blockedRequirements("unmarked owned handlers are unsupported");
+  }
+  return records.map(line => line.raw).join("");
 }
 
 function setTableKey(text, table, key, value) {
@@ -366,60 +327,6 @@ function managedRequirements(text, paths) {
   ];
   return `${result.trimEnd()}\n\n${REQUIREMENTS_BEGIN}\n${blocks.join("\n\n")}\n${REQUIREMENTS_END}\n`;
 }
-function owned(handler) { return handler && handler.type === "command" && String(handler.command || "").includes(OWNED_SEGMENT); }
-function removeOwned(hooksConfig) {
-  const value = structuredClone(hooksConfig || {}); value.hooks = value.hooks && typeof value.hooks === "object" ? value.hooks : {};
-  for (const event of Object.keys(value.hooks)) {
-    value.hooks[event] = (Array.isArray(value.hooks[event]) ? value.hooks[event] : []).map(group => ({ ...group, hooks: (Array.isArray(group.hooks) ? group.hooks : []).filter(h => !owned(h)) })).filter(group => group.hooks.length);
-    if (!value.hooks[event].length) delete value.hooks[event];
-  }
-  return value;
-}
-function mergeHooks(current, required) {
-  const value = removeOwned(current); value.hooks ||= {};
-  for (const [event, groups] of Object.entries(required)) value.hooks[event] = [...(value.hooks[event] || []), ...groups];
-  return value;
-}
-function hookHash(event, group, handler) {
-  const normalized = { type: "command", command: String(handler.command), timeout: Math.max(1, Number.parseInt(handler.timeout || 600, 10)), async: Boolean(handler.async || false) };
-  if (handler.statusMessage != null) normalized.statusMessage = String(handler.statusMessage);
-  const identity = { event_name: event, hooks: [normalized] };
-  if (group.matcher) identity.matcher = String(group.matcher);
-  return `sha256:${sha256(canonical(identity))}`;
-}
-function ownedEntries(hooksPath, config) {
-  const result = [];
-  for (const [event, groups] of Object.entries(config.hooks || {})) (groups || []).forEach((group, gi) => (group.hooks || []).forEach((handler, hi) => {
-    if (!owned(handler)) return;
-    const rawKey = `${hooksPath}:${event}:${gi}:${hi}`;
-    result.push({ event, groupIndex: gi, handlerIndex: hi, rawKey, fileKey: `file:${rawKey}`, hash: hookHash(event, group, handler), command: handler.command });
-  }));
-  return result;
-}
-function stripTrustToml(text, entries = []) {
-  const names = new Set(entries.flatMap(entry => [entry.rawKey, entry.fileKey]).map(key => `hooks.state."${tomlEscape(key)}"`));
-  const records = tomlLines(text), output = []; let skip = false;
-  for (const line of records) {
-    const section = tomlHeader(line.body);
-    if (section?.invalid && skip) blockedRequirements("malformed TOML header after legacy trust state");
-    if (section && !section.invalid) skip = !section.array && names.has(section.inner);
-    if (!skip) output.push(line.raw);
-  }
-  return output.join("");
-}
-function enableHooks(text) {
-  let lines = String(text || "").split("\n"), start = lines.findIndex(x => x.trim() === "[features]");
-  if (start < 0) return `${lines.join("\n").trimEnd()}${lines.join("\n").trim() ? "\n\n" : ""}[features]\nhooks = true\n`;
-  let end = lines.length; for (let i = start + 1; i < lines.length; i++) if (/^\s*\[/.test(lines[i])) { end = i; break; }
-  const index = lines.slice(start + 1, end).findIndex(x => /^\s*hooks\s*=/.test(x));
-  if (index >= 0) lines[start + 1 + index] = "hooks = true"; else lines.splice(start + 1, 0, "hooks = true");
-  return `${lines.join("\n").trimEnd()}\n`;
-}
-function trustToml(text, entries, previousEntries = []) {
-  let result = enableHooks(stripTrustToml(text, [...previousEntries, ...entries])); const blocks = [];
-  for (const entry of entries) for (const key of [entry.rawKey, entry.fileKey]) blocks.push(`[hooks.state."${tomlEscape(key)}"]\nenabled = true\ntrusted_hash = "${entry.hash}"`);
-  return `${result.trimEnd()}\n\n${blocks.join("\n\n")}\n`;
-}
 function acquire(paths, operation) {
   fs.mkdirSync(paths.home, { recursive: true, mode: 0o700 });
   fs.mkdirSync(paths.lock, { mode: 0o700 });
@@ -428,25 +335,21 @@ function acquire(paths, operation) {
 }
 function timestamp() { return new Date().toISOString().replace(/[:.]/g, "-"); }
 function captureSharedState(paths) {
-  return new Map([paths.config, paths.hooks, paths.requirements, paths.manifest].map(file => [file, statFingerprint(file)]));
+  return new Map([paths.requirements, paths.manifest].map(file => [file, statFingerprint(file)]));
 }
 function capturedText(captures, file) {
   const captured = captures.get(file);
   return captured?.exists ? captured.bytes.toString("utf8") : "";
-}
-function capturedJson(captures, file, fallback) {
-  const captured = captures.get(file);
-  return captured?.exists ? JSON.parse(captured.bytes.toString("utf8")) : fallback;
 }
 function assertSharedState(captures) {
   for (const [file, expected] of captures) assertFingerprint(file, expected);
 }
 function backup(paths, captures) {
   const dir = path.join(paths.backups, timestamp()); fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
-  for (const file of [paths.config, paths.hooks, paths.requirements]) {
+  for (const file of [paths.requirements]) {
     const captured = captures.get(file);
     if (!captured?.exists) continue;
-    const destination = file === paths.requirements ? path.join(dir, "system-requirements.toml") : path.join(dir, path.relative(paths.home, file));
+    const destination = path.join(dir, "system-requirements.toml");
     fs.mkdirSync(path.dirname(destination), { recursive: true });
     fs.writeFileSync(destination, captured.bytes);
   }
@@ -601,7 +504,9 @@ function assertSafeRuntimeForInstall(paths) {
   if (!entries.length) return;
   const { manifest, error } = readManifest(paths);
   if (error) throw new Error(`BLOCKED_UNKNOWN_RUNTIME: ${error}`);
-  if (manifest.schema_version >= MANIFEST_SCHEMA && manifest.owner !== OWNER) throw new Error("BLOCKED_UNKNOWN_RUNTIME: manifest owner mismatch");
+  if (manifest.schema_version !== MANIFEST_SCHEMA || manifest.owner !== OWNER) {
+    throw new Error("BLOCKED_UNKNOWN_RUNTIME: installed manifest identity mismatch");
+  }
   const allowedFiles = new Set(sourceRuntimeFiles().map(file => file.relative));
   allowedFiles.add(path.basename(paths.manifest));
   const allowedDirectories = new Set();
@@ -626,15 +531,10 @@ function install(options) {
     const currentRequirements = capturedText(captures, paths.requirements);
     const proposedRequirements = managedRequirements(currentRequirements, paths);
     assertSafeRuntimeForInstall(paths);
-    const previousManifest = capturedJson(captures, paths.manifest, {});
-    const previousEntries = previousManifest.entries || [];
     const backupDir = backup(paths, captures);
     assertSharedState(captures);
     writeRuntimeFiles(paths);
     atomicWrite(paths.requirements, proposedRequirements, 0o644, captures.get(paths.requirements));
-    // Remove handlers and trust entries left by the v0.1 non-managed installation.
-    if (captures.get(paths.hooks).exists) atomicJson(paths.hooks, removeOwned(capturedJson(captures, paths.hooks, { hooks: {} })), captures.get(paths.hooks));
-    if (captures.get(paths.config).exists && previousEntries.length) atomicWrite(paths.config, `${stripTrustToml(capturedText(captures, paths.config), previousEntries).trimEnd()}\n`, 0o600, captures.get(paths.config));
     atomicJson(paths.manifest, buildManifest(paths, skill, proposedRequirements), captures.get(paths.manifest));
     const inspected = inspectInstallation(paths, skill);
     const checked = doctorResult(paths, skill, inspected);
@@ -690,13 +590,10 @@ function uninstall(options) {
     const captures = captureSharedState(paths);
     const backupDir = backup(paths, captures);
     assertSharedState(captures);
-    const manifest = capturedJson(captures, paths.manifest, {});
     if (captures.get(paths.requirements).exists) {
       const cleaned = removeOwnedRequirements(capturedText(captures, paths.requirements));
       atomicWrite(paths.requirements, `${cleaned.trimEnd()}\n`, 0o644, captures.get(paths.requirements));
     }
-    if (captures.get(paths.hooks).exists) atomicJson(paths.hooks, removeOwned(capturedJson(captures, paths.hooks, { hooks: {} })), captures.get(paths.hooks));
-    if (captures.get(paths.config).exists && (manifest.entries || []).length) atomicWrite(paths.config, `${stripTrustToml(capturedText(captures, paths.config), manifest.entries).trimEnd()}\n`, 0o600, captures.get(paths.config));
     fs.rmSync(paths.runtime, { recursive: true, force: true });
     return { action: "uninstall", codex_home: paths.home, requirements_file: paths.requirements, backup: backupDir, healthy: true };
   } finally { release(); }
@@ -725,4 +622,4 @@ function main() {
   } catch (error) { console.error(JSON.stringify({ healthy: false, error: error.message })); process.exitCode = 1; }
 }
 if (require.main === module) main();
-module.exports = { canonical, hookHash, install, managedRequirements, mergeHooks, removeOwned, removeOwnedRequirements, ownedEntries, pathsFor, setTableKey, setTestHooks, stripTrustToml, trustToml };
+module.exports = { canonical, install, managedRequirements, removeOwnedRequirements, pathsFor, setTableKey, setTestHooks };

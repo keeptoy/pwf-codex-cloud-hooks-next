@@ -127,11 +127,6 @@ def sibling_runtime_path(identity: str) -> Path | None:
         return None
 
 
-def owned_runtime_path() -> Path | None:
-    """Backward-compatible name for the active catch-up sibling."""
-    return sibling_runtime_path("catchup")
-
-
 def session_store_roots() -> list[Path]:
     candidates = []
     override = os.environ.get("CODEX_SESSIONS_DIR", "").strip()

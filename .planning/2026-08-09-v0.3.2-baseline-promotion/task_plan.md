@@ -46,6 +46,11 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   `0.3.3-dev`，不得借运输分支建立新 machine identity、Release、seal 或 P3 授权。
 - 维护者要求继续文档治理并检查代码侧是否仍有历史残留；本轮先执行 P2-CRD-D 只读 Discovery，按
   current identity、必要 rollback/publication oracle、真正退役残留分类，未讨论冻结前不得删除或改代码。
+- 维护者批准先实施 P2-CRD-I 低风险清理，并明确本项目仍是内测原型、尚未完成 Phase 9，不承担 v0.1
+  或其他历史版本直接升级兼容；可删除 legacy install cleanup，而不是保留迁移或 remediation 分支。
+- P2-CRD-I 只处理 dead adapter/installer code、v0.1 cleanup、fixture 历史施工命名、通用 repository guard
+  与治理指南兼容代码退休规则；不得触碰 upstream patcher/overlay、trusted graph、runtime bundle Phase
+  metadata、package/bootstrap/Release identity 或 P3。
 - P3 只记录为后续独立 gate；当前不修改 package、Release contract、bootstrap 或 `v0.3.3-dev` identity，
   不 seal、不发布、不部署新版本。
 - 已完成的 `2026-08-09-architecture-contract-retention` 三文件由 immutable commit `d4cc3b5` 保存，P2
@@ -70,8 +75,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Next Step
 
-停在 P2-CRD-D 的 CONDITIONAL_GO 讨论点。维护者决定是否另行授权低风险 hygiene、v0.1 migration policy
-或后继 trusted-graph overlay retirement gate 前，不实施代码/contract 清理，也不进入 P3。
+停在 overlay/patcher trusted-graph 关键 Discovery 前。若维护者要继续评估 pristine upstream 转换，需另行
+冻结该 gate 的设计、等价测试、contract/Release 影响和 Cloud 验收；当前不进入 P3。
 
 ## Gates
 
@@ -104,6 +109,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   `main`、`0.3.3-dev`、tag、Release 或 assets。
 - [x] P2-CRD-D — Code residue Discovery：全仓只读审计代码/测试中的历史耦合，区分必要精确身份与可退役
   残留，冻结恢复链、影响面和候选路线；未获 GO 不实施删改。
+- [x] P2-CRD-I — Low-risk code residue cleanup：删除不可达别名/helper 与 v0.1 upgrade cleanup，语义化
+  fixtures，泛化 repository guard 并补治理合同；完整验证后停在 overlay/trusted-graph gate 前。
 - [x] P2-PROV — Early publication provenance backfill：核验并登记有证据的 v0.1.0、v0.2.2 与
   v0.3.0 alpha/beta 身份，缺证字段保持空缺。
 - [x] P2-P0 — Architecture lineage overview：建立回顾性 Phase 0，串联可行性、Cloud 功能基线、owned
@@ -126,7 +133,7 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS，P2-P-A PASS，P2-P-M PASS，P2-P-B PASS，
 P2-P-E PASS，P2-P-T PASS，P2-P-R PASS，P2-H-010 PASS，P2-PROV PASS，P2-P0 PASS，P2-H-021 PASS；
-P2-H-020 PASS；P2-H-VN PASS；P2-PUSH PASS；P2-CRD-D CONDITIONAL_GO，停在实施前讨论点。
+P2-H-020 PASS；P2-H-VN PASS；P2-PUSH PASS；P2-CRD-D CONDITIONAL_GO；P2-CRD-I PASS。
 本地分支为 `0.3.2-post-release`，当前 HEAD 是 P3 前的 unsealed governance transition；P3 未授权。
 
 ## Errors Encountered
@@ -157,3 +164,5 @@ P2-H-020 PASS；P2-H-VN PASS；P2-PUSH PASS；P2-CRD-D CONDITIONAL_GO，停在�
 | P2-H-020 清理旧 findings 时，首个补丁使用了概括后的句子而非文件中的精确换行 | 1 | 无部分修改；先读取真实行，再用精确上下文修正三处旧结论 |
 | 版本简写扫描使用 ripgrep 默认引擎不支持的 lookbehind/lookahead | 1 | status 已成功输出且文件未修改；改用 `rg --pcre2` 或无 lookaround 的精确模式，不重复默认引擎命令 |
 | P2-CRD-D 并行 inventory 的 JavaScript wrapper 因嵌套 shell 引号未通过解析 | 3 | 命令尚未执行、文件未修改；停止使用该并行写法，后续严格改为一次一个简单 `shell_command` |
+| P2-CRD-I 把 installer 与三个 focused suite 放入同一 `--test-isolation=none` 进程后，installer `before()` 在沙箱内无法 spawn Python，导致共享 harness 37 项级联失败 | 1 | 所有失败均指向同一 `tests/installer.test.js:34` platform limitation；后续拆开非 installer suite，并在沙箱外单独运行 installer tests，不修改产品断言 |
+| P2-CRD-I 拆分后的 golden 8 项与 repository 3 项仍分别被沙箱阻止 spawn adapter/Python 与 git | 1 | architecture/governance 14 项已 PASS；保持断言不变，把 installer/golden/repository focused suite 一并转到沙箱外复核 |

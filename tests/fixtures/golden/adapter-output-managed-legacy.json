@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "fixture_id": "PWF_ADAPTER_OUTPUT_V022_GOLDEN_V1",
-  "description": "Exact current adapter output before owned-runtime activation",
+  "fixture_id": "PWF_ADAPTER_OUTPUT_MANAGED_LEGACY_GOLDEN_V1",
+  "description": "Managed-legacy adapter composition across plan discovery scenarios",
   "scenarios": [
     {
       "id": "session_start_no_plan",

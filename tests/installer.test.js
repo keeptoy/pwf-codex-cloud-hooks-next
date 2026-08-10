@@ -111,10 +111,24 @@ test("managed install fails closed when an existing managed_dir excludes the ada
   fs.rmSync(home, { recursive: true, force: true });
 });
 
+test("managed install rejects a runtime owned by a non-current manifest", () => {
+  const home = fixture(), runtime = path.join(home, "hooks", "planning-with-files");
+  fs.mkdirSync(runtime, { recursive: true });
+  fs.writeFileSync(path.join(runtime, "hook_adapter.py"), "# incompatible adapter\n");
+  fs.writeFileSync(path.join(runtime, "installed-manifest.json"), '{"schema_version":2,"owner":"pwf-codex-cloud-hooks"}\n');
+  const result = run(home, "install");
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /installed manifest identity mismatch/);
+  assert.equal(fs.readFileSync(path.join(runtime, "hook_adapter.py"), "utf8"), "# incompatible adapter\n");
+  fs.rmSync(home, { recursive: true, force: true });
+});
+
 test("managed install is merge-preserving, idempotent, diagnosable and uninstallable", () => {
   const home = fixture();
   const pristineCatchup = fs.readFileSync(path.join(skill, "scripts", "session-catchup.py"));
+  const unmanaged = snapshot([path.join(home, "config.toml"), path.join(home, "hooks.json")]);
   let result = run(home, "install"); assert.equal(result.status, 0, result.stderr); assert.equal(result.json.action, "install"); assert.equal(result.json.healthy, true);
+  assertSnapshot(unmanaged);
   assert.deepEqual(fs.readFileSync(path.join(skill, "scripts", "session-catchup.py")), pristineCatchup);
   assert.deepEqual(runtimeFiles(home), expectedRuntimeFiles);
   const installedManifest = JSON.parse(fs.readFileSync(path.join(home, "hooks", "planning-with-files", "installed-manifest.json"), "utf8"));
@@ -129,6 +143,7 @@ test("managed install is merge-preserving, idempotent, diagnosable and uninstall
   requirements = fs.readFileSync(requirementsPath, "utf8"); assert.equal((requirements.match(/hook_adapter\.py/g) || []).length, 2);
   result = run(home, "doctor"); assert.equal(result.status, 0, result.stderr); assert.equal(result.json.healthy, true);
   result = run(home, "uninstall"); assert.equal(result.status, 0, result.stderr);
+  assertSnapshot(unmanaged);
   requirements = fs.readFileSync(requirementsPath, "utf8");
   assert.match(requirements, /command = "\/usr\/bin\/keep"/); assert.doesNotMatch(requirements, /hook_adapter\.py/);
   assert.equal(fs.existsSync(path.join(home, "hooks", "planning-with-files")), false);
@@ -150,13 +165,6 @@ test("managed TOML ownership preserves unrelated array tables and rejects ambigu
     assert.match(unowned, /administrator-owned-rule/);
     assert.doesNotMatch(unowned, /hook_adapter\.py/);
 
-    const legacy = managed
-      .replace(/^# BEGIN pwf-codex-cloud-hooks managed requirements\r?\n/m, "")
-      .replace(/^# END pwf-codex-cloud-hooks managed requirements\r?\n?/m, "");
-    const legacyUnowned = installer.removeOwnedRequirements(`${legacy.trimEnd()}\n${admin}`);
-    assert.match(legacyUnowned, /administrator-owned-rule/);
-    assert.doesNotMatch(legacyUnowned, /hook_adapter\.py/);
-
     const ambiguous = managed.replace(
       "# END pwf-codex-cloud-hooks managed requirements",
       "unknown = true\n# END pwf-codex-cloud-hooks managed requirements",
@@ -166,16 +174,15 @@ test("managed TOML ownership preserves unrelated array tables and rejects ambigu
       /BLOCKED_AMBIGUOUS_MANAGED_REQUIREMENTS/,
     );
 
-    const trustEntry = { rawKey: "legacy-key", fileKey: "file:legacy-key" };
-    const trust = '[hooks.state."legacy-key"]\nenabled = true\n\n[[permissions.audit]]\nname = "keep-trust-neighbor"\n';
-    const stripped = installer.stripTrustToml(trust, [trustEntry]);
-    assert.match(stripped, /keep-trust-neighbor/);
+    const quotedAdmin = '  # administrator comment\r\n[["permissions.audit"]]\r\nname = "quoted-admin"\r\n';
+    const preserved = installer.removeOwnedRequirements(`${managed.trimEnd()}\n${quotedAdmin}`);
+    assert.ok(preserved.includes(quotedAdmin));
   } finally {
     fs.rmSync(home, { recursive: true, force: true });
   }
 });
 
-test("legacy TOML recognition fails closed on shared groups, malformed headers, and command collisions", () => {
+test("unmarked owned requirements fail closed without migration", () => {
   const home = fixture();
   try {
     const installer = require(cli);
@@ -185,21 +192,16 @@ test("legacy TOML recognition fails closed on shared groups, malformed headers, 
       .replace(/^# BEGIN pwf-codex-cloud-hooks managed requirements\r?\n/m, "")
       .replace(/^# END pwf-codex-cloud-hooks managed requirements\r?\n?/m, "");
 
-    const sharedGroup = legacy.replace(
-      "[[hooks.UserPromptSubmit]]",
-      '[[hooks.SessionStart.hooks]]\ntype = "command"\ncommand = "/usr/bin/admin"\n\n[[hooks.UserPromptSubmit]]',
+    assert.throws(
+      () => installer.removeOwnedRequirements(legacy),
+      /unmarked owned handlers are unsupported/,
     );
-    assert.throws(() => installer.removeOwnedRequirements(sharedGroup), /BLOCKED_AMBIGUOUS_MANAGED_REQUIREMENTS/);
-
-    const malformed = `${legacy.trimEnd()}\n[[permissions.audit]\nnetwork = "deny"\n`;
-    assert.throws(() => installer.removeOwnedRequirements(malformed), /BLOCKED_AMBIGUOUS_MANAGED_REQUIREMENTS/);
 
     const collision = '[[hooks.Stop]]\n[[hooks.Stop.hooks]]\ntype = "command"\ncommand = "/tmp/hooks/planning-with-files/hook_adapter.py Stop"\n';
-    assert.throws(() => installer.removeOwnedRequirements(collision), /BLOCKED_AMBIGUOUS_MANAGED_REQUIREMENTS/);
-
-    const quotedAdmin = '  # administrator comment\r\n[["permissions.audit"]]\r\nname = "quoted-admin"\r\n';
-    const preserved = installer.removeOwnedRequirements(`${legacy.trimEnd()}\n${quotedAdmin}`);
-    assert.ok(preserved.includes(quotedAdmin));
+    assert.throws(
+      () => installer.removeOwnedRequirements(collision),
+      /unmarked owned handlers are unsupported/,
+    );
   } finally {
     fs.rmSync(home, { recursive: true, force: true });
   }
@@ -367,16 +369,19 @@ test("installation backup can restore every pre-existing managed file byte-for-b
   const home = fixture(), requirements = path.join(home, "etc", "codex", "requirements.toml"), runtime = path.join(home, "hooks", "planning-with-files");
   fs.mkdirSync(runtime, { recursive: true });
   fs.writeFileSync(path.join(runtime, "hook_adapter.py"), "# previous adapter\n");
-  fs.writeFileSync(path.join(runtime, "installed-manifest.json"), '{"schema_version":2,"entries":[]}\n');
-  const files = [path.join(home, "config.toml"), path.join(home, "hooks.json"), requirements, path.join(runtime, "hook_adapter.py"), path.join(runtime, "installed-manifest.json")];
+  fs.writeFileSync(path.join(runtime, "installed-manifest.json"), '{"schema_version":3,"owner":"pwf-codex-cloud-hooks"}\n');
+  const unmanaged = snapshot([path.join(home, "config.toml"), path.join(home, "hooks.json")]);
+  const files = [requirements, path.join(runtime, "hook_adapter.py"), path.join(runtime, "installed-manifest.json")];
   const before = snapshot(files);
   const result = run(home, "install"); assert.equal(result.status, 0, result.stderr);
+  assertSnapshot(unmanaged);
+  assert.equal(fs.existsSync(path.join(result.json.backup, "config.toml")), false);
+  assert.equal(fs.existsSync(path.join(result.json.backup, "hooks.json")), false);
 
   fs.rmSync(runtime, { recursive: true, force: true }); fs.mkdirSync(runtime, { recursive: true });
-  fs.copyFileSync(path.join(result.json.backup, "config.toml"), path.join(home, "config.toml"));
-  fs.copyFileSync(path.join(result.json.backup, "hooks.json"), path.join(home, "hooks.json"));
   fs.copyFileSync(path.join(result.json.backup, "system-requirements.toml"), requirements);
   fs.cpSync(path.join(result.json.backup, "hooks", "planning-with-files"), runtime, { recursive: true });
   assertSnapshot(before);
+  assertSnapshot(unmanaged);
   fs.rmSync(home, { recursive: true, force: true });
 });

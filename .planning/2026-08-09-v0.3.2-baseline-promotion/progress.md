@@ -282,3 +282,30 @@
   CONDITIONAL_GO；本轮仅持久化证据并停下讨论，没有修改 production、tests、contracts、Release 或 P3 identity。
 - focused governance/architecture/contracts suite 在沙箱内 15/18，余下 3 项均为既知的 Node `spawnSync("git")`
   platform limitation；沙箱外重跑同一命令 18/18 PASS。随后 `git diff --check` 作为提交前检查执行。
+- 2026-08-10：维护者批准 P2-CRD-I 简单清理，并明确内测原型不支持 v0.1/历史版本直接升级；活动计划已
+  冻结删除范围，overlay/patcher/trusted graph、runtime contract Phase metadata 与 P3 继续排除。
+- installer 实施前调用图复核完成：除六项 dead construction helpers 外，v0.1 cleanup 还使 config/hooks
+  进入 capture/backup，并保留 unmarked requirements migration 与 old manifest schema acceptance；本 gate
+  将移除自动迁移、对历史状态 fail closed，并保持当前 managed ownership 不变量。
+- 第一批实施完成：删除 adapter dead alias、installer 六项 dead construction helper/exports、v0.1 hooks/trust
+  cleanup、shared config/hooks capture/backup 与 unmarked requirements migration；非当前 manifest identity 和
+  unmarked owned handler 改为 fail closed，当前 marker/requirements/runtime ownership 保持不变。
+- installer tests 已改为断言 config.toml/hooks.json 在 install/uninstall 前后逐字不变、backup 不含非 owned
+  shared files、旧 manifest 被拒绝；golden 内部版本/Round/beta 标记已语义化并重新固定整文件 hash。
+- repository fixture guard 已从三个逐版本 tombstone 泛化为产品版本 pattern；治理指南新增 compatibility code
+  支持窗口/owner/test/fail-closed/retirement contract 与 machine-contract Phase/Round 分层规则，CHANGELOG 已同步。
+- 首次 focused 联合测试因 `--test-isolation=none` 共享 installer `before()`：沙箱禁止其 spawn Python 后，
+  37 项均级联显示同一 line 34 错误，另 1 项 Linux SKIP；分类为 harness/platform limitation，不是 37 个产品
+  failure。验证路线已拆为沙箱内非 installer suite 与沙箱外 installer suite。
+- 拆分后 architecture/governance 14 项 PASS；golden 8 项仍在 adapter child spawn 处返回 status null，
+  repository 3 项仍在 git spawn 处返回 status null，均为既知 sandbox limitation。下一步沙箱外复跑同一 focused
+  集合，以取得真实产品结果。
+- 沙箱外 focused suite 真实结果：38 tests，37 PASS、1 个 Linux-only SKIP、0 FAIL；新 manifest/unmarked
+  requirements fail-closed、shared config/hooks 不变、backup ownership、golden semantic bytes 与 repository
+  pattern guard 全部通过。静态历史 token 复扫后又把测试中的 generic historical 文案改为 incompatible/no-migration。
+- 完整 `npm test`：93 tests、81 PASS、12 个诚实的 Windows/POSIX SKIP、0 FAIL。Importer check、三份 Python
+  compile、install.js syntax 与 diff check PASS；双构建/check ZIP 均为 23 entries、81,156 bytes、SHA-256
+  `3a1cbba8...b4fe`，临时 ZIP 在校验位于系统 temp 后已删除。
+- non-Markdown 历史 token/dead-symbol 末轮扫描零匹配。P2-CRD-I 已完成本地验证，当前 source 仍是 unsealed
+  transition，不冒充 published v0.3.2；overlay/patcher/trusted graph 与 P3 均未修改。
+- 活动计划收口后，最终 repository/architecture guard 17/17 PASS；P2-CRD-I 可以建立本地 rollback checkpoint。
