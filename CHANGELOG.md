@@ -80,8 +80,9 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - 该版本没有改变 production runtime、Host ABI、trusted graph、Hook 事件或安装行为；变化限于稳定身份、
   文档/治理边界和相应 guard。
 - 后续目标与 Product Phase 授权状态只在 [`ROADMAP.md`](ROADMAP.md) 维护。
-- 发布与 Cloud 验收状态见 [`docs/v0.3.2-cloud-hard-acceptance.md`](docs/v0.3.2-cloud-hard-acceptance.md)；
-  完成 publication 后的精确身份再由 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 收录。
+- 发布与 Cloud 验收状态见
+  [immutable v0.3.2 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/1b668b4af8691c5685b5cd94d10002ff757e2971/docs/v0.3.2-cloud-hard-acceptance.md)；
+  完成 publication 后的精确身份由 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 收录。
 
 ## v0.3.1
 

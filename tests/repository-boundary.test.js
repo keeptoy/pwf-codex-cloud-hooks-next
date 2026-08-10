@@ -13,13 +13,14 @@ const trustedRootPaths = new Set(["install.js", "package.json", "upstream-manife
 const planningFiles = ["findings.md", "progress.md", "task_plan.md"];
 const versionPattern = "v\\d+\\.\\d+\\.\\d+(?:-[A-Za-z0-9.]+)?";
 
-function trackedPaths() {
-  const result = spawnSync("git", ["-c", "core.quotepath=false", "ls-files"], {
+function repositoryPaths() {
+  const result = spawnSync("git", ["-c", "core.quotepath=false", "ls-files", "--cached", "--others", "--exclude-standard"], {
     cwd: root, encoding: "utf8",
   });
   assert.equal(result.status, 0, result.stderr);
   return result.stdout.trim().split(/\r?\n/).filter(Boolean)
-    .map(value => value.replaceAll("\\", "/")).sort();
+    .map(value => value.replaceAll("\\", "/"))
+    .filter(relative => fs.existsSync(path.join(root, relative))).sort();
 }
 
 function isTrustedSource(relative) {
@@ -44,7 +45,7 @@ function currentRoleWindow() {
 }
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
-  const actual = trackedPaths();
+  const actual = repositoryPaths();
   const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
   const releasePaths = artifact.entries.map(item => item.path);
   const expectedTrusted = releasePaths.filter(isTrustedSource).sort();
@@ -53,12 +54,16 @@ test("trusted source zones are exact while repository governance paths remain li
   assert.deepEqual(actualTrusted, expectedTrusted);
   for (const relative of [...releasePaths, ...artifact.external_release_assets.map(item => item.path)]) {
     assert.equal(actual.includes(relative), true, relative);
+    assert.equal(fs.existsSync(path.join(root, relative)), true, `${relative} must exist in the working tree`);
   }
   for (const required of [
     "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
     "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "docs/cloud-hard-acceptance-template.md",
     "docs/repository-governance-guide.md",
-  ]) assert.equal(actual.includes(required), true, required);
+  ]) {
+    assert.equal(actual.includes(required), true, required);
+    assert.equal(fs.existsSync(path.join(root, required)), true, `${required} must exist in the working tree`);
+  }
   for (const prefix of [".planning/", "docs/", "tests/"]) {
     assert.equal(artifact.excluded_prefixes.includes(prefix), true, prefix);
     assert.equal(releasePaths.some(item => item.startsWith(prefix)), false, prefix);
@@ -74,7 +79,7 @@ test("trusted source zones are exact while repository governance paths remain li
 });
 
 test("planning lifecycle has one valid active pointer and complete scoped records", () => {
-  const actual = trackedPaths();
+  const actual = repositoryPaths();
   const activePlan = read(".planning/.active_plan").trim();
   const scopeFiles = new Map();
 
@@ -100,12 +105,12 @@ test("planning lifecycle has one valid active pointer and complete scoped record
 });
 
 test("documentation lifecycle paths stay portable and outside the Release artifact", () => {
-  const actual = trackedPaths();
+  const actual = repositoryPaths();
   const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
   const releasePaths = artifact.entries.map(item => item.path);
   const docs = actual.filter(item => item.startsWith("docs/"));
-  const { accepted, candidate, immediateFallback } = currentRoleWindow();
-  const roleVersions = [...new Set([accepted, candidate, immediateFallback])].sort();
+  const { accepted, candidate } = currentRoleWindow();
+  const roleVersions = [...new Set([accepted, candidate])].sort();
   const rootBootstraps = actual.filter(item => /^init-cloud-sandbox-v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\.bash$/.test(item));
   const acceptanceDocs = docs.filter(item => /^docs\/v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?-cloud-hard-acceptance\.md$/.test(item));
 
@@ -161,28 +166,12 @@ test("historical documents have one macro entrance and remain advisory", () => {
     `${macroDoc} must not create a second historical-document entrance`);
 });
 
-test("root architecture history snapshots remain non-authoritative and isolated", () => {
-  const actual = trackedPaths();
-  const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
+test("root architecture history snapshots leave the current tree", () => {
+  const actual = repositoryPaths();
   const snapshots = actual.filter(item =>
     /^ARCHITECTURE-old-v?\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\.md$/.test(item));
 
-  assert.ok(snapshots.length > 0, "expected at least one architecture history snapshot");
-  for (const snapshot of snapshots) {
-    const text = read(snapshot);
-    assert.match(text, /非权威历史副本/);
-    assert.match(text, /immutable (?:tag|post-release commit)/);
-    assert.doesNotMatch(text, /github\.com\/[^/]+\/[^/]+\/blob\/(?:main|master|[^/]*-post-release)\//,
-      `${snapshot} must not use a moving branch as its source identity`);
-    assert.match(text, /当前架构始终以 \[`ARCHITECTURE\.md`\]\(ARCHITECTURE\.md\)/);
-    assert.equal(artifact.entries.some(item => item.path === snapshot), false,
-      `${snapshot} must stay outside the Release artifact`);
-    for (const authority of [
-      "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
-      "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "docs/repository-governance-guide.md",
-    ]) assert.equal(read(authority).includes(snapshot), false,
-      `${authority} must not promote ${snapshot} into the authority graph`);
-  }
+  assert.deepEqual(snapshots, [], "root architecture history snapshots must use immutable Git history instead");
 });
 
 test("portable repository governance defines a closed retirement transaction", () => {
@@ -275,7 +264,8 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 
   assert.match(roadmap, /活动.*task_plan.*当前唯一 Next Step/s);
-  assert.match(roadmap, /一个 active planning.*candidate.*accepted.*immediate fallback role\s+window.*immutable/s);
+  assert.match(roadmap, /一个 active planning.*candidate \+ accepted role window.*immediate fallback.*immutable/s);
+  assert.match(roadmap, /accepted \+ immediate fallback.*publication\/rollback 资产席位/s);
   assert.match(roadmap, new RegExp("## 3\\. 已完成的基线 `" + accepted.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "`"));
   assert.doesNotMatch(roadmap, /## 3\. 已完成的仓库迁移|M1 exact mirror|M2 slim transformation/);
   assert.equal((roadmap.match(/GitHub `Latest`/g) || []).length, 1);

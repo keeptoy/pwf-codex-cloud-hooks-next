@@ -59,10 +59,10 @@ baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta
 Host ABI、trusted graph 或 Product Phase 4 行为。Phase 4 仍停在 Discovery authorization 之前，尚未建立
 `0.4.0-*` machine identity、开发分支或实现 gate。
 
-仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted + immediate fallback role
-window 控制当前 bootstrap/acceptance；当前去重文件窗口为 v0.3.3 current/accepted + v0.3.2 immediate
-fallback。v0.3.1 作为 deeper fallback 由 immutable commit、tag、Release 与 exact acceptance 恢复；更早历史
-只留在精选 provenance。
+仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
+bootstrap/acceptance；当前两席去重后只有 v0.3.3。v0.3.2 immediate fallback 与 v0.3.1 deeper fallback
+均由 immutable commit、tag、Release、exact acceptance 与 publication oracle 恢复；更早历史只留在精选
+provenance。
 trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。
 
 下表是未来 Discovery 的候选，不是发布承诺，也不自动授权下一 Phase。一个 Phase 可以有多个
