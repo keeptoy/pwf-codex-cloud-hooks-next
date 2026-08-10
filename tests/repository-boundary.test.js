@@ -52,7 +52,8 @@ test("trusted source zones are exact while repository governance paths remain li
   }
   for (const required of [
     "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
-    "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "docs/repository-governance-guide.md",
+    "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "docs/cloud-hard-acceptance-template.md",
+    "docs/repository-governance-guide.md",
   ]) assert.equal(actual.includes(required), true, required);
   for (const prefix of [".planning/", "docs/", "tests/"]) {
     assert.equal(artifact.excluded_prefixes.includes(prefix), true, prefix);
@@ -111,8 +112,23 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   }
   assert.deepEqual(rootBootstraps, roleVersions.map(version => `init-cloud-sandbox-${version}.bash`));
   assert.deepEqual(acceptanceDocs, roleVersions.map(version => `docs/${version}-cloud-hard-acceptance.md`));
+  const acceptanceTemplate = read("docs/cloud-hard-acceptance-template.md");
+  assert.match(acceptanceTemplate, /^<a name="cloud-hard-acceptance-template"><\/a>$/m);
+  assert.match(acceptanceTemplate, /### 4\.2 Published Release[\s\S]*__IMMUTABLE_BOOTSTRAP_URL__[\s\S]*__IMMUTABLE_BOOTSTRAP_SHA256__/);
+  assert.match(acceptanceTemplate, /### 9\.2 Published Release[\s\S]*__IMMUTABLE_ZIP_URL__[\s\S]*__IMMUTABLE_ZIP_SHA256__/);
+  assert.match(acceptanceTemplate, /PWF_CLOUD_ACCEPTANCE_CANONICAL_V1[\s\S]*PWF_CLOUD_ACCEPTANCE_REAL_RESUME_TAIL/);
+  assert.match(acceptanceTemplate, /版本专项 acceptance 应保存以下原始证据/);
+  assert.doesNotMatch(acceptanceTemplate, new RegExp(versionPattern, "i"));
+  assert.doesNotMatch(acceptanceTemplate, /\b[a-f0-9]{40,64}\b/i);
+  assert.doesNotMatch(acceptanceTemplate, /Phase 4 marker/i);
+  assert.doesNotMatch(acceptanceTemplate, /Gate ledger|Cloud state|当前状态|R5_PR_IN_PROGRESS/);
+  assert.doesNotMatch(acceptanceTemplate, /readonly (?:PUBLICATION_TAG|PACKAGE_VERSION|ZIP_NAME|ZIP_SIZE)=/);
+  assert.equal(releasePaths.includes("docs/cloud-hard-acceptance-template.md"), false);
   const fixedBootstrapName = /init-cloud-sandbox-v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\.bash/;
-  for (const stableDoc of ["README.md", "AGENTS.md", "docs/repository-governance-guide.md"]) {
+  for (const stableDoc of [
+    "README.md", "AGENTS.md", "docs/cloud-hard-acceptance-template.md",
+    "docs/repository-governance-guide.md",
+  ]) {
     assert.doesNotMatch(read(stableDoc), fixedBootstrapName, `${stableDoc} must use a version-neutral bootstrap command`);
   }
   assert.match(read("README.md"), /for bootstrap in init-cloud-sandbox-v\*\.bash; do/);
@@ -178,6 +194,10 @@ test("portable repository governance defines a closed retirement transaction", (
   assert.match(guide, /不是第四种长期 baseline/);
   assert.match(guide, /compatibility code.*支持来源窗口.*owner.*行为测试.*retirement condition/s);
   assert.match(guide, /machine contract.*Phase\/Round.*运行时、构建或验证语义/s);
+  assert.match(guide, /稳定模板和当前角色窗口内的版本专项 acceptance/);
+  assert.match(guide, /Cloud hard acceptance template.*版本中立黑盒提示词/s);
+  assert.match(guide, /模板不得保存具体版本.*PASS\/PENDING.*不占用 candidate \+ accepted 文件窗口/s);
+  assert.match(guide, /模板和所有版本 acceptance.*Release.*trusted execution graph 排除/s);
 });
 
 test("retired prototype conclusions remain covered by production safety tests", () => {

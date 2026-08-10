@@ -56,6 +56,10 @@
 - [x] G10 — Cloud acceptance consolidation：记录完整 R5-PR PASS；把 Published setup/F 分别并入 4.2/9.2；
   删除无意义的 Phase 4 marker 观察；将 B～E 提示词改为版本无关协议，并把 Published 脚本输入收敛为
   immutable asset URL + SHA。同步 lifecycle guard、ROADMAP/provenance 与活动证据，不改已发布资产。
+- [x] G11 — Reusable Cloud acceptance template：新增不携带具体版本身份、测试计数、已发生的 PASS/PENDING
+  或角色状态的
+  `docs/cloud-hard-acceptance-template.md`；保留双通道 trust boundary、版本中立 B～F、可替换 URL/SHA 输入、
+  失败取证与 evidence schema。接入 DESIGN/治理指南和通用 guard，不改变版本 acceptance 或 Release inventory。
 ## Next Step
 
 停在 `CLOUD_HARD_ACCEPTANCE_PASS / PROMOTION_NOT_AUTHORIZED`，等待维护者另行决定是否开启 Latest/
@@ -115,3 +119,4 @@ R5-PR 10.2 首次执行因提示词转义在下载前停止；直接获取原始
 | G9 读取旧 Release 模板时请求了当前 `gh` 不支持的 `isLatest` JSON 字段 | 1 | 无远端写入；改用 `release list` 判断 Latest，并用受支持字段重读 v0.3.2 Release |
 | G9 组合读取 tagged 文件时 `git show | Select-Object` 因下游提前关闭产生非零退出 | 1 | 已取得所需只读片段；后续避免截断 Git stdout，按精确文件或本地读取核验 |
 | R5-PR 10.2 Cloud 临时脚本把 `$PUBLICATION_TAG` 变成 `$PUBLICATION\_TAG`，在 `set -u` 下报 `PUBLICATION: unbound variable` | 1 | 下载/doctor 均未开始；改为直接取得原始 acceptance、提取 10.2 code block 并原样执行后 PASS，确认只是提示词转义，不新增 repository hardening gate |
+| G11 首次完整回归发现 README 导航改动使重建 ZIP SHA 偏离已发布 v0.3.3 | 1 | 模板本身位于 Release-excluded docs；撤回 sealed README 输入改动，改由 DESIGN/治理指南导航，重跑后 published ZIP oracle 与完整 suite 全绿 |

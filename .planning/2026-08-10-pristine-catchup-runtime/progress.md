@@ -188,3 +188,17 @@
 - `python tools/import_upstream_runtime.py check`、两个修改测试文件的 Node syntax、`git diff --check`、手册
   四段 Bash `bash -n` 与三段 Python heredoc compile 全部 PASS。Git Bash 在受限沙箱内仍因 signal pipe
   Win32 error 5 无法启动，按既有分类在沙箱外原样校验，无需放宽脚本断言。
+
+### 2026-08-10 G11 reusable Cloud acceptance template
+
+- 新增 `docs/cloud-hard-acceptance-template.md`，完整保留双通道合同、hard stops、Source/Candidate 动态构建、
+  Published bootstrap/ZIP 两输入链、版本中立 B～E、source/public F、失败取证和 evidence schema；不登记
+  任何具体版本、commit、asset digest、测试计数或当前角色/验收结论。
+- DESIGN 仓库地图和 repository governance guide 已接入模板；版本专项 acceptance 继续由 ROADMAP 的
+  candidate + accepted 窗口管理，模板与全部 acceptance 仍被 Release/trusted graph 排除。
+- repository guard 新增模板 anchor、placeholder、stable sentinel、无固定版本/hash/状态账本、Release exclusion
+  与治理生命周期断言。模板四段 Bash `bash -n` 和五段 Python heredoc compile 全部 PASS。
+- 首次完整回归唯一失败是新增 README 直链改变 sealed ZIP 输入，使 rebuild SHA 变为新字节；按 immutable
+  Release contract 撤回 README 改动，保留其既有 `docs/` 专项入口，并改由 Release-excluded DESIGN/治理指南
+  导航。最终完整 suite 96 tests：84 PASS、12 个 Windows/POSIX 诚实 SKIP、0 FAIL；published v0.3.3 ZIP
+  oracle 恢复精确原 SHA，证明本轮没有改写已发布 package bytes。

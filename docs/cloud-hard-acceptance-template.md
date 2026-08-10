@@ -1,0 +1,651 @@
+<a name="cloud-hard-acceptance-template"></a>
+
+# Cloud hard acceptance template
+
+本文件是 `pwf-codex-cloud-hooks` 新版本 Cloud hard acceptance 的稳定写作与执行模板，不是任何版本的
+验收结果，也不维护任何已发生的 candidate、accepted、Latest、rollback、PASS/PENDING、测试数量或资产大小。
+
+使用时复制本文件为版本专项 acceptance，再在副本中冻结 exact source、资产 identity 和实际证据。模板
+本身只在 Cloud lifecycle、trusted graph、Host ABI、Release boundary 或稳定观测协议变化时修改；普通版本
+轮换不得把运行状态回填到这里。
+
+## 0. 使用规则
+
+1. 从 ROADMAP 和活动 task plan 确认目标版本、当前角色、授权 gate 与停止条件。
+2. 复制本文件为 `docs/<release-identity>-cloud-hard-acceptance.md`；版本专项文件必须进入当前角色窗口。
+3. 只在版本副本中登记 source commit、tag、filename、size、SHA、测试计数、Cloud 原始结果和最终结论。
+4. 替换第 4.2 节的 immutable bootstrap URL/SHA，以及第 9.2 节的 immutable ZIP URL/SHA；不得用 moving
+   branch、`latest`、zero hash 或本地文件代替 Published Release identity。
+5. 第 5～8 节的提示词原样使用，不嵌入版本名、动态 gate 结论或施工阶段 marker。
+6. Source/Candidate 与 Published Release 必须使用两个独立、可丢弃的 Cloud 环境，不共享安装、planning、
+   transcript、cache 或 B～F 结果。
+7. 任一步失败立即停止并保存第一次错误；不得 repair 后继续把同一次 run 记为成功。
+
+模板里的 `__...__` 是 fail-closed 占位符。版本副本开始执行前不得残留任何占位符。
+
+## 1. 双通道合同
+
+| 通道 | 身份来源 | 安装路径 | 证明范围 |
+|---|---|---|---|
+| Source/Candidate | Cloud 实际 checkout 的完整 commit + 当次确定性构建 ZIP | 从 source 构建/check ZIP，以显式本地 `HOOKS_URL`/`HOOKS_SHA256` override 安装 | 当前 source、portable suite、候选 ZIP 与 installed behavior |
+| Published Release | immutable public bootstrap URL + bootstrap SHA；bootstrap 内嵌默认 ZIP URL/SHA | environment setup 在 agent startup 前校验并执行 public bootstrap | 公开默认下载链、Fresh startup 与最终发布字节 |
+
+Publication audit 另行在具备 exact refs 的维护环境执行完整 tag/source/asset oracle。Source/Candidate 的
+tagless checkout 不应伪造 remote/tag；Published Release 也不能使用 workspace 同名工具代替公开资产。
+
+## 2. 共同硬停止条件
+
+遇到以下任一情况立即停止：
+
+- 无法记录 Source/Candidate 完整 commit，或 setup 前工作树不干净；
+- Cloud Node major 不符合版本专项文件冻结的环境；
+- 目标 CODEX_HOME 已存在不属于本次 Fresh run 的 managed runtime；
+- portable suite 出现 fail/skip，或 publication-only oracle 混入 tagless Source/Candidate；
+- 两次 ZIP 不逐字一致、builder/importer check 失败、bootstrap 进入 ZIP 或 Release inventory 漂移；
+- global PWF Skill 不 pristine，Managed policy 不再 adapter-only，或 installed manifest/inventory 漂移；
+- Fresh 与 Resume 的 SessionStart source 不符合安装时序；
+- canonical plan、real Resume catch-up、tail marker或 canary/plan/catch-up 顺序不符合 current contract；
+- doctor 不健康、repairable、存在 error/blocker 或 snapshot residue；
+- Published 脚本仍有占位符，或者使用 moving URL、未校验字节、本地 override 或 checkout 工具。
+
+产品或资产字节修复后，必须从对应通道的 Fresh setup 重新开始。任何已发布字节变化都需要新 identity、
+新 SHA 和新的 downloaded-asset/Cloud evidence。
+
+## 3. 执行顺序
+
+```text
+Source/Candidate fresh environment
+  -> 4.1 source setup
+  -> new task: 5.1 B-SC
+  -> 6 C -> 7 D -> 8.1 E1
+  -> reopen same task: 8.2 E2
+  -> 9.1 source deep check
+  -> discard environment
+
+Published Release fresh environment
+  -> environment setup: 4.2 public bootstrap
+  -> first task: 5.2 B-PR
+  -> 6 C -> 7 D -> 8.1 E1
+  -> reopen same task: 8.2 E2
+  -> 9.2 public ZIP deep check
+  -> discard environment
+```
+
+安装脚本内的 direct adapter probe 或 doctor 只证明静态安装链健康，不能替代 agent/task lifecycle 中自动
+注入的黑盒证据。
+
+## 4. 安装 setup
+
+### 4.1 Source/Candidate：source、双构建与本地 override
+
+在 agent startup 完成并切到目标 checkout 后，作为第一条任务执行。下面脚本从 package/Release contract
+派生版本、bootstrap 与 entry count；只需在版本副本中替换 Cloud Node major。
+
+~~~bash
+set -Eeuo pipefail
+
+readonly REQUIRED_NODE_MAJOR="__CLOUD_NODE_MAJOR__"
+readonly TARGET_CODEX_HOME="${CODEX_HOME:-/opt/codex}"
+readonly PUBLICATION_ORACLE_SUITE="tests/published-release-oracles.test.js"
+
+case "$REQUIRED_NODE_MAJOR" in
+  *__*|'') printf 'Source/Candidate setup is blocked: Cloud Node major is unresolved\n' >&2; exit 64 ;;
+esac
+
+PROBE_DIR="$(mktemp -d)"
+trap 'rm -rf -- "$PROBE_DIR"' EXIT
+
+test -z "$(git status --short)"
+readonly RUNBOOK_HEAD="$(git rev-parse HEAD)"
+test "$(node -p 'process.versions.node.split(".")[0]')" = "$REQUIRED_NODE_MAJOR"
+git diff --check
+
+python3 tools/import_upstream_runtime.py check
+python3 - <<'PY'
+from pathlib import Path
+
+for value in (
+    "hooks/hook_adapter.py",
+    "runtime/owned-plan.py",
+    "runtime/owned-catchup.py",
+):
+    path = Path(value)
+    compile(path.read_text(encoding="utf-8"), str(path), "exec")
+PY
+node --check install.js
+
+BOOTSTRAP="$(python3 - <<'PY'
+import json
+from pathlib import Path
+
+artifact = json.loads(Path("contracts/release-artifact-v1.json").read_text(encoding="utf-8"))
+assets = [item["path"] for item in artifact["external_release_assets"]]
+assert len(assets) == 1
+print(assets[0])
+PY
+)"
+test -f "$BOOTSTRAP"
+bash -n "$BOOTSTRAP"
+
+test -f "$PUBLICATION_ORACLE_SUITE"
+mapfile -t TEST_FILES < <(
+  find tests -maxdepth 1 -type f -name '*.test.js' ! -name 'published-release-oracles.test.js' -print | sort
+)
+test "${#TEST_FILES[@]}" -gt 0
+TEST_OUTPUT="$PROBE_DIR/tests.tap"
+node --test --test-reporter=tap "${TEST_FILES[@]}" | tee "$TEST_OUTPUT"
+grep -Eq '^# fail 0$' "$TEST_OUTPUT"
+grep -Eq '^# skipped 0$' "$TEST_OUTPUT"
+TESTS="$(awk '/^# tests / {print $3}' "$TEST_OUTPUT" | tail -1)"
+PASSES="$(awk '/^# pass / {print $3}' "$TEST_OUTPUT" | tail -1)"
+test -n "$TESTS"
+test "$PASSES" = "$TESTS"
+
+ZIP_A="$PROBE_DIR/candidate-a.zip"
+ZIP_B="$PROBE_DIR/candidate-b.zip"
+python3 tools/build_release.py build --output "$ZIP_A"
+python3 tools/build_release.py check --archive "$ZIP_A"
+python3 tools/build_release.py build --output "$ZIP_B"
+python3 tools/build_release.py check --archive "$ZIP_B"
+cmp "$ZIP_A" "$ZIP_B"
+
+EXPECTED_ENTRIES="$(python3 - <<'PY'
+import json
+from pathlib import Path
+
+artifact = json.loads(Path("contracts/release-artifact-v1.json").read_text(encoding="utf-8"))
+print(len(artifact["entries"]))
+PY
+)"
+test "$(unzip -Z1 "$ZIP_A" | wc -l)" -eq "$EXPECTED_ENTRIES"
+if unzip -Z1 "$ZIP_A" | grep -Fq 'init-cloud-sandbox-'; then
+  printf 'Bootstrap unexpectedly entered candidate ZIP\n' >&2
+  exit 1
+fi
+
+ACTUAL_ZIP_SIZE="$(wc -c < "$ZIP_A")"
+ACTUAL_ZIP_SHA256="$(sha256sum "$ZIP_A" | awk '{print $1}')"
+
+unzip -q "$ZIP_A" -d "$PROBE_DIR/extracted"
+PACKAGE_ROOT="$PROBE_DIR/extracted/pwf-codex-cloud-hooks"
+python3 "$PACKAGE_ROOT/tools/build_release.py" check \
+  --contract "$PACKAGE_ROOT/contracts/release-artifact-v1.json" --archive "$ZIP_A"
+python3 "$PACKAGE_ROOT/tools/import_upstream_runtime.py" check
+
+if [ -e "$TARGET_CODEX_HOME/hooks/planning-with-files" ]; then
+  printf 'Fresh setup required; managed runtime already exists: %s\n' "$TARGET_CODEX_HOME" >&2
+  exit 1
+fi
+
+HOOKS_URL="file://$ZIP_A" HOOKS_SHA256="$ACTUAL_ZIP_SHA256" bash "$BOOTSTRAP" all
+
+test -z "$(git status --short)"
+printf 'PWF_SC_RUNBOOK_HEAD=%s\n' "$RUNBOOK_HEAD"
+printf 'PWF_SC_LINUX_SUITE=PASS tests=%s pass=%s fail=0 skipped=0\n' "$TESTS" "$PASSES"
+printf 'PWF_SC_ZIP_ENTRIES=%s\n' "$EXPECTED_ENTRIES"
+printf 'PWF_SC_ZIP_SIZE=%s\n' "$ACTUAL_ZIP_SIZE"
+printf 'PWF_SC_ZIP_SHA256=%s\n' "$ACTUAL_ZIP_SHA256"
+printf 'PWF_SOURCE_CANDIDATE_SETUP=PASS\n'
+~~~
+
+安装发生在原始 startup 之后。脚本成功后创建新 task，从第 5.1 节开始验证 post-install Resume；不得在
+安装 task 中手工调用 adapter 冒充 lifecycle evidence。
+
+### 4.2 Published Release：public bootstrap environment setup
+
+将本节放进独立 Fresh Cloud 的 environment setup，使 Managed Hook 在 agent startup 前安装。版本副本只
+替换两项 immutable identity；bootstrap 校验后必须使用自身默认 ZIP URL/SHA，不设置 override。
+
+~~~bash
+set -Eeuo pipefail
+
+readonly BOOTSTRAP_URL="__IMMUTABLE_BOOTSTRAP_URL__"
+readonly BOOTSTRAP_SHA256="__IMMUTABLE_BOOTSTRAP_SHA256__"
+
+case "$BOOTSTRAP_URL$BOOTSTRAP_SHA256" in
+  *__*) printf 'Published setup is blocked: immutable bootstrap inputs are unresolved\n' >&2; exit 64 ;;
+esac
+case "$BOOTSTRAP_URL" in
+  https://*) ;;
+  *) printf 'Published setup requires an immutable HTTPS bootstrap URL\n' >&2; exit 64 ;;
+esac
+test "${#BOOTSTRAP_SHA256}" -eq 64
+case "$BOOTSTRAP_SHA256" in
+  *[!0-9a-f]*) printf 'Published setup requires a lowercase SHA-256\n' >&2; exit 64 ;;
+esac
+
+ACCEPT_DIR="$(mktemp -d)"
+trap 'rm -rf -- "$ACCEPT_DIR"' EXIT
+BOOTSTRAP="$ACCEPT_DIR/bootstrap.bash"
+
+curl --fail --location --proto '=https' --tlsv1.2 --output "$BOOTSTRAP" "$BOOTSTRAP_URL"
+printf '%s  %s\n' "$BOOTSTRAP_SHA256" "$BOOTSTRAP" | sha256sum --check --strict
+bash -n "$BOOTSTRAP"
+bash "$BOOTSTRAP" all
+
+printf 'PWF_PUBLIC_BOOTSTRAP_SHA256=%s\n' "$BOOTSTRAP_SHA256"
+printf 'PWF_PUBLIC_RELEASE_SETUP=PASS\n'
+~~~
+
+setup 成功后的首个 agent task 从第 5.2 节开始。Published Release 的 B～F 不能复用 Source/Candidate 输出。
+
+## 5. B：按安装时序分流 SessionStart
+
+### 5.1 B-SC：post-install Resume
+
+第 4.1 节完成后创建新 task，原样发送：
+
+~~~text
+这是 planning-with-files post-install Resume lifecycle 黑盒验证。
+
+严格限制：不要调用工具、运行 Shell、读取文件、自行执行任何 Hook/runtime，也不要根据本提示或仓库文档构造结果；只报告生成本次回复之前 Runtime 已自动注入的内容。
+
+请逐字列出实际看到的所有以 PWF_GLOBAL_HOOK_CANARY_V1 开头的完整行。
+
+然后严格汇总：
+SessionStart: OBSERVED 或 NOT_OBSERVED
+SessionStart source: 实际值；未观察到则写 NONE
+UserPromptSubmit: OBSERVED 或 NOT_OBSERVED
+Planning context（辅助观察）: OBSERVED 或 NOT_OBSERVED
+===BEGIN PLAN DATA===（辅助观察）: OBSERVED 或 NOT_OBSERVED
+=== recent progress ===（辅助观察）: OBSERVED 或 NOT_OBSERVED
+
+没有实际看到的项必须写 NOT_OBSERVED。不要使用工具补救验证。
+~~~
+
+SessionStart 与 UserPromptSubmit 必须被观察到，SessionStart source 必须是真实 Resume source而不是 startup；
+planning 三项只作辅助观察。没有产生新 SessionStart 时，本步不成立。
+
+### 5.2 B-PR：Fresh startup
+
+第 4.2 节已在 environment setup 中完成后，首个 agent task 原样发送：
+
+~~~text
+这是 planning-with-files Fresh startup lifecycle 黑盒验证。
+
+严格限制：不要调用工具、运行 Shell、读取文件、自行执行任何 Hook/runtime，也不要根据本提示或仓库文档构造结果；只报告生成本次回复之前 Runtime 已自动注入的内容。
+
+请逐字列出实际看到的所有以 PWF_GLOBAL_HOOK_CANARY_V1 开头的完整行。
+
+然后严格汇总：
+SessionStart: OBSERVED 或 NOT_OBSERVED
+SessionStart source: 实际值；未观察到则写 NONE
+UserPromptSubmit: OBSERVED 或 NOT_OBSERVED
+Planning context（辅助观察）: OBSERVED 或 NOT_OBSERVED
+===BEGIN PLAN DATA===（辅助观察）: OBSERVED 或 NOT_OBSERVED
+=== recent progress ===（辅助观察）: OBSERVED 或 NOT_OBSERVED
+
+没有实际看到的项必须写 NOT_OBSERVED。不要使用工具补救验证。
+~~~
+
+SessionStart 与 UserPromptSubmit 必须被观察到，SessionStart source 必须为 startup；planning 三项只作
+辅助观察。
+
+## 6. C：创建 canonical planning baseline
+
+在当前通道的 B 完成后，于同一 task 原样发送：
+
+~~~text
+这是 planning-with-files canonical planning baseline 创建步骤。
+
+请使用 apply_patch：
+1. 创建 .planning/pwf-cloud-acceptance-v1/task_plan.md，第一行必须是：
+   # PWF_CLOUD_ACCEPTANCE_CANONICAL_V1
+2. 创建同目录 progress.md，内容必须包含：
+   PWF Cloud acceptance baseline created by apply_patch.
+3. 创建同目录 findings.md，内容必须包含：
+   planning-with-files Cloud acceptance fixture.
+4. 把 .planning/.active_plan 设置为：
+   pwf-cloud-acceptance-v1
+5. 完成后只回复：
+   PWF_CLOUD_ACCEPTANCE_BASELINE_CREATED
+~~~
+
+必须实际产生 structured planning update，并收到精确 acknowledgment。
+
+## 7. D：canonical UserPromptSubmit
+
+C 完成后立即原样发送：
+
+~~~text
+这是 planning-with-files canonical Planning context 自动注入验证。
+
+严格限制：不要调用工具、运行 Shell、读取文件或根据本提示/仓库文档构造标记；只报告生成本次回复之前 Runtime 已自动注入的内容。
+
+请严格汇总：
+UserPromptSubmit canary: OBSERVED 或 NOT_OBSERVED
+PWF_CLOUD_ACCEPTANCE_CANONICAL_V1: OBSERVED 或 NOT_OBSERVED
+[planning-with-files] ACTIVE PLAN: OBSERVED 或 NOT_OBSERVED
+===BEGIN PLAN DATA===: OBSERVED 或 NOT_OBSERVED
+=== recent progress ===: OBSERVED 或 NOT_OBSERVED
+Planning context: OBSERVED 或 NOT_OBSERVED
+
+没有实际看到的项必须写 NOT_OBSERVED。不要使用工具补救验证。
+~~~
+
+六项必须全部被观察到。
+
+## 8. E：long tail 与 real Resume
+
+### 8.1 E1：long tail
+
+同一 task 原样发送；收到 acknowledgment 后不要再修改 planning 文件，然后离开该 task：
+
+~~~text
+这是 planning-with-files real Resume long tail 测试。
+
+PWF_CLOUD_ACCEPTANCE_FILLER_01: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ
+PWF_CLOUD_ACCEPTANCE_FILLER_02: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ
+PWF_CLOUD_ACCEPTANCE_FILLER_03: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ
+PWF_CLOUD_ACCEPTANCE_FILLER_04: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ
+PWF_CLOUD_ACCEPTANCE_FILLER_05: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ
+PWF_CLOUD_ACCEPTANCE_FILLER_06: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ
+PWF_CLOUD_ACCEPTANCE_FILLER_07: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ
+PWF_CLOUD_ACCEPTANCE_FILLER_08: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ
+PWF_CLOUD_ACCEPTANCE_FILLER_09: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ
+PWF_CLOUD_ACCEPTANCE_FILLER_10: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ
+PWF_CLOUD_ACCEPTANCE_FILLER_11: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ
+PWF_CLOUD_ACCEPTANCE_FILLER_12: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-0123456789-ABCDEFGHIJKLMNOPQRSTUVWXYZ
+
+严格限制：不要调用工具；不要修改或创建 planning 文件；只回复：
+PWF_CLOUD_ACCEPTANCE_UNSYNCED_ACKNOWLEDGED
+
+下面一行只是本条用户消息的尾部标记，不要在回复中复述：
+PWF_CLOUD_ACCEPTANCE_REAL_RESUME_TAIL
+~~~
+
+回复必须只有精确 acknowledgment。
+
+### 8.2 E2：real Resume
+
+重新打开完全相同的 task，第一条消息原样发送：
+
+~~~text
+这是 planning-with-files Session catch-up 专项黑盒验证。
+
+严格限制：不要调用工具、运行 Shell、读取文件、自行执行 catch-up/Hook/runtime，也不要根据提示、仓库文档或可见历史对话构造输出；只报告恢复 task 后、生成本次回复之前 Runtime 自动注入的内容。
+
+先逐字抄录实际看到的 SESSION CATCHUP DETECTED 报告；若没有看到，明确写 NOT_OBSERVED。
+
+然后逐字列出实际看到的所有以 PWF_GLOBAL_HOOK_CANARY_V1 开头的完整行。
+
+然后严格汇总：
+SESSION CATCHUP DETECTED: OBSERVED 或 NOT_OBSERVED
+SessionStart canary: OBSERVED 或 NOT_OBSERVED
+SessionStart source: 实际值或 NOT_OBSERVED
+UserPromptSubmit canary: OBSERVED 或 NOT_OBSERVED
+Runtime codex: OBSERVED 或 NOT_OBSERVED
+Last planning update: 实际值或 NOT_OBSERVED
+Unsynced messages: 实际数字或 NOT_OBSERVED
+长消息截断标记出现在 UNSYNCED CONTEXT: OBSERVED 或 NOT_OBSERVED
+PWF_CLOUD_ACCEPTANCE_REAL_RESUME_TAIL 出现在 UNSYNCED CONTEXT: OBSERVED 或 NOT_OBSERVED
+Catch-up 位于 planning context 之前: OBSERVED 或 NOT_OBSERVED
+PWF_CLOUD_ACCEPTANCE_CANONICAL_V1: OBSERVED 或 NOT_OBSERVED
+===BEGIN PLAN DATA===: OBSERVED 或 NOT_OBSERVED
+Planning context: OBSERVED 或 NOT_OBSERVED
+
+没有实际看到的项必须写 NOT_OBSERVED。不要使用工具补救验证。
+~~~
+
+所有汇总项必须被观察到；Unsynced messages 数字不预设，SessionStart source 必须是真实 Resume source且
+不能为 startup。黑盒只证明 observable behavior；helper closure、immutable bytes、overlay absence 与不调用
+upstream CLI `main()` 由 source/inventory assertions 和 portable negative suite证明。
+
+## 9. Post-resume doctor、inventory、policy 与 residue
+
+### 9.1 Source/Candidate
+
+E2 完成后，只在 Source/Candidate 的精确 checkout 运行：
+
+~~~bash
+set -Eeuo pipefail
+
+PACKAGE_ROOT="$(git rev-parse --show-toplevel)"
+TARGET_CODEX_HOME="${CODEX_HOME:-/opt/codex}"
+SKILL_ROOT="$HOME/.agents/skills/planning-with-files"
+REQUIREMENTS="/etc/codex/requirements.toml"
+
+DOCTOR_JSON="$(node "$PACKAGE_ROOT/install.js" doctor --json \
+  --codex-home "$TARGET_CODEX_HOME" \
+  --skill-root "$SKILL_ROOT" \
+  --managed-requirements "$REQUIREMENTS")"
+printf '%s\n' "$DOCTOR_JSON"
+
+python3 - "$DOCTOR_JSON" "$PACKAGE_ROOT" "$TARGET_CODEX_HOME" "$SKILL_ROOT" "$REQUIREMENTS" <<'PY'
+import hashlib
+import json
+import pathlib
+import sys
+import tomllib
+
+doctor = json.loads(sys.argv[1])
+package_root = pathlib.Path(sys.argv[2])
+codex_home = pathlib.Path(sys.argv[3])
+skill_root = pathlib.Path(sys.argv[4])
+requirements_path = pathlib.Path(sys.argv[5])
+
+package = json.loads((package_root / "package.json").read_text(encoding="utf-8"))
+artifact = json.loads((package_root / "contracts/release-artifact-v1.json").read_text(encoding="utf-8"))
+bundle = json.loads((package_root / "contracts/runtime-bundle-v1.json").read_text(encoding="utf-8"))
+upstream_manifest = json.loads((package_root / "upstream-manifest.json").read_text(encoding="utf-8"))
+
+assert artifact["package_version"] == package["version"]
+assert artifact["entries"]
+assert bundle["files"]
+assert doctor["healthy"] is True
+assert doctor["repairable"] is False
+assert doctor["managed"] is True
+assert doctor["events"] == ["SessionStart", "UserPromptSubmit"]
+assert doctor["errors"] == []
+assert doctor["blockers"] == []
+
+runtime = codex_home / "hooks" / "planning-with-files"
+installed = json.loads((runtime / "installed-manifest.json").read_text(encoding="utf-8"))
+expected = sorted(item["path"] for item in installed["runtime_files"])
+actual = sorted(
+    str(path.relative_to(runtime)).replace("\\", "/")
+    for path in runtime.rglob("*")
+    if path.is_file() and path.name != "installed-manifest.json"
+)
+assert installed["installer_version"] == package["version"]
+assert expected == actual
+assert not any("compatibility" in item or item.startswith("patches/") for item in actual)
+
+def sha256(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+for item in bundle["files"]:
+    assert item["origin"] == "upstream_pristine"
+    assert item["managed_sha256"] == item["pristine_sha256"]
+    assert item["overlay_ids"] == []
+    relative = pathlib.PurePosixPath(item["package_path"]).relative_to("runtime")
+    assert sha256(runtime / pathlib.Path(*relative.parts)) == item["managed_sha256"]
+
+owned_catchup = next(item for item in bundle["local_files"] if item["id"] == "owned_catchup")
+assert owned_catchup["direct_file_dependencies"][0]["allowed_symbols"] == [
+    "extract_messages_after",
+    "find_last_planning_update",
+    "same_project_path",
+    "text_content",
+]
+
+for relative, expected_hash in upstream_manifest["required_skill_files"].items():
+    path = skill_root / pathlib.Path(*pathlib.PurePosixPath(relative).parts)
+    assert sha256(path) == expected_hash
+
+policy = tomllib.loads(requirements_path.read_text(encoding="utf-8"))
+for event in ("SessionStart", "UserPromptSubmit"):
+    groups = policy["hooks"][event]
+    assert len(groups) == 1
+    handlers = groups[0]["hooks"]
+    assert len(handlers) == 1
+    command = handlers[0]["command"]
+    assert "hook_adapter.py" in command
+    assert "owned-plan.py" not in command
+    assert "owned-catchup.py" not in command
+    assert "session-catchup.py" not in command
+
+print("POST_RESUME_DOCTOR=PASS")
+print("INSTALLER_VERSION=" + package["version"])
+print("RELEASE_ARTIFACT_ENTRIES=" + str(len(artifact["entries"])))
+print("INSTALLED_RUNTIME_FILES=" + str(len(actual)))
+print("UPSTREAM_PRISTINE_FILES=" + str(len(bundle["files"])))
+print("MANAGED_POLICY=ADAPTER_ONLY")
+print("INSTALLED_RUNTIME_INVENTORY=" + json.dumps(actual, ensure_ascii=False))
+PY
+
+SNAPSHOT_BASE="${TMPDIR:-/tmp}/pwf-codex-cloud-hooks/snapshots"
+LEFTOVERS=0
+if [ -d "$SNAPSHOT_BASE" ]; then
+  LEFTOVERS="$(find "$SNAPSHOT_BASE" -mindepth 1 -maxdepth 1 -type d -name 'pwf-snapshot-*' | wc -l)"
+fi
+test "$LEFTOVERS" -eq 0
+printf 'SNAPSHOT_LEFTOVERS=0\n'
+printf 'PWF_SC_POST_RESUME=PASS\n'
+~~~
+
+### 9.2 Published Release
+
+public bootstrap 的临时目录可能已经删除。本节重新取得同一 immutable ZIP，校验后只使用 ZIP 内
+builder/importer/installer 复验 installed state；版本副本只替换 URL/SHA 两项 identity。
+
+~~~bash
+set -Eeuo pipefail
+
+readonly ZIP_URL="__IMMUTABLE_ZIP_URL__"
+readonly ZIP_SHA256="__IMMUTABLE_ZIP_SHA256__"
+
+case "$ZIP_URL$ZIP_SHA256" in
+  *__*) printf 'Published deep check is blocked: immutable ZIP inputs are unresolved\n' >&2; exit 64 ;;
+esac
+case "$ZIP_URL" in
+  https://*) ;;
+  *) printf 'Published deep check requires an immutable HTTPS ZIP URL\n' >&2; exit 64 ;;
+esac
+test "${#ZIP_SHA256}" -eq 64
+case "$ZIP_SHA256" in
+  *[!0-9a-f]*) printf 'Published deep check requires a lowercase SHA-256\n' >&2; exit 64 ;;
+esac
+
+VERIFY_DIR="$(mktemp -d)"
+trap 'rm -rf -- "$VERIFY_DIR"' EXIT
+ZIP="$VERIFY_DIR/release.zip"
+EXTRACT_DIR="$VERIFY_DIR/extracted"
+PACKAGE_ROOT="$EXTRACT_DIR/pwf-codex-cloud-hooks"
+
+curl --fail --location --proto '=https' --tlsv1.2 --output "$ZIP" "$ZIP_URL"
+printf '%s  %s\n' "$ZIP_SHA256" "$ZIP" | sha256sum --check --strict
+
+mkdir -p "$EXTRACT_DIR"
+unzip -q "$ZIP" -d "$EXTRACT_DIR"
+test -f "$PACKAGE_ROOT/install.js"
+test -f "$PACKAGE_ROOT/tools/build_release.py"
+test -f "$PACKAGE_ROOT/tools/import_upstream_runtime.py"
+
+python3 "$PACKAGE_ROOT/tools/build_release.py" check \
+  --contract "$PACKAGE_ROOT/contracts/release-artifact-v1.json" --archive "$ZIP"
+python3 "$PACKAGE_ROOT/tools/import_upstream_runtime.py" check
+
+PACKAGE_VERSION="$(node -p "require('$PACKAGE_ROOT/package.json').version")"
+DOCTOR_JSON="$(node "$PACKAGE_ROOT/install.js" doctor --json \
+  --codex-home /opt/codex \
+  --skill-root "$HOME/.agents/skills/planning-with-files" \
+  --managed-requirements /etc/codex/requirements.toml)"
+printf '%s\n' "$DOCTOR_JSON"
+
+python3 - "$DOCTOR_JSON" "$PACKAGE_ROOT" "$PACKAGE_VERSION" <<'PY'
+import json
+import pathlib
+import sys
+import tomllib
+
+doctor = json.loads(sys.argv[1])
+package_root = pathlib.Path(sys.argv[2])
+package_version = sys.argv[3]
+package = json.loads((package_root / "package.json").read_text(encoding="utf-8"))
+artifact = json.loads((package_root / "contracts/release-artifact-v1.json").read_text(encoding="utf-8"))
+bundle = json.loads((package_root / "contracts/runtime-bundle-v1.json").read_text(encoding="utf-8"))
+
+assert package["version"] == package_version
+assert artifact["package_version"] == package_version
+assert artifact["entries"]
+assert bundle["files"]
+for item in bundle["files"]:
+    assert item["origin"] == "upstream_pristine"
+    assert item["managed_sha256"] == item["pristine_sha256"]
+    assert item["overlay_ids"] == []
+
+assert doctor["healthy"] is True
+assert doctor["repairable"] is False
+assert doctor["managed"] is True
+assert doctor["events"] == ["SessionStart", "UserPromptSubmit"]
+assert doctor["errors"] == []
+assert doctor["blockers"] == []
+
+runtime = pathlib.Path("/opt/codex/hooks/planning-with-files")
+manifest = json.loads((runtime / "installed-manifest.json").read_text(encoding="utf-8"))
+expected = sorted(item["path"] for item in manifest["runtime_files"])
+actual = sorted(
+    str(path.relative_to(runtime)).replace("\\", "/")
+    for path in runtime.rglob("*")
+    if path.is_file() and path.name != "installed-manifest.json"
+)
+assert manifest["installer_version"] == package_version
+assert expected == actual
+assert not any("compatibility" in item or item.startswith("patches/") for item in actual)
+
+policy = tomllib.loads(pathlib.Path("/etc/codex/requirements.toml").read_text(encoding="utf-8"))
+for event in ("SessionStart", "UserPromptSubmit"):
+    groups = policy["hooks"][event]
+    assert len(groups) == 1
+    handlers = groups[0]["hooks"]
+    assert len(handlers) == 1
+    command = handlers[0]["command"]
+    assert "hook_adapter.py" in command
+    assert "owned-plan.py" not in command
+    assert "owned-catchup.py" not in command
+    assert "session-catchup.py" not in command
+
+print("PUBLIC_PACKAGE_IDENTITY=" + package_version)
+print("POST_RESUME_DOCTOR=PASS")
+print("RELEASE_ARTIFACT_ENTRIES=" + str(len(artifact["entries"])))
+print("INSTALLED_RUNTIME_FILES=" + str(len(actual)))
+print("UPSTREAM_PRISTINE_FILES=" + str(len(bundle["files"])))
+print("MANAGED_POLICY=ADAPTER_ONLY")
+print("INSTALLED_RUNTIME_INVENTORY=" + json.dumps(actual, ensure_ascii=False))
+PY
+
+SNAPSHOT_BASE="${TMPDIR:-/tmp}/pwf-codex-cloud-hooks/snapshots"
+LEFTOVERS=0
+if [ -d "$SNAPSHOT_BASE" ]; then
+  LEFTOVERS="$(find "$SNAPSHOT_BASE" -mindepth 1 -maxdepth 1 -type d -name 'pwf-snapshot-*' | wc -l)"
+fi
+test "$LEFTOVERS" -eq 0
+printf 'PWF_PUBLIC_ZIP_REDOWNLOAD_SHA256=%s\n' "$ZIP_SHA256"
+printf 'PWF_PUBLIC_ZIP_BOUNDARY_IMPORTER=PASS\n'
+printf 'SNAPSHOT_LEFTOVERS=0\n'
+printf 'PWF_PUBLIC_POST_RESUME=PASS\n'
+~~~
+
+## 10. 版本副本的证据写回
+
+模板不保存运行结果。版本专项 acceptance 应保存以下原始证据，并在证据闭合后由维护者写入版本结论：
+
+- Source/Candidate：完整 commit、branch transport、测试 runner 原始摘要、明确排除的 publication suite、
+  两次 ZIP build/check、entry count、size、SHA 与 override 安装输出；
+- Published Release：exact tag/source、bootstrap 与 ZIP 的 immutable URL、filename、size、SHA，以及公开
+  重新下载输出；
+- 两条通道各自的 B～E 原始提示词、模型原始回复、SessionStart source、Unsynced messages 和顺序观察；
+- 两条通道各自的 doctor JSON、installed inventory、upstream/helper、adapter-only policy 与 residue 输出；
+- publication oracle、失败的首次输出、停止点，以及是否从 Fresh 环境重新开始；
+- GitHub Latest、rollback baseline 或下一 Product Phase 的授权应另行记录，不能由 Cloud 结果自动推导。
+
+版本专项文件可以有冻结结果表；不得反向把版本号、测试计数、资产 identity 或动态状态写回本模板。
+
+## 11. 模板的非权威边界
+
+- 本模板不证明任何 commit、tag、Release、Cloud run 或 rollback 角色已经成立；
+- 本模板不进入 Release ZIP、installed runtime、Managed policy 或 trusted execution graph；
+- machine contracts 和源码优先于模板中的实现断言；架构变化时先进入 Discovery，再更新模板；
+- 已发布的版本 acceptance 保留其时间语义，不因模板改进而批量重写；
+- 当前 programme 与角色只读 ROADMAP，当前授权与停止条件只读活动 task plan。

@@ -34,6 +34,7 @@ DESIGN 只提供实现层导航。函数、schema 字段、hash、allowlist 和�
 | [`tools/import_upstream_runtime.py`](tools/import_upstream_runtime.py) | 固定 archive 的确定性 import/check |
 | [`tools/build_release.py`](tools/build_release.py) | contract-driven deterministic ZIP build/check |
 | [`tests/`](tests/) | production、安全、供应链、安装和仓库边界回归 |
+| [`docs/cloud-hard-acceptance-template.md`](docs/cloud-hard-acceptance-template.md) | 版本中立的双通道 Cloud 执行协议；复制后由版本专项 acceptance 冻结 identity、运行结果与结论 |
 | [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) | 持续维护的冷证据账本：已发布身份、迁移 refs、上游 archive、overlay 与不可变资产来源链 |
 | [`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) | 新维护者最短接手路径、踩坑摘要与检测结果分流 |
 

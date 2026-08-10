@@ -123,6 +123,18 @@ provenance 与 immutable refs，不在 current tree 保存可执行博物馆副�
 - v0.3.3 的 tag/source/asset identities、Cloud PASS 和回传 marker 仍是历史证据，不应从 acceptance 删除；
   它们只留在 identity/result ledger。通用黑盒正文不再随候选版本或当前 lifecycle 状态频繁改写。
 
+## G11 reusable acceptance template decision（2026-08-10）
+
+- 通用模板属于稳定维护协议，不是第三个版本 acceptance，也不占用 candidate + accepted 文件窗口；具体
+  version/source/asset identity、测试计数和 PASS/PENDING 只能写入复制后形成的版本专项文档。
+- 模板应可直接复制，但不能把当前 21-entry/10-file/4-helper 等实现数字变成永久写作事实。Source/Candidate
+  和 Published deep check 从 package、Release contract、runtime bundle 与 installed manifest 动态派生。
+- 黑盒 B～E 使用 G10 已冻结的 `PWF_CLOUD_ACCEPTANCE_*` 语义 fixture；setup/F 的唯一版本替换面分别是
+  bootstrap URL + SHA 与 ZIP URL + SHA。模板正文不记录任何当前 programme、Latest/rollback 或 Cloud 状态。
+- DESIGN 仓库地图提供实现入口，仓库治理指南规定模板的 copy/freeze 生命周期；README 已有的 `docs/`
+  专项 runbook/acceptance 通用入口保持不变，避免在 post-release HEAD 改写 sealed ZIP 输入。版本专项
+  acceptance 仍由 ROADMAP 角色窗口管理并在发布后成为带时间语义的冷证据。
+
 ## Post-gate ARCHITECTURE ↔ source audit（2026-08-10）
 
 - 本轮只审计当前 `ARCHITECTURE.md` 是否准确描述 v0.3.3-dev source、contracts、installed layout、runtime
