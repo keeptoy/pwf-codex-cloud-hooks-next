@@ -56,6 +56,8 @@
 
 G0～G5 本地范围全部 PASS；实现状态为 `LOCAL_PASS / CLOUD_PENDING`。P2-OTG-D 的 Route B 已落地；
 published v0.3.2 身份未改写，v0.3.3-dev 仍是 zero-hash、未封板的 Source/Candidate。
+Post-gate ARCHITECTURE ↔ source audit PASS：主体架构无需改造，部署图、单次 Host 输出与 transcript fallback
+三处表达精度已按当前源码收紧并由 architecture guard 冻结；Cloud/Release 状态不变。
 
 ## Errors Encountered
 

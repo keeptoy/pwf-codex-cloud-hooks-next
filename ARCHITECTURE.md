@@ -85,9 +85,14 @@ new container
 ```text
 fixed upstream v3.8.2 archive
         |
-        | importer validates archive, manifest, allowlist, pristine hashes and modes
+        | importer validates archive, runtime bundle, pristine hashes and modes
         v
-repository-owned runtime bundle
+repository-owned pristine upstream runtime
+        + owned runtimes + contracts + installer/package inputs
+        |
+        | tools/build_release.py applies the exact Release allowlist
+        v
+candidate Release ZIP  <--- external checksum-pinning bootstrap stays outside
         |
         | install.js (lock, hash, mode, backup, policy merge)
         v
@@ -97,6 +102,7 @@ $CODEX_HOME/hooks/planning-with-files/
   |-- owned-catchup.py
   |-- upstream/{resolve-plan-dir.sh,inject-plan.sh,ledger-summary.sh,session-catchup.py}
   |-- contracts/{adapter-plan-context-request-v1,plan-context-result-v1}
+  |-- THIRD_PARTY_NOTICES.md
   `-- installed-manifest.json
 
 /etc/codex/requirements.toml
@@ -139,7 +145,8 @@ immutable v0.3.2 source 与 `BASELINE_PROVENANCE.md` 恢复，不能重新进入
 pinned PWF v3.8.2 archive
   -> importer 校验 archive、license、runtime bundle、allowlist 与 pristine hashes
   -> repository-owned runtime/upstream/*（四个文件逐字 pristine）
-  -> Release builder 将成品 runtime 与 self-contained importer 一起装入候选 ZIP
+  -> Release builder 按 exact allowlist 将成品 runtime、contracts、installer、builder 与 self-contained importer
+     一起装入候选 ZIP；checksum-pinning bootstrap 继续作为 ZIP 外部资产
 ```
 
 生产安装/运行路径不现场打 patch，而是使用 ZIP 内已经生成的成品：
@@ -166,14 +173,14 @@ Codex Hook stdin JSON
         v
 hook_adapter.py
   |-- parse and validate event/Host fields
-  |-- emit PWF_GLOBAL_HOOK_CANARY_V1
+  |-- prepare mandatory PWF_GLOBAL_HOOK_CANARY_V1 (not streamed yet)
   |-- supervise owned-plan.py with exact-v1 request
   |      `-- resolve plan + private safe snapshot + pristine inject-plan.sh
-  |-- SessionStart only:
+  |-- SessionStart + validated plan result with inject=true only:
   |      forward the exact validated six-field project result
   |      to owned-catchup.py
   |         `-- validate, identity-check, and freeze transcript bytes + reuse pinned owned parser helpers
-  `-- compose canary, optional catch-up, optional plan
+  `-- compose canary, optional catch-up, optional plan; emit one Host JSON result
         |
         v
 hookSpecificOutput.additionalContext
@@ -181,6 +188,9 @@ hookSpecificOutput.additionalContext
 
 Plan runtime runs first for both `SessionStart` and `UserPromptSubmit`. The adapter does not resolve planning files,
 does not read `task_plan.md`/`progress.md`, and contains no parallel plan-selection or injection algorithm.
+The adapter does not stream an early canary or partial child output: it prepares the mandatory canary, completes the
+bounded child path, then writes exactly one final Host result. A missing/invalid/non-injecting plan result therefore
+produces canary-only output and never dispatches catch-up; catch-up failure preserves the already validated plan context.
 
 `owned-catchup.py` 不调用上游 `session-catchup.py` 的 CLI `main()`；它只从固定 owned module 复用
 project-path、planning-update、message extraction 与 text helpers。transcript 选择、identity 复核、
@@ -245,13 +255,16 @@ compatibility behavior，只复用 pinned pristine module 的 parser helper clos
 `SessionStart` 才调用 `owned-catchup.py`。输入项目状态必须来自已验证 plan result，而不是 adapter
 第二次解析磁盘。
 
-Transcript 选择顺序：
+Transcript 先构造 allowed roots，再做两级选择：
 
-1. Host 提供且通过 containment、regular-file、session identity 校验的 `transcript_path`；
-2. 显式 `CODEX_SESSIONS_DIR`；
-3. 显式 `$CODEX_HOME/sessions`；
-4. 从 managed adapter 安装位置推导的 Codex home；
-5. 仅在明确允许时扫描 compatibility fallback roots。
+1. Adapter 按显式 `CODEX_SESSIONS_DIR` → 显式 `$CODEX_HOME/sessions` → managed adapter 安装位置推导
+   的 Codex home 顺序构造、规范化并去重 allowed roots，最多保留三个；这里是信任根构造顺序，不是
+   fallback session 的逐根优先级。
+2. Host 提供且已通过 adapter containment/regular-file 初检的 `transcript_path` 始终优先；owned runtime
+   重新以 no-follow/identity/project/session 规则打开并冻结它。确定的 session identity mismatch、损坏或
+   不可读会直接 fail closed；Host path 缺席或普通路径拒绝，只有在 request 明确允许时才进入 fallback。
+3. Fallback 获准时，runtime 在所有 allowed roots 中最多检查 256 个 `rollout-*.jsonl` 候选，将已安全
+   打开的候选按 `mtime_ns` 全局倒序，并选择第一个同时匹配 session identity 与 project 的 transcript。
 
 选择成功后，runtime 一次性读取并再次核对文件 identity；后续解析只使用 verified immutable bytes，
 不从 mutable path 重读。
@@ -282,7 +295,8 @@ Transcript 选择顺序：
 - stderr 只用于诊断；stdout 必须是一个 bounded JSON result。
 - repair 只处理明确 owned drift；unknown/unowned drift 必须 blocker。
 
-Adapter deadline 为 27 秒，child 与 finalization 必须在该总预算内完成；测试冻结当前 supervision 和
+Managed policy 给 adapter 30 秒 timeout；adapter 自身使用更窄的 27 秒 deadline，并为 finalization 保留
+1 秒。所有 child 与最终单次 JSON 输出必须在该内部预算内完成；测试冻结当前 supervision 和
 process-group cleanup 语义。
 
 ## 9. 来源与 pristine helper boundary

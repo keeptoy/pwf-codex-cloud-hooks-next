@@ -43,3 +43,20 @@
   `LOCAL_PASS / CLOUD_PENDING`，下一步停在 R5-SC 外部执行前，不进入 seal、push、R5-PR 或 Phase 4。
 - 最终 repository/architecture guards 在受限沙箱中因派生只读 Git 子进程返回 `status=null`；沙箱外原样重跑
   17/17 PASS。该现象归类为 platform limitation，测试断言和 production code 均未为此放宽。
+- 2026-08-10 post-gate audit：维护者要求重新逐项确认当前 `ARCHITECTURE.md` 与真实源码流程一致。已恢复
+  README/ARCHITECTURE/DESIGN/ROADMAP/活动 planning，并开始对照 adapter 与四份 request/result contracts；
+  当前仅形成初步匹配证据，尚未完成 installer、owned runtimes、importer 和 Release 全链审计。
+- 已完成 adapter、owned-plan、owned-catchup 的函数级调用链复核：plan-first、六字段 project 转交、private
+  snapshot、pristine helper roots、immutable transcript bytes、canary/catch-up/plan 输出顺序与 child 降级匹配；
+  记录一处 fallback root“顺序”措辞歧义，等待全链复核后统一修正文档并补 guard。
+- 已对照 runtime bundle、upstream manifest 与 21-entry Release contract；确认四份 upstream pristine、source
+  ZIP 与 installed runtime 分层正确，同时发现 ARCHITECTURE installed tree 漏画实际安装的 notice 文件。
+- 已完成 installer/importer/builder 函数级审计：absolute adapter-only policy、27/30 秒 deadline 配合、exact
+  installed inventory、doctor/repair drift 分类、四文件 pristine importer 与 21-entry ZIP builder 均匹配当前
+  架构分层；暂无 production code defect。
+- 已更新 ARCHITECTURE：部署图补 source → exact ZIP → install 层及 notice；Runtime 图改为 prepare canary →
+  plan-first → 条件 catch-up → 单次 Host JSON；Catch-up contract 改为 allowed-root 构造 + Host-first + 跨根
+  `mtime_ns` fallback；失败语义补 policy 30 秒与 adapter 27 秒/1 秒 reserve。
+- 对应 architecture guard 18/18 PASS；完整 `npm test` 为 96 tests、84 PASS、12 个 Windows/POSIX 诚实 SKIP、
+  0 FAIL；`tools/import_upstream_runtime.py check` 与 `git diff --check` PASS。审计结论：ARCHITECTURE 与当前
+  v0.3.3-dev source/contracts 统一，状态仍为 `LOCAL_PASS / CLOUD_PENDING`。

@@ -78,6 +78,8 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   const upstream = readJson("upstream-manifest.json");
   const architecture = readText("ARCHITECTURE.md");
   const design = readText("DESIGN.md");
+  const catchup = readText("runtime/owned-catchup.py");
+  const installer = readText("install.js");
 
   assert.equal(request.properties.schema_version.const, 1);
   assert.equal(request.properties.runtime.const, "codex");
@@ -106,6 +108,16 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.match(architecture, /不调用上游 `session-catchup\.py` 的 CLI `main\(\)`/);
   assert.doesNotMatch(architecture, /run owned session-catchup\.py/);
   assert.match(architecture, /validate, identity-check, and freeze transcript bytes \+ reuse pinned owned parser helpers/);
+  assert.match(architecture, /tools\/build_release\.py applies the exact Release allowlist/);
+  assert.match(architecture, /THIRD_PARTY_NOTICES\.md/);
+  assert.match(architecture, /prepare mandatory PWF_GLOBAL_HOOK_CANARY_V1 \(not streamed yet\)/);
+  assert.match(architecture, /validated plan result with inject=true only/);
+  assert.match(architecture, /does not stream an early canary or partial child output/);
+  assert.match(architecture, /信任根构造顺序，不是\s*fallback session 的逐根优先级/s);
+  assert.match(architecture, /按 `mtime_ns` 全局倒序/);
+  assert.match(architecture, /Managed policy 给 adapter 30 秒 timeout.*27 秒 deadline.*1 秒/s);
+  assert.match(catchup, /candidates\.sort\(key=lambda item: item\.mtime_ns, reverse=True\)/);
+  assert.match(installer, /timeout = 30/);
   assert.match(design, /parser helpers（不调用 upstream CLI main）/);
   assert.match(
     design,
