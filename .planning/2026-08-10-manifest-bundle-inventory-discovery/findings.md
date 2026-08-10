@@ -43,6 +43,22 @@
 - 这不是两份独立业务事实：原始测试要求字段相等、当前值也完全相等，因此重复部分应收敛为一个 machine
   authority；但 manifest 的 provenance/integrity ledger 与 bundle 的 dependency graph 仍需分别保留。
 
+## Design hindsight
+
+- 原始拆法在 Phase 1 的局部目标下有合理性：完整 bundle 服务 importer，精简 projection 降低首版 installer
+  consumer 复杂度，manifest hash 与 equality test 又提供了表面完整性。
+- 设计债不在“出现投影”本身，而在投影成为手工维护、被 production 直接读取的第二份 machine fact；同时缺少
+  consumer 自己的 bundle SHA 验证、唯一 authority 不变量以及 projection retirement contract。
+- 后续不是没有严格执行原设计，而是 equality tests 让双写得到长期严格执行：它们防止 drift，也冻结了临时
+  结构。local runtimes、installed contracts 与 overlay retirement 继续扩展投影后，局部便利演变为系统重复。
+- 经验应冻结为：投影必须派生或生成；所有 consumer 必须验证并到达唯一 authority；临时字段引入时同时定义
+  owner/retirement/exit gate；测试保护安全意图而不是 rollout 形状；ROADMAP 只设置 retirement DoD，真正字段
+  约束由 Architecture/Design/contracts/loaders/tests 共同执行；不同生命周期 inventory 不因相似而误删。
+- retirement DoD 的可执行含义不是让 ROADMAP 罗列 JSON 字段，而是在 Phase closure 强制清点所有临时字段、
+  projection、inactive path 与 rollout test，并逐项删除、迁移或带 owner/复核条件延期；task plan 再冻结精确
+  文件和证据。字段级唯一 authority 则分别落到 Architecture invariant、Design consumer map、exact schema、
+  verified production loader 与 negative/bypass tests，缺一层都可能让路线要求退化成口号。
+
 ## D1 current consumer map
 
 | 层/消费者 | 当前直接读取 | inventory 用途 |

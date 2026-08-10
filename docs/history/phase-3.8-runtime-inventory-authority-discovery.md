@@ -26,6 +26,83 @@ dependency contract，manifest 为了让 installer 不理解 bundle 结构，又
 owned runtimes、installed contracts、successor baseline 和 pristine overlay retirement 时，两份 inventory
 一直同步扩展，临时镜像由此固化成长期双写。
 
+<a name="phase-3-8-design-hindsight"></a>
+
+## 当时这样拆，合理吗
+
+只看 `0.3.0-alpha.1` 当时的局部目标，这个拆法并不荒唐。bundle 要服务 importer，包含 source、package、
+installed path、hash、mode 和 dependency 等完整信息；installer 当时只需要其中一小部分。给 installer 一份较小、
+较容易读取的投影视图，可以减少首版 consumer 的理解成本。manifest 还保存了 bundle 的 path + SHA，测试也要求
+两份数组逐字段相等，所以短期看起来既清楚又安全。
+
+真正遗漏的不是“能不能有投影”，而是没有把投影的地位和退场方式设计完整：
+
+- 文档把 bundle 叫作 machine source of truth，但 installer 仍把 manifest 副本当作直接生产输入；因此 bundle
+  只是 importer 的权威，不是整条 source/install 链的唯一权威。
+- manifest 中的精简视图不是从 bundle 运行时派生，也不是由 generator 生成的只读产物，而是需要维护者手工
+  同步的第二份 machine fact。
+- manifest 虽然记录 bundle SHA，installer 当时却不在读取 inventory 前验证这条 hash edge；完整性主要由仓库
+  contract test 代为检查，没有形成 consumer 自己的 fail-closed 信任链。
+- 测试保护的是“两份字段必须相等”这个结构，没有保护“一个事实只能有一个作者权威”这个架构不变量。它成功
+  防止了静默漂移，也同时把双写变成每次改动都必须延续的合同。
+- Phase 计划没有给这个过渡投影设置 owner、退休条件和完成门槛。等 local runtime、installed contract 与
+  overlay retirement 继续加入后，原本很小的便利视图逐步长成 bundle 镜像，再删除就需要 schema、consumer、
+  upgrade/rollback 和 Cloud gate 一起迁移。
+
+所以不能简单说原方案“完全不合理”，也不能归因于后来没有认真执行。更准确的结论是：**它是一个短期合理、
+长期闭环不足的过渡设计；后续维护者恰恰严格执行了它，才把过渡结构稳定地保留了下来。** 本次清理是在偿还当时
+没有定义单一 authority 和 retirement contract 的设计债，而不是修复一次偶然复制错误。好的一面是，原有 hash
+记录和逐字段相等测试避免了两份 inventory 在偿债前悄悄分叉，使后续迁移仍能在保持 installed layout 与行为不变
+的前提下完成。
+
+由此得到的经验是：
+
+1. 为了让 consumer 简单而创建投影可以接受，但投影必须明确为派生物；优先让 consumer 读取并校验同一权威，
+   其次才是从权威自动生成不可独立编辑的视图。
+2. “source of truth” 不能只写在设计文档里；所有生产 consumer 都必须通过可执行的 path/hash/schema 验证链到达
+   它，边界测试还要证明旧副本不再被读取。
+3. 临时 schema 字段、programme metadata 和兼容投影在引入时就要写明 owner、retirement condition 与退出 gate；
+   Phase 完成时检查“该删什么”，不能只检查“新增能力是否通过”。
+4. 测试应冻结安全意图和唯一 authority，而不是无期限冻结某次 rollout 的临时形状。若测试只能通过维护两份相同
+   数组，应先追问它是在防漂移，还是在替重复设计续命。
+5. ROADMAP 可以要求 retirement/DoD，但字段归属不能只靠路线文字。ARCHITECTURE 要定义唯一权威，DESIGN 要标明
+   producer/consumer，machine contract 和 production loader 要落实，tests 才能把它变成自动红线。
+6. 去重前先按生命周期分类：source authority 应唯一；installed-state snapshot 和 Release artifact allowlist 分别
+   服务 drift 与 ZIP 边界，不能因为内容相似就一起删除。
+
+<a name="phase-3-8-governance-landing"></a>
+
+### 这两点怎样真正落地
+
+“ROADMAP 没有 retirement DoD”用大白话说，就是当时的阶段验收只问“新东西是否已经建好并能工作”，没有再问
+“为了施工临时加的字段、投影和测试现在该删、该迁还是该长期保留”。就像验收新楼只检查通水通电，却没有把
+脚手架、临时电线和施工围挡列入收尾清单。Phase 2/3 完成后没有一个 gate 强制逐项清点临时结构，它们自然会被
+下一个版本原样继承。
+
+ROADMAP 的正确落点不是记录每个 JSON 字段，而是为阶段关闭增加一条 retirement DoD：本阶段引入或继承的每个
+临时字段、兼容投影、inactive path 和 rollout test，都必须在关闭前被分类为“现在删除”“迁到长期权威”或“明确
+保留”；保留项要写 owner、理由、下一次复核条件和恢复证据。清单没有归零或得到明确延期，阶段就只能算功能完成，
+不能算治理收口。当前 gate 的 task plan 再把这条宏观要求拆成精确文件、证据和停止条件。
+
+“字段级约束没有落实”用大白话说，就是虽然文档说 bundle 是 source of truth，代码却仍允许 installer 从 manifest
+副本拿同一事实，测试还把“两份必须相等”当作正确答案。口头指定了总账，但收银台仍可直接认第二本手抄账；只要
+第二本账存在并被生产读取，就还没有唯一权威。
+
+落地时要让每一层各做一件可检查的事：
+
+| 层 | 必须落下的约束 |
+|---|---|
+| ROADMAP / task plan | 阶段关闭必须完成临时结构清点；当前 gate 冻结删除、迁移、保留集合和证据，不把延期当完成 |
+| ARCHITECTURE | 明文规定“同一逻辑事实只有一个 machine authority”，并区分允许保留的 installed snapshot、Release allowlist 等生命周期副本 |
+| DESIGN | 列清 producer/consumer map：谁写 bundle，谁只通过 manifest 的 path/SHA 到达 bundle，禁止哪个旧读取路径 |
+| machine contracts | manifest exact schema 不再接受 mirror；bundle 独占 inventory；path、SHA、schema、ID、mode、dependency 全部严格校验 |
+| production consumers | importer 和 installer 都先校验 bundle 原始字节，再解析同一 inventory；不得 fallback 到退休字段，也不得信任 bundle 自报 hash |
+| tests | 删除或篡改旧 mirror 仍应正常工作，mirror 回流必须被拒绝，bundle tamper 必须在任何写入前失败，并继续保护 Phase 4 负向准入与 exact installed set |
+
+这样 ROADMAP 提供“必须收尾”的关卡，架构和设计说明“应该只有哪一本账”，contract 与 consumer 决定“代码实际上
+认哪一本账”，测试则负责证明旁路真的走不通。缺少其中任意一层，retirement 都可能重新退化成一句没有执行力的
+文档愿望。
+
 <a name="phase-3-8-consumer-findings"></a>
 
 ## Consumer findings

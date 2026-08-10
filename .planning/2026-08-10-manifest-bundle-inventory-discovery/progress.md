@@ -104,3 +104,12 @@
   I3 等待维护者真实 Cloud 输出，不预填通过状态。
 - 黑盒 template、v0.3.4-dev 薄入口与 planning evidence 已作为纯 docs/planning commit `e54f459` 推送到远端
   `0.3.4-dev`；该提交不含 Release allowlist 输入或 production bytes，`59395e7` implementation 仍在其祖先链中。
+- 按维护者要求补充 Phase 3.8 设计复盘：明确原双视图在首版局部目标下并非荒唐，真正遗漏的是 projection 的
+  派生身份、consumer 端 SHA 信任链、唯一 authority 不变量和 retirement gate；后续严格 equality 维护既避免
+  drift，也把过渡结构固化为长期双写。历史新增六条可复用教训，不改变 I3 Cloud PENDING、Release 或 Phase 4。
+- 设计复盘的 architecture/repository focused governance 在受限 Windows sandbox 中因 `spawn EPERM` 未进入断言；
+  获准沙箱外重跑后 17/17 PASS，`git diff --check` PASS。
+- 继续按维护者要求把两点翻成可执行治理：用“楼建好后仍要拆脚手架”解释 retirement DoD，并新增六层落地表，
+  明确 ROADMAP/task plan 管收尾 gate，Architecture/Design 管唯一权威与 consumer route，contracts/loaders/tests
+  负责拒绝旧 mirror 和生产旁路；仍只修改历史/planning，不改变当前 I3 或产品字节。
+- 本轮补充后的 architecture/repository focused governance 17/17 PASS，`git diff --check` PASS。

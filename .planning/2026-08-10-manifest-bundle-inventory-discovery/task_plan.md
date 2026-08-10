@@ -30,6 +30,10 @@ authority 迁移设计。
   acceptance 为已执行样例，整理 v0.3.4-dev 的维护者黑盒协议；维护者自行执行 Cloud 黑盒。
 - 该授权允许把 exact implementation commit `59395e7` 推为远端 `0.3.4-dev`，以及修改 planning/版本专项
   acceptance；不授权把未提交 evidence 混入 candidate、执行 Cloud 黑盒、seal、publication 或 Phase 4。
+- 维护者追加授权把“原双视图为何短期合理、长期为何变成重复 authority、遗漏了哪些闭环约束以及经验教训”
+  内化到 Phase 3.8 历史；该纯历史复盘不改变 I3 Cloud Next Step 或任何 Release/Phase 4 授权。
+- 维护者进一步要求用大白话解释 retirement DoD 与字段级约束，并把 ROADMAP/task plan、Architecture、Design、
+  machine contracts、production consumers 和 tests 的分层落地方式补入同一 Phase 3.8 复盘。
 
 ## Invariants
 
@@ -100,3 +104,4 @@ Linux/Cloud，也不提前进入 Phase 4、seal 或 publication。
 | exact candidate push 的首次自动审批复核超时 | 1 | 工具确认命令未执行并允许重试一次；第二次成功创建远端 `0.3.4-dev` at `59395e7` |
 | 执行嵌入 Python authority block 时，PowerShell→`python -c` 传参剥离内部引号 | 1 | 语法已通过 stdin compile；执行改用 `python -` 从 stdin 读取原文，authority assertion PASS |
 | 模板 Bash block 首次用 `bash -c` 接收 PowerShell 多行参数时引号损坏 | 1 | 改用 stdin `bash -n -s` 解析原始 block；四段 Bash 全部 syntax PASS |
+| Phase 3.8 设计复盘的 focused Node tests 在受限 Windows sandbox 中因 `spawn EPERM` 未执行断言 | 1 | 在获准的沙箱外重跑同一只读命令，17/17 PASS |
