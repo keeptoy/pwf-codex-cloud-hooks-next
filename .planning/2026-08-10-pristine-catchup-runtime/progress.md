@@ -227,3 +227,6 @@
 - 2026-08-10：维护者授权把本地 `0.3.3-dev` 推送到远端 `main`，仍禁止进入 Phase 4。G13 preflight
   已确认 clean/synced dev、GitHub/SSH auth 健康，fresh `origin/main` 是 dev 的祖先且只落后 71 commits；
   当前先提交 planning-only design checkpoint，尚未写远端 main。
+- G13-A checkpoint `e269b83` 已先推送 dev；G13-B ordinary non-force `0.3.3-dev:main` fast-forward PASS。
+  GitHub ref API 与 fresh fetch postflight 证明两个远端分支同指 `e269b83c57f5f619a74f915f1a1818734ca50470`、
+  ahead/behind `0/0`。下一步只提交并同步这份 planning 证据，状态保持 `PHASE4_NOT_AUTHORIZED`。

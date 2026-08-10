@@ -220,3 +220,9 @@ provenance 与 immutable refs，不在 current tree 保存可执行博物馆副�
   fast-forward，不会覆盖 main 独有提交，也不需要 merge commit、rebase 或 force push。
 - ROADMAP 已把 successor `main` 定义为源码维护权威；G13 只让远端 ref 与已完成 v0.3.3 lifecycle 对齐，
   不改变 package、runtime、Host ABI、trusted graph、Latest/rollback 或 Phase 4 状态。
+- G13-A planning-only checkpoint 为 `e269b83c57f5f619a74f915f1a1818734ca50470`，先推送到
+  `origin/0.3.3-dev`；随后唯一 main write 使用普通 `git push origin 0.3.3-dev:main`，Git 报告
+  `03aebac..e269b83` fast-forward，没有使用 force 或产生 merge commit。
+- Postflight 从 GitHub ref API 分别读取 `refs/heads/main` 与 `refs/heads/0.3.3-dev`，两者都返回
+  `e269b83c57f5f619a74f915f1a1818734ca50470`；fresh fetch 后 remote-tracking refs 的 left/right count 为
+  `0/0`。该证据关闭 main ref gate，不产生 Phase 4 授权。

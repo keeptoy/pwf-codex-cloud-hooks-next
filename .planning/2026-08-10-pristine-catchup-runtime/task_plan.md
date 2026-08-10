@@ -70,13 +70,13 @@
   只将 GitHub `Latest` 从 v0.3.2 移到 v0.3.3，独立后置查询；再同步 ROADMAP、CHANGELOG、
   v0.3.3 acceptance、活动 planning 与精确 lifecycle guards，完成全回归、commit/push。不改 tag、
   Release 资产、bootstrap/ZIP、production runtime、Host ABI、trusted graph 或 Product Phase 4 状态。
-- [ ] G13 — successor main fast-forward：确认 clean/synced `0.3.3-dev`、远端认证与 `origin/main` ancestry；
+- [x] G13 — successor main fast-forward：确认 clean/synced `0.3.3-dev`、远端认证与 `origin/main` ancestry；
   先提交/push planning-only checkpoint，再用普通 refspec `0.3.3-dev:main` fast-forward；独立 fetch/compare
   两个远端 refs，最后记录证据并同步两分支。不 force、不改 branch settings/Release/Phase 4。
 ## Next Step
 
-执行 G13-A planning-only design checkpoint；随后 G13-B 用 ordinary non-force push 将本地
-`0.3.3-dev` fast-forward 到远端 `main`，立即独立 postflight。Product Phase 4 仍未授权。
+G13 已关闭；停在 `MAIN_FAST_FORWARD_PASS / PHASE4_NOT_AUTHORIZED`。等待维护者未来另行决定是否进入
+Product Phase 4 Discovery；当前不得创建 `0.4.0-*` identity、分支或实施 gate。
 
 ## Stop Conditions
 
@@ -110,9 +110,9 @@ R5-PR 10.2 首次执行因提示词转义在下载前停止；直接获取原始
 G12 PASS：design checkpoint 已由 commit `37b87d4` push；pointer-only promotion 与独立 postflight 证明
 GitHub `Latest=v0.3.3`，v0.3.3/v0.3.2 四项公开资产 identity 未变；lifecycle/evidence/guards 与完整回归
 均已关闭。最终状态为 `BASELINE_PROMOTION_PASS / PHASE4_NOT_AUTHORIZED`。
-G13 已获维护者明确授权并完成 preflight：worktree clean，`HEAD=origin/0.3.3-dev=a65f889`；fetch 后
-`origin/main=03aebac` 且是本地 `0.3.3-dev` 的祖先，ahead/behind 为 `0/71`，允许普通 fast-forward。
-当前尚未写入远端 `main`，Product Phase 4 仍未授权。
+G13 PASS：planning-only checkpoint `e269b83` 先同步到 dev；ordinary non-force push 随后把远端 `main`
+从 `03aebac` fast-forward 到 `e269b83`。独立 GitHub ref API 与 fresh fetch 均证明 `main`、`0.3.3-dev`
+同指 `e269b83c57f5f619a74f915f1a1818734ca50470`，ahead/behind 为 `0/0`。Product Phase 4 仍未授权。
 
 ## Errors Encountered
 
