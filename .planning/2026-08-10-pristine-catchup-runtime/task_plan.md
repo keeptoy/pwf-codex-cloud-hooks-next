@@ -63,14 +63,14 @@
   或角色状态的
   `docs/cloud-hard-acceptance-template.md`；保留双通道 trust boundary、版本中立 B～F、可替换 URL/SHA 输入、
   失败取证与 evidence schema。接入 DESIGN/治理指南和通用 guard，不改变版本 acceptance 或 Release inventory。
-- [ ] G12 — v0.3.3 baseline promotion：先冻结 pointer-only 设计并复核 Latest/Release/资产不变性；
+- [x] G12 — v0.3.3 baseline promotion：先冻结 pointer-only 设计并复核 Latest/Release/资产不变性；
   只将 GitHub `Latest` 从 v0.3.2 移到 v0.3.3，独立后置查询；再同步 ROADMAP、CHANGELOG、
   v0.3.3 acceptance、活动 planning 与精确 lifecycle guards，完成全回归、commit/push。不改 tag、
   Release 资产、bootstrap/ZIP、production runtime、Host ABI、trusted graph 或 Product Phase 4 状态。
 ## Next Step
 
-执行 G12-A：提交并 push 只包含授权、preflight 证据、边界与停止条件的 promotion design
-checkpoint；随后 G12-B 只移动 GitHub `Latest` pointer 并立即后置复核。不进入 Phase 4。
+G12 已关闭；停在 `BASELINE_PROMOTION_PASS / PHASE4_NOT_AUTHORIZED`。等待维护者未来另行决定是否进入
+Product Phase 4 Discovery；当前不得创建 `0.4.0-*` identity、分支或实施 gate。
 
 ## Stop Conditions
 
@@ -101,9 +101,9 @@ R5-PR 10.2 首次执行因提示词转义在下载前停止；直接获取原始
 确认 repository/runbook 无缺陷。当前状态为 `PUBLICATION_PASS / R5_PR_F_PASS / R5_PR_CHANNEL_PENDING`。
 维护者随后确认完整 Published Release Cloud channel 已验收通过，并授权只做手册/guard 通用化收口；当前
 状态为 `CLOUD_HARD_ACCEPTANCE_PASS / PROMOTION_NOT_AUTHORIZED`。
-G12 已获维护者明确授权并进入 preflight：目标是 `v0.3.3` pointer-only Latest/rollback baseline
-promotion，Product Phase 4 仍未授权。当前外部事实仍为 `Latest=v0.3.2`，直到 G12-B
-后置查询证明切换成功。
+G12 PASS：design checkpoint 已由 commit `37b87d4` push；pointer-only promotion 与独立 postflight 证明
+GitHub `Latest=v0.3.3`，v0.3.3/v0.3.2 四项公开资产 identity 未变；lifecycle/evidence/guards 与完整回归
+均已关闭。最终状态为 `BASELINE_PROMOTION_PASS / PHASE4_NOT_AUTHORIZED`。
 
 ## Errors Encountered
 
@@ -131,3 +131,4 @@ promotion，Product Phase 4 仍未授权。当前外部事实仍为 `Latest=v0.3
 | R5-PR 10.2 Cloud 临时脚本把 `$PUBLICATION_TAG` 变成 `$PUBLICATION\_TAG`，在 `set -u` 下报 `PUBLICATION: unbound variable` | 1 | 下载/doctor 均未开始；改为直接取得原始 acceptance、提取 10.2 code block 并原样执行后 PASS，确认只是提示词转义，不新增 repository hardening gate |
 | G11 首次完整回归发现 README 导航改动使重建 ZIP SHA 偏离已发布 v0.3.3 | 1 | 模板本身位于 Release-excluded docs；撤回 sealed README 输入改动，改由 DESIGN/治理指南导航，重跑后 published ZIP oracle 与完整 suite 全绿 |
 | G12-A focused Release test 在受限 Windows sandbox 中的 Python/Git 派生进程返回 `status=null` | 1 | 断言未获得产品返回码；按已有 sandbox process limitation 分类，在沙箱外原样重跑 focused guards |
+| G12-C 首个多文件组合补丁因 ROADMAP v0.3.2 acceptance 链接跨行上下文不精确而整批拒绝 | 1 | `apply_patch` 未产生部分修改；读取精确 ROADMAP 片段后拆为单文件、小范围 hunks |

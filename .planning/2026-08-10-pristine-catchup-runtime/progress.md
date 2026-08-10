@@ -211,3 +211,16 @@
   v0.3.3/v0.3.2 四个公开资产的 filename/size/server digest 与冻结证据一致。未执行任何外部写入。
 - G12-A focused Release test 在受限 sandbox 内的 child process 返回 `status=null`，导致期望 0/1
   的两个 assertion 无法评估；该错误发生在产品断言前，将在沙箱外原样复验，不放宽测试。
+- G12-A planning-only design checkpoint 已以 commit `37b87d4` push 到 `origin/0.3.3-dev`；提交前沙箱外
+  focused Release/governance tests 15/15 PASS，worktree 随后保持 clean/synced。
+- G12-B 已执行唯一外部角色写入：将 GitHub Release `v0.3.3` 设为 Latest。独立 postflight 从 release list、
+  `releases/latest` endpoint 与两个版本的 Release detail 三路确认 `Latest=v0.3.3`，且 v0.3.3/v0.3.2
+  ZIP/bootstrap 的 filename、size、digest 均未变化。下一步只做 repository evidence/guard/validation 收口。
+- G12-C 已同步 ROADMAP、CHANGELOG、v0.3.3 acceptance、provenance 持久证据措辞与 lifecycle guards：
+  v0.3.3 为 accepted/Latest，v0.3.2 为 immediate fallback，Phase 4 仍未授权；current tree 的两个版本
+  bootstrap/acceptance 席位保持不变。首轮 focused tests 15/15 PASS，两个 oracle 分别从 immutable
+  v0.3.3/v0.3.2 source 重建 21/23-entry ZIP 并命中冻结 SHA；`git diff --check` PASS。
+- G12-D 完整验证 PASS：`npm test` 共 96 tests，84 PASS、12 个 Windows/POSIX 诚实 SKIP、0 FAIL；
+  importer check、三个 owned Python entrypoint compile、`install.js` 与三个修改测试文件 Node syntax、
+  v0.3.2/v0.3.3 bootstrap `bash -n`、`git diff --check` 全绿。没有 production、contract、Release ZIP/
+  bootstrap 或 Phase 4 文件变更；gate 停在 `BASELINE_PROMOTION_PASS / PHASE4_NOT_AUTHORIZED`。

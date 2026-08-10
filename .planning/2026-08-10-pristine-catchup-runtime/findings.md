@@ -194,3 +194,17 @@ provenance 与 immutable refs，不在 current tree 保存可执行博物馆副�
   focused/full validation → commit/push。
 - BASELINE_PROVENANCE 只维护不可变身份与来源，不复制当前 Latest/角色；因此 promotion 只需
   更新其 v0.3.3 持久证据意义中已过时的“promotion 尚待授权”表述，不改任何已登记 identity。
+- G12-A design checkpoint 已提交并 push 为 `37b87d4`，其中只有活动 planning 的授权、preflight、边界与
+  停止条件；没有提前改写 lifecycle 状态或 Release identity。
+- G12-B 只执行 `gh release edit v0.3.3 --latest`。独立 `releases/latest` endpoint 返回 tag `v0.3.3`、
+  release id `367806502`、non-draft/non-prerelease；Release list 也只把 Latest 标记从 v0.3.2 移到 v0.3.3。
+- Postflight 重新读取 v0.3.3/v0.3.2 两个 Release：四个资产的 filename、size、server digest 与 preflight
+  完全一致，证明 pointer-only promotion 没有重建、替换或改写 ZIP/bootstrap。
+- 当前树仍需保留 v0.3.3 与 v0.3.2 两套 bootstrap/acceptance：promotion 后 candidate 与 accepted 都是
+  v0.3.3，而 v0.3.2 成为 immediate fallback。ROADMAP 必须显式增加可解析的“当前直接回退版本”角色，
+  repository guard 则按 candidate + accepted + immediate fallback 的去重版本集合管理 current file window。
+- Published oracle 应从 v0.3.2 accepted + v0.3.1 fallback 轮换为 v0.3.3 accepted + v0.3.2 fallback；两版
+  historical Release contract 的 entry count 分别为 21/23，测试需要把 entry count 放进每个 immutable oracle，
+  不能继续把 v0.3.2 的 23-entry 历史常量错误套给 v0.3.3。
+- v0.3.3 acceptance 是带时间语义的专项证据：应保留“Cloud gate 本身不自动授权 promotion”，并追加随后
+  获得独立授权、pointer-only postflight PASS 的记录；不能把原始 Cloud PASS 改写成当时已自动晋级。

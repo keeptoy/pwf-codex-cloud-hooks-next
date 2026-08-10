@@ -15,6 +15,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   [`docs/v0.3.3-cloud-hard-acceptance.md`](docs/v0.3.3-cloud-hard-acceptance.md)。
 - 发布 stable `v0.3.3` exact tag、21-entry ZIP 与外部 bootstrap，并从公开 URL 重新下载复核；Published
   Release Cloud 通道随后在独立 Fresh 环境完成，baseline/Latest promotion 仍作为独立 gate。
+- 在独立 gate 完成 pointer-only baseline promotion；postflight 确认 v0.3.3/v0.3.2 的 immutable tag、
+  source 与公开 ZIP/bootstrap identity 未改变，v0.3.2 转为 immediate fallback，Product Phase 4 仍未开启。
 - 退休已不可达的 catch-up compatibility supply-chain：四个 pinned upstream runtime 文件全部恢复 pristine，
   importer 不再加载 patcher/overlay ledger，installed inventory 与 Release allowlist 同步收窄；
   `owned-catchup.py` 继续拥有 transcript/identity/immutable bytes/normalization/rendering，只通过显式

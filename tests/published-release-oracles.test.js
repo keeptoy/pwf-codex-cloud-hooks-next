@@ -14,19 +14,21 @@ const sha256 = file => crypto.createHash("sha256").update(fs.readFileSync(file))
 const publicationRoles = Object.freeze([
   Object.freeze({
     role: "accepted",
-    version: "v0.3.2",
-    commit: "c68a53bdeab7c38badcfb4e2a733ddd851e498e4",
-    zipSha256: "b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081",
-    bootstrapSha256: "aa2c1fd64bfc8ee3804d5f4bf39f7816a2ca9ad9a96949336ec94a6c20f8f77c",
+    version: "v0.3.3",
+    commit: "a1b9f4548e3b6e071fee611270365c8ecf3f8d13",
+    entryCount: 21,
+    zipSha256: "2b2dca5c5894a2297a6f2ccc5fb190878c3c920b71148719a4873326b4ccb352",
+    bootstrapSha256: "236e364bde8397b04c9d7ebfa121fa96963055d77b56e6299e6b9c9aad6c887e",
     tagRequired: true,
   }),
   Object.freeze({
     role: "immediate-fallback",
-    version: "v0.3.1",
-    commit: "9aa2148886e499f9f45594f7ae4f7681f1045de2",
-    zipSha256: "f097b04015b1a3847ca5a24b9236f882c5a008b22033793b5661e282c39131f9",
-    bootstrapSha256: "ce31a32002aea46bbf3f9baf9a0e93451d24c3b3653952e425d1e1ff6960a5e8",
-    tagRequired: false,
+    version: "v0.3.2",
+    commit: "c68a53bdeab7c38badcfb4e2a733ddd851e498e4",
+    entryCount: 23,
+    zipSha256: "b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081",
+    bootstrapSha256: "aa2c1fd64bfc8ee3804d5f4bf39f7816a2ca9ad9a96949336ec94a6c20f8f77c",
+    tagRequired: true,
   }),
 ]);
 
@@ -93,7 +95,7 @@ for (const release of publicationRoles) {
       const releasePackage = JSON.parse(fs.readFileSync(path.join(releaseRoot, "package.json"), "utf8"));
       const bootstrapName = `init-cloud-sandbox-${release.version}.bash`;
       assert.equal(releasePackage.version, release.version.slice(1));
-      assert.equal(releaseArtifact.entries.length, 23);
+      assert.equal(releaseArtifact.entries.length, release.entryCount);
       assert.deepEqual(releaseArtifact.external_release_assets.map(entry => entry.path), [bootstrapName]);
 
       const releaseZip = path.join(workspace, `pwf-codex-cloud-hooks-${release.version}.zip`);

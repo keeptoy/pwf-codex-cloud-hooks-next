@@ -90,7 +90,8 @@ test("published v0.3.3 ZIP is deterministic, self-contained, externalizes its bo
     assert.match(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${release033ZipSha256}\\}"`));
     const roadmap = fs.readFileSync(path.join(root, "ROADMAP.md"), "utf8");
     assert.match(roadmap, /v0\.3\.3.*R5-SC.*PASS/is);
-    assert.match(roadmap, /Cloud-accepted published\s+candidate \/ promotion pending/i);
+    assert.match(roadmap, /accepted baseline \/ promotion complete/i);
+    assert.match(roadmap, /Product Phase 4.*未授权/is);
 
     const extracted = path.join(workspace, "extracted");
     extractZip(first, extracted);

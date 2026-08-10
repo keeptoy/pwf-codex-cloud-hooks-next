@@ -30,13 +30,17 @@ function currentRoleWindow() {
   const roadmap = read("ROADMAP.md");
   const candidateMatch = roadmap.match(new RegExp("^\\| 当前开发列车 \\| `(" + versionPattern + ")`", "m"));
   const acceptedMatch = roadmap.match(new RegExp("^\\| 当前已接受版本 \\| `(" + versionPattern + ")`", "m"));
+  const fallbackMatch = roadmap.match(new RegExp("^\\| 当前直接回退版本 \\| immutable `(" + versionPattern + ")` immediate fallback", "m"));
   assert.ok(candidateMatch, "ROADMAP lacks a parseable current candidate role");
   assert.ok(acceptedMatch, "ROADMAP lacks a parseable accepted baseline role");
+  assert.ok(fallbackMatch, "ROADMAP lacks a parseable immediate fallback role");
   const candidate = candidateMatch[1];
   const accepted = acceptedMatch[1];
+  const immediateFallback = fallbackMatch[1];
   const packageVersion = JSON.parse(read("package.json")).version;
   assert.equal(candidate, `v${packageVersion}`, "package identity must match the current candidate role");
-  return { accepted, candidate, roadmap };
+  assert.notEqual(accepted, immediateFallback, "accepted and immediate fallback roles must remain distinct");
+  return { accepted, candidate, immediateFallback, roadmap };
 }
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
@@ -100,8 +104,8 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
   const releasePaths = artifact.entries.map(item => item.path);
   const docs = actual.filter(item => item.startsWith("docs/"));
-  const { accepted, candidate } = currentRoleWindow();
-  const roleVersions = [...new Set([accepted, candidate])].sort();
+  const { accepted, candidate, immediateFallback } = currentRoleWindow();
+  const roleVersions = [...new Set([accepted, candidate, immediateFallback])].sort();
   const rootBootstraps = actual.filter(item => /^init-cloud-sandbox-v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\.bash$/.test(item));
   const acceptanceDocs = docs.filter(item => /^docs\/v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?-cloud-hard-acceptance\.md$/.test(item));
 
@@ -253,7 +257,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   const design = read("DESIGN.md");
   const agents = read("AGENTS.md");
   const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
-  const { accepted, candidate, roadmap } = currentRoleWindow();
+  const { accepted, candidate, immediateFallback, roadmap } = currentRoleWindow();
   const acceptancePath = `docs/${candidate}-cloud-hard-acceptance.md`;
   const acceptance = read(acceptancePath);
   const escapedCandidate = candidate.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -262,6 +266,8 @@ test("change history, programme, provenance, and current acceptance keep separat
     .map(match => match[1]);
   assert.equal(changelogVersions[0], candidate, "CHANGELOG must lead with the current package version");
   assert.equal(changelogVersions.includes(accepted), true, "CHANGELOG must retain the accepted baseline delta");
+  assert.equal(changelogVersions.includes(immediateFallback), true,
+    "CHANGELOG must retain the immediate fallback delta");
   for (const target of ["ROADMAP.md", "BASELINE_PROVENANCE.md", acceptancePath]) {
     assert.match(changelog, new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
@@ -269,12 +275,12 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 
   assert.match(roadmap, /活动.*task_plan.*当前唯一 Next Step/s);
-  assert.match(roadmap, /一个 active planning.*candidate.*accepted role window.*immutable/s);
+  assert.match(roadmap, /一个 active planning.*candidate.*accepted.*immediate fallback role\s+window.*immutable/s);
   assert.match(roadmap, new RegExp("## 3\\. 已完成的基线 `" + accepted.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "`"));
   assert.doesNotMatch(roadmap, /## 3\. 已完成的仓库迁移|M1 exact mirror|M2 slim transformation/);
   assert.equal((roadmap.match(/GitHub `Latest`/g) || []).length, 1);
 
-  for (const roleVersion of new Set([candidate, accepted])) {
+  for (const roleVersion of new Set([candidate, accepted, immediateFallback])) {
     assert.match(provenance, new RegExp(roleVersion.replaceAll(".", "\\.")));
   }
   assert.match(provenance, /^## 1\. 已发布身份账本$/m);
@@ -306,7 +312,9 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, /R5-SC.*Source\/Candidate.*HOOKS_URL.*HOOKS_SHA256/is);
   assert.match(acceptance, /R5-PR.*Published Release.*默认.*下载/is);
   assert.match(acceptance, /两条通道不得共用容器、安装状态或 B～F 结果/);
-  assert.match(acceptance, /不授权.*Latest.*rollback/is);
+  assert.match(acceptance, /Cloud 结论本身不自动授权.*Latest.*rollback/is);
+  assert.match(acceptance, /Latest\/rollback promotion \| PASS[\s\S]*G12[\s\S]*pointer-only postflight/);
+  assert.match(acceptance, /Product Phase 4[\s\S]*Discovery authorization 之前/);
   assert.match(acceptance, /## 4\. 安装 setup[\s\S]*### 4\.1 Source\/Candidate[\s\S]*published-release-oracles\.test\.js[\s\S]*node --test[\s\S]*cmp "\$ZIP_A" "\$ZIP_B"/);
   assert.match(acceptance, /V033_DEV_STATIC_CONTRACT=PASS/);
   assert.match(acceptance, /origin.*upstream_pristine[\s\S]*managed_sha256[\s\S]*pristine_sha256[\s\S]*overlay_ids/s);
