@@ -35,6 +35,8 @@ tagless checkout 不应伪造 remote/tag；Published Release 也不能使用 wor
 
 ## 2. 共同硬停止条件
 
+<a name="acceptance-hard-stops"></a>
+
 遇到以下任一情况立即停止：
 
 - 无法记录 Source/Candidate 完整 commit，或 setup 前工作树不干净；
@@ -52,6 +54,8 @@ tagless checkout 不应伪造 remote/tag；Published Release 也不能使用 wor
 新 SHA 和新的 downloaded-asset/Cloud evidence。
 
 ## 3. 执行顺序
+
+<a name="source-candidate-sequence"></a>
 
 ```text
 Source/Candidate fresh environment
@@ -76,20 +80,23 @@ Published Release fresh environment
 
 ## 4. 安装 setup
 
+<a name="source-candidate-setup"></a>
+
 ### 4.1 Source/Candidate：source、双构建与本地 override
 
 在 agent startup 完成并切到目标 checkout 后，作为第一条任务执行。下面脚本从 package/Release contract
-派生版本、bootstrap 与 entry count；只需在版本副本中替换 Cloud Node major。
+派生版本、bootstrap 与 entry count。Cloud environment 必须把预先选定的 Node major 通过
+`PWF_ACCEPTANCE_NODE_MAJOR` 显式注入；脚本不把某次 Cloud image 的 major 冻结成模板常量。
 
 ~~~bash
 set -Eeuo pipefail
 
-readonly REQUIRED_NODE_MAJOR="__CLOUD_NODE_MAJOR__"
+readonly REQUIRED_NODE_MAJOR="${PWF_ACCEPTANCE_NODE_MAJOR:-}"
 readonly TARGET_CODEX_HOME="${CODEX_HOME:-/opt/codex}"
 readonly PUBLICATION_ORACLE_SUITE="tests/published-release-oracles.test.js"
 
 case "$REQUIRED_NODE_MAJOR" in
-  *__*|'') printf 'Source/Candidate setup is blocked: Cloud Node major is unresolved\n' >&2; exit 64 ;;
+  ''|*[!0-9]*) printf 'Source/Candidate setup is blocked: PWF_ACCEPTANCE_NODE_MAJOR must be numeric\n' >&2; exit 64 ;;
 esac
 
 PROBE_DIR="$(mktemp -d)"
@@ -102,6 +109,8 @@ git diff --check
 
 python3 tools/import_upstream_runtime.py check
 python3 - <<'PY'
+import hashlib
+import json
 from pathlib import Path
 
 for value in (
@@ -111,6 +120,41 @@ for value in (
 ):
     path = Path(value)
     compile(path.read_text(encoding="utf-8"), str(path), "exec")
+
+package = json.loads(Path("package.json").read_text(encoding="utf-8"))
+artifact = json.loads(Path("contracts/release-artifact-v1.json").read_text(encoding="utf-8"))
+manifest = json.loads(Path("upstream-manifest.json").read_text(encoding="utf-8"))
+managed = manifest["managed_runtime"]
+
+assert artifact["package_version"] == package["version"]
+assert set(managed) == {"schema_version", "contracts", "importer", "license_provenance"}
+assert managed["schema_version"] == 2
+assert set(managed["contracts"]) == {
+    "runtime_bundle",
+    "adapter_runtime_request",
+    "runtime_result",
+    "release_artifact",
+}
+for retired in ("package_root", "local_package_root", "local_files", "files"):
+    assert retired not in managed
+
+bundle_ref = managed["contracts"]["runtime_bundle"]
+bundle_path = Path(bundle_ref["path"])
+bundle_bytes = bundle_path.read_bytes()
+assert hashlib.sha256(bundle_bytes).hexdigest() == bundle_ref["sha256"]
+bundle = json.loads(bundle_bytes.decode("utf-8"))
+assert bundle["contract_id"] == "PWF_MANAGED_RUNTIME_BUNDLE_V1"
+assert bundle["schema_version"] == 1
+
+admitted = {
+    item["package_path"]
+    for section in ("local_files", "files", "installed_contracts")
+    for item in bundle[section]
+}
+for candidate in ("attest-plan.sh", "ledger-append.sh", "phase-status.sh"):
+    assert not any(path.endswith("/" + candidate) for path in admitted)
+
+print("MANIFEST_BUNDLE_AUTHORITY=PASS")
 PY
 node --check install.js
 
@@ -231,6 +275,8 @@ setup 成功后的首个 agent task 从第 5.2 节开始。Published Release 的
 
 ## 5. B：按安装时序分流 SessionStart
 
+<a name="blackbox-post-install-resume"></a>
+
 ### 5.1 B-SC：post-install Resume
 
 第 4.1 节完成后创建新 task，原样发送：
@@ -281,6 +327,8 @@ Planning context（辅助观察）: OBSERVED 或 NOT_OBSERVED
 SessionStart 与 UserPromptSubmit 必须被观察到，SessionStart source 必须为 startup；planning 三项只作
 辅助观察。
 
+<a name="blackbox-canonical-baseline"></a>
+
 ## 6. C：创建 canonical planning baseline
 
 在当前通道的 B 完成后，于同一 task 原样发送：
@@ -303,6 +351,8 @@ SessionStart 与 UserPromptSubmit 必须被观察到，SessionStart source 必�
 
 必须实际产生 structured planning update，并收到精确 acknowledgment。
 
+<a name="blackbox-canonical-context"></a>
+
 ## 7. D：canonical UserPromptSubmit
 
 C 完成后立即原样发送：
@@ -324,6 +374,8 @@ Planning context: OBSERVED 或 NOT_OBSERVED
 ~~~
 
 六项必须全部被观察到。
+
+<a name="blackbox-real-resume"></a>
 
 ## 8. E：long tail 与 real Resume
 
@@ -393,6 +445,8 @@ upstream CLI `main()` 由 source/inventory assertions 和 portable negative suit
 
 ## 9. Post-resume doctor、inventory、policy 与 residue
 
+<a name="source-candidate-deep-check"></a>
+
 ### 9.1 Source/Candidate
 
 E2 完成后，只在 Source/Candidate 的精确 checkout 运行：
@@ -441,14 +495,25 @@ assert doctor["blockers"] == []
 
 runtime = codex_home / "hooks" / "planning-with-files"
 installed = json.loads((runtime / "installed-manifest.json").read_text(encoding="utf-8"))
-expected = sorted(item["path"] for item in installed["runtime_files"])
+installed_snapshot = sorted(item["path"] for item in installed["runtime_files"])
 actual = sorted(
     str(path.relative_to(runtime)).replace("\\", "/")
     for path in runtime.rglob("*")
     if path.is_file() and path.name != "installed-manifest.json"
 )
+
+installed_root = pathlib.PurePosixPath("hooks/planning-with-files")
+bundle_authority = ["hook_adapter.py", "THIRD_PARTY_NOTICES.md"]
+for section in ("local_files", "files", "installed_contracts"):
+    for item in bundle[section]:
+        relative = pathlib.PurePosixPath(item["installed_path"]).relative_to(installed_root)
+        bundle_authority.append(relative.as_posix())
+bundle_authority = sorted(bundle_authority)
+
+assert len(bundle_authority) == len(set(bundle_authority))
 assert installed["installer_version"] == package["version"]
-assert expected == actual
+assert installed_snapshot == bundle_authority
+assert actual == bundle_authority
 assert not any("compatibility" in item or item.startswith("patches/") for item in actual)
 
 def sha256(path):
@@ -490,6 +555,7 @@ print("INSTALLER_VERSION=" + package["version"])
 print("RELEASE_ARTIFACT_ENTRIES=" + str(len(artifact["entries"])))
 print("INSTALLED_RUNTIME_FILES=" + str(len(actual)))
 print("UPSTREAM_PRISTINE_FILES=" + str(len(bundle["files"])))
+print("BUNDLE_INSTALLED_INVENTORY=AUTHORITATIVE")
 print("MANAGED_POLICY=ADAPTER_ONLY")
 print("INSTALLED_RUNTIME_INVENTORY=" + json.dumps(actual, ensure_ascii=False))
 PY
@@ -626,6 +692,8 @@ printf 'PWF_PUBLIC_ZIP_BOUNDARY_IMPORTER=PASS\n'
 printf 'SNAPSHOT_LEFTOVERS=0\n'
 printf 'PWF_PUBLIC_POST_RESUME=PASS\n'
 ~~~
+
+<a name="acceptance-evidence-writeback"></a>
 
 ## 10. 版本副本的证据写回
 

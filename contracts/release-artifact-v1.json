@@ -2,7 +2,7 @@
   "schema_version": 1,
   "contract_id": "PWF_RELEASE_ARTIFACT_V1",
   "package_name": "pwf-codex-cloud-hooks",
-  "package_version": "0.3.3",
+  "package_version": "0.3.4-dev",
   "archive_root": "pwf-codex-cloud-hooks/",
   "ordering": "lexicographic_by_utf8_path",
   "timestamp": "1980-01-01T00:00:00Z",
@@ -32,7 +32,7 @@
   ],
   "external_release_assets": [
     {
-      "path": "init-cloud-sandbox-v0.3.3.bash",
+      "path": "init-cloud-sandbox-v0.3.4-dev.bash",
       "reason": "The bootstrap pins and downloads the ZIP checksum and therefore must remain outside that ZIP."
     }
   ],

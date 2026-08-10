@@ -12,27 +12,15 @@
     "scripts/session-catchup.py": "6476fd9024d0cbb9bfb850119fd0beff7fb7cfab9c6683ce10e4cc8d830ce6de"
   },
   "managed_runtime": {
-    "schema_version": 1,
-    "package_root": "runtime/upstream",
-    "local_package_root": "runtime",
+    "schema_version": 2,
     "contracts": {
       "runtime_bundle": {
         "path": "contracts/runtime-bundle-v1.json",
-        "sha256": "125b831ab122642337f00834491ef3728680aab645a046f67e8e087d2ad46824"
+        "sha256": "d707a65d6f0d6c5229cd9b4a03c76a2377b97a14411a8a2c5ecf76432d7e3567"
       },
       "adapter_runtime_request": {
         "path": "contracts/adapter-runtime-request-v1.schema.json",
         "sha256": "a86588e3c7d55cbbeddc74110403ba815ad8715735c149d77dd0c47996ee72d5"
-      },
-      "adapter_plan_context_request": {
-        "path": "contracts/adapter-plan-context-request-v1.schema.json",
-        "installed_path": "hooks/planning-with-files/contracts/adapter-plan-context-request-v1.schema.json",
-        "sha256": "c0c904451cf5042d621c8702d475af65b757ca5e45d74da50d9541a55b469262"
-      },
-      "plan_context_result": {
-        "path": "contracts/plan-context-result-v1.schema.json",
-        "installed_path": "hooks/planning-with-files/contracts/plan-context-result-v1.schema.json",
-        "sha256": "5d739740d82e01abf06c4b18b3a1eeb533a1f8e7513a24827b4bdcb36d484172"
       },
       "runtime_result": {
         "path": "contracts/runtime-result-v1.schema.json",
@@ -40,12 +28,12 @@
       },
       "release_artifact": {
         "path": "contracts/release-artifact-v1.json",
-        "sha256": "253cf6f94e01cd1f88805e424b8c61c368b034b2fb6fd7ed112bf1dad3fdf7db"
+        "sha256": "4ccd1a3c0f3854c577796e99e4ca3c4ffdd1a74bd8e9d97e37df090989e8c9d9"
       }
     },
     "importer": {
       "path": "tools/import_upstream_runtime.py",
-      "sha256": "c6b9008bfe20e5c27d9753d2eb580df9986b25efb9df24f75b4cb0606bf30764"
+      "sha256": "f969e7b3d3534149aa40e1151f73da75370dc57c5d43fe9fd35ef7e186900cef"
     },
     "license_provenance": {
       "spdx": "MIT",
@@ -53,60 +41,6 @@
       "upstream_sha256": "4f2e5ecfaa4e0833621cfe54c0bdc2f60f086c0925540d7bdc713517eafb3c84",
       "notice_path": "THIRD_PARTY_NOTICES.md",
       "notice_sha256": "ba31b6620593dd80561e6586908ffb8e5af07a2a069510bce04c00c49a27c53c"
-    },
-    "local_files": [
-      {
-        "id": "owned_catchup",
-        "package_path": "runtime/owned-catchup.py",
-        "mode": "0755",
-        "origin": "local_managed_runtime",
-        "sha256": "8b5501eb4257654922a9e247bd3873e1ede75a7a1ae4b777eb7d8b3b47e41b72"
-      },
-      {
-        "id": "owned_plan",
-        "package_path": "runtime/owned-plan.py",
-        "mode": "0755",
-        "origin": "local_managed_runtime",
-        "sha256": "1d8098d12ae6fdc9389b1047fc3691d1f792c813d21575ace7db0daa85c32595"
-      }
-    ],
-    "files": [
-      {
-        "id": "session_catchup",
-        "source_path": "skills/planning-with-files/scripts/session-catchup.py",
-        "package_path": "runtime/upstream/session-catchup.py",
-        "mode": "0755",
-        "origin": "upstream_pristine",
-        "pristine_sha256": "6476fd9024d0cbb9bfb850119fd0beff7fb7cfab9c6683ce10e4cc8d830ce6de",
-        "managed_sha256": "6476fd9024d0cbb9bfb850119fd0beff7fb7cfab9c6683ce10e4cc8d830ce6de"
-      },
-      {
-        "id": "resolve_plan_dir",
-        "source_path": "skills/planning-with-files/scripts/resolve-plan-dir.sh",
-        "package_path": "runtime/upstream/resolve-plan-dir.sh",
-        "mode": "0755",
-        "origin": "upstream_pristine",
-        "pristine_sha256": "38a1c5effb35f9506e2e371ccabb6be6e4f4170acc18f1811f08d634f5f0e9bd",
-        "managed_sha256": "38a1c5effb35f9506e2e371ccabb6be6e4f4170acc18f1811f08d634f5f0e9bd"
-      },
-      {
-        "id": "inject_plan",
-        "source_path": "skills/planning-with-files/scripts/inject-plan.sh",
-        "package_path": "runtime/upstream/inject-plan.sh",
-        "mode": "0755",
-        "origin": "upstream_pristine",
-        "pristine_sha256": "72c7904ec9a03f994d349ac1b9b3cfe484b417e738b25c0545d9ae11a2cc0364",
-        "managed_sha256": "72c7904ec9a03f994d349ac1b9b3cfe484b417e738b25c0545d9ae11a2cc0364"
-      },
-      {
-        "id": "ledger_summary",
-        "source_path": "skills/planning-with-files/scripts/ledger-summary.sh",
-        "package_path": "runtime/upstream/ledger-summary.sh",
-        "mode": "0755",
-        "origin": "upstream_pristine",
-        "pristine_sha256": "d4fe626a6bed95ce00a05bc4ffb2dbf70990f9a16e116607c0a21ad0679cf3b9",
-        "managed_sha256": "d4fe626a6bed95ce00a05bc4ffb2dbf70990f9a16e116607c0a21ad0679cf3b9"
-      }
-    ]
+    }
   }
 }

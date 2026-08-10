@@ -10,6 +10,7 @@ const test = require("node:test");
 
 const root = path.resolve(__dirname, "..");
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
+const pristineSkill = path.join(root, "tests", "fixtures", "planning-with-files");
 const sha256 = file => crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
 const publicationRoles = Object.freeze([
   Object.freeze({
@@ -60,6 +61,97 @@ function extractZip(archive, destination) {
     { encoding: "utf8" },
   );
   assert.equal(result.status, 0, result.stderr);
+}
+
+function patchManagedPython(packageRoot) {
+  const executable = spawnSync(python, ["-c", "import sys; print(sys.executable)"], { encoding: "utf8" });
+  assert.equal(executable.status, 0, executable.stderr);
+  const installer = path.join(packageRoot, "install.js");
+  const source = fs.readFileSync(installer, "utf8");
+  const current = 'const MANAGED_PYTHON = "/usr/bin/python3";';
+  const replacement = `const MANAGED_PYTHON = ${JSON.stringify(executable.stdout.trim().replace(/\\/g, "/"))};`;
+  assert.equal(source.split(current).length - 1, 1, `${installer} managed Python declaration`);
+  fs.writeFileSync(installer, source.replace(current, replacement));
+}
+
+function installHome(workspace, name) {
+  const home = path.join(workspace, name);
+  const requirements = path.join(home, "etc", "codex", "requirements.toml");
+  fs.mkdirSync(path.dirname(requirements), { recursive: true });
+  fs.writeFileSync(requirements, `[hooks]\nmanaged_dir = ${JSON.stringify(path.join(home, "hooks"))}\n`);
+  return home;
+}
+
+function runPackageInstaller(packageRoot, home, command) {
+  return spawnSync(process.execPath, [
+    path.join(packageRoot, "install.js"),
+    command,
+    "--codex-home", home,
+    "--skill-root", pristineSkill,
+    "--managed-requirements", path.join(home, "etc", "codex", "requirements.toml"),
+    "--json",
+  ], { encoding: "utf8" });
+}
+
+function managedState(home) {
+  const entries = [];
+  const roots = [
+    [path.join(home, "etc", "codex", "requirements.toml"), "requirements.toml"],
+    [path.join(home, "hooks", "planning-with-files"), "runtime"],
+    [path.join(home, "backups", "planning-with-files-hooks"), "backups"],
+  ];
+  function walk(target, relative) {
+    if (!fs.existsSync(target)) return;
+    const info = fs.lstatSync(target);
+    if (info.isDirectory()) {
+      entries.push([relative, "directory", info.mode & 0o777]);
+      for (const child of fs.readdirSync(target).sort()) walk(path.join(target, child), `${relative}/${child}`);
+    } else {
+      entries.push([relative, "file", info.mode & 0o777, sha256(target)]);
+    }
+  }
+  for (const [target, relative] of roots) walk(target, relative);
+  return entries;
+}
+
+function buildPublishedPackage(workspace, release) {
+  const sourceArchive = path.join(workspace, `${release.version}-roundtrip-source.zip`);
+  let result = spawnSync("git", ["archive", "--format=zip", `--output=${sourceArchive}`, release.commit], {
+    cwd: root,
+    encoding: "utf8",
+  });
+  assert.equal(result.status, 0, result.stderr);
+  const sourceRoot = path.join(workspace, `${release.version}-roundtrip-source`);
+  extractZip(sourceArchive, sourceRoot);
+  const releaseZip = path.join(workspace, `${release.version}-roundtrip.zip`);
+  result = buildFromSource(
+    releaseZip,
+    path.join(sourceRoot, "contracts", "release-artifact-v1.json"),
+    path.join(sourceRoot, "tools", "build_release.py"),
+    sourceRoot,
+  );
+  assert.equal(result.status, 0, result.stderr);
+  const extracted = path.join(workspace, `${release.version}-roundtrip-package`);
+  extractZip(releaseZip, extracted);
+  const packageRoot = path.join(extracted, "pwf-codex-cloud-hooks");
+  patchManagedPython(packageRoot);
+  return packageRoot;
+}
+
+function buildCurrentPackage(workspace) {
+  const releaseZip = path.join(workspace, "current-roundtrip.zip");
+  const result = buildFromSource(
+    releaseZip,
+    path.join(root, "contracts", "release-artifact-v1.json"),
+    path.join(root, "tools", "build_release.py"),
+    root,
+  );
+  assert.equal(result.status, 0, result.stderr);
+  const extracted = path.join(workspace, "current-roundtrip-package");
+  extractZip(releaseZip, extracted);
+  const packageRoot = path.join(extracted, "pwf-codex-cloud-hooks");
+  patchManagedPython(packageRoot);
+  return packageRoot;
 }
 
 test("publication oracle window contains exactly accepted and immediate fallback", () => {
@@ -113,3 +205,57 @@ for (const release of publicationRoles) {
     }
   });
 }
+
+test("v0.3.3 upgrade and rollback keep the published managed state recoverable", async t => {
+  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-v033-roundtrip-"));
+  try {
+    const accepted = publicationRoles.find(release => release.version === "v0.3.3");
+    const acceptedPackage = buildPublishedPackage(workspace, accepted);
+    const currentPackage = buildCurrentPackage(workspace);
+
+    await t.test("a candidate with bundle drift cannot modify or back up the v0.3.3 installation", () => {
+      const home = installHome(workspace, "invalid-upgrade-home");
+      let result = runPackageInstaller(acceptedPackage, home, "install");
+      assert.equal(result.status, 0, result.stderr);
+      result = runPackageInstaller(acceptedPackage, home, "doctor");
+      assert.equal(result.status, 0, result.stderr);
+      const before = managedState(home);
+
+      const candidateBundle = path.join(currentPackage, "contracts", "runtime-bundle-v1.json");
+      const originalBundle = fs.readFileSync(candidateBundle);
+      try {
+        fs.appendFileSync(candidateBundle, " ");
+        result = runPackageInstaller(currentPackage, home, "install");
+        assert.equal(result.status, 1, "candidate accepted a runtime bundle that no longer matches its manifest SHA");
+        assert.match(result.stderr, /runtime bundle SHA-256 mismatch/);
+        assert.deepEqual(managedState(home), before, "rejected candidate upgrade changed the v0.3.3 managed state");
+      } finally {
+        fs.writeFileSync(candidateBundle, originalBundle);
+      }
+
+      result = runPackageInstaller(acceptedPackage, home, "doctor");
+      assert.equal(result.status, 0, result.stderr);
+    });
+
+    await t.test("a valid candidate can replace v0.3.3 and the immutable v0.3.3 installer can take ownership back", () => {
+      const home = installHome(workspace, "valid-roundtrip-home");
+      let result = runPackageInstaller(acceptedPackage, home, "install");
+      assert.equal(result.status, 0, result.stderr);
+      result = runPackageInstaller(currentPackage, home, "install");
+      assert.equal(result.status, 0, result.stderr);
+      result = runPackageInstaller(currentPackage, home, "doctor");
+      assert.equal(result.status, 0, result.stderr);
+      let manifest = JSON.parse(fs.readFileSync(path.join(home, "hooks", "planning-with-files", "installed-manifest.json"), "utf8"));
+      assert.equal(manifest.installer_version, "0.3.4-dev");
+
+      result = runPackageInstaller(acceptedPackage, home, "install");
+      assert.equal(result.status, 0, result.stderr);
+      result = runPackageInstaller(acceptedPackage, home, "doctor");
+      assert.equal(result.status, 0, result.stderr);
+      manifest = JSON.parse(fs.readFileSync(path.join(home, "hooks", "planning-with-files", "installed-manifest.json"), "utf8"));
+      assert.equal(manifest.installer_version, "0.3.3");
+    });
+  } finally {
+    fs.rmSync(workspace, { recursive: true, force: true });
+  }
+});

@@ -47,6 +47,10 @@
 - 当前唯一支持的集成是 `OthmanAdi/planning-with-files v3.8.2`，不得描述为通用转换器。
 - global PWF Skill 必须 pristine。production 只能执行 installer 管理、manifest/allowlist 固定并
   校验的 owned runtime；不得从用户 Skill 目录执行可变脚本。
+- runtime source/install inventory 只由 `contracts/runtime-bundle-v1.json` 定义；`upstream-manifest.json` 只固定
+  provenance、bundle path/SHA 和非重复 integrity references。importer/installer 必须先校验 bundle 原始 SHA 再解析。
+- `installed-manifest.json.runtime_files` 是安装状态快照，`release-artifact-v1.json.entries` 是 ZIP allowlist；
+  两者不得作为重复 inventory 删除或改写为 source authority。
 - Managed policy 只注册 absolute adapter。`owned-plan.py`、`owned-catchup.py` 是 adapter sibling，
   不是平台 handler。
 - 不因 pinned upstream 中存在某脚本就推断它已导入、安装或激活。

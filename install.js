@@ -85,9 +85,198 @@ function pathsFor(codexHome, requirementsPath = "/etc/codex/requirements.toml") 
     backups: path.join(home, "backups", "planning-with-files-hooks"),
   };
 }
+function packageDrift(message) { throw new Error(`BLOCKED_PACKAGE_DRIFT: ${message}`); }
+function exactObject(value, keys, label) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) packageDrift(`${label} must be an object`);
+  const expected = [...keys].sort(), actual = Object.keys(value).sort();
+  if (canonical(actual) !== canonical(expected)) packageDrift(`${label} fields mismatch`);
+  return value;
+}
+function safePackagePath(value, label) {
+  if (typeof value !== "string" || !value || value.includes("\\") || value.includes("\0") || path.posix.isAbsolute(value)) {
+    packageDrift(`unsafe ${label} path`);
+  }
+  const parts = value.split("/");
+  if (parts.some(part => !part || part === "." || part === "..") || /^[A-Za-z]:/.test(parts[0]) || path.posix.normalize(value) !== value) {
+    packageDrift(`unsafe ${label} path`);
+  }
+  return value;
+}
+function belowRoot(value, root, label) {
+  const relative = path.posix.relative(root, value);
+  if (!relative || relative.startsWith("../") || path.posix.isAbsolute(relative)) packageDrift(`${label} escapes ${root}`);
+  return relative;
+}
+function contentHash(value, label) {
+  if (typeof value !== "string" || !/^[a-f0-9]{64}$/.test(value)) packageDrift(`invalid SHA-256 for ${label}`);
+  return value;
+}
+function stringList(value, label) {
+  if (!Array.isArray(value) || value.some(item => typeof item !== "string" || !item) || new Set(value).size !== value.length) {
+    packageDrift(`invalid ${label}`);
+  }
+  return value;
+}
+function packageSource(relative, label) {
+  safePackagePath(relative, label);
+  let current = ROOT;
+  for (const part of relative.split("/")) {
+    current = path.join(current, part);
+    let info;
+    try { info = fs.lstatSync(current); }
+    catch { packageDrift(`${label} is missing`); }
+    if (info.isSymbolicLink()) packageDrift(`${label} contains a symlink`);
+  }
+  let final;
+  try { final = fs.lstatSync(current); }
+  catch { packageDrift(`${label} is missing`); }
+  if (!final.isFile()) packageDrift(`${label} is not a regular file`);
+  return current;
+}
+function validateDependencies(entries, runtimeIds) {
+  for (const entry of entries) {
+    if (!Array.isArray(entry.direct_file_dependencies)) packageDrift(`invalid dependencies for ${entry.id}`);
+    const seen = new Set();
+    for (const dependency of entry.direct_file_dependencies) {
+      const keys = Object.hasOwn(dependency || {}, "allowed_symbols")
+        ? ["id", "condition", "required", "allowed_symbols"]
+        : ["id", "condition", "required"];
+      exactObject(dependency, keys, `${entry.id} dependency`);
+      if (typeof dependency.id !== "string" || !runtimeIds.has(dependency.id) || dependency.id === entry.id || seen.has(dependency.id)) {
+        packageDrift(`unknown or duplicate dependency for ${entry.id}: ${dependency.id}`);
+      }
+      if (typeof dependency.condition !== "string" || !dependency.condition || typeof dependency.required !== "boolean") {
+        packageDrift(`invalid dependency metadata for ${entry.id}: ${dependency.id}`);
+      }
+      if (Object.hasOwn(dependency, "allowed_symbols")) stringList(dependency.allowed_symbols, `${entry.id}.${dependency.id}.allowed_symbols`);
+      seen.add(dependency.id);
+    }
+  }
+}
+function validateRuntimeBundle(bundle) {
+  exactObject(bundle, [
+    "schema_version", "contract_id", "upstream", "package_root", "local_package_root",
+    "installed_root", "local_files", "installed_contracts", "files",
+  ], "runtime bundle");
+  if (bundle.schema_version !== 1 || bundle.contract_id !== "PWF_MANAGED_RUNTIME_BUNDLE_V1") packageDrift("unsupported runtime bundle schema or identity");
+  const upstream = exactObject(bundle.upstream, [
+    "repository", "release", "commit", "release_archive_url", "release_archive_sha256", "canonical_source_root",
+    "license", "copyright", "license_source_path", "license_sha256",
+  ], "runtime bundle upstream");
+  for (const key of ["repository", "release", "commit", "release_archive_url", "canonical_source_root", "license", "copyright"]) {
+    if (typeof upstream[key] !== "string" || !upstream[key]) packageDrift(`invalid runtime bundle upstream ${key}`);
+  }
+  if (!upstream.release_archive_url.startsWith("https://github.com/")) packageDrift("runtime bundle archive URL is not an HTTPS GitHub URL");
+  contentHash(upstream.release_archive_sha256, "release archive");
+  contentHash(upstream.license_sha256, "upstream license");
+  safePackagePath(upstream.license_source_path, "upstream license");
+  const packageRoot = safePackagePath(bundle.package_root, "package root");
+  const localPackageRoot = safePackagePath(bundle.local_package_root, "local package root");
+  const installedRoot = safePackagePath(bundle.installed_root, "installed root");
+  const managedRoot = path.posix.dirname(installedRoot);
+  const sourceRoot = safePackagePath(upstream.canonical_source_root, "canonical source root");
+  for (const [name, value] of [["files", bundle.files], ["local_files", bundle.local_files], ["installed_contracts", bundle.installed_contracts]]) {
+    if (!Array.isArray(value) || !value.length) packageDrift(`runtime bundle ${name} is incomplete`);
+  }
+  const seenIds = new Set(), seenPackages = new Set(), seenInstalled = new Set();
+  const register = (entry, packagePath, installedPath) => {
+    if (typeof entry.id !== "string" || !/^[a-z][a-z0-9_]*$/.test(entry.id) || seenIds.has(entry.id)) packageDrift(`duplicate or invalid runtime id: ${entry.id}`);
+    if (seenPackages.has(packagePath)) packageDrift(`duplicate package path: ${packagePath}`);
+    if (seenInstalled.has(installedPath)) packageDrift(`duplicate installed path: ${installedPath}`);
+    seenIds.add(entry.id); seenPackages.add(packagePath); seenInstalled.add(installedPath);
+  };
+  for (const entry of bundle.files) {
+    exactObject(entry, [
+      "id", "source_path", "package_path", "installed_path", "origin", "language", "mode", "pristine_sha256",
+      "managed_sha256", "direct_file_dependencies", "host_dependencies", "overlay_ids",
+    ], "upstream runtime file");
+    const sourcePath = safePackagePath(entry.source_path, `${entry.id} source`);
+    const packagePath = safePackagePath(entry.package_path, `${entry.id} package`);
+    const installedPath = safePackagePath(entry.installed_path, `${entry.id} installed`);
+    belowRoot(sourcePath, sourceRoot, `${entry.id} source`);
+    belowRoot(packagePath, packageRoot, `${entry.id} package`);
+    belowRoot(installedPath, installedRoot, `${entry.id} installed`);
+    register(entry, packagePath, installedPath);
+    if (entry.origin !== "upstream_pristine" || entry.mode !== "0755" || typeof entry.language !== "string" || !entry.language) packageDrift(`invalid upstream runtime metadata for ${entry.id}`);
+    const pristine = contentHash(entry.pristine_sha256, `${entry.id} pristine`);
+    if (contentHash(entry.managed_sha256, `${entry.id} managed`) !== pristine) packageDrift(`pristine/managed hash mismatch for ${entry.id}`);
+    if (!Array.isArray(entry.overlay_ids) || entry.overlay_ids.length) packageDrift(`runtime file declares an overlay: ${entry.id}`);
+    stringList(entry.host_dependencies, `${entry.id} host dependencies`);
+  }
+  for (const entry of bundle.local_files) {
+    exactObject(entry, [
+      "id", "package_path", "installed_path", "origin", "language", "mode", "sha256",
+      "direct_file_dependencies", "host_dependencies",
+    ], "local runtime file");
+    const packagePath = safePackagePath(entry.package_path, `${entry.id} package`);
+    const installedPath = safePackagePath(entry.installed_path, `${entry.id} installed`);
+    belowRoot(packagePath, localPackageRoot, `${entry.id} package`);
+    belowRoot(installedPath, managedRoot, `${entry.id} installed`);
+    register(entry, packagePath, installedPath);
+    if (entry.origin !== "local_managed_runtime" || entry.mode !== "0755" || typeof entry.language !== "string" || !entry.language) packageDrift(`invalid local runtime metadata for ${entry.id}`);
+    contentHash(entry.sha256, entry.id);
+    stringList(entry.host_dependencies, `${entry.id} host dependencies`);
+  }
+  for (const entry of bundle.installed_contracts) {
+    exactObject(entry, ["id", "package_path", "installed_path", "mode", "sha256"], "installed contract");
+    const packagePath = safePackagePath(entry.package_path, `${entry.id} package`);
+    const installedPath = safePackagePath(entry.installed_path, `${entry.id} installed`);
+    belowRoot(packagePath, "contracts", `${entry.id} package`);
+    belowRoot(installedPath, managedRoot, `${entry.id} installed`);
+    register(entry, packagePath, installedPath);
+    if (entry.mode !== "0644") packageDrift(`invalid installed contract mode for ${entry.id}`);
+    contentHash(entry.sha256, entry.id);
+  }
+  const runtimeEntries = [...bundle.files, ...bundle.local_files];
+  validateDependencies(runtimeEntries, new Set(runtimeEntries.map(entry => entry.id)));
+  return bundle;
+}
+function loadVerifiedRuntimeBundle() {
+  const managed = UPSTREAM.managed_runtime;
+  exactObject(managed, ["schema_version", "contracts", "importer", "license_provenance"], "managed runtime manifest");
+  if (managed.schema_version !== 2) packageDrift("unsupported managed runtime manifest schema");
+  const contracts = exactObject(managed.contracts, [
+    "runtime_bundle", "adapter_runtime_request", "runtime_result", "release_artifact",
+  ], "managed runtime contracts");
+  for (const [identifier, value] of Object.entries(contracts)) {
+    exactObject(value, ["path", "sha256"], `${identifier} integrity reference`);
+    safePackagePath(value.path, identifier);
+    contentHash(value.sha256, identifier);
+  }
+  exactObject(managed.importer, ["path", "sha256"], "runtime importer");
+  safePackagePath(managed.importer.path, "runtime importer");
+  contentHash(managed.importer.sha256, "runtime importer");
+  const provenance = exactObject(managed.license_provenance, [
+    "spdx", "upstream_path", "upstream_sha256", "notice_path", "notice_sha256",
+  ], "license provenance");
+  if (typeof provenance.spdx !== "string" || !provenance.spdx) packageDrift("invalid license provenance SPDX");
+  safePackagePath(provenance.upstream_path, "upstream license");
+  safePackagePath(provenance.notice_path, "third-party notice");
+  contentHash(provenance.upstream_sha256, "upstream license");
+  contentHash(provenance.notice_sha256, "third-party notice");
+  const reference = contracts.runtime_bundle;
+  const relative = safePackagePath(reference.path, "runtime bundle");
+  const expected = contentHash(reference.sha256, "runtime bundle");
+  const source = packageSource(relative, "runtime bundle");
+  const bytes = fs.readFileSync(source);
+  const actual = sha256(bytes);
+  if (actual !== expected) packageDrift(`runtime bundle SHA-256 mismatch: ${actual}`);
+  let bundle;
+  try { bundle = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)); }
+  catch { packageDrift("runtime bundle is invalid JSON"); }
+  validateRuntimeBundle(bundle);
+  for (const [manifestKey, bundleKey] of [
+    ["upstream", "repository"], ["release", "release"], ["commit", "commit"],
+    ["release_archive_url", "release_archive_url"], ["release_archive_sha256", "release_archive_sha256"],
+  ]) {
+    if (UPSTREAM[manifestKey] !== bundle.upstream[bundleKey]) packageDrift(`runtime bundle upstream mismatch: ${manifestKey}`);
+  }
+  if (managed.license_provenance?.upstream_sha256 !== bundle.upstream.license_sha256) packageDrift("runtime bundle upstream license mismatch");
+  return bundle;
+}
+const RUNTIME_BUNDLE = loadVerifiedRuntimeBundle();
 function sourceRuntimeFiles() {
   const managed = UPSTREAM.managed_runtime;
-  if (!managed || managed.schema_version !== 1 || !Array.isArray(managed.files)) throw new Error("BLOCKED_PACKAGE_DRIFT: managed runtime manifest missing");
   const files = [{
     id: "adapter",
     relative: "hook_adapter.py",
@@ -95,54 +284,48 @@ function sourceRuntimeFiles() {
     expected: fileHash(path.join(ROOT, "hooks", "hook_adapter.py")),
     mode: 0o755,
   }];
-  for (const item of managed.local_files || []) {
-    const relative = path.posix.relative("runtime", item.package_path);
-    if (!relative || relative.startsWith("../") || path.posix.isAbsolute(relative)) throw new Error(`BLOCKED_PACKAGE_DRIFT: invalid local runtime package path ${item.package_path}`);
+  for (const item of RUNTIME_BUNDLE.local_files) {
     files.push({
       id: item.id,
-      relative,
-      source: path.join(ROOT, ...item.package_path.split("/")),
+      relative: belowRoot(item.installed_path, "hooks/planning-with-files", `${item.id} installed`),
+      source: packageSource(item.package_path, item.id),
       expected: item.sha256,
       mode: Number.parseInt(item.mode, 8),
     });
   }
-  for (const item of managed.files) {
-    const relative = path.posix.relative("runtime", item.package_path);
-    if (!relative || relative.startsWith("../") || path.posix.isAbsolute(relative)) throw new Error(`BLOCKED_PACKAGE_DRIFT: invalid runtime package path ${item.package_path}`);
+  for (const item of RUNTIME_BUNDLE.files) {
     files.push({
       id: item.id,
-      relative,
-      source: path.join(ROOT, ...item.package_path.split("/")),
+      relative: belowRoot(item.installed_path, "hooks/planning-with-files", `${item.id} installed`),
+      source: packageSource(item.package_path, item.id),
       expected: item.managed_sha256,
       mode: Number.parseInt(item.mode, 8),
     });
   }
-  for (const [id, item] of Object.entries(managed.contracts || {})) {
-    if (!item.installed_path) continue;
-    const relative = path.posix.relative("hooks/planning-with-files", item.installed_path);
-    if (!relative || relative.startsWith("../") || path.posix.isAbsolute(relative)) throw new Error(`BLOCKED_PACKAGE_DRIFT: invalid installed contract path ${item.installed_path}`);
+  for (const item of RUNTIME_BUNDLE.installed_contracts) {
     files.push({
-      id,
-      relative,
-      source: path.join(ROOT, ...item.path.split("/")),
+      id: item.id,
+      relative: belowRoot(item.installed_path, "hooks/planning-with-files", `${item.id} installed`),
+      source: packageSource(item.package_path, item.id),
       expected: item.sha256,
-      mode: 0o644,
+      mode: Number.parseInt(item.mode, 8),
     });
   }
+  const noticePath = safePackagePath(managed.license_provenance?.notice_path, "third-party notice");
   files.push({
     id: "third_party_notices",
     relative: "THIRD_PARTY_NOTICES.md",
-    source: path.join(ROOT, managed.license_provenance.notice_path),
-    expected: managed.license_provenance.notice_sha256,
+    source: packageSource(noticePath, "third-party notice"),
+    expected: contentHash(managed.license_provenance?.notice_sha256, "third-party notice"),
     mode: 0o644,
   });
-  const seen = new Set();
+  const seen = new Set(), seenIds = new Set();
   for (const file of files) {
     const normalized = file.relative.split(path.sep).join("/");
-    if (seen.has(normalized) || normalized.startsWith("../") || path.posix.isAbsolute(normalized)) throw new Error(`BLOCKED_PACKAGE_DRIFT: duplicate or unsafe runtime path ${file.relative}`);
-    if (!fs.existsSync(file.source) || fileHash(file.source) !== file.expected) throw new Error(`BLOCKED_PACKAGE_DRIFT: ${file.id}`);
+    if (seen.has(normalized) || seenIds.has(file.id) || normalized.startsWith("../") || path.posix.isAbsolute(normalized)) packageDrift(`duplicate or unsafe runtime entry ${file.id}: ${file.relative}`);
+    if (fileHash(file.source) !== file.expected) packageDrift(`${file.id} content hash mismatch`);
     file.relative = normalized;
-    seen.add(normalized);
+    seen.add(normalized); seenIds.add(file.id);
   }
   return files;
 }

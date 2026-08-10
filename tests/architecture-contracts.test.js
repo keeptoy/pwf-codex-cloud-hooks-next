@@ -134,7 +134,10 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.match(architecture, /已发布资产的精确身份与来源只在.*BASELINE_PROVENANCE/s);
 
   assert.equal((bundle.local_files || []).some(item => item.id === "owned_plan"), true);
-  assert.equal((upstream.managed_runtime.local_files || []).some(item => item.id === "owned_plan"), true);
+  assert.equal(upstream.managed_runtime.schema_version, 2);
+  assert.equal(Object.hasOwn(upstream.managed_runtime, "local_files"), false);
+  assert.equal(Object.hasOwn(upstream.managed_runtime, "files"), false);
+  assert.match(installer, /const RUNTIME_BUNDLE = loadVerifiedRuntimeBundle\(\)/);
   assert.equal(artifact.entries.some(item => item.path === "runtime/owned-plan.py"), true);
   assert.equal(artifact.entries.some(item => item.path === "contracts/adapter-plan-context-request-v1.schema.json"), true);
   assert.equal(artifact.entries.some(item => item.path === "contracts/plan-context-result-v1.schema.json"), true);

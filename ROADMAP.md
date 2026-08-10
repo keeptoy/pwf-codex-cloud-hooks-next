@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.3`；R5-SC、stable seal、immutable publication、公开下载复核、R5-PR Cloud hard acceptance 与 baseline promotion 已 PASS；尚未开启 successor 列车 |
+| 当前开发列车 | `v0.3.4-dev`；清理 runtime contract 的历史 programme metadata，并把重复 manifest inventory 收敛到 verified bundle authority；当前为 zero-hash Source/Candidate |
 | 当前已接受版本 | `v0.3.3`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.2` immediate fallback |
 | 回退证据链 | immutable `v0.3.1` deeper fallback；更早发布里程碑见 provenance museum |
@@ -54,13 +54,14 @@ baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta
 
 ## 4. 当前开发列车与 Product Phase 路线
 
-`v0.3.3` 列车已经发布、双通道 Cloud 验收并完成独立 pointer-only baseline promotion；当前状态为
-**accepted baseline / promotion complete**。该列车只退休不可达 compatibility supply-chain，不新增 Hook、
-Host ABI、trusted graph 或 Product Phase 4 行为。Phase 4 仍停在 Discovery authorization 之前，尚未建立
-`0.4.0-*` machine identity、开发分支或实现 gate。
+`v0.3.4-dev` 是 v0.3.3 accepted baseline 之上的兼容维护列车：把历史 programme annotation 从 runtime
+machine contract 迁出，并把 manifest 的重复 source/install projection 收敛到经 SHA 验证的 runtime bundle；
+exact current inventory guard 继续阻止未授权脚本准入。它不改变 production
+dispatch、Host ABI、trusted graph、installed inventory 或 upstream runtime bytes，也不授权 Phase 4。
+Phase 4 仍停在 Discovery authorization 之前，尚未建立 `0.4.0-*` machine identity、开发分支或实现 gate。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
-bootstrap/acceptance；当前两席去重后只有 v0.3.3。v0.3.2 immediate fallback 与 v0.3.1 deeper fallback
+bootstrap/acceptance；当前窗口为 v0.3.4-dev candidate + v0.3.3 accepted。v0.3.2 immediate fallback 与 v0.3.1 deeper fallback
 均由 immutable commit、tag、Release、exact acceptance 与 publication oracle 恢复；更早历史只留在精选
 provenance。
 trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。

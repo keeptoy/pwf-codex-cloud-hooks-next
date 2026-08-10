@@ -165,12 +165,20 @@ pinned PWF v3.8.2 archive
 
 ```text
 Release ZIP
-  -> install.js 校验 runtime contract、SHA-256、mode 与 inventory
+  -> install.js 从 upstream manifest 取得 bundle path/SHA
+  -> 校验 bundle 原始字节后严格解析唯一 source/install inventory
+  -> 校验 runtime content、mode 与 dependency graph
   -> 复制成品到 $CODEX_HOME/hooks/planning-with-files/
   -> Managed policy 只启动绝对路径 hook_adapter.py
   -> adapter 只调用已安装的 sibling owned runtimes
   -> owned runtimes 只从已安装的 sibling upstream runtime 进入明确允许的调用点
 ```
+
+`runtime-bundle-v1.json` 独占 repository source 到 installed path 的 runtime/contract inventory；
+`upstream-manifest.json` 是 provenance 与 integrity index，不再镜像 bundle arrays 或 installed-contract projections。
+importer 和 installer 共享同一条 `manifest → raw bundle SHA → strict parse → inventory` 信任边。
+installed manifest 的 `runtime_files` 是安装状态快照，Release artifact 的 `entries` 是 ZIP 层 allowlist；它们分别
+服务 drift 检查和制品边界，不能与 source authority 合并或删除。
 
 因此生产安装是否健康只取决于已校验的成品 runtime 与安装 contract；源码重建工具是否自包含是独立
 的 Release 维护边界，不能反向扩大 trusted execution graph。各版本对此边界的实际变化见

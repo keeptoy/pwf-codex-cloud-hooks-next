@@ -207,6 +207,12 @@ pinned archive 逐字重建并保持 pristine。正常安装不会现场转换�
 ZIP 内已经生成的 owned runtime。源码重建/生产执行分层、已退休 patcher 的历史定位和 parser helper
 边界见 [`ARCHITECTURE.md`](ARCHITECTURE.md)；各版本实际 package delta 见 [`CHANGELOG.md`](CHANGELOG.md)。
 
+runtime source/install inventory 的唯一 machine authority 是
+[`runtime-bundle-v1.json`](contracts/runtime-bundle-v1.json)。`upstream-manifest.json` 只保存上游 provenance、
+bundle path/SHA 和非重复 integrity references；importer 与 installer 都必须先按 manifest 校验 bundle 原始字节，
+再严格解析并消费 inventory。`installed-manifest.json.runtime_files` 仍是安装状态快照，Release artifact entries
+仍是 ZIP 层 allowlist，两者不属于重复的 source authority。
+
 ## 安全与 Release 不变量
 
 - global PWF Skill 始终 pristine；production 只执行 manifest/allowlist 固定的 owned runtime；
