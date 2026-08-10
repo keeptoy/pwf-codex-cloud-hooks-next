@@ -44,6 +44,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   简写改为完整 `v0.3.0-*` 身份；不得把 v0.3.1/v0.3.2 扩写进 Phase 0 或改变任何历史语义。
 - 维护者明确授权把本地 `0.3.2-post-release` 发布到远端同名分支；不得直接推 `main`，不得创建
   `0.3.3-dev`，不得借运输分支建立新 machine identity、Release、seal 或 P3 授权。
+- 维护者要求继续文档治理并检查代码侧是否仍有历史残留；本轮先执行 P2-CRD-D 只读 Discovery，按
+  current identity、必要 rollback/publication oracle、真正退役残留分类，未讨论冻结前不得删除或改代码。
 - P3 只记录为后续独立 gate；当前不修改 package、Release contract、bootstrap 或 `v0.3.3-dev` identity，
   不 seal、不发布、不部署新版本。
 - 已完成的 `2026-08-09-architecture-contract-retention` 三文件由 immutable commit `d4cc3b5` 保存，P2
@@ -68,8 +70,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Next Step
 
-停在远端 `0.3.2-post-release` 已发布、但尚未合入 `main` 且 P3 未开启的状态。后续若要合入 main、
-创建 PR 或开始 successor train，必须由维护者另行明确授权具体 gate。
+停在 P2-CRD-D 的 CONDITIONAL_GO 讨论点。维护者决定是否另行授权低风险 hygiene、v0.1 migration policy
+或后继 trusted-graph overlay retirement gate 前，不实施代码/contract 清理，也不进入 P3。
 
 ## Gates
 
@@ -100,6 +102,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   Phase 0 范围或改写 provenance identity。
 - [x] P2-PUSH — Post-release branch publication：只发布同名远端运输分支并核对 exact commit，不触碰
   `main`、`0.3.3-dev`、tag、Release 或 assets。
+- [x] P2-CRD-D — Code residue Discovery：全仓只读审计代码/测试中的历史耦合，区分必要精确身份与可退役
+  残留，冻结恢复链、影响面和候选路线；未获 GO 不实施删改。
 - [x] P2-PROV — Early publication provenance backfill：核验并登记有证据的 v0.1.0、v0.2.2 与
   v0.3.0 alpha/beta 身份，缺证字段保持空缺。
 - [x] P2-P0 — Architecture lineage overview：建立回顾性 Phase 0，串联可行性、Cloud 功能基线、owned
@@ -122,7 +126,7 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS，P2-P-A PASS，P2-P-M PASS，P2-P-B PASS，
 P2-P-E PASS，P2-P-T PASS，P2-P-R PASS，P2-H-010 PASS，P2-PROV PASS，P2-P0 PASS，P2-H-021 PASS；
-P2-H-020 PASS；P2-H-VN PASS；P2-PUSH PASS。
+P2-H-020 PASS；P2-H-VN PASS；P2-PUSH PASS；P2-CRD-D CONDITIONAL_GO，停在实施前讨论点。
 本地分支为 `0.3.2-post-release`，当前 HEAD 是 P3 前的 unsealed governance transition；P3 未授权。
 
 ## Errors Encountered
@@ -152,3 +156,4 @@ P2-H-020 PASS；P2-H-VN PASS；P2-PUSH PASS。
 | Phase 0 时间线格式补丁误放进 CHANGELOG update 段，精确上下文校验拒绝应用 | 1 | 无部分修改；拆成 CHANGELOG 与 Phase 0 两个精确文件补丁 |
 | P2-H-020 清理旧 findings 时，首个补丁使用了概括后的句子而非文件中的精确换行 | 1 | 无部分修改；先读取真实行，再用精确上下文修正三处旧结论 |
 | 版本简写扫描使用 ripgrep 默认引擎不支持的 lookbehind/lookahead | 1 | status 已成功输出且文件未修改；改用 `rg --pcre2` 或无 lookaround 的精确模式，不重复默认引擎命令 |
+| P2-CRD-D 并行 inventory 的 JavaScript wrapper 因嵌套 shell 引号未通过解析 | 3 | 命令尚未执行、文件未修改；停止使用该并行写法，后续严格改为一次一个简单 `shell_command` |

@@ -740,3 +740,135 @@ bootstrap/README 一并删除，则当前结论转为 `NO_GO`，必须等待 P3 
   `5156e2ab73b82621e4fa020f3d793b3fa245083a`。
 - 独立 `ls-remote` 后置查询确认远端同名分支精确指向该 commit，`main` 仍为 preflight 的 `4658f1a`，
   `0.3.3-dev` 仍不存在；没有创建 tag、Release、asset 或 P3 machine identity。
+
+## P2-CRD-D Code Residue Discovery
+
+- 本轮“历史残留”不等于所有版本字符串。`package.json`、Release contract、当前 bootstrap 属于 current
+  machine identity；accepted + immediate fallback publication oracle 属于必要历史席位；只有退役身份、
+  旧路径或旧算法仍影响默认 source/test/Release 时才是清理候选。
+- inventory 覆盖 tracked filename、production/runtime/installer、tools/patches、contracts/manifests、tests/
+  fixtures，并同时搜索具体产品版本、旧 commit/SHA、retired filenames、legacy/historical 分支和重复实现。
+- 当前只授权 Discovery。若单点命中可能代表同类问题，必须先形成 keep/generalize/retire 集合、immutable
+  恢复路径、测试影响和停止条件，再与维护者讨论；不得边扫描边删改。
+- 首轮 tracked filename inventory 只有当前 `v0.3.2` bootstrap/acceptance、当前 planning slug 与精选
+  `docs/history/`；没有 `old/`、`archive/`、第二套版本化 production/runtime/contracts 目录。
+- 非 Markdown 具体版本扫描初步分成：current identity（package/contract/bootstrap/tests 的 0.3.2）、pinned
+  upstream（v3.8.2）、两席 publication oracle（v0.3.2 + v0.3.1）、带历史版本名的 golden/Cloud fixtures，
+  以及 `install.js` 中清退 v0.1 non-managed installation 的兼容代码注释。
+- 目前最需要深挖的不是 current/pinned/two-seat 常量，而是两类候选：v0.2.2/beta.1 命名 fixtures 是否仍是
+  当前兼容性 golden，和 v0.1 legacy uninstall/cleanup 是否仍有受测迁移职责或已经变成永久历史分支。
+- `install.js` 的 v0.1 面不是一个整体：`removeOwned()` 与 `stripTrustToml()` 仍在 install/uninstall 路径中，
+  用旧 manifest entries 清理 hooks.json/config trust；但 `mergeHooks()`、`hookHash()`、`ownedEntries()`、
+  `trustToml()` 在当前 production 内没有调用点，只被 module exports 暴露，tests 也没有调用后三者。
+- 这形成一个高可信 dead-code 候选集和一个需决策的 migration-cleanup 集。后者不能仅因版本老就删除；
+  需要继续确认当前 installer 是否承诺从 v0.1 直接升级、旧 manifest 能否被当前 `readManifest` 接受，以及
+  fixture 是否真的覆盖 owned legacy handlers/trust，而不是只覆盖第三方 hooks.json preservation。
+- 当前 install/uninstall 确实读取旧 manifest 的 `entries`，随后从 hooks.json 删除命令路径包含 owned
+  adapter segment 的 handlers，并按 raw/file trust keys 清理 config.toml；这是可达行为，不是纯注释。
+  但现有 installer fixture 默认只放第三方 Stop hook，唯一 trust test 直接调用 `stripTrustToml()`；尚未看到
+  端到端 fixture 构造 v0.1 owned handlers + entries + trust 并证明 install 后安全迁移。
+- 两个当前 golden 文件实际已经采用版本无关文件名 `adapter-output-managed-legacy.json` 与
+  `adapter-output-canonical-plan.json`；内部 fixture_id/description 保留来源时代语义。repository guard 中
+  出现的 v0.2.2/beta.1 旧路径更像精选 tombstone，需要核对它是负断言而非当前 fixture 依赖。
+- 继续查明 `requiredHooks()` 与 `enableHooks()` 也只服务已退休的 hooks.json/trust 构造链且当前无调用；
+  因此高可信 dead cluster 是 `requiredHooks`、`mergeHooks`、`hookHash`、`ownedEntries`、`enableHooks`、
+  `trustToml`，而不是仍可达的 `removeOwned`/`stripTrustToml`。
+- 当前 `readManifest()` 对 install preflight 只解析 JSON，不先要求 schema 3；这使 entries-based 老安装清理
+  在设计上可能接收旧 manifest。`assertSafeRuntimeForInstall()` 另行限制 runtime inventory，所以这条兼容
+  路线具有 fail-closed 外壳，但是否继续承诺从 v0.1 直接升级仍缺显式 lifecycle/测试结论。
+- repository guard 中三个 v0.2.2/beta.1 fixture 路径确认只是 forbidden list，不是依赖。它们能阻止最近
+  退役命名回流，但也把具体历史永久留在默认测试；候选方向是改成“fixtures 不得使用产品版本命名”的
+  通用 pattern guard，保留安全意图而删除逐版本 tombstone。
+- current golden 文件名虽已语义化，内部仍有 `V022`、`V030_BETA1`、`R4-B`、`.planning/beta`、
+  `session-beta-golden` 与 `BETA_GOLDEN_*` 等历史施工标记。`golden-output.test.js` 不把这些标记作为合同；
+  它只读取 scenarios/schema，managed-legacy 文件额外固定整文件 SHA。
+- 因而 fixture 内部标记是低风险 normalize 候选：把 ID/描述/虚拟路径与 sentinel 改为语义名称，并同步
+  managed-legacy fixture hash，可保留同样的 golden 场景与输出合同。Cloud fixture 中 Codex CLI
+  `0.144.0-alpha.4` 是带日期 Host observation，不是本项目历史版本，必须保留。
+- `upstream-manifest.json.historical_patched_skill_files` 不是死字段：patcher 的 active transform contract
+  读取它，并要求其 session-catchup hash 等于 `compatibility_patches` 的 patched hash。但同一 managed hash
+  已同时存在于 compatibility patch、runtime bundle/managed runtime 和 overlay ledger，字段名称与重复事实
+  都带有旧架构痕迹。
+- 这项只能归入“active supply-chain contract 的结构性清理候选”，不能和死 helper/fixture 文案一起顺手删；
+  若处理，应让 patcher 改读 active overlay/runtime authority、同步 manifest hash/Release inputs 并跑 importer/
+  patch/contracts/package 全套验证。当前 0.3.2 package/bootstrap constants 与 v3.8.2 pin 均是合法精确身份。
+- `contracts/runtime-bundle-v1.json` 还把架构施工史写进了 active machine contract：每个 owned/upstream
+  文件携带 `activation_phase`，`deferred_upstream_candidates` 又冻结 Phase 4/7/8 的 `earliest_phase` 和旧路线原因。
+  全仓交叉检索确认这些字段只被 `tests/contracts.test.js` 读取；installer、importer、builder 与 runtime 均不消费。
+- 因而 Phase 数字不是当前 runtime inventory、安全校验或 Host ABI 的组成部分，而是 programme history 泄漏进
+  machine contract 后由测试自证的残留。可迁往 ROADMAP/history 或直接从当前 contract 删除，但这会改变 contract
+  与 Release 输入字节，必须归入独立的高风险 contract gate，不能与低风险命名整理合并。
+- 相反，`managed_legacy`、`session_attachment=legacy` 与 `plan_scope=legacy_root` 仍贯穿 request/result schema、adapter、
+  owned runtimes 和行为测试，是当前 exact-v1 兼容行为及根目录 plan fallback 的有效 ABI；仅因包含 `legacy` 字样而删改
+  会破坏现行行为，不属于历史清理。
+- `tests/architecture-contracts.test.js` 中对 `_plan_candidate`、`_active_slug`、`resolve_plan`、
+  `session_attachment`、`plan_file`、`resolve_project_state` 的禁止断言虽使用旧函数名，但其保护的是当前“thin adapter
+  不重新长回平行 plan 算法”的架构不变量。它们不是版本身份残留；是否泛化应以能否同等约束职责边界为准，不能只为
+  消除旧名字而删除。
+- 生产 Python 顶层函数全量引用计数只发现一个“定义后全仓零调用”的明确兼容别名：
+  `hooks/hook_adapter.py::owned_runtime_path()`。其 docstring 明说是 active catch-up sibling 的 backward-compatible
+  name，而当前 main、测试与架构断言均直接使用 `sibling_runtime_path("catchup")`；这是高置信可退役代码。
+- JavaScript 顶层函数引用计数也再次确认旧 hooks.json/trust 构造链：`requiredHooks` 只有定义；`mergeHooks`、
+  `ownedEntries`、`trustToml` 只有定义与 export；`enableHooks` 只被死的 `trustToml` 调用；`hookHash` 只被死的
+  `ownedEntries` 调用后再 export。它们共同构成一簇，不应只删其中三项留下半条死链。
+- `session_store_roots()` 在缺失 `CODEX_HOME` 时从已安装 adapter 的受控绝对布局推导 sessions root，仍被当前
+  catch-up request 构造使用；`removeOwned()` / `stripTrustToml()` 仍被 install/uninstall 用于旧 non-managed
+  installation 清退。这些可达兼容行为与无调用别名/构造 helper 必须分开治理。
+- 更深一层的 overlay 调用图显示：四项 patch 分别修改上游 `get_codex_sessions()`、
+  `get_session_candidates()`、CLI planning guard 和 CLI user rendering；当前 `owned-catchup.py` 只动态加载同一固定
+  module 后调用 `same_project_path()`、`find_last_planning_update()`、`text_content()`、
+  `extract_messages_after()`，并从未调用 upstream CLI `main()` 或前述四个 patched symbols。
+- pristine fixture 与 `runtime/upstream/session-catchup.py` 的逐字 diff 也只包含这四项 overlay；owned wrapper 使用的
+  parser helpers 及其依赖没有差异。现有 owned-runtime/owned-plan/activation tests 又分别覆盖 validated Host path、
+  explicit fallback roots、identity、canonical plan state、bounded report 与 trailing sentinel，已经与 overlay ledger
+  自身列出的四项 retirement condition 高度对应。
+- 因此不只是 `historical_patched_skill_files` 字段命名陈旧：整条“patcher → overlay ledger → managed
+  session-catchup bytes”很可能已经成为不影响 production behavior 的过渡架构。首选后继设计应评估把四个 upstream
+  文件全部恢复为 pristine、让 owned wrapper 继续复用 pinned parser helpers，并从 active Release/runtime contract
+  移除 patcher 与 overlay ledger；但这会改变 trusted graph、importer、runtime hashes、inventory 与 ZIP 边界，必须作为
+  独立关键 Discovery/implementation/Cloud gate，不能在 P2-CRD-D 中直接实施。
+- 这项结论目前是静态调用图 + 现有边界测试的强证据，不等同于已完成行为等价验收。真正退役前还应增加一条明确测试：
+  owned catch-up 在 pristine pinned `session-catchup.py` 下产生与当前 managed copy 相同的关键结果；随后再跑 importer、
+  installer、Release 双构建、Linux full suite 与 Source/Candidate Cloud 黑盒。
+
+### P2-CRD-D Inventory and Decision
+
+**Keep（当前事实/行为）**
+
+- 当前 0.3.2 package、Release contract、bootstrap 与对应测试；PWF v3.8.2 pin；accepted v0.3.2 + immediate
+  fallback v0.3.1 publication oracle；带日期的 Cloud Host/CLI observation。
+- `managed_legacy`、`legacy_root`、validated Host transcript、explicit fallback roots 与 installed-layout fallback
+  等现行 ABI/行为；pinned upstream test fixture 中的 upstream 自有兼容注释。
+- thin-adapter 的职责边界断言。具体旧函数 tombstone 只有在改成更强的语义断言后才可移除，不能直接减弱。
+
+**Generalize（低风险治理候选）**
+
+- 把三个逐版本 fixture filename tombstone 改成“测试 fixture 不得使用产品版本命名”的 pattern guard；按 docs
+  分区建立稳定文档/current acceptance/history capsule 规则，逐步替代 beta 文档的逐文件 tombstone。
+- 把 golden 内部的 `V022`、`V030_BETA1`、`R4-B`、beta 虚拟路径/session/sentinel 改成语义名称，并同步
+  managed-legacy fixture hash；不改场景、预期输出结构或行为。
+- 在可迁移治理指南补一条 compatibility-code retirement contract：每条旧升级/兼容路径必须声明受支持来源窗口、
+  owner、行为测试、fail-closed 语义和退休条件；machine contract 不保存仅供项目回忆的 Phase/Round 元数据。
+
+**Retire（高置信、行为不可达）**
+
+- `hook_adapter.py::owned_runtime_path()` 兼容别名。
+- installer 的 `requiredHooks`、`mergeHooks`、`hookHash`、`ownedEntries`、`enableHooks`、`trustToml` 整簇及
+  相应 exports。恢复路径由当前 pre-cleanup commit 与已发布 immutable refs 提供。
+
+**Decision required（可达兼容行为）**
+
+- v0.1 non-managed install cleanup 不能静默遗留：若继续支持直接升级，就补完整 old manifest + hooks.json +
+  config trust 迁移 fixture 和明确 sunset；若不再支持，就用精确检测显式 fail closed、提示先用旧版卸载，而不是
+  简单删除 cleanup 后让旧 handler 与新 managed handler 并存。
+
+**Critical successor gate（trusted graph / machine contract）**
+
+- 评估并证明四项 overlay 已满足 retirement condition，把 `session-catchup.py` 恢复为 pristine pinned bytes，
+  移除 active patcher/overlay ledger/`historical_patched_skill_files` 链，并同步 importer、manifest、runtime inventory、
+  contracts、Release allowlist 与文档。`activation_phase` / `deferred_upstream_candidates` 的项目史元数据可在同一
+  contract migration 的独立子门槛清退。
+
+结论为 **CONDITIONAL_GO**：低风险 dead-code/fixture/governance hygiene 已有足够证据进入独立实施 gate；v0.1
+迁移策略必须由维护者先选定；overlay retirement 虽有强证据，但属于 trusted graph/Release 关键变更，必须在后继
+machine identity 的专项 Discovery 与 Cloud gate 中实施。P2-CRD-D 本身停在讨论点，不自动进入任何实施或 P3。

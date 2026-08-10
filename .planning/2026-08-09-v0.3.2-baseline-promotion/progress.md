@@ -258,3 +258,27 @@
   `12cf20f`、目标远端分支不存在、远端 main 为 `4658f1a`，且未跟踪 `临时文件/` 不进入提交。
 - push checkpoint `5156e2a` 建立后，`git push -u origin 0.3.2-post-release` 成功；后置远端查询确认
   同名分支精确指向该 commit、main 保持 `4658f1a`、`0.3.3-dev` 不存在。P2-PUSH 已关闭。
+- 2026-08-10：维护者要求继续检查代码历史残留；P2-CRD-D 已启动为只读 Discovery，先按 current identity、
+  必要 publication/rollback evidence 与真正退役耦合分类，不在本轮直接删除或修改代码。
+- 首轮 filenames/version-token inventory 完成：未发现版本化 production 副本；current 0.3.2、upstream
+  v3.8.2 与 accepted/fallback oracle 先归入 keep，v0.1 legacy cleanup 和两个历史命名 fixtures 进入深挖。
+- installer call-site 扫描确认四个旧 trust 构造 helper 已无调用，其中三项连 tests 也未使用；legacy 清理
+  helper 仍在 install/uninstall 可达，需继续核对直接升级承诺和真实测试覆盖后再分类。
+- install/uninstall 路径与 installer tests 初审完成：旧 entries-based cleanup 可达，但未发现完整 v0.1
+  upgrade fixture；golden 现行文件名已版本无关，旧版本路径可能只作为 repository tombstone 保留。
+- dead helper 集扩展为六项；旧 manifest 解析与 runtime inventory 形成可达但未完整受测的 fail-closed 迁移
+  外壳。三个历史 fixture 路径确认仅为负清单，进入“改通用 pattern 还是保留精选 tombstone”的路线比较。
+- golden runner 复核完成：历史 fixture IDs/Round/beta 虚拟数据不参与 schema/行为选择，具备语义化空间；
+  managed-legacy 整文件 hash 需同步更新。外部 Cloud CLI alpha 版本属于观测事实，排除在清理候选外。
+- supply-chain 初审发现 `historical_patched_skill_files` 仍被 patcher 主动消费，但与三个 active hash authority
+  重复；先归入高风险结构性清理候选，不与低风险文案/dead-code 清理混做。
+- runtime contract 交叉检索确认 `activation_phase`、`deferred_upstream_candidates` 与 `earliest_phase` 只被
+  contracts test 自证，不被 production/import/install/build 消费；当前 `managed_legacy`/`legacy_root` 则仍是有效 ABI。
+- Python/JavaScript 顶层引用扫描确认一个 dead adapter alias 与六项 dead installer construction helpers；
+  可达的 installed-layout fallback、old install cleanup 和 ABI compatibility 被明确排除在直接删除集合外。
+- overlay 调用图与 pristine/managed diff 复核完成：四个 patched symbols 均不在 owned wrapper 的 parser-helper
+  调用链上，且 wrapper 不调用 upstream CLI `main()`；overlay ledger 的 retirement conditions 已被现有能力高度覆盖。
+- P2-CRD-D 形成 keep/generalize/retire/decision-required/critical-successor 五类 inventory，结论为
+  CONDITIONAL_GO；本轮仅持久化证据并停下讨论，没有修改 production、tests、contracts、Release 或 P3 identity。
+- focused governance/architecture/contracts suite 在沙箱内 15/18，余下 3 项均为既知的 Node `spawnSync("git")`
+  platform limitation；沙箱外重跑同一命令 18/18 PASS。随后 `git diff --check` 作为提交前检查执行。
