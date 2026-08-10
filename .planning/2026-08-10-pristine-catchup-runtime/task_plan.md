@@ -81,7 +81,7 @@ G8 lifecycle split PASS：R5-SC setup/F Cloud 证据已写回，B 已按安装�
 post-install Resume 与 Published Release Fresh startup；architecture/guard/full regression 全绿。当前状态为
 `SC_SETUP_PASS / SC_F_PASS / LIFECYCLE_PENDING`，下一步只执行 B-SC，不进入 publication。
 维护者随后确认修订后的 R5-SC lifecycle 全部通过，并授权正式 publication。当前状态为
-`R5_SC_PASS / V0.3.3_RELEASE_AUTHORIZED / R5_PR_PENDING`；G9 未关闭前不宣称 Release 成立。
+`R5_SC_PASS / LOCAL_SEAL_PASS / PUBLICATION_PENDING / R5_PR_PENDING`；G9 未关闭前不宣称 Release 成立。
 
 ## Errors Encountered
 
@@ -104,3 +104,5 @@ post-install Resume 与 Published Release Fresh startup；architecture/guard/ful
 | G8 focused `node --test` 在 runner 启动两个 test file 时均返回 `spawn EPERM` | 1 | 未进入断言，归类为既有 Windows sandbox limitation；改为逐文件直接执行相同 Node test 内容 |
 | G8 runbook 抽取器猜测 `C:\Program Files\Git\bin\bash.exe`，本机不存在 | 1 | 在抽取/语法执行前停止；从实际 `git.exe` 位置推导同发行版 Bash 后重跑 |
 | G8 抽取器定位真实 Git Bash 后在首个 `bash -n` 启动时遇到 Win32 signal pipe error 5 | 2 | 未检查脚本文字，归类为既有 sandbox limitation；沙箱外原样重跑四段 Bash 与三段 Python |
+| G9 读取旧 Release 模板时请求了当前 `gh` 不支持的 `isLatest` JSON 字段 | 1 | 无远端写入；改用 `release list` 判断 Latest，并用受支持字段重读 v0.3.2 Release |
+| G9 组合读取 tagged 文件时 `git show | Select-Object` 因下游提前关闭产生非零退出 | 1 | 已取得所需只读片段；后续避免截断 Git stdout，按精确文件或本地读取核验 |

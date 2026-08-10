@@ -155,7 +155,7 @@ test("machine contracts freeze provenance, pristine runtime, Host protocol, and 
   assert.equal(artifact.package_version, readJson("package.json").version);
   assert.equal(artifact.ordering, "lexicographic_by_utf8_path");
   assert.equal(artifact.external_release_assets.length, 1);
-  assert.equal(artifact.external_release_assets[0].path, "init-cloud-sandbox-v0.3.3-dev.bash");
+  assert.equal(artifact.external_release_assets[0].path, "init-cloud-sandbox-v0.3.3.bash");
   const artifactPaths = artifact.entries.map(entry => entry.path);
   assert.equal(new Set(artifactPaths).size, artifactPaths.length);
   assert.equal(artifactPaths.length, 21);

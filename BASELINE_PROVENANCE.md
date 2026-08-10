@@ -75,9 +75,9 @@ M2 排除的历史 planning、Phase/Round 文档和 snapshot prototype 仍可在
 pristine/managed hashes 和 deferred candidates。`tools/import_upstream_runtime.py` 只接受该 allowlist，
 验证 archive、license、pristine source hash、mode 和 destination inventory。
 
-`v0.3.3-dev` 是尚未形成 immutable publication identity 的 successor source 标识，因此不进入第 1 节
-已发布身份账本；其 programme 状态只由 ROADMAP 与活动 planning 维护。若以后 seal/publish，必须以新的
-tag、资产字节、SHA 和 acceptance 独立登记，不能继承 v0.3.2 的 overlay package identity。
+`v0.3.3-dev` 是 `v0.3.3` 的 Source/Candidate 运输身份；当前 local seal bytes 已冻结，但尚未完成 immutable
+publication，因此仍不进入第 1 节已发布身份账本。R4 关闭后必须以新的 tag、资产字节、SHA 和 acceptance 独立登记，
+不能继承 v0.3.2 的 overlay package identity。
 
 ## 4. Published v0.3.2 owned compatibility overlay（冷证据）
 

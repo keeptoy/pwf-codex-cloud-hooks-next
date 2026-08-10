@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.3-dev`；P3 successor critical gate 已开启，正在退休不可达的 catch-up overlay；未 seal、未发布、未完成 Cloud acceptance |
+| 当前开发列车 | `v0.3.3`；R5-SC 已 PASS，stable seal/publication 已授权并在进行中；尚未完成 R5-PR，不是 accepted baseline |
 | 当前已接受版本 | `v0.3.2`；production rollback 与 GitHub `Latest` |
 | 回退证据链 | immutable `v0.3.1` immediate fallback；更早发布里程碑见 provenance museum |
 | 当前 programme 边界 | Product Phase 4 未授权 |
@@ -56,13 +56,13 @@ baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta
 清理后，P2-OTG-D 证明四项 catch-up overlay 从 Phase 2 owned wrapper 首次激活起就不在 production helper
 调用闭包，但 patcher、ledger、patched bytes 与相应测试仍存留在 source/rebuild/install/Release contract。
 
-维护者随后授权 P3 successor critical gate，仓库因此建立 `v0.3.3-dev` machine identity 和 zero-hash
-development bootstrap。该列车只退休不可达 compatibility supply-chain，不新增 Hook、Host ABI、Product
-Phase 4 行为或发布承诺。当前字节是 **unsealed candidate source**；必须用本地构建 ZIP 的显式
-`HOOKS_URL`/`HOOKS_SHA256` override 测试，默认 bootstrap 必须 fail closed，不得使用 v0.3.2 的 checksum。
+维护者随后授权 P3 successor critical gate，仓库先建立 `v0.3.3-dev` machine identity 和 zero-hash
+development bootstrap。该列车只退休不可达 compatibility supply-chain，不新增 Hook、Host ABI 或 Product
+Phase 4 行为。Source/Candidate Cloud 已全部 PASS，维护者现已授权把它封板为 stable `v0.3.3`；当前仍处于
+**local seal / publication in progress**，R5-PR 与 baseline promotion 尚未发生。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
-bootstrap/acceptance；当前窗口为 v0.3.3-dev candidate + v0.3.2 accepted。v0.3.1 作为 immediate
+bootstrap/acceptance；当前窗口为 v0.3.3 candidate + v0.3.2 accepted。v0.3.1 作为 immediate
 fallback 由 immutable commit、tag、Release 与 exact acceptance 恢复；更早历史只留在精选 provenance。
 trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。
 

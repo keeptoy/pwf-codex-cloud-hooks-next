@@ -116,3 +116,28 @@
 - G9 远端只读审计 PASS：fetch 后本地相对 `origin/0.3.3-dev` 为 0 behind / 1 ahead，`v0.3.3` tag/Release
   均不存在；现有 Releases 为 v0.3.0～v0.3.2，Latest 仍为 v0.3.2。当前 dev identity 尚未封板，不能直接
   把 ignored development ZIP 当作发布资产。
+- 已提交并 push Cloud-passed source 与 G9 authorization：远端 `0.3.3-dev` 现指向 `4027d15`。读取 v0.3.2
+  Release 模板时首次请求不支持的 `isLatest` 字段失败且无写入；改用支持字段后确认历史发布为两个资产、
+  non-draft/non-prerelease，notes 明确保留 Cloud/Latest/rollback 分离。
+- Stable identity 第一阶段已完成：package/Release contract 切换为 `0.3.3`，bootstrap 与 acceptance 重命名为
+  stable 路径，ROADMAP/CHANGELOG/tests 同步，bootstrap 仍保留 zero hash 等待最终 ZIP。Release contract
+  新 SHA `253cf6f9...f7db` 已写回 upstream manifest；尚未构建或声明 sealed bytes。
+- Stable ZIP 第一次双构建/check PASS：两份均为 21 entries、74,198 bytes、SHA-256
+  `2b2dca5c5894a2297a6f2ccc5fb190878c3c920b71148719a4873326b4ccb352`，importer check PASS；已把该
+  exact SHA 写入 `init-cloud-sandbox-v0.3.3.bash`，tests 从 zero-hash candidate 语义切换为 sealed default +
+  explicit-zero fail-closed。尚未计算 bootstrap identity 或创建 seal commit/tag。
+### 2026-08-10 G9 stable seal validation
+
+- `git diff --check` 与 `python tools/import_upstream_runtime.py check` PASS。
+- 受限 Windows sandbox 中运行 Node focused tests 时，test runner 在创建子进程前统一返回 `spawn EPERM`；
+  分类为 platform limitation，不是产品或断言失败，按仓库既有规则改在允许子进程的环境重跑原命令。
+- 首次完整 suite 在重命名尚未进入 Git index 时出现 2 个 repository-boundary FAIL；断言正确指出
+  `git ls-files` 仍看到 `-dev` 路径。暂存精确重命名后重跑：96 tests，84 PASS、12 Windows/POSIX SKIP、
+  0 FAIL。
+- importer、Python compile、`node --check install.js`、最终 bootstrap `bash -n` PASS。
+- stable ZIP 两次独立 build/check 逐字节一致：21 entries、74,198 bytes、SHA-256
+  `2b2dca5c5894a2297a6f2ccc5fb190878c3c920b71148719a4873326b4ccb352`。
+- external bootstrap：21,565 bytes、SHA-256
+  `236e364bde8397b04c9d7ebfa121fa96963055d77b56e6299e6b9c9aad6c887e`。
+- `bash` 不在 PowerShell PATH 的第一次语法命令属于 platform invocation error；改用本机
+  `D:\Program Files\Git\bin\bash.exe -n` 后 PASS。

@@ -4,14 +4,15 @@
 [`ROADMAP.md`](ROADMAP.md)；当前唯一行动与授权边界见活动 `task_plan.md`；精确 source、资产、大小和
 SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 acceptance。
 
-## v0.3.3-dev
+## v0.3.3
 
 ### Changed
 
-- 开启不冒充任何已发布资产的 successor source identity；development bootstrap 保持 64 位 zero hash 并
-  fail closed。当前 programme/lifecycle 见 [`ROADMAP.md`](ROADMAP.md)，已发布 v0.3.2 immutable identity
+- 先以不冒充任何已发布资产的 `v0.3.3-dev` successor source identity 和 64 位 zero-hash bootstrap 完成
+  Source/Candidate 验收，再冻结 `v0.3.3` stable package、精确 ZIP checksum 与外部 bootstrap。当前
+  programme/lifecycle 见 [`ROADMAP.md`](ROADMAP.md)，已发布 v0.3.2 immutable identity
   见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，候选 Cloud gate 见
-  [`docs/v0.3.3-dev-cloud-hard-acceptance.md`](docs/v0.3.3-dev-cloud-hard-acceptance.md)。
+  [`docs/v0.3.3-cloud-hard-acceptance.md`](docs/v0.3.3-cloud-hard-acceptance.md)。
 - 退休已不可达的 catch-up compatibility supply-chain：四个 pinned upstream runtime 文件全部恢复 pristine，
   importer 不再加载 patcher/overlay ledger，installed inventory 与 Release allowlist 同步收窄；
   `owned-catchup.py` 继续拥有 transcript/identity/immutable bytes/normalization/rendering，只通过显式

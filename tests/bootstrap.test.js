@@ -12,7 +12,8 @@ const manifestPath = path.join(root, "upstream-manifest.json");
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 const bash = process.env.BASH || (process.platform === "win32" ? "D:\\Program Files\\Git\\bin\\bash.exe" : "bash");
-const candidateBootstrap = path.join(root, "init-cloud-sandbox-v0.3.3-dev.bash");
+const candidateBootstrap = path.join(root, "init-cloud-sandbox-v0.3.3.bash");
+const releaseZipSha256 = "2b2dca5c5894a2297a6f2ccc5fb190878c3c920b71148719a4873326b4ccb352";
 
 function bashPath(value) {
   const normalized = value.replaceAll("\\", "/");
@@ -49,12 +50,12 @@ function makeSkillArchive(workspace, driftRequiredFile = false) {
   return { archive, sha256: require("node:crypto").createHash("sha256").update(fs.readFileSync(archive)).digest("hex") };
 }
 
-test("candidate bootstrap pins the upstream archive, removes remote Node tooling, and fails closed on its zero hash", () => {
+test("sealed bootstrap pins both archives, removes remote Node tooling, and rejects an explicit zero hash", () => {
   const bootstrap = fs.readFileSync(candidateBootstrap, "utf8");
   const runAll = bootstrap.match(/run_all\(\) \{([\s\S]*?)\n\}/);
   assert.ok(runAll, "run_all was not found");
-  assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.3-dev\}"/);
-  assert.match(bootstrap, /HOOKS_SHA256="\$\{HOOKS_SHA256:-0{64}\}"/);
+  assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.3\}"/);
+  assert.match(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${releaseZipSha256}\\}"`));
   assert.match(bootstrap, new RegExp(manifest.release_archive_url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(bootstrap, new RegExp(manifest.release_archive_sha256));
   assert.match(bootstrap, /PLANNING_WITH_FILES_ARCHIVE_ROOT="\$\{PLANNING_WITH_FILES_ARCHIVE_ROOT:-planning-with-files-3\.8\.2\}"/);
@@ -66,9 +67,15 @@ test("candidate bootstrap pins the upstream archive, removes remote Node tooling
   assert.doesNotMatch(bootstrap, /\bnvm\b|\bnpx\b|\bnpm\b/i);
   assert.doesNotMatch(bootstrap, /\|[ \t]*bash\b/);
   assert.ok(runAll[1].indexOf("verify_node_toolchain") < runAll[1].indexOf("install_system_prerequisites"));
-  const zeroDefault = runBash('source "$1"\nassert_hooks_checksum_configured', [candidateBootstrap]);
-  assert.equal(zeroDefault.status, 1, zeroDefault.stdout);
-  assert.match(zeroDefault.stderr, /HOOKS_SHA256 is still a placeholder/);
+  const sealedDefault = runBash('source "$1"\nassert_hooks_checksum_configured', [candidateBootstrap]);
+  assert.equal(sealedDefault.status, 0, sealedDefault.stderr);
+  const explicitZero = runBash(
+    'source "$1"\nassert_hooks_checksum_configured',
+    [candidateBootstrap],
+    { HOOKS_SHA256: "0".repeat(64) },
+  );
+  assert.equal(explicitZero.status, 1, explicitZero.stdout);
+  assert.match(explicitZero.stderr, /HOOKS_SHA256 is still a placeholder/);
   const explicitNonzero = runBash(
     'source "$1"\nassert_hooks_checksum_configured',
     [candidateBootstrap],
