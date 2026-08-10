@@ -101,7 +101,7 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.match(architecture, /Managed policy 只认识 adapter/);
   assert.match(architecture, /代码出现在上游或仓库.*前一层不能推导后一层/s);
   assert.match(architecture, /does not resolve planning files/);
-  assert.match(architecture, /只有 `runtime\/upstream\/session-catchup\.py` 与 pristine upstream 不同/);
+  assert.match(architecture, /四个.*upstream runtime.*pristine/s);
   assert.match(architecture, /verified immutable bytes/);
   assert.match(architecture, /不调用上游 `session-catchup\.py` 的 CLI `main\(\)`/);
   assert.doesNotMatch(architecture, /run owned session-catchup\.py/);
@@ -123,7 +123,7 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.equal(artifact.entries.some(item => item.path === "runtime/owned-plan.py"), true);
   assert.equal(artifact.entries.some(item => item.path === "contracts/adapter-plan-context-request-v1.schema.json"), true);
   assert.equal(artifact.entries.some(item => item.path === "contracts/plan-context-result-v1.schema.json"), true);
-  assert.equal(artifact.entries.some(item => item.path === "patches/patch_planning_skill.py"), true);
+  assert.equal(artifact.entries.some(item => item.path === "patches/patch_planning_skill.py"), false);
 
   const adapter = readText("hooks/hook_adapter.py");
   assert.match(adapter, /"plan": "owned-plan\.py"/);

@@ -11,16 +11,8 @@ const readJson = relative => JSON.parse(fs.readFileSync(path.join(root, relative
 const sha256 = value => crypto.createHash("sha256").update(value).digest("hex");
 const fileHash = file => sha256(fs.readFileSync(file));
 
-function tripleQuotedConstant(source, name) {
-  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const match = source.match(new RegExp(`${escaped} = \"\"\"([\\s\\S]*?)\"\"\"`));
-  assert.ok(match, `${name} was not found in the compatibility patcher`);
-  return match[1];
-}
-
-test("machine contracts freeze provenance, overlays, Host protocol, and artifact boundary", () => {
+test("machine contracts freeze provenance, pristine runtime, Host protocol, and artifact boundary", () => {
   const bundle = readJson("contracts/runtime-bundle-v1.json");
-  const overlays = readJson("contracts/compatibility-overlays-v1.json");
   const request = readJson("contracts/adapter-runtime-request-v1.schema.json");
   const result = readJson("contracts/runtime-result-v1.schema.json");
   const artifact = readJson("contracts/release-artifact-v1.json");
@@ -46,6 +38,9 @@ test("machine contracts freeze provenance, overlays, Host protocol, and artifact
     assert.match(file.pristine_sha256, /^[a-f0-9]{64}$/);
     assert.match(file.managed_sha256, /^[a-f0-9]{64}$/);
     assert.equal(file.mode, "0755");
+    assert.equal(file.origin, "upstream_pristine");
+    assert.equal(file.managed_sha256, file.pristine_sha256);
+    assert.deepEqual(file.overlay_ids, []);
     for (const dependency of file.direct_file_dependencies) {
       assert.ok(files.has(dependency.id), `${file.id} has unknown dependency ${dependency.id}`);
     }
@@ -68,27 +63,9 @@ test("machine contracts freeze provenance, overlays, Host protocol, and artifact
     assert.ok(deferred.earliest_phase >= 4);
   }
 
-  assert.equal(overlays.schema_version, 1);
-  assert.equal(overlays.combined_legacy_patch_id, "PWF_CODEX_CLOUD_COMPAT_PATCH");
-  assert.equal(overlays.pristine_sha256, files.get("session_catchup").pristine_sha256);
-  assert.equal(overlays.managed_sha256, files.get("session_catchup").managed_sha256);
-  assert.equal(overlays.overlays.length, 4);
-  assert.deepEqual(new Set(overlays.application_order), new Set(overlays.overlays.map(item => item.id)));
-  assert.deepEqual(new Set(files.get("session_catchup").overlay_ids), new Set(overlays.application_order));
-
-  const patcher = fs.readFileSync(path.join(root, "patches", "patch_planning_skill.py"), "utf8");
-  for (const overlay of overlays.overlays) {
-    assert.equal(overlay.owner, "pwf-codex-cloud-hooks");
-    assert.equal(overlay.status, "active_owned_runtime_compatibility");
-    assert.ok(overlay.retirement_condition.length > 40);
-    assert.ok(overlay.cloud_evidence.every(relative => fs.existsSync(path.join(root, relative))));
-    assert.equal(overlay.cloud_evidence.some(relative => relative.startsWith(".planning/")), false);
-    assert.equal(fs.existsSync(path.join(root, overlay.regression_test.split("#", 1)[0])), true);
-    const anchor = tripleQuotedConstant(patcher, overlay.anchor.patcher_constant);
-    assert.equal(sha256(anchor), overlay.anchor.pristine_anchor_sha256);
-  }
-  assert.equal(upstream.compatibility_patches[overlays.combined_legacy_patch_id].upstream_sha256, overlays.pristine_sha256);
-  assert.equal(upstream.compatibility_patches[overlays.combined_legacy_patch_id].patched_sha256, overlays.managed_sha256);
+  assert.equal(Object.hasOwn(upstream, "compatibility_patches"), false);
+  assert.equal(Object.hasOwn(upstream, "historical_patched_skill_files"), false);
+  assert.equal(Object.hasOwn(upstream.managed_runtime.contracts, "compatibility_overlays"), false);
 
   assert.equal(upstream.managed_runtime.schema_version, 1);
   assert.equal(upstream.managed_runtime.package_root, bundle.package_root);
@@ -109,7 +86,12 @@ test("machine contracts freeze provenance, overlays, Host protocol, and artifact
   const localFiles = new Map(bundle.local_files.map(file => [file.id, file]));
   assert.deepEqual([...localFiles.keys()], ["owned_catchup", "owned_plan"]);
   assert.equal(localFiles.get("owned_catchup").activation_phase, 2);
-  assert.deepEqual(localFiles.get("owned_catchup").direct_file_dependencies, [{ id: "session_catchup", condition: "always", required: true }]);
+  assert.deepEqual(localFiles.get("owned_catchup").direct_file_dependencies, [{
+    id: "session_catchup",
+    condition: "always",
+    required: true,
+    allowed_symbols: ["extract_messages_after", "find_last_planning_update", "same_project_path", "text_content"],
+  }]);
   assert.equal(localFiles.get("owned_plan").activation_phase, 3);
   assert.deepEqual(localFiles.get("owned_plan").direct_file_dependencies.map(item => item.id), ["resolve_plan_dir", "inject_plan"]);
   for (const local of localFiles.values()) {
@@ -170,14 +152,15 @@ test("machine contracts freeze provenance, overlays, Host protocol, and artifact
 
   assert.equal(artifact.archive_root, "pwf-codex-cloud-hooks/");
   assert.equal(artifact.package_name, "pwf-codex-cloud-hooks");
-  assert.equal(artifact.package_version, "0.3.2");
+  assert.equal(artifact.package_version, readJson("package.json").version);
   assert.equal(artifact.ordering, "lexicographic_by_utf8_path");
   assert.equal(artifact.external_release_assets.length, 1);
-  assert.equal(artifact.external_release_assets[0].path, "init-cloud-sandbox-v0.3.2.bash");
+  assert.equal(artifact.external_release_assets[0].path, "init-cloud-sandbox-v0.3.3-dev.bash");
   const artifactPaths = artifact.entries.map(entry => entry.path);
   assert.equal(new Set(artifactPaths).size, artifactPaths.length);
-  assert.equal(artifactPaths.length, 23);
-  assert.equal(artifactPaths.includes("patches/patch_planning_skill.py"), true);
+  assert.equal(artifactPaths.length, 21);
+  assert.equal(artifactPaths.includes("patches/patch_planning_skill.py"), false);
+  assert.equal(artifactPaths.includes("contracts/compatibility-overlays-v1.json"), false);
   assert.equal(artifactPaths.some(item => item.startsWith("init-cloud-sandbox-")), false);
   for (const entry of artifact.entries.filter(entry => entry.state === "present")) {
     assert.equal(fs.existsSync(path.join(root, entry.path)), true, entry.path);

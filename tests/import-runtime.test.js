@@ -6,20 +6,14 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
-const { after, test } = require("node:test");
+const { test } = require("node:test");
 
 const root = path.resolve(__dirname, "..");
 const importer = path.join(root, "tools", "import_upstream_runtime.py");
 const bundlePath = path.join(root, "contracts", "runtime-bundle-v1.json");
-const overlaysPath = path.join(root, "contracts", "compatibility-overlays-v1.json");
 const fixtureSkill = path.join(root, "tests", "fixtures", "planning-with-files");
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 const sha256 = value => crypto.createHash("sha256").update(value).digest("hex");
-
-after(() => {
-  assert.equal(fs.existsSync(path.join(root, "patches", "__pycache__")), false,
-    "runtime importer created patcher bytecode cache");
-});
 
 const license = `MIT License
 
@@ -79,10 +73,8 @@ function createFixture() {
   bundle.upstream.license_sha256 = sha256(Buffer.from(license));
   for (const item of bundle.files) {
     const pristine = fs.readFileSync(path.join(source, item.source_path));
-    if (item.id !== "session_catchup") {
-      item.pristine_sha256 = sha256(pristine);
-      item.managed_sha256 = item.pristine_sha256;
-    }
+    item.pristine_sha256 = sha256(pristine);
+    item.managed_sha256 = item.pristine_sha256;
   }
   const archive = path.join(workspace, "upstream.zip");
   bundle.upstream.release_archive_sha256 = makeZip(source, archive);
@@ -97,7 +89,6 @@ function runImporter(fixture, command, extra = []) {
     command,
     "--destination", fixture.destination,
     "--bundle", fixture.contract,
-    "--overlays", overlaysPath,
     ...extra,
   ];
   if (command === "import") args.push("--archive", fixture.archive);
@@ -176,6 +167,26 @@ test("runtime import rejects archive checksum and pristine source drift", () => 
     result = runImporter(fixture, "import");
     assert.equal(result.status, 1);
     assert.match(result.stderr, /pristine SHA-256 mismatch for session_catchup/);
+  } finally {
+    fs.rmSync(fixture.workspace, { recursive: true, force: true });
+  }
+});
+
+test("runtime import rejects overlay, non-pristine origin, and divergent managed hash declarations", () => {
+  const fixture = createFixture();
+  try {
+    for (const [mutate, expected] of [
+      [item => { item.origin = "upstream_with_managed_overlay"; }, /runtime file is not pristine/],
+      [item => { item.managed_sha256 = "0".repeat(64); }, /pristine\/managed hash mismatch/],
+      [item => { item.overlay_ids = ["RETIRED_OVERLAY"]; }, /runtime file declares an overlay/],
+    ]) {
+      const bundle = JSON.parse(fs.readFileSync(bundlePath, "utf8"));
+      mutate(bundle.files[0]);
+      fs.writeFileSync(fixture.contract, `${JSON.stringify(bundle, null, 2)}\n`);
+      const result = runImporter(fixture, "check");
+      assert.equal(result.status, 1);
+      assert.match(result.stderr, expected);
+    }
   } finally {
     fs.rmSync(fixture.workspace, { recursive: true, force: true });
   }

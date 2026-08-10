@@ -30,9 +30,8 @@ DESIGN 只提供实现层导航。函数、schema 字段、hash、allowlist 和�
 | [`runtime/owned-plan.py`](runtime/owned-plan.py) | canonical plan resolution、安全快照和 context 生成 |
 | [`runtime/owned-catchup.py`](runtime/owned-catchup.py) | Host transcript 校验、session catch-up result |
 | [`runtime/upstream/`](runtime/upstream/) | importer 管理的四个固定上游 runtime 文件 |
-| [`contracts/`](contracts/) | Host ABI、result schema、runtime/overlay/Release machine contracts |
+| [`contracts/`](contracts/) | Host ABI、result schema、runtime/Release machine contracts |
 | [`tools/import_upstream_runtime.py`](tools/import_upstream_runtime.py) | 固定 archive 的确定性 import/check |
-| [`patches/patch_planning_skill.py`](patches/patch_planning_skill.py) | owned catch-up compatibility overlay 复现 |
 | [`tools/build_release.py`](tools/build_release.py) | contract-driven deterministic ZIP build/check |
 | [`tests/`](tests/) | production、安全、供应链、安装和仓库边界回归 |
 | [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) | 持续维护的冷证据账本：已发布身份、迁移 refs、上游 archive、overlay 与不可变资产来源链 |
@@ -56,9 +55,9 @@ pinned upstream + provenance
 
 | 布局 | 由谁产生 | 放什么 | 不承担什么 |
 |---|---|---|---|
-| repository source | Git checkout | 源码、contracts、importer/patcher/builder、tests 和文档 | 不因本地存在就成为 Release 或 installed runtime |
+| repository source | Git checkout | 源码、contracts、importer/builder、tests 和文档 | 不因本地存在就成为 Release 或 installed runtime |
 | Release ZIP | [`tools/build_release.py`](tools/build_release.py) 按 [`release-artifact-v1.json`](contracts/release-artifact-v1.json) 构建 | 可安装 runtime、installer 及 allowlist 明确要求的维护输入 | 不包含 bootstrap，也不自动表示已发布或验收 |
-| installed managed runtime | [`install.js`](install.js) 校验后复制 | adapter、两个 owned runtime、四个 upstream runtime、两个 plan contracts、overlay、notice 和 installed manifest | 不带 builder、测试、维护文档或其余 repository contracts |
+| installed managed runtime | [`install.js`](install.js) 校验后复制 | adapter、两个 owned runtime、四个 pristine upstream runtime、两个 plan contracts、notice 和 installed manifest | 不带 builder、importer、测试、维护文档或其余 repository contracts |
 | Managed policy | installer 合并到共享 requirements | 指向 installed adapter 的绝对命令 | 不直接注册 plan、catch-up 或 upstream child |
 | global PWF Skill | 独立上游 Skill 安装 | pristine reference 和 bootstrap 校验输入 | production 不从这里执行可变脚本 |
 
@@ -78,15 +77,16 @@ contract 为准。
 | Adapter | [`hooks/hook_adapter.py`](hooks/hook_adapter.py)：接收 Host Hook stdin，校验 typed result，监督 child 并组合 context | 调用 sibling plan/catch-up；对接 request/result contracts；输出 Host Hook result | 事件 dispatch、超时/进程清理、fail-open composition、Host ABI seam | [`tests/hook-adapter.test.js`](tests/hook-adapter.test.js)、[`tests/runtime-supervisor.test.js`](tests/runtime-supervisor.test.js)、[`tests/activation.test.js`](tests/activation.test.js) |
 | Plan runtime | [`runtime/owned-plan.py`](runtime/owned-plan.py)：唯一 plan selection、安全读取/快照和 context 生成入口 | 消费 plan request；调用 [`resolve-plan-dir.sh`](runtime/upstream/resolve-plan-dir.sh) 与 [`inject-plan.sh`](runtime/upstream/inject-plan.sh)；返回 plan result | planning attachment、选择顺序、安全文件读取、注入结果 | [`tests/owned-plan-runtime.test.js`](tests/owned-plan-runtime.test.js) 与 adapter seam 测试 |
 | Catch-up runtime | [`runtime/owned-catchup.py`](runtime/owned-catchup.py)：验证 Host transcript 并生成可选 session report | 消费 adapter runtime request 和已验证 plan project；加载 [`session-catchup.py`](runtime/upstream/session-catchup.py) 的 parser helpers（不调用 upstream CLI main）；返回 runtime result | transcript 选择/身份/解析、Resume report、partial-injection 防护 | [`tests/owned-runtime.test.js`](tests/owned-runtime.test.js)、[`tests/cloud-fixtures.test.js`](tests/cloud-fixtures.test.js) 与 activation 测试 |
-| Upstream owned copy | [`runtime/upstream/`](runtime/upstream/)：固定上游脚本的 repository-owned 成品 | 由 importer/patcher 从 pinned archive 重建；只被两个 owned runtime 调用 | 上游等价性、overlay、mode、source provenance | [`tests/import-runtime.test.js`](tests/import-runtime.test.js)、[`tests/skill-patch.test.js`](tests/skill-patch.test.js) |
-| Import/overlay plane | [`tools/import_upstream_runtime.py`](tools/import_upstream_runtime.py) + [`patches/patch_planning_skill.py`](patches/patch_planning_skill.py)：确定性重建并检查 owned copy | 读取 runtime bundle、overlay contract、pinned archive；写/核验 `runtime/upstream/*` | archive/source drift、patch anchor、overlay 顺序、可复现性 | import-runtime、skill-patch 与 [`tests/contracts.test.js`](tests/contracts.test.js) |
+| Upstream owned copy | [`runtime/upstream/`](runtime/upstream/)：四个固定上游脚本的 repository-owned pristine 成品 | 由 importer 从 pinned archive 逐字重建；只被两个 owned runtime 调用 | 上游等价性、helper entrypoints、mode、source provenance | [`tests/import-runtime.test.js`](tests/import-runtime.test.js)、[`tests/pristine-catchup-boundary.test.js`](tests/pristine-catchup-boundary.test.js) |
+| Import plane | [`tools/import_upstream_runtime.py`](tools/import_upstream_runtime.py)：确定性重建并检查 owned copy | 读取 runtime bundle 与 pinned archive；写/核验 `runtime/upstream/*` | archive/source drift、pristine hash、mode、inventory、可复现性 | import-runtime、contracts 与 pristine-catchup boundary tests |
 | Package plane | [`tools/build_release.py`](tools/build_release.py)：按 contract 构建/检查 deterministic ZIP | 读取 package identity、Release contract 与 allowlisted source bytes；输出 ZIP | package identity、entry/mode/metadata、bootstrap boundary、历史 asset oracle | [`tests/release-package.test.js`](tests/release-package.test.js)、[`tests/published-release-oracles.test.js`](tests/published-release-oracles.test.js)、contracts 与 [`tests/repository-boundary.test.js`](tests/repository-boundary.test.js) |
 
 Catch-up runtime seam：`owned-catchup.py` 负责 transcript selection、containment/identity revalidation、
 immutable byte capture、record decoding/validation、Cloud event normalization/dedup、output budget 和
 report rendering。它动态加载完整的 fixed owned `session-catchup.py` module，但只调用
 `same_project_path`、`find_last_planning_update`、`extract_messages_after` 与 `text_content` helpers，
-不调用 CLI `main()`。
+不调用 CLI `main()`。完整 module initialization 的 UTF-8 stdio 配置与 optional `orjson` import 仍属于
+trusted surface；allowed helper roots、传递闭包和 pristine/managed 等价由 runtime bundle 与边界测试冻结。
 
 ### 4.1 Machine contract 路由
 
@@ -95,7 +95,7 @@ report rendering。它动态加载完整的 fixed owned `session-catchup.py` mod
 | adapter → plan request | [`adapter-plan-context-request-v1.schema.json`](contracts/adapter-plan-context-request-v1.schema.json) | adapter producer、owned-plan consumer、两侧 seam tests |
 | plan → adapter result | [`plan-context-result-v1.schema.json`](contracts/plan-context-result-v1.schema.json) | owned-plan producer、adapter validator、activation tests |
 | adapter → catch-up request / result | [`adapter-runtime-request-v1.schema.json`](contracts/adapter-runtime-request-v1.schema.json) / [`runtime-result-v1.schema.json`](contracts/runtime-result-v1.schema.json) | adapter、owned-catchup、runtime/activation tests |
-| owned upstream inventory/source | [`runtime-bundle-v1.json`](contracts/runtime-bundle-v1.json) + [`compatibility-overlays-v1.json`](contracts/compatibility-overlays-v1.json) | importer、patcher、upstream manifest、import/patch tests |
+| owned upstream inventory/source | [`runtime-bundle-v1.json`](contracts/runtime-bundle-v1.json) | importer、upstream manifest、import/contracts/pristine-helper tests |
 | candidate ZIP identity/inventory | [`release-artifact-v1.json`](contracts/release-artifact-v1.json) | package identity、builder、bootstrap boundary、release tests |
 
 修改 contract 时不能只改 JSON：必须同步检查 producer、consumer、integrity reference 和最近的 seam test；
@@ -109,7 +109,7 @@ report rendering。它动态加载完整的 fixed owned `session-catchup.py` mod
 | Hook 事件接入、child 调度或输出组合 | `hook_adapter.py` | 两组 request/result contracts、adapter/supervisor/activation tests | 在 adapter 中重新实现 plan selection 或 transcript parser |
 | plan 定位、attachment、安全读取或 context 生成 | `owned-plan.py` | resolver/injector、plan contracts、owned-plan tests | 让 adapter 直接读取 planning 文件 |
 | Resume/catch-up transcript 行为 | `owned-catchup.py` | owned upstream catch-up、runtime contracts、runtime/cloud fixture tests | 使用未验证 transcript 或产生 partial report |
-| 上游版本、文件来源或 compatibility overlay | provenance → runtime bundle/overlay → importer/patcher | upstream manifest、owned copy、import/patch/contracts tests | 修改 global Skill 或绕过 hash/anchor gate |
+| 上游版本、文件来源或 helper entrypoint | provenance → runtime bundle → importer | upstream manifest、owned pristine copy、import/contracts/helper-closure tests | 修改 global Skill、重新引入 source transformation 或绕过 hash gate |
 | ZIP 内容、mode、metadata 或外部 bootstrap 边界 | release artifact contract → builder | package identity、release/repository tests、README 打包入口 | 把本地 ZIP、zero-hash bootstrap 或文件名当成 Release |
 | Host ABI、trusted graph 或失败语义 | 先读 ARCHITECTURE 与活动 task plan | 所有 producer/consumer、contracts、activation 与 Cloud gate | 在普通模块修复中隐式扩大行为面 |
 
@@ -121,7 +121,7 @@ report rendering。它动态加载完整的 fixed owned `session-catchup.py` mod
 1. **单模块修改：** 先跑上表对应的最近边界测试，再跑直接 producer/consumer 的 seam test。
 2. **contract 或跨层修改：** 同时跑 contracts、adapter/runtime、activation 和 repository boundary；若
    Host ABI、trusted graph 或失败语义变化，先停止并取得专项设计与授权。
-3. **importer、patcher 或 owned upstream 修改：** importer `check`、import/patch tests 和 mode/LF
+3. **importer 或 owned upstream 修改：** importer `check`、import/contracts/pristine-helper tests 和 mode/LF
    都必须通过；来源与 hash 还要回到 provenance/machine contract。
 4. **installer 或 Release boundary 修改：** 完整 suite、deterministic ZIP build/check 和目标平台 gate
    缺一不可；Windows 的 POSIX SKIP 不能替代 Linux/Cloud。
@@ -152,7 +152,8 @@ report rendering。它动态加载完整的 fixed owned `session-catchup.py` mod
 | [`release-package.test.js`](tests/release-package.test.js) | 当前 candidate ZIP 确定性、自包含边界与 package/contract identity drift | Release builder、artifact contract、external bootstrap boundary | tagless checkout 可执行；本地结果不构成 publication |
 | [`repository-boundary.test.js`](tests/repository-boundary.test.js) | trusted source exact inventory、planning/docs 生命周期、历史归档单入口、动态角色窗口、版本无关稳定文档与 retirement DoD | Git repository、Release allowlist、当前 acceptance、runtime dispatch | 跨平台静态边界；不冻结历史摘要写作格式 |
 | [`runtime-supervisor.test.js`](tests/runtime-supervisor.test.js) | child result 校验、process supervision、sibling identity 与 producer/consumer seam | adapter supervisor、plan contracts、installed siblings | 主体跨平台；process-group timeout 需要 Linux |
-| [`skill-patch.test.js`](tests/skill-patch.test.js) | compatibility overlay 可复现性、bootstrap 安全和 global Skill pristine | patcher、bootstrap、pinned Skill archive | 跨平台 sandbox；不替代 Cloud install acceptance |
+| [`bootstrap.test.js`](tests/bootstrap.test.js) | development checksum fail-closed、Node/toolchain 与 global Skill pristine 安装 | candidate bootstrap、pinned Skill archive | 需要 Bash；不替代 Cloud install acceptance |
+| [`pristine-catchup-boundary.test.js`](tests/pristine-catchup-boundary.test.js) | managed/pristine result 等价、helper allowlist/closure 与 import-time surface | owned-catchup、pinned session module、runtime bundle | 跨平台但需要 Python child；不替代 live Resume |
 
 同一能力可能被边界、seam、golden 和 activation 多层测试共同保护，因此这不是一一对应表。具体 case
 语义以测试源码中的 test title 与 assertion 为准，运行数量由 runner 提供；新增 test module 时必须在本

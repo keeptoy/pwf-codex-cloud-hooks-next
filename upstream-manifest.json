@@ -11,19 +11,6 @@
     "scripts/resolve-plan-dir.sh": "38a1c5effb35f9506e2e371ccabb6be6e4f4170acc18f1811f08d634f5f0e9bd",
     "scripts/session-catchup.py": "6476fd9024d0cbb9bfb850119fd0beff7fb7cfab9c6683ce10e4cc8d830ce6de"
   },
-  "historical_patched_skill_files": {
-    "SKILL.md": "bfcdbbbf883bc0db95f84d095d58021fc1a6b97eeeab23cd373f6261779fb232",
-    "scripts/resolve-plan-dir.sh": "38a1c5effb35f9506e2e371ccabb6be6e4f4170acc18f1811f08d634f5f0e9bd",
-    "scripts/session-catchup.py": "fc765590dc32b3949027de97e33dad6a049daf148719ba1822598a6c146461e2"
-  },
-  "compatibility_patches": {
-    "PWF_CODEX_CLOUD_COMPAT_PATCH": {
-      "target": "scripts/session-catchup.py",
-      "upstream_sha256": "6476fd9024d0cbb9bfb850119fd0beff7fb7cfab9c6683ce10e4cc8d830ce6de",
-      "patched_sha256": "fc765590dc32b3949027de97e33dad6a049daf148719ba1822598a6c146461e2",
-      "description": "Codex runtime, CODEX_HOME sessions, scoped planning state, and bounded Cloud-wrapped user context"
-    }
-  },
   "managed_runtime": {
     "schema_version": 1,
     "package_root": "runtime/upstream",
@@ -31,11 +18,7 @@
     "contracts": {
       "runtime_bundle": {
         "path": "contracts/runtime-bundle-v1.json",
-        "sha256": "01ada6e9c94a6015c87669b74974bca6381c043eb61800e318b0d6a61abfb930"
-      },
-      "compatibility_overlays": {
-        "path": "contracts/compatibility-overlays-v1.json",
-        "sha256": "4b3e89ddfd7f32e3fa08a50c990bf8b4dbf407645e480864c9c296614299b7c9"
+        "sha256": "125b831ab122642337f00834491ef3728680aab645a046f67e8e087d2ad46824"
       },
       "adapter_runtime_request": {
         "path": "contracts/adapter-runtime-request-v1.schema.json",
@@ -57,12 +40,12 @@
       },
       "release_artifact": {
         "path": "contracts/release-artifact-v1.json",
-        "sha256": "eccaaed7f16a6702885cdd9778ae0bd9ef55e5bd9c9d04fc4ad6925c28f0c212"
+        "sha256": "ce7529707170c6e76735330955ae7ab71096ec029982c17a8e9719dd684f724a"
       }
     },
     "importer": {
       "path": "tools/import_upstream_runtime.py",
-      "sha256": "c24d32a70774f0933f4cddcbbe5e781babae814e6242559ff37c8e5b104cc4f8"
+      "sha256": "c6b9008bfe20e5c27d9753d2eb580df9986b25efb9df24f75b4cb0606bf30764"
     },
     "license_provenance": {
       "spdx": "MIT",
@@ -93,9 +76,9 @@
         "source_path": "skills/planning-with-files/scripts/session-catchup.py",
         "package_path": "runtime/upstream/session-catchup.py",
         "mode": "0755",
-        "origin": "upstream_with_managed_overlay",
+        "origin": "upstream_pristine",
         "pristine_sha256": "6476fd9024d0cbb9bfb850119fd0beff7fb7cfab9c6683ce10e4cc8d830ce6de",
-        "managed_sha256": "fc765590dc32b3949027de97e33dad6a049daf148719ba1822598a6c146461e2"
+        "managed_sha256": "6476fd9024d0cbb9bfb850119fd0beff7fb7cfab9c6683ce10e4cc8d830ce6de"
       },
       {
         "id": "resolve_plan_dir",

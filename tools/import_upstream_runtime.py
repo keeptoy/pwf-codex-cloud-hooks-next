@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import importlib.util
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -15,16 +14,9 @@ import sys
 import zipfile
 
 
-# The importer dynamically loads the compatibility patcher for anchor validation.
-# Keep source-tree checks read-only by preventing that import from writing pyc files.
-sys.dont_write_bytecode = True
-
-
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BUNDLE = ROOT / "contracts" / "runtime-bundle-v1.json"
-DEFAULT_OVERLAYS = ROOT / "contracts" / "compatibility-overlays-v1.json"
 DEFAULT_DESTINATION = ROOT / "runtime" / "upstream"
-PATCHER_PATH = ROOT / "patches" / "patch_planning_skill.py"
 
 
 def sha256_bytes(value: bytes) -> str:
@@ -59,20 +51,9 @@ def safe_relative(value: object, label: str) -> PurePosixPath:
     return path
 
 
-def load_patcher():
-    spec = importlib.util.spec_from_file_location("pwf_compat_patcher", PATCHER_PATH)
-    if spec is None or spec.loader is None:
-        raise ValueError("could not load compatibility patcher")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-def validate_contracts(bundle: dict, overlays: dict) -> tuple[list[dict], dict, object]:
+def validate_contracts(bundle: dict) -> tuple[list[dict], dict]:
     if bundle.get("schema_version") != 1:
         raise ValueError("unsupported runtime bundle schema")
-    if overlays.get("schema_version") != 1:
-        raise ValueError("unsupported compatibility overlay schema")
 
     upstream = bundle.get("upstream")
     files = bundle.get("files")
@@ -104,49 +85,19 @@ def validate_contracts(bundle: dict, overlays: dict) -> tuple[list[dict], dict, 
             raise ValueError(f"duplicate package path: {relative_package}")
         if raw.get("mode") != "0755":
             raise ValueError(f"unsupported mode for {raw['id']}: {raw.get('mode')}")
-        require_hash(raw.get("pristine_sha256"), f"{raw['id']} pristine")
-        require_hash(raw.get("managed_sha256"), f"{raw['id']} managed")
+        if raw.get("origin") != "upstream_pristine":
+            raise ValueError(f"runtime file is not pristine: {raw['id']}")
+        pristine_hash = require_hash(raw.get("pristine_sha256"), f"{raw['id']} pristine")
+        managed_hash = require_hash(raw.get("managed_sha256"), f"{raw['id']} managed")
+        if managed_hash != pristine_hash:
+            raise ValueError(f"pristine/managed hash mismatch for {raw['id']}")
+        if raw.get("overlay_ids") != []:
+            raise ValueError(f"runtime file declares an overlay: {raw['id']}")
         seen_ids.add(raw["id"])
         seen_packages.add(relative_package)
         normalized.append({**raw, "source": source_path, "relative": relative_package})
 
-    order = overlays.get("application_order")
-    overlay_items = overlays.get("overlays")
-    if not isinstance(order, list) or not isinstance(overlay_items, list):
-        raise ValueError("compatibility overlay ledger is incomplete")
-    overlay_ids = [item.get("id") for item in overlay_items if isinstance(item, dict)]
-    if order != overlay_ids or len(order) != len(set(order)):
-        raise ValueError("overlay application order must exactly match ledger order")
-
-    overlay_target = safe_relative(overlays.get("target_source_path"), "overlay target")
-    target_matches = [item for item in normalized if item["source"] == overlay_target]
-    if len(target_matches) != 1:
-        raise ValueError("overlay target is not exactly one runtime file")
-    target = target_matches[0]
-    if target.get("overlay_ids") != order:
-        raise ValueError("runtime overlay order differs from compatibility ledger")
-    if target.get("pristine_sha256") != overlays.get("pristine_sha256"):
-        raise ValueError("overlay pristine hash differs from runtime bundle")
-    if target.get("managed_sha256") != overlays.get("managed_sha256"):
-        raise ValueError("overlay managed hash differs from runtime bundle")
-
-    patcher = load_patcher()
-    canonical_root = safe_relative(upstream.get("canonical_source_root"), "canonical source root")
-    if overlay_target != canonical_root / safe_relative(patcher.TARGET, "patch target"):
-        raise ValueError("compatibility patcher target differs from overlay ledger")
-    if overlays.get("combined_legacy_patch_id") != patcher.PATCH_ID:
-        raise ValueError("compatibility patch id differs from overlay ledger")
-    for item in overlay_items:
-        anchor = item.get("anchor")
-        if not isinstance(anchor, dict) or not isinstance(anchor.get("patcher_constant"), str):
-            raise ValueError(f"overlay anchor missing: {item.get('id')}")
-        value = getattr(patcher, anchor["patcher_constant"], None)
-        if not isinstance(value, str):
-            raise ValueError(f"patcher anchor missing: {anchor['patcher_constant']}")
-        expected = require_hash(anchor.get("pristine_anchor_sha256"), item["id"])
-        if sha256_bytes(value.encode("utf-8")) != expected:
-            raise ValueError(f"patcher anchor hash mismatch: {item['id']}")
-    return normalized, upstream, patcher
+    return normalized, upstream
 
 
 def validate_zip_info(info: zipfile.ZipInfo) -> PurePosixPath:
@@ -187,14 +138,14 @@ def locate_archive_members(zf: zipfile.ZipFile, sources: list[PurePosixPath]) ->
     return selected
 
 
-def build_expected(archive: Path, bundle: dict, overlays: dict) -> tuple[list[dict], dict[PurePosixPath, bytes]]:
+def build_expected(archive: Path, bundle: dict) -> tuple[list[dict], dict[PurePosixPath, bytes]]:
     archive_bytes = archive.read_bytes()
     expected_archive = require_hash(bundle["upstream"].get("release_archive_sha256"), "release archive")
     actual_archive = sha256_bytes(archive_bytes)
     if actual_archive != expected_archive:
         raise ValueError(f"release archive SHA-256 mismatch: {actual_archive}")
 
-    files, upstream, patcher = validate_contracts(bundle, overlays)
+    files, upstream = validate_contracts(bundle)
     license_source = safe_relative(upstream["license_source_path"], "upstream license")
     sources = [item["source"] for item in files] + [license_source]
     with zipfile.ZipFile(archive) as zf:
@@ -206,17 +157,11 @@ def build_expected(archive: Path, bundle: dict, overlays: dict) -> tuple[list[di
         raise ValueError(f"upstream license SHA-256 mismatch: {license_hash}")
 
     expected: dict[PurePosixPath, bytes] = {}
-    overlay_target = safe_relative(overlays["target_source_path"], "overlay target")
     for item in files:
         content = source_bytes[item["source"]]
         actual = sha256_bytes(content)
         if actual != item["pristine_sha256"]:
             raise ValueError(f"pristine SHA-256 mismatch for {item['id']}: {actual}")
-        if item["source"] == overlay_target:
-            try:
-                content = patcher.transform_source(content.decode("utf-8")).encode("utf-8")
-            except (UnicodeError, ValueError) as error:
-                raise ValueError(f"could not apply managed overlays: {error}") from error
         actual_managed = sha256_bytes(content)
         if actual_managed != item["managed_sha256"]:
             raise ValueError(f"managed SHA-256 mismatch for {item['id']}: {actual_managed}")
@@ -263,8 +208,8 @@ def check_destination(destination: Path, files: list[dict]) -> dict:
     return {"healthy": True, "destination": str(destination), "files": hashes}
 
 
-def import_runtime(archive: Path, destination: Path, bundle: dict, overlays: dict) -> dict:
-    files, expected = build_expected(archive, bundle, overlays)
+def import_runtime(archive: Path, destination: Path, bundle: dict) -> dict:
+    files, expected = build_expected(archive, bundle)
     if destination.exists() or destination.is_symlink():
         result = check_destination(destination, files)
         result["changed"] = False
@@ -300,7 +245,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--archive", type=Path)
     parser.add_argument("--destination", type=Path, default=DEFAULT_DESTINATION)
     parser.add_argument("--bundle", type=Path, default=DEFAULT_BUNDLE)
-    parser.add_argument("--overlays", type=Path, default=DEFAULT_OVERLAYS)
     args = parser.parse_args()
     if args.command == "import" and args.archive is None:
         parser.error("--archive is required for import")
@@ -319,14 +263,13 @@ def main() -> int:
     try:
         args = parse_args()
         bundle = load_json(args.bundle.resolve(strict=True))
-        overlays = load_json(args.overlays.resolve(strict=True))
-        files, _, _ = validate_contracts(bundle, overlays)
+        files, _ = validate_contracts(bundle)
         destination = Path(os.path.abspath(args.destination))
         reject_destination_symlinks(destination)
         if args.command == "check":
             result = check_destination(destination, files)
         else:
-            result = import_runtime(args.archive.resolve(strict=True), destination, bundle, overlays)
+            result = import_runtime(args.archive.resolve(strict=True), destination, bundle)
         print(json.dumps(result, sort_keys=True))
         return 0
     except (OSError, ValueError, UnicodeError, json.JSONDecodeError, zipfile.BadZipFile) as error:

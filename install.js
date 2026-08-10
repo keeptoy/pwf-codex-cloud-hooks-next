@@ -130,13 +130,6 @@ function sourceRuntimeFiles() {
     });
   }
   files.push({
-    id: "compatibility_overlays",
-    relative: "compatibility-overlays-v1.json",
-    source: path.join(ROOT, managed.contracts.compatibility_overlays.path),
-    expected: managed.contracts.compatibility_overlays.sha256,
-    mode: 0o644,
-  });
-  files.push({
     id: "third_party_notices",
     relative: "THIRD_PARTY_NOTICES.md",
     source: path.join(ROOT, managed.license_provenance.notice_path),

@@ -30,7 +30,13 @@
         {
           "id": "session_catchup",
           "condition": "always",
-          "required": true
+          "required": true,
+          "allowed_symbols": [
+            "extract_messages_after",
+            "find_last_planning_update",
+            "same_project_path",
+            "text_content"
+          ]
         }
       ],
       "host_dependencies": [
@@ -88,24 +94,19 @@
       "source_path": "skills/planning-with-files/scripts/session-catchup.py",
       "package_path": "runtime/upstream/session-catchup.py",
       "installed_path": "hooks/planning-with-files/upstream/session-catchup.py",
-      "origin": "upstream_with_managed_overlay",
+      "origin": "upstream_pristine",
       "activation_phase": 2,
       "language": "python3",
       "mode": "0755",
       "pristine_sha256": "6476fd9024d0cbb9bfb850119fd0beff7fb7cfab9c6683ce10e4cc8d830ce6de",
-      "managed_sha256": "fc765590dc32b3949027de97e33dad6a049daf148719ba1822598a6c146461e2",
+      "managed_sha256": "6476fd9024d0cbb9bfb850119fd0beff7fb7cfab9c6683ce10e4cc8d830ce6de",
       "direct_file_dependencies": [],
       "host_dependencies": [
         "python3-standard-library",
         "optional:orjson",
         "optional:sqlite3-for-opencode-only"
       ],
-      "overlay_ids": [
-        "PWF_CLOUD_SESSION_STORE_V1",
-        "PWF_CLOUD_RUNTIME_EXPLICIT_V1",
-        "PWF_SCOPED_PLANNING_STATE_V1",
-        "PWF_BOUNDED_WRAPPER_CONTEXT_V1"
-      ]
+      "overlay_ids": []
     },
     {
       "id": "resolve_plan_dir",

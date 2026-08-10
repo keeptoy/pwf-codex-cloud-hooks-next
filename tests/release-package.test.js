@@ -45,7 +45,7 @@ function extractZip(archive, destination) {
   assert.equal(result.status, 0, result.stderr);
 }
 
-test("post-promotion source ZIP is deterministic, self-contained, externalizes bootstrap, and cannot impersonate published v0.3.2", () => {
+test("successor source ZIP is deterministic, self-contained, externalizes a fail-closed bootstrap, and cannot impersonate published v0.3.2", () => {
   const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-release-candidate-"));
   const first = path.join(workspace, "first.zip"), second = path.join(workspace, "second.zip");
   try {
@@ -56,21 +56,22 @@ test("post-promotion source ZIP is deterministic, self-contained, externalizes b
     assert.equal(sha256(first), sha256(second));
     assert.equal(firstResult.sha256, secondResult.sha256);
     assert.notEqual(firstResult.sha256, release032ZipSha256);
-    assert.equal(firstResult.entries, 23);
+    assert.equal(firstResult.entries, 21);
     assert.ok(firstResult.size > 0);
     result = run("check", first); assert.equal(result.status, 0, result.stderr);
     assert.equal(JSON.parse(result.stdout).healthy, true);
 
     const artifact = JSON.parse(fs.readFileSync(contract, "utf8"));
     const packageMetadata = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
-    assert.equal(packageMetadata.version, "0.3.2");
+    assert.equal(packageMetadata.version, "0.3.3-dev");
     assert.equal(artifact.package_name, packageMetadata.name);
     assert.equal(artifact.package_version, packageMetadata.version);
     assert.equal(artifact.entries.some(entry => entry.path === "tools/build_release.py"), true);
     assert.equal(artifact.entries.some(entry => entry.path === "tools/import_upstream_runtime.py"), true);
-    assert.equal(artifact.entries.some(entry => entry.path === "patches/patch_planning_skill.py"), true);
+    assert.equal(artifact.entries.some(entry => entry.path === "patches/patch_planning_skill.py"), false);
+    assert.equal(artifact.entries.some(entry => entry.path === "contracts/compatibility-overlays-v1.json"), false);
     assert.equal(artifact.entries.some(entry => entry.path.startsWith("init-cloud-sandbox-")), false);
-    assert.deepEqual(artifact.external_release_assets.map(entry => entry.path), ["init-cloud-sandbox-v0.3.2.bash"]);
+    assert.deepEqual(artifact.external_release_assets.map(entry => entry.path), ["init-cloud-sandbox-v0.3.3-dev.bash"]);
     assert.deepEqual(artifact.checksum_workflow, [
       "freeze all required entries",
       "import and verify allowlisted upstream files",
@@ -81,13 +82,13 @@ test("post-promotion source ZIP is deterministic, self-contained, externalizes b
       "publish both immutable assets",
       "download both published assets and verify their SHA-256 values",
     ]);
-    const bootstrap = fs.readFileSync(path.join(root, "init-cloud-sandbox-v0.3.2.bash"), "utf8");
-    assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.2\}"/);
+    const bootstrap = fs.readFileSync(path.join(root, "init-cloud-sandbox-v0.3.3-dev.bash"), "utf8");
+    assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.3-dev\}"/);
     assert.match(bootstrap, /keeptoy\/pwf-codex-cloud-hooks-next\/releases\/download/);
-    assert.match(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${release032ZipSha256}\\}"`));
+    assert.match(bootstrap, /HOOKS_SHA256="\$\{HOOKS_SHA256:-0{64}\}"/);
     const roadmap = fs.readFileSync(path.join(root, "ROADMAP.md"), "utf8");
-    assert.match(roadmap, /P3.*新.*machine identity.*seal/is);
-    assert.match(roadmap, /unsealed governance transition/i);
+    assert.match(roadmap, /v0\.3\.3-dev.*P3 successor critical gate/is);
+    assert.match(roadmap, /unsealed candidate source/i);
 
     const extracted = path.join(workspace, "extracted");
     extractZip(first, extracted);

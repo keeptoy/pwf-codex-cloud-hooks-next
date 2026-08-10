@@ -312,17 +312,7 @@ def is_codex_project_session(session: Path, project_cmp: str) -> bool:
 
 
 def get_codex_sessions(project_path: str) -> Iterable[Path]:
-    # PWF_CODEX_CLOUD_COMPAT_PATCH: Codex Cloud installs the runtime under
-    # CODEX_HOME=/opt/codex while HOME remains /root. Prefer an explicit store,
-    # then the configured Codex home, and retain the upstream user-home fallback.
-    sessions_override = os.getenv('CODEX_SESSIONS_DIR', '').strip()
-    codex_home = os.getenv('CODEX_HOME', '').strip()
-    if sessions_override:
-        sessions_dir = Path(os.path.expanduser(sessions_override))
-    elif codex_home:
-        sessions_dir = Path(os.path.expanduser(codex_home)) / 'sessions'
-    else:
-        sessions_dir = Path.home() / '.codex' / 'sessions'
+    sessions_dir = Path(os.path.expanduser(os.getenv('CODEX_SESSIONS_DIR', '~/.codex/sessions')))
     if not sessions_dir.exists():
         return
 
@@ -340,16 +330,6 @@ def get_codex_sessions(project_path: str) -> Iterable[Path]:
 
 
 def get_session_candidates(project_path: str) -> Tuple[str, Iterable[Path]]:
-    # PWF_CODEX_CLOUD_COMPAT_PATCH: the Agent Skills standard installs under
-    # ~/.agents, so script-path inference alone misclassifies Codex as Claude.
-    # A managed adapter can select its known host explicitly; path inference
-    # remains the backward-compatible fallback for other installations.
-    runtime_override = os.getenv('PWF_RUNTIME', '').strip().lower()
-    if runtime_override == 'codex':
-        return 'codex', get_codex_sessions(project_path)
-    if runtime_override == 'opencode':
-        return 'opencode', []
-
     script_path = Path(__file__).resolve().as_posix().lower()
     if '/.codex/' in script_path:
         return 'codex', get_codex_sessions(project_path)
@@ -825,32 +805,14 @@ def extract_messages_after(messages: List[Dict[str, Any]], after_line: int) -> L
     return result
 
 
-def has_planning_state(project_path: str) -> bool:
-    root = Path(project_path)
-    if any((root / filename).is_file() for filename in PLANNING_FILES):
-        return True
-
-    # PWF_CODEX_CLOUD_COMPAT_PATCH: the managed adapter supports scoped
-    # plans under .planning, so catch-up must not return early for scoped-only
-    # projects. This is only an existence guard; plan content is not read here.
-    planning_root = root / '.planning'
-    if not planning_root.is_dir():
-        return False
-    try:
-        return any(
-            candidate.is_dir()
-            and not candidate.name.startswith('.')
-            and (candidate / 'task_plan.md').is_file()
-            for candidate in planning_root.iterdir()
-        )
-    except OSError:
-        return False
-
-
 def main():
     project_path = sys.argv[1] if len(sys.argv) > 1 else os.getcwd()
 
-    if not has_planning_state(project_path):
+    # Check if planning files exist (indicates active task)
+    has_planning_files = any(
+        Path(project_path, f).exists() for f in PLANNING_FILES
+    )
+    if not has_planning_files:
         # No planning files in this project; skip catchup to avoid noise.
         return
 
@@ -896,17 +858,7 @@ def main():
     assistant_label = 'CODEX' if runtime_name == 'codex' else 'CLAUDE'
     for msg in messages_after[-15:]:  # Last 15 messages
         if msg['role'] == 'user':
-            user_content = msg['content']
-            # PWF_CODEX_CLOUD_COMPAT_PATCH: Cloud can prepend a long PR or
-            # feedback wrapper to the literal user prompt. Keep output bounded
-            # while preserving both the wrapper context and trailing request.
-            if len(user_content) > 1000:
-                user_content = (
-                    f"{user_content[:350]}\n"
-                    "...[truncated]...\n"
-                    f"{user_content[-650:]}"
-                )
-            print(f"USER: {user_content}")
+            print(f"USER: {msg['content'][:300]}")
         else:
             if msg.get('content'):
                 print(f"{assistant_label}: {msg['content'][:300]}")

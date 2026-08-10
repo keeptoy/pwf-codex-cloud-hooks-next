@@ -16,7 +16,6 @@ let cliWorkspace;
 
 const expectedRuntimeFiles = [
   "THIRD_PARTY_NOTICES.md",
-  "compatibility-overlays-v1.json",
   "contracts/adapter-plan-context-request-v1.schema.json",
   "contracts/plan-context-result-v1.schema.json",
   "hook_adapter.py",

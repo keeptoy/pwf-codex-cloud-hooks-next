@@ -85,7 +85,7 @@ new container
 ```text
 fixed upstream v3.8.2 archive
         |
-        | importer validates manifest/ledger; patcher applies owned overlay
+        | importer validates archive, manifest, allowlist, pristine hashes and modes
         v
 repository-owned runtime bundle
         |
@@ -97,7 +97,6 @@ $CODEX_HOME/hooks/planning-with-files/
   |-- owned-catchup.py
   |-- upstream/{resolve-plan-dir.sh,inject-plan.sh,ledger-summary.sh,session-catchup.py}
   |-- contracts/{adapter-plan-context-request-v1,plan-context-result-v1}
-  |-- compatibility-overlays-v1.json
   `-- installed-manifest.json
 
 /etc/codex/requirements.toml
@@ -113,27 +112,34 @@ repository source、Release ZIP 与 installed layout 的逐层对应见
 
 ### 3.1 源码重建与生产执行是两条路径
 
-`patches/patch_planning_skill.py` 位于源码重建和 Release 审计层，是
-`tools/import_upstream_runtime.py` 的直接依赖；它不是安装后的 Hook runtime，也不进入 Managed policy
-或 trusted execution graph。Importer 从固定的 PWF v3.8.2 archive 重建 owned runtime 时，只有上游
-`scripts/session-catchup.py` 需要经过 patcher，另外三个上游脚本保持 pristine。
+`tools/import_upstream_runtime.py` 位于源码重建和 Release 审计层；它随候选 ZIP 提供 self-contained
+`import`/`check`，但不是安装后的 Hook runtime，也不进入 Managed policy 或 production trusted execution
+graph。Importer 从固定 PWF v3.8.2 archive 重建 owned runtime 时，四个上游文件都必须逐字保持 pristine；
+任何 `origin`、pristine/managed hash 或 overlay declaration 不一致都会 fail closed。
 
-Patcher 的职责严格限定为：
+Importer 的职责严格限定为：
 
-1. 固定 patch ID、目标文件和四个精确源码 anchor；上游结构意外变化时拒绝继续，而不是猜测替换；
-2. 按 machine contract 的顺序应用 session store、explicit runtime、scoped planning state 和 bounded
-   wrapper context 四项 compatibility overlay；
-3. 核对 pristine/managed SHA-256，使 `runtime/upstream/session-catchup.py` 可以从固定上游确定性复现；
-4. 为 importer 的 `import`/`check` 和独立维护检查提供转换逻辑，不在生产安装时修改 global PWF Skill。
+1. 固定 archive URL/SHA、license、四个 exact source/package path、mode 与 destination inventory；
+2. 核对每个 source 的 pinned pristine SHA-256，并要求 package bytes 与 pristine bytes 相同；
+3. 为源码树或解压后的候选 ZIP 提供确定性 `import`/`check`，拒绝 archive、source、mode、symlink 或
+   unknown destination drift；
+4. 不修改 global PWF Skill，不推断或生成 compatibility transformation。
+
+已发布 v0.3.2 使用过更早的源码重建路线：`patches/patch_planning_skill.py` 当时是 importer 的直接依赖，
+位于源码重建和 Release 审计层，不是安装后的 Hook runtime，也不进入 Managed policy 或 production
+trusted execution graph；四个上游文件中只有 `scripts/session-catchup.py` 经过四项 overlay，另外三个保持
+pristine。后来调用图证明 Phase 2 owned wrapper 从首次激活起就不调用这些 patched CLI branches，且四项
+retirement condition 已由 validated/frozen transcript、explicit request、canonical project state 和 owned
+renderer 满足，因此 successor current tree 退休 patcher/ledger/patched bytes。该历史实现和精确 hash 只从
+immutable v0.3.2 source 与 `BASELINE_PROVENANCE.md` 恢复，不能重新进入当前构建合同。
 
 维护者的源码重建/核验路径发生在源码树或自包含的 Release ZIP 中：
 
 ```text
 pinned PWF v3.8.2 archive
-  -> importer 校验 archive、manifest、allowlist、overlay ledger 与 patcher anchors
-  -> patcher 只转换 session-catchup.py
-  -> repository-owned runtime/upstream/*
-  -> Release builder 将成品 runtime、importer 与 patcher 一起装入候选 ZIP
+  -> importer 校验 archive、license、runtime bundle、allowlist 与 pristine hashes
+  -> repository-owned runtime/upstream/*（四个文件逐字 pristine）
+  -> Release builder 将成品 runtime 与 self-contained importer 一起装入候选 ZIP
 ```
 
 生产安装/运行路径不现场打 patch，而是使用 ZIP 内已经生成的成品：
@@ -143,7 +149,8 @@ Release ZIP
   -> install.js 校验 runtime contract、SHA-256、mode 与 inventory
   -> 复制成品到 $CODEX_HOME/hooks/planning-with-files/
   -> Managed policy 只启动绝对路径 hook_adapter.py
-  -> adapter 只调用已安装的 sibling owned/upstream runtime
+  -> adapter 只调用已安装的 sibling owned runtimes
+  -> owned runtimes 只从已安装的 sibling upstream runtime 进入明确允许的调用点
 ```
 
 因此生产安装是否健康只取决于已校验的成品 runtime 与安装 contract；源码重建工具是否自包含是独立
@@ -210,8 +217,15 @@ filesystem fallback。
 
 对当前 pinned PWF v3.8.2，private snapshot 是 `owned-plan.py` 内部的 integration-specific 调用策略，
 不是 Codex Host ABI，也不是已证明可复用于任意 Skill 的 Driver contract。选择它是为了在不增加第二个
-managed upstream patch point 的情况下保持 resolver/injector pristine，并通过最小文件投影和环境清洗
+upstream patch point 的情况下保持 resolver/injector pristine，并通过最小文件投影和环境清洗
 强制 `managed_legacy`；安全读取、权限、预算、超时和清理成本由 owned runtime 明确承担。
+
+这里的“第二个 patch point”特指当时为 plan resolver/injector 比较过的多目标 overlay，不表示 private
+snapshot 直接替换了 catch-up overlay。Catch-up 是另一条 invocation domain：Phase 2 的 owned wrapper 已
+通过 validated/frozen transcript bytes、显式 runtime/project request 和 owned report renderer 接管四项 CLI
+compatibility behavior，只复用 pinned pristine module 的 parser helper closure。Phase 3 private snapshot
+随后解决 plan scripts 的真实文件调用问题；两条路线共同体现“pristine upstream + owned boundary”，但不是
+同一个 overlay → snapshot 转换。
 
 该选择的长期边界固定为：
 
@@ -271,15 +285,18 @@ Transcript 选择顺序：
 Adapter deadline 为 27 秒，child 与 finalization 必须在该总预算内完成；测试冻结当前 supervision 和
 process-group cleanup 语义。
 
-## 9. 来源与 overlay
+## 9. 来源与 pristine helper boundary
 
-四个 upstream runtime 文件由 pinned v3.8.2 archive 生成。`resolve-plan-dir.sh`、`inject-plan.sh`、
-`ledger-summary.sh` 保持 pristine；`session-catchup.py` 的 owned copy 应用四项受控 Cloud compatibility
-overlay：session store、explicit runtime、scoped planning state 和 bounded wrapper context。
-四个文件中，只有 `runtime/upstream/session-catchup.py` 与 pristine upstream 不同。
+四个 upstream runtime 文件都由 pinned v3.8.2 archive 逐字生成并保持 pristine。Runtime bundle 同时固定
+source/package/installed path、mode、pristine SHA 和 owned runtime 的直接依赖；importer 要求
+`managed_sha256 == pristine_sha256`、`origin=upstream_pristine` 且 `overlay_ids=[]`。
 
-Overlay 只作用于 owned copy，不修改 global Skill。具体 hash、anchor、状态和证据见
-`contracts/compatibility-overlays-v1.json` 与 `BASELINE_PROVENANCE.md`。
+`owned-catchup.py` 会动态加载完整的 fixed `session-catchup.py` module，因此 module initialization 中的 UTF-8
+stdio 配置与 optional `orjson` import 仍属于真实 trusted surface；但后续只允许进入
+`same_project_path`、`find_last_planning_update`、`extract_messages_after` 和 `text_content` 四个 helper roots
+及其 pinned transitive closure，不调用 CLI `main()`。Helper allowlist、闭包不可达性和 managed/pristine
+result 等价由 machine contract 与边界测试共同冻结。已发布版本曾使用的 overlay IDs、patcher anchors 与
+managed hash 只在 `BASELINE_PROVENANCE.md` 和 immutable source 中作为冷证据保留。
 
 ## 10. Installer 所有权
 

@@ -187,17 +187,17 @@ sha256sum "$ZIP"
 ```
 
 ZIP entries、外部资产和 package identity 只由 Release contract 决定；不要在文档中另建可漂移的
-entry count。Importer 与其直接 patcher 依赖必须同时进入 allowlist，所有 bootstrap 必须保持在 ZIP
-外。本地双构建、`check` 或 hash 只证明当前开发字节可复现，不等于完成 seal、publication、Cloud
+entry count。Self-contained importer 与四个 pinned pristine runtime 文件必须同时进入 allowlist，所有
+bootstrap 必须保持在 ZIP 外。本地双构建、`check` 或 hash 只证明当前开发字节可复现，不等于完成 seal、publication、Cloud
 acceptance 或 rollback 晋级。已发布版本的精确字节只从 immutable tag/source oracle 和对应 acceptance
 复核，不从当前工作树覆盖。
 
-### Importer 与 patcher 摘要
+### Importer 与 pristine runtime 摘要
 
-候选 ZIP 必须同时包含 importer 与 patcher，确保解压后的维护工具可以独立 `check`；正常安装不会
-现场打 patch，而是由 `install.js` 校验并复制 ZIP 内已经生成的 owned runtime。两条路径、patcher 的
-四项职责、信任边界和 overlay 顺序见 [`ARCHITECTURE.md`](ARCHITECTURE.md) 的部署图及“来源与 overlay”
-章节；各版本实际 package delta 见 [`CHANGELOG.md`](CHANGELOG.md)。
+候选 ZIP 包含 self-contained importer，确保解压后可以独立 `check`；四个 upstream runtime 文件全部从
+pinned archive 逐字重建并保持 pristine。正常安装不会现场转换上游源码，而是由 `install.js` 校验并复制
+ZIP 内已经生成的 owned runtime。源码重建/生产执行分层、已退休 patcher 的历史定位和 parser helper
+边界见 [`ARCHITECTURE.md`](ARCHITECTURE.md)；各版本实际 package delta 见 [`CHANGELOG.md`](CHANGELOG.md)。
 
 ## 安全与 Release 不变量
 

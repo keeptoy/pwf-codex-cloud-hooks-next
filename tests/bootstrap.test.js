@@ -8,16 +8,11 @@ const test = require("node:test");
 
 const root = path.resolve(__dirname, "..");
 const pristineSkill = path.join(root, "tests", "fixtures", "planning-with-files");
-const patcher = path.join(root, "patches", "patch_planning_skill.py");
 const manifestPath = path.join(root, "upstream-manifest.json");
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
-const patchContract = manifest.compatibility_patches.PWF_CODEX_CLOUD_COMPAT_PATCH;
-assert.deepEqual(Object.keys(manifest.compatibility_patches), ["PWF_CODEX_CLOUD_COMPAT_PATCH"]);
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 const bash = process.env.BASH || (process.platform === "win32" ? "D:\\Program Files\\Git\\bin\\bash.exe" : "bash");
-const bootstrap032 = path.join(root, "init-cloud-sandbox-v0.3.2.bash");
-const sealed032ZipSha256 = "b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081";
-const zeroSha256 = "0".repeat(64);
+const candidateBootstrap = path.join(root, "init-cloud-sandbox-v0.3.3-dev.bash");
 
 function bashPath(value) {
   const normalized = value.replaceAll("\\", "/");
@@ -54,55 +49,12 @@ function makeSkillArchive(workspace, driftRequiredFile = false) {
   return { archive, sha256: require("node:crypto").createHash("sha256").update(fs.readFileSync(archive)).digest("hex") };
 }
 
-function fixture(prefix = "pwf-skill-patch-") {
-  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
-  const skill = path.join(workspace, ".agents", "skills", "planning-with-files");
-  fs.mkdirSync(path.dirname(skill), { recursive: true });
-  fs.cpSync(pristineSkill, skill, { recursive: true });
-  return { workspace, skill };
-}
-
-function runPatcher(skill, command = "apply") {
-  return spawnSync(python, [
-    patcher,
-    command,
-    "--skill-root", skill,
-    "--manifest", manifestPath,
-  ], { encoding: "utf8" });
-}
-
-test("compatibility patch is deterministic, idempotent, and fail-closed", () => {
-  const { workspace, skill } = fixture();
-  const target = path.join(skill, "scripts", "session-catchup.py");
-  try {
-    assert.equal(fs.existsSync(target), true);
-    let result = runPatcher(skill);
-    assert.equal(result.status, 0, result.stderr);
-    assert.equal(JSON.parse(result.stdout).changed, true);
-    assert.equal(require("node:crypto").createHash("sha256").update(fs.readFileSync(target)).digest("hex"), patchContract.patched_sha256);
-
-    result = runPatcher(skill);
-    assert.equal(result.status, 0, result.stderr);
-    assert.equal(JSON.parse(result.stdout).changed, false);
-
-    result = runPatcher(skill, "check");
-    assert.equal(result.status, 0, result.stderr);
-
-    fs.appendFileSync(target, "# unknown drift\n");
-    result = runPatcher(skill);
-    assert.equal(result.status, 1);
-    assert.match(result.stderr, /refusing unknown Skill content/);
-  } finally {
-    fs.rmSync(workspace, { recursive: true, force: true });
-  }
-});
-
-test("v0.3.2 sealed bootstrap pins both archives, removes remote Node tooling, and rejects a zero override", () => {
-  const bootstrap = fs.readFileSync(bootstrap032, "utf8");
+test("candidate bootstrap pins the upstream archive, removes remote Node tooling, and fails closed on its zero hash", () => {
+  const bootstrap = fs.readFileSync(candidateBootstrap, "utf8");
   const runAll = bootstrap.match(/run_all\(\) \{([\s\S]*?)\n\}/);
   assert.ok(runAll, "run_all was not found");
-  assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.2\}"/);
-  assert.match(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${sealed032ZipSha256}\\}"`));
+  assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.3-dev\}"/);
+  assert.match(bootstrap, /HOOKS_SHA256="\$\{HOOKS_SHA256:-0{64}\}"/);
   assert.match(bootstrap, new RegExp(manifest.release_archive_url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(bootstrap, new RegExp(manifest.release_archive_sha256));
   assert.match(bootstrap, /PLANNING_WITH_FILES_ARCHIVE_ROOT="\$\{PLANNING_WITH_FILES_ARCHIVE_ROOT:-planning-with-files-3\.8\.2\}"/);
@@ -114,36 +66,36 @@ test("v0.3.2 sealed bootstrap pins both archives, removes remote Node tooling, a
   assert.doesNotMatch(bootstrap, /\bnvm\b|\bnpx\b|\bnpm\b/i);
   assert.doesNotMatch(bootstrap, /\|[ \t]*bash\b/);
   assert.ok(runAll[1].indexOf("verify_node_toolchain") < runAll[1].indexOf("install_system_prerequisites"));
-  const sealedGate = runBash('source "$1"\nassert_hooks_checksum_configured', [bootstrap032]);
-  assert.equal(sealedGate.status, 0, sealedGate.stderr);
-  const zeroOverride = runBash(
+  const zeroDefault = runBash('source "$1"\nassert_hooks_checksum_configured', [candidateBootstrap]);
+  assert.equal(zeroDefault.status, 1, zeroDefault.stdout);
+  assert.match(zeroDefault.stderr, /HOOKS_SHA256 is still a placeholder/);
+  const explicitNonzero = runBash(
     'source "$1"\nassert_hooks_checksum_configured',
-    [bootstrap032],
-    { HOOKS_SHA256: zeroSha256 },
+    [candidateBootstrap],
+    { HOOKS_SHA256: "1".repeat(64) },
   );
-  assert.equal(zeroOverride.status, 1, zeroOverride.stdout);
-  assert.match(zeroOverride.stderr, /HOOKS_SHA256 is still a placeholder/);
+  assert.equal(explicitNonzero.status, 0, explicitNonzero.stderr);
 });
 
-test("v0.3.2 bootstrap rejects Node below 18 and accepts supported platform majors", () => {
+test("candidate bootstrap rejects Node below 18 and accepts supported platform majors", () => {
   const command = [
     'source "$1"',
     'node() { printf "%s\\n" "$PWF_TEST_NODE_VERSION"; }',
     "verify_node_toolchain",
   ].join("\n");
   for (const version of ["v18.0.0", "v22.17.1", "v24.3.0"]) {
-    const result = runBash(command, [bootstrap032], { PWF_TEST_NODE_VERSION: version });
+    const result = runBash(command, [candidateBootstrap], { PWF_TEST_NODE_VERSION: version });
     assert.equal(result.status, 0, `${version}: ${result.stderr}`);
   }
   for (const version of ["v17.9.1", "not-a-node-version", "v18"]) {
-    const result = runBash(command, [bootstrap032], { PWF_TEST_NODE_VERSION: version });
+    const result = runBash(command, [candidateBootstrap], { PWF_TEST_NODE_VERSION: version });
     assert.equal(result.status, 1, `${version}: ${result.stdout}`);
     assert.match(result.stderr, /Node\.js 18 or newer is required|Unable to parse Node\.js version/);
   }
 });
 
-test("v0.3.2 bootstrap installs only the verified pristine Skill subtree", () => {
-  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-bootstrap-v032-"));
+test("candidate bootstrap installs only the verified pristine Skill subtree", () => {
+  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-bootstrap-candidate-"));
   const installedSkill = path.join(workspace, "global", "planning-with-files");
   const replacedSentinel = path.join(installedSkill, "replaced-skill-sentinel");
   try {
@@ -155,7 +107,7 @@ test("v0.3.2 bootstrap installs only the verified pristine Skill subtree", () =>
       'download_file() { cp -- "$PWF_TEST_ARCHIVE" "$2"; }',
       "install_planning_skill",
     ].join("\n");
-    const result = runBash(command, [bootstrap032], {
+    const result = runBash(command, [candidateBootstrap], {
       PLANNING_WITH_FILES_ARCHIVE_SHA256: fixtureArchive.sha256,
       PLANNING_WITH_FILES_ROOT: bashPath(installedSkill),
       PWF_TEST_ARCHIVE: bashPath(fixtureArchive.archive),
@@ -173,8 +125,8 @@ test("v0.3.2 bootstrap installs only the verified pristine Skill subtree", () =>
   }
 });
 
-test("v0.3.2 bootstrap rejects a bad Skill archive without replacing an existing Skill", () => {
-  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-bootstrap-v032-bad-"));
+test("candidate bootstrap rejects a bad Skill archive without replacing an existing Skill", () => {
+  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-bootstrap-candidate-bad-"));
   const installedSkill = path.join(workspace, "global", "planning-with-files");
   const sentinel = path.join(installedSkill, "existing-skill-sentinel");
   try {
@@ -186,7 +138,7 @@ test("v0.3.2 bootstrap rejects a bad Skill archive without replacing an existing
       'download_file() { cp -- "$PWF_TEST_ARCHIVE" "$2"; }',
       "install_planning_skill",
     ].join("\n");
-    const result = runBash(command, [bootstrap032], {
+    const result = runBash(command, [candidateBootstrap], {
       PLANNING_WITH_FILES_ARCHIVE_SHA256: "0".repeat(64),
       PLANNING_WITH_FILES_ROOT: bashPath(installedSkill),
       PWF_TEST_ARCHIVE: bashPath(fixtureArchive.archive),
@@ -196,7 +148,7 @@ test("v0.3.2 bootstrap rejects a bad Skill archive without replacing an existing
     assert.equal(fs.readFileSync(sentinel, "utf8"), "preserve me\n");
 
     const driftFixture = makeSkillArchive(path.join(workspace, "drift"), true);
-    const driftResult = runBash(command, [bootstrap032], {
+    const driftResult = runBash(command, [candidateBootstrap], {
       PLANNING_WITH_FILES_ARCHIVE_SHA256: driftFixture.sha256,
       PLANNING_WITH_FILES_ROOT: bashPath(installedSkill),
       PWF_TEST_ARCHIVE: bashPath(driftFixture.archive),
@@ -204,47 +156,6 @@ test("v0.3.2 bootstrap rejects a bad Skill archive without replacing an existing
     assert.equal(driftResult.status, 1, driftResult.stdout);
     assert.match(driftResult.stderr, /SHA-256 verification failed/);
     assert.equal(fs.readFileSync(sentinel, "utf8"), "preserve me\n");
-  } finally {
-    fs.rmSync(workspace, { recursive: true, force: true });
-  }
-});
-
-test("managed compatibility overlay remains reproducible for the owned imported copy", () => {
-  const { workspace, skill } = fixture("pwf-catchup-runtime-");
-  const project = path.join(workspace, "project");
-  const scoped = path.join(project, ".planning", "catchup-regression");
-  const codexHome = path.join(workspace, "codex");
-  const sessions = path.join(codexHome, "sessions", "2026", "08", "01");
-  const rollout = path.join(sessions, "rollout-2026-08-01T00-00-00-catchup-thread.jsonl");
-  try {
-    const patched = runPatcher(skill);
-    assert.equal(patched.status, 0, patched.stderr);
-    fs.mkdirSync(scoped, { recursive: true });
-    fs.writeFileSync(path.join(project, ".planning", ".active_plan"), "catchup-regression\n");
-    fs.writeFileSync(path.join(scoped, "task_plan.md"), "# scoped-only plan\n");
-    fs.mkdirSync(sessions, { recursive: true });
-    const sentinel = "PWF_CATCHUP_UNSYNCED_SENTINEL_82C4";
-    const wrappedUserMessage = `The user was unsatisfied with the code.\n<PREVIOUS_PR_DESCRIPTION>\n${"w".repeat(1500)}\n</PREVIOUS_PR_DESCRIPTION>\n${sentinel}`;
-    const records = [
-      { type: "session_meta", payload: { cwd: project, source: "codex" } },
-      { type: "response_item", payload: { type: "message", role: "assistant", content: [{ type: "output_text", text: "x".repeat(6000) }] } },
-      { type: "event_msg", payload: { type: "patch_apply_end", success: true, changes: { [path.join(scoped, "task_plan.md")]: { operation: "modified" } } } },
-      { type: "response_item", payload: { type: "message", role: "user", content: [{ type: "input_text", text: wrappedUserMessage }] } },
-    ];
-    fs.writeFileSync(rollout, records.map(record => JSON.stringify(record)).join("\n") + "\n");
-    const env = { ...process.env, PWF_RUNTIME: "codex", CODEX_HOME: codexHome };
-    delete env.CODEX_SESSIONS_DIR;
-    delete env.CODEX_THREAD_ID;
-    const result = spawnSync(python, [path.join(skill, "scripts", "session-catchup.py"), project], { encoding: "utf8", env });
-    assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /SESSION CATCHUP DETECTED/);
-    assert.match(result.stdout, /Runtime: codex/);
-    assert.match(result.stdout, /Last planning update: task_plan\.md/);
-    assert.match(result.stdout, /Unsynced messages: 1/);
-    assert.match(result.stdout, /The user was unsatisfied with the code/);
-    assert.match(result.stdout, /\.\.\.\[truncated\]\.\.\./);
-    assert.match(result.stdout, new RegExp(sentinel));
-
   } finally {
     fs.rmSync(workspace, { recursive: true, force: true });
   }

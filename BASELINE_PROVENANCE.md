@@ -73,11 +73,16 @@ M2 排除的历史 planning、Phase/Round 文档和 snapshot prototype 仍可在
 
 `contracts/runtime-bundle-v1.json` 固定 source/package/installed path、direct dependencies、mode、
 pristine/managed hashes 和 deferred candidates。`tools/import_upstream_runtime.py` 只接受该 allowlist，
-验证 archive、license、anchor、mode 和 destination inventory。
+验证 archive、license、pristine source hash、mode 和 destination inventory。
 
-## 4. Owned compatibility overlay
+`v0.3.3-dev` 是尚未形成 immutable publication identity 的 successor source 标识，因此不进入第 1 节
+已发布身份账本；其 programme 状态只由 ROADMAP 与活动 planning 维护。若以后 seal/publish，必须以新的
+tag、资产字节、SHA 和 acceptance 独立登记，不能继承 v0.3.2 的 overlay package identity。
 
-只有 `runtime/upstream/session-catchup.py` 与 pristine upstream 不同。四项 overlay 顺序固定：
+## 4. Published v0.3.2 owned compatibility overlay（冷证据）
+
+在 immutable v0.3.2 source/package 中，只有 `runtime/upstream/session-catchup.py` 与 pristine upstream
+不同，四项 overlay 顺序固定：
 
 1. `PWF_CLOUD_SESSION_STORE_V1`
 2. `PWF_CLOUD_RUNTIME_EXPLICIT_V1`
@@ -89,17 +94,19 @@ pristine/managed hashes 和 deferred candidates。`tools/import_upstream_runtime
 | pristine session-catchup | `6476fd9024d0cbb9bfb850119fd0beff7fb7cfab9c6683ce10e4cc8d830ce6de` |
 | managed session-catchup | `fc765590dc32b3949027de97e33dad6a049daf148719ba1822598a6c146461e2` |
 
-Overlay 只应用到 repository-owned copy；global Skill 保持 pristine。稳定 machine authority 是：
+Overlay 只应用到当时的 repository-owned copy；global Skill 始终保持 pristine。该已发布实现从 immutable
+v0.3.2 source 的以下路径恢复：
 
-- `contracts/compatibility-overlays-v1.json`
-- `patches/patch_planning_skill.py`
-- `upstream-manifest.json.compatibility_patches`
-- `tests/fixtures/cloud/hook-observations-v1.json`
-- `tests/fixtures/cloud/session-catchup-cloud-wrapper.jsonl`
-- importer、contract、patch 和 Cloud-shaped regression tests
+- [`contracts/compatibility-overlays-v1.json`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/c68a53bdeab7c38badcfb4e2a733ddd851e498e4/contracts/compatibility-overlays-v1.json)
+- [`patches/patch_planning_skill.py`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/c68a53bdeab7c38badcfb4e2a733ddd851e498e4/patches/patch_planning_skill.py)
+- [`upstream-manifest.json`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/c68a53bdeab7c38badcfb4e2a733ddd851e498e4/upstream-manifest.json) 的 compatibility metadata
+- [`runtime/upstream/session-catchup.py`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/c68a53bdeab7c38badcfb4e2a733ddd851e498e4/runtime/upstream/session-catchup.py) managed bytes
+- v0.3.2 immutable acceptance 与 source 内 importer/contract/patch/Cloud-shaped regression tests
 
-`upstream-manifest.json.historical_patched_skill_files` 名称带有历史色彩，但 patcher 仍用它交叉校验
-managed hash，因此在不修改 reproduction contract 前保留。它不是 global Skill mutation 许可。
+当时的 `upstream-manifest.json.historical_patched_skill_files` 虽然名称带有历史色彩，仍被 patcher 用于
+交叉校验 managed hash；它从来不是 global Skill mutation 许可。Successor 在独立 trusted-graph gate 证明
+patched CLI branches 不可达并满足四项 retirement condition 后，已从 current source contract 退休可执行
+patcher/ledger/patched bytes；历史 package 继续只由上述 immutable refs 证明，不能用 current importer 重建。
 
 ## 5. Cloud 与平台证据路由
 
@@ -119,9 +126,9 @@ Cloud 平台观测属于带日期的 fixture/acceptance，不在本文件复制�
 
 ```text
 pinned upstream archive + license
-  -> runtime-bundle-v1 + compatibility-overlays-v1
-  -> deterministic importer/patcher
-  -> exact runtime/upstream bytes
+  -> runtime-bundle-v1 pristine allowlist + helper entrypoints
+  -> deterministic importer
+  -> exact pristine runtime/upstream bytes
   -> upstream-manifest contract hashes
   -> installer inventory/doctor
   -> release-artifact-v1 allowlist + deterministic ZIP

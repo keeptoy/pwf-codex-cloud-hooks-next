@@ -4,10 +4,18 @@
 [`ROADMAP.md`](ROADMAP.md)；当前唯一行动与授权边界见活动 `task_plan.md`；精确 source、资产、大小和
 SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 acceptance。
 
-## Unreleased
+## v0.3.3-dev
 
 ### Changed
 
+- 开启不冒充任何已发布资产的 successor source identity；development bootstrap 保持 64 位 zero hash 并
+  fail closed。当前 programme/lifecycle 见 [`ROADMAP.md`](ROADMAP.md)，已发布 v0.3.2 immutable identity
+  见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，候选 Cloud gate 见
+  [`docs/v0.3.3-dev-cloud-hard-acceptance.md`](docs/v0.3.3-dev-cloud-hard-acceptance.md)。
+- 退休已不可达的 catch-up compatibility supply-chain：四个 pinned upstream runtime 文件全部恢复 pristine，
+  importer 不再加载 patcher/overlay ledger，installed inventory 与 Release allowlist 同步收窄；
+  `owned-catchup.py` 继续拥有 transcript/identity/immutable bytes/normalization/rendering，只通过显式
+  helper allowlist 复用 pristine session module，且不调用 upstream CLI `main()`。
 - 将稳定 architecture contract 与版本 lifecycle/history oracle 分层：架构测试不再冻结具体 acceptance、
   release commit、资产 hash 或某次状态；candidate/accepted 文件窗口改由 ROADMAP 角色动态派生。
 - 当前树继续只保留一个 active planning scope；已完成的 Release/Cloud scope 由 Git 历史恢复，不作为

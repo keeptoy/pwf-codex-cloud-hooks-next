@@ -184,8 +184,9 @@ test("cold history stays on immutable refs and outside runtime, Release, and ada
   }
   const artifact = JSON.parse(release);
   assert.equal(artifact.package_version, candidate.slice(1));
-  assert.equal(artifact.entries.length, 23);
-  assert.equal(artifact.entries.some(item => item.path === "patches/patch_planning_skill.py"), true);
+  assert.equal(artifact.entries.length, 21);
+  assert.equal(artifact.entries.some(item => item.path === "patches/patch_planning_skill.py"), false);
+  assert.equal(artifact.entries.some(item => item.path === "contracts/compatibility-overlays-v1.json"), false);
   assert.equal(artifact.entries.some(item => item.path.startsWith("docs/") || item.path.startsWith("tests/")), false);
   assert.deepEqual(artifact.external_release_assets.map(item => item.path), [`init-cloud-sandbox-${candidate}.bash`]);
   assert.match(installer, /\[\[hooks\.SessionStart\.hooks\]\]/);

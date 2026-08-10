@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.2`；published 与 Cloud hard acceptance 已完成；当前分支是 P3 前的 unsealed governance transition，后继列车尚未开启 |
+| 当前开发列车 | `v0.3.3-dev`；P3 successor critical gate 已开启，正在退休不可达的 catch-up overlay；未 seal、未发布、未完成 Cloud acceptance |
 | 当前已接受版本 | `v0.3.2`；production rollback 与 GitHub `Latest` |
 | 回退证据链 | immutable `v0.3.1` immediate fallback；更早发布里程碑见 provenance museum |
 | 当前 programme 边界 | Product Phase 4 未授权 |
@@ -52,19 +52,17 @@ baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta
 
 ## 4. 当前开发列车与 Product Phase 路线
 
-`v0.3.2` 列车已经发布并验收；package、Release contract 与根目录 v0.3.2 bootstrap 继续保存最后一个
-已发布 machine identity，但不把 P2 后的 HEAD 认证为相同发布源码。`0.3.2-post-release` 已完成 P2 历史
-深度清理与 retirement contract 固化，期间没有修改 production runtime、Host ABI、trusted graph、Hook
-行为或任何已发布资产；但
-README 作为 ZIP input 已经版本无关化，所以当前 HEAD 构建只是 deterministic unsealed transition bytes，
-不等于 published v0.3.2 ZIP，也不是新的 candidate。
+`v0.3.2` 列车已经发布、验收并继续担任 accepted baseline。P2 在 post-release 分支完成治理与低风险历史
+清理后，P2-OTG-D 证明四项 catch-up overlay 从 Phase 2 owned wrapper 首次激活起就不在 production helper
+调用闭包，但 patcher、ledger、patched bytes 与相应测试仍存留在 source/rebuild/install/Release contract。
 
-下一步必须先进入独立 P3 Discovery，再建立新的 machine identity 和 fail-closed bootstrap，之后才允许
-seal 新候选字节；P3 目前未授权。当前状态明确是 **unsealed governance transition**，不得用 v0.3.2
-bootstrap 的已发布 checksum 安装从 HEAD 临时重建的 ZIP。
+维护者随后授权 P3 successor critical gate，仓库因此建立 `v0.3.3-dev` machine identity 和 zero-hash
+development bootstrap。该列车只退休不可达 compatibility supply-chain，不新增 Hook、Host ABI、Product
+Phase 4 行为或发布承诺。当前字节是 **unsealed candidate source**；必须用本地构建 ZIP 的显式
+`HOOKS_URL`/`HOOKS_SHA256` override 测试，默认 bootstrap 必须 fail closed，不得使用 v0.3.2 的 checksum。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
-bootstrap/acceptance；当前两项角色同为 v0.3.2，因此当前树只保留这一套入口。v0.3.1 作为 immediate
+bootstrap/acceptance；当前窗口为 v0.3.3-dev candidate + v0.3.2 accepted。v0.3.1 作为 immediate
 fallback 由 immutable commit、tag、Release 与 exact acceptance 恢复；更早历史只留在精选 provenance。
 trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。
 
