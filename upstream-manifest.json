@@ -18,7 +18,7 @@
     "contracts": {
       "runtime_bundle": {
         "path": "contracts/runtime-bundle-v1.json",
-        "sha256": "125b831ab122642337f00834491ef3728680aab645a046f67e8e087d2ad46824"
+        "sha256": "d707a65d6f0d6c5229cd9b4a03c76a2377b97a14411a8a2c5ecf76432d7e3567"
       },
       "adapter_runtime_request": {
         "path": "contracts/adapter-runtime-request-v1.schema.json",
@@ -40,7 +40,7 @@
       },
       "release_artifact": {
         "path": "contracts/release-artifact-v1.json",
-        "sha256": "253cf6f94e01cd1f88805e424b8c61c368b034b2fb6fd7ed112bf1dad3fdf7db"
+        "sha256": "4ccd1a3c0f3854c577796e99e4ca3c4ffdd1a74bd8e9d97e37df090989e8c9d9"
       }
     },
     "importer": {

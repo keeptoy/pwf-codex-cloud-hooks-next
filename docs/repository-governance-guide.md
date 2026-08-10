@@ -128,7 +128,8 @@ iterations/<version>/tests
 
 ## 8. Planning 生命周期
 
-当前树通常只应保留 `.active_plan` 指向的一个 scope。一个 scope 包含：
+`.planning/.active_plan` 只选择当前唯一活动 scope，不负责自动删除其他目录。current tree 可以按维护者
+控制的节奏暂时保留完整的 completed scope；一个 scope 包含：
 
 - `task_plan.md`：唯一 Next Step、授权、禁止事项、阶段和停止条件；
 - `findings.md`：研究、取舍与稳定结论；
@@ -141,9 +142,10 @@ iterations/<version>/tests
 3. 把 programme/lifecycle 变化写入 ROADMAP；
 4. 把重大来源/迁移写入 provenance；
 5. 确认完整 scope 已由 commit/PR 保存；
-6. 新 scope 激活时，从当前树移除已完成 scope。
+6. 新 scope 激活时只切换 `.active_plan`；completed scope 何时从 current tree 移除，由维护者在单独评审中
+   明确决定，不从指针切换自动推导删除授权。
 
-活动 planning 是施工现场，不是永久档案馆。
+活动 planning 是施工现场，不是永久档案馆；completed scope 可以短期保留，但应由维护者控制数量和退役节奏。
 
 <a name="phase-history-capsules"></a>
 

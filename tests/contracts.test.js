@@ -31,7 +31,17 @@ test("machine contracts freeze provenance, pristine runtime, Host protocol, and 
   const files = new Map(bundle.files.map(file => [file.id, file]));
   assert.equal(files.size, bundle.files.length);
   assert.deepEqual([...files.keys()], ["session_catchup", "resolve_plan_dir", "inject_plan", "ledger_summary"]);
+  assert.deepEqual([...files.values()].map(file => file.source_path), [
+    "skills/planning-with-files/scripts/session-catchup.py",
+    "skills/planning-with-files/scripts/resolve-plan-dir.sh",
+    "skills/planning-with-files/scripts/inject-plan.sh",
+    "skills/planning-with-files/scripts/ledger-summary.sh",
+  ]);
+  assert.equal(Object.hasOwn(bundle, "deferred_upstream_candidates"), false,
+    "programme roadmap candidates must stay outside the runtime bundle");
   for (const file of files.values()) {
+    assert.equal(Object.hasOwn(file, "activation_phase"), false,
+      `${file.id} must not carry historical programme phase metadata`);
     assert.match(file.source_path, /^skills\/planning-with-files\/scripts\/[A-Za-z0-9._-]+$/);
     assert.match(file.package_path, /^runtime\/upstream\/[A-Za-z0-9._-]+$/);
     assert.match(file.installed_path, /^hooks\/planning-with-files\/upstream\/[A-Za-z0-9._-]+$/);
@@ -57,12 +67,6 @@ test("machine contracts freeze provenance, pristine runtime, Host protocol, and 
       assert.equal(fileHash(path.join(referenceRoot, file.source_path)), file.pristine_sha256, file.id);
     }
   }
-  const admittedSources = new Set(bundle.files.map(file => file.source_path));
-  for (const deferred of bundle.deferred_upstream_candidates) {
-    assert.equal(admittedSources.has(deferred.source_path), false, deferred.source_path);
-    assert.ok(deferred.earliest_phase >= 4);
-  }
-
   assert.equal(Object.hasOwn(upstream, "compatibility_patches"), false);
   assert.equal(Object.hasOwn(upstream, "historical_patched_skill_files"), false);
   assert.equal(Object.hasOwn(upstream.managed_runtime.contracts, "compatibility_overlays"), false);
@@ -85,16 +89,16 @@ test("machine contracts freeze provenance, pristine runtime, Host protocol, and 
   }
   const localFiles = new Map(bundle.local_files.map(file => [file.id, file]));
   assert.deepEqual([...localFiles.keys()], ["owned_catchup", "owned_plan"]);
-  assert.equal(localFiles.get("owned_catchup").activation_phase, 2);
   assert.deepEqual(localFiles.get("owned_catchup").direct_file_dependencies, [{
     id: "session_catchup",
     condition: "always",
     required: true,
     allowed_symbols: ["extract_messages_after", "find_last_planning_update", "same_project_path", "text_content"],
   }]);
-  assert.equal(localFiles.get("owned_plan").activation_phase, 3);
   assert.deepEqual(localFiles.get("owned_plan").direct_file_dependencies.map(item => item.id), ["resolve_plan_dir", "inject_plan"]);
   for (const local of localFiles.values()) {
+    assert.equal(Object.hasOwn(local, "activation_phase"), false,
+      `${local.id} must not carry historical programme phase metadata`);
     assert.equal(fileHash(path.join(root, local.package_path)), local.sha256, local.id);
   }
   assert.deepEqual(upstream.managed_runtime.local_files.map(item => item.id), ["owned_catchup", "owned_plan"]);
@@ -155,7 +159,8 @@ test("machine contracts freeze provenance, pristine runtime, Host protocol, and 
   assert.equal(artifact.package_version, readJson("package.json").version);
   assert.equal(artifact.ordering, "lexicographic_by_utf8_path");
   assert.equal(artifact.external_release_assets.length, 1);
-  assert.equal(artifact.external_release_assets[0].path, "init-cloud-sandbox-v0.3.3.bash");
+  assert.equal(artifact.external_release_assets[0].path,
+    `init-cloud-sandbox-v${artifact.package_version}.bash`);
   const artifactPaths = artifact.entries.map(entry => entry.path);
   assert.equal(new Set(artifactPaths).size, artifactPaths.length);
   assert.equal(artifactPaths.length, 21);

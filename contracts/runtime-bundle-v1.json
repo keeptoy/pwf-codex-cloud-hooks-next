@@ -22,7 +22,6 @@
       "package_path": "runtime/owned-catchup.py",
       "installed_path": "hooks/planning-with-files/owned-catchup.py",
       "origin": "local_managed_runtime",
-      "activation_phase": 2,
       "language": "python3",
       "mode": "0755",
       "sha256": "8b5501eb4257654922a9e247bd3873e1ede75a7a1ae4b777eb7d8b3b47e41b72",
@@ -49,7 +48,6 @@
       "package_path": "runtime/owned-plan.py",
       "installed_path": "hooks/planning-with-files/owned-plan.py",
       "origin": "local_managed_runtime",
-      "activation_phase": 3,
       "language": "python3",
       "mode": "0755",
       "sha256": "1d8098d12ae6fdc9389b1047fc3691d1f792c813d21575ace7db0daa85c32595",
@@ -95,7 +93,6 @@
       "package_path": "runtime/upstream/session-catchup.py",
       "installed_path": "hooks/planning-with-files/upstream/session-catchup.py",
       "origin": "upstream_pristine",
-      "activation_phase": 2,
       "language": "python3",
       "mode": "0755",
       "pristine_sha256": "6476fd9024d0cbb9bfb850119fd0beff7fb7cfab9c6683ce10e4cc8d830ce6de",
@@ -114,7 +111,6 @@
       "package_path": "runtime/upstream/resolve-plan-dir.sh",
       "installed_path": "hooks/planning-with-files/upstream/resolve-plan-dir.sh",
       "origin": "upstream_pristine",
-      "activation_phase": 2,
       "language": "posix-sh",
       "mode": "0755",
       "pristine_sha256": "38a1c5effb35f9506e2e371ccabb6be6e4f4170acc18f1811f08d634f5f0e9bd",
@@ -133,7 +129,6 @@
       "package_path": "runtime/upstream/inject-plan.sh",
       "installed_path": "hooks/planning-with-files/upstream/inject-plan.sh",
       "origin": "upstream_pristine",
-      "activation_phase": 3,
       "language": "posix-sh",
       "mode": "0755",
       "pristine_sha256": "72c7904ec9a03f994d349ac1b9b3cfe484b417e738b25c0545d9ae11a2cc0364",
@@ -161,7 +156,6 @@
       "package_path": "runtime/upstream/ledger-summary.sh",
       "installed_path": "hooks/planning-with-files/upstream/ledger-summary.sh",
       "origin": "upstream_pristine",
-      "activation_phase": 3,
       "language": "posix-sh",
       "mode": "0755",
       "pristine_sha256": "d4fe626a6bed95ce00a05bc4ffb2dbf70990f9a16e116607c0a21ad0679cf3b9",
@@ -182,33 +176,6 @@
         "wc"
       ],
       "overlay_ids": []
-    }
-  ],
-  "deferred_upstream_candidates": [
-    {
-      "source_path": "skills/planning-with-files/scripts/attest-plan.sh",
-      "earliest_phase": 4,
-      "reason": "attestation is not enabled before the opt-in v3 mode phase"
-    },
-    {
-      "source_path": "skills/planning-with-files/scripts/ledger-append.sh",
-      "earliest_phase": 4,
-      "reason": "ledger mutation is not part of legacy read-only behavior"
-    },
-    {
-      "source_path": "skills/planning-with-files/scripts/phase-status.sh",
-      "earliest_phase": 4,
-      "reason": "phase mutation requires a separate reviewed lifecycle contract"
-    },
-    {
-      "source_path": "skills/planning-with-files/scripts/check-complete.sh",
-      "earliest_phase": 7,
-      "reason": "completion semantics remain deferred until advisory Stop"
-    },
-    {
-      "source_path": "skills/planning-with-files/scripts/gate-stop.sh",
-      "earliest_phase": 8,
-      "reason": "hard Stop gating is the final opt-in safety phase"
     }
   ]
 }

@@ -4,6 +4,18 @@
 [`ROADMAP.md`](ROADMAP.md)；当前唯一行动与授权边界见活动 `task_plan.md`；精确 source、资产、大小和
 SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 acceptance。
 
+## v0.3.4-dev
+
+### Changed
+
+- 建立 64 位 zero-hash、fail-closed 的下一兼容 Source/Candidate identity；不 seal、不发布，也不改变
+  v0.3.3 accepted/Latest 与 v0.3.2 immediate fallback。
+- 从 runtime bundle 退休只表达早期 rollout 计划、从未被 production 消费的 `activation_phase` 与
+  `deferred_upstream_candidates`；未授权脚本继续由 exact id/source inventory guard 排除。
+- 本列车不删除 `ledger-summary.sh`，不合并 manifest/bundle inventory，也不进入 Product Phase 4。
+- 当前 gate 与后续 Cloud 状态见
+  [`docs/v0.3.4-dev-cloud-hard-acceptance.md`](docs/v0.3.4-dev-cloud-hard-acceptance.md)。
+
 ## v0.3.3
 
 ### Changed
