@@ -41,6 +41,10 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   转交可复制模板维护，不再由 repository guard 固化。
 - 将 BASELINE_PROVENANCE 明确为持续维护的冷证据账本：已发布身份采用统一、角色无关的登记结构；索引
   可以新增或轮换精选入口，但已登记 immutable identity 不随 ROADMAP lifecycle 变化而改写。
+- 将 v0.3.3-dev Cloud hard acceptance 从目标摘要扩展为可重放双通道手册：Source/Candidate 完整覆盖
+  portable Linux suite、双构建/override 安装、Fresh、canonical planning、long-tail/real Resume 与
+  post-resume deep assertion；Published Release 在 seal 前使用 fail-closed placeholder，避免虚构公开身份。
+  Repository lifecycle guard 同步冻结这套骨架，防止后续手册再次退化成不可执行摘要。
 
 ## v0.3.2
 

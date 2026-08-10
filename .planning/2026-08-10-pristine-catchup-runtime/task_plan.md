@@ -40,11 +40,15 @@
 - [x] G5 — Cloud handoff：生成 Source/Candidate 验收步骤并停下，等待维护者另行授权/执行 Cloud；不 seal。
 - [x] G6 — Local pre-release refresh：清理 `.planning` 中已确认无文件的历史空目录，重新执行完整本地回归、
   双构建确定性、ZIP contract/checksum 与静态边界检查；产物仅作本地开发候选，不 seal、不发布。
+- [x] G7 — Cloud runbook parity：以 v0.3.2 双通道手册为已验证骨架，把 v0.3.3-dev R5-SC 扩展为可直接
+  执行的 Source/Candidate setup、Fresh、canonical planning、long tail、real Resume、doctor/inventory/policy/
+  residue、失败取证和回传模板；保留未来 R5-PR 为 publication-gated 模板，不伪造未封板身份。补治理测试、
+  完整回归、提交并按维护者授权 push。
 
 ## Next Step
 
-G6 已完成并停在本地 development candidate。下一步仍需维护者另行授权并在 Linux/Cloud 执行
-`docs/v0.3.3-dev-cloud-hard-acceptance.md` 的 R5-SC；本 scope 不 seal、不 tag、不发布，也不进入 R5-PR。
+提交并 push G7 后停止。下一步是在 Linux/Cloud 执行扩展手册的 R5-SC；本 scope 不 seal、不 tag、
+不发布，也不进入 R5-PR。
 
 ## Stop Conditions
 
@@ -62,6 +66,8 @@ Post-gate ARCHITECTURE ↔ source audit PASS：主体架构无需改造，部署
 三处表达精度已按当前源码收紧并由 architecture guard 冻结；Cloud/Release 状态不变。
 G6 发布前本地复验 PASS；development ZIP 双构建逐字节一致。状态仍为 `LOCAL_PASS / CLOUD_PENDING`，
 该 ZIP 未 seal，不能作为 Published Release 身份。
+G7 runbook parity PASS：R5-SC、B～F、失败取证、evidence ledger 与 publication-gated R5-PR 已达到可重放
+粒度并由 lifecycle guard 冻结；状态仍为 `LOCAL_PASS / CLOUD_PENDING`。
 
 ## Errors Encountered
 
@@ -76,3 +82,8 @@ G6 发布前本地复验 PASS；development ZIP 双构建逐字节一致。状�
 | G6 首轮并行检查通过 PowerShell 裸调用 `bash`，当前 `PATH` 无该命令，组合调用未返回其他子项结果 | 1 | 记录为本机工具发现问题；改为定位 Git for Windows 的显式 `bash.exe`，再整轮重跑并单独汇总 |
 | G6 沙箱内 `npm test` 的 16 个 test file 均在 runner 启动时 `spawn EPERM`，Git Bash 也因 signal pipe Win32 error 5 退出 | 1 | 分类为已知 Windows sandbox process limitation；不改断言，申请沙箱外原命令复验 |
 | G6 双构建脚本使用 `[System.Linq.Enumerable]::SequenceEqual[byte]`，被 PowerShell 在解析阶段拒绝 | 1 | 解析失败发生在任何命令执行前；改用 `StructuralEqualityComparer` 比较两个 byte array，再整套执行 |
+| G7 contract inventory 首次读取猜测旧路径 `runtime/upstream-manifest.json`，文件不存在 | 1 | 不沿用历史布局；先用 `rg --files` 定位当前 manifest/contract authority，再据真实路径编写 Cloud 断言 |
+| G7 focused lifecycle guard 首次失败：新增隔离项插入了旧测试冻结短语中间 | 1 | 保留“两条通道不得共用容器、安装状态或 B～F 结果”原句，planning/transcript 隔离另起一句 |
+| G7 focused guard 的 `workspace.*install.js` 否定正则误命中文档“不得回退到 workspace install.js” | 1 | 脚本已正确使用 ZIP 内工具；说明改为“不得回退到 checkout 同名维护工具”，不削弱边界 |
+| G7 runbook syntax extractor 预期 3 个 Bash fence，实际为 4 个 | 1 | 提取器在语法执行前停止；修正为 SC setup/SC F/PR setup/PR F 四块后逐块 `bash -n` |
+| G7 closing 组合补丁因 task plan 状态段换行上下文不精确而整批拒绝 | 1 | `apply_patch` 未产生部分修改；读取精确片段后拆分为小范围 exact hunks |

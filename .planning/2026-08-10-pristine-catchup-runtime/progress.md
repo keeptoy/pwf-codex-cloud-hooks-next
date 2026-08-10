@@ -76,3 +76,24 @@
   `40e3e134aa4d9a7f452a2447f4aa9026af479882c9b7f78074fc9e3370646182`，byte-for-byte 一致；已删除比较副本，
   只保留 ignored `dist/pwf-codex-cloud-hooks-v0.3.3-dev.zip`。这只是 development candidate，不写 bootstrap
   hash、不 seal、不 tag、不发布，状态保持 `LOCAL_PASS / CLOUD_PENDING`。
+- 2026-08-10：维护者指出 v0.3.3-dev Cloud hard acceptance 相比 v0.3.2 过度简化，并授权补齐、验证、提交和
+  push。初步结构盘点为 142 行/11 个主节对 649 行/完整双通道 13 节；新增 G7，按已验证 v0.3.2 骨架做
+  current-contract parity，不把尚未封板的 v0.3.3-dev 写成 Published Release。
+- G7 contract inventory 首次误用已退休布局猜测路径 `runtime/upstream-manifest.json`，读取失败且未修改文件；
+  改为先从 current tracked inventory 定位 machine authority，避免把 v0.3.2 历史路径抄进 successor runbook。
+- 已将手册扩展为 799 行、14 个主节：完整 R5-SC setup、B Fresh、C baseline、D canonical、E long-tail/
+  real Resume、F source deep check、publication-gated R5-PR 双脚本、证据模板和失败取证。focused guard 前两次
+  分别发现旧固定短语被插断与否定说明触发宽正则，均只调整表达/guard，不修改生产行为或验收强度。
+- repository lifecycle focused guard 已在扩展后 10/10 PASS；新增断言冻结 portable suite/双构建、pristine
+  contract、四 helper roots、B～E 提示词、10-file inventory、source/public F gate 与双通道 evidence ledger。
+- 首次 runbook Bash fence 提取器把实际四块误记为三块，在运行任何 `bash -n` 前按数量断言停止；修正
+  expectation 后重跑，不据此判断手册脚本失败。
+- Runbook code validation PASS：四个 Bash fence 分别 `bash -n` PASS，三个 Python heredoc 分别 compile
+  PASS；R5-SC setup 内的 static contract heredoc 在当前仓库实际执行并输出 `V033_DEV_STATIC_CONTRACT=PASS`。
+- G7 完整验证 PASS：focused lifecycle guard 10/10；完整 `npm test` 96 tests、84 PASS、12 个 Windows/POSIX
+  SKIP、0 FAIL；importer、owned Python compile、install/guard Node syntax、两个 bootstrap Bash syntax 与
+  `git diff --check` 全绿。Release ZIP fresh rebuild 仍为 21 entries、74,206 bytes、SHA-256
+  `40e3e134aa4d9a7f452a2447f4aa9026af479882c9b7f78074fc9e3370646182`，与原 development candidate
+  byte-for-byte 相等，证明 docs/tests 治理变更未进入 ZIP payload。
+- CHANGELOG 的 v0.3.3-dev 已同步本次实际文档/guard delta；ROADMAP programme、Host ABI、production
+  behavior、accepted baseline 与 Release authorization 均未改变。

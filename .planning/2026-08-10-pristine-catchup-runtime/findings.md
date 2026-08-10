@@ -38,6 +38,40 @@ provenance 与 immutable refs，不在 current tree 保存可执行博物馆副�
   `40e3e134aa4d9a7f452a2447f4aa9026af479882c9b7f78074fc9e3370646182`；结构化 byte-array 比较为 true，
   两次 contract check 均 `healthy=true`。只保留 `dist/pwf-codex-cloud-hooks-v0.3.3-dev.zip`。
 
+## G7 Cloud runbook parity discovery（2026-08-10）
+
+- 维护者发现 v0.3.3-dev acceptance 仅 142 行，而 v0.3.2 已验证手册为 649 行；这不是单纯篇幅差异：前者
+  只有 setup 摘要和 B～F 目标，没有可复制的 Fresh/canonical/long-tail/real-Resume 提示词、精确 post-resume
+  深度断言、失败取证、通道证据模板和完整停止条件。
+- v0.3.2 的稳定可复用骨架是：双通道身份隔离 → Source/Candidate portable suite + 双构建/override 安装 →
+  Fresh → 创建 canonical baseline → UserPromptSubmit → long tail → real Resume → source/publication 各自的
+  doctor/inventory/policy/residue → 独立证据模板。v0.3.3-dev 应继承该结构，而不是重新发明较弱流程。
+- 必须替换而不能机械复制的部分：版本/fixture 标记、21-entry pristine ZIP、zero-hash development bootstrap、
+  retired patcher/overlay 的 absence、四项 upstream pristine identity 与 helper allowlist/closure；R5-PR 仍未授权，
+  只能保留明确 placeholder，不能填造 tag、公开 URL、size、SHA 或 PASS。
+- Current contract authority 已定位：root `upstream-manifest.json`、`contracts/runtime-bundle-v1.json` 与
+  `contracts/release-artifact-v1.json`。Release allowlist 为 21 entries，external asset 只有
+  `init-cloud-sandbox-v0.3.3-dev.bash`；四项 upstream 均为 `origin=upstream_pristine`、managed/pristine SHA
+  相等、`overlay_ids=[]`，owned catch-up 只允许四个 parser roots。
+- Current bootstrap 默认 version 是 `v0.3.3-dev`、默认 SHA 是 64 位 zero hash，并在没有显式 override 时
+  fail closed。R5-SC 脚本应断言这个 placeholder 尚未被误 seal，再用 `file://` + runtime SHA override 安装；
+  R5-PR 的公开 URL/SHA/size 必须全部保持 publication placeholder，而不是指向不存在的 `v0.3.3-dev` Release。
+- Current installed inventory 为 10 个 manifest-owned payload 加生成的 `installed-manifest.json`：adapter、两个
+  owned runtimes、四个 pristine upstream files、两个 installed plan contracts 与 notice。v0.3.2 的 11 payload
+  数字包含现已退休的 compatibility ledger，不能复制到 v0.3.3-dev F gate。
+- 现有 repository lifecycle guard 只冻结了双通道名、override/default-download 摘要和一个简化的 public
+  post-resume 段，未冻结 Fresh/canonical/tail/real-Resume 的可执行提示词和 evidence ledger，因此 142 行手册
+  仍能通过。G7 应把“可重放骨架完整性”加入该 lifecycle guard，同时保持 architecture tests 不绑定版本。
+
+### G7 conclusion
+
+- 扩展后的手册不再把“目标描述”当作 runbook：R5-SC setup、四段黑盒 fixture、source F deep assertion、
+  未来 R5-PR 的公开重新下载复验和两套 evidence template 均可直接复制执行。
+- Publication pending 被建模为硬 placeholder gate；当前文档不会指向一个不存在的 v0.3.3-dev Release，
+  也不会让 Source/Candidate PASS 冒充 Published Release。
+- 新 lifecycle guard 冻结可重放骨架但不把版本历史塞入 architecture invariant tests；未来 lifecycle 晋级
+  需要替换 identity/placeholder 席位，而不是复制越来越多的历史 runbook 断言。
+
 ## Post-gate ARCHITECTURE ↔ source audit（2026-08-10）
 
 - 本轮只审计当前 `ARCHITECTURE.md` 是否准确描述 v0.3.3-dev source、contracts、installed layout、runtime
