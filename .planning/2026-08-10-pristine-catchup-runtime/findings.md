@@ -208,3 +208,15 @@ provenance 与 immutable refs，不在 current tree 保存可执行博物馆副�
   不能继续把 v0.3.2 的 23-entry 历史常量错误套给 v0.3.3。
 - v0.3.3 acceptance 是带时间语义的专项证据：应保留“Cloud gate 本身不自动授权 promotion”，并追加随后
   获得独立授权、pointer-only postflight PASS 的记录；不能把原始 Cloud PASS 改写成当时已自动晋级。
+
+## G13 successor main fast-forward preflight（2026-08-10）
+
+- 维护者明确要求把本地 `0.3.3-dev` 推送到远端 `main`，但没有授权 force、改写 Release/tag、branch
+  settings/ruleset 或 Phase 4；因此唯一允许的远端 ref write 是 ordinary `0.3.3-dev:main`。
+- Preflight 时 worktree clean，local `0.3.3-dev`、`origin/0.3.3-dev` 与 HEAD 都是
+  `a65f889a1dacef4239951e284082ced9e2fcf03c`；GitHub CLI 以 `keeptoy` authenticated，Git 使用 SSH。
+- Fresh fetch 后 `origin/main=03aebaca5ae7223ef56c62ec1d340ab9a7c8dea7`，且
+  `git merge-base --is-ancestor origin/main 0.3.3-dev` 成功；left/right count 为 `0/71`。这证明更新可以
+  fast-forward，不会覆盖 main 独有提交，也不需要 merge commit、rebase 或 force push。
+- ROADMAP 已把 successor `main` 定义为源码维护权威；G13 只让远端 ref 与已完成 v0.3.3 lifecycle 对齐，
+  不改变 package、runtime、Host ABI、trusted graph、Latest/rollback 或 Phase 4 状态。

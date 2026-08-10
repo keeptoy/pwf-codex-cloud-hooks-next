@@ -224,3 +224,6 @@
   importer check、三个 owned Python entrypoint compile、`install.js` 与三个修改测试文件 Node syntax、
   v0.3.2/v0.3.3 bootstrap `bash -n`、`git diff --check` 全绿。没有 production、contract、Release ZIP/
   bootstrap 或 Phase 4 文件变更；gate 停在 `BASELINE_PROMOTION_PASS / PHASE4_NOT_AUTHORIZED`。
+- 2026-08-10：维护者授权把本地 `0.3.3-dev` 推送到远端 `main`，仍禁止进入 Phase 4。G13 preflight
+  已确认 clean/synced dev、GitHub/SSH auth 健康，fresh `origin/main` 是 dev 的祖先且只落后 71 commits；
+  当前先提交 planning-only design checkpoint，尚未写远端 main。
