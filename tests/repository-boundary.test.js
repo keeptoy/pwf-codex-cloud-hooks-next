@@ -305,7 +305,8 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, /### 8\.2 E2：real Resume[\s\S]*Unsynced messages[\s\S]*Catch-up 位于 planning context 之前/);
   assert.match(acceptance, /## 9\. F：Source\/Candidate post-resume[\s\S]*INSTALLED_RUNTIME_FILES=10[\s\S]*UPSTREAM_PRISTINE_FILES=4[\s\S]*OWNED_CATCHUP_HELPERS=4[\s\S]*GLOBAL_SKILL_PRISTINE=PASS/s);
   assert.match(acceptance, /### 11\.1 R5-SC Source\/Candidate[\s\S]*V033_DEV_SC_B_POST_INSTALL_RESUME=PASS[\s\S]*V033_DEV_SC_CLOUD_CHANNEL=PASS/);
-  assert.match(acceptance, /### 11\.2 R5-PR Published Release[\s\S]*READY_FOR_R5_PR[\s\S]*V033_PR_B_FRESH_STARTUP=PASS/);
+  assert.match(acceptance, /### 11\.2 R5-PR Published Release[\s\S]*R5_PR_IN_PROGRESS[\s\S]*V033_PR_B_FRESH_STARTUP=PASS/);
+  assert.match(acceptance, /R5-PR F deep check \| PASS[\s\S]*ZIP SHA\/size[\s\S]*adapter-only policy[\s\S]*zero residue/);
   if (roadmap.includes("Cloud hard acceptance PASS")) {
     assert.match(acceptance, /CLOUD-HARD-ACCEPTANCE-PASS/);
     assert.doesNotMatch(acceptance, /PENDING_R5_SC|PENDING_R5_PR|PENDING_R5/);

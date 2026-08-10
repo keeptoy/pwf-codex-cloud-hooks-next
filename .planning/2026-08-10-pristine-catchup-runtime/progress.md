@@ -155,3 +155,14 @@
   将该 lifecycle 断言替换为真实的 `published candidate / R5-PR ready`，不改 ZIP 或 bootstrap 字节。
 - 修正后 focused publication/governance tests 12/12 PASS；最终完整 suite 96 tests：84 PASS、12
   Windows/POSIX SKIP、0 FAIL。
+- 维护者回传 R5-PR 10.2 首次 Cloud 失败：`/tmp/run-user-script.sh` 第 7 行把变量引用写成
+  `$PUBLICATION\_TAG`，在任何 ZIP 下载、hash、doctor 或 residue 检查前由 `set -u` 终止；Cloud worktree
+  保持干净。
+- 本地核验 acceptance 源码和 `origin/0.3.3-dev` 无差异，全仓目标文档没有 literal `\_`，10.2 原文为
+  `$PUBLICATION_TAG`。维护者确认这是提示词转义，不是仓库问题。
+- Cloud 改为直接下载原始 acceptance、提取 10.2 code block 并原样执行后退出码 0：公开 ZIP SHA/size、
+  21-entry builder check、ZIP 内 importer、doctor、10-file inventory、4 pristine upstream、adapter-only policy、
+  zero snapshot residue 与全部 10.2 PASS markers 均通过。状态恢复为 `R5_PR_F_PASS / R5_PR_CHANNEL_PENDING`；
+  不修改 ROADMAP 发布规则，不重建或改写 v0.3.3 Release。
+- Acceptance 已记录 R5-PR F deep check PASS，同时保留 B-PR～E 与 immutable oracle pending；repository
+  lifecycle focused test 10/10 PASS，`git diff --check` PASS。

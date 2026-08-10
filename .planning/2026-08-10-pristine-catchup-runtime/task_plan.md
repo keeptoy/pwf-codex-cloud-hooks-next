@@ -53,11 +53,11 @@
 - [x] G9 — v0.3.3 immutable publication：记录 R5-SC lifecycle PASS，核对远端 refs/Release 与身份窗口；
   push 当前 Cloud-passed source；冻结 stable package/contracts/bootstrap/acceptance，双构建/check、完整回归、
   publication audit；创建 immutable tag/Release 双资产并从公开 URL 重新下载复核。发布后停在 R5-PR Cloud。
-
 ## Next Step
 
-停止在 R5-PR 前：等待维护者使用第 10 节公开链接在独立 Fresh Cloud 环境执行安装、B-PR～F 黑盒与
-post-resume 深度复验并回传证据；不晋级 Latest/rollback。
+继续收集 R5-PR 其余 Cloud 证据：10.2 post-resume 深度复验已经 PASS；若 B-PR～E 与 v0.3.2 immutable
+oracle 已在同一独立 Fresh environment 完成，则回传其 exact markers 关闭完整 channel。仍不晋级
+Latest/rollback。
 
 ## Stop Conditions
 
@@ -84,6 +84,8 @@ post-install Resume 与 Published Release Fresh startup；architecture/guard/ful
 `R5_SC_PASS / LOCAL_SEAL_PASS / PUBLICATION_PENDING / R5_PR_PENDING`；该状态不曾冒充 Release 成立。
 G9 immutable publication PASS：`v0.3.3` tag 指向 exact seal source，双资产已发布并从公开 URL 重新下载
 复核；Latest/accepted 仍为 v0.3.2。当前状态为 `PUBLICATION_PASS / R5_PR_READY`。
+R5-PR 10.2 首次执行因提示词转义在下载前停止；直接获取原始 acceptance 并提取同一脚本后完整 PASS，
+确认 repository/runbook 无缺陷。当前状态为 `PUBLICATION_PASS / R5_PR_F_PASS / R5_PR_CHANNEL_PENDING`。
 
 ## Errors Encountered
 
@@ -108,3 +110,4 @@ G9 immutable publication PASS：`v0.3.3` tag 指向 exact seal source，双资�
 | G8 抽取器定位真实 Git Bash 后在首个 `bash -n` 启动时遇到 Win32 signal pipe error 5 | 2 | 未检查脚本文字，归类为既有 sandbox limitation；沙箱外原样重跑四段 Bash 与三段 Python |
 | G9 读取旧 Release 模板时请求了当前 `gh` 不支持的 `isLatest` JSON 字段 | 1 | 无远端写入；改用 `release list` 判断 Latest，并用受支持字段重读 v0.3.2 Release |
 | G9 组合读取 tagged 文件时 `git show | Select-Object` 因下游提前关闭产生非零退出 | 1 | 已取得所需只读片段；后续避免截断 Git stdout，按精确文件或本地读取核验 |
+| R5-PR 10.2 Cloud 临时脚本把 `$PUBLICATION_TAG` 变成 `$PUBLICATION\_TAG`，在 `set -u` 下报 `PUBLICATION: unbound variable` | 1 | 下载/doctor 均未开始；改为直接取得原始 acceptance、提取 10.2 code block 并原样执行后 PASS，确认只是提示词转义，不新增 repository hardening gate |

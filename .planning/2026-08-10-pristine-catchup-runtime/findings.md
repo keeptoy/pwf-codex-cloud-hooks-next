@@ -96,6 +96,20 @@ provenance 与 immutable refs，不在 current tree 保存可执行博物馆副�
 - publication 只关闭 tag、公开 ZIP/bootstrap 与重新下载资产复核；R5-PR 必须在资产公开后另行从 URL
   安装并跑 Fresh startup、canonical planning、real Resume 和 post-resume deep check，不能预填 PASS。
 - GitHub Latest/rollback baseline promotion 仍是独立授权，不随 Release 自动发生。
+
+## R5-PR runbook transport incident（2026-08-10）
+
+- Cloud 10.2 在第一个下载动作前退出：临时执行文件引用 `$PUBLICATION\_TAG`，Bash 将其解析为未定义的
+  `$PUBLICATION` 加字面量 `\_TAG`，`set -u` 因而报 `unbound variable`。
+- Repository HEAD、`origin/0.3.3-dev` 与 acceptance 源文本第 659～678 行均使用未转义的
+  `$PUBLICATION_TAG`/`$ZIP_NAME`；全仓目标文档没有任何 literal `\_`。因此不是 Release asset、产品代码或
+  repository runbook source defect，而是 Markdown/提示词到 `/tmp/run-user-script.sh` 的 lexical transport drift。
+- 维护者确认转义来自提示词运输。Cloud 随后直接下载原始 acceptance、提取 10.2 Bash block，并以公开
+  Release 元数据复核参数后原样执行；ZIP boundary/importer、doctor、10-file inventory、adapter-only policy
+  与 zero residue 全部 PASS。
+- ROADMAP §7 已正确覆盖 Published Release 身份、公开 URL、重新下载、ZIP 内工具和 Fresh/Resume/doctor
+  分流。本次不把上游提示词转义扩大为 repository contract 或新的 hardening gate；操作经验是执行型代码块
+  应优先从 raw source 提取，而不是执行被富文本转义的复制副本。
 - 远端审计确认 GitHub Release 只有 `v0.3.0`、`v0.3.1`、`v0.3.2`，其中 `v0.3.2` 仍为 Latest；本地与
   fetched refs 均不存在 `v0.3.3` tag，目标 identity 未被占用。
 - `origin/0.3.3-dev` 与本地分支无分叉，本地仅领先已验证的 G8 commit；当前 package/Release contract/
