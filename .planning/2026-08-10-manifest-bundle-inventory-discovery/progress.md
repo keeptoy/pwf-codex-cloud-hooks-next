@@ -43,3 +43,14 @@
   contract-only 背景、测试消费原因、production 真实激活链、successor 原样继承和不自动退休的闭环。
 - 历史审计纠正一处时间线：`033a82b` 建立 deferred/earliest guard；owned catch-up/plan 的 Phase 2/3 断言随
   各自 runtime 后续加入。focused suite 沙箱内 `spawn EPERM`，沙箱外 17/17 PASS；diff/whitespace PASS，D5 PASS。
+- 维护者接受推荐路线并只授权 I0；工作树起点为 clean `0.3.4-dev`/`3839c01`。task plan 明确 I1～I3 与
+  production/contracts/Release/Phase 4 仍未授权。
+- 新增 manifest schema/mirror 终态 guard、importer manifest→bundle raw SHA guard、installer 14 项 bundle
+  tamper/invalid guard、三个 Phase 4 source negative guard，以及 ref-aware v0.3.3 invalid-upgrade/valid-roundtrip guards。
+- 四个测试文件 Node syntax 与 `git diff --check` PASS。首次 focused failing-first：既有 contract/import/runtime/
+  installer/publication cases 和正常 v0.3.3 往返通过；新 manifest、importer、14 项 installer 与 invalid-upgrade
+  guards 按预期失败，分别命中 I2 mirrors、I1 manifest CLI/hash edge 和 installer 未消费 bundle。
+- 补强 unsafe manifest bundle reference、unsafe installed path、duplicate package path 与跨分区 duplicate id 后，
+  installer 复验仍为 14 项全部精准红、既有 12 项 PASS、Windows-only 1 项诚实 SKIP。I0 闭合并停在 I1 授权前。
+- 最终 repository/architecture 治理复验 17/17 PASS；四个修改测试文件 syntax、diff/whitespace 检查均 PASS，
+  工作树只包含 planning 与 tests，没有 production、machine contract、runtime、Release 或文档 authority 改动。

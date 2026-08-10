@@ -11,6 +11,7 @@ const { test } = require("node:test");
 const root = path.resolve(__dirname, "..");
 const importer = path.join(root, "tools", "import_upstream_runtime.py");
 const bundlePath = path.join(root, "contracts", "runtime-bundle-v1.json");
+const manifestPath = path.join(root, "upstream-manifest.json");
 const fixtureSkill = path.join(root, "tests", "fixtures", "planning-with-files");
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 const sha256 = value => crypto.createHash("sha256").update(value).digest("hex");
@@ -80,7 +81,12 @@ function createFixture() {
   bundle.upstream.release_archive_sha256 = makeZip(source, archive);
   const contract = path.join(workspace, "runtime-bundle.json");
   fs.writeFileSync(contract, `${JSON.stringify(bundle, null, 2)}\n`);
-  return { workspace, source, archive, contract, destination: path.join(workspace, "runtime", "upstream") };
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  manifest.managed_runtime.contracts.runtime_bundle.path = path.basename(contract);
+  manifest.managed_runtime.contracts.runtime_bundle.sha256 = sha256(fs.readFileSync(contract));
+  const manifestContract = path.join(workspace, "upstream-manifest.json");
+  fs.writeFileSync(manifestContract, `${JSON.stringify(manifest, null, 2)}\n`);
+  return { workspace, source, archive, contract, manifest: manifestContract, destination: path.join(workspace, "runtime", "upstream") };
 }
 
 function runImporter(fixture, command, extra = []) {
@@ -94,6 +100,31 @@ function runImporter(fixture, command, extra = []) {
   if (command === "import") args.push("--archive", fixture.archive);
   return spawnSync(python, args, { encoding: "utf8" });
 }
+
+function runAnchoredImporter(fixture, command) {
+  const args = [
+    importer,
+    command,
+    "--destination", fixture.destination,
+    "--manifest", fixture.manifest,
+    "--bundle", fixture.contract,
+  ];
+  if (command === "import") args.push("--archive", fixture.archive);
+  return spawnSync(python, args, { encoding: "utf8" });
+}
+
+test("runtime importer verifies the manifest-to-bundle raw SHA before parsing or using inventory", () => {
+  const fixture = createFixture();
+  try {
+    fs.appendFileSync(fixture.contract, " ");
+    const result = runAnchoredImporter(fixture, "check");
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /runtime bundle SHA-256 mismatch/);
+    assert.equal(fs.existsSync(fixture.destination), false);
+  } finally {
+    fs.rmSync(fixture.workspace, { recursive: true, force: true });
+  }
+});
 
 test("runtime import is allowlisted, deterministic, idempotent, and checkable", () => {
   const repositoryBundle = JSON.parse(fs.readFileSync(bundlePath, "utf8"));

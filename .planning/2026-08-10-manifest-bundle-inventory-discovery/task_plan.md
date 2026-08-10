@@ -14,6 +14,9 @@ authority 迁移设计。
   Phase 3.7 的 programme metadata 退休原因；历史文字不得冒充 inventory 去重已经实施。
 - 维护者要求继续把 Phase 3.7 改成大白话，补全“字段原用途 → 测试为何读取 → production 为何不读 →
   为何长期残留 → 安全意图由谁接替”的因果链。
+- 维护者接受 bundle authority 推荐路线，并授权第一轮 I0 failing-first guards：允许只修改最近边界测试与
+  planning，预先冻结 manifest→bundle integrity、严格 bundle validation、Phase 4 负向准入和 v0.3.3
+  升级/回滚要求。
 - 本轮不授权修改 importer、installer、machine contracts、runtime、Release allowlist/hash、production dispatch，
   也不授权 seal、publication、push、Cloud 部署或 Phase 4 激活。
 
@@ -33,15 +36,20 @@ authority 迁移设计。
 - [x] D3 — Decision：给出 GO/CONDITIONAL_GO/NO_GO、最小实施批次、failing-first guards、验证与回滚方案。
 - [x] D4 — History promotion：补录 Phase 3.7，并将本次已闭合 Discovery 冻结为 Phase 3.8 决策 interlude。
 - [x] D5 — Phase 3.7 clarification：用可读时间线补足 staged-admission ledger 的产生、消费和退休原因。
+- [x] I0 — Failing-first guards：先写并执行供应链完整性、非法 bundle、Phase 4 负向准入及跨版本往返测试；
+  预期只因尚未实施 I1/I2 而红，不得修改 production 使其变绿。
+- [ ] I1 — Verified bundle consumers：未授权。
+- [ ] I2 — Atomic mirror removal：未授权。
+- [ ] I3 — Local/Linux/Cloud verification：未授权。
 
 ## Next Step
 
-Discovery、历史编排与 Phase 3.7 事实性补写均已完成；等待维护者明确授权 I0～I3 implementation gate。
-未获授权前保持 production、contracts、Release bytes 与 Phase 4 不变。
+I0 failing-first guards 已闭合并按预期保持红灯；停止并等待维护者明确授权 I1。保持 production、machine
+contracts、Release bytes 与 Phase 4 不变，不提前进入 I1/I2/I3。
 
 ## Decision
 
-`CONDITIONAL_GO_BUNDLE_AUTHORITY / IMPLEMENTATION_NOT_AUTHORIZED / PHASE4_NOT_AUTHORIZED`
+`I0_FAILING_FIRST_COMPLETE / I1_I2_I3_NOT_AUTHORIZED / PHASE4_NOT_AUTHORIZED`
 
 进入实施的条件：
 
@@ -62,3 +70,5 @@ Discovery、历史编排与 Phase 3.7 事实性补写均已完成；等待维护
 |---|---:|---|
 | `rg` pattern 以 `--bundle` 开头，被解析为未知 flag | 1 | 后续使用 `rg -e` 显式传入 pattern，不重复原命令 |
 | Phase 3.7 focused tests 在受限 Windows sandbox 中因 `spawn EPERM` 未执行断言 | 1 | 在获准的沙箱外重跑同一只读命令，17/17 PASS |
+| 尝试读取不存在的 `tests/helpers/published-release.js` | 1 | 确认 publication helpers 全部内联在 `published-release-oracles.test.js`，直接复用并扩展该文件 |
+| I0 focused suite 返回非零 | 1 | 属于授权目标：新 guards 精确命中 I1/I2 尚未实现的缺口；既有测试与正常 v0.3.3 往返继续通过 |

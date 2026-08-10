@@ -11,6 +11,21 @@ const readJson = relative => JSON.parse(fs.readFileSync(path.join(root, relative
 const sha256 = value => crypto.createHash("sha256").update(value).digest("hex");
 const fileHash = file => sha256(fs.readFileSync(file));
 
+test("managed runtime manifest delegates source and install inventory to the verified bundle", () => {
+  const upstream = readJson("upstream-manifest.json");
+  const managed = upstream.managed_runtime;
+  const violations = [];
+
+  if (managed.schema_version !== 2) violations.push(`managed_runtime.schema_version=${managed.schema_version}, expected 2`);
+  for (const retiredMirror of ["package_root", "local_package_root", "local_files", "files"]) {
+    if (Object.hasOwn(managed, retiredMirror)) violations.push(`mirrored inventory field remains: ${retiredMirror}`);
+  }
+  for (const installedContract of ["adapter_plan_context_request", "plan_context_result"]) {
+    if (Object.hasOwn(managed.contracts, installedContract)) violations.push(`mirrored installed contract remains: ${installedContract}`);
+  }
+  assert.deepEqual(violations, []);
+});
+
 test("machine contracts freeze provenance, pristine runtime, Host protocol, and artifact boundary", () => {
   const bundle = readJson("contracts/runtime-bundle-v1.json");
   const request = readJson("contracts/adapter-runtime-request-v1.schema.json");
@@ -39,6 +54,15 @@ test("machine contracts freeze provenance, pristine runtime, Host protocol, and 
   ]);
   assert.equal(Object.hasOwn(bundle, "deferred_upstream_candidates"), false,
     "programme roadmap candidates must stay outside the runtime bundle");
+  const admittedSources = new Set(bundle.files.map(file => file.source_path));
+  for (const phase4Source of [
+    "skills/planning-with-files/scripts/attest-plan.sh",
+    "skills/planning-with-files/scripts/ledger-append.sh",
+    "skills/planning-with-files/scripts/phase-status.sh",
+  ]) {
+    assert.equal(admittedSources.has(phase4Source), false,
+      `unadmitted Phase 4 source must stay outside runtime inventory: ${phase4Source}`);
+  }
   for (const file of files.values()) {
     assert.equal(Object.hasOwn(file, "activation_phase"), false,
       `${file.id} must not carry historical programme phase metadata`);

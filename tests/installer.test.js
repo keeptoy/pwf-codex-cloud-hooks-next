@@ -1,5 +1,6 @@
 "use strict";
 const assert = require("node:assert/strict");
+const crypto = require("node:crypto");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
@@ -13,6 +14,7 @@ const python = process.env.PYTHON || (process.platform === "win32" ? "python" : 
 let skillWorkspace;
 let skill;
 let cliWorkspace;
+const sha256 = value => crypto.createHash("sha256").update(value).digest("hex");
 
 const expectedRuntimeFiles = [
   "THIRD_PARTY_NOTICES.md",
@@ -94,6 +96,34 @@ function runtimeFiles(home) {
   return result.sort();
 }
 
+async function withMutatedRuntimeBundle(scenario, action) {
+  const bundlePath = path.join(cliWorkspace, "contracts", "runtime-bundle-v1.json");
+  const manifestPath = path.join(cliWorkspace, "upstream-manifest.json");
+  const originalBundle = fs.readFileSync(bundlePath);
+  const originalManifest = fs.readFileSync(manifestPath);
+  try {
+    if (scenario.missing) {
+      fs.rmSync(bundlePath);
+    } else {
+      const bundle = JSON.parse(originalBundle.toString("utf8"));
+      const bytes = scenario.raw
+        ? Buffer.from(scenario.raw(bundle), "utf8")
+        : Buffer.from(`${JSON.stringify(scenario.mutate(bundle), null, 2)}\n`, "utf8");
+      fs.writeFileSync(bundlePath, bytes);
+      if (scenario.anchor !== false || scenario.mutateManifest) {
+        const manifest = JSON.parse(originalManifest.toString("utf8"));
+        if (scenario.anchor !== false) manifest.managed_runtime.contracts.runtime_bundle.sha256 = sha256(bytes);
+        if (scenario.mutateManifest) scenario.mutateManifest(manifest);
+        fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+      }
+    }
+    await action();
+  } finally {
+    fs.writeFileSync(bundlePath, originalBundle);
+    fs.writeFileSync(manifestPath, originalManifest);
+  }
+}
+
 test("dry-run is read-only and reports two handlers", () => {
   const home = fixture(), requirements = path.join(home, "etc", "codex", "requirements.toml"), beforeRequirements = fs.readFileSync(requirements, "utf8");
   const result = run(home, "install", "--dry-run");
@@ -120,6 +150,49 @@ test("managed install rejects a runtime owned by a non-current manifest", () => 
   assert.match(result.stderr, /installed manifest identity mismatch/);
   assert.equal(fs.readFileSync(path.join(runtime, "hook_adapter.py"), "utf8"), "# incompatible adapter\n");
   fs.rmSync(home, { recursive: true, force: true });
+});
+
+test("managed install rejects an unverified or invalid runtime bundle before any managed write", async t => {
+  const scenarios = [
+    { name: "missing bundle", missing: true },
+    { name: "raw bundle hash mismatch", anchor: false, raw: bundle => `${JSON.stringify(bundle, null, 2)}\n ` },
+    { name: "invalid JSON", raw: () => "{\n" },
+    { name: "unsupported schema", mutate: bundle => { bundle.schema_version = 999; return bundle; } },
+    { name: "unsafe bundle reference", mutate: bundle => bundle, mutateManifest: manifest => { manifest.managed_runtime.contracts.runtime_bundle.path = "../runtime-bundle-v1.json"; } },
+    { name: "unsafe package path", mutate: bundle => { bundle.local_files[0].package_path = "../owned-catchup.py"; return bundle; } },
+    { name: "unsafe installed path", mutate: bundle => { bundle.installed_contracts[0].installed_path = "../adapter-plan-context-request-v1.schema.json"; return bundle; } },
+    { name: "duplicate package path", mutate: bundle => { bundle.files[1].package_path = bundle.files[0].package_path; return bundle; } },
+    { name: "duplicate installed path", mutate: bundle => { bundle.installed_contracts[1].installed_path = bundle.installed_contracts[0].installed_path; return bundle; } },
+    { name: "duplicate runtime id", mutate: bundle => { bundle.files[1].id = bundle.files[0].id; return bundle; } },
+    { name: "duplicate cross-section id", mutate: bundle => { bundle.local_files[0].id = bundle.files[0].id; return bundle; } },
+    { name: "invalid mode", mutate: bundle => { bundle.files[0].mode = "0777"; return bundle; } },
+    { name: "invalid content hash", mutate: bundle => { bundle.local_files[0].sha256 = "not-a-sha256"; return bundle; } },
+    { name: "unknown dependency", mutate: bundle => { bundle.local_files[0].direct_file_dependencies[0].id = "not_admitted"; return bundle; } },
+  ];
+
+  for (const scenario of scenarios) {
+    await t.test(scenario.name, async () => {
+      const home = fixture();
+      const requirements = path.join(home, "etc", "codex", "requirements.toml");
+      const protectedState = snapshot([
+        path.join(home, "config.toml"),
+        path.join(home, "hooks.json"),
+        requirements,
+      ]);
+      try {
+        await withMutatedRuntimeBundle(scenario, () => {
+          const result = run(home, "install");
+          assert.equal(result.status, 1, `installer accepted ${scenario.name}`);
+          assert.match(result.stderr, /BLOCKED_PACKAGE_DRIFT/);
+          assertSnapshot(protectedState);
+          assert.equal(fs.existsSync(path.join(home, "hooks", "planning-with-files")), false,
+            `${scenario.name} wrote a managed runtime before validation completed`);
+        });
+      } finally {
+        fs.rmSync(home, { recursive: true, force: true });
+      }
+    });
+  }
 });
 
 test("managed install is merge-preserving, idempotent, diagnosable and uninstallable", () => {

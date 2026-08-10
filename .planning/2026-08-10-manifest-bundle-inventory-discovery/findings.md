@@ -236,3 +236,19 @@ trusted Git/ZIP bytes
 - Phase 3.7 的精确时间线是：`033a82b` 同时引入两个 programme 字段，并建立 deferred source 不得进入
   `bundle.files`、`earliest_phase >= 4` 的断言；`owned_catchup=2` 与 `owned_plan=3` 是两个 owned runtime
   后续加入时才补进测试。共同根因仍是测试冻结阶段计划，而 production 从不把 Phase 数字作为执行输入。
+
+## I0 failing-first evidence
+
+- manifest authority guard 一次列出七项待迁移事实：nested schema 仍为 1；四个 inventory/package-root mirrors
+  仍存在；两个 bundle-owned installed-contract projections 仍存在。该红灯属于 I2，不应在 I1 偷改合同消除。
+- importer guard 使用配对 synthetic manifest + bundle，并在 bundle 原始字节追加空格后要求 raw SHA mismatch。
+  当前 CLI 因尚无 `--manifest` 返回 argparse status 2，证明 manifest anchor 入口确实未实现；I1 必须让它返回
+  domain failure status 1，且在 parse/inventory 使用前命中 SHA。
+- installer guard 逐项变造 missing/raw hash/JSON/schema、unsafe bundle/package/installed path、duplicate package/
+  installed path、同区/跨区 duplicate id、mode/hash 和 unknown dependency。当前 14 项全部被 status 0 接受，
+  直接证明 installer 完全没有消费 bundle；未来每项必须在任何 runtime/requirements/backup 写入前
+  `BLOCKED_PACKAGE_DRIFT`。
+- Phase 4 negative guard 显式禁止 `attest-plan.sh`、`ledger-append.sh`、`phase-status.sh` 进入 admitted source
+  inventory；现有 exact 4 upstream + 2 local + 2 installed-contract 断言继续通过，没有为制造红灯弱化安全边界。
+- publication oracle 新增两条 v0.3.3 路径：带 bundle drift 的 candidate 当前错误地接受升级，因此红；未变造
+  candidate 的 v0.3.3 → v0.3.4-dev → immutable v0.3.3 install/doctor 往返当前已经通过，作为 I1/I2 的兼容护栏。
