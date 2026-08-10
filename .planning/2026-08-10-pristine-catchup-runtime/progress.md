@@ -110,3 +110,9 @@
 - G8 验证关闭：沙箱外 focused architecture/repository guards 18/18 PASS；完整 `npm test` 为 96 tests、
   84 PASS、12 个 Windows/POSIX 诚实 SKIP、0 FAIL；runbook 四段 Bash `bash -n` 与三段 Python heredoc
   compile 全部 PASS，`git diff --check` PASS。production、ZIP 输入、Host ABI 与 Release identity 均未改变。
+- 2026-08-10：维护者确认 R5-SC 剩余 lifecycle 全部通过，并授权 push 与正式发布；新增 G9，目标
+  immutable identity 为 `v0.3.3`。当前先做远端/ref/Release 审计与 Cloud-passed source push，随后严格按
+  ZIP → bootstrap → tag/Release → 公开重新下载顺序封板；R5-PR 与 Latest/rollback promotion 继续分离。
+- G9 远端只读审计 PASS：fetch 后本地相对 `origin/0.3.3-dev` 为 0 behind / 1 ahead，`v0.3.3` tag/Release
+  均不存在；现有 Releases 为 v0.3.0～v0.3.2，Latest 仍为 v0.3.2。当前 dev identity 尚未封板，不能直接
+  把 ignored development ZIP 当作发布资产。

@@ -88,6 +88,20 @@ provenance 与 immutable refs，不在 current tree 保存可执行博物馆副�
   `===BEGIN PLAN DATA===` 与 `=== recent progress ===`。catch-up 报告属于 E2；Phase 4 absence 属于 D 和
   source negative tests，不应作为 B 的解释性汇总字段。
 
+## G9 publication authorization（2026-08-10）
+
+- 维护者确认修订后的 Source/Candidate Cloud lifecycle 全部通过，并明确授权直接 push、封板和发布。
+- 当前列车从 `0.3.3-dev` 晋级的正式 immutable identity 选定为 `v0.3.3`；这是同一 `0.3` 行为合同内退休
+  不可达 compatibility supply-chain 的 patch release，不新增 Hook、Host ABI、trusted graph 或 Phase 4。
+- publication 只关闭 tag、公开 ZIP/bootstrap 与重新下载资产复核；R5-PR 必须在资产公开后另行从 URL
+  安装并跑 Fresh startup、canonical planning、real Resume 和 post-resume deep check，不能预填 PASS。
+- GitHub Latest/rollback baseline promotion 仍是独立授权，不随 Release 自动发生。
+- 远端审计确认 GitHub Release 只有 `v0.3.0`、`v0.3.1`、`v0.3.2`，其中 `v0.3.2` 仍为 Latest；本地与
+  fetched refs 均不存在 `v0.3.3` tag，目标 identity 未被占用。
+- `origin/0.3.3-dev` 与本地分支无分叉，本地仅领先已验证的 G8 commit；当前 package/Release contract/
+  bootstrap identity 均仍为 `0.3.3-dev`，external bootstrap 仍是 `init-cloud-sandbox-v0.3.3-dev.bash`，
+  因而必须先完成 stable identity migration，不能直接上传 development ZIP。
+
 ## Post-gate ARCHITECTURE ↔ source audit（2026-08-10）
 
 - 本轮只审计当前 `ARCHITECTURE.md` 是否准确描述 v0.3.3-dev source、contracts、installed layout、runtime

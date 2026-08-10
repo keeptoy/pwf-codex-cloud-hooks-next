@@ -11,7 +11,10 @@
 - 维护者已批准 P2-OTG-D 的 Route B 并要求继续施工，同时补充 `ARCHITECTURE.md` 的源码重建/生产执行边界。
 - 本 gate 授权建立 `v0.3.3-dev` successor source identity、fail-closed development bootstrap、迁移 trusted
   bytes/contracts/importer/installer/Release allowlist/tests/docs，并进行本地完整验证。
-- 不授权 seal、tag、Release、push、Cloud deployment、Latest/rollback promotion 或 Product Phase 4 功能。
+- 维护者在 R5-SC 全部 Cloud 黑盒通过后，明确授权 push 当前分支，并把该列车封板、tag、发布为
+  immutable `v0.3.3` 双资产；授权包含 publication 后公开重新下载复核。
+- 本 gate 仍不授权 GitHub Latest/rollback baseline promotion、Published Release Cloud PASS 的预填、外部
+  deployment 或 Product Phase 4 功能。
 - 已发布 v0.3.2 的 tag、ZIP/bootstrap、SHA、acceptance、patcher/overlay identity 不得改写；历史恢复只走
   immutable refs 与 `BASELINE_PROVENANCE.md`。
 
@@ -47,11 +50,14 @@
 - [x] G8 — Cloud lifecycle split：吸收 R5-SC setup/F 的真实 PASS 与官方 container-cache 时序证据，把 B
   按安装发生在 agent phase 或 setup phase 拆成 Source/Candidate post-install Resume 与 Published Release
   Fresh startup；恢复直接输出锚点汇总，更新 architecture/runbook guard 并完成本地验证。
+- [ ] G9 — v0.3.3 immutable publication：记录 R5-SC lifecycle PASS，核对远端 refs/Release 与身份窗口；
+  push 当前 Cloud-passed source；冻结 stable package/contracts/bootstrap/acceptance，双构建/check、完整回归、
+  publication audit；创建 immutable tag/Release 双资产并从公开 URL 重新下载复核。发布后停在 R5-PR Cloud。
 
 ## Next Step
 
-等待维护者按修订后的第 5.1 节 B-SC 继续 Cloud lifecycle；若没有 Resume SessionStart，原样回传
-NOT_OBSERVED 并停止。当前不 seal、不 tag、不发布，也不进入 R5-PR。
+执行 G9：先核对并 push 当前 Cloud-passed source，再按固定字节顺序封板 `v0.3.3`、发布双资产并公开
+重新下载复核。发布完成后停止，等待维护者执行 R5-PR Cloud 链接安装与黑盒；不晋级 Latest/rollback。
 
 ## Stop Conditions
 
@@ -74,6 +80,8 @@ G7 runbook parity PASS：R5-SC、B～F、失败取证、evidence ledger 与 publ
 G8 lifecycle split PASS：R5-SC setup/F Cloud 证据已写回，B 已按安装阶段拆为 Source/Candidate
 post-install Resume 与 Published Release Fresh startup；architecture/guard/full regression 全绿。当前状态为
 `SC_SETUP_PASS / SC_F_PASS / LIFECYCLE_PENDING`，下一步只执行 B-SC，不进入 publication。
+维护者随后确认修订后的 R5-SC lifecycle 全部通过，并授权正式 publication。当前状态为
+`R5_SC_PASS / V0.3.3_RELEASE_AUTHORIZED / R5_PR_PENDING`；G9 未关闭前不宣称 Release 成立。
 
 ## Errors Encountered
 
