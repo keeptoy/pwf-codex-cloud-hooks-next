@@ -1,13 +1,15 @@
-# ARCHITECTURE v0.3.2 历史快照
+# ARCHITECTURE v0.3.2 post-release 历史快照
 
-> **非权威历史副本。** 本文件只用于方便回溯 published `v0.3.2` 当时的架构说明，
+> **非权威历史副本。** 本文件只用于方便回溯 `v0.3.2` 发布后、v0.3.3-dev pristine migration 前
+> 补充完善的旧架构说明，
 > 不解释当前实现、不产生兼容承诺，也不得进入 Release、trusted graph 或现行文档权威图。
 > 当前架构始终以 [`ARCHITECTURE.md`](ARCHITECTURE.md) 和现行 machine contracts 为准。
-> 本文正文取自 immutable tag `v0.3.2`（commit `c68a53bdeab7c38badcfb4e2a733ddd851e498e4`）。
+> 本文正文逐字取自 immutable post-release commit
+> [`eaa84e0a65f57a4c32087dbac1d5d33f7c767907`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/eaa84e0a65f57a4c32087dbac1d5d33f7c767907)。
 
 ---
 
-## v0.3.2 原文
+## v0.3.2 post-release 原文
 # 架构与信任边界
 
 ## 1. 一句话模型
@@ -215,6 +217,26 @@ normalization 和 report rendering 仍由 owned wrapper 负责。
 
 Adapter 只接受完整、关系一致、位于 request root 下的 exact-v1 result。失败或 `inject=false` 时不做
 filesystem fallback。
+
+### 5.1 Upstream invocation strategy boundary
+
+对当前 pinned PWF v3.8.2，private snapshot 是 `owned-plan.py` 内部的 integration-specific 调用策略，
+不是 Codex Host ABI，也不是已证明可复用于任意 Skill 的 Driver contract。选择它是为了在不增加第二个
+managed upstream patch point 的情况下保持 resolver/injector pristine，并通过最小文件投影和环境清洗
+强制 `managed_legacy`；安全读取、权限、预算、超时和清理成本由 owned runtime 明确承担。
+
+该选择的长期边界固定为：
+
+- 只有 Cloud/Linux 证据证明快照无法满足真实文件语义、权限或有界清理时，才重新评估多目标 overlay；
+- 上游提供稳定结构化调用协议，或 Codex Cloud 原生承担同等 Skill Hook 模型时，优先迁移并删除对应
+  snapshot/compatibility layer；
+- 第二个只读 integration 出现前，不把 PWF 的 snapshot、overlay 或字段集合提升为通用 Driver manifest、
+  Host-native IR 或转换器承诺；
+- OS namespace、bind mount、FUSE 或外部 sandbox capability 未成为 Host contract 前，不作为 production
+  正确性的必要条件。
+
+任何路线切换都会改变 upstream invocation、trusted graph 或兼容层退休方式，必须重新进入 Discovery，
+复核 contracts、Release boundary、Linux/Cloud evidence 与 rollback，不得在局部 runtime 修复中隐式替换。
 
 ## 6. Catch-up contract
 

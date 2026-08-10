@@ -151,7 +151,9 @@ test("root architecture history snapshots remain non-authoritative and isolated"
   for (const snapshot of snapshots) {
     const text = read(snapshot);
     assert.match(text, /非权威历史副本/);
-    assert.match(text, /immutable tag/);
+    assert.match(text, /immutable (?:tag|post-release commit)/);
+    assert.doesNotMatch(text, /github\.com\/[^/]+\/[^/]+\/blob\/(?:main|master|[^/]*-post-release)\//,
+      `${snapshot} must not use a moving branch as its source identity`);
     assert.match(text, /当前架构始终以 \[`ARCHITECTURE\.md`\]\(ARCHITECTURE\.md\)/);
     assert.equal(artifact.entries.some(item => item.path === snapshot), false,
       `${snapshot} must stay outside the Release artifact`);
