@@ -51,6 +51,11 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 - P2-CRD-I 只处理 dead adapter/installer code、v0.1 cleanup、fixture 历史施工命名、通用 repository guard
   与治理指南兼容代码退休规则；不得触碰 upstream patcher/overlay、trusted graph、runtime bundle Phase
   metadata、package/bootstrap/Release identity 或 P3。
+- 维护者要求继续分析独立关键 gate 的架构残留，并特别提出 `ARCHITECTURE.md` 5.1 invocation strategy
+  可能记录了“早期临时 overlay，后续改用 snapshot”的路线切换；本轮启动 P2-OTG-D 只读 Discovery。
+- P2-OTG-D 只对照架构选择、Phase 3 快照理由、overlay retirement conditions、当前调用图、contract/Release
+  影响与验证路线；未冻结 GO 前不得修改 patcher、importer、runtime/upstream、contracts、manifest、ZIP
+  allowlist、ARCHITECTURE/DESIGN 当前事实或 P3 identity。
 - P3 只记录为后续独立 gate；当前不修改 package、Release contract、bootstrap 或 `v0.3.3-dev` identity，
   不 seal、不发布、不部署新版本。
 - 已完成的 `2026-08-09-architecture-contract-retention` 三文件由 immutable commit `d4cc3b5` 保存，P2
@@ -75,8 +80,9 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 ## Next Step
 
-停在 overlay/patcher trusted-graph 关键 Discovery 前。若维护者要继续评估 pristine upstream 转换，需另行
-冻结该 gate 的设计、等价测试、contract/Release 影响和 Cloud 验收；当前不进入 P3。
+停在 P3 前讨论 P2-OTG-D 的 CONDITIONAL_GO / Route B 结论。只有维护者另行授权 P3 successor critical
+gate 后，才建立新 active scope，先补 pristine/managed 等价与 helper-closure 测试，再迁移 trusted bytes、
+contracts、installed inventory 和 Release boundary；当前不实施、不 seal、不发布。
 
 ## Gates
 
@@ -111,6 +117,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
   残留，冻结恢复链、影响面和候选路线；未获 GO 不实施删改。
 - [x] P2-CRD-I — Low-risk code residue cleanup：删除不可达别名/helper 与 v0.1 upgrade cleanup，语义化
   fixtures，泛化 repository guard 并补治理合同；完整验证后停在 overlay/trusted-graph gate 前。
+- [x] P2-OTG-D — Overlay trusted-graph Discovery：复核 invocation strategy 与 snapshot 路线，冻结 overlay/
+  patcher 是否已退休的调用图证据、候选设计、影响面、等价测试、回滚与 Cloud gate；未获 GO 不实施。
 - [x] P2-PROV — Early publication provenance backfill：核验并登记有证据的 v0.1.0、v0.2.2 与
   v0.3.0 alpha/beta 身份，缺证字段保持空缺。
 - [x] P2-P0 — Architecture lineage overview：建立回顾性 Phase 0，串联可行性、Cloud 功能基线、owned
@@ -133,7 +141,8 @@ P3 另开新 scope，才建立后继开发列车与 `v0.3.3-dev` machine identit
 
 P1 PASS，P2-I PASS，P2-G PASS，P2-H PASS，P2-P PASS，P2-P-A PASS，P2-P-M PASS，P2-P-B PASS，
 P2-P-E PASS，P2-P-T PASS，P2-P-R PASS，P2-H-010 PASS，P2-PROV PASS，P2-P0 PASS，P2-H-021 PASS；
-P2-H-020 PASS；P2-H-VN PASS；P2-PUSH PASS；P2-CRD-D CONDITIONAL_GO；P2-CRD-I PASS。
+P2-H-020 PASS；P2-H-VN PASS；P2-PUSH PASS；P2-CRD-D CONDITIONAL_GO；P2-CRD-I PASS；P2-OTG-D
+CONDITIONAL_GO（Route B，等待 P3 successor critical gate 授权）。
 本地分支为 `0.3.2-post-release`，当前 HEAD 是 P3 前的 unsealed governance transition；P3 未授权。
 
 ## Errors Encountered

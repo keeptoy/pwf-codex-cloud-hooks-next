@@ -912,3 +912,115 @@ machine identity 的专项 Discovery 与 Cloud gate 中实施。P2-CRD-D 本身�
   unsealed source 可复现，不建立新 Release identity。
 - P2-CRD-I 可以 PASS；下一步重新停在 overlay/patcher trusted-graph Discovery 前，不自动进入 P3、seal、
   Release 或 Cloud deployment。
+
+## P2-OTG-D Overlay Trusted-Graph Discovery
+
+- 维护者提出的核心假设是：overlay 是早期为了让 upstream CLI `main()` 在 Cloud/managed layout 工作的临时
+  选择；Phase 3 后 production 改成 owned wrapper + private snapshot，只复用 parser helpers，可能已经使四项
+  overlay 和 patcher 退出实际行为图，但 machine contracts/Release 仍保留旧转换链。
+- 本轮必须区分三个概念：plan private snapshot（owned-plan 的安全读取/注入）、transcript immutable byte
+  snapshot（owned-catchup 的 TOCTOU 防护），以及 source snapshot/pinned pristine helper（供应链复用）。不能
+  只因都叫 snapshot 就把 Phase 3 plan strategy 与 catch-up parser 来源混为同一实现。
+- 当前只授权只读 Discovery；先从 `ARCHITECTURE.md` 5.1、Phase 3 route rationale、overlay ledger、patcher/
+  importer 和 tests 建立时间线与职责矩阵，再讨论是否进入 trusted-graph implementation gate。
+- `ARCHITECTURE.md` 5.1 的 private snapshot 专指 **plan invocation**：`owned-plan.py` 把安全读取后的 task/
+  progress 最小投影放入 private directory，再调用 pristine `resolve-plan-dir.sh`/`inject-plan.sh`。它当时是在
+  “给 plan scripts 再加第二个 upstream patch point”与“受控快照”之间选择后者。
+- 现有四项 overlay 则全部作用于 **catch-up upstream CLI** 的 `session-catchup.py`：session store、runtime
+  inference、CLI planning guard、CLI report rendering。两者不是同一组方案；准确说法不是“同一个 overlay 后来
+  改成 snapshot”，而是“Phase 3 snapshot 避免新增第二组 plan overlay，既有 catch-up overlay 仍被历史合同保留”。
+- Phase 2 capsule 已明确：`owned-catchup.py` 当时就负责 transcript selection/identity、normalization/report，
+  只复用少量 parser helpers、不调用 upstream CLI `main()`。因此既有 catch-up overlay 的生产必要性并不是到
+  Phase 3 snapshot 才消失，而是在 Phase 2 owned wrapper 激活时就已经高度可疑；Phase 3 只是进一步统一 project
+  state，并没有用 plan private snapshot 替代 transcript/catch-up overlay。
+- Overlay ledger 自身其实记录了预期退休方向：validated Host transcript + explicit roots、versioned runtime
+  request、shared canonical plan resolver、owned bounded renderer。当前 Phase 2/3 架构逐项实现了这些 disposition，
+  但四项 status 仍停在 `active_owned_runtime_compatibility`，说明更可能是 retirement gate 漏做，而不是当前行为
+  仍需要 patched CLI。
+- 当前源码直接调用图与 pristine/managed diff 再次吻合：owned wrapper 只出现四个 `upstream.*` 调用——
+  `same_project_path`、`text_content`、`extract_messages_after`、`find_last_planning_update`；四项 patched
+  symbols 是 `get_codex_sessions`、`get_session_candidates`、新增 `has_planning_state` 与 CLI `main` rendering。
+  Diff 除这四处外为零，因此 production 没有直接进入 patched branch。
+- 四项 retirement condition 的当前证据入口也已经存在：adapter 构造 validated Host path/explicit roots 与
+  `runtime="codex"` exact request；owned-plan 统一 project state；owned-catchup 自己执行 transcript selection、
+  normalization、350/650 head-tail 与 total report budget。下一步仍需验证 parser helper 的**传递调用闭包**也
+  不触及 patched symbols，避免只看直接调用点得出过早结论。
+- Python AST 传递调用分析已覆盖 managed 与 pristine 两份 `session-catchup.py`：四个 imported roots 的闭包
+  包含 path normalization、planning update、JSON/tool/result/message extraction 共 15 个 helpers，和
+  `get_codex_sessions`、`get_session_candidates`、`has_planning_state`、`main` 的交集均为空；两份闭包完全一致。
+  这把“patched behavior 不可达”从直接 grep 提升为当前 pinned source 的传递调用图证据。
+- Provenance 冻结的时间线是 alpha.1 建立 inactive owned inventory/contract，alpha.2 首次激活 owned catch-up，
+  beta.1 再完成 plan private snapshot。需要继续读取 exact alpha.1/alpha.2 source object，确认 overlay 是否从
+  owned catch-up 激活之初就只是随 bundle 保留，还是早期 wrapper 曾短暂调用 patched API 后才演进。
+- Exact tree 已排除“wrapper 后来才绕开 overlay”的可能：alpha.1 没有 `runtime/owned-catchup.py`，但已包含
+  patched `session-catchup.py`、overlay ledger 与 patcher；alpha.2 首次加入 owned wrapper 时，upstream managed
+  blob、overlay ledger blob 均与 alpha.1 相同。alpha.2 与 beta.1 的 owned wrapper blob 相同，且都只调用当前
+  四个 parser helpers。换言之，overlay 先作为 Phase 1 inactive inventory 建立；Phase 2 激活生产 wrapper 时，
+  patched CLI branch 从一开始就没有进入 wrapper 的调用闭包，只是 source/rebuild/Release contract 没有同步退休。
+- “只调用 parser helpers”仍需准确限定：Python 动态加载会执行完整 module initialization。Pinned pristine 与
+  managed module 都会调用 `configure_utf8_stdio()`、尝试导入 optional `orjson`，随后才由 owned wrapper 进入
+  15-helper 传递闭包；当前没有文件/网络等 import-time I/O，四个 patched symbols 仍不可达。该初始化副作用是
+  选择“继续加载完整 pristine module”时必须显式测试的剩余 trusted surface，不能描述为只加载四个函数的字节。
+
+### P2-OTG-D Architecture conclusion
+
+- 这不是一条单纯的“catch-up overlay 后来改成 snapshot”时间线。更准确的双域模型是：
+  1. Phase 1 为旧 catch-up CLI 的 Cloud 差异建立四项 overlay；
+  2. Phase 2 用 validated/frozen transcript + owned wrapper 接管 selection、identity、normalization 与 rendering，
+     只复用 pinned parser helper closure，因而使四项 overlay 的行为分支不可达；
+  3. Phase 3 针对 **plan scripts** 选择 private snapshot，以避免再增加第二组 plan overlay。
+- 因此 `ARCHITECTURE.md` 5.1 的 snapshot 技术选择可以支持“项目后来形成了优先 pristine + owned boundary 的
+  方向”，但不能作为四项 catch-up overlay 已被同一 snapshot 直接替换的证据。Catch-up 的实际替代机制是
+  Phase 2 的 Host transcript contract、immutable byte capture 和 owned renderer；Phase 3 snapshot 是正交决策。
+
+当前残留跨三个平面：
+
+| 平面 | 当前事实 | 退休影响 |
+|---|---|---|
+| production runtime | wrapper 动态加载 managed module，但 patched functions 不可达；module initialization 仍执行 | 把 managed bytes 换成同版 pristine bytes，保持 helper closure 与初始化行为等价 |
+| source/rebuild | importer 强制读取 overlay ledger、动态加载 patcher、校验 anchors 并生成 patched bytes | 删除 active overlay/patcher 依赖，四个 upstream 文件统一做 pinned pristine import/check |
+| install/Release | overlay ledger 和 patcher 均进入 ZIP，ledger 还进入 installed inventory；manifest/hash/origin 固定 patched identity | 同步收窄 allowlist、installed inventory、origin/hash 与测试；不能只替换 runtime 单文件 |
+
+候选路线：
+
+1. **A — 保持 full patched module：NO_GO（长期）**。短期行为风险最低，但继续承担不可达补丁、anchor、双 hash、
+   ledger、安装 inventory 与 Release input，且会误导后续维护者认为 production 依赖 upstream CLI compatibility。
+2. **B — pinned pristine full module + explicit helper allowlist：首选，CONDITIONAL_GO**。保留完整 pristine
+   `session-catchup.py`，owned wrapper 继续动态加载，但 machine/test boundary 明确允许的 helper roots 及其传递
+   闭包；移除 patcher、active overlay ledger 与 patched manifest chain。它对当前 production 数据流改动最小，
+   保留上游解析语义和许可证来源，同时使四个 upstream 文件真正统一为 pristine。
+3. **C — 抽取/复制最小 parser module：暂不选择**。执行面最小，也可去掉 upstream module initialization，
+   但会把 parser 变成新的本地 fork，增加源码摘取、归因、升级 diff 与语义漂移责任；在 Route B 尚无失败证据时
+   代价大于收益。
+4. **D — 上游稳定结构化 library API：未来迁移条件**。Pinned v3.8.2 当前没有该合同，不能靠本仓库臆造。
+
+Route B 的实施边界应保持单一目的：
+
+- `runtime/upstream/session-catchup.py` 恢复 pinned pristine SHA；runtime bundle/upstream manifest 的 origin、hash、
+  overlay dependency 与 active patch metadata 同步修改；importer 不再接受 overlay ledger 或加载 patcher。
+- 从 current tree、Release allowlist 和 installed inventory 删除 patcher/overlay contract；相关 patch tests 删除，
+  其中仍有价值的 archive hash、exact source、mode、global Skill pristine、fail-closed drift 断言迁移到 importer/
+  contract/installer tests，不能随历史 fixture 一起丢失。
+- `BASELINE_PROVENANCE.md` 保留已发布 v0.3.2 patched bytes、四项 overlay 与 immutable refs 的冷历史；不保留
+  可执行 patcher 的 current-tree“博物馆副本”，也不改写发布资产。`ARCHITECTURE.md`/`DESIGN.md`/README 只在
+  successor 实施时改为当前 pristine rebuild 现实。
+- `activation_phase`、deferred candidate 等不影响本结论的 contract 历史元数据不应顺手清理；另开治理 gate。
+
+实施前应先建立等价性保护：
+
+- 在临时 runtime layout 中把 `owned-catchup.py` 分别配对 current managed module 与 pinned pristine fixture，
+  对 Host transcript、fallback roots、scoped/legacy plan、长 wrapper tail sentinel、malformed/identity mismatch、
+  budget 等请求做 result-envelope 等价比较。
+- 冻结 helper root allowlist，并对 pinned source 计算传递调用闭包，断言不得进入 session selection、runtime
+  inference、planning CLI guard 或 CLI `main()`；单独断言 module import 初始化无新增外部 I/O/进程行为。
+- 全量 importer/contracts/installer/runtime/release suite、双构建 deterministic ZIP、Linux mode/permissions/
+  process cleanup，以及 Source/Candidate Fresh、Resume、doctor/post-resume Cloud hard acceptance 全部通过。
+  Published Release 通道只在新的 successor identity seal/publish 后执行，不能用当前 unsealed HEAD 冒充 v0.3.2。
+
+回滚只允许恢复前一 successor commit 或重新安装 immutable v0.3.2；不得修改既有 tag/ZIP/bootstrap。若 pristine
+module 与任何 owned fixture 结果不等价、helper closure 触及 patched symbol、module initialization 出现新副作用、
+Cloud 证明仍依赖 patched CLI，或迁移导致通用安全断言丢失，则立即 **NO_GO** 并保持现状。
+
+P2-OTG-D 结论为 **CONDITIONAL_GO / Route B**。Discovery 已充分证明 overlay 是 current source/Release 架构
+残留，但实施会改变 trusted bytes、machine contracts、installed inventory 和 ZIP boundary，应作为 P3/后继
+machine identity 的第一个独立关键 gate；本轮停在授权点，不修改 production、contracts、stable docs 或 Release。

@@ -309,3 +309,23 @@
 - non-Markdown 历史 token/dead-symbol 末轮扫描零匹配。P2-CRD-I 已完成本地验证，当前 source 仍是 unsealed
   transition，不冒充 published v0.3.2；overlay/patcher/trusted graph 与 P3 均未修改。
 - 活动计划收口后，最终 repository/architecture guard 17/17 PASS；P2-CRD-I 可以建立本地 rollback checkpoint。
+- 2026-08-10：维护者要求继续分析 overlay 独立关键 gate，并把 `ARCHITECTURE.md` 5.1 的早期 overlay→后续
+  snapshot 路线作为假设；P2-OTG-D 已启动为只读 Discovery，implementation、P3 与 Release 均未授权。
+- 5.1/Phase 2/Phase 3/overlay ledger 首轮对照完成：private snapshot 是 plan invocation strategy，用来避免
+  第二个 plan patch point；四项现存 overlay 属于 catch-up CLI。Phase 2 owned wrapper 已不调用 CLI main，
+  overlay retirement condition 也已写成后来由 owned architecture 实现的四项 disposition。
+- 当前 owned wrapper 的四个 direct upstream calls 与 pristine/managed diff 已交叉核对，均不命中 patched
+  symbols；adapter/owned runtimes/tests 已定位到四项 retirement condition 的现行实现入口。继续核验 helper
+  transitive call closure 与历史 activation timing。
+- AST transitive closure 对 managed/pristine source 得到相同 15-helper 集合，patched symbol intersection 均为空。
+  alpha.1/alpha.2/beta.1 immutable identities 已从 provenance 恢复，下一步检查 exact historical source 调用图。
+- Exact historical trees 已核验：alpha.1 尚无 owned wrapper，但已有 patched upstream/ledger/patcher；alpha.2
+  首次加入 wrapper 时沿用同一 patched upstream blob，且 alpha.2/beta.1 wrapper blob 相同。从首次生产激活起，
+  patched CLI behavior 就不在 wrapper 调用闭包，残留发生在 source/rebuild/install/Release 合同未同步退休。
+- 补查 Python module initialization：动态加载完整 session module 会执行 UTF-8 stdio reconfigure 和 optional
+  `orjson` import；managed/pristine 当前一致、无外部 I/O，但属于 Route B 必须冻结测试的真实 trusted surface。
+- 形成 A～D 路线比较并选择 Route B：恢复 pinned pristine full module、显式冻结 parser helper allowlist/closure，
+  同步移除 active patcher/overlay chain；不抽取新的本地 parser fork，不改写历史 v0.3.2 provenance。
+- P2-OTG-D 以 CONDITIONAL_GO 收口；等价 fixture、import-time side-effect、完整 suite、deterministic ZIP、Linux/
+  Cloud Fresh+Resume+doctor 与 rollback/stop conditions 已冻结。实施留给 P3 的独立 successor critical gate，当前
+  未修改 production、contracts、stable docs、manifest、runtime 或 Release。
