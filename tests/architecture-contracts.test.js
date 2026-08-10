@@ -116,6 +116,9 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.match(architecture, /信任根构造顺序，不是\s*fallback session 的逐根优先级/s);
   assert.match(architecture, /按 `mtime_ns` 全局倒序/);
   assert.match(architecture, /Managed policy 给 adapter 30 秒 timeout.*27 秒 deadline.*1 秒/s);
+  assert.match(architecture, /冷任务.*checkout.*branch\/commit.*setup script.*agent phase/s);
+  assert.match(architecture, /environment cache.*default branch.*恢复.*checkout.*maintenance script/s);
+  assert.match(architecture, /setup 中完成安装.*source=startup.*提示词中安装.*Resume SessionStart.*UserPromptSubmit/s);
   assert.match(catchup, /candidates\.sort\(key=lambda item: item\.mtime_ns, reverse=True\)/);
   assert.match(installer, /timeout = 30/);
   assert.match(design, /parser helpers（不调用 upstream CLI main）/);

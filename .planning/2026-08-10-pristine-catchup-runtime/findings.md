@@ -72,6 +72,22 @@ provenance 与 immutable refs，不在 current tree 保存可执行博物馆副�
 - 新 lifecycle guard 冻结可重放骨架但不把版本历史塞入 architecture invariant tests；未来 lifecycle 晋级
   需要替换 identity/placeholder 席位，而不是复制越来越多的历史 runbook 断言。
 
+## G8 Cloud lifecycle split discovery（2026-08-10）
+
+- 维护者回传 R5-SC setup 为 93/93 PASS，21-entry ZIP 为 74,206 bytes、SHA-256
+  `40e3e134aa4d9a7f452a2447f4aa9026af479882c9b7f78074fc9e3370646182`；Source/Candidate F 的 doctor、
+  exact 10-file inventory、四项 pristine upstream、四 helper roots、adapter-only policy 与 zero residue 也 PASS。
+- OpenAI 官方 Cloud environment 文档区分两条容器时序：冷任务先 checkout 选定 branch/commit 再运行 setup；
+  environment cache 则以 default branch clone/setup 形成，恢复缓存容器时才 checkout 本次 chat 的分支并可运行
+  maintenance。不能把任一时序写成所有 Cloud 任务的唯一事实。
+- 当前 R5-SC 的环境 setup 为空，安装脚本在 agent 已启动后的第一条提示中执行；安装后的下一 task 已错过
+  原始 startup，B 只能验证 post-install Resume，不能要求 `source=startup`；如果新 task 没有产生新的
+  SessionStart，该次 B 必须失败，不能用 UserPromptSubmit 冒充。未来 R5-PR 在 environment setup 中从公开
+  URL 安装，首个 task 才能验证 Fresh `source=startup`。
+- B 应恢复 v0.3.2 的直接输出锚点：SessionStart、实际 source、UserPromptSubmit、Planning context、
+  `===BEGIN PLAN DATA===` 与 `=== recent progress ===`。catch-up 报告属于 E2；Phase 4 absence 属于 D 和
+  source negative tests，不应作为 B 的解释性汇总字段。
+
 ## Post-gate ARCHITECTURE ↔ source audit（2026-08-10）
 
 - 本轮只审计当前 `ARCHITECTURE.md` 是否准确描述 v0.3.3-dev source、contracts、installed layout、runtime

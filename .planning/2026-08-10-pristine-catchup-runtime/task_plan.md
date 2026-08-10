@@ -44,11 +44,14 @@
   执行的 Source/Candidate setup、Fresh、canonical planning、long tail、real Resume、doctor/inventory/policy/
   residue、失败取证和回传模板；保留未来 R5-PR 为 publication-gated 模板，不伪造未封板身份。补治理测试、
   完整回归、提交并按维护者授权 push。
+- [x] G8 — Cloud lifecycle split：吸收 R5-SC setup/F 的真实 PASS 与官方 container-cache 时序证据，把 B
+  按安装发生在 agent phase 或 setup phase 拆成 Source/Candidate post-install Resume 与 Published Release
+  Fresh startup；恢复直接输出锚点汇总，更新 architecture/runbook guard 并完成本地验证。
 
 ## Next Step
 
-提交并 push G7 后停止。下一步是在 Linux/Cloud 执行扩展手册的 R5-SC；本 scope 不 seal、不 tag、
-不发布，也不进入 R5-PR。
+等待维护者按修订后的第 5.1 节 B-SC 继续 Cloud lifecycle；若没有 Resume SessionStart，原样回传
+NOT_OBSERVED 并停止。当前不 seal、不 tag、不发布，也不进入 R5-PR。
 
 ## Stop Conditions
 
@@ -68,6 +71,9 @@ G6 发布前本地复验 PASS；development ZIP 双构建逐字节一致。状�
 该 ZIP 未 seal，不能作为 Published Release 身份。
 G7 runbook parity PASS：R5-SC、B～F、失败取证、evidence ledger 与 publication-gated R5-PR 已达到可重放
 粒度并由 lifecycle guard 冻结；状态仍为 `LOCAL_PASS / CLOUD_PENDING`。
+G8 lifecycle split PASS：R5-SC setup/F Cloud 证据已写回，B 已按安装阶段拆为 Source/Candidate
+post-install Resume 与 Published Release Fresh startup；architecture/guard/full regression 全绿。当前状态为
+`SC_SETUP_PASS / SC_F_PASS / LIFECYCLE_PENDING`，下一步只执行 B-SC，不进入 publication。
 
 ## Errors Encountered
 
@@ -87,3 +93,6 @@ G7 runbook parity PASS：R5-SC、B～F、失败取证、evidence ledger 与 publ
 | G7 focused guard 的 `workspace.*install.js` 否定正则误命中文档“不得回退到 workspace install.js” | 1 | 脚本已正确使用 ZIP 内工具；说明改为“不得回退到 checkout 同名维护工具”，不削弱边界 |
 | G7 runbook syntax extractor 预期 3 个 Bash fence，实际为 4 个 | 1 | 提取器在语法执行前停止；修正为 SC setup/SC F/PR setup/PR F 四块后逐块 `bash -n` |
 | G7 closing 组合补丁因 task plan 状态段换行上下文不精确而整批拒绝 | 1 | `apply_patch` 未产生部分修改；读取精确片段后拆分为小范围 exact hunks |
+| G8 focused `node --test` 在 runner 启动两个 test file 时均返回 `spawn EPERM` | 1 | 未进入断言，归类为既有 Windows sandbox limitation；改为逐文件直接执行相同 Node test 内容 |
+| G8 runbook 抽取器猜测 `C:\Program Files\Git\bin\bash.exe`，本机不存在 | 1 | 在抽取/语法执行前停止；从实际 `git.exe` 位置推导同发行版 Bash 后重跑 |
+| G8 抽取器定位真实 Git Bash 后在首个 `bash -n` 启动时遇到 Win32 signal pipe error 5 | 2 | 未检查脚本文字，归类为既有 sandbox limitation；沙箱外原样重跑四段 Bash 与三段 Python |

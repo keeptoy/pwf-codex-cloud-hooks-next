@@ -97,3 +97,16 @@
   byte-for-byte 相等，证明 docs/tests 治理变更未进入 ZIP payload。
 - CHANGELOG 的 v0.3.3-dev 已同步本次实际文档/guard delta；ROADMAP programme、Host ABI、production
   behavior、accepted baseline 与 Release authorization 均未改变。
+- 2026-08-10：维护者回传 R5-SC setup 93/93、deterministic ZIP identity 与 Source/Candidate F 深度复验
+  全部 PASS；B 的 `startup` 期望与实际“空 environment setup → agent prompt 内安装 → 新 task”时序冲突。
+  官方文档复核进一步确认冷任务与 cached environment 有不同 checkout/setup 顺序；新增 G8，只修订 Cloud
+  lifecycle 模型、runbook 与治理 guard，不修改 production、ZIP 或 publication 状态。
+- G8 首次 focused `node --test` 在 runner 派生两个 test file 时均被 Windows sandbox 以 `spawn EPERM`
+  拒绝，未进入任何 assertion；沿用既有分类，不弱化 guard，改为逐文件直接运行同一测试内容。
+- G8 runbook 抽取器首次使用猜测路径 `C:\Program Files\Git\bin\bash.exe`，在读取任何 code block 前因文件
+  不存在停止；记录为工具发现错误，改从当前 `git.exe` 的实际安装位置推导 Bash。
+- 从 `D:\Program Files\Git\cmd\git.exe` 成功推导 Bash 后，沙箱在首个 `bash -n` 启动阶段返回已知 Win32
+  signal pipe error 5；尚未检查脚本文字，下一步在沙箱外原样重跑抽取器。
+- G8 验证关闭：沙箱外 focused architecture/repository guards 18/18 PASS；完整 `npm test` 为 96 tests、
+  84 PASS、12 个 Windows/POSIX 诚实 SKIP、0 FAIL；runbook 四段 Bash `bash -n` 与三段 Python heredoc
+  compile 全部 PASS，`git diff --check` PASS。production、ZIP 输入、Host ABI 与 Release identity 均未改变。

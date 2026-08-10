@@ -45,6 +45,10 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   portable Linux suite、双构建/override 安装、Fresh、canonical planning、long-tail/real Resume 与
   post-resume deep assertion；Published Release 在 seal 前使用 fail-closed placeholder，避免虚构公开身份。
   Repository lifecycle guard 同步冻结这套骨架，防止后续手册再次退化成不可执行摘要。
+- 根据实际 Cloud lifecycle 修正双通道 B gate：agent prompt 内安装的 Source/Candidate 验证 post-install
+  Resume，environment setup 内安装的 Published Release 才验证 Fresh startup；B 的模型汇总恢复为
+  SessionStart/UserPromptSubmit 与 planning 原始输出锚点，catch-up 和 Phase 4 负向断言分别留给 E2、D 与
+  portable suite。ARCHITECTURE 同步区分冷任务与 cached environment 的 checkout/setup 时序。
 
 ## v0.3.2
 

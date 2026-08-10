@@ -291,14 +291,21 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, /V033_DEV_STATIC_CONTRACT=PASS/);
   assert.match(acceptance, /origin.*upstream_pristine[\s\S]*managed_sha256[\s\S]*pristine_sha256[\s\S]*overlay_ids/s);
   assert.match(acceptance, /allowed_symbols[\s\S]*extract_messages_after[\s\S]*find_last_planning_update[\s\S]*same_project_path[\s\S]*text_content/s);
-  assert.match(acceptance, /## 5\. B：Fresh lifecycle[\s\S]*SessionStart source[\s\S]*SESSION CATCHUP DETECTED/);
+  assert.match(acceptance, /## 5\. B：按安装阶段分流 lifecycle[\s\S]*### 5\.1 B-SC：Source\/Candidate post-install Resume[\s\S]*SessionStart source[\s\S]*===BEGIN PLAN DATA===[\s\S]*=== recent progress ===/);
+  assert.match(acceptance, /### 5\.2 B-PR：Published Release Fresh startup[\s\S]*SessionStart source[\s\S]*source 为 startup/);
+  const lifecycleB = acceptance.slice(
+    acceptance.indexOf("## 5. B：按安装阶段分流 lifecycle"),
+    acceptance.indexOf("## 6. C：创建 canonical planning baseline"),
+  );
+  assert.doesNotMatch(lifecycleB, /^SESSION CATCHUP DETECTED:/m);
+  assert.doesNotMatch(lifecycleB, /^Phase 4 marker:/m);
   assert.match(acceptance, /## 6\. C：创建 canonical planning baseline[\s\S]*PWF_V033_DEV_R5_CANONICAL/);
   assert.match(acceptance, /## 7\. D：canonical UserPromptSubmit[\s\S]*===BEGIN PLAN DATA===[\s\S]*=== recent progress ===/);
   assert.match(acceptance, /### 8\.1 E1：long tail[\s\S]*PWF_V033_DEV_REAL_RESUME_TAIL/);
   assert.match(acceptance, /### 8\.2 E2：real Resume[\s\S]*Unsynced messages[\s\S]*Catch-up 位于 planning context 之前/);
   assert.match(acceptance, /## 9\. F：Source\/Candidate post-resume[\s\S]*INSTALLED_RUNTIME_FILES=10[\s\S]*UPSTREAM_PRISTINE_FILES=4[\s\S]*OWNED_CATCHUP_HELPERS=4[\s\S]*GLOBAL_SKILL_PRISTINE=PASS/s);
-  assert.match(acceptance, /### 11\.1 R5-SC Source\/Candidate[\s\S]*V033_DEV_SC_CLOUD_CHANNEL=PASS/);
-  assert.match(acceptance, /### 11\.2 R5-PR Published Release[\s\S]*BLOCKED_BY_PUBLICATION/);
+  assert.match(acceptance, /### 11\.1 R5-SC Source\/Candidate[\s\S]*V033_DEV_SC_B_POST_INSTALL_RESUME=PASS[\s\S]*V033_DEV_SC_CLOUD_CHANNEL=PASS/);
+  assert.match(acceptance, /### 11\.2 R5-PR Published Release[\s\S]*BLOCKED_BY_PUBLICATION[\s\S]*V033_PR_B_FRESH_STARTUP=PASS/);
   if (roadmap.includes("Cloud hard acceptance PASS")) {
     assert.match(acceptance, /CLOUD-HARD-ACCEPTANCE-PASS/);
     assert.doesNotMatch(acceptance, /PENDING_R5_SC|PENDING_R5_PR|PENDING_R5/);

@@ -28,10 +28,17 @@ owned copy 部署到 Codex Cloud system-managed Hooks，并负责 Host protocol�
 
 ### 2.1 Cloud 生命周期与 `CODEX_HOME`
 
-OpenAI 的公开 Cloud environment 文档给出的顺序是：创建容器并 checkout 选定仓库版本，运行 setup
-script（复用缓存容器时可再运行 maintenance script），然后才进入 agent phase。setup script 运行在
-独立 Bash session 中，因此其中临时 `export` 的值不会仅凭 shell 继承进入后续 agent phase。
-参见 OpenAI 官方 [`Cloud environments`](https://learn.chatgpt.com/docs/environments/cloud-environment)。
+OpenAI 的公开 Cloud environment 文档区分两条时序。冷任务创建容器后先 checkout 该 chat 选定的
+branch/commit，再运行 setup script，最后进入 agent phase；environment cache 则先 clone default branch、
+运行 setup 并缓存容器状态，恢复该缓存时才 checkout 本次 chat 指定的 branch，并可运行 maintenance script。
+因此“setup 看见默认分支”和“setup 看见选定分支”都只能在各自 lifecycle 前提下成立，不能冻结成所有
+Cloud task 的单一路径。参见 OpenAI 官方 [`How Codex cloud chats run`](https://learn.chatgpt.com/docs/environments/cloud-environment#how-codex-cloud-chats-run)
+与 [`Container caching`](https://learn.chatgpt.com/docs/environments/cloud-environment#container-caching)。
+
+setup script 运行在独立 Bash session 中，因此其中临时 `export` 的值不会仅凭 shell 继承进入后续 agent
+phase。安装发生在哪个阶段还决定 Hook 能观察到哪次 lifecycle：setup 中完成安装时，随后首个 task 可以
+观察 `SessionStart source=startup`；如果先启动 agent、再在提示词中安装，原始 startup 已经过去，后续只能
+按实际调度观察 Resume SessionStart，或者在同一 task 没有新 SessionStart 时只观察 UserPromptSubmit。
 
 Codex Cloud 配置界面把 environment settings 与 setup script 明确分成不同控制面；维护者提供的
 2026-08 界面截图也显示“环境变量”“密钥”“容器缓存”和“设置脚本”是彼此独立的配置区。应按下表
@@ -50,12 +57,17 @@ session。界面布局本身是带日期的产品观测，公开文档中的生�
 本仓库进一步冻结的是 2026-08 Cloud fixture 与 Fresh/Resume 验收得到的、更窄的平台观测：
 
 ```text
-new container
-  -> repository clone / checkout
-  -> setup shell
-       CODEX_HOME 在入口处未由 Host 提供
-       bootstrap 显式解析 CODEX_HOME（当前默认 /opt/codex）
-  -> agent / Codex runtime starts
+cold task
+  -> checkout selected branch/commit -> setup shell -> agent startup
+
+cached environment
+  -> checkout default branch -> setup shell -> cached container
+  -> resume cache -> checkout selected branch -> optional maintenance -> agent
+
+setup-installed Hook -> observes the following startup SessionStart
+agent-prompt-installed Hook -> original startup already passed; next observation is Resume/UserPromptSubmit
+
+both paths after managed installation
   -> managed Hook process
        CODEX_HOME=/opt/codex
        session store=/opt/codex/sessions
