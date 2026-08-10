@@ -141,6 +141,28 @@ test("historical documents have one macro entrance and remain advisory", () => {
     `${macroDoc} must not create a second historical-document entrance`);
 });
 
+test("root architecture history snapshots remain non-authoritative and isolated", () => {
+  const actual = trackedPaths();
+  const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
+  const snapshots = actual.filter(item =>
+    /^ARCHITECTURE-old-v?\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\.md$/.test(item));
+
+  assert.ok(snapshots.length > 0, "expected at least one architecture history snapshot");
+  for (const snapshot of snapshots) {
+    const text = read(snapshot);
+    assert.match(text, /非权威历史副本/);
+    assert.match(text, /immutable tag/);
+    assert.match(text, /当前架构始终以 \[`ARCHITECTURE\.md`\]\(ARCHITECTURE\.md\)/);
+    assert.equal(artifact.entries.some(item => item.path === snapshot), false,
+      `${snapshot} must stay outside the Release artifact`);
+    for (const authority of [
+      "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
+      "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "docs/repository-governance-guide.md",
+    ]) assert.equal(read(authority).includes(snapshot), false,
+      `${authority} must not promote ${snapshot} into the authority graph`);
+  }
+});
+
 test("portable repository governance defines a closed retirement transaction", () => {
   const guide = read("docs/repository-governance-guide.md");
 
