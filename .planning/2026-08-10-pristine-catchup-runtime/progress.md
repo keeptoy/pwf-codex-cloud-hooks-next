@@ -202,3 +202,12 @@
   Release contract 撤回 README 改动，保留其既有 `docs/` 专项入口，并改由 Release-excluded DESIGN/治理指南
   导航。最终完整 suite 96 tests：84 PASS、12 个 Windows/POSIX 诚实 SKIP、0 FAIL；published v0.3.3 ZIP
   oracle 恢复精确原 SHA，证明本轮没有改写已发布 package bytes。
+
+### 2026-08-10 G12 v0.3.3 baseline promotion
+
+- 维护者明确授权将 v0.3.3 晋级为 GitHub Latest/production rollback baseline，并明确禁止进入
+  Product Phase 4；活动 task plan 已增加 G12，将 pointer、证据/角色同步和验证/push 拆分。
+- Preflight 确认 worktree/remote branch 同步、Latest=v0.3.2、v0.3.3 Release 为非 draft/prerelease，且
+  v0.3.3/v0.3.2 四个公开资产的 filename/size/server digest 与冻结证据一致。未执行任何外部写入。
+- G12-A focused Release test 在受限 sandbox 内的 child process 返回 `status=null`，导致期望 0/1
+  的两个 assertion 无法评估；该错误发生在产品断言前，将在沙箱外原样复验，不放宽测试。

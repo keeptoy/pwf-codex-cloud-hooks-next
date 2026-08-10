@@ -177,3 +177,20 @@ provenance 与 immutable refs，不在 current tree 保存可执行博物馆副�
   区分 trust-root construction order 与跨根 newest-session selection。
 - `ARCHITECTURE-old-0.3.2.md` 未修改，也没有被现行 authority 引用；v0.3.2 冷历史与 v0.3.3-dev 当前事实
   继续隔离。
+
+## G12 v0.3.3 baseline promotion preflight（2026-08-10）
+
+- 维护者已明确授权 `v0.3.3` 晋级为 GitHub `Latest` 与 production rollback baseline，并明确
+  不进入 Product Phase 4。授权面与 ROADMAP 既有 promotion-pending 停止点精确对应。
+- 本地 `0.3.3-dev` 与 `origin/0.3.3-dev` 同步且 worktree 干净；`v0.3.3` tag 精确指向
+  seal commit `a1b9f4548e3b6e071fee611270365c8ecf3f8d13`。
+- GitHub preflight 返回 `Latest=v0.3.2`；`v0.3.3` 为 non-draft、non-prerelease Release。其 ZIP 与
+  external bootstrap 分别为 74,198 / 21,565 bytes，server digest 分别为
+  `2b2dca5c5894a2297a6f2ccc5fb190878c3c920b71148719a4873326b4ccb352` /
+  `236e364bde8397b04c9d7ebfa121fa96963055d77b56e6299e6b9c9aad6c887e`，与 frozen acceptance/provenance
+  一致。v0.3.2 双资产 identity 也与当前 accepted oracle 一致。
+- 上次 v0.3.2 promotion 已证明的最小路线仍适用：design checkpoint → `gh release edit
+  v0.3.3 --latest` → 独立 `releases/latest`/asset 后置复核 → lifecycle/evidence/guard 同步 →
+  focused/full validation → commit/push。
+- BASELINE_PROVENANCE 只维护不可变身份与来源，不复制当前 Latest/角色；因此 promotion 只需
+  更新其 v0.3.3 持久证据意义中已过时的“promotion 尚待授权”表述，不改任何已登记 identity。

@@ -15,6 +15,9 @@
   immutable `v0.3.3` 双资产；授权包含 publication 后公开重新下载复核。
 - 维护者已回传完整 Published Release Cloud PASS，并授权将事实写回 acceptance/lifecycle 文档；本 gate
   仍不授权 GitHub Latest/rollback baseline promotion、外部 deployment 或 Product Phase 4 功能。
+- 维护者现已明确授权将已完成 Cloud hard acceptance 的 `v0.3.3` 晋级为 GitHub `Latest`
+  与 production rollback baseline；本授权仅包含 pointer-only promotion、后置复核、当前角色/证据
+  同步与相应提交/push，明确不进入 Product Phase 4。
 - 已发布 v0.3.2 的 tag、ZIP/bootstrap、SHA、acceptance、patcher/overlay identity 不得改写；历史恢复只走
   immutable refs 与 `BASELINE_PROVENANCE.md`。
 
@@ -60,10 +63,14 @@
   或角色状态的
   `docs/cloud-hard-acceptance-template.md`；保留双通道 trust boundary、版本中立 B～F、可替换 URL/SHA 输入、
   失败取证与 evidence schema。接入 DESIGN/治理指南和通用 guard，不改变版本 acceptance 或 Release inventory。
+- [ ] G12 — v0.3.3 baseline promotion：先冻结 pointer-only 设计并复核 Latest/Release/资产不变性；
+  只将 GitHub `Latest` 从 v0.3.2 移到 v0.3.3，独立后置查询；再同步 ROADMAP、CHANGELOG、
+  v0.3.3 acceptance、活动 planning 与精确 lifecycle guards，完成全回归、commit/push。不改 tag、
+  Release 资产、bootstrap/ZIP、production runtime、Host ABI、trusted graph 或 Product Phase 4 状态。
 ## Next Step
 
-停在 `CLOUD_HARD_ACCEPTANCE_PASS / PROMOTION_NOT_AUTHORIZED`，等待维护者另行决定是否开启 Latest/
-rollback baseline promotion gate；不改写 v0.3.3 tag、ZIP/bootstrap 或 seal source。
+执行 G12-A：提交并 push 只包含授权、preflight 证据、边界与停止条件的 promotion design
+checkpoint；随后 G12-B 只移动 GitHub `Latest` pointer 并立即后置复核。不进入 Phase 4。
 
 ## Stop Conditions
 
@@ -94,6 +101,9 @@ R5-PR 10.2 首次执行因提示词转义在下载前停止；直接获取原始
 确认 repository/runbook 无缺陷。当前状态为 `PUBLICATION_PASS / R5_PR_F_PASS / R5_PR_CHANNEL_PENDING`。
 维护者随后确认完整 Published Release Cloud channel 已验收通过，并授权只做手册/guard 通用化收口；当前
 状态为 `CLOUD_HARD_ACCEPTANCE_PASS / PROMOTION_NOT_AUTHORIZED`。
+G12 已获维护者明确授权并进入 preflight：目标是 `v0.3.3` pointer-only Latest/rollback baseline
+promotion，Product Phase 4 仍未授权。当前外部事实仍为 `Latest=v0.3.2`，直到 G12-B
+后置查询证明切换成功。
 
 ## Errors Encountered
 
@@ -120,3 +130,4 @@ R5-PR 10.2 首次执行因提示词转义在下载前停止；直接获取原始
 | G9 组合读取 tagged 文件时 `git show | Select-Object` 因下游提前关闭产生非零退出 | 1 | 已取得所需只读片段；后续避免截断 Git stdout，按精确文件或本地读取核验 |
 | R5-PR 10.2 Cloud 临时脚本把 `$PUBLICATION_TAG` 变成 `$PUBLICATION\_TAG`，在 `set -u` 下报 `PUBLICATION: unbound variable` | 1 | 下载/doctor 均未开始；改为直接取得原始 acceptance、提取 10.2 code block 并原样执行后 PASS，确认只是提示词转义，不新增 repository hardening gate |
 | G11 首次完整回归发现 README 导航改动使重建 ZIP SHA 偏离已发布 v0.3.3 | 1 | 模板本身位于 Release-excluded docs；撤回 sealed README 输入改动，改由 DESIGN/治理指南导航，重跑后 published ZIP oracle 与完整 suite 全绿 |
+| G12-A focused Release test 在受限 Windows sandbox 中的 Python/Git 派生进程返回 `status=null` | 1 | 断言未获得产品返回码；按已有 sandbox process limitation 分类，在沙箱外原样重跑 focused guards |
