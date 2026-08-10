@@ -102,3 +102,5 @@
 - architecture/repository focused governance 17/17 PASS，stable cross-document anchors、dev zero-hash/无 sealed
   identity、current acceptance lifecycle 与 Phase 4 boundary 均保持；`git diff --check` PASS。黑盒交付就绪，
   I3 等待维护者真实 Cloud 输出，不预填通过状态。
+- 黑盒 template、v0.3.4-dev 薄入口与 planning evidence 已作为纯 docs/planning commit `e54f459` 推送到远端
+  `0.3.4-dev`；该提交不含 Release allowlist 输入或 production bytes，`59395e7` implementation 仍在其祖先链中。
