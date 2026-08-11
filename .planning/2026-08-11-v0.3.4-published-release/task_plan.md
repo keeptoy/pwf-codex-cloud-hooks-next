@@ -32,7 +32,8 @@ Host ABI、trusted graph 或 Product Phase 4 边界。
   Source/Candidate Linux 120/120 与行为黑盒继续覆盖该行为面，不重复执行同一 Cloud 通道。
 - [x] R2 — Seal：冻结全部 ZIP 输入，双构建逐字一致，计算最终 ZIP SHA，写入 ZIP 外 bootstrap，再计算
   bootstrap SHA；sealed source 完整回归通过，任何后续 ZIP/bootstrap 输入变化都必须回到 R2 起点。
-- [ ] R3 — Publication audit：在具备 exact refs 的维护环境验证 tag/source/asset oracle 和完整 suite。
+- [x] R3 — Publication audit：在具备 exact refs 的维护环境验证 source reproducibility、历史 publication
+  oracles、远端 identity 空闲与 main ancestry；sealed tree/ZIP/bootstrap 均保持 exact。
 - [ ] R4 — Immutable publication：创建并发布最终 tag 与双资产，重新下载并核对 filename/size/SHA/内容。
 - [ ] R5 — Published Release Cloud：在独立 Fresh Cloud 中从 immutable public bootstrap 执行 B-PR/C/D/E1/E2
   与 9.2 deep check，不使用本地 ZIP、checkout 同名脚本或 Source/Candidate 环境。
@@ -40,13 +41,13 @@ Host ABI、trusted graph 或 Product Phase 4 边界。
 
 ## Next Step
 
-执行 R3 publication audit：提交当前 sealed source，在干净 HEAD 上重建并复核相同 ZIP/bootstrap identity，
-然后检查完整 refs、tag/source/asset prerequisites 与 publication oracle。R3 不创建远端 tag 或上传资产；
-只有 audit 全部通过后才进入 R4 immutable publication。
+执行 R4 immutable publication：提交本次 R3 planning closure，在干净 HEAD 再确认 sealed ZIP/bootstrap identity，
+fast-forward 推送 `0.3.4-dev` 与 `main`，创建 immutable `v0.3.4` tag/Release 并上传两项 sealed assets；随后
+重新下载核对 filename/size/SHA/boundary。任一远端 identity 冲突或下载字节不一致立即停止。
 
 ## Decision
 
-`PUBLISHED_RELEASE_GATE_AUTHORIZED / R2_COMPLETE / R3_NEXT / PUBLICATION_NOT_STARTED / PHASE4_NOT_AUTHORIZED`
+`PUBLISHED_RELEASE_GATE_AUTHORIZED / R3_COMPLETE / R4_NEXT / PUBLICATION_NOT_STARTED / PHASE4_NOT_AUTHORIZED`
 
 ## Stop Conditions
 
@@ -66,3 +67,4 @@ Host ABI、trusted graph 或 Product Phase 4 边界。
 | 本机只有 `wsl.exe` 占位入口但未安装 Linux distribution，Docker/Podman 也不可用 | 1 | 归类为 platform limitation；保留 12 个 POSIX/Linux SKIP，R1 停在 exact committed candidate 的 Linux 0-skip gate |
 | 首次 `gh release view v0.3.4` 以预期的 `release not found` 返回 1，使并行聚合命令整体非零 | 1 | 改为显式区分 absent 与 query failure；复核 LOCAL_TAG、REMOTE_TAG、REMOTE_RELEASE 均为 ABSENT |
 | R2 首次完整 suite 仅因 release-package test 仍匹配 ROADMAP 的 `stable candidate` 旧角色文字而失败 | 1 | 归类为 test fixture drift；更新为 `sealed candidate`，不弱化 ZIP/bootstrap SHA 断言后重跑完整 suite |
+| PowerShell 未引用 `^{tree}` rev 表达式，花括号被 shell 处理为 encoded argument，三次 `git rev-parse` 失败 | 1 | 改用单引号包裹完整 rev；确认 `origin/main` tree 与 `dc20ef9` 完全相同，不重复原命令 |

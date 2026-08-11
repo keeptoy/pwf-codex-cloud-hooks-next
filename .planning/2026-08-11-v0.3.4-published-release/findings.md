@@ -98,3 +98,17 @@
   Node syntax、importer check 与 `git diff --check` 均通过。
 - 首轮 sealed suite 的唯一失败是 release-package 仍匹配旧 ROADMAP `stable candidate` 文案；同步为
   `sealed candidate` 后完整 suite 全绿，未更改任何产品或 SHA 安全断言。
+
+## R3 publication audit
+
+- sealed source commit `2c5ee17029af76e098e4f7da6ec01953ba03c535` 的 `git archive` 可独立重建同一
+  ZIP `497e92…ec3b` 和 bootstrap `9a3df0…cd40`；不是只由脏工作树偶然生成。
+- publication/Release/lifecycle focused suite 17/17 PASS；完整 suite 已在完全相同的 sealed source bytes 上
+  114 PASS、12 Windows POSIX SKIP、0 FAIL。
+- fetch 后确认 `origin/0.3.4-dev=dc20ef9`，`origin/main=f8ed6e1`。main 是合并 dc20 的 PR merge commit；
+  `origin/main` 与 `dc20ef9` tree 都为 `aca8617…8ad2`，内容零差异，只是提交拓扑分叉。
+- 本地用一次 contentless merge 把 main ancestry 纳入 sealed lineage；merge commit
+  `1b69fd90852d2ec91c91c953e4f1b9b05d571482` 的 tree 与 merge 前完全相同，重新从 Git archive 构建仍得到
+  exact ZIP/bootstrap SHA。
+- R3 结论：source reproducibility、accepted/fallback oracles、identity vacancy、main ancestry 与 sealed
+  bytes 全部闭合，可以进入 R4。尚未推送本地 commits、创建 v0.3.4 tag 或上传资产。

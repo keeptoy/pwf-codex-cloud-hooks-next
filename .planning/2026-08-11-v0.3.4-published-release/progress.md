@@ -41,3 +41,7 @@
   importer check 与 diff check 全部通过。R2 complete，ZIP/bootstrap exact identity 已冻结并保留在 seal 目录。
 - Next Step 切换为 R3：先提交 sealed source，在干净 HEAD 重建同一 ZIP/bootstrap，再执行 publication audit；
   尚未创建 tag、推送 sealed commit 或上传任何资产。
+- sealed source commit `2c5ee17` 的 Git archive 重建 exact ZIP/bootstrap；R3 focused publication/Release/
+  lifecycle 17/17 PASS。远端三处 v0.3.4 identity 仍为空。
+- fetch 发现 origin/main 是 dc20 的 content-identical PR merge ancestry；本地以 contentless merge
+  `1b69fd9` 汇合，tree、ZIP 与 bootstrap SHA 均未变化。R3 complete，Next Step 为 R4 immutable publication。
