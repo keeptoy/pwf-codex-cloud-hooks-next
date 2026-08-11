@@ -182,6 +182,37 @@
 - 最合理顺序是：先在下一兼容版本修 notice、history 尾注和低价值静态断言；再以独立 contract/Release gate
   处理 bundle/manifest/release schema；`ledger-summary.sh` 与 installed schema 策略不在本轮删除。
 
+## Resumed planning constraint
+
+- Phase 3.9.1 与本审计结论一致：后续工作必须拆成兼容清理、contract/Release-v2 Discovery、Phase 4 Discovery
+  三个 gate，不能把文案/测试清理与 machine-contract identity rotation 混成一次变更。
+- 维护者明确要求本轮只把 Phase 4 写成前两段清理闭合后的“下一任务提示”；不得在本计划中展开 Phase 4
+  实施步骤、写 source、改变 ABI 或预先宣布 Cloud gate 通过。
+
+## Route-freeze evidence
+
+- `THIRD_PARTY_NOTICES.md` 当前仍明确写着 compatibility overlays applied to `session-catchup.py`，不是模糊措辞；
+  修正它会改变 installed/ZIP 字节，因此兼容清理仍需新 candidate identity、hash rotation、deterministic package
+  和完整 Release/Cloud 闭环。
+- `repository-boundary.test.js` 的 `retired prototype conclusions remain covered...` case 只按英文标题搜索另外三个
+  测试文件；它不验证 production behavior，可在兼容清理 gate 删除，同时保留目标行为测试本身。
+- 当前过拟合断言集中在 governance guide/ARCHITECTURE 的长串中文 prose regex；安全替代不是“全删”，而是保留
+  explicit anchors、exact sets、forbidden zones、role windows、Release exclusion 与 source-level call-order guards。
+- `release-package.test.js` 同时硬编码 test title、entry count、bootstrap filename 和 bootstrap default version；
+  通用 candidate 测试应从 `package.json` 与 artifact contract 派生当前 identity，并把 builder entry count 与
+  `artifact.entries.length` 对齐。已发布版本的精确 count 继续留在 acceptance/publication oracle，而不是通用测试。
+- Phase 3.8 正文保留“当时只完成 Discovery、尚未实施”；后续落地应以独立尾注说明 v0.3.4 已完成 bundle-authority
+  migration，避免事后重写原决策的时间语义。
+- Notice 由 manifest 的 notice integrity reference、installer envelope、Release allowlist 与 installer/package tests
+  共同固定；因此兼容 gate 的最小 hash 传播链至少包含 notice 本身、manifest 中的 notice hash、manifest/bundle
+  相互 integrity edge、Release candidate 与外部 bootstrap checksum，不能只改一行 prose 后结束。
+- Contract-v2 consumer 图已再次确认：bundle tombstone 同时被 importer、installer、contracts/importer tests 消费；
+  `skill_version` 无 production consumer；ZIP mode 由 builder 内 `EXECUTABLE_PATHS` 决定；Release metadata 有的只在
+  tests 中冻结。这验证了 contract-v2 必须是独立 Discovery + implementation/Release transaction，而非兼容 gate
+  的顺手清理。
+- ROADMAP 仍把 Phase 4 定位为 pending Discovery authorization，且尚未建立 `0.4.0-*` identity/branch/implementation
+  gate；本计划结尾只能留下下一任务提示。
+
 ## Verification
 
 - `npm test`：126 tests，114 pass，0 fail，12 个 POSIX/Linux-only case 在 Windows 如实 SKIP。

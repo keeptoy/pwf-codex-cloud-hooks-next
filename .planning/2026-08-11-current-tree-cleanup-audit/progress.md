@@ -28,3 +28,13 @@
   `git diff --check` 通过。审计结论已冻结，未修改 production、contracts、tests 或 Release 输入。
 - 首次 planning-only 自动提交因 sandbox 拒绝创建 `.git/index.lock` 而未暂存任何文件；按仓库纪律保留现场，
   改为在沙箱外对四个精确 planning 路径提交，不扩大范围。
+- 维护者在 Phase 3.9.1 架构里程碑完成后重新激活本 scope，授权把既有审计结论细化成三段 gate 路线；本轮只
+  更新 planning，不实施兼容清理、contract/Release v2 或 Phase 4。
+- 回读 Phase 3.9.1 与低风险候选的精确源码位置，确认 notice 属于 Release 输入、标题元测试没有行为语义、
+  prose regex 必须以结构/禁区断言替代而非机械删除，candidate package 测试可从 package/artifact 动态派生身份。
+- 恢复 notice/hash、bundle tombstone、manifest metadata、Release mode 与测试 consumer 图；确认兼容清理和
+  contract-v2 必须拆开，Phase 4 仍处于 ROADMAP 的 Discovery authorization 之前。
+- 完成 R0 路线冻结：C1 细化为 admission、failing-first、最小编辑、candidate/Release rotation 与 exit criteria；
+  C2 细化为字段 consumer map、四组 architecture decision 和 compatibility/Discovery exit；Phase 4 仅留 next-task hint。
+- `.planning/.active_plan` 已切回本 scope；focused repository-boundary tests 在沙箱外通过 9/9，证明 active pointer、
+  planning 三件套与历史/Release 排除边界仍成立。未修改任何清理目标文件。
