@@ -10,10 +10,13 @@ const root = path.resolve(__dirname, "..");
 const pristineSkill = path.join(root, "tests", "fixtures", "planning-with-files");
 const manifestPath = path.join(root, "upstream-manifest.json");
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+const packageVersion = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")).version;
+const releaseArtifact = JSON.parse(fs.readFileSync(path.join(root, "contracts", "release-artifact-v1.json"), "utf8"));
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 const bash = process.env.BASH || (process.platform === "win32" ? "D:\\Program Files\\Git\\bin\\bash.exe" : "bash");
-const candidateBootstrap = path.join(root, "init-cloud-sandbox-v0.3.3.bash");
-const releaseZipSha256 = "2b2dca5c5894a2297a6f2ccc5fb190878c3c920b71148719a4873326b4ccb352";
+const currentVersion = `v${packageVersion}`;
+assert.equal(releaseArtifact.external_release_assets.length, 1);
+const candidateBootstrap = path.join(root, releaseArtifact.external_release_assets[0].path);
 
 function bashPath(value) {
   const normalized = value.replaceAll("\\", "/");
@@ -52,10 +55,12 @@ function makeSkillArchive(workspace, driftRequiredFile = false) {
 
 test("sealed bootstrap pins both archives, removes remote Node tooling, and rejects an explicit zero hash", () => {
   const bootstrap = fs.readFileSync(candidateBootstrap, "utf8");
+  const releaseZipSha256 = bootstrap.match(/HOOKS_SHA256="\$\{HOOKS_SHA256:-([a-f0-9]{64})\}"/);
+  assert.ok(releaseZipSha256, "bootstrap lacks a pinned default ZIP SHA-256");
+  assert.notEqual(releaseZipSha256[1], "0".repeat(64));
   const runAll = bootstrap.match(/run_all\(\) \{([\s\S]*?)\n\}/);
   assert.ok(runAll, "run_all was not found");
-  assert.match(bootstrap, /HOOKS_VERSION="\$\{HOOKS_VERSION:-v0\.3\.3\}"/);
-  assert.match(bootstrap, new RegExp(`HOOKS_SHA256="\\$\\{HOOKS_SHA256:-${releaseZipSha256}\\}"`));
+  assert.match(bootstrap, new RegExp(`HOOKS_VERSION="\\$\\{HOOKS_VERSION:-${currentVersion.replaceAll(".", "\\.")}\\}"`));
   assert.match(bootstrap, new RegExp(manifest.release_archive_url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(bootstrap, new RegExp(manifest.release_archive_sha256));
   assert.match(bootstrap, /PLANNING_WITH_FILES_ARCHIVE_ROOT="\$\{PLANNING_WITH_FILES_ARCHIVE_ROOT:-planning-with-files-3\.8\.2\}"/);

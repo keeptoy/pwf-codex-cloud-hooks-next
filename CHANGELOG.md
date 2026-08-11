@@ -11,7 +11,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - 先以 64 位 zero-hash、fail-closed 的 `v0.3.4-dev` Source/Candidate identity 完成 Linux/Cloud 验收，再
   原子收敛为 `v0.3.4` stable identity；确定性双构建后把 exact ZIP SHA 固定进外部 bootstrap，并完成
   immutable prerelease publication、公开双资产重新下载复核和独立 Published Release Cloud hard acceptance。
-  lifecycle promotion 仍是独立 gate，不改变 v0.3.3 accepted/Latest 与 v0.3.2 immediate fallback。
+  维护者随后原地取消 Pre-release 并晋级 Latest；postflight 确认 v0.3.4/v0.3.3 tag、source 和资产未改写，
+  v0.3.3 转为 immediate fallback，v0.3.2 转为 deeper fallback。
 - 从 runtime bundle 退休只表达早期 rollout 计划、从未被 production 消费的 `activation_phase` 与
   `deferred_upstream_candidates`；未授权脚本继续由 exact id/source inventory guard 排除。
 - 将 runtime bundle 确立为唯一 source/install inventory authority：importer 与 installer 先验证
@@ -30,7 +31,7 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   Source/Candidate 验收，再冻结 `v0.3.3` stable package、精确 ZIP checksum 与外部 bootstrap。当前
   programme/lifecycle 见 [`ROADMAP.md`](ROADMAP.md)，已发布 v0.3.2 immutable identity
   见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，候选 Cloud gate 见
-  [`docs/v0.3.3-cloud-hard-acceptance.md`](docs/v0.3.3-cloud-hard-acceptance.md)。
+  [immutable v0.3.3 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/a65f889a1dacef4239951e284082ced9e2fcf03c/docs/v0.3.3-cloud-hard-acceptance.md)。
 - 发布 stable `v0.3.3` exact tag、21-entry ZIP 与外部 bootstrap，并从公开 URL 重新下载复核；Published
   Release Cloud 通道随后在独立 Fresh 环境完成，baseline/Latest promotion 仍作为独立 gate。
 - 在独立 gate 完成 pointer-only baseline promotion；postflight 确认 v0.3.3/v0.3.2 的 immutable tag、

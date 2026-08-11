@@ -305,6 +305,10 @@ test("change history, programme, provenance, and current acceptance keep separat
   }
   assert.match(agents, /当前版本角色只见 `ROADMAP\.md`/);
   assert.match(agents, /for bootstrap in init-cloud-sandbox-v\*\.bash; do/);
+  assert.match(agents, /重要且可独立恢复的阶段.*自动创建本地[\s\S]*commit/);
+  assert.match(agents, /所有远端写操作由维护者负责[\s\S]*push\/force-push[\s\S]*Pre-release\/Latest/);
+  assert.match(agents, /远端只读查询[\s\S]*维护者完成[\s\S]*只读 postflight/);
+  assert.match(agents, /减少[\s\S]*权限确认、网络重试和来回等待[\s\S]*不得因此跳过测试/);
   assert.match(design, /CHANGELOG\.md/);
   assert.match(changelog,
     /\[`BASELINE_PROVENANCE\.md` 的 Successor 迁移不可变证据\]\(BASELINE_PROVENANCE\.md#successor-migration-evidence\)/);
@@ -312,123 +316,73 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotMatch(changelog, /Successor 迁移来源链/);
 
   assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));
-  if (candidate !== accepted) {
-    const sourceCandidateComplete = roadmap.includes("zero-hash Source/Candidate Cloud 已 PASS");
-    const publishedReleaseComplete = roadmap.includes("Published Release Cloud hard acceptance 已 PASS");
-    if (sourceCandidateComplete) {
-      assert.match(acceptance, /Source\/Candidate Cloud hard acceptance 已.*完成/s);
-      assert.match(acceptance, /SOURCE_CANDIDATE_CLOUD_PASS \/ I3_COMPLETE/);
-      assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
-    } else {
-      assert.match(acceptance, /Source\/Candidate.*Cloud hard acceptance 尚未开始/s);
-      assert.doesNotMatch(acceptance, /\b[a-f0-9]{64}\b/i);
-    }
-    assert.match(acceptance, /64 位 zero hash.*fail closed/s);
-    assert.match(acceptance, /Cloud hard acceptance template/);
-    assert.match(acceptance, /不授予 Product Phase 4/);
-    assert.match(acceptance, /exact current id\/source inventory guard/);
-    assert.match(acceptance, /本次验收增量没有改写 B～E 黑盒提示词/);
-    assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-setup/);
-    assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-deep-check/);
-    assert.doesNotMatch(acceptance, /## 1\. 执行输入与边界|维护者执行顺序|回传证据|NOT EXECUTED|NOT AUTHORIZED|PENDING|Next Step|当前状态/);
-    if (publishedReleaseComplete) {
-      const publishedRow = provenance.split(/\r?\n/)
-        .find(line => line.startsWith(`| \`${candidate}\` |`));
-      assert.ok(publishedRow, "published candidate lacks a provenance ledger row");
-      const publishedSource = publishedRow.match(/\[source `([a-f0-9]{40})`\]/);
-      assert.ok(publishedSource, "published candidate provenance lacks an exact source");
-      const bootstrapName = `init-cloud-sandbox-${candidate}.bash`;
-      const zipName = `pwf-codex-cloud-hooks-${candidate}.zip`;
-      const publishedHashes = [...new Set(publishedRow.match(/\b[a-f0-9]{64}\b/g) || [])];
-      assert.equal(publishedHashes.length, 2, "published candidate must freeze ZIP and bootstrap SHA-256");
-      const installedPrefix = "hooks/planning-with-files/";
-      const expectedInstalled = [
-        "THIRD_PARTY_NOTICES.md",
-        "hook_adapter.py",
-        ...runtimeBundle.local_files.map(item => item.installed_path.slice(installedPrefix.length)),
-        ...runtimeBundle.installed_contracts.map(item => item.installed_path.slice(installedPrefix.length)),
-        ...runtimeBundle.files.map(item => item.installed_path.slice(installedPrefix.length)),
-      ];
-      assert.match(acceptance, /## 3\. Published Release 完成证据/);
-      assert.match(acceptance, new RegExp(`tag \`${escapedCandidate}\`；source \`${publishedSource[1]}\``));
-      for (const identity of [bootstrapName, zipName, ...publishedHashes]) {
-        assert.match(acceptance, new RegExp(identity.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-      }
-      assert.match(acceptance, new RegExp(`PUBLIC_PACKAGE_IDENTITY=${escapedCandidate.slice(1)}`));
-      assert.match(acceptance, new RegExp(`${artifact.entries.length} entries`));
-      assert.match(acceptance, new RegExp(`exact ${expectedInstalled.length} 项`));
-      for (const installedPath of expectedInstalled) assert.match(acceptance,
-        new RegExp(installedPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-      assert.match(acceptance, new RegExp(`${runtimeBundle.files.length} 个 upstream runtime 均保持 pristine`));
-      for (const upstream of runtimeBundle.files) {
-        assert.match(acceptance, new RegExp(upstream.pristine_sha256));
-      }
-      assert.match(acceptance, /MANAGED_POLICY=ADAPTER_ONLY/);
-      assert.match(acceptance, /SNAPSHOT_LEFTOVERS=0/);
-      assert.match(acceptance, /R5-SC=PASS[\s\S]*R5-PR=PASS[\s\S]*CLOUD-HARD-ACCEPTANCE-PASS/);
-      assert.match(acceptance, /不自动授权 GitHub `Latest`、rollback[\s\S]*Product Phase 4/);
-    } else {
-      assert.doesNotMatch(acceptance, /R5-SC=PASS|R5-PR=PASS|CLOUD-HARD-ACCEPTANCE-PASS/);
-      assert.doesNotMatch(acceptance, /https:\/\/github\.com\/[^\s]+\/releases\/download\//i);
-    }
+  const sourceCandidateComplete = candidate === accepted
+    || roadmap.includes("zero-hash Source/Candidate Cloud 已 PASS");
+  const publishedReleaseComplete = candidate === accepted
+    || roadmap.includes("Published Release Cloud hard acceptance 已 PASS");
+  if (sourceCandidateComplete) {
+    assert.match(acceptance, /Source\/Candidate Cloud hard acceptance 已.*完成/s);
+    assert.match(acceptance, /SOURCE_CANDIDATE_CLOUD_PASS \/ I3_COMPLETE/);
+    assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
   } else {
-    assert.match(acceptance, /R5-SC.*Source\/Candidate.*HOOKS_URL.*HOOKS_SHA256/is);
-    assert.match(acceptance, /R5-PR.*Published Release.*默认.*下载/is);
-    assert.match(acceptance, /两条通道不得共用容器、安装状态或 B～F 结果/);
-    assert.match(acceptance, /Cloud 结论本身不自动授权.*Latest.*rollback/is);
-    assert.match(acceptance, /Latest\/rollback promotion \| PASS[\s\S]*G12[\s\S]*pointer-only postflight/);
-    assert.match(acceptance, /Product Phase 4[\s\S]*Discovery authorization 之前/);
-    assert.match(acceptance, /## 4\. 安装 setup[\s\S]*### 4\.1 Source\/Candidate[\s\S]*published-release-oracles\.test\.js[\s\S]*node --test[\s\S]*cmp "\$ZIP_A" "\$ZIP_B"/);
-    assert.match(acceptance, /V033_DEV_STATIC_CONTRACT=PASS/);
-    assert.match(acceptance, /origin.*upstream_pristine[\s\S]*managed_sha256[\s\S]*pristine_sha256[\s\S]*overlay_ids/s);
-    assert.match(acceptance, /allowed_symbols[\s\S]*extract_messages_after[\s\S]*find_last_planning_update[\s\S]*same_project_path[\s\S]*text_content/s);
-    const publishedSetupStart = acceptance.indexOf("### 4.2 Published Release");
-    const lifecycleStart = acceptance.indexOf("## 5. B：", publishedSetupStart);
-    assert.ok(publishedSetupStart >= 0 && lifecycleStart > publishedSetupStart);
-    const publishedSetup = acceptance.slice(publishedSetupStart, lifecycleStart);
-    assert.match(publishedSetup, /readonly BOOTSTRAP_URL="https:\/\/github\.com\/[^\s"]+\/releases\/download\/v0\.3\.3\/init-cloud-sandbox-v0\.3\.3\.bash"/);
-    assert.match(publishedSetup, /readonly BOOTSTRAP_SHA256="[a-f0-9]{64}"/);
-    assert.match(publishedSetup, /bash "\$BOOTSTRAP" all/);
-    assert.doesNotMatch(publishedSetup, /readonly (?:PUBLICATION_TAG|BOOTSTRAP_NAME|BOOTSTRAP_SIZE|RELEASE_URL)=/);
-    assert.doesNotMatch(publishedSetup, /(?:^|\s)HOOKS_(?:URL|SHA256)=/m);
-    assert.match(acceptance, /## 5\. B：按安装阶段分流 lifecycle[\s\S]*### 5\.1 B-SC：Source\/Candidate post-install Resume[\s\S]*SessionStart source[\s\S]*===BEGIN PLAN DATA===[\s\S]*=== recent progress ===/);
-    assert.match(acceptance, /### 5\.2 B-PR：Published Release Fresh startup[\s\S]*SessionStart source[\s\S]*source 为 startup/);
-    const lifecycleB = acceptance.slice(
-      acceptance.indexOf("## 5. B：按安装阶段分流 lifecycle"),
-      acceptance.indexOf("## 6. C：创建 canonical planning baseline"),
-    );
-    assert.doesNotMatch(lifecycleB, /^SESSION CATCHUP DETECTED:/m);
-    assert.doesNotMatch(lifecycleB, /这是 planning-with-files (?:Source\/Candidate|Published Release)/);
-    assert.doesNotMatch(acceptance, /Phase 4 marker/i);
-    assert.match(acceptance, /## 6\. C：创建 canonical planning baseline[\s\S]*PWF_CLOUD_ACCEPTANCE_CANONICAL_V1/);
-    assert.match(acceptance, /## 7\. D：canonical UserPromptSubmit[\s\S]*===BEGIN PLAN DATA===[\s\S]*=== recent progress ===/);
-    assert.match(acceptance, /### 8\.1 E1：long tail[\s\S]*PWF_CLOUD_ACCEPTANCE_FILLER_01[\s\S]*PWF_CLOUD_ACCEPTANCE_REAL_RESUME_TAIL/);
-    assert.match(acceptance, /### 8\.2 E2：real Resume[\s\S]*Unsynced messages[\s\S]*Catch-up 位于 planning context 之前/);
-    assert.match(acceptance, /## 9\. Post-resume doctor、inventory、policy 与 residue[\s\S]*### 9\.1 Source\/Candidate[\s\S]*INSTALLED_RUNTIME_FILES=10[\s\S]*UPSTREAM_PRISTINE_FILES=4[\s\S]*OWNED_CATCHUP_HELPERS=4[\s\S]*GLOBAL_SKILL_PRISTINE=PASS/s);
-    assert.match(acceptance, /### 10\.1 R5-SC Source\/Candidate[\s\S]*R5-SC=PASS/);
-    assert.match(acceptance, /### 10\.2 R5-PR Published Release[\s\S]*R5-PR=PASS[\s\S]*CLOUD-HARD-ACCEPTANCE-PASS/);
-    assert.doesNotMatch(acceptance, /R5_PR_IN_PROGRESS|final Cloud hard acceptance \| PENDING/);
-    if (roadmap.includes("Cloud hard acceptance PASS")) {
-      assert.match(acceptance, /CLOUD-HARD-ACCEPTANCE-PASS/);
-      assert.doesNotMatch(acceptance, /PENDING_R5_SC|PENDING_R5_PR|PENDING_R5/);
-    }
+    assert.match(acceptance, /Source\/Candidate.*Cloud hard acceptance 尚未开始/s);
+    assert.doesNotMatch(acceptance, /\b[a-f0-9]{64}\b/i);
+  }
+  assert.match(acceptance, /64 位 zero hash.*fail closed/s);
+  assert.match(acceptance, /Cloud hard acceptance template/);
+  assert.match(acceptance, /不授予 Product Phase 4/);
+  assert.match(acceptance, /exact current id\/source inventory guard/);
+  assert.match(acceptance, /本次验收增量没有改写 B～E 黑盒提示词/);
+  assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-setup/);
+  assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-deep-check/);
+  assert.doesNotMatch(acceptance, /## 1\. 执行输入与边界|维护者执行顺序|回传证据|NOT EXECUTED|NOT AUTHORIZED|PENDING|Next Step|当前状态/);
 
-    const publishedFStart = acceptance.indexOf("### 9.2 Published Release");
-    const evidenceStart = acceptance.indexOf("## 10.", publishedFStart);
-    assert.ok(publishedFStart >= 0 && evidenceStart > publishedFStart);
-    const publishedF = acceptance.slice(publishedFStart, evidenceStart);
-    assert.match(publishedF, /readonly ZIP_URL="https:\/\/github\.com\/[^\s"]+\/releases\/download\/v0\.3\.3\/pwf-codex-cloud-hooks-v0\.3\.3\.zip"/);
-    assert.match(publishedF, /readonly ZIP_SHA256="[a-f0-9]{64}"/);
-    assert.match(publishedF, /tools\/build_release\.py.*check/is);
-    assert.match(publishedF, /tools\/import_upstream_runtime\.py.*check/is);
-    assert.match(publishedF, /node "\$PACKAGE_ROOT\/install\.js" doctor/);
-    assert.match(publishedF, /PACKAGE_VERSION=.*package\.json/);
-    assert.match(publishedF, /INSTALLED_RUNTIME_FILES=" \+ str\(len\(actual\)\)/);
-    assert.match(publishedF, /UPSTREAM_PRISTINE_FILES=" \+ str\(len\(bundle\["files"\]\)\)/);
-    assert.match(publishedF, /SNAPSHOT_LEFTOVERS=0/);
-    assert.doesNotMatch(publishedF, /git rev-parse|workspace.*install\.js/is);
-    assert.doesNotMatch(publishedF, /__[A-Z0-9_]+__/);
-    assert.doesNotMatch(publishedF, /readonly (?:PUBLICATION_TAG|PACKAGE_VERSION|ZIP_NAME|ZIP_SIZE)=/);
+  if (publishedReleaseComplete) {
+    const publishedRow = provenance.split(/\r?\n/)
+      .find(line => line.startsWith(`| \`${candidate}\` |`));
+    assert.ok(publishedRow, "published candidate lacks a provenance ledger row");
+    const publishedSource = publishedRow.match(/\[source `([a-f0-9]{40})`\]/);
+    assert.ok(publishedSource, "published candidate provenance lacks an exact source");
+    const bootstrapName = `init-cloud-sandbox-${candidate}.bash`;
+    const zipName = `pwf-codex-cloud-hooks-${candidate}.zip`;
+    const publishedHashes = [...new Set(publishedRow.match(/\b[a-f0-9]{64}\b/g) || [])];
+    assert.equal(publishedHashes.length, 2, "published candidate must freeze ZIP and bootstrap SHA-256");
+    const installedPrefix = "hooks/planning-with-files/";
+    const expectedInstalled = [
+      "THIRD_PARTY_NOTICES.md",
+      "hook_adapter.py",
+      ...runtimeBundle.local_files.map(item => item.installed_path.slice(installedPrefix.length)),
+      ...runtimeBundle.installed_contracts.map(item => item.installed_path.slice(installedPrefix.length)),
+      ...runtimeBundle.files.map(item => item.installed_path.slice(installedPrefix.length)),
+    ];
+    assert.match(acceptance, /## 3\. Published Release 完成证据/);
+    assert.match(acceptance, new RegExp(`tag \`${escapedCandidate}\`；source \`${publishedSource[1]}\``));
+    for (const identity of [bootstrapName, zipName, ...publishedHashes]) {
+      assert.match(acceptance, new RegExp(identity.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    }
+    assert.match(acceptance, new RegExp(`PUBLIC_PACKAGE_IDENTITY=${escapedCandidate.slice(1)}`));
+    assert.match(acceptance, new RegExp(`${artifact.entries.length} entries`));
+    assert.match(acceptance, new RegExp(`exact ${expectedInstalled.length} 项`));
+    for (const installedPath of expectedInstalled) assert.match(acceptance,
+      new RegExp(installedPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(acceptance, new RegExp(`${runtimeBundle.files.length} 个 upstream runtime 均保持 pristine`));
+    for (const upstream of runtimeBundle.files) assert.match(acceptance, new RegExp(upstream.pristine_sha256));
+    assert.match(acceptance, /MANAGED_POLICY=ADAPTER_ONLY/);
+    assert.match(acceptance, /SNAPSHOT_LEFTOVERS=0/);
+    assert.match(acceptance, /R5-SC=PASS[\s\S]*R5-PR=PASS[\s\S]*CLOUD-HARD-ACCEPTANCE-PASS/);
+    assert.match(acceptance, /不自动授权 GitHub `Latest`、rollback[\s\S]*Product Phase 4/);
+  } else {
+    assert.doesNotMatch(acceptance, /R5-SC=PASS|R5-PR=PASS|CLOUD-HARD-ACCEPTANCE-PASS/);
+    assert.doesNotMatch(acceptance, /https:\/\/github\.com\/[^\s]+\/releases\/download\//i);
+  }
+
+  if (candidate === accepted) {
+    assert.match(acceptance, /## 5\. Latest promotion 与 postflight/);
+    assert.match(acceptance, /isLatest=true[\s\S]*isPrerelease=false[\s\S]*isDraft=false/);
+    assert.match(acceptance, /POINTER_ONLY_PROMOTION_POSTFLIGHT=PASS/);
+    assert.match(acceptance, new RegExp(`${escapedCandidate} 成为 accepted/Latest`));
+    assert.match(acceptance, new RegExp(`${immediateFallback.replaceAll(".", "\\.")} 成为 immediate[\\s\\S]*fallback`));
+    assert.match(acceptance, /Product Phase 4 仍未授权/);
   }
 });
 

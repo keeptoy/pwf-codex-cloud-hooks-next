@@ -12,25 +12,41 @@ const root = path.resolve(__dirname, "..");
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 const pristineSkill = path.join(root, "tests", "fixtures", "planning-with-files");
 const sha256 = file => crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
+const roadmap = fs.readFileSync(path.join(root, "ROADMAP.md"), "utf8");
+const provenance = fs.readFileSync(path.join(root, "BASELINE_PROVENANCE.md"), "utf8");
+
+function roadmapRole(pattern, description) {
+  const match = roadmap.match(pattern);
+  assert.ok(match, `ROADMAP lacks a parseable ${description}`);
+  return match[1];
+}
+
+function publishedRole(role, version) {
+  const row = provenance.split(/\r?\n/).find(line => line.startsWith(`| \`${version}\` |`));
+  assert.ok(row, `provenance lacks ${role} ${version}`);
+  const commit = row.match(/\[source `([a-f0-9]{40})`\]/);
+  const entryCount = row.match(/；(\d+) entries；/);
+  const hashes = [...row.matchAll(/SHA-256 `([a-f0-9]{64})`/g)].map(match => match[1]);
+  assert.ok(commit, `${version} provenance lacks source commit`);
+  assert.ok(entryCount, `${version} provenance lacks ZIP entry count`);
+  assert.equal(hashes.length, 2, `${version} provenance must freeze ZIP and bootstrap SHA-256`);
+  return Object.freeze({
+    role,
+    version,
+    commit: commit[1],
+    entryCount: Number(entryCount[1]),
+    zipSha256: hashes[0],
+    bootstrapSha256: hashes[1],
+    tagRequired: true,
+  });
+}
+
+const acceptedVersion = roadmapRole(/^\| 当前已接受版本 \| `(v[^`]+)`/m, "accepted role");
+const fallbackVersion = roadmapRole(/^\| 当前直接回退版本 \| immutable `(v[^`]+)` immediate fallback/m,
+  "immediate fallback role");
 const publicationRoles = Object.freeze([
-  Object.freeze({
-    role: "accepted",
-    version: "v0.3.3",
-    commit: "a1b9f4548e3b6e071fee611270365c8ecf3f8d13",
-    entryCount: 21,
-    zipSha256: "2b2dca5c5894a2297a6f2ccc5fb190878c3c920b71148719a4873326b4ccb352",
-    bootstrapSha256: "236e364bde8397b04c9d7ebfa121fa96963055d77b56e6299e6b9c9aad6c887e",
-    tagRequired: true,
-  }),
-  Object.freeze({
-    role: "immediate-fallback",
-    version: "v0.3.2",
-    commit: "c68a53bdeab7c38badcfb4e2a733ddd851e498e4",
-    entryCount: 23,
-    zipSha256: "b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081",
-    bootstrapSha256: "aa2c1fd64bfc8ee3804d5f4bf39f7816a2ca9ad9a96949336ec94a6c20f8f77c",
-    tagRequired: true,
-  }),
+  publishedRole("accepted", acceptedVersion),
+  publishedRole("immediate-fallback", fallbackVersion),
 ]);
 
 function buildFromSource(archive, contractPath, builderPath, cwd) {
@@ -206,14 +222,16 @@ for (const release of publicationRoles) {
   });
 }
 
-test("v0.3.3 upgrade and rollback keep the published managed state recoverable", async t => {
-  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-v033-roundtrip-"));
+test(`${acceptedVersion} accepted and ${fallbackVersion} fallback keep managed state recoverable`, async t => {
+  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-published-roundtrip-"));
   try {
-    const accepted = publicationRoles.find(release => release.version === "v0.3.3");
+    const accepted = publicationRoles.find(release => release.role === "accepted");
+    const fallback = publicationRoles.find(release => release.role === "immediate-fallback");
     const acceptedPackage = buildPublishedPackage(workspace, accepted);
+    const fallbackPackage = buildPublishedPackage(workspace, fallback);
     const currentPackage = buildCurrentPackage(workspace);
 
-    await t.test("a candidate with bundle drift cannot modify or back up the v0.3.3 installation", () => {
+    await t.test("current-source bundle drift cannot modify or back up the accepted installation", () => {
       const home = installHome(workspace, "invalid-upgrade-home");
       let result = runPackageInstaller(acceptedPackage, home, "install");
       assert.equal(result.status, 0, result.stderr);
@@ -228,7 +246,7 @@ test("v0.3.3 upgrade and rollback keep the published managed state recoverable",
         result = runPackageInstaller(currentPackage, home, "install");
         assert.equal(result.status, 1, "candidate accepted a runtime bundle that no longer matches its manifest SHA");
         assert.match(result.stderr, /runtime bundle SHA-256 mismatch/);
-        assert.deepEqual(managedState(home), before, "rejected candidate upgrade changed the v0.3.3 managed state");
+        assert.deepEqual(managedState(home), before, "rejected current source changed the accepted managed state");
       } finally {
         fs.writeFileSync(candidateBundle, originalBundle);
       }
@@ -237,23 +255,30 @@ test("v0.3.3 upgrade and rollback keep the published managed state recoverable",
       assert.equal(result.status, 0, result.stderr);
     });
 
-    await t.test("a valid candidate can replace v0.3.3 and the immutable v0.3.3 installer can take ownership back", () => {
+    await t.test("accepted and immediate fallback installers can take ownership back in both directions", () => {
       const home = installHome(workspace, "valid-roundtrip-home");
-      let result = runPackageInstaller(acceptedPackage, home, "install");
+      let result = runPackageInstaller(fallbackPackage, home, "install");
       assert.equal(result.status, 0, result.stderr);
-      result = runPackageInstaller(currentPackage, home, "install");
+      result = runPackageInstaller(acceptedPackage, home, "install");
       assert.equal(result.status, 0, result.stderr);
-      result = runPackageInstaller(currentPackage, home, "doctor");
+      result = runPackageInstaller(acceptedPackage, home, "doctor");
       assert.equal(result.status, 0, result.stderr);
       let manifest = JSON.parse(fs.readFileSync(path.join(home, "hooks", "planning-with-files", "installed-manifest.json"), "utf8"));
-      assert.equal(manifest.installer_version, "0.3.4");
+      assert.equal(manifest.installer_version, accepted.version.slice(1));
+
+      result = runPackageInstaller(fallbackPackage, home, "install");
+      assert.equal(result.status, 0, result.stderr);
+      result = runPackageInstaller(fallbackPackage, home, "doctor");
+      assert.equal(result.status, 0, result.stderr);
+      manifest = JSON.parse(fs.readFileSync(path.join(home, "hooks", "planning-with-files", "installed-manifest.json"), "utf8"));
+      assert.equal(manifest.installer_version, fallback.version.slice(1));
 
       result = runPackageInstaller(acceptedPackage, home, "install");
       assert.equal(result.status, 0, result.stderr);
       result = runPackageInstaller(acceptedPackage, home, "doctor");
       assert.equal(result.status, 0, result.stderr);
       manifest = JSON.parse(fs.readFileSync(path.join(home, "hooks", "planning-with-files", "installed-manifest.json"), "utf8"));
-      assert.equal(manifest.installer_version, "0.3.3");
+      assert.equal(manifest.installer_version, accepted.version.slice(1));
     });
   } finally {
     fs.rmSync(workspace, { recursive: true, force: true });

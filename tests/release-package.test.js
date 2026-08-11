@@ -92,7 +92,11 @@ test("current v0.3.4 sealed ZIP is deterministic, self-contained, and pinned by 
     assert.equal(hooksSha[1], firstResult.sha256);
     assert.notEqual(hooksSha[1], "0".repeat(64));
     const roadmap = fs.readFileSync(path.join(root, "ROADMAP.md"), "utf8");
-    assert.match(roadmap, /v0\.3\.4.*published prerelease candidate.*zero-hash Source\/Candidate.*immutable publication.*PASS/is);
+    assert.match(roadmap, /v0\.3\.4.*accepted stable/is);
+    assert.match(roadmap, /Source\/Candidate/is);
+    assert.match(roadmap, /zero-hash candidate/is);
+    assert.match(roadmap, /immutable publication/is);
+    assert.match(roadmap, /pointer-only promotion.*PASS/is);
     assert.match(roadmap, /历史 programme annotation.*exact current inventory guard/is);
     assert.match(roadmap, /Product Phase 4.*未授权/is);
 
