@@ -145,3 +145,36 @@
   current-tree 的 v0.3.4 bootstrap/acceptance；历史证据改由 immutable source URL/provenance 恢复。
 - C1 closure focused repository/publication/Release 16/16 通过；完整 suite 为 124 tests / 112 pass / 0 fail /
   12 honest Windows skips。角色轮转只改 governance/acceptance/provenance 文件，不改变 ZIP/sealed runtime bytes。
+- 已创建本地 C1 closure commit `e8ee0518ea52361f995b28ff01fa53614264d9ee`
+  （`docs: accept v0.3.5 release baseline`）；工作树干净，未 push。C1 完成，开始 C2.0 read-only consumer inventory。
+- C2.0 首轮读取 manifest、runtime bundle、Release artifact、importer、installer 与 builder。已确认 bundle tombstone
+  是双 consumer schema/投影，manifest `skill_version` 无 consumer但顶层也不 exact，Release mode 由 builder
+  `EXECUTABLE_PATHS` 独占且 contract 无 mode；详细 producer/consumer 分类已写入 findings，尚未修改任何 contract/code。
+## 2026-08-11 C2 Discovery：消费链与历史证据
+
+- 只读检查 `runtime-bundle-v1`、`upstream-manifest`、`release-artifact-v1` 的 producer、validators、
+  production consumers、tests 与 installed-state 生命周期。
+- 确认 bundle 的 `managed_sha256` 当前参与 importer/install 投影与 drift 检查，不能当作普通无 consumer
+  字段直接删除；`overlay_ids` 是 exact empty tombstone。
+- 确认 manifest `skill_version` 无 consumer，且 top-level 尚无 exact-key validation。
+- 确认 Release mode 仍由 builder `EXECUTABLE_PATHS` 提供；contract 中多项 metadata 没有 production
+  owner，其中 `checksum_workflow` 仅被测试固定。
+- 确认 installed manifest 嵌入完整 UPSTREAM，contract 旋转必须验证跨版本 takeover/rollback。
+- C2 仍为 Discovery-only；未修改 machine contract、production、Release identity 或 Phase 4 source。
+- 复核 overlay 退役提交 `60c9b11` 与 inventory authority 提交 `59395e7`：当前 tombstone 是有意的
+  fail-closed 迁移结果；未来 v2 可以改写安全断言，但不能丢掉拒绝 overlay 复活的行为。
+- 对照 Phase 3.8/3.9.1 冻结 C2 与 Phase 4 的边界：只研究 phase-neutral normalization；后续可能作为
+  `0.4.0-alpha.*` 未激活 foundation gate，但最终落位要等 Phase 4 Discovery 联合裁决。
+- 建立字段级初步裁决表：bundle 删除双 hash/空 overlay tombstone但保留 v2 反复活 guard；manifest
+  删除 `skill_version` 并补顶层 exact schema；Release v2 以 entry mode 取代 builder 第二 authority，
+  把纯说明 metadata 迁出 machine JSON；Phase-4-coupled metadata 延迟。
+- 冻结建议 schema 形状：bundle v2、manifest schema 4、Release artifact v2 必须同一原子 transaction；
+  v1 文件不静默变义，builder build/check 共用 contract mode，旧 key/path 在写入前 fail closed。
+- 冻结兼容/rollback 与验证矩阵：新旧 package 各读自己的 schema，published oracle 从各 source manifest
+  动态发现 contract path，future gate 必须验证 v0.3.5 与 candidate 双向 takeover、pre-write tamper、
+  deterministic ZIP、Linux/Cloud Fresh/Resume 和独立 Release closure。
+- C2 Discovery 结论为 `CONDITIONAL_GO`：首选 Phase 4 Discovery 后放入 `0.4.0-alpha.*` 的独立 inactive
+  foundation gate；不建议再发纯 normalization 的稳定 0.3.x patch。当前停在 planning-only closure。
+- C2 closure validation：`git diff --check` PASS；repository-boundary focused test 在受限 Windows sandbox
+  首次因 `spawn EPERM` 未启动，在已授权非受限上下文原命令重跑 8/8 PASS。未运行 production/Release/Cloud
+  gate，因为本轮仅修改 `.planning` 且明确无 implementation 权限。

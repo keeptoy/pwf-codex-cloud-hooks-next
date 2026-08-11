@@ -397,3 +397,252 @@
   current tree，但 immutable tag/source/资产/acceptance 继续由 provenance 与 publication oracle 恢复。
 - focused repository/publication/Release 16/16 与完整 suite 124/112/0/12 全绿；publication oracle 已证明
   v0.3.5/v0.3.4 installers 双向接管和 rollback recoverability。C1 没有修改任何 ZIP 输入或 sealed asset。
+
+## C2.0 accepted-tree consumer inventory — first pass
+
+### Runtime bundle
+
+- `contract_id`、顶层/section exact keys、`origin`、`mode`、hash、path、ID、dependency graph 都被 importer 与 installer
+  双 consumer 直接强校验；它们不是 prose metadata。`origin=upstream_pristine` 与
+  `origin=local_managed_runtime` 仍承担 trust classification，应保留。
+- upstream `managed_sha256` 不只是 no-overlay sentinel：两个 consumer 都先要求它等于 `pristine_sha256`，随后又把它
+  作为 import destination、installed projection 与 disk drift 的 expected hash。移除时必须把这些 operational reads
+  全部原子改为 `pristine_sha256`，并旋转 bundle schema/raw SHA/manifest/Release identity。
+- `overlay_ids=[]` 只承担显式 no-overlay sentinel：两个 consumer 都要求 exact empty array，但没有下游 projection。
+  在 exact-key schema 与 `origin=upstream_pristine` 已存在的前提下，删除字段后旧 overlay key 回流会作为 unknown key
+  fail closed；保留它的价值主要是显式审计可读性，不是运行依赖。
+- `language` 和 `host_dependencies` 对 upstream/local runtime 都只做非空字符串/字符串数组形状校验；不驱动 bootstrap、
+  doctor、installer prerequisite、dispatch 或 dependency resolution。它们当前属于 machine-readable declaration，尚无
+  operational owner；但 Phase 4 新脚本准入可能需要它们，因此初步 disposition 是 `RETAIN_WITH_OWNER`，不是立即删除。
+- `installed_contracts` 的 path/mode/hash 被 installer 真正用于安装与 drift，importer 又把它纳入全 bundle strict
+  validation；是否安装 schema 仍是 Phase-4-coupled 策略，不进入 C2 neutral 删除集合。
+
+### Upstream manifest
+
+- `managed_runtime`、contracts/importer/license-provenance 子树已有 exact-key validation；bundle raw SHA 在 parse 前校验，
+  manifest 与 bundle 的 repository/release/commit/archive/license 交叉核验是现存 integrity edge，不是 inventory mirror。
+- manifest 顶层没有 exact-key validation。`skill_version` 全仓无 consumer；`release=v3.8.2` 已承担 pinned version，
+  因而 `skill_version` 是可删字段，但必须与顶层 exact-key schema 同一 transaction 落地，避免“删一字段、继续接受任意
+  unknown metadata”。
+- `required_skill_files` 被 installer 的 global pristine Skill admission 真正消费，bootstrap tests 也验证该投影；必须保留。
+
+### Release artifact
+
+- builder 真正消费 `schema_version`、package name/version、archive root、ordering/timestamp/compression、entry path、
+  `state=present`、external path exclusion 与 excluded prefixes；但没有顶层、entry 或 external exact-key validation。
+- `contract_id`、entry `origin`、external `reason` 完全不被 builder读取；`checksum_workflow` 仅由 package test 逐项冻结。
+  `state` 当前只能取 `present`，因此与“entry 出现在列表中”重复，除非未来需要 staged/optional entry lifecycle。
+- ZIP mode 完全来自 builder 内 `EXECUTABLE_PATHS`，contract entry 不携带 mode。build 与 check 共用同一第二 authority，
+  所以二者同时绿色也不能证明 contract 声明了 mode；这正是 C2 中安全价值最高的 Release-v2 修复点。
+- 初步方向：Release v2 必须先补 exact top-level/entry/external schema，再把每项 `mode` 设为唯一 authority；
+  `contract_id` 应被严格消费，`origin/reason/checksum_workflow` 则需在 `STRICTLY_CONSUME` 与 `MOVE_TO_DOCS` 间逐项决策。
+## C2 Discovery：测试所有权、安装状态兼容与字段历史（2026-08-11）
+
+### 测试所有权
+
+- `runtime-bundle-v1` 的 overlay 退役语义并非只剩文档：importer 负向测试会直接拒绝非
+  `upstream_pristine` origin、`managed_sha256 != pristine_sha256` 和非空 `overlay_ids`；
+  `contracts.test.js` 还固定了 tombstone 与 inventory 语义。installer 现有 invalid-bundle matrix
+  主要覆盖 raw SHA、schema、路径、重复项、mode/hash 和未知 dependency；它没有分别命名三个
+  overlay tombstone case，但 exact-key/shape 校验仍会拒绝缺失或未知字段。
+- `release-artifact-v1` 中 `checksum_workflow` 的中文流程文本只被
+  `release-package.test.js` 精确断言，没有 production consumer。这证明它当前是“测试拥有的说明文字”，
+  不是可执行 Release contract。
+- release entry 的 `origin`、`state`，external asset 的 `reason` 也未被 builder/checker 消费；
+  当前测试只证明这些字段存在或 contract 整体可读，不能证明它们参与了 ZIP 判定。
+
+### installed-manifest 生命周期与跨版本兼容
+
+- installed manifest 当前为 schema 3，保存整个 `UPSTREAM` 对象、精确 `installer_version`、adapter hash、
+  runtime snapshot、requirements hashes 与 events。doctor 会要求 schema/owner/installer version/UPSTREAM
+  canonical equality；因此 manifest 或 bundle contract 旋转会反映到安装状态，而不是对既有安装透明。
+- 当前发布 oracle 已覆盖 v0.3.4 与 v0.3.5 双向 takeover。正常 `install` 可以由另一受信发布重新写入其
+  自己的 installed manifest；但旧 installer 对新版本 manifest 的 doctor 结果应是版本不匹配 blocker，
+  不应被“repair”伪装为同版本修复。
+- 删除 `skill_version`、旋转 bundle path/SHA 或改变嵌套 manifest 会改变 canonical `UPSTREAM`。
+  即使 installed-manifest schema 本身不变，也必须把 accepted -> candidate、candidate -> accepted 的
+  takeover/rollback oracle 纳入独立 contract gate。
+
+### 历史来源
+
+- `overlay_ids`、`managed_sha256` 和相关 release metadata 都可追溯到初始 contract 基线
+  `3234e4e`；overlay 退役提交 `60c9b11` 选择把字段归一化为 pristine equality/empty sentinel，
+  而不是删除 schema。这说明它们是有意保留的退役 tombstone，不是偶然死字段。
+- `release-artifact-v1` 的 `state`、entry `origin`、external `reason`、`checksum_workflow`，以及 builder
+  的 `EXECUTABLE_PATHS`，同样来自初始 Release 设计；mode 双 authority 是初版建模遗留，不是近期回归。
+- `skill_version` 从初始 manifest 基线起存在；当前代码只验证其类型，没有 runtime、installer 或
+  Release consumer。
+
+### overlay 退役提交复核
+
+- `60c9b11` 同一个原子提交删除了 compatibility overlay ledger、patcher、installer 安装项与 importer
+  patch 执行链，同时把原 overlay target 改为 `upstream_pristine`、令 managed/pristine hash 相等并清空
+  `overlay_ids`。因此当前三个 tombstone 是当时 fail-closed 退役设计的一部分。
+- 同一提交新增 importer 负向测试，明确把非 pristine origin、不相等 managed hash、非空 overlay IDs
+  都定义为错误。这些断言的安全目标应保留；C2 若删除字段，必须把目标重写为“v2 exact-key schema
+  拒绝任何旧 overlay 字段 + 所有 runtime 字节只按 pristine hash 验证”，不能简单删除测试。
+- `59395e7` 是 importer/installer 直接消费 bundle inventory、压平 upstream manifest 的 Phase 3.8 I2
+  落地提交；这进一步确认 inventory authority 已完成迁移，C2 不应重新把 manifest 或 builder 变成第二份
+  runtime source authority。
+
+### 与既有路线的交界
+
+- Phase 3.8 已冻结：只要 runtime 集合、Host ABI、trusted graph、dispatch 和行为不变，bundle authority
+  的 contract 整理不与 Phase 4～9 功能主线冲突；但新 runtime 的准入仍必须回到对应 Product Phase gate。
+- Phase 3.9.1 已把 `language`、`host_dependencies`、installed/source-only schemas 等识别为可能服务后续
+  Product Phase 的预埋边界。C2 不应为追求“JSON 更小”提前删除它们。
+- 因此 C2 必须拆成 phase-neutral contract normalization 与 Phase-4-coupled admission/ABI 两组；前者
+  可以设计为 inactive foundation，后者只能留给 Phase 4 Discovery 决定。
+
+## C2 字段决策表（accepted v0.3.5 tree）
+
+| Contract / field | 当前 producer / validator | production consumer | 初步裁决 | 理由与未来 owner |
+|---|---|---|---|---|
+| bundle `contract_id` | JSON + importer/installer exact identity | 两个 loader 的 schema admission | `STRICTLY_CONSUME` | 保留；它与 schema_version 共同阻止错误 contract 被当作 bundle |
+| bundle upstream `origin` | JSON + 两个 loader exact enum | trust classification | `STRICTLY_CONSUME` | 保留 `upstream_pristine`；这是 supply-chain 声明，不是说明文字 |
+| bundle upstream `managed_sha256` | JSON；两个 loader 校验等于 pristine | importer output/destination drift、installer install projection | `REMOVE_IN_V2` | 迁移所有 operational reads 到 `pristine_sha256` 后原子删除；不能先删 JSON |
+| bundle upstream `overlay_ids` | JSON；两个 loader要求 exact empty | 无投影 consumer | `REMOVE_IN_V2` | v2 exact keys 必须反向拒绝该旧 key，保持 overlay 不可复活的安全意图 |
+| bundle `language` | JSON；两个 loader只检查非空 | 无 capability/dependency consumer | `RETAIN_WITH_OWNER` | 暂由 runtime admission metadata 持有；Phase 4 Discovery 决定是否成为准入条件 |
+| bundle `host_dependencies` | JSON；两个 loader只检查 string list | 无 prerequisite/doctor/dispatch consumer | `RETAIN_WITH_OWNER` | 同上；在 Phase 4 之前既不删除，也不假装当前已执行 dependency resolution |
+| bundle `installed_contracts` | JSON + exact validator | installer install/drift projection | `KEEP` | 是真实安装 inventory；schema install asymmetry交由 Phase 4 Discovery |
+| manifest top-level keys | JSON；字段分散校验 | importer/installer provenance 与 Skill admission | `ADD_EXACT_SCHEMA` | schema 升级时一次性拒绝 unknown/missing top-level key |
+| manifest `skill_version` | 仅 JSON；顶层 loader 当前忽略 | 无 | `REMOVE_IN_NEW_SCHEMA` | 与 `release=v3.8.2` 重复；删除必须与顶层 exact-key validation 同一 transaction |
+| manifest `required_skill_files` | JSON + hash/shape validation | installer pristine global Skill admission | `KEEP` | 是实际 trust edge，不是重复 runtime inventory |
+| manifest bundle path/SHA | JSON + raw-byte verification | importer/installer bundle acquire | `KEEP` | 是到唯一 runtime inventory authority 的 integrity edge |
+| manifest/bundle provenance cross-check | 两个 loader | repository/release/commit/archive/license identity | `KEEP` | 防止被正确 hash 的错误 bundle 与 manifest 组合 |
+| Release `contract_id` | JSON；builder 当前忽略 | 无 | `STRICTLY_CONSUME_IN_V2` | v2 loader 必须校验 identity，禁止错误 JSON 被当作 Release contract |
+| Release entry `mode` | 当前不存在 | mode 来自 builder `EXECUTABLE_PATHS` | `ADD_AS_SOLE_AUTHORITY` | 每个 entry 必填 `0644`/`0755`；build/check 均只读 contract |
+| Release entry `state` | JSON；builder只接受 `present` | 无状态生命周期 | `REMOVE_IN_V2` | exact ZIP allowlist 本身就表示 present；未来 staged/optional 状态应另建 lifecycle contract |
+| Release entry `origin` | JSON；builder忽略 | 无 | `MOVE_TO_DOCS` | 自报分类不影响所取字节，也不是 runtime trust authority；避免在 Release contract 复制 provenance taxonomy |
+| external asset `reason` | JSON；builder忽略 | 无 | `MOVE_TO_DOCS` | 外置原因属于 Release runbook；machine contract只需 exact path 与排除断言 |
+| `checksum_workflow` | JSON；prose test精确锁定 | 无 | `MOVE_TO_DOCS` | 流程由 README/Release rules/acceptance 承担，不把英文步骤数组伪装成 executable contract |
+| `excluded_prefixes` | JSON + builder/checker | ZIP negative boundary | `KEEP` | 是实际 fail-closed exclusion guard，v2 中 exact validate |
+
+这里的 `REMOVE_IN_V2` 不是当前授权，而是未来 schema transaction 的设计输入。`language`、
+`host_dependencies` 和 schema 安装策略是明确延迟，不计入“C2 清理完成”的删除数字。
+
+## C2 建议的 v2 contract 形状
+
+### runtime bundle v2
+
+- 新 identity/path 应为 `PWF_MANAGED_RUNTIME_BUNDLE_V2` / `contracts/runtime-bundle-v2.json`，不在名为
+  v1 的文件中静默改 schema。
+- upstream file exact keys 删除 `managed_sha256`、`overlay_ids`；保留 `origin=upstream_pristine`、
+  `pristine_sha256`、mode、paths、dependencies、language/host_dependencies。
+- importer 的 archive byte check、import expected bytes、destination drift，以及 installer 的 source projection
+  全部改为只读 `pristine_sha256`。v1 key 回流因 unknown key 在任何 acquire/write 前失败。
+- local files 与 installed contracts 的 shape、runtime 数量、package/installed paths、mode 和字节都不变。
+
+### upstream manifest schema 4
+
+- 顶层 exact keys 固定为 `schema_version/upstream/release/commit/release_archive_url/
+  release_archive_sha256/required_skill_files/managed_runtime`，删除 `skill_version`。
+- `managed_runtime.schema_version=2` 可以保持不变：其嵌套 shape 未改变，只更新 runtime bundle / Release
+  contract 的 v2 path + SHA，以及 importer SHA。
+- importer 和 installer 必须在读取任何 provenance 或 integrity reference 前验证顶层 exact keys 与 schema 4。
+  不提供 v3 fallback；旧包仍使用自己的 immutable loader 和 manifest。
+- 当前代码证据是：两个 loader 已对 `managed_runtime`、contracts、integrity references 和 license provenance
+  做 exact-key validation，但都直接从 manifest 取 `managed_runtime`，没有先验证 manifest 顶层 key set；
+  因而 schema 4 的改动落点明确，不能只补 repository test。
+
+### release artifact v2
+
+- 新 identity/path 应为 `PWF_RELEASE_ARTIFACT_V2` / `contracts/release-artifact-v2.json`。
+- top-level exact keys：`schema_version`、`contract_id`、package identity、archive root、ordering、timestamp、
+  compression、`entries`、`external_release_assets`、`excluded_prefixes`。
+- entry exact keys 只保留 `path/mode`；external asset exact keys 只保留 `path`。mode 仅允许 `0644/0755`。
+  paths、external paths、excluded prefixes 都应验证类型、唯一性、安全相对路径和相互排斥。
+- builder loader 返回按 UTF-8 path 排序的 `{path, mode}`，build/check 共用该映射；删除
+  `EXECUTABLE_PATHS`。`contract_id` 必须在读取 entries 前校验。
+- 当前 builder 的 build 与 check 虽然一致，却一致地依赖同一份源码常量；这是“共享第二 authority”，
+  不是 contract 已接管 mode 的证据。v2 验证需静态禁止该常量回流，并用 contract mutation 证明 mode 由
+  entry 驱动。
+- `state/origin/reason/checksum_workflow` 不进入 v2。Release 流程与外置原因由 README Release rules、
+  acceptance template 和版本 acceptance 负责；runtime provenance 仍由 bundle/manifest 负责。
+
+这三个变更是一个最小原子 transaction：bundle path/SHA 和 importer SHA 进入 manifest，manifest 与两个
+v2 contract 又都进入 Release entries；拆开发布会制造旧 path、旧 hash 或第二 authority 的中间状态。
+
+## C2 精确影响图
+
+### 未来 implementation transaction 必改
+
+- machine/source：`contracts/runtime-bundle-v2.json`、`contracts/release-artifact-v2.json`、
+  `upstream-manifest.json`、`tools/import_upstream_runtime.py`、`tools/build_release.py`、`install.js`；当前
+  v1 contract 文件在同一 candidate tree 退役，不并存两套 active schema。
+- nearest tests：`contracts.test.js`、`import-runtime.test.js`、`installer.test.js`、
+  `release-package.test.js`、`published-release-oracles.test.js`、`repository-boundary.test.js`、
+  `architecture-contracts.test.js`；bootstrap test 通过外部资产与 manifest 间接受影响。
+- stable design/governance：README、ARCHITECTURE、DESIGN、AGENTS 与 acceptance template 只更新当前
+  contract 名称、single-authority 和 gate 规则；历史 phase 文档及既有 provenance rows 不改写。
+- candidate/Release identity：package version、ROADMAP/CHANGELOG、candidate bootstrap、版本 acceptance、
+  manifest 中 bundle/Release/importer hashes、Release ZIP 与外部 bootstrap hashes 全部随新 candidate
+  重新轮转。任何 v0.3.5 tag/asset/acceptance 字节保持不可变。
+
+### 明确不改
+
+- `hooks/hook_adapter.py`、`runtime/owned-*.py`、四个 `runtime/upstream/*`、Host request/result schemas、
+  installed plan-context schemas 的内容与 runtime dispatch 不变。
+- release entries 数量可能因 v1 path 替换为 v2 path而保持不变；这不是 gate，不应冻结数字。installed
+  runtime 文件集合、hash、mode 和 managed policy 必须逐项完全相同。
+
+### 历史 oracle 的版本发现
+
+- `published-release-oracles.test.js` 当前为 accepted/fallback source 硬编码两个 v1 contract path。这在
+  v0.3.5 窗口内成立，但 current tree 切到 v2 后，不能把历史 package 强行按 v2 读取，也不能继续把 current
+  candidate 写死为 v1。
+- future gate 应让每个 source snapshot 从自己的 `upstream-manifest.json` 读取
+  `managed_runtime.contracts.release_artifact.path` 与 `runtime_bundle.path`；随后校验 path 安全性和 anchored SHA。
+  这样 v0.3.5/v0.3.4 仍用各自 v1 builder/contract，new candidate 用自己的 v2，oracle 才真正跨 schema。
+- README 已完整保存外部 bootstrap、双构建、seal、publication、重新下载与 SHA 顺序；删除 machine JSON
+  的 `checksum_workflow` 不会删除 Release 流程 authority。
+
+## C2 compatibility / rollback contract
+
+1. **Source/package compatibility**：candidate package 只接受 schema 4 manifest、bundle v2、Release v2；
+   v0.3.5 package 继续只接受其 immutable v3/v1/v1 组合。没有同一 loader 的双 schema fallback。
+2. **Installed-state takeover**：candidate 从 v0.3.5 managed install 接管时允许完整替换 owned runtime 与
+   installed manifest；安装后的 10-file runtime snapshot、policy 与 requirements 行为必须逐项不变。
+3. **Doctor semantics**：同版本 candidate doctor healthy；v0.3.5 doctor 面对 candidate manifest 可以报告
+   identity/version mismatch blocker，但不能称为普通 repairable drift，也不能部分写回。
+4. **Rollback**：使用 immutable v0.3.5 installer 从 candidate 安装完整接回 ownership，再由 v0.3.5 doctor
+   healthy；随后 candidate 可再次接管。三个方向 `accepted -> candidate -> accepted -> candidate` 都需通过。
+5. **Pre-write tamper**：manifest unknown/missing key、bundle raw SHA/identity/retired key、Release schema/mode
+   错误都必须在 acquire/backup/write 前失败，并证明原 managed state 字节未改变、未产生 snapshot leftover。
+6. **Published history**：不修改 v0.3.5/v0.3.4 tag、assets、provenance row 或 acceptance。新 identity 只有在
+   future Release gate 另行授权后建立。
+
+## C2 future implementation verification matrix
+
+| Gate | 必须证明的内容 |
+|---|---|
+| failing-first unit | 两个 loader 拒绝 manifest unknown/missing key、bundle v1 identity、`managed_sha256`/`overlay_ids` 回流；builder 拒绝 unknown/missing/invalid mode、unknown keys、错误 identity 与不安全/重复 path |
+| authority guards | importer/installer 只读 `pristine_sha256`；builder source 中无 `EXECUTABLE_PATHS`，build/check 只读 entry mode；manifest 顶层和 v2 contract 全部 exact-key |
+| focused regression | contracts、importer、installer、Release package、repository boundary、architecture contracts 与跨版本 published oracles 全绿 |
+| full local | importer check、完整 `npm test`、Python compile、`node --check install.js`、所有 bootstrap `bash -n`、Git mode 检查与 `git diff --check` |
+| deterministic package | 两次独立 build 字节一致；两个 ZIP 各自 `check`；解包后使用包内 v2 builder/contract 自检；entry path/mode 与 contract 逐项相等 |
+| Linux | 完整测试零失败且不得把 POSIX case 伪装为 Windows skip；installed runtime 10-file snapshot、四个 pristine runtime mode/hash、adapter-only policy 均保持 |
+| no-live Cloud | Source/Candidate Fresh +真实 Resume、doctor、Hook feature、SessionStart/UserPromptSubmit probes、tamper/cache/rollback 与 snapshot-leftover gate |
+| cross-version | immutable v0.3.5 -> candidate -> v0.3.5 -> candidate 双向 takeover；每一步 install/doctor、manifest owner/version、managed state 与失败前不写入 oracle |
+| Release（另授权） | candidate identity/hash 全轮转、双构建、外部 bootstrap seal、Published Release、重新下载双资产、自包含 check/install、Latest/rollback promotion 分离 |
+
+Windows 上的 POSIX skip 只能作为本地事实；Linux/Cloud 结果是 future implementation 的退出条件，不能由
+本轮 C2 planning-only 验证替代。
+
+## C2 final decision
+
+`CONDITIONAL_GO`，首选落位是 Phase 4 Discovery 之后的 `0.4.0-alpha.*` inactive foundation gate，而不是
+再切一个没有用户行为变化的稳定 `0.3.x` patch。理由：
+
+- 三份 schema、manifest hashes、Release paths 和 bootstrap identity 必须一起轮转；单独 stable patch 的发布成本
+  与 successor alpha 相同，却会制造连续两个无行为变化的稳定版本。
+- 该 transaction 保持 runtime bytes、Host ABI、trusted graph、legacy 默认与 installed inventory 不变，适合在
+  任何 Phase 4 行为激活之前作为独立 foundation gate。
+- Phase 4 仍可能决定 `language/host_dependencies` 的 owner、schema install asymmetry 与新 runtime admission
+  shape；先做 Phase 4 Discovery 可以避免刚删/刚定 v2 又立刻升 v3。
+- 即使进入同一 `0.4.0-alpha.*` 列车，contract foundation 与 opt-in activation 也必须是两个独立 gate；前者
+  PASS 不自动授权后者。
+
+若 Phase 4 Discovery 发现 attestation/nonce/v3 modes 要求不同的 bundle/Release entry shape，则本方案停在
+Discovery 并修订，不实施当前 v2。C2 本身已经完成；当前没有 contract implementation、successor identity 或
+Phase 4 授权。

@@ -32,18 +32,18 @@
   顺序、验证和停止条件；未实施任何清理。
 - [x] C1 — Next compatible cleanup：`v0.3.5` exact source/tag、非 prerelease Release、Latest、双资产、Cloud/下载
   验收与 accepted/fallback 角色轮转全部闭合；未改变 runtime/ABI/trusted graph 或夹带 contract-v2。
-- [ ] C2 — Contract/Release-v2 Discovery（进行中）：决定 bundle tombstone、manifest
-  metadata/exact schema、Release entry mode 与其他无 consumer metadata 的处理路线，不在 Discovery 中实施。
+- [x] C2 — Contract/Release-v2 Discovery：已冻结 bundle tombstone、manifest exact schema/metadata、Release
+  entry mode、跨版本 rollback、验证矩阵与 implementation placement；Discovery 中未实施任何 schema/source。
 
 ## Next Step
 
-完成独立 C1 closure commit 后执行 C2.0：从 v0.3.5 accepted tree 只读扫描 importer、installer、builder、contracts、
-tests 与历史 refs，为每个候选字段建立 `producer -> validators -> production consumers -> tests -> lifecycle`
-inventory。C2 只产出 Discovery 设计，不修改 machine contracts、production、Release identity 或 Phase 4 source。
+当前清理 audit 到此停止。下一独立任务是在维护者另行授权后创建 **Phase 4 Discovery**：恢复 attestation、nonce、
+opt-in v3 modes、legacy 默认、schema install asymmetry 与 Cloud 事实，再与本 C2 的 phase-neutral v2 方案联合裁决
+implementation placement。不得直接创建 `0.4.0-*` identity、修改 contracts 或激活 Phase 4 source。
 
 ## Decision
 
-`C1_ACCEPTED_CLOSURE_PASS / C2_DISCOVERY_IN_PROGRESS / NO_CONTRACT_IMPLEMENTATION / PHASE4_NOT_AUTHORIZED`
+`C1_ACCEPTED_CLOSURE_PASS / C2_DISCOVERY_PASS_CONDITIONAL_GO / STOP_NO_IMPLEMENTATION / PHASE4_NOT_AUTHORIZED`
 
 ## Route invariants
 
@@ -95,7 +95,7 @@ inventory。C2 只产出 Discovery 设计，不修改 machine contracts、produc
 6. 在 Phase 3.8 摘要末尾新增独立 `Subsequent landing` 尾注，并最小更新 history index：保留原文“当时只关闭
    Discovery、尚未实施”，另行说明 bundle-authority migration 后续已由 v0.3.4 落地，不重写 cold history。
 
-### C1.3 Candidate and Release rotation（本地 stable seal 完成；远端 gates 待维护者）
+### C1.3 Candidate and Release rotation（完成）
 
 1. 按所选 candidate 同步 package、Release contract、版本 acceptance 与外部 bootstrap identity；不把版本号硬编码
    回稳定架构文档或通用测试。
@@ -148,6 +148,23 @@ inventory。C2 只产出 Discovery 设计，不修改 machine contracts、produc
    transaction，还是 `0.4.0-*` 列车中先于行为激活的 inactive foundation gate；Discovery 结束即停，只有维护者
    另行授权才创建 implementation gate。
 
+### C2.3 Final route decision（完成）
+
+- 总裁决：`CONDITIONAL_GO`。bundle v2 + manifest schema 4 + Release artifact v2 在技术上可以组成
+  phase-neutral、inactive、单次原子 transaction；它不需要改变 runtime bytes、Host ABI、trusted graph、
+  dispatch、legacy 默认或 installed inventory。
+- placement 首选：完成 Phase 4 Discovery 后，把该 transaction 作为 `0.4.0-alpha.*` 列车中先于行为激活的
+  独立 foundation gate。这样只轮转一次 successor identity，同时仍以独立 commit、tests、Cloud marker 和
+  rollback gate 保持可审查性。
+- 当前 `NO_GO`：不再发布只含 machine-contract normalization 的稳定 `0.3.x` patch；不在 Phase 4 Discovery
+  前删除 `language`、`host_dependencies`、installed schemas 或 source-only catch-up schemas；不把 C2 设计
+  解释为实现授权。
+- 条件：Phase 4 Discovery 必须确认 attestation/nonce/v3 mode 不需要改变本 C2 的 entry semantics，确认保留字段
+  owner 与 schema asymmetry 决策，并冻结 successor identity/branch/gates。若发现 shape 冲突，则回到 Discovery
+  修订 v2，而不是先实施再二次旋转。
+- C2 closure 只提交 planning 证据；不修改 README/ARCHITECTURE/DESIGN/ROADMAP 当前稳定事实，不创建 release
+  candidate，不运行 publication 或 Cloud 写操作。
+
 ## Post-cleanup next task hint — Phase 4 Discovery
 
 C1 已完成 accepted closure且 C2 Discovery 闭合后，下一任务才是新建 Phase 4 Discovery。C2 implementation 不预设为
@@ -188,8 +205,17 @@ Phase 4 Discovery 的前置发布；两轮 Discovery 必须先区分 Phase-4-neu
 | 首次 v0.3.5-dev focused/full run 暴露 manifest Release-contract SHA、ROADMAP prose locks 与 bootstrap sealed-only 假设 | 3 | 同步真实 contract SHA；删除被动态角色解析覆盖的 prose locks；bootstrap 测试按 candidate/accepted 关系验证 zero/sealed checksum，focused 与完整 suite 全绿 |
 | 预封板审计误用了不存在的 `tools/build_release_artifact.py` | 1 | 回读 README 与实际工具入口，改用 `tools/build_release.py build/check`；随后开发候选和 stable 双构建均通过 |
 | 组合只读查询引用了不存在的 `docs/v0.3.4-release-acceptance.md`，使 `rg` 最终 exit 1 | 1 | 从 repository role-window 测试确认真实文件为 `docs/v0.3.4-cloud-hard-acceptance.md`；后续只读取动态 candidate acceptance 与现存路径 |
-| planning 更新后的 focused `node --test` 在受限 Windows sandbox 创建 test-runner 子进程时返回 `spawn EPERM` | 1 | 在非受限测试上下文原命令复跑，repository boundary 8/8 通过；分类为 sandbox platform limitation |
+| planning 更新后的 focused `node --test` 在受限 Windows sandbox 创建 test-runner 子进程时返回 `spawn EPERM` | 2 | 两次均在非受限测试上下文原命令复跑，repository boundary 8/8 通过；分类为 sandbox platform limitation |
 | `gh release view v0.3.5` 与 latest 查询通过本机代理 `127.0.0.1:3080` 连接 GitHub API 时被拒绝 | 1 | `git ls-remote` 已成功确认 branch/tag exact source；Release/Latest metadata 改用独立只读 Web 通道，不重复失效代理路径 |
 | 公共 Web open/search 未返回目标 Release，搜索只命中无关公开仓库 | 1 | 目标仓库未被公共索引时 Web 结果不具否定力；保留已认证 GitHub CLI，仅在单次只读命令中清除失效 proxy 环境重试 |
 | 本地 `show-ref refs/tags/v0.3.5` 失败：维护者已创建远端 tag，但本地 refs 尚未 fetch | 1 | 远端 tag source 已由 `ls-remote` 证明；在不触碰工作树的前提下精确 fetch 单个 tag，供 publication oracle 使用 |
 | fetch 后未给 PowerShell 中的 `v0.3.5^{commit}` revision expression 加引号，`git rev-parse` 报 `Needed a single revision` | 1 | 用单引号包住 revision expression 复核成功；本地 v0.3.5 tag 精确解析为 sealed HEAD |
+
+### C2 Discovery error log
+
+- 一次并行 `rg` 批次因至少一个无匹配查询返回 exit 1，聚合脚本未保留其他成功输出。处理：不把无匹配
+  当作产品失败；拆分查询并显式回传各命令 exit/output，不重复同一聚合方式。
+- 一次带多重 negative glob 的影响面 `rg -l` 意外返回无匹配，未据此作结论。后续改用已知目录的
+  `rg -l -e ...` 与 `git grep` 交叉恢复文件列表。
+- 一次 test-title 查询误写了不存在的 `tests/publication-oracle.test.js`；有效文件是复数形式
+  `tests/published-release-oracles.test.js`。其他文件输出有效，后续矩阵使用正确文件名。
