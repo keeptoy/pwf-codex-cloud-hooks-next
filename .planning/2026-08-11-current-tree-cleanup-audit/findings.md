@@ -319,6 +319,37 @@
   Phase 4 denied-source guards；没有新增 Phase 4 source、ABI、event 或 dispatch。后续 C2/Phase 4 Discovery 仍可独立
   决定 contract-v2 placement，不需要恢复本 gate 删除的任何运行时 seam。
 
+## C1.3 Cloud return and seal admission
+
+- 维护者确认 `v0.3.5-dev` 已推送，Cloud 仓库代码构建/测试通过，development Release 已发布，ZIP 重新下载和
+  安装测试通过；并明确授权直接封板为 `v0.3.5` 后创建本地 commit。该回传构成 Source/Candidate 与下载安装
+  gate 的维护者证据，但不被扩写为尚未执行的 stable publication/Latest 事实。
+- 当前 `HEAD=4ee0ac19f1e7421ffe8015ac9700d68959976094` 且与 `origin/0.3.5-dev` 一致；该 commit 只提交维护者先前的
+  15 个旧 planning scope 删除，不改变 Release allowlist 输入，因此不会使已测 runtime/ZIP 内容产生行为漂移。
+- Cloud 验收留下的 `.planning/pwf-cloud-acceptance-v1` 三文件是合成 fixture，内容只有 canonical marker；工作树
+  `.active_plan` 的冲突标记同属测试残留。两者均不进入 Release，但会破坏 repository lifecycle test，封板前应
+  精确清除并恢复 tracked active pointer。
+
+## C1.3 stable seal conclusion
+
+- 在任何 stable identity 修改前，从 `HEAD=4ee0ac19f1e7421ffe8015ac9700d68959976094` 复建 development ZIP；
+  结果仍为 21 entries、77,807 bytes、SHA-256
+  `d5687d4318a34dd514a5e203d71bd3918e6ef758ab49bde894de1b9c2b867b5f`，证明 Cloud 回传后的 planning-only
+  commit 没有改变已测 Release 边界。
+- stable 轮转只修改 package/Release identity、manifest 对 Release contract 的 integrity edge、外部 bootstrap、
+  lifecycle/acceptance 与 checksum-state 测试；runtime bundle、Host ABI、trusted graph、installed inventory、
+  upstream bytes、accepted v0.3.4 与 immediate fallback v0.3.3 均未改变。
+- checksum guard 不能继续按 `candidate === accepted` 推断：已封板但尚未晋级的 stable candidate 必须已有精确非零
+  ZIP hash。测试现按 package identity 是否以 `-dev` 结尾区分 development zero/fail-closed 与 stable sealed/nonzero，
+  同时仍直接校验 bootstrap 默认 hash 等于确定性构建结果。
+- 全部 ZIP 输入冻结后的两个独立 stable 构建及 check 完全一致：21 entries、77,800 bytes、SHA-256
+  `7d351cfe0eaa60e93bc279645ed3f480dc9e83efdff1c6abf13c14d84c286f0b`。该摘要写入 ZIP 外 bootstrap 后再次复建，
+  ZIP 身份未漂移；bootstrap 为 21,565 bytes、SHA-256
+  `33d7fcaca56c617ef70e33c9708af804a8737d587cc58571382b945e5bff58a5`。
+- 该结果只构成本地 stable seal，不冒充 stable tag/Release、公开默认下载链、Published Release Cloud、Latest 或
+  accepted promotion。product seal 已落在本地 commit
+  `5be9b787d96e1a0927f437f24ebae5b06c7835b4`；当前停止点是维护者 push，C2 与 Phase 4 仍需后续明确授权。
+
 ## Verification
 
 - C1.0 baseline `npm test`：126 tests，114 pass，0 fail，12 个 POSIX/Linux-only case 在 Windows 如实 SKIP。
@@ -336,3 +367,9 @@
   `d5687d4318a34dd514a5e203d71bd3918e6ef758ab49bde894de1b9c2b867b5f`；临时 ZIP 已安全删除。
 - C1 Python compile、Node syntax、accepted/candidate Bash syntax、四文件 `100755` mode、importer check 与
   `git diff --check`：全部通过。
+- C1 stable seal 完整 suite：124 tests，112 pass，0 fail，12 个 Windows POSIX/Linux-only case 如实 SKIP；
+  importer、Python/Node syntax、v0.3.4/v0.3.5 Bash syntax、四文件 `100755` mode 与 `git diff --check` 全部通过。
+- C1 stable ZIP 双构建/check：21 entries、77,800 bytes，两份 SHA-256 均为
+  `7d351cfe0eaa60e93bc279645ed3f480dc9e83efdff1c6abf13c14d84c286f0b`；写入 bootstrap 后 post-pin 复建仍一致。
+- product commit 后从同一工作树再次 build/check，ZIP 与 bootstrap SHA-256 均保持上述 sealed identity，且
+  `.planning` 之外没有未提交 product diff。

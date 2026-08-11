@@ -96,3 +96,27 @@
   不进入 C2 或 Phase 4。
 - 本地提交 `cb59ad7`（`chore: prepare v0.3.5 compatible candidate`）只包含 15 个 C1 source-candidate 文件；
   活动 planning 证据另行提交，维护者已有 15 个旧 planning tracked deletions 继续未暂存。
+- 维护者已推送本地提交并回传：Cloud 仓库代码构建/测试通过，`v0.3.5-dev` 已发布，ZIP 下载与安装验收通过；
+  明确授权直接收敛 `v0.3.5` stable identity、执行本地 seal 和 commit，后续 push 仍由维护者执行。
+- 恢复时确认 `HEAD`/`origin/0.3.5-dev` 均为 `4ee0ac1`；该提交只纳入先前 15 个旧 planning scope 删除，没有
+  修改 Release 输入。session catch-up 同时发现 Cloud 合成 fixture 与 `.active_plan` 冲突标记；已用精确 patch
+  恢复 active pointer 并删除三份临时 fixture，未触碰产品或验收资产。
+- 在 stable 轮转前重新构建/check `v0.3.5-dev` candidate，结果与 Cloud 前记录完全一致：21 entries、77,807
+  bytes、SHA-256 `d5687d4318a34dd514a5e203d71bd3918e6ef758ab49bde894de1b9c2b867b5f`；临时 ZIP 已删除。
+- 已把 package、Release contract、外部 bootstrap、CHANGELOG、ROADMAP 与版本 acceptance 原子收敛为 `v0.3.5`；
+  同步 manifest 中 Release-contract SHA。bootstrap 测试改按 `-dev`/stable identity 验证 zero/sealed checksum，覆盖
+  “stable candidate 已封板但尚未 accepted”的真实中间态。
+- stable ZIP 两次独立 build/check 完全一致：21 entries、77,800 bytes、SHA-256
+  `7d351cfe0eaa60e93bc279645ed3f480dc9e83efdff1c6abf13c14d84c286f0b`。写入外部 bootstrap 后 post-pin 复建仍为
+  同一摘要；bootstrap 为 21,565 bytes、SHA-256
+  `33d7fcaca56c617ef70e33c9708af804a8737d587cc58571382b945e5bff58a5`。
+- 封板全量 suite 通过：124 tests / 112 pass / 0 fail / 12 honest Windows skips；importer、Python/Node syntax、
+  v0.3.4/v0.3.5 Bash syntax、四文件 `100755` mode、deterministic ZIP post-pin 与 `git diff --check` 全部通过。
+- planning 收口后的 repository boundary focused run 在受限 sandbox 因 Node test-runner `spawn EPERM` 未启动；
+  非受限上下文原命令复跑 8/8 通过，确认为平台限制而非测试或产品失败。
+- 已创建本地 product seal commit `5be9b787d96e1a0927f437f24ebae5b06c7835b4`
+  （`release: seal v0.3.5 candidate`），只包含 9 个稳定身份/验收/测试文件；未 push。
+- commit 后再次 build/check：ZIP 仍为 21 entries、77,800 bytes、SHA-256
+  `7d351cfe0eaa60e93bc279645ed3f480dc9e83efdff1c6abf13c14d84c286f0b`，bootstrap SHA-256 仍为
+  `33d7fcaca56c617ef70e33c9708af804a8737d587cc58571382b945e5bff58a5`；`.planning` 外工作树无差异。
+- C1 本地 stable seal 已完成；按授权停止在 push/publication 前，不执行远端动作，不进入 C2 或 Phase 4。

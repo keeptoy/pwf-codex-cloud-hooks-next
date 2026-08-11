@@ -13,6 +13,9 @@
   不授权 contract/Release-v2 schema 改造、Product Phase 4 source 或行为激活。
 - 远端 tag、push、Release、Latest、部署与 Cloud 外部状态变更仍由维护者执行；智能体只准备精确本地提交、命令和
   只读 postflight。C1 未闭合不得进入 Gate C2，Gate C2 Discovery 又不自动授权 contract-v2 implementation。
+- 维护者已回传 `v0.3.5-dev` Cloud 仓库构建/测试与发布 ZIP 下载、安装验收均通过，并明确授权直接收敛
+  `v0.3.5` stable identity、执行本地 deterministic seal、写入 exact ZIP hash 和创建本地 commit。该授权不包含
+  push、stable tag/Release、Latest/promotion、C2 或 Phase 4。
 - 所有结论必须区分 production reachability、source/import/install/ZIP authority、未来已规划能力与测试价值。
 
 ## Gates
@@ -23,21 +26,21 @@
 - [x] D2 — Recommendation：给出保留、可直接精简、需独立 Discovery/Release gate 三张清单及优先顺序。
 - [x] R0 — Route freeze：结合 Phase 3.9.1，把审计结论拆成 Gate C1、Gate C2 与 Phase 4 next-task hint，冻结范围、
   顺序、验证和停止条件；未实施任何清理。
-- [ ] C1 — Next compatible cleanup（进行中）：在 `0.3.5-dev` 修正 notice/history，
-  删除标题元测试，收缩 prose locks，并把通用 Release 测试改为动态 candidate；完成新版本 seal、Cloud 与发布闭环。
+- [ ] C1 — Next compatible cleanup（本地 stable seal 完成，远端闭环待维护者）：在 `0.3.5-dev` 修正 notice/history，
+  删除标题元测试，收缩 prose locks，并把通用 Release 测试改为动态 candidate；`v0.3.5` 已完成本地 seal，
+  stable push/publication/角色闭环尚未执行。
 - [ ] C2 — Contract/Release-v2 Discovery：只在 C1 accepted closure 后启动；决定 bundle tombstone、manifest
   metadata/exact schema、Release entry mode 与其他无 consumer metadata 的处理路线，不在 Discovery 中实施。
 
 ## Next Step
 
-停在 `C1_SOURCE_CANDIDATE_READY / CLOUD_NOT_AUTHORIZED`。维护者下一步先审阅本地 C1 commit，再按
-`docs/cloud-hard-acceptance-template.md` 授权并执行 `v0.3.5-dev` Source/Candidate Cloud；必须绑定 exact checkout、
-zero-hash bootstrap 和显式 candidate ZIP URL/SHA override。该通道 PASS 前不得收敛 stable identity、写 sealed ZIP
-hash 或进入 publication；远端 push/tag/Release/Latest 仍由维护者执行。
+停止本地实施。由维护者 push 本轮 `v0.3.5` sealed commits；不得由智能体 push、创建 stable tag/Release、修改
+Latest 或提前进入 C2。维护者回传远端结果并明确继续后，再恢复活动 planning、核验 exact pushed source，按新授权
+决定关闭 C1 角色还是启动 C2 Discovery。
 
 ## Decision
 
-`C1_SOURCE_CANDIDATE_READY / V0.3.5-DEV_ZERO_HASH / CLOUD_AND_RELEASE_NOT_AUTHORIZED / C2_AND_PHASE4_NOT_AUTHORIZED`
+`C1_LOCAL_STABLE_SEAL_PASS / MAINTAINER_PUSH_PENDING / REMOTE_WRITES_MAINTAINER_ONLY / C2_AND_PHASE4_NOT_AUTHORIZED`
 
 ## Route invariants
 
@@ -89,7 +92,7 @@ hash 或进入 publication；远端 push/tag/Release/Latest 仍由维护者执�
 6. 在 Phase 3.8 摘要末尾新增独立 `Subsequent landing` 尾注，并最小更新 history index：保留原文“当时只关闭
    Discovery、尚未实施”，另行说明 bundle-authority migration 后续已由 v0.3.4 落地，不重写 cold history。
 
-### C1.3 Candidate and Release rotation（本地 candidate 准备完成；外部 gates 待授权）
+### C1.3 Candidate and Release rotation（本地 stable seal 完成；远端 gates 待维护者）
 
 1. 按所选 candidate 同步 package、Release contract、版本 acceptance 与外部 bootstrap identity；不把版本号硬编码
    回稳定架构文档或通用测试。
@@ -180,3 +183,6 @@ Phase 4 Discovery 的前置发布；两轮 Discovery 必须先区分 Phase-4-neu
 | 多文件 `apply_patch` 因 task plan 中文 Next Step hunk 上下文未精确匹配而整体拒绝 | 3 | 每次均未发生部分写入；拆成单文件最小 hunk 后成功，并在 `git diff --check` 中复核 |
 | C1.2 修改 Release 输入后，package test 仍绑定 sealed v0.3.4 hash | 1 | 识别为预期 unsealed identity transition；不改写 v0.3.4，原子轮转到 v0.3.5-dev zero-hash candidate |
 | 首次 v0.3.5-dev focused/full run 暴露 manifest Release-contract SHA、ROADMAP prose locks 与 bootstrap sealed-only 假设 | 3 | 同步真实 contract SHA；删除被动态角色解析覆盖的 prose locks；bootstrap 测试按 candidate/accepted 关系验证 zero/sealed checksum，focused 与完整 suite 全绿 |
+| 预封板审计误用了不存在的 `tools/build_release_artifact.py` | 1 | 回读 README 与实际工具入口，改用 `tools/build_release.py build/check`；随后开发候选和 stable 双构建均通过 |
+| 组合只读查询引用了不存在的 `docs/v0.3.4-release-acceptance.md`，使 `rg` 最终 exit 1 | 1 | 从 repository role-window 测试确认真实文件为 `docs/v0.3.4-cloud-hard-acceptance.md`；后续只读取动态 candidate acceptance 与现存路径 |
+| planning 更新后的 focused `node --test` 在受限 Windows sandbox 创建 test-runner 子进程时返回 `spawn EPERM` | 1 | 在非受限测试上下文原命令复跑，repository boundary 8/8 通过；分类为 sandbox platform limitation |
