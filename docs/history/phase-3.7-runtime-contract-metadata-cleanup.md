@@ -63,6 +63,68 @@ Phase 2/3 完成后，维护工作集中在真正影响执行的 hash、origin�
 根因不是 runtime 依赖它们，而是把 programme 路线塞进 machine runtime contract 后形成了历史耦合。它们不会
 因为某个 Phase 完成就自动消失；除非专门做一次治理清理，contract 和维护它的测试都会一直留下。
 
+<a name="phase-3-7-design-hindsight"></a>
+
+## 当时这样记，合理吗
+
+把“哪个文件准备在哪个阶段启用”“哪些候选暂时不能准入”记下来，本身是合理的。Phase 1 只冻结合同，后续
+Phase 2/3 才逐步接入能力；一张机器可检查的阶段表可以防止维护者把“已经提前准备好”误读成“已经允许运行”。
+`deferred_upstream_candidates` 配合测试，也确实帮助守住了 Phase 4+ 文件尚未准入的边界。
+
+问题出在这张表被放错了地方。它本质上是 programme 的迁移笔记，却进入了面向 source/build/install/runtime 的
+长期 machine contract。可以把它想成搬家时贴在箱子上的便签：“这件东西第三天再拆”“那件先别搬进房间”。便签
+在搬家过程中有用，但房子住稳后，正式物品清单应该记录“现在有哪些东西、放在哪里、谁会使用”，不该继续要求
+每件物品保留当年的第几天标签。
+
+原设计遗漏了几个闭环：
+
+- 没先区分稳定事实和阶段计划。path、hash、mode、dependency 是 consumer 会读取的稳定事实；Phase 数字只是
+  当时的路线安排，会随着 programme 推进失效。
+- 两个字段没有 production owner。importer、installer 和 runtime 都不消费它们，却因为位于 machine contract
+  而获得了与生产字段相似的长期地位。
+- 没有为临时元数据写退休触发器：Phase 2/3 完成后由谁清点、何时迁出、哪条测试接替其安全意图，都没有进入
+  Definition of Done。
+- 测试验证了“便签上的数字不能变”，没有直接把“当前只能准入这组文件”作为主要不变量。测试因此保护了历史
+  路线的形状，而不是只保护当前生产安全边界。
+- successor 迁移只要原样复制 contract 和 tests 就能保持全绿，没有任何自动红灯提示“这些 programme 字段已经
+  没有活跃 consumer”。
+
+所以这也不是简单的“当初设计很差”或“后来维护不认真”。更准确的说法是：**阶段表在迁移期有用，但它没有被
+限制在迁移层，也没有预先设计退场。** 后续维护者照着合同和测试继续维护，反而让已经过期的路线信息看起来像
+不能删除的 runtime 要求。本次清理偿还的是“临时 programme annotation 获得永久 machine-contract 身份”的
+设计债。
+
+<a name="phase-3-7-lessons-and-landing"></a>
+
+## 经验教训与落地方式
+
+1. 先按生命周期给字段分类。production consumer 会读取并影响 source/build/install/runtime 的事实才能进入
+   runtime contract；阶段号、候选版本和 rollout 顺序留在 ROADMAP、活动 planning 或专项 Discovery。
+2. 如果临时 programme 字段确实必须机器可读，它也要有 owner、唯一用途、退休条件和最晚复核 gate；不能只写
+   “以后会删”。对应测试要同时说明字段退休后由哪条长期断言接班。
+3. 测试优先冻结安全结果，不冻结旧路线数字。本例应直接断言当前 admitted inventory 精确是什么、哪些 Phase 4
+   候选不得出现，以及未知字段不得重新进入 contract，而不是继续断言某文件等于 Phase 2 或 Phase 3。
+4. 每个 Phase 的 retirement DoD 都要检查“新增了什么”和“哪些临时物该退场”。没有 active consumer 的字段、
+   compatibility branch、fixture 和测试断言必须删除、迁移或带 owner 明确延期。
+5. 历史解释迁到 history 和 immutable ref，当前 machine contract 不承担考古职责。以后需要追溯早期分阶段计划，
+   可以从本历史和固定 commit 恢复，不需要把旧标签继续装进 Release。
+6. 自动化应负责发现和阻止回流，而不是自动删除未知内容：schema/test 拒绝 `activation_phase` 与
+   `deferred_upstream_candidates`，exact inventory guard 阻止未准入文件；真正删除仍作为可审查的新 development
+   变更完成，不能改写已经发布的合同和资产。
+
+具体责任分层如下：
+
+| 层 | 落地责任 |
+|---|---|
+| ROADMAP / task plan | 保存 programme 顺序，并在 Phase closure 强制执行临时元数据清点与 retirement DoD |
+| runtime contract | 只保留当前 consumer 真正使用的稳定事实，以 exact schema 拒绝 programme 字段回流 |
+| importer / installer / runtime | 不读取或推断 Phase 数字，只依据 verified inventory、integrity、policy 与 dispatch 决定准入和执行 |
+| tests | 断言 programme 字段缺席、当前 inventory 精确、未批准候选不出现，并继续覆盖 Release allowlist |
+| history / immutable refs | 保存“当时为什么这样分阶段”的冷证据，不反向控制当前生产行为 |
+
+这套做法把“当年准备什么时候做”与“现在产品实际允许什么”彻底分开：前者可以随路线推进并按期退休，后者才由
+machine contract 和生产测试长期守住。
+
 <a name="phase-3-7-core-decisions"></a>
 
 ## Core decisions

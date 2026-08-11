@@ -113,3 +113,7 @@
   明确 ROADMAP/task plan 管收尾 gate，Architecture/Design 管唯一权威与 consumer route，contracts/loaders/tests
   负责拒绝旧 mirror 和生产旁路；仍只修改历史/planning，不改变当前 I3 或产品字节。
 - 本轮补充后的 architecture/repository focused governance 17/17 PASS，`git diff --check` PASS。
+- 按维护者要求补全 Phase 3.7 复盘：用“搬家便签不应永久留在正式物品清单”解释 programme metadata 的局部
+  合理性与长期错位，补充五项设计遗漏、六条经验和 ROADMAP/contract/consumer/tests/history 分层落地；只改
+  cold history/planning，不改变 current runtime、I3、Release 或 Phase 4。
+- Phase 3.7 复盘补充后的 architecture/repository focused governance 17/17 PASS，`git diff --check` PASS。

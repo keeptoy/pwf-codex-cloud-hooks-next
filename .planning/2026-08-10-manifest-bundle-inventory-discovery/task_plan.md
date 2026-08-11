@@ -34,6 +34,8 @@ authority 迁移设计。
   内化到 Phase 3.8 历史；该纯历史复盘不改变 I3 Cloud Next Step 或任何 Release/Phase 4 授权。
 - 维护者进一步要求用大白话解释 retirement DoD 与字段级约束，并把 ROADMAP/task plan、Architecture、Design、
   machine contracts、production consumers 和 tests 的分层落地方式补入同一 Phase 3.8 复盘。
+- 维护者授权以相同深度补全 Phase 3.7 的设计复盘：说明 programme 标签在迁移期为何合理、放入长期 runtime
+  contract 遗漏了什么、测试为何固化旧路线，以及 programme/runtime 分层和 retirement 的落地教训。
 
 ## Invariants
 

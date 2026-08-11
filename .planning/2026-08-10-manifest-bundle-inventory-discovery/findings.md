@@ -252,6 +252,12 @@ trusted Git/ZIP bytes
 - Phase 3.7 的精确时间线是：`033a82b` 同时引入两个 programme 字段，并建立 deferred source 不得进入
   `bundle.files`、`earliest_phase >= 4` 的断言；`owned_catchup=2` 与 `owned_plan=3` 是两个 owned runtime
   后续加入时才补进测试。共同根因仍是测试冻结阶段计划，而 production 从不把 Phase 数字作为执行输入。
+- Phase 3.7 复盘定性：机器可检查的阶段表在 contract-only 迁移期有局部价值，但 programme annotation 不应获得
+  永久 runtime-contract 身份。遗漏的是稳定事实/阶段计划分类、production owner、退休触发器和长期安全断言的
+  接班设计；equality/phase tests 随后让无 consumer 的历史形状保持全绿并被 successor 继承。
+- 落地教训是把 Phase 顺序留在 ROADMAP/planning，把 consumer 真正读取的 path/hash/mode/dependency 留在 exact
+  runtime contract；Phase closure 强制清点临时 metadata，tests 直接保护 admitted/forbidden inventory，并用
+  schema guard 阻止 programme 字段回流；历史原因只由 history/immutable refs 保存。
 
 ## I0 failing-first evidence
 
