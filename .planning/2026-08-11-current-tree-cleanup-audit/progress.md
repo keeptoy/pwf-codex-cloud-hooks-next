@@ -190,3 +190,8 @@
   本轮只有 ROADMAP 与活动 planning 变更，没有执行 contract/production/Release/Cloud gate。
 - C2 表内 `origin=upstream_pristine` 从自动保留改为待复核：若 v2 使用明确 `upstream_files` 分区、受限 paths
   与单一 pristine hash，固定 origin 常量可能同样无独立 owner。仍未冻结最终 schema。
+- 新建 `docs/history/phase-3.9.2-contract-v2-tombstone-review.md` 并登记 history index：记录 tombstone 历史、
+  通用 exact schema、正向 pristine 证据、专用 guard 退休方向、`origin` 未决项与非授权边界；未修改 production、
+  contracts、tests 或 Release inputs。
+- Phase 3.9.2 文档治理验证通过：`git diff --check` PASS；`repository-boundary` 与
+  `architecture-contracts` focused suite 15/15 PASS。

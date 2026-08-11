@@ -125,8 +125,8 @@
 ### C2.1 Decisions to freeze
 
 - **Bundle v2：**首选移除 `managed_sha256 == pristine_sha256` 与空 `overlay_ids`，让 `pristine_sha256` 成为 upstream
-  package/install hash；保留 `origin=upstream_pristine` 和 exact unknown-key rejection。Discovery 必须比较“删除”与
-  “保留显式 no-overlay sentinel”的安全、兼容和审计代价。
+  package/install hash；exact-key 保留为通用 unknown-field validation。`origin` 继续复核：比较显式 trust label 与
+  `upstream_files` structural partition，不再以保留 no-overlay sentinel 为默认方向。
 - **Manifest：**首选删除无 consumer 的 `skill_version` 并补顶层 exact-key validation；`required_skill_files`、bundle
   path/SHA、archive/license provenance 保留。manifest/bundle upstream provenance 交叉核验是否继续存在，必须作为
   integrity-edge 决策单列，不能冒充 inventory 去重。
@@ -142,7 +142,7 @@
 
 1. 冻结 schema/version migration、旧 package/installed manifest 的 upgrade/rollback 语义，以及 accepted +
    immediate-fallback installer 双向接管测试；doctor 不得把版本升级误报成普通 repair。
-2. 先设计 failing-first guards：retired keys 回流、unknown top-level key、bundle raw SHA tamper、invalid/missing ZIP
+2. 先设计 failing-first guards：unknown top-level/entry key、bundle raw SHA tamper、invalid/missing ZIP
    mode、builder secondary authority 回流、metadata 无 consumer 等都应在 acquire/write 之前失败。
 3. 输出专项设计、字段 decision table、精确文件影响图、hash/identity rotation、Linux/Cloud/Release 验证矩阵与回滚
    方案，并给出 `GO / CONDITIONAL_GO / NO_GO`。同时冻结 implementation placement：Phase-4-neutral 子集是独立兼容
@@ -177,6 +177,8 @@
   叙事。当前无 implementation 授权。
 - 同步复核固定 `origin=upstream_pristine` 是否有独立 owner；若 v2 用明确 `upstream_files` 分区和路径/hash 约束
   完整表达来源，origin 常量也可能属于重复 machine metadata。该取舍尚未冻结。
+- 本轮讨论成果已提升为回顾性维护者里程碑
+  `docs/history/phase-3.9.2-contract-v2-tombstone-review.md`；它保存认识修正，不替代当前 C2 Next Step 或授权。
 
 ## Post-cleanup next task hint — Phase 4 Discovery
 

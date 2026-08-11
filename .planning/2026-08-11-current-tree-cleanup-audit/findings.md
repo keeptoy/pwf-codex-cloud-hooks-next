@@ -694,3 +694,6 @@ pristine bytes、trusted graph 不存在 transformer、未知 schema 字段不�
 初步收敛：v2 implementation 时应删除专用 tombstone 数据和大部分逐名 absence guards；保留一组通用
 unknown-key tests、一组 imported/package bytes 等于 pinned pristine bytes 的行为测试，以及 exact trusted inventory。
 这比“每个旧名字永不出现”更少、更强，也与 ARCHITECTURE 允许经新 Discovery 重新评估路线保持一致。
+
+本轮讨论成果已整理到 `docs/history/phase-3.9.2-contract-v2-tombstone-review.md`，作为新人恢复这次认识修正的
+独立摘要；活动字段取舍、Next Step 与授权仍以本 planning scope 为准。

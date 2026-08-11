@@ -36,6 +36,7 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 | Phase 3.7 | 回顾性 contract-cleanup 标签：退休只由测试维护、production 从未读取的早期 programme 元数据，以 exact inventory guard 保留准入边界；不是正式 Product Phase | [`phase-3.7-runtime-contract-metadata-cleanup.md`](phase-3.7-runtime-contract-metadata-cleanup.md) |
 | Phase 3.8 | 回顾性 supply-chain Discovery 标签：追溯 manifest/bundle inventory 双写根因，选择 bundle authority 并冻结迁移边界；当时只关闭方案决策，摘要尾注另记该路线后由 v0.3.4 落地 | [`phase-3.8-runtime-inventory-authority-discovery.md`](phase-3.8-runtime-inventory-authority-discovery.md) |
 | Phase 3.9.1 | 回顾性维护者里程碑：把 v0.3.4 已验收的运行时、供应链/安装、演进路线与后续建议整理为新人心智模型；不是正式 Product Phase，也不产生新授权 | [`phase-3.9.1-v0.3.4-architecture-analysis.md`](phase-3.9.1-v0.3.4-architecture-analysis.md) |
+| Phase 3.9.2 | 回顾性 contract-design 讨论里程碑：区分 overlay 退役 tombstone、通用 exact schema、正向 pristine 证据与未来路线治理；不表示 v2 已实施 | [`phase-3.9.2-contract-v2-tombstone-review.md`](phase-3.9.2-contract-v2-tombstone-review.md) |
 
 ## 阅读方式
 
