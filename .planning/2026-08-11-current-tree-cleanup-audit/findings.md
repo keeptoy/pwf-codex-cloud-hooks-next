@@ -271,8 +271,27 @@
 - 最佳发布节奏不是预先承诺两个 Phase 4 前 stable patch：C1 可形成兼容 accepted baseline；C2 先 Discovery，随后
   根据 Phase 4 Discovery 决定独立兼容实现，或在 `0.4.0-alpha.*` 中作为与行为激活分离的 inactive foundation。
 
+## C1 authorization and branch admission
+
+- 维护者明确采用三段路线并选择本地开发分支 `0.3.5-dev`；这符合 ROADMAP 中同一 minor 行为合同的 patch 修复
+  语义。C1 只清理错误 attribution、低价值静态锁与 candidate test coupling，不新增 Hook/ABI/trusted graph。
+- 当前仅有维护者已声明的五组旧 planning scope tracked deletions，目标 C1 文件无重叠；这些 deletions 可以安全
+  随 branch switch 保留，但不得暂存进 C1 commit。
+- README/ARCHITECTURE 再次确认 patch 版本不得新增 Hook、Host ABI 或 trusted graph；C1 只旋转错误 notice、测试/
+  文档治理和候选 Release 字节，符合 `0.3.5-dev` admission。Release ZIP 必须使用 exact allowlist，bootstrap 继续
+  在 ZIP 外且 development hash 为 64 位 zero hash。
+- DESIGN/ROADMAP 确认 C1 涉及 notice、manifest integrity、package/builder/repository governance 与 Release candidate
+  多层验证；`0.x.y (y>0)` 正是同一 minor 行为合同内的兼容修复身份。candidate 仍需 Source/Candidate、publication、
+  Published Release 与 promotion 四步，当前授权只到本地 source/candidate 准备和提交。
+
 ## Verification
 
 - `npm test`：126 tests，114 pass，0 fail，12 个 POSIX/Linux-only case 在 Windows 如实 SKIP。
 - `python tools/import_upstream_runtime.py check`：healthy，四个 pristine upstream hash 全部匹配。
+- Python compile（`hook_adapter.py`、`owned-plan.py`、`owned-catchup.py`）和 `node --check install.js`：通过。
+- `git ls-files --stage runtime/upstream`：四个且仅四个 upstream runtime 文件均为 `100755`。
+- `bash -n init-cloud-sandbox-v0.3.4.bash`：受限 Windows sandbox 首次因 Git Bash signal pipe `Win32 error 5`
+  无法启动；在非受限只读执行上下文重跑通过，分类为 platform limitation，不是脚本缺陷。
+- deterministic Release build/check：21 项 exact allowlist，build 与 check 均为 healthy，同一临时 ZIP SHA-256 为
+  `497e92a861bd7882129f05b28df1e23a55330db98bebe76891db5b9761bdec3b`；临时文件验证后安全删除。
 - `git diff --check`：通过。

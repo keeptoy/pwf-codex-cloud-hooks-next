@@ -8,10 +8,11 @@
 
 ## Authorization
 
-- 当前授权仅限补充、激活本 planning scope；不授权实施下述兼容清理或 contract/Release-v2 改造。
-- 不授权 Product Phase 4、candidate identity、Release、tag、push、部署或任何其他远端写操作。
-- 后续若维护者授权 Gate C1，本计划允许的实现范围只限该 gate 明列文件和对应 hash/version/Release closure；
-  Gate C1 未闭合不得进入 Gate C2，Gate C2 Discovery 又不自动授权 contract-v2 implementation。
+- 维护者已明确选择 `0.3.5-dev` 作为下一兼容开发分支，并授权实施 Gate C1 的本地 source/candidate 工作。
+- 授权范围只限 C1 明列 notice/history/test-assertion cleanup、版本/hash/候选资产同步、本地 commit 与验证；
+  不授权 contract/Release-v2 schema 改造、Product Phase 4 source 或行为激活。
+- 远端 tag、push、Release、Latest、部署与 Cloud 外部状态变更仍由维护者执行；智能体只准备精确本地提交、命令和
+  只读 postflight。C1 未闭合不得进入 Gate C2，Gate C2 Discovery 又不自动授权 contract-v2 implementation。
 - 所有结论必须区分 production reachability、source/import/install/ZIP authority、未来已规划能力与测试价值。
 
 ## Gates
@@ -22,19 +23,20 @@
 - [x] D2 — Recommendation：给出保留、可直接精简、需独立 Discovery/Release gate 三张清单及优先顺序。
 - [x] R0 — Route freeze：结合 Phase 3.9.1，把审计结论拆成 Gate C1、Gate C2 与 Phase 4 next-task hint，冻结范围、
   顺序、验证和停止条件；未实施任何清理。
-- [ ] C1 — Next compatible cleanup：在维护者选择新 candidate identity 并明确授权后，修正 notice/history，
+- [ ] C1 — Next compatible cleanup（进行中）：在 `0.3.5-dev` 修正 notice/history，
   删除标题元测试，收缩 prose locks，并把通用 Release 测试改为动态 candidate；完成新版本 seal、Cloud 与发布闭环。
 - [ ] C2 — Contract/Release-v2 Discovery：只在 C1 accepted closure 后启动；决定 bundle tombstone、manifest
   metadata/exact schema、Release entry mode 与其他无 consumer metadata 的处理路线，不在 Discovery 中实施。
 
 ## Next Step
 
-停在 `C1_PLAN_READY / IMPLEMENTATION_NOT_AUTHORIZED / PHASE4_NOT_AUTHORIZED`。下一动作只能是维护者选择下一兼容
-candidate identity 并授权 C1；在此之前不修改 notice、tests、history、version/hash 或 Release 输入。
+执行 C1.1：先建立 notice 的失败优先直接断言，再对目标 prose regex 做逐条
+`KEEP_STRUCTURAL / REPLACE_WITH_STRUCTURAL / DELETE_DUPLICATE` 分类，并把通用 Release candidate 测试改成
+由 package/artifact contract 派生身份。C1.1 闭合前不修改 notice、history 或 candidate 字节。
 
 ## Decision
 
-`THREE_GATE_ROUTE_FROZEN / C1_FIRST / C2_DISCOVERY_SECOND / PHASE4_NEXT_TASK_ONLY / REMOTE_WRITES_MAINTAINER_ONLY`
+`C1_LOCAL_IMPLEMENTATION_AUTHORIZED / 0.3.5-DEV / C2_AND_PHASE4_NOT_AUTHORIZED / REMOTE_WRITES_MAINTAINER_ONLY`
 
 ## Route invariants
 
@@ -51,7 +53,7 @@ candidate identity 并授权 C1；在此之前不修改 notice、tests、history
 
 ## Gate C1 — Next compatible cleanup
 
-### C1.0 Admission and baseline
+### C1.0 Admission and baseline（完成）
 
 1. 维护者先选择并授权新 candidate identity；不得改写已发布 v0.3.4 或复用其 sealed ZIP/bootstrap identity。
 2. 恢复 accepted + immediate-fallback 角色窗口、活动 planning、Git 状态和用户改动归属；为 C1 建立明确的

@@ -48,3 +48,19 @@
   Phase 4 Discovery 的前置发布；两轮 Discovery 应共同决定独立兼容 transaction 或 0.4.0 inactive foundation。
 - 已把 sequencing refinement 写回 task plan；focused repository-boundary tests 再次在沙箱外通过 9/9。最终结论是
   当前方案总体前向兼容，但必须保持“保留 upstream 闭包、可复用 seam、未准入 feature”三层区分。
+- 维护者授权进入 C1 并选择 `0.3.5-dev`；已确认本地不存在同名分支，现有 dirty state 只有维护者声明的旧 planning
+  deletions，开始 C1.0 branch admission 与修改前基线。
+- 已创建并切换本地 `0.3.5-dev`；回读 README 与 ARCHITECTURE，确认 C1 patch/version/Release/trusted-graph 边界，
+  维护者旧 planning deletions 在分支切换中保持原样。
+- 回读 DESIGN 与 ROADMAP，确认 C1 的模块/验证落点和 `0.3.5` patch identity 语义；未扩大到 Phase 4、contract-v2
+  或远端 Release 动作。
+- 按根级顺序完整恢复活动 task plan、findings、progress；C1.0 权威恢复完成，开始运行修改前 importer、suite、
+  syntax、ZIP 与 diff 基线。
+- C1.0 修改前基线闭合：importer healthy；完整 suite 126/114/0/12；Python/Node syntax、`git diff --check`、
+  四文件 `100755` mode 与 Bash syntax 通过。Bash 在受限 Windows sandbox 的 signal-pipe 启动失败已在非受限只读
+  上下文复跑通过，归类为 platform limitation。
+- deterministic ZIP build/check 均 healthy（21 exact entries，SHA-256
+  `497e92a861bd7882129f05b28df1e23a55330db98bebe76891db5b9761bdec3b`）；临时资产已删除。C1.0 无 product
+  failure，下一步进入 C1.1 failing-first guards 与断言分类。
+- 一次组合 `apply_patch` 因 task plan hunk 上下文未精确匹配而整体未应用；拆成最小 hunk 后成功，未造成部分写入
+  或内容损失。
