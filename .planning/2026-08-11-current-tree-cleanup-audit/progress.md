@@ -38,3 +38,13 @@
   C2 细化为字段 consumer map、四组 architecture decision 和 compatibility/Discovery exit；Phase 4 仅留 next-task hint。
 - `.planning/.active_plan` 已切回本 scope；focused repository-boundary tests 在沙箱外通过 9/9，证明 active pointer、
   planning 三件套与历史/Release 排除边界仍成立。未修改任何清理目标文件。
+- 开始复核 C1/C2 对 Phase 4～9 的前向影响；当前 active pointer 正确，维护者已有的旧 planning deletions 仍保持
+  未暂存且不进入本次分析记录提交。
+- 回读当前 plan 与 ROADMAP Phase 4～9/gate 模型：确认 C1 只旋转未来 baseline identity；C2 Discovery 应在 Phase 4
+  前完成，但 contract-v2 implementation 不能与 Phase 4 behavior activation 混成一个 transaction。
+- 复核 upstream injector、owned snapshot、exact schemas、Managed events、bundle dependency 与 Phase 4 denied sources：
+  当前确有“保留 upstream 闭包 + 预留 typed seams”，但没有隐藏激活路径；Phase 4 仍需显式 ABI/source/trust gate。
+- 完成 Phase 5～9 前向映射并识别一项路线修正：C2 Discovery 必须先于 Phase 4，但 C2 implementation 不应被预设为
+  Phase 4 Discovery 的前置发布；两轮 Discovery 应共同决定独立兼容 transaction 或 0.4.0 inactive foundation。
+- 已把 sequencing refinement 写回 task plan；focused repository-boundary tests 再次在沙箱外通过 9/9。最终结论是
+  当前方案总体前向兼容，但必须保持“保留 upstream 闭包、可复用 seam、未准入 feature”三层区分。

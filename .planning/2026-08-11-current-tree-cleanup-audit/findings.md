@@ -213,6 +213,64 @@
 - ROADMAP 仍把 Phase 4 定位为 pending Discovery authorization，且尚未建立 `0.4.0-*` identity/branch/implementation
   gate；本计划结尾只能留下下一任务提示。
 
+## Phase 4–9 forward-impact review
+
+- ROADMAP confirms Phases 4–8 are distinct behavior/Host lifecycle candidates while Phase 9 is the release closure of whichever
+  product train was authorized; therefore a compatible cleanup release before Phase 4 changes the future baseline identity but
+  does not consume any Phase 4–8 scope.
+- C1 is forward-positive if its invariants hold: it removes stale prose and version/test coupling, but leaves runtime dispatch,
+  exact ABI, trusted graph, installed inventory and legacy output unchanged. Its only material downstream effect is that Phase 4
+  Discovery must start from the new accepted cleanup baseline rather than v0.3.4.
+- C2 Discovery is strategically useful before Phase 4 because it can prevent Phase 4 from building new behavior on duplicate mode
+  authority or ownerless metadata. C2 implementation, however, must remain a separate transaction; mixing contract cleanup with
+  Phase 4 activation would make failures, rollback and Release identity impossible to attribute cleanly.
+
+### What is actually pre-positioned for Phase 4
+
+- The pristine `inject-plan.sh` already contains opt-in `.mode`, attestation checking, nonce delimiters, smart rendering and
+  autonomous/gated ledger branches; `ledger-summary.sh` is already in the exact bundle/install/ZIP inventory as its optional
+  `mode=autonomous|gated` dependency. This is a deliberately preserved upstream closure, not active managed behavior.
+- The owned boundary deliberately makes that closure unreachable: the request/result ABI is exact v1, `behavior_profile` is the
+  constant `managed_legacy`, and the private snapshot contains only `task_plan.md` plus optional `progress.md`. `.mode`,
+  `.attestation`, `.nonce`, ledger and ambient `PWF_INJECT` do not cross the projection.
+- Tests explicitly put `.mode` and `.nonce` beside a real plan and require managed-legacy output. This is a current isolation
+  guarantee that Phase 4 must evolve through an ABI/snapshot gate, not a dormant feature toggle that cleanup may delete.
+- Phase 4 is only partially pre-positioned: the bundle intentionally denies `attest-plan.sh`, `ledger-append.sh` and
+  `phase-status.sh`; the manifest pristine-Skill minimum checks only `SKILL.md`, resolver and session-catchup. Those future files
+  may exist inside the pinned upstream archive/global Skill, but they are neither admitted owned runtime nor executable policy.
+- The adapter/supervisor and exact sibling protocol are reusable seams, but Managed policy and schemas admit only
+  `SessionStart`/`UserPromptSubmit`. No Stop, tool/permission or separate compaction runtime is pre-activated.
+
+### Phase 5–9 pre-positioning and sequencing correction
+
+- Phase 5 has only a narrow compatibility seam: `clear`/`compact` are accepted `SessionStart.source` values and reuse current
+  plan/catch-up behavior. There is no managed `PreCompact`/`PostCompact` event, compaction checkpoint, or proven no-duplicate/
+  no-loss state machine. Upstream `--context=precompact` exists but owned-plan always invokes `--context=userprompt`.
+- Phase 6 likewise has only upstream code reuse potential: pristine injector supports a `pretool` render shape, while Managed
+  policy and exact schemas expose no `PreToolUse` or permission event. Phase 7/8 Stop/gating logic exists in the pristine Skill
+  fixture/global upstream world, but it is absent from owned bundle dispatch and Managed policy; current advisory fail-open
+  semantics are intentionally incompatible with assuming hard gating is already implemented.
+- Phase 9 is genuinely pre-positioned as lifecycle infrastructure: deterministic builder, external checksummed bootstrap,
+  candidate/accepted role windows, publication oracles and Cloud acceptance templates are reusable for every future train.
+  C1 dynamic candidate tests and a later single mode authority reduce repeated Phase 9 maintenance rather than changing features.
+- Bundle `language`/`host_dependencies` are plausible inputs for admitting new Phase 4 scripts even though current consumers mostly
+  type-check them. C2 should not delete them merely as ownerless metadata; the safe preliminary disposition is
+  `RETAIN_WITH_OWNER` until Phase 4 decides whether bootstrap/doctor will enforce them or docs will own them.
+- Sequencing refinement: after C1 accepted closure and C2 Discovery, Phase 4 Discovery may begin. C2 implementation is not an
+  unconditional prerequisite to Phase 4 Discovery. The two Discoveries must decide whether Phase-4-neutral contract v2 work ships
+  as a separate compatible transaction or as a distinct inactive foundation gate in the `0.4.0-*` train; Phase-4-coupled schema
+  decisions must not be implemented early.
+
+### Forward-impact conclusion
+
+- 当前方案不会吃掉 Phase 4～8 的功能范围，也不会让未来 gate 自动通过；C1 的主要影响是建立一个更干净的新
+  accepted rollback baseline，C2 的主要影响是减少 Phase 4 新增 runtime/entry 时继承的 machine-authority 债务。
+- 仓库存在的“预埋”应分三类：`ledger-summary`/injector v3 branch 是保留的不可达 upstream closure；exact ABI、
+  child supervisor、bundle/installer/release machinery 是可复用架构接缝；Phase 4 denied files、Stop/tool/permission/
+  compaction state machine 则明确尚未准入。三类不能混称为“功能已经实现”。
+- 最佳发布节奏不是预先承诺两个 Phase 4 前 stable patch：C1 可形成兼容 accepted baseline；C2 先 Discovery，随后
+  根据 Phase 4 Discovery 决定独立兼容实现，或在 `0.4.0-alpha.*` 中作为与行为激活分离的 inactive foundation。
+
 ## Verification
 
 - `npm test`：126 tests，114 pass，0 fail，12 个 POSIX/Linux-only case 在 Windows 如实 SKIP。

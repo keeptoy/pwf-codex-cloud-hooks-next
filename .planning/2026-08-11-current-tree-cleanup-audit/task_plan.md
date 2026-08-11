@@ -135,11 +135,14 @@ candidate identity 并授权 C1；在此之前不修改 notice、tests、history
 2. 先设计 failing-first guards：retired keys 回流、unknown top-level key、bundle raw SHA tamper、invalid/missing ZIP
    mode、builder secondary authority 回流、metadata 无 consumer 等都应在 acquire/write 之前失败。
 3. 输出专项设计、字段 decision table、精确文件影响图、hash/identity rotation、Linux/Cloud/Release 验证矩阵与回滚
-   方案，并给出 `GO / CONDITIONAL_GO / NO_GO`。Discovery 结束即停；只有维护者另行授权才创建 implementation gate。
+   方案，并给出 `GO / CONDITIONAL_GO / NO_GO`。同时冻结 implementation placement：Phase-4-neutral 子集是独立兼容
+   transaction，还是 `0.4.0-*` 列车中先于行为激活的 inactive foundation gate；Discovery 结束即停，只有维护者
+   另行授权才创建 implementation gate。
 
 ## Post-cleanup next task hint — Phase 4 Discovery
 
-C1 已完成 accepted closure，且 C2 的 Discovery/后续实现分别独立闭合后，下一任务才是新建 Phase 4 Discovery：
+C1 已完成 accepted closure且 C2 Discovery 闭合后，下一任务才是新建 Phase 4 Discovery。C2 implementation 不预设为
+Phase 4 Discovery 的前置发布；两轮 Discovery 必须先区分 Phase-4-neutral contract cleanup 与 Phase-4-coupled ABI/source：
 
 - 评估 attestation、nonce 与 opt-in v3 modes；
 - legacy 默认行为必须保持不变；
@@ -169,3 +172,4 @@ C1 已完成 accepted closure，且 C2 的 Discovery/后续实现分别独立闭
 | PowerShell 双引号中的 `rg` alternation 含 JSON 引号，转义后形成未闭合正则 | 1 | 不重复复杂转义；改用单引号 pattern，成功取得全部 contract/builder 命中 |
 | 受限 sandbox 不允许创建 `.git/index.lock`，planning-only 自动提交未开始暂存 | 1 | 工作树内容未受损；按权限规则在沙箱外重跑精确 `git add` / `git commit` |
 | 首次 resumed-route `rg` 把 PowerShell 双引号与 `\"mode\"` 组合成未闭合 regex；同一命令的 ROADMAP 查询成功 | 1 | 改用 PowerShell 单引号包围 pattern，完整恢复 notice/contract/builder/test consumer 图 |
+| Phase 4 预埋搜索把 `contracts/*.schema.json` 作为 Windows literal path 传给 `rg`，其余文件证据已输出但命令 exit 1 | 1 | 改用 `contracts -g '*.schema.json'`，成功恢复四份 exact-v1 schema 的 event/profile/unknown-key 边界 |
