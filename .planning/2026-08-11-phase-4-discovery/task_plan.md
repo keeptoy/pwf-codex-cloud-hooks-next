@@ -21,10 +21,10 @@
 
 - [x] D0 — Scope transition：关闭 current-tree cleanup scope，建立唯一 Phase 4 active planning，并同步 ROADMAP
   lifecycle；未改变 package/machine identity。
-- [ ] D1 — Evidence recovery and inventory（进行中）：扫描 pinned upstream v3 mode/attestation/nonce/ledger 文件、
+- [x] D1 — Evidence recovery and inventory：扫描 pinned upstream v3 mode/attestation/nonce/ledger 文件、
   当前 owned snapshot 投影、Host contracts、Cloud fixtures、source/install/ZIP inventory 与 denied surfaces。
-- [ ] D2 — Upstream semantic model：画出 legacy/smart/autonomous/gated 的输入、读写、attestation、nonce、ledger、
-  completion 与失败语义，区分 parser/helper、CLI 与真实依赖 closure。
+- [ ] D2 — Upstream semantic model（进行中）：画出 legacy/autonomous/gated 与正交 smart-injection opt-in 的输入、读写、
+  attestation、nonce、ledger、completion 与失败语义，区分 parser/helper、CLI 与真实依赖 closure。
 - [ ] D3 — Host/Cloud ABI reconciliation：以当前官方文档和带日期 Cloud 证据核对事件、input/output、并发、managed
   policy、cache/Fresh/Resume；把 Phase 5～8 新 Host 能力与 Phase 4 明确隔离。
 - [ ] D4 — Architecture options：比较最小 snapshot projection、owned wrapper/state machine、上游 CLI 调用等路线，
@@ -38,13 +38,13 @@
 
 ## Next Step
 
-执行 D1 read-only inventory：从 pinned PWF v3.8.2 archive/current pristine fixture 恢复 attestation、nonce、mode、
-ledger 的精确文件与调用图；同时盘点当前 adapter/owned-plan/private snapshot 为什么使这些分支不可达。只写 findings，
-不导入新 runtime，不修改 contracts/production/Release inputs。
+执行 D2 semantic model：冻结 legacy、smart-only、autonomous 与 gated token 在两个当前 Hook context 中的精确输出、
+所需输入、缺失/篡改/并发语义；把 gated context behavior 与 Phase 8 Stop activation 分开。只写 findings，不修改
+contracts/production/Release inputs。
 
 ## Current decision
 
-`PHASE4_DISCOVERY_AUTHORIZED / D1_IN_PROGRESS / IMPLEMENTATION_NOT_AUTHORIZED / LEGACY_DEFAULT_FROZEN`
+`PHASE4_DISCOVERY_AUTHORIZED / D1_COMPLETE / D2_IN_PROGRESS / IMPLEMENTATION_NOT_AUTHORIZED / LEGACY_DEFAULT_FROZEN`
 
 ## Invariants
 
@@ -64,7 +64,7 @@ ledger 的精确文件与调用图；同时盘点当前 adapter/owned-plan/priva
 
 ## Discovery questions
 
-1. pinned v3.8.2 中四种 mode 的真实选择、输入文件、调用链和 mutation surface 是什么？
+1. pinned v3.8.2 中 legacy/autonomous/gated 与 smart-injection token 的组合、输入文件、调用链和 mutation surface 是什么？
 2. attestation 证明什么，nonce 防什么；验证失败、缺失、重放和并发时各应如何降级？
 3. private snapshot 能否最小、安全地投影所需 metadata/state，还是需要新的 owned state boundary？
 4. opt-in authority 放在哪里，如何做到用户可理解、Host 可验证、默认 legacy 且 rollback 可逆？
@@ -88,3 +88,6 @@ ledger 的精确文件与调用图；同时盘点当前 adapter/owned-plan/priva
 |---|---:|---|
 | 官方文档首轮精确搜索没有返回可用结果 | 2 | 改用官方 Codex docs 导航页，实际打开 Hooks 与 Cloud environment 页面；没有使用搜索摘要作结论 |
 | active planning focused test 报 `active task plan lacks Stop Conditions` | 1 | 标题大小写未满足 repository lifecycle exact contract；修正为 `## Stop Conditions` 后重跑原测试 |
+| 盘点命令读取不存在的 `contracts/managed-hook-request-v1.json` | 1 | 用 `rg --files contracts` 恢复真实名称，改读 `adapter-plan-context-request-v1.schema.json` 与 result contract |
+| Windows `node --test <two files>` 在 runner 启动子进程时报 `spawn EPERM` | 1 | 分类为本地 runner/sandbox limitation；改用 `node <test-file>` 单进程逐文件执行同一断言，不跳过测试 |
+| 沙箱内 `git commit` 无法创建 `.git/index.lock` | 1 | 工作树无冲突；按仓库纪律仅请求沙箱外本地 add/commit，不执行 push |
