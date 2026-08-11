@@ -28,7 +28,7 @@
       },
       "release_artifact": {
         "path": "contracts/release-artifact-v1.json",
-        "sha256": "26d6962155a7e35f4834a7aab3a5419c87a9f347e1316d5b2ff4a4f4a18c4ae4"
+        "sha256": "2b35180de43777ba6558ce46f2fa8cc66b1d14341f576a7fb11795f288015d20"
       }
     },
     "importer": {
@@ -40,7 +40,7 @@
       "upstream_path": "LICENSE",
       "upstream_sha256": "4f2e5ecfaa4e0833621cfe54c0bdc2f60f086c0925540d7bdc713517eafb3c84",
       "notice_path": "THIRD_PARTY_NOTICES.md",
-      "notice_sha256": "ba31b6620593dd80561e6586908ffb8e5af07a2a069510bce04c00c49a27c53c"
+      "notice_sha256": "10415e608418192d20d0e7095cfb4d77339850576043f65e796e695699424703"
     }
   }
 }

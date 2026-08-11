@@ -157,11 +157,6 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
 });
 
 test("historical documents have one macro entrance and remain advisory", () => {
-  const index = read("docs/history/README.md");
-  assert.match(index, /warm layer.*不是源码 archive.*当前\s+programme authority/s);
-  assert.match(index, /只允许事实纠错或修复.*immutable link/s);
-  assert.match(index, /不得进入 Release.*trusted graph.*runtime dispatch/s);
-
   const readme = read("README.md");
   assert.match(readme, /\]\(docs\/history\/README\.md\)/);
   assert.equal((readme.match(/docs\/history\//g) || []).length, 1,
@@ -173,40 +168,11 @@ test("historical documents have one macro entrance and remain advisory", () => {
     `${macroDoc} must not create a second historical-document entrance`);
 });
 
-test("portable repository governance defines a closed retirement transaction", () => {
+test("portable repository governance keeps stable retirement anchors", () => {
   const guide = read("docs/repository-governance-guide.md");
 
+  assert.match(guide, /^<a name="repository-governance-guide"><\/a>$/m);
   assert.match(guide, /^<a name="retirement-definition-of-done"><\/a>$/m);
-  assert.match(guide, /同一次 lifecycle rotation.*不要求.*同一个 commit.*实施 gate/s);
-  assert.match(guide, /eviction.*关闭前不得开启下一开发列车/s);
-  assert.match(guide, /candidate \+ accepted 角色窗口/);
-  assert.match(guide, /accepted \+ immediate fallback 两个席位/);
-  assert.match(guide, /长期安全不变量已经迁入当前版本或版本无关测试/);
-  assert.match(guide, /unsealed transition.*旧版本 bootstrap checksum/s);
-  assert.match(guide, /不是第四种长期 baseline/);
-  assert.match(guide, /compatibility code.*支持来源窗口.*owner.*行为测试.*retirement condition/s);
-  assert.match(guide, /machine contract.*Phase\/Round.*运行时、构建或验证语义/s);
-  assert.match(guide, /稳定协议、活动施工状态和当前角色窗口内的版本证据三层/);
-  assert.match(guide, /Cloud hard acceptance template.*版本中立黑盒提示词/s);
-  assert.match(guide, /模板不得保存具体版本.*PASS\/PENDING.*不占用 candidate \+ accepted 文件窗口/s);
-  assert.match(guide, /活动 Release task plan 保存.*Next Step.*PENDING.*失败记录/s);
-  assert.match(guide, /版本专项 acceptance 只引用模板.*不得复制模板脚本或保存施工进度表/s);
-  assert.match(guide, /模板和所有版本 acceptance.*Release.*trusted execution graph 排除/s);
-});
-
-test("retired prototype conclusions remain covered by production safety tests", () => {
-  const planTests = read("tests/owned-plan-runtime.test.js");
-  const activationTests = read("tests/activation.test.js");
-  const catchupTests = read("tests/owned-runtime.test.js");
-  for (const title of [
-    "owned plan emits pristine managed-legacy context from a private snapshot",
-    "owned plan rejects linked, non-regular, oversized, and invalid UTF-8 inputs",
-    "owned plan safe reads detect replacement, truncation, append, and hard-link races",
-    "owned plan kills the injector process group, bounds output, and cleans snapshots",
-    "owned plan removes only bounded safe stale snapshots from its trusted base",
-  ]) assert.match(planTests, new RegExp(title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.match(activationTests, /Linux synthetic install-user\/Hook-user split executes both real owned runtimes/);
-  assert.match(catchupTests, /owned runtime distinguishes planning\/update\/output-budget skip reasons/);
 });
 
 test("cold history stays on immutable refs and outside runtime, Release, and adapter dispatch", () => {
@@ -222,7 +188,6 @@ test("cold history stays on immutable refs and outside runtime, Release, and ada
   }
   const artifact = JSON.parse(release);
   assert.equal(artifact.package_version, candidate.slice(1));
-  assert.equal(artifact.entries.length, 21);
   assert.equal(artifact.entries.some(item => item.path === "patches/patch_planning_skill.py"), false);
   assert.equal(artifact.entries.some(item => item.path === "contracts/compatibility-overlays-v1.json"), false);
   assert.equal(artifact.entries.some(item => item.path.startsWith("docs/") || item.path.startsWith("tests/")), false);
@@ -265,9 +230,6 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|Next Step|GitHub `Latest`|production rollback|\d+ registered/);
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 
-  assert.match(roadmap, /活动.*task_plan.*当前唯一 Next Step/s);
-  assert.match(roadmap, /一个 active planning.*candidate \+ accepted role window.*immediate fallback.*immutable/s);
-  assert.match(roadmap, /accepted \+ immediate fallback.*publication\/rollback 资产席位/s);
   assert.match(roadmap, new RegExp("## 3\\. 已完成的基线 `" + accepted.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "`"));
   assert.doesNotMatch(roadmap, /## 3\. 已完成的仓库迁移|M1 exact mirror|M2 slim transformation/);
   assert.equal((roadmap.match(/GitHub `Latest`/g) || []).length, 1);
@@ -287,10 +249,6 @@ test("change history, programme, provenance, and current acceptance keep separat
     }
   }
   assert.match(provenance, /^## 1\. 已发布身份账本$/m);
-  assert.match(provenance, /持续维护的\*\*冷证据账本\*\*/);
-  assert.match(provenance, /索引可以在新证据闭合后新增或轮换精选入口/);
-  assert.match(provenance, /已经登记的 tag、source、ZIP\/bootstrap 字节、SHA 和 acceptance identity 不得.*改写/s);
-  assert.match(provenance, /架构共识.*ARCHITECTURE\.md.*machine contracts.*programme\/lifecycle 角色只见.*ROADMAP\.md/s);
   assert.doesNotMatch(provenance, /^### 1\.[12] /m,
     "published identities must share one role-neutral ledger instead of current/history subsections");
   const publishedLedger = provenance.slice(0, provenance.indexOf("## 2. Successor 迁移不可变证据"));
@@ -303,12 +261,6 @@ test("change history, programme, provenance, and current acceptance keep separat
   for (const macroDoc of [architecture, design, agents]) {
     assert.doesNotMatch(macroDoc, /当前生产回滚|当前回退层级|GitHub `Latest`|production rollback/);
   }
-  assert.match(agents, /当前版本角色只见 `ROADMAP\.md`/);
-  assert.match(agents, /for bootstrap in init-cloud-sandbox-v\*\.bash; do/);
-  assert.match(agents, /重要且可独立恢复的阶段.*自动创建本地[\s\S]*commit/);
-  assert.match(agents, /所有远端写操作由维护者负责[\s\S]*push\/force-push[\s\S]*Pre-release\/Latest/);
-  assert.match(agents, /远端只读查询[\s\S]*维护者完成[\s\S]*只读 postflight/);
-  assert.match(agents, /减少[\s\S]*权限确认、网络重试和来回等待[\s\S]*不得因此跳过测试/);
   assert.match(design, /CHANGELOG\.md/);
   assert.match(changelog,
     /\[`BASELINE_PROVENANCE\.md` 的 Successor 迁移不可变证据\]\(BASELINE_PROVENANCE\.md#successor-migration-evidence\)/);

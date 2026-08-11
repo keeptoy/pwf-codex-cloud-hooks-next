@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.4` accepted stable；Phase 3.7/3.8 contract 与 inventory 瘦身、双通道 Cloud、immutable publication 和 pointer-only promotion 全部 PASS |
+| 当前开发列车 | `v0.3.5-dev`；修正 attribution、精简低价值静态锁并解耦通用 candidate tests，当前为 zero-hash Source/Candidate |
 | 当前已接受版本 | `v0.3.4`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.3` immediate fallback |
 | 回退证据链 | immutable `v0.3.2` deeper fallback；更早发布里程碑见 provenance museum |
@@ -33,6 +33,9 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 v0.3.4/v0.3.3 tag、source、ZIP/bootstrap、URL、size 与 digest 均未改写。版本 delta 见
 [`CHANGELOG.md`](CHANGELOG.md)，精确 source/资产/SHA 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，
 最终 Cloud 与晋级证据见 [`docs/v0.3.4-cloud-hard-acceptance.md`](docs/v0.3.4-cloud-hard-acceptance.md)。
+
+`v0.3.5-dev` 是该 accepted baseline 之上的未封板兼容 candidate。它只改变 attribution、治理测试与历史摘要，
+不冒充 tag/Release，也不改变 v0.3.4/v0.3.3 的不可变资产或当前 rollback 角色。
 
 ## 3. 已完成的基线 `v0.3.4`
 
@@ -57,24 +60,19 @@ baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta
 
 ## 4. 当前开发列车与 Product Phase 路线
 
-`v0.3.4` 已完成稳定兼容列车：它先以 `v0.3.4-dev` 完成 Source/Candidate，随后把历史 programme annotation 从 runtime
-machine contract 迁出，并把 manifest 的重复 source/install projection 收敛到经 SHA 验证的 runtime bundle；
-exact current inventory guard 继续阻止未授权脚本准入。它不改变 production
-dispatch、Host ABI、trusted graph、installed inventory 或 upstream runtime bytes，也不授权 Phase 4。
-Phase 4 仍停在 Discovery authorization 之前，尚未建立 `0.4.0-*` machine identity、开发分支或实现 gate。
+`v0.3.5-dev` 是 v0.3.4 accepted baseline 之上的兼容维护列车：修正已过时的 overlay attribution，删除只检查
+其他测试标题的元测试，收缩中文 prose/order locks，并让通用 Release 测试从 machine identity 动态派生。
+它不改变 production dispatch、Host ABI、trusted graph、runtime/installed inventory 或 upstream runtime bytes，
+也不授权 Phase 4。Phase 4 仍停在 Discovery authorization 之前，尚未建立 `0.4.0-*` machine identity、开发
+分支或实现 gate。
 
-本列车的 Source/Candidate Linux、完整行为黑盒与 post-resume deep check 已按
-[`v0.3.4 acceptance`](docs/v0.3.4-cloud-hard-acceptance.md#v0-3-4-source-candidate-result) 闭合；该证据只证明
-zero-hash candidate 通道。随后 R1～R4 已完成 stable identity、确定性 seal、publication audit、immutable
-prerelease publication 与公开双资产重新下载复核；精确 source、资产大小和 SHA 见
-[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)。随后独立 Fresh Cloud 从公开 bootstrap 的默认下载链
-完成 B-PR、C、D、E1/E2 与 9.2，版本 acceptance 已冻结两条通道的最终证据。Published Release gate 至此
-关闭。维护者随后把现有 Release 原地晋级为 Latest；postflight 与 current-tree eviction 已闭合，这不改写
-任何 sealed byte。Product Phase 4、下一开发列车与额外旧版本 eviction 仍未授权。
+本列车当前只完成本地 C1 source cleanup 与 zero-hash candidate 准备；Source/Candidate Cloud、stable seal、
+immutable publication、Published Release Cloud 与 pointer-only promotion 尚未授权执行。精确 Next Step 和停止条件
+只见活动 task plan；已完成 v0.3.4 基线与 rollback 证据仍见第 3 节及 provenance/acceptance。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
-bootstrap/acceptance；当前 candidate 与 accepted 都是 v0.3.4，因此版本文件窗口只保留 v0.3.4。
-v0.3.3 immediate fallback 与 v0.3.2 deeper fallback
+bootstrap/acceptance；当前窗口为 v0.3.5-dev candidate + v0.3.4 accepted。v0.3.3 immediate fallback 与
+v0.3.2 deeper fallback
 均由 immutable commit、tag、Release、exact acceptance 与 publication oracle 恢复；更早历史只留在精选
 provenance。
 trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。
@@ -110,6 +108,8 @@ trusted graph、rollback 和 Cloud 评审。
 
 新增 Hook 类型、Host ABI、信任/激活模型或明显用户行为面，默认提升 minor；纯兼容修复才使用 patch。
 任何字节变化都必须使用新身份和新 hash，不得复用已发布资产。
+
+<a name="discovery-gate-governance"></a>
 
 ## 6. Discovery 与 gate 晋级模型
 

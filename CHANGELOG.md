@@ -4,6 +4,22 @@
 [`ROADMAP.md`](ROADMAP.md)；当前唯一行动与授权边界见活动 `task_plan.md`；精确 source、资产、大小和
 SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 acceptance。
 
+## v0.3.5-dev
+
+### Changed
+
+- 建立 64 位 zero-hash、fail-closed 的下一兼容 Source/Candidate identity；不 seal、不发布，也不改变
+  v0.3.4 accepted/Latest 与 v0.3.3 immediate fallback。
+- 修正 installed/Release notice 中已经过时的 overlay attribution，明确四个 packaged upstream runtime 均为
+  pinned v3.8.2 的 byte-for-byte pristine copy，兼容与安全边界由 repository-owned wrappers 承担。
+- 删除只检查其他测试标题的元测试，通用 Release 测试改从 package/artifact 派生 candidate、bootstrap 与
+  entry count；静态治理测试保留 stable anchors、exact inventory、forbidden zones、role windows、Release
+  exclusions 与 source call-order，不再锁定中文同义措辞和段落顺序。
+- Phase 3.8 历史摘要保留“当时只关闭 Discovery”的语义，并以独立尾注说明 bundle-authority migration 后由
+  v0.3.4 落地。本列车不修改 runtime dispatch、Host ABI、trusted graph、installed inventory 或 Product Phase 4。
+- 当前 gate 与后续 Cloud 状态见
+  [`docs/v0.3.5-dev-cloud-hard-acceptance.md`](docs/v0.3.5-dev-cloud-hard-acceptance.md)。
+
 ## v0.3.4
 
 ### Changed

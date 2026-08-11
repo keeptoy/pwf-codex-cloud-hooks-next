@@ -195,6 +195,15 @@ dependency 都必须在 acquire、backup 或 write 之前失败。
 集合与行为保持不变，该迁移和未来 Phase 4～9 主路线没有功能冲突；未来新增已准入 runtime 时只需进入 bundle
 这一 inventory authority，但仍必须经过对应 Product Phase、Cloud 与 Release gate。
 
+<a name="phase-3-8-subsequent-landing"></a>
+
+## Subsequent landing
+
+本摘要上文保留的是 Phase 3.8 关闭时“只完成 Discovery、尚未实施”的历史语义。后继兼容 gate 随后在 `v0.3.4`
+完成 bundle-authority migration：installer 与 importer 先校验 bundle 原始 SHA 再解析，由 bundle 独占 source/install
+inventory；manifest 收敛为 provenance 与 integrity index。installed-state snapshot 和 Release ZIP allowlist 仍按各自
+生命周期保留，因此不属于重复 source authority。该后续事实不反向扩大 Phase 3.8 当时的授权。
+
 <a name="phase-3-8-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

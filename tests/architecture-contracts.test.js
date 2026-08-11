@@ -77,7 +77,6 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   const artifact = readJson("contracts/release-artifact-v1.json");
   const upstream = readJson("upstream-manifest.json");
   const architecture = readText("ARCHITECTURE.md");
-  const design = readText("DESIGN.md");
   const catchup = readText("runtime/owned-catchup.py");
   const installer = readText("install.js");
 
@@ -98,40 +97,9 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.equal(result.properties.context.maxLength, 20000);
   assert.deepEqual(result.properties.project.properties.session_attachment.enum, ["legacy", "attached", "detached"]);
 
-  assert.match(architecture, /Plan runtime runs first for both `SessionStart` and `UserPromptSubmit`/);
-  assert.match(architecture, /global PWF Skill 保持 pristine/);
-  assert.match(architecture, /Managed policy 只认识 adapter/);
-  assert.match(architecture, /代码出现在上游或仓库.*前一层不能推导后一层/s);
-  assert.match(architecture, /does not resolve planning files/);
-  assert.match(architecture, /四个.*upstream runtime.*pristine/s);
-  assert.match(architecture, /verified immutable bytes/);
-  assert.match(architecture, /不调用上游 `session-catchup\.py` 的 CLI `main\(\)`/);
-  assert.doesNotMatch(architecture, /run owned session-catchup\.py/);
-  assert.match(architecture, /validate, identity-check, and freeze transcript bytes \+ reuse pinned owned parser helpers/);
-  assert.match(architecture, /tools\/build_release\.py applies the exact Release allowlist/);
-  assert.match(architecture, /THIRD_PARTY_NOTICES\.md/);
-  assert.match(architecture, /prepare mandatory PWF_GLOBAL_HOOK_CANARY_V1 \(not streamed yet\)/);
-  assert.match(architecture, /validated plan result with inject=true only/);
-  assert.match(architecture, /does not stream an early canary or partial child output/);
-  assert.match(architecture, /信任根构造顺序，不是\s*fallback session 的逐根优先级/s);
-  assert.match(architecture, /按 `mtime_ns` 全局倒序/);
-  assert.match(architecture, /Managed policy 给 adapter 30 秒 timeout.*27 秒 deadline.*1 秒/s);
-  assert.match(architecture, /冷任务.*checkout.*branch\/commit.*setup script.*agent phase/s);
-  assert.match(architecture, /environment cache.*default branch.*恢复.*checkout.*maintenance script/s);
-  assert.match(architecture, /setup 中完成安装.*source=startup.*提示词中安装.*Resume SessionStart.*UserPromptSubmit/s);
+  assert.match(architecture, /^<a name="cloud-lifecycle"><\/a>$/m);
   assert.match(catchup, /candidates\.sort\(key=lambda item: item\.mtime_ns, reverse=True\)/);
   assert.match(installer, /timeout = 30/);
-  assert.match(design, /parser helpers（不调用 upstream CLI main）/);
-  assert.match(
-    design,
-    /transcript selection.*identity revalidation.*immutable byte capture.*Cloud event normalization\/dedup.*report rendering/s,
-  );
-  assert.match(
-    design,
-    /动态加载完整的 fixed owned `session-catchup\.py` module.*`same_project_path`.*`find_last_planning_update`.*`extract_messages_after`.*`text_content`.*不调用 CLI `main\(\)`/s,
-  );
-  assert.match(architecture, /Release ZIP 的身份与内容由 machine contract/);
-  assert.match(architecture, /已发布资产的精确身份与来源只在.*BASELINE_PROVENANCE/s);
 
   assert.equal((bundle.local_files || []).some(item => item.id === "owned_plan"), true);
   assert.equal(upstream.managed_runtime.schema_version, 2);
@@ -202,18 +170,12 @@ test("README owns the document map while DESIGN owns the repository implementati
 test("ARCHITECTURE preserves system reasoning while DESIGN routes implementation changes", () => {
   const architecture = readText("ARCHITECTURE.md");
   const design = readText("DESIGN.md");
-  const agents = readText("AGENTS.md");
 
-  for (const architectureSection of [
-    "## 2. 为什么需要适配层", "## 3. 部署图", "## 4. Runtime 数据流",
-    "## 7. 信任分层", "## 8. 失败语义",
-  ]) assert.match(architecture, new RegExp(architectureSection.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(architecture, /^<a name="cloud-lifecycle"><\/a>$/m);
   assert.match(architecture, /\[.*DESIGN.*\]\(DESIGN\.md\)/);
 
-  for (const designSection of [
-    "## 3. 实现布局", "## 4. 模块职责与依赖", "## 5. 按变更目标定位",
-    "## 6. 验证路由",
-  ]) assert.match(design, new RegExp(designSection.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(design, /^<a name="implementation-layout"><\/a>$/m);
+  assert.match(design, /^<a name="module-responsibilities"><\/a>$/m);
 
   for (const target of [
     "contracts/runtime-bundle-v1.json", "contracts/release-artifact-v1.json",
@@ -222,8 +184,6 @@ test("ARCHITECTURE preserves system reasoning while DESIGN routes implementation
     "tests/published-release-oracles.test.js",
   ]) assert.match(design, new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 
-  assert.match(design, /repository source.*Release ZIP.*installed managed runtime/is);
-  assert.match(design, /入口.*直接依赖.*影响.*验证/s);
   assert.doesNotMatch(design, /ADAPTER_DEADLINE_SECONDS|20,000|50 \/ 20|当前生产回滚|GitHub `Latest`/);
 });
 
@@ -256,50 +216,11 @@ test("DESIGN maps every test module back to the capability and boundary it prote
   assert.doesNotMatch(reverseIndex, /\b\d+\s+(?:tests?|cases?|passed|failed|skipped)\b/i);
 });
 
-test("ROADMAP discovery governance separates new rounds from in-round safety gates", () => {
-  const roadmap = readText("ROADMAP.md");
-  const discoveryStart = roadmap.indexOf("## 6. Discovery 与 gate 晋级模型\n");
-  const releaseStart = roadmap.indexOf("## 7. Release 授权与封板顺序\n");
-  assert.ok(discoveryStart >= 0 && releaseStart > discoveryStart);
-  const discovery = roadmap.slice(discoveryStart, releaseStart);
-
-  assert.match(discovery, /新 Product Phase.*第一轮.*Discovery/is);
-  assert.match(discovery, /激活.*迁移.*删除旧.*schema.*Host ABI.*trusted graph.*Release.*rollback/is);
-  assert.match(discovery, /架构.*契约.*Phase 范围.*信任.*Release.*回滚.*正式增加.*Round/is);
-  assert.match(discovery, /架构不变.*Round 内.*A\/B\/C.*子门槛/is);
-  assert.match(discovery, /测试补漏.*文档同步.*局部 bug.*不.*增加.*探路轮/is);
-  assert.match(discovery, /新证据.*差异.*可选路线.*代价.*不变量.*非目标.*停止条件/is);
-  assert.match(discovery, /本地测试.*Cloud.*回滚.*GO.*CONDITIONAL_GO.*NO_GO/is);
-  assert.match(discovery, /暂停.*production dispatch.*发布哈希.*外部.*不变/is);
-  assert.match(discovery, /实现正确.*架构方向错/is);
-  assert.match(discovery, /讨论态.*疑问.*例子.*只读.*不.*实施授权/is);
-  assert.match(discovery, /决策态.*GO.*实施态.*明确.*实施/is);
-  assert.match(discovery, /单点.*同类.*全仓库.*inventory.*分类.*清退.*停止条件/is);
-});
-
-test("Release governance routes tests by checkout prerequisites without forging refs", () => {
+test("ROADMAP keeps stable Discovery and Release governance anchors", () => {
   const roadmap = readText("ROADMAP.md");
   const readme = readText("README.md");
-  const releaseStart = roadmap.indexOf("## 7. Release 授权与封板顺序\n");
-  const retentionStart = roadmap.indexOf("## 8.", releaseStart);
-  assert.ok(releaseStart >= 0 && retentionStart > releaseStart);
-  const release = roadmap.slice(releaseStart, retentionStart);
-
-  assert.match(release, /Source\/Candidate.*Published Release/is);
-  assert.match(release, /tagless.*checkout.*remote.*tag/is);
-  assert.match(release, /publication-only.*oracle.*分流/is);
-  assert.match(release, /不得.*创建.*tag.*伪造.*前置条件/is);
-  assert.match(release, /完整.*suite.*封板.*publication/is);
-  assert.match(release, /公开.*URL.*SHA.*默认.*下载/is);
-  assert.match(release, /bootstrap.*临时目录.*清理.*post-install.*重新下载.*ZIP/is);
-  assert.match(release, /ZIP 内.*install\.js.*doctor.*workspace/is);
-  assert.match(release, /^<a name="pre-1-compatibility-admission"><\/a>$/m);
-  assert.match(release, /pre-1\.0.*不能代替明确的支持合同/is);
-  assert.match(release, /clean install.*machine contracts.*行为测试.*managed install\/doctor\/repair\/\s*uninstall/is);
-  assert.match(release, /历史可恢复性.*installed-state 升级兼容性.*前者不自动产生后者/is);
-  assert.match(release, /accepted \+ immediate fallback.*不是跨版本 installer.*contract/is);
-  assert.match(release, /Discovery\/compatibility gate.*来源版本\/状态窗口.*owner.*端到端升级.*回滚测试.*Linux\/Cloud.*sunset\/retirement/s);
-  assert.match(readme, /Pre-1\.0 支持与升级边界/);
-  assert.match(readme, /旧 tag\/Release\/acceptance.*不等于.*installer.*installed state/s);
+  assert.match(roadmap, /^<a name="discovery-gate-governance"><\/a>$/m);
+  assert.match(roadmap, /^<a name="release-four-step-flow"><\/a>$/m);
+  assert.match(roadmap, /^<a name="pre-1-compatibility-admission"><\/a>$/m);
   assert.match(readme, /ROADMAP\.md#pre-1-compatibility-admission/);
 });

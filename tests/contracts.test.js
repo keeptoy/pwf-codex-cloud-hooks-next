@@ -127,6 +127,10 @@ test("machine contracts freeze provenance, pristine runtime, Host protocol, and 
   }
   assert.equal(fileHash(path.join(root, upstream.managed_runtime.importer.path)), upstream.managed_runtime.importer.sha256);
   assert.equal(fileHash(path.join(root, upstream.managed_runtime.license_provenance.notice_path)), upstream.managed_runtime.license_provenance.notice_sha256);
+  const notice = fs.readFileSync(path.join(root, upstream.managed_runtime.license_provenance.notice_path), "utf8");
+  assert.match(notice, /runtime\/upstream[\s\S]*byte-for-byte pristine/);
+  assert.match(notice, /repository-owned wrappers/);
+  assert.doesNotMatch(notice, /compatibility overlays? applied|overlays? applied/i);
 
   assert.equal(request.$schema, "https://json-schema.org/draft/2020-12/schema");
   assert.equal(request.additionalProperties, false);

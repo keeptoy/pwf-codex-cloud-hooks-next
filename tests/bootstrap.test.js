@@ -15,6 +15,9 @@ const releaseArtifact = JSON.parse(fs.readFileSync(path.join(root, "contracts", 
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 const bash = process.env.BASH || (process.platform === "win32" ? "D:\\Program Files\\Git\\bin\\bash.exe" : "bash");
 const currentVersion = `v${packageVersion}`;
+const roadmap = fs.readFileSync(path.join(root, "ROADMAP.md"), "utf8");
+const acceptedVersion = roadmap.match(/^\| 当前已接受版本 \| `(v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?)`/m)?.[1];
+assert.ok(acceptedVersion, "ROADMAP lacks a parseable accepted baseline role");
 assert.equal(releaseArtifact.external_release_assets.length, 1);
 const candidateBootstrap = path.join(root, releaseArtifact.external_release_assets[0].path);
 
@@ -53,11 +56,12 @@ function makeSkillArchive(workspace, driftRequiredFile = false) {
   return { archive, sha256: require("node:crypto").createHash("sha256").update(fs.readFileSync(archive)).digest("hex") };
 }
 
-test("sealed bootstrap pins both archives, removes remote Node tooling, and rejects an explicit zero hash", () => {
+test("candidate bootstrap pins both archives, removes remote Node tooling, and enforces checksum state", () => {
   const bootstrap = fs.readFileSync(candidateBootstrap, "utf8");
   const releaseZipSha256 = bootstrap.match(/HOOKS_SHA256="\$\{HOOKS_SHA256:-([a-f0-9]{64})\}"/);
   assert.ok(releaseZipSha256, "bootstrap lacks a pinned default ZIP SHA-256");
-  assert.notEqual(releaseZipSha256[1], "0".repeat(64));
+  const candidateIsAccepted = currentVersion === acceptedVersion;
+  assert.equal(releaseZipSha256[1] === "0".repeat(64), !candidateIsAccepted);
   const runAll = bootstrap.match(/run_all\(\) \{([\s\S]*?)\n\}/);
   assert.ok(runAll, "run_all was not found");
   assert.match(bootstrap, new RegExp(`HOOKS_VERSION="\\$\\{HOOKS_VERSION:-${currentVersion.replaceAll(".", "\\.")}\\}"`));
@@ -72,8 +76,9 @@ test("sealed bootstrap pins both archives, removes remote Node tooling, and reje
   assert.doesNotMatch(bootstrap, /\bnvm\b|\bnpx\b|\bnpm\b/i);
   assert.doesNotMatch(bootstrap, /\|[ \t]*bash\b/);
   assert.ok(runAll[1].indexOf("verify_node_toolchain") < runAll[1].indexOf("install_system_prerequisites"));
-  const sealedDefault = runBash('source "$1"\nassert_hooks_checksum_configured', [candidateBootstrap]);
-  assert.equal(sealedDefault.status, 0, sealedDefault.stderr);
+  const defaultChecksum = runBash('source "$1"\nassert_hooks_checksum_configured', [candidateBootstrap]);
+  assert.equal(defaultChecksum.status, candidateIsAccepted ? 0 : 1, defaultChecksum.stderr);
+  if (!candidateIsAccepted) assert.match(defaultChecksum.stderr, /HOOKS_SHA256 is still a placeholder/);
   const explicitZero = runBash(
     'source "$1"\nassert_hooks_checksum_configured',
     [candidateBootstrap],

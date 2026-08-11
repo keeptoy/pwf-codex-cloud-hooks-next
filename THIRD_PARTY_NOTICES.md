@@ -1,8 +1,9 @@
 # Third-party notices
 
-The files under `runtime/upstream/` contain source code from
-`OthmanAdi/planning-with-files` release `v3.8.2`, with the locally documented
-Codex Cloud compatibility overlays applied only to `session-catchup.py`.
+The four files under `runtime/upstream/` are byte-for-byte pristine copies from
+`OthmanAdi/planning-with-files` release `v3.8.2`. Codex Cloud compatibility and
+security boundaries are implemented by repository-owned wrappers outside those
+upstream files.
 
 ## planning-with-files
 
