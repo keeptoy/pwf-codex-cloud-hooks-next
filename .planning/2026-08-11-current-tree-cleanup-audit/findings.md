@@ -697,3 +697,18 @@ unknown-key tests、一组 imported/package bytes 等于 pinned pristine bytes �
 
 本轮讨论成果已整理到 `docs/history/phase-3.9.2-contract-v2-tombstone-review.md`，作为新人恢复这次认识修正的
 独立摘要；活动字段取舍、Next Step 与授权仍以本 planning scope 为准。
+
+## C2 field lifecycle convergence
+
+- `origin=upstream_pristine` 不阻塞 Phase 4 Discovery；它是 source-admission shape 的下游字段。当前状态冻结为
+  `DEFERRED_WITH_REVIEW_TRIGGER`：v1 不改，Phase 4 冻结 upstream/local、source-only/installed 分区时复核，最迟
+  在 contract v2 implementation 前裁决。
+- v2 首选用明确 `upstream_files` / `local_files` 分区、受限 paths、单一 pristine hash、mode 与 dependency 表达
+  来源并删除重复常量；只有同一 collection 混合多种来源且 production consumer 真正按来源分支时才保留。
+- “当初为什么加”与“以后何时删”必须同时治理。迁移 tombstone 当时合理；缺口是没有 owner、transition window、
+  review trigger、retirement evidence 和 latest decision gate，导致 validator/test 把临时字段固化为祖传合同。
+- 后续 machine-field decision table 至少记录 field/contract、introduced because、owner、producer/validators、
+  behavioral consumer、lifecycle class、transition window、review trigger/latest gate、retirement evidence 与
+  replacement/recovery。生命周期说明留在对应 Discovery/治理 authority，不塞回 machine JSON。
+- 本轮成果已整理到 `docs/history/phase-3.9.3-machine-field-lifecycle-and-origin.md`；尚未关闭当前 planning scope、
+  新建 Phase 4 planning 或修改任何 machine/production/Release 输入。

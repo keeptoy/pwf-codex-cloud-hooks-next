@@ -195,3 +195,8 @@
   contracts、tests 或 Release inputs。
 - Phase 3.9.2 文档治理验证通过：`git diff --check` PASS；`repository-boundary` 与
   `architecture-contracts` focused suite 15/15 PASS。
+- 新建 `docs/history/phase-3.9.3-machine-field-lifecycle-and-origin.md` 并登记 history index：记录 `origin` 的
+  `DEFERRED_WITH_REVIEW_TRIGGER` 状态、默认结构化来源/删除重复常量方向，以及 machine field 最小生命周期表；
+  同步 C2 task/findings，未进入 Phase 4 或修改 contracts/production/Release inputs。
+- Phase 3.9.3 文档治理验证通过：`git diff --check` PASS；`repository-boundary` 与
+  `architecture-contracts` focused suite 15/15 PASS。

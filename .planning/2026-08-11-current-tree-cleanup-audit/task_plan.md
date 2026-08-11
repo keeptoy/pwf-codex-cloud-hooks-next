@@ -34,17 +34,17 @@
   顺序、验证和停止条件；未实施任何清理。
 - [x] C1 — Next compatible cleanup：`v0.3.5` exact source/tag、非 prerelease Release、Latest、双资产、Cloud/下载
   验收与 accepted/fallback 角色轮转全部闭合；未改变 runtime/ABI/trusted graph 或夹带 contract-v2。
-- [ ] C2 — Contract/Release-v2 Discovery（观点复核中）：重新判断 overlay tombstone/专用反复活断言是否有
-  长期价值，区分通用 exact-schema 完整性、正向 pristine contract 与架构路线治理；不实施 schema/source。
+- [ ] C2 — Contract/Release-v2 Discovery（观点已收敛，等待任务切换决定）：overlay tombstone/专用反复活断言与
+  `origin` 生命周期已有边界；尚未实施 schema/source，也未新建 Phase 4 planning。
 
 ## Next Step
 
-在本地 `0.4.0-dev` 上继续 C2 讨论态：复核“删除 tombstone 后是否还需要 overlay 专用 absence/negative guard”。
-只允许更新证据与取舍；不得修改 machine contract、production、package identity 或激活 Phase 4 source。
+Phase 3.9.3 已记录本轮生命周期结论；停止在维护者决定是否关闭当前 C2 scope、另建 Phase 4 Discovery 之前。
+不得修改 machine contract、production、package identity 或激活 Phase 4 source。
 
 ## Decision
 
-`C1_ACCEPTED_CLOSURE_PASS / C2_DISCOVERY_REOPENED_FOR_TOMBSTONE_REVIEW / NO_IMPLEMENTATION / PHASE4_NOT_AUTHORIZED`
+`C1_ACCEPTED_CLOSURE_PASS / C2_REVIEW_CONVERGED_AWAITING_TASK_SWITCH / NO_IMPLEMENTATION / PHASE4_NOT_AUTHORIZED`
 
 ## Route invariants
 
@@ -166,7 +166,7 @@
 - 此前 C2 closure 只提交 planning 证据；本次 reopened review 仅同步本地分支/C2 lifecycle 到 ROADMAP，仍不创建
   package candidate，不修改 machine contract，不运行 publication 或 Cloud 写操作。
 
-### C2.4 Tombstone review（讨论中）
+### C2.4 Tombstone and field-lifecycle review（认识复核已收敛）
 
 - 不把“overlay 退役提交曾有意保留 tombstone”直接推导为“v2 必须长期保留 overlay 专用防线”。历史动机只能
   解释 v1，不能自动取得 v2 owner。
@@ -175,10 +175,14 @@
   ARCHITECTURE/Discovery gate 管理未来是否重新选择 overlay。三者不应再由空 `overlay_ids` 或双 hash 重复表达。
 - 重点判断专用 overlay negative test 是否应退休为通用 unknown-key test，而不是继续冻结历史字段名和“永不复活”
   叙事。当前无 implementation 授权。
-- 同步复核固定 `origin=upstream_pristine` 是否有独立 owner；若 v2 用明确 `upstream_files` 分区和路径/hash 约束
-  完整表达来源，origin 常量也可能属于重复 machine metadata。该取舍尚未冻结。
+- 固定 `origin=upstream_pristine` 状态冻结为 `DEFERRED_WITH_REVIEW_TRIGGER`：v1 原样保留；Phase 4 Discovery
+  冻结 source/inventory shape 时复核，最迟在 contract v2 implementation 前裁决。若明确分区和 path/hash/mode/
+  dependency 已完整表达来源则首选删除；只有真实 consumer 按来源改变行为才保留或在新 schema 恢复。
 - 本轮讨论成果已提升为回顾性维护者里程碑
   `docs/history/phase-3.9.2-contract-v2-tombstone-review.md`；它保存认识修正，不替代当前 C2 Next Step 或授权。
+- 字段生命周期与 Phase 4 交界另记于
+  `docs/history/phase-3.9.3-machine-field-lifecycle-and-origin.md`：以后 machine field 必须同时记录引入理由、owner、
+  behavioral consumer、transition window、review trigger、retirement evidence 与最迟裁决 gate。
 
 ## Post-cleanup next task hint — Phase 4 Discovery
 
