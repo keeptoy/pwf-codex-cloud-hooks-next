@@ -54,3 +54,5 @@
 - R4 治理回写后 focused lifecycle/Release suite 11/11 PASS；完整 Windows suite 114 PASS、12 个诚实的
   POSIX/Linux SKIP、0 FAIL；`git diff --check` PASS。回写只涉及 docs/planning/tests，未改变 sealed
   ZIP/bootstrap 或任何 production/runtime byte。
+- R4 治理回写 commit `66e571e` 已 fast-forward 推送到远端 `0.3.4-dev` 与 `main`；immutable `v0.3.4`
+  tag 继续固定在发布源 `59a999f`，没有移动 Latest、执行 R5/R6 或进入 Product Phase 4。
