@@ -59,6 +59,22 @@
   文件和证据。字段级唯一 authority 则分别落到 Architecture invariant、Design consumer map、exact schema、
   verified production loader 与 negative/bypass tests，缺一层都可能让路线要求退化成口号。
 
+## Phase 3.6 retrospective
+
+- immutable refs 证实 alpha.1 已含 patcher/overlay/patched `session-catchup.py` 而没有 owned wrapper；alpha.2 首次
+  加入 `owned-catchup.py`，但两版 patched upstream 的 Git blob 同为
+  `56b033a961e47c9f7c7c3abedeb5db7ffcb5a5b2`。alpha.2 wrapper 只进入四个 parser helper roots，不调用
+  upstream `main()`。
+- 因果必须分开：Phase 2 owned wrapper 让 catch-up overlay 的 patched CLI branches 失去 production 用途；Phase 3
+  private snapshot 只解决 plan resolver/injector 的真实文件调用，并避免新增第二组 plan overlay，不是前四项
+  catch-up overlay 的直接替代者。
+- v0.3.2 的残留属于“behavior retired / supply-chain active”：production call graph 不可达，但 importer、patcher
+  anchors、overlay ledger、managed hashes、Release allowlist、installer/doctor、tests/docs 仍把 transformation 当作
+  活动合同。replacement gate 缺少 source→build→install→test/docs 的完整 retirement transaction。
+- 复盘教训是 compatibility layer 必须同时关闭 behavior 与 supply-chain 两个生命周期；新 boundary 激活时就建立
+  overlay→replacement evidence map 和 retirement gate，测试从 patch mechanism 迁到 equivalence/helper closure/
+  unreachable/absence，旧机制只由 immutable refs/provenance 恢复。
+
 ## D1 current consumer map
 
 | 层/消费者 | 当前直接读取 | inventory 用途 |

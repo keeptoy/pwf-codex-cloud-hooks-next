@@ -117,3 +117,7 @@
   合理性与长期错位，补充五项设计遗漏、六条经验和 ROADMAP/contract/consumer/tests/history 分层落地；只改
   cold history/planning，不改变 current runtime、I3、Release 或 Phase 4。
 - Phase 3.7 复盘补充后的 architecture/repository focused governance 17/17 PASS，`git diff --check` PASS。
+- 根据维护者补充快照审计 Phase 3.6 immutable refs：alpha.1 无 owned wrapper，alpha.2 首次加入 wrapper，但二者
+  patched upstream blob 完全相同；wrapper 从第一版只调用四个 helper roots。Phase 3.6 历史据此补全真实三阶段
+  因果、行为/供应链双生命周期、四项设计缺口、六条教训和完整 retirement transaction，不改 production/Release。
+- Phase 3.6 复盘补充后的 architecture/repository focused governance 17/17 PASS，`git diff --check` PASS。

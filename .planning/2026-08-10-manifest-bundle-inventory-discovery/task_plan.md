@@ -36,6 +36,8 @@ authority 迁移设计。
   machine contracts、production consumers 和 tests 的分层落地方式补入同一 Phase 3.8 复盘。
 - 维护者授权以相同深度补全 Phase 3.7 的设计复盘：说明 programme 标签在迁移期为何合理、放入长期 runtime
   contract 遗漏了什么、测试为何固化旧路线，以及 programme/runtime 分层和 retirement 的落地教训。
+- 维护者提供 Phase 1 overlay、Phase 2 owned wrapper、Phase 3 private snapshot 的因果快照，并授权补全 Phase 3.6
+  复盘：必须区分 catch-up 与 plan invocation domain，解释“行为退休、供应链仍存活”，并总结全链路 retirement。
 
 ## Invariants
 
