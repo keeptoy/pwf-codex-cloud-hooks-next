@@ -121,3 +121,14 @@
   patched upstream blob 完全相同；wrapper 从第一版只调用四个 helper roots。Phase 3.6 历史据此补全真实三阶段
   因果、行为/供应链双生命周期、四项设计缺口、六条教训和完整 retirement transaction，不改 production/Release。
 - Phase 3.6 复盘补充后的 architecture/repository focused governance 17/17 PASS，`git diff --check` PASS。
+- 维护者确认 exact `dc20ef9` 的 Source/Candidate 4.1、B-SC/C/D/E1/E2 与 9.1 全链路 PASS；同步版本 acceptance、
+  ROADMAP 与 task plan，I3 标记 complete，下一步停在尚未授权/执行的独立 Published Release gate。
+- 审计 Architecture/Design 与 production consumers：未发现双 authority、旧 mirror 或读取旁路；微调 importer
+  “验证整个 bundle、只复制四项 upstream projection”的表述，并补 manifest/bundle/snapshot/ZIP allowlist 的
+  大白话职责映射。README 运维命令逐项对照当前 CLI 与 installer tests，仍有效，未修改。
+- lifecycle focused 首次只因旧 test 冻结“Source/Candidate 尚未开始”而红；改为按 ROADMAP 检查 pending/completed
+  后 architecture/repository governance 17/17 PASS，并继续拒绝 release URL、Published PASS 与 Phase 4 越权。
+- 当前完整 `npm test` 为 114 PASS/12 Windows POSIX SKIP/0 FAIL；importer check、Node syntax 与 `git diff --check`
+  PASS。当前树重新 build/check 的 ZIP 仍为 21 entries、77,782 bytes、SHA
+  `87bff3eddb8c8f6431ddfd55f707e6ba02c31cf8c2d9fc822709b3967d10de09`，证明本轮非 Release-input 文档/测试同步
+  没有改变 Cloud 已测 candidate ZIP；README diff 为空。

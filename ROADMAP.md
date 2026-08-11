@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.4-dev`；清理 runtime contract 的历史 programme metadata，并把重复 manifest inventory 收敛到 verified bundle authority；当前为 zero-hash Source/Candidate |
+| 当前开发列车 | `v0.3.4-dev`；清理 runtime contract 的历史 programme metadata，并把重复 manifest inventory 收敛到 verified bundle authority；zero-hash Source/Candidate Cloud 已 PASS，Published Release 尚未进入 |
 | 当前已接受版本 | `v0.3.3`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.2` immediate fallback |
 | 回退证据链 | immutable `v0.3.1` deeper fallback；更早发布里程碑见 provenance museum |
@@ -59,6 +59,11 @@ machine contract 迁出，并把 manifest 的重复 source/install projection �
 exact current inventory guard 继续阻止未授权脚本准入。它不改变 production
 dispatch、Host ABI、trusted graph、installed inventory 或 upstream runtime bytes，也不授权 Phase 4。
 Phase 4 仍停在 Discovery authorization 之前，尚未建立 `0.4.0-*` machine identity、开发分支或实现 gate。
+
+本列车的 Source/Candidate Linux、完整行为黑盒与 post-resume deep check 已按
+[`v0.3.4-dev acceptance`](docs/v0.3.4-dev-cloud-hard-acceptance.md#v0-3-4-dev-source-candidate-result) 闭合；这只完成
+zero-hash candidate gate，不构成 seal、publication、公开资产下载、Published Release Cloud 或 rollback 晋级。
+后续若进入 Published Release，仍须独立授权并按第 7 节冻结最终字节和执行完整发布链。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
 bootstrap/acceptance；当前窗口为 v0.3.4-dev candidate + v0.3.3 accepted。v0.3.2 immediate fallback 与 v0.3.1 deeper fallback

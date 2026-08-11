@@ -137,11 +137,14 @@ graph。Importer 从固定 PWF v3.8.2 archive 重建 owned runtime 时，四个�
 
 Importer 的职责严格限定为：
 
-1. 固定 archive URL/SHA、license、四个 exact source/package path、mode 与 destination inventory；
-2. 核对每个 source 的 pinned pristine SHA-256，并要求 package bytes 与 pristine bytes 相同；
-3. 为源码树或解压后的候选 ZIP 提供确定性 `import`/`check`，拒绝 archive、source、mode、symlink 或
+1. 从 manifest 取得 bundle path/SHA，先校验原始字节，再严格验证整个 bundle 的 schema、各分区 inventory、
+   path、ID、hash、mode 与 dependency；不能因为 importer 只复制 upstream projection 就忽略其他分区的非法内容；
+2. 从已验证 bundle 中只取四个 exact upstream source/package records，固定 archive URL/SHA、license、mode 与
+   destination inventory；
+3. 核对每个 source 的 pinned pristine SHA-256，并要求 package bytes 与 pristine bytes 相同；
+4. 为源码树或解压后的候选 ZIP 提供确定性 `import`/`check`，拒绝 archive、source、mode、symlink 或
    unknown destination drift；
-4. 不修改 global PWF Skill，不推断或生成 compatibility transformation。
+5. 不修改 global PWF Skill，不推断或生成 compatibility transformation。
 
 已发布 v0.3.2 使用过更早的源码重建路线：`patches/patch_planning_skill.py` 当时是 importer 的直接依赖，
 位于源码重建和 Release 审计层，不是安装后的 Hook runtime，也不进入 Managed policy 或 production
@@ -179,6 +182,10 @@ Release ZIP
 importer 和 installer 共享同一条 `manifest → raw bundle SHA → strict parse → inventory` 信任边。
 installed manifest 的 `runtime_files` 是安装状态快照，Release artifact 的 `entries` 是 ZIP 层 allowlist；它们分别
 服务 drift 检查和制品边界，不能与 source authority 合并或删除。
+
+说人话：manifest 是封条和索引，告诉 consumer 应取哪份 bundle、原始 SHA 应是什么；bundle 是唯一装箱清单，
+决定源码和安装清单里到底有哪些 runtime/contracts；installed manifest 是安装后的收货单；Release artifact 是
+整个 ZIP 的外箱清单。四者会包含部分相同路径，但只有 bundle 可以回答 source/install inventory 是什么。
 
 因此生产安装是否健康只取决于已校验的成品 runtime 与安装 contract；源码重建工具是否自包含是独立
 的 Release 维护边界，不能反向扩大 trusted execution graph。各版本对此边界的实际变化见

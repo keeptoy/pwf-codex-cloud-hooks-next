@@ -96,8 +96,13 @@ trusted surface；allowed helper roots、传递闭包和 pristine/managed 等价
 | adapter → plan request | [`adapter-plan-context-request-v1.schema.json`](contracts/adapter-plan-context-request-v1.schema.json) | adapter producer、owned-plan consumer、两侧 seam tests |
 | plan → adapter result | [`plan-context-result-v1.schema.json`](contracts/plan-context-result-v1.schema.json) | owned-plan producer、adapter validator、activation tests |
 | adapter → catch-up request / result | [`adapter-runtime-request-v1.schema.json`](contracts/adapter-runtime-request-v1.schema.json) / [`runtime-result-v1.schema.json`](contracts/runtime-result-v1.schema.json) | adapter、owned-catchup、runtime/activation tests |
+| upstream provenance / bundle integrity index | [`upstream-manifest.json`](upstream-manifest.json) | importer、installer 与 manifest/contracts integrity tests；不得在这里重建 runtime inventory mirror |
 | runtime source/install inventory | [`runtime-bundle-v1.json`](contracts/runtime-bundle-v1.json) | importer、installer、upstream manifest integrity index、import/installer/contracts/pristine-helper tests |
 | candidate ZIP identity/inventory | [`release-artifact-v1.json`](contracts/release-artifact-v1.json) | package identity、builder、bootstrap boundary、release tests |
+
+大白话对应关系是：manifest 是 bundle 的封条和索引，bundle 是唯一装箱清单，installed manifest 是安装后的
+状态快照，Release artifact 是 ZIP 外层 allowlist。前两者共同建立 source/install 信任链，后两者分别服务 drift
+检查和制品边界，内容相似也不能互换职责。
 
 修改 contract 时不能只改 JSON：必须同步检查 producer、consumer、integrity reference 和最近的 seam test；
 是否允许改变 Host ABI 或 trusted graph 仍由活动 task plan 与 [`ARCHITECTURE.md`](ARCHITECTURE.md) 决定。

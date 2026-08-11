@@ -353,3 +353,17 @@ trusted Git/ZIP bytes
 - 推荐不再把整份稳定 B～E 提示词复制进 v0.3.4-dev：给 template 增加稳定英文 anchors，让版本专项文件只
   冻结 branch transport、未授权边界、架构 delta 与执行顺序；Node major 作为每次运行显式输入，不在协议中冻结。
   动态 HEAD、测试数量、ZIP size/hash 与模型原始输出由脚本打印并在实际回传后记录，不预填 PASS/PENDING ledger。
+
+## I3 Cloud closure and stable-doc alignment
+
+- 维护者确认 exact `dc20ef9133b1998e70e733f233e97c9ac8a0bc76` 的 Source/Candidate setup、B-SC/C/D/E1/E2
+  与 9.1 全部 PASS；Linux portable suite 120/120、ZIP 21 entries/77,782 bytes、SHA
+  `87bff3eddb8c8f6431ddfd55f707e6ba02c31cf8c2d9fc822709b3967d10de09`，bundle authority、doctor、10 项 installed
+  inventory、4 项 pristine upstream、adapter-only 与 0 residue 均闭合。
+- 当前本地后继提交只修改 `.planning/` 与 `docs/history/`；本轮 Architecture/Design/ROADMAP/acceptance 微调也都
+  不在 Release allowlist。README 是 ZIP 输入但经 CLI 对照确认安装、doctor、`install --repair`/dry-run 和 uninstall
+  命令仍有效，因此保持不变。
+- Architecture/Design 原有语义已经一致；微调只明确 importer 严格验证整个 bundle、只复制 upstream projection，
+  并用“封条/装箱清单/收货单/外箱清单”区分 manifest、bundle、installed snapshot 与 Release allowlist。
+- I3 关闭不授权 Published Release。后者必须重新冻结最终 identity/bytes，并完成 seal、publication、重新下载、
+  Published Cloud 与 rollback；Source/Candidate exact run 不能改标为后继 commit 或公开资产证据。

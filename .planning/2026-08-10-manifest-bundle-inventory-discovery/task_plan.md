@@ -38,6 +38,9 @@ authority 迁移设计。
   contract 遗漏了什么、测试为何固化旧路线，以及 programme/runtime 分层和 retirement 的落地教训。
 - 维护者提供 Phase 1 overlay、Phase 2 owned wrapper、Phase 3 private snapshot 的因果快照，并授权补全 Phase 3.6
   复盘：必须区分 catch-up 与 plan invocation domain，解释“行为退休、供应链仍存活”，并总结全链路 retirement。
+- 维护者确认 exact `dc20ef9` 的 Source/Candidate setup、B-SC/C/D/E1/E2 与 9.1 全链路 Cloud PASS，只剩尚未
+  执行的 Published Release；并授权微调 Architecture/Design 可读性、同步 I3 lifecycle authority。该授权不包含
+  seal、publication、公开资产操作、promotion、rollback 或 Phase 4。
 
 ## Invariants
 
@@ -60,18 +63,18 @@ authority 迁移设计。
 - [x] I1 — Verified bundle consumers：实现 manifest→bundle raw SHA、严格 bundle validator 与 importer/installer
   单一 inventory consumption；保持 manifest schema 1/mirrors 供 I2 原子删除。
 - [x] I2 — Atomic mirror removal：nested schema 2、mirror 删除、consumer/tests/docs/hash 同步并完成本地回归。
-- [ ] I3 — Local/Linux/Cloud verification：Windows local PASS；远端 transport 与维护者黑盒入口已就绪，等待
-  维护者在 Fresh Linux Source/Candidate Cloud 执行并回传原始证据。
+- [x] I3 — Local/Linux/Cloud verification：Windows local、Linux 0-skip、Source/Candidate setup、完整 B-SC/C/D/E1/E2
+  行为黑盒与 9.1 post-resume deep check 全部 PASS；exact evidence 见版本 acceptance。
 
 ## Next Step
 
-维护者按 `docs/v0.3.4-dev-cloud-hard-acceptance.md` 在 Fresh/Reset-cache Linux Cloud 执行 Source/Candidate
-setup、B-SC、C、D、E1/E2 与 9.1，并原样回传输出。收到证据前 I3 保持未闭合；不得把本地或文档自检冒充
-Linux/Cloud，也不提前进入 Phase 4、seal 或 publication。
+I3 已闭合，本 scope 没有剩余 implementation。若维护者决定进入 Published Release，下一步必须先建立独立
+Release gate，冻结最终 source/ZIP inputs、seal/bootstrap/publication/download/Cloud/rollback 边界并取得明确授权；
+在此之前不得把 Source/Candidate PASS 当作发布、Latest、rollback 晋级或 Phase 4 授权。
 
 ## Decision
 
-`I3_LOCAL_PASS / REMOTE_TRANSPORT_READY / MAINTAINER_CLOUD_EXECUTION_PENDING / PHASE4_RELEASE_NOT_AUTHORIZED`
+`I3_COMPLETE / SOURCE_CANDIDATE_CLOUD_PASS / PUBLISHED_RELEASE_NOT_EXECUTED / PHASE4_NOT_AUTHORIZED`
 
 进入实施的条件：
 
@@ -109,3 +112,5 @@ Linux/Cloud，也不提前进入 Phase 4、seal 或 publication。
 | 执行嵌入 Python authority block 时，PowerShell→`python -c` 传参剥离内部引号 | 1 | 语法已通过 stdin compile；执行改用 `python -` 从 stdin 读取原文，authority assertion PASS |
 | 模板 Bash block 首次用 `bash -c` 接收 PowerShell 多行参数时引号损坏 | 1 | 改用 stdin `bash -n -s` 解析原始 block；四段 Bash 全部 syntax PASS |
 | Phase 3.8 设计复盘的 focused Node tests 在受限 Windows sandbox 中因 `spawn EPERM` 未执行断言 | 1 | 在获准的沙箱外重跑同一只读命令，17/17 PASS |
+| 首次整体文档 patch 因 acceptance 文件尾部空行数量与上下文不一致而未应用 | 1 | 确认工具原子失败、工作树未产生半修改；改按职责拆成小 patch 并使用稳定正文上下文 |
+| lifecycle 同步后的 focused governance 首次仍命中“dev Source/Candidate 尚未开始”旧断言 | 1 | 分类为状态转换后的 test defect；将 guard 改为按 ROADMAP 区分 pending/completed，同时继续禁止 release URL 与 Published PASS 冒充 |

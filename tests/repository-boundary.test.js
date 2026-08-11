@@ -298,13 +298,22 @@ test("change history, programme, provenance, and current acceptance keep separat
 
   assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));
   if (candidate.endsWith("-dev")) {
-    assert.match(acceptance, /Source\/Candidate.*Cloud hard acceptance 尚未开始/s);
+    const sourceCandidateComplete = roadmap.includes("zero-hash Source/Candidate Cloud 已 PASS");
+    if (sourceCandidateComplete) {
+      assert.match(acceptance, /Source\/Candidate Cloud hard acceptance 已.*完成/s);
+      assert.match(acceptance, /SOURCE_CANDIDATE_CLOUD_PASS \/ I3_COMPLETE/);
+      assert.match(acceptance, /Published Release \| NOT EXECUTED/);
+      assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
+    } else {
+      assert.match(acceptance, /Source\/Candidate.*Cloud hard acceptance 尚未开始/s);
+      assert.doesNotMatch(acceptance, /\b[a-f0-9]{64}\b/i);
+    }
     assert.match(acceptance, /64 位 zero hash.*fail closed/s);
     assert.match(acceptance, /Cloud hard acceptance template/);
     assert.match(acceptance, /Product Phase 4 \| NOT AUTHORIZED/);
     assert.match(acceptance, /exact current id\/source inventory guard/);
     assert.doesNotMatch(acceptance, /R5-SC=PASS|R5-PR=PASS|CLOUD-HARD-ACCEPTANCE-PASS/);
-    assert.doesNotMatch(acceptance, /https:\/\/github\.com\/[^\s]+\/releases\/download\/|\b[a-f0-9]{64}\b/i);
+    assert.doesNotMatch(acceptance, /https:\/\/github\.com\/[^\s]+\/releases\/download\//i);
   } else {
     assert.match(acceptance, /R5-SC.*Source\/Candidate.*HOOKS_URL.*HOOKS_SHA256/is);
     assert.match(acceptance, /R5-PR.*Published Release.*默认.*下载/is);
