@@ -56,3 +56,15 @@
   ZIP/bootstrap 或任何 production/runtime byte。
 - R4 治理回写 commit `66e571e` 已 fast-forward 推送到远端 `0.3.4-dev` 与 `main`；immutable `v0.3.4`
   tag 继续固定在发布源 `59a999f`，没有移动 Latest、执行 R5/R6 或进入 Product Phase 4。
+- 维护者回传独立 Published Release Cloud 完整 PASS：公开 ZIP 重新下载 SHA/size、21-entry boundary、
+  self-contained importer、0.3.4 install identity、doctor、10 项 installed inventory、4 项 pristine upstream、
+  adapter-only policy 与零 snapshot residue 全部通过，脚本退出码 0。R5 complete，开始 R6 evidence close。
+- R6 已把 exact tag/source、公开双资产 identity、完整 lifecycle 结论、doctor、installed inventory、四项
+  pristine hash、adapter-only policy 和零 residue 写入 v0.3.4 acceptance；provenance 与 ROADMAP 同步为
+  dual-channel PASS，但 accepted/Latest 角色保持 v0.3.3。
+- R6 首次 focused suite 发现 publication 判断绑定旧说明句，误把 v0.3.4 当作 unpublished；改为读取
+  `published prerelease candidate` 明确角色后 11/11 PASS。完整 Windows suite 为 114 PASS、12 个诚实的
+  POSIX/Linux SKIP、0 FAIL；没有修改 production/runtime、sealed tag 或已发布资产。
+- 最终证据断言进一步改为从 provenance、Release artifact 与 runtime bundle 动态派生 source、资产名/SHA、
+  entry/inventory 和 pristine hashes；补齐 Cloud 原始 counters 后 repository-boundary 9/9 PASS，
+  `git diff --check` PASS。

@@ -130,3 +130,24 @@
   均与 seal 一致；下载 ZIP 的 builder check、self-contained importer check 与 Node syntax 通过。
 - R4 只建立 immutable published bytes，不证明独立 Fresh Cloud；v0.3.3 继续承担 accepted/Latest，R5 是当前
   唯一 Next Step。
+
+## R5 Published Release Cloud
+
+- 维护者确认在独立 Cloud 环境完整执行模板 4.2、B-PR、C、D、E1/E2 与 9.2，最终脚本退出码为 0；该通道
+  使用公开发布资产，不复用 Source/Candidate 的本地 override 或安装状态。
+- 9.2 从公开 URL 重新下载 `pwf-codex-cloud-hooks-v0.3.4.zip`：77,777 bytes，SHA-256
+  `497e92a861bd7882129f05b28df1e23a55330db98bebe76891db5b9761bdec3b`，`sha256sum`、21-entry builder check
+  与 self-contained importer check 全部通过。
+- importer 报告四个 upstream runtime 全部 pristine：`inject-plan.sh=72c7904…0364`、
+  `ledger-summary.sh=d4fe626…3b9`、`resolve-plan-dir.sh=38a1c5e…e9bd`、
+  `session-catchup.py=6476fd9…e6de`。
+- installed package identity 为 `0.3.4`；doctor 返回 `healthy=true`、`repairable=false`、managed=true、
+  SessionStart/UserPromptSubmit、零 errors/blockers。
+- installed runtime inventory 为 exact 10 项；其中 4 项 upstream pristine，managed policy 为
+  `ADAPTER_ONLY`，没有 overlay，snapshot leftovers 为 0。
+- 最终原始标记为 `POST_RESUME_DOCTOR=PASS`、`PWF_PUBLIC_ZIP_BOUNDARY_IMPORTER=PASS`、
+  `PWF_PUBLIC_POST_RESUME=PASS` 与 `SNAPSHOT_LEFTOVERS=0`。R5 已满足，可以只做 R6 evidence close；该结论
+  不授权 Latest/rollback promotion 或 Product Phase 4。
+- R6 治理断言从 ROADMAP 的明确 publication 角色判断通道状态，并从 provenance、Release artifact 与 runtime
+  bundle 动态派生 source、资产名/SHA、ZIP entry count、installed inventory 和 pristine hashes；不把 v0.3.4
+  的一次性数字再写成未来版本必须手改的第二份状态常量。

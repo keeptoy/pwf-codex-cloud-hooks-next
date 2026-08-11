@@ -10,8 +10,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 
 - 先以 64 位 zero-hash、fail-closed 的 `v0.3.4-dev` Source/Candidate identity 完成 Linux/Cloud 验收，再
   原子收敛为 `v0.3.4` stable identity；确定性双构建后把 exact ZIP SHA 固定进外部 bootstrap，并完成
-  immutable prerelease publication 与公开双资产重新下载复核。独立 Published Release Cloud 和 lifecycle
-  promotion 仍按各自 gate 分离，不改变 v0.3.3 accepted/Latest 与 v0.3.2 immediate fallback。
+  immutable prerelease publication、公开双资产重新下载复核和独立 Published Release Cloud hard acceptance。
+  lifecycle promotion 仍是独立 gate，不改变 v0.3.3 accepted/Latest 与 v0.3.2 immediate fallback。
 - 从 runtime bundle 退休只表达早期 rollout 计划、从未被 production 消费的 `activation_phase` 与
   `deferred_upstream_candidates`；未授权脚本继续由 exact id/source inventory guard 排除。
 - 将 runtime bundle 确立为唯一 source/install inventory authority：importer 与 installer 先验证

@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.4` published prerelease candidate；清理 runtime contract 的历史 programme metadata，并把重复 manifest inventory 收敛到 verified bundle authority；zero-hash Source/Candidate Cloud 已 PASS，immutable publication 与公开下载复核已 PASS，独立 Published Release Cloud 尚待执行 |
+| 当前开发列车 | `v0.3.4` published prerelease candidate；清理 runtime contract 的历史 programme metadata，并把重复 manifest inventory 收敛到 verified bundle authority；zero-hash Source/Candidate Cloud 已 PASS，immutable publication、公开下载复核与 Published Release Cloud hard acceptance 已 PASS；promotion 未授权 |
 | 当前已接受版本 | `v0.3.3`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.2` immediate fallback |
 | 回退证据链 | immutable `v0.3.1` deeper fallback；更早发布里程碑见 provenance museum |
@@ -64,9 +64,10 @@ Phase 4 仍停在 Discovery authorization 之前，尚未建立 `0.4.0-*` machin
 [`v0.3.4 acceptance`](docs/v0.3.4-cloud-hard-acceptance.md#v0-3-4-source-candidate-result) 闭合；该证据只证明
 zero-hash candidate 通道。随后 R1～R4 已完成 stable identity、确定性 seal、publication audit、immutable
 prerelease publication 与公开双资产重新下载复核；精确 source、资产大小和 SHA 见
-[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)。当前仍须从公开 bootstrap 在独立 Fresh Cloud 完成
-Published Release 通道；精确 Next Step、输入、PENDING 与失败记录只由活动 Release task plan 管理。
-本授权不包含 rollback/Latest promotion 或 Product Phase 4。
+[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)。随后独立 Fresh Cloud 从公开 bootstrap 的默认下载链
+完成 B-PR、C、D、E1/E2 与 9.2，版本 acceptance 已冻结两条通道的最终证据。Published Release gate 至此
+关闭，但这不改变第 2 节的角色窗口；rollback/Latest promotion、旧版本 eviction 与 Product Phase 4
+仍未授权，精确停止点只由活动 Release task plan 管理。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
 bootstrap/acceptance；当前窗口为 v0.3.4 published prerelease candidate + v0.3.3 accepted。v0.3.2 immediate fallback 与 v0.3.1 deeper fallback
