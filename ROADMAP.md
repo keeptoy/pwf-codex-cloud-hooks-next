@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.4-dev`；清理 runtime contract 的历史 programme metadata，并把重复 manifest inventory 收敛到 verified bundle authority；zero-hash Source/Candidate Cloud 已 PASS，Published Release 尚未进入 |
+| 当前开发列车 | `v0.3.4-dev`；清理 runtime contract 的历史 programme metadata，并把重复 manifest inventory 收敛到 verified bundle authority；zero-hash Source/Candidate Cloud 已 PASS，Published Release gate 已授权并进入 Release planning，seal/publication 尚未执行 |
 | 当前已接受版本 | `v0.3.3`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.2` immediate fallback |
 | 回退证据链 | immutable `v0.3.1` deeper fallback；更早发布里程碑见 provenance museum |
@@ -63,7 +63,9 @@ Phase 4 仍停在 Discovery authorization 之前，尚未建立 `0.4.0-*` machin
 本列车的 Source/Candidate Linux、完整行为黑盒与 post-resume deep check 已按
 [`v0.3.4-dev acceptance`](docs/v0.3.4-dev-cloud-hard-acceptance.md#v0-3-4-dev-source-candidate-result) 闭合；这只完成
 zero-hash candidate gate，不构成 seal、publication、公开资产下载、Published Release Cloud 或 rollback 晋级。
-后续若进入 Published Release，仍须独立授权并按第 7 节冻结最终字节和执行完整发布链。
+维护者现已独立授权 Published Release gate；精确 Next Step、seal 输入、PENDING 与失败记录只由活动 Release
+task plan 管理。授权不跳过第 7 节的最终字节冻结、publication audit、重新下载和独立 Fresh Cloud，也不包含
+rollback/Latest promotion 或 Product Phase 4。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
 bootstrap/acceptance；当前窗口为 v0.3.4-dev candidate + v0.3.3 accepted。v0.3.2 immediate fallback 与 v0.3.1 deeper fallback
@@ -187,6 +189,9 @@ Discovery，按 6.2 决定增加正式 Round 或 Round 内子门槛，再按 6.3
 只有 ROADMAP 把目标版本标为获批 Release candidate，且活动 task plan 明确授权具体 Release gate，
 才允许封板。稳定构建/验证命令由 [`README.md`](README.md) 管理，精确版本步骤和资产证据由相应版本
 acceptance 管理；[`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) 只提供维护者接手和结果分流入口。
+模板、活动 Release task plan、版本 acceptance 与 ROADMAP 的详细分工只由
+[`Cloud hard acceptance template` 的“文档职责与写入时机”](docs/cloud-hard-acceptance-template.md#acceptance-document-responsibilities)
+定义；本节只维护 programme 级授权与封板顺序，不复制逐资产或逐步骤状态。
 
 <a name="pre-1-compatibility-admission"></a>
 

@@ -71,7 +71,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   其余 version、size 与 inventory 从已校验产物派生。精确 tag、资产字节和最终 PASS 只保留在冻结证据表。
 - 新增版本中立的 [`Cloud hard acceptance template`](docs/cloud-hard-acceptance-template.md)：集中维护双通道
   setup、B～F 黑盒协议、deep check、停止条件与 evidence schema；具体版本 identity、测试计数和运行结论
-  只写复制后的版本专项 acceptance，模板不占用 candidate + accepted 角色窗口。
+  在执行中先写活动 Release task plan，通道完成后才写版本专项 acceptance；后者引用模板而不复制脚本，
+  模板不占用 candidate + accepted 角色窗口。
 - 根据实际 Cloud lifecycle 修正双通道 B gate：agent prompt 内安装的 Source/Candidate 验证 post-install
   Resume，environment setup 内安装的 Published Release 才验证 Fresh startup；B 的模型汇总恢复为
   SessionStart/UserPromptSubmit 与 planning 原始输出锚点，catch-up 留给 E2，内部 supply-chain 语义由

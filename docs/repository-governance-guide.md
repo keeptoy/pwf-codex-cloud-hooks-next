@@ -215,19 +215,24 @@ Release notes；不要提前创建大量按版本 archive 文件。
 
 ### 11.1 Cloud acceptance 模板与版本证据
 
-可重放 Cloud 流程应分成一份稳定模板和当前角色窗口内的版本专项 acceptance：
+可重放 Cloud 流程应分成稳定协议、活动施工状态和当前角色窗口内的版本证据三层；详细写入规则只由
+[`Cloud hard acceptance template` 的“文档职责与写入时机”](cloud-hard-acceptance-template.md#acceptance-document-responsibilities)
+维护：
 
 - [`Cloud hard acceptance template`](cloud-hard-acceptance-template.md) 只维护双通道前置条件、信任输入、
   版本中立黑盒提示词、deep-check 结构、停止条件和 evidence schema；
 - 模板不得保存具体版本、commit、资产名/size/SHA、测试计数、某次 gate 的 PASS/PENDING、Latest/rollback
   或 programme 状态，也不占用 candidate + accepted 文件窗口；
-- 创建新版本 runbook 时复制模板，在副本中替换 immutable bootstrap URL/SHA、ZIP URL/SHA，并登记精确
-  source、Cloud 原始输出和最终结论；副本随后按版本 acceptance 生命周期治理；
+- 活动 Release task plan 保存当次授权、seal 输入、URL/SHA、Next Step、PENDING、失败记录和恢复位置；
+- 版本专项 acceptance 只引用模板，并在相应通道完整通过后一次性登记 exact source、资产身份、Cloud 原始
+  输出和最终结论；不得复制模板脚本或保存施工进度表；
+- development identity 收敛为 stable identity 时重命名同一份 acceptance，不得同时保留 dev/stable 两份；
 - 已发布 acceptance 是带时间语义的冷证据，不因模板改进而批量回写；模板只在 lifecycle、Host ABI、
   trusted graph、Release boundary 或稳定观测协议变化时更新；
 - 模板和所有版本 acceptance 都必须被 Release、installed inventory 与 trusted execution graph 排除。
 
-这种拆分允许执行协议跨 patch 版本复用，同时避免把动态验收状态写成需要每轮维护的第三份账本。
+这种拆分允许执行协议跨 patch 版本复用，让动态状态只活在可归档的 task plan，并让版本 acceptance 保持为
+完成后才写入的不可变证据。
 
 ## 12. Promotion 与 eviction 是一个事务
 

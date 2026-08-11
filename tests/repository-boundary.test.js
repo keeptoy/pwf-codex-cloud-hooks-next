@@ -122,6 +122,14 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.deepEqual(acceptanceDocs, roleVersions.map(version => `docs/${version}-cloud-hard-acceptance.md`));
   const acceptanceTemplate = read("docs/cloud-hard-acceptance-template.md");
   assert.match(acceptanceTemplate, /^<a name="cloud-hard-acceptance-template"><\/a>$/m);
+  assert.match(acceptanceTemplate, /^<a name="acceptance-document-responsibilities"><\/a>$/m);
+  assert.match(acceptanceTemplate, /^<a name="version-acceptance-delta"><\/a>$/m);
+  assert.match(acceptanceTemplate, /本模板[\s\S]*稳定执行协议[\s\S]*活动 Release task plan[\s\S]*Next Step[\s\S]*版本专项 acceptance[\s\S]*最终不可变结论/);
+  assert.match(acceptanceTemplate, /通道尚未完成[\s\S]*进度只写活动 Release task plan[\s\S]*不在版本 acceptance 预建 PENDING/);
+  assert.match(acceptanceTemplate, /development identity 收敛为 stable identity[\s\S]*重命名[\s\S]*不得让 dev\/stable 两份 acceptance 并存/);
+  assert.match(acceptanceTemplate, /“本版本验收增量”（可选）[\s\S]*没有验收增量时[\s\S]*整个章节直接省略/);
+  assert.match(acceptanceTemplate, /B～E 黑盒提示词是否变化[\s\S]*版本文件不得再次复制脚本、提示词或完整执行步骤/);
+  assert.match(acceptanceTemplate, /Environment variables（“环境变量”）[\s\S]*PWF_ACCEPTANCE_NODE_MAJOR[\s\S]*不要只在 setup script 中/);
   assert.match(acceptanceTemplate, /### 4\.2 Published Release[\s\S]*__IMMUTABLE_BOOTSTRAP_URL__[\s\S]*__IMMUTABLE_BOOTSTRAP_SHA256__/);
   assert.match(acceptanceTemplate, /### 9\.2 Published Release[\s\S]*__IMMUTABLE_ZIP_URL__[\s\S]*__IMMUTABLE_ZIP_SHA256__/);
   assert.match(acceptanceTemplate, /PWF_CLOUD_ACCEPTANCE_CANONICAL_V1[\s\S]*PWF_CLOUD_ACCEPTANCE_REAL_RESUME_TAIL/);
@@ -178,9 +186,11 @@ test("portable repository governance defines a closed retirement transaction", (
   assert.match(guide, /不是第四种长期 baseline/);
   assert.match(guide, /compatibility code.*支持来源窗口.*owner.*行为测试.*retirement condition/s);
   assert.match(guide, /machine contract.*Phase\/Round.*运行时、构建或验证语义/s);
-  assert.match(guide, /稳定模板和当前角色窗口内的版本专项 acceptance/);
+  assert.match(guide, /稳定协议、活动施工状态和当前角色窗口内的版本证据三层/);
   assert.match(guide, /Cloud hard acceptance template.*版本中立黑盒提示词/s);
   assert.match(guide, /模板不得保存具体版本.*PASS\/PENDING.*不占用 candidate \+ accepted 文件窗口/s);
+  assert.match(guide, /活动 Release task plan 保存.*Next Step.*PENDING.*失败记录/s);
+  assert.match(guide, /版本专项 acceptance 只引用模板.*不得复制模板脚本或保存施工进度表/s);
   assert.match(guide, /模板和所有版本 acceptance.*Release.*trusted execution graph 排除/s);
 });
 
@@ -302,7 +312,6 @@ test("change history, programme, provenance, and current acceptance keep separat
     if (sourceCandidateComplete) {
       assert.match(acceptance, /Source\/Candidate Cloud hard acceptance 已.*完成/s);
       assert.match(acceptance, /SOURCE_CANDIDATE_CLOUD_PASS \/ I3_COMPLETE/);
-      assert.match(acceptance, /Published Release \| NOT EXECUTED/);
       assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
     } else {
       assert.match(acceptance, /Source\/Candidate.*Cloud hard acceptance 尚未开始/s);
@@ -310,8 +319,12 @@ test("change history, programme, provenance, and current acceptance keep separat
     }
     assert.match(acceptance, /64 位 zero hash.*fail closed/s);
     assert.match(acceptance, /Cloud hard acceptance template/);
-    assert.match(acceptance, /Product Phase 4 \| NOT AUTHORIZED/);
+    assert.match(acceptance, /不授予 Product Phase 4/);
     assert.match(acceptance, /exact current id\/source inventory guard/);
+    assert.match(acceptance, /本次验收增量没有改写 B～E 黑盒提示词/);
+    assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-setup/);
+    assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-deep-check/);
+    assert.doesNotMatch(acceptance, /## 1\. 执行输入与边界|维护者执行顺序|回传证据|NOT EXECUTED|NOT AUTHORIZED|PENDING|Next Step|当前状态/);
     assert.doesNotMatch(acceptance, /R5-SC=PASS|R5-PR=PASS|CLOUD-HARD-ACCEPTANCE-PASS/);
     assert.doesNotMatch(acceptance, /https:\/\/github\.com\/[^\s]+\/releases\/download\//i);
   } else {

@@ -5,23 +5,56 @@
 本文件是 `pwf-codex-cloud-hooks` 新版本 Cloud hard acceptance 的稳定写作与执行模板，不是任何版本的
 验收结果，也不维护任何已发生的 candidate、accepted、Latest、rollback、PASS/PENDING、测试数量或资产大小。
 
-使用时复制本文件为版本专项 acceptance，再在副本中冻结 exact source、资产 identity 和实际证据。模板
+版本专项 acceptance 直接引用本模板，只在通道完成后登记 exact source、资产 identity 和实际证据。模板
 本身只在 Cloud lifecycle、trusted graph、Host ABI、Release boundary 或稳定观测协议变化时修改；普通版本
-轮换不得把运行状态回填到这里。
+轮换不得把运行状态回填到这里，也不得整份复制模板脚本。
 
 ## 0. 使用规则
 
-1. 从 ROADMAP 和活动 task plan 确认目标版本、当前角色、授权 gate 与停止条件。
-2. 复制本文件为 `docs/<release-identity>-cloud-hard-acceptance.md`；版本专项文件必须进入当前角色窗口。
-3. 只在版本副本中登记 source commit、tag、filename、size、SHA、测试计数、Cloud 原始结果和最终结论。
-4. 替换第 4.2 节的 immutable bootstrap URL/SHA，以及第 9.2 节的 immutable ZIP URL/SHA；不得用 moving
-   branch、`latest`、zero hash 或本地文件代替 Published Release identity。
-5. 第 5～8 节的提示词原样使用，不嵌入版本名、动态 gate 结论或施工阶段 marker。
-6. Source/Candidate 与 Published Release 必须使用两个独立、可丢弃的 Cloud 环境，不共享安装、planning、
-   transcript、cache 或 B～F 结果。
-7. 任一步失败立即停止并保存第一次错误；不得 repair 后继续把同一次 run 记为成功。
+<a name="acceptance-document-responsibilities"></a>
 
-模板里的 `__...__` 是 fail-closed 占位符。版本副本开始执行前不得残留任何占位符。
+### 0.1 文档职责与写入时机
+
+| 位置 | 唯一职责 | 不得保存 |
+|---|---|---|
+| 本模板 | Source/Candidate 与 Published Release 的稳定执行协议、停止条件和 evidence schema | 具体版本、当前进度、资产 SHA 或某次 PASS |
+| 活动 Release task plan | 当前授权、seal 输入、URL/SHA、Next Step、PENDING、失败记录和恢复位置 | 已完成版本的长期不可变证据 |
+| 版本专项 acceptance | 已经完成的版本增量、exact source/资产身份、Cloud 原始结果和最终不可变结论 | 施工进度表、PENDING/NOT EXECUTED、模板脚本副本 |
+| ROADMAP | programme 角色、宏观 Release 授权与 lifecycle 结论 | seal 流水账、逐资产 SHA、逐步骤状态 |
+
+一个通道尚未完成时，它的进度只写活动 Release task plan，不在版本 acceptance 预建 PENDING 表格或占位章节；
+通道完成后，再把证据一次性写入同一份版本 acceptance。development identity 收敛为 stable identity 时，
+重命名这份文件并更新内容，不得让 dev/stable 两份 acceptance 并存。
+
+<a name="version-acceptance-delta"></a>
+
+### 0.2 “本版本验收增量”（可选）
+
+只有当前版本相对本模板新增或修改了验证面时，版本 acceptance 才写“本版本验收增量”；没有验收增量时，
+整个章节直接省略，不写“无”或占位文字。该章节至少回答：
+
+1. 本版本改变了哪个 contract、信任边界或风险面，因此需要增加什么证明；
+2. 增量落在模板哪个稳定 anchor、哪项 portable/publication test 或哪个 machine oracle；
+3. B～E 黑盒提示词是否变化；若变化，指出模板中的具体小节和变化理由，若未变化则明确复用原协议；
+4. 已完成证据中的哪个输出或结论证明这项增量通过。
+
+会被后续版本复用的共同验证必须先进入本模板，版本 acceptance 只链接对应小节并解释本版本为何需要它；
+版本文件不得再次复制脚本、提示词或完整执行步骤。只针对一次 immutable identity 的检查可以链接相应
+contract/test/oracle，不必把它提升为通用黑盒协议。
+
+1. 从 ROADMAP 和活动 task plan 确认目标版本、当前角色、授权 gate 与停止条件。
+2. 直接引用本模板执行，不把完整协议或脚本复制到版本 acceptance；版本专项文件必须进入当前角色窗口。
+3. 在活动 Release task plan 冻结当次 source、tag、filename、size、URL、SHA、测试计数和停止条件。
+4. 只有通道完整通过后，才在版本 acceptance 登记相应 exact identity、Cloud 原始结果和最终结论。
+5. 执行第 4.2 节时替换 immutable bootstrap URL/SHA，执行第 9.2 节时替换 immutable ZIP URL/SHA；不得用 moving
+   branch、`latest`、zero hash 或本地文件代替 Published Release identity。
+6. 第 5～8 节的提示词原样使用，不嵌入版本名、动态 gate 结论或施工阶段 marker。
+7. Source/Candidate 与 Published Release 必须使用两个独立、可丢弃的 Cloud 环境，不共享安装、planning、
+   transcript、cache 或 B～F 结果。
+8. 任一步失败立即停止并保存第一次错误；不得 repair 后继续把同一次 run 记为成功。
+
+模板里的 `__...__` 是 fail-closed 占位符。实际执行副本或命令开始运行前不得残留任何占位符；占位符和
+替换后的动态值只属于当次 Release task plan/执行环境，不写回稳定模板。
 
 ## 1. 双通道合同
 
@@ -85,8 +118,9 @@ Published Release fresh environment
 ### 4.1 Source/Candidate：source、双构建与本地 override
 
 在 agent startup 完成并切到目标 checkout 后，作为第一条任务执行。下面脚本从 package/Release contract
-派生版本、bootstrap 与 entry count。Cloud environment 必须把预先选定的 Node major 通过
-`PWF_ACCEPTANCE_NODE_MAJOR` 显式注入；脚本不把某次 Cloud image 的 major 冻结成模板常量。
+派生版本、bootstrap 与 entry count。Cloud environment 必须在系统的 Environment variables（“环境变量”）
+设置中，把预先选定的 Node major 通过 `PWF_ACCEPTANCE_NODE_MAJOR` 显式注入；不要只在 setup script 中
+临时设置，因为 4.1 运行在后续 agent task。脚本不把某次 Cloud image 的 major 冻结成模板常量。
 
 ~~~bash
 set -Eeuo pipefail
@@ -237,7 +271,7 @@ printf 'PWF_SOURCE_CANDIDATE_SETUP=PASS\n'
 
 ### 4.2 Published Release：public bootstrap environment setup
 
-将本节放进独立 Fresh Cloud 的 environment setup，使 Managed Hook 在 agent startup 前安装。版本副本只
+将本节放进独立 Fresh Cloud 的 environment setup，使 Managed Hook 在 agent startup 前安装。实际执行时只
 替换两项 immutable identity；bootstrap 校验后必须使用自身默认 ZIP URL/SHA，不设置 override。
 
 ~~~bash
@@ -573,7 +607,7 @@ printf 'PWF_SC_POST_RESUME=PASS\n'
 ### 9.2 Published Release
 
 public bootstrap 的临时目录可能已经删除。本节重新取得同一 immutable ZIP，校验后只使用 ZIP 内
-builder/importer/installer 复验 installed state；版本副本只替换 URL/SHA 两项 identity。
+builder/importer/installer 复验 installed state；实际执行时只替换 URL/SHA 两项 identity。
 
 ~~~bash
 set -Eeuo pipefail
@@ -695,7 +729,7 @@ printf 'PWF_PUBLIC_POST_RESUME=PASS\n'
 
 <a name="acceptance-evidence-writeback"></a>
 
-## 10. 版本副本的证据写回
+## 10. 版本 acceptance 的证据写回
 
 模板不保存运行结果。版本专项 acceptance 应保存以下原始证据，并在证据闭合后由维护者写入版本结论：
 
@@ -708,7 +742,8 @@ printf 'PWF_PUBLIC_POST_RESUME=PASS\n'
 - publication oracle、失败的首次输出、停止点，以及是否从 Fresh 环境重新开始；
 - GitHub Latest、rollback baseline 或下一 Product Phase 的授权应另行记录，不能由 Cloud 结果自动推导。
 
-版本专项文件可以有冻结结果表；不得反向把版本号、测试计数、资产 identity 或动态状态写回本模板。
+版本专项文件可以有已完成通道的冻结结果表；不得预建未完成通道的状态表，也不得反向把版本号、测试计数、
+资产 identity 或动态状态写回本模板。
 
 ## 11. 模板的非权威边界
 
