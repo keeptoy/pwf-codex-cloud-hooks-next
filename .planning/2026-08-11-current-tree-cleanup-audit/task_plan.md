@@ -34,17 +34,17 @@
   顺序、验证和停止条件；未实施任何清理。
 - [x] C1 — Next compatible cleanup：`v0.3.5` exact source/tag、非 prerelease Release、Latest、双资产、Cloud/下载
   验收与 accepted/fallback 角色轮转全部闭合；未改变 runtime/ABI/trusted graph 或夹带 contract-v2。
-- [ ] C2 — Contract/Release-v2 Discovery（观点已收敛，等待任务切换决定）：overlay tombstone/专用反复活断言与
-  `origin` 生命周期已有边界；尚未实施 schema/source，也未新建 Phase 4 planning。
+- [x] C2 — Contract/Release-v2 Discovery：overlay tombstone、通用 exact schema、`origin` 生命周期、Release mode
+  authority、兼容/rollback 与 placement 已形成 `CONDITIONAL_GO` 输入；未实施 schema/source。
 
 ## Next Step
 
-Phase 3.9.3 已记录本轮生命周期结论；停止在维护者决定是否关闭当前 C2 scope、另建 Phase 4 Discovery 之前。
-不得修改 machine contract、production、package identity 或激活 Phase 4 source。
+本 scope 已关闭。后继唯一 Next Step 由 `.planning/2026-08-11-phase-4-discovery/task_plan.md` 管理；本文件只保留
+C1/C2 当时证据，不再产生新授权。
 
 ## Decision
 
-`C1_ACCEPTED_CLOSURE_PASS / C2_REVIEW_CONVERGED_AWAITING_TASK_SWITCH / NO_IMPLEMENTATION / PHASE4_NOT_AUTHORIZED`
+`C1_ACCEPTED_CLOSURE_PASS / C2_DISCOVERY_CONDITIONAL_GO / SCOPE_CLOSED / NO_IMPLEMENTATION`
 
 ## Route invariants
 

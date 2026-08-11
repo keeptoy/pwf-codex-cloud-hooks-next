@@ -200,3 +200,5 @@
   同步 C2 task/findings，未进入 Phase 4 或修改 contracts/production/Release inputs。
 - Phase 3.9.3 文档治理验证通过：`git diff --check` PASS；`repository-boundary` 与
   `architecture-contracts` focused suite 15/15 PASS。
+- 维护者明确授权进入 Phase 4 Discovery。C2 以 `CONDITIONAL_GO` 设计输入关闭，未实施 contract v2；活动指针
+  切换到 `.planning/2026-08-11-phase-4-discovery`，旧 scope 保留为短期 completed evidence，不自动删除。
