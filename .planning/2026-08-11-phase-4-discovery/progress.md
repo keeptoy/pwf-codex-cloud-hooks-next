@@ -55,3 +55,24 @@
 - 设置 `PYTHONUTF8=1` 后，五个 pinned upstream targeted scripts 分别 21/21、8/8、7/7、7/7、12/12 PASS，
   共 55/55。该结果证明已记录的 upstream 当前语义；不证明 proposed managed policy 或 Linux/Cloud acceptance。
 - D2 完成：冻结 legacy/smart/autonomous/gated 组合、失败/缓存语义与 parser/data gaps；进入 D3 Host/Cloud ABI 对齐。
+- D2 已创建本地 commit `b34240c`（`docs: model phase 4 upstream semantics`），未 push。
+- D3 对齐确认现有两个 managed events 足以承载 Phase 4；官方新增事件继续留给 Phase 5～8。发现 upgrade opt-in
+  问题：v0.3.5 可能已忽略 workspace 中既有 `.mode`，新版本不能突然承认它。推荐在同一 `.mode` 中增加并严格要求
+  `codex-managed-v1` token；`gate` 在 Phase 4 明确 unsupported，避免只启用半套 gated 语义。
+- Cloud fixture 首次按猜测文件名读取失败；真实带日期证据是 `tests/fixtures/cloud/hook-observations-v1.json`，其 startup/
+  resume 与 input-key shape 由 `cloud-fixtures.test.js` 固定。未产生 production 改动。
+- D3 完成：Phase 4 保持两个现有 managed events，使用 versioned per-plan opt-in 防止旧 `.mode` 在升级后误激活；
+  Fresh/Resume/cache/rollback 必须覆盖 pre-existing marker 与显式 re-arm。
+- D4 完成并推荐 hybrid：owned-plan 严格读取/验证并生成 normalized private snapshot，pristine injector/ledger-summary
+  只渲染规范化输入。拒绝直接 workspace execution、完整 Python renderer duplication 与当前引入 persistent managed DB。
+- D5 完成：Phase 4 不准入新 upstream executable；bundle v2 把现有 adapter 纳入 `local_files`，四个内部 ABI schema
+  统一安装。结构分区后删除 `origin`，并删除 overlay tombstone 与无 operational consumer 的 language/host metadata。
+  C2 + Phase 4 进入同一 alpha train，但拆为 `[legacy]` inactive foundation 与后续 smart/autonomous activation 两个 gate。
+- D6 完成：冻结 marker/nonce/attestation/ledger exact grammar、tamper/race/cache/concurrency 边界、v0.3.5 双向 takeover
+  与 local/Linux/no-live Cloud/Release 分层矩阵。Phase 4 不持久化 cache、不写 workspace、不把 workflow attestation
+  描述为 human identity proof。
+- D7 完成：结论 `CONDITIONAL_GO_TO_F1_INACTIVE_FOUNDATION`。F1 只允许在未来明确授权后落 exact-v2/schema-4、
+  adapter bundle admission、统一 installed ABI schemas、plan protocol v2 与 `[legacy]` 不可达实现；F2 smart/autonomous、
+  live Cloud、Release 继续是独立授权。Discovery 到此停止。
+- Discovery 封板 focused governance 15/15 PASS，`git diff --check` PASS；全程未修改 production、machine contracts、
+  tests、package/Release identity 或远端状态。

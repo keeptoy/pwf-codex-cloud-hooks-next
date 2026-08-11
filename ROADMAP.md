@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.5` accepted baseline；本地 `0.4.0-dev` 上进行 Phase 4 Discovery，尚无 successor package/machine identity |
+| 当前开发列车 | `v0.3.5` accepted baseline；本地 `0.4.0-dev` 已完成 Phase 4 Discovery，等待 F1 授权，尚无 successor package/machine identity |
 | 当前已接受版本 | `v0.3.5`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.4` immediate fallback |
 | 回退证据链 | immutable `v0.3.3` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4 Discovery 已授权；implementation/activation 未授权 |
+| 当前 programme 边界 | Product Phase 4 Discovery 已完成并 `CONDITIONAL_GO_TO_F1`；implementation/activation 未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.3.5` 已完成 immutable publication、公开下载/安装验收与 pointer-only promotion；只读 postflight 确认它为
@@ -59,11 +59,11 @@ baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta
 
 `v0.3.5` 的 zero-hash Source/Candidate Cloud 已 PASS，Published Release Cloud hard acceptance 已 PASS，
 publication 与 Latest postflight 也已闭合。C2 已把 bundle tombstone、通用 exact schema、字段生命周期、Release
-entry mode、兼容/rollback 与 placement 收敛为 `CONDITIONAL_GO` 输入；当前在本地 `0.4.0-dev` 上进入 Phase 4
-Discovery，联合复核 attestation、nonce、opt-in v3 modes、source admission 与 contract foundation shape。
+entry mode、兼容/rollback 与 placement 收敛为 `CONDITIONAL_GO` 输入；本地 `0.4.0-dev` 上的 Phase 4 Discovery
+已联合复核 attestation、nonce、opt-in v3 modes、source admission 与 contract foundation shape，并冻结为 F1 conditional go。
 
-Phase 4 只获得 Discovery 授权；没有 contract-v2 implementation、行为激活、Release identity 或 `0.4.0-*`
-package/machine identity 授权。本地分支名不建立这些身份或实现 gate。
+Phase 4 Discovery 已完成并冻结为 `CONDITIONAL_GO_TO_F1_INACTIVE_FOUNDATION`；没有 contract-v2 implementation、
+行为激活、Release identity 或 `0.4.0-*` package/machine identity 授权。本地分支名不建立这些身份或实现 gate。
 精确 Next Step 和停止条件只见活动 task plan；已完成 v0.3.5 基线与 rollback 证据仍见第 3 节及
 provenance/acceptance。
 
@@ -78,7 +78,7 @@ pre-release；多个低风险 Phase 也只有在独立评审后才能进入同�
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | attestation、nonce 与 opt-in v3 modes | legacy 默认不变；tamper/cache/rollback 与 Fresh/Resume | Discovery in progress；implementation 未授权 |
+| 4 | `0.4.0-*` | attestation、nonce 与 opt-in v3 modes | legacy 默认不变；tamper/cache/rollback 与 Fresh/Resume | Discovery complete；F1 conditional go；implementation 未授权 |
 | 5 | `0.5.0-*` | compaction lifecycle | 先观测 `clear`/`compact` Host schema；无重复或丢失 context | pending |
 | 6 | `0.6.0-*` | selective tool/permission hooks | 逐事件测量 latency/token/噪声；先 advisory、后扩展 | pending |
 | 7 | `0.7.0-*` | advisory completion | bounded、non-recursive、无 plan 时安静 | pending |

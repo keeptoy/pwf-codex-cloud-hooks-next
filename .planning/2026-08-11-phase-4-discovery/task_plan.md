@@ -25,26 +25,25 @@
   当前 owned snapshot 投影、Host contracts、Cloud fixtures、source/install/ZIP inventory 与 denied surfaces。
 - [x] D2 — Upstream semantic model：画出 legacy/autonomous/gated 与正交 smart-injection opt-in 的输入、读写、
   attestation、nonce、ledger、completion 与失败语义，区分 parser/helper、CLI 与真实依赖 closure。
-- [ ] D3 — Host/Cloud ABI reconciliation（进行中）：以当前官方文档和带日期 Cloud 证据核对事件、input/output、并发、managed
+- [x] D3 — Host/Cloud ABI reconciliation：以当前官方文档和带日期 Cloud 证据核对事件、input/output、并发、managed
   policy、cache/Fresh/Resume；把 Phase 5～8 新 Host 能力与 Phase 4 明确隔离。
-- [ ] D4 — Architecture options：比较最小 snapshot projection、owned wrapper/state machine、上游 CLI 调用等路线，
+- [x] D4 — Architecture options：比较最小 snapshot projection、owned wrapper/state machine、上游 CLI 调用等路线，
   冻结 trusted graph、状态 owner、原子性、并发和 fail-open/fail-closed 边界。
-- [ ] D5 — Source admission and C2 intersection：决定 upstream/local、source-only/installed schemas、`origin`、
+- [x] D5 — Source admission and C2 intersection：决定 upstream/local、source-only/installed schemas、`origin`、
   `language/host_dependencies` 与 contract-v2 foundation 的 shape/placement；建立字段生命周期表。
-- [ ] D6 — Threat, compatibility and validation matrix：冻结 tamper、replay/nonce、cache、concurrency、partial write、
+- [x] D6 — Threat, compatibility and validation matrix：冻结 tamper、replay/nonce、cache、concurrency、partial write、
   rollback、legacy parity、Fresh/Resume、Linux/Cloud 与 Release 证据。
-- [ ] D7 — Route freeze：输出 `GO / CONDITIONAL_GO / NO_GO`，划分 inactive foundation、opt-in activation、Cloud、
+- [x] D7 — Route freeze：输出 `GO / CONDITIONAL_GO / NO_GO`，划分 inactive foundation、opt-in activation、Cloud、
   Release 与 rollback gates；Discovery 结束即停，等待维护者授权实施。
 
 ## Next Step
 
-执行 D3 Host/Cloud reconciliation：把官方 Hook 并发、SessionStart source、transcript 非稳定性与 Cloud
-setup/cache/Resume 生命周期映射到 Phase 4 所需输入；明确哪些可用现有两个 managed events完成，哪些必须延后。
-只写 findings，不修改 contracts/production/Release inputs。
+等待维护者决定是否按冻结路线授权 F1 inactive foundation。未获授权前不修改 production、machine contracts、tests、
+package identity 或 Release inputs，不进入 F2 opt-in activation。
 
 ## Current decision
 
-`PHASE4_DISCOVERY_AUTHORIZED / D1-D2_COMPLETE / D3_IN_PROGRESS / IMPLEMENTATION_NOT_AUTHORIZED / LEGACY_DEFAULT_FROZEN`
+`PHASE4_DISCOVERY_COMPLETE / CONDITIONAL_GO_TO_F1 / IMPLEMENTATION_NOT_AUTHORIZED / LEGACY_DEFAULT_FROZEN`
 
 ## Invariants
 
@@ -94,3 +93,4 @@ setup/cache/Resume 生命周期映射到 Phase 4 所需输入；明确哪些可�
 | `python -m unittest <hyphenated-path>` 把 `planning-with-files-3.8.2` 解析为 module name | 1 | 改在 pinned extraction 根目录直接逐个执行测试脚本，避免错误 module discovery |
 | upstream Python tests 无权写系统 `%TEMP%` fixture | 1 | 分类为沙箱 tempfile limitation；在沙箱外运行相同只读源码/临时 fixture 测试，不写仓库或外部系统 |
 | Windows 默认 GBK 解码 upstream UTF-8 Hook 输出失败 | 1 | 设置 `PYTHONUTF8=1` 后重跑完整 targeted group；不修改 upstream tests 或输出 |
+| 读取不存在的 Cloud fixture `source-candidate-observations.json` | 1 | 用 `rg` 恢复真实 authority：`hook-observations-v1.json`，并读取其 consumer `cloud-fixtures.test.js` |

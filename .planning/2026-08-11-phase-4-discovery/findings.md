@@ -213,3 +213,323 @@ The upstream mtime cache is a performance hint, not part of correctness. Its mti
 cached digest on a path+mtime match. The current private snapshot makes it ephemeral, so the safest Phase 4 route is to compute SHA-256 directly
 over the owned captured bytes on every Hook invocation and keep no persistent attestation cache. Gated forced re-hash then adds no distinct Phase 4
 value; any future cache requires its own private owner, atomic format, bounded cleanup and same-second replacement tests.
+
+## D3 Host and Cloud reconciliation
+
+### Existing events are sufficient
+
+- Phase 4 context behavior needs no new Host event. Both supported events already call the same owned plan runtime before optional catch-up;
+  `SessionStart` covers startup/resume/clear/compact and `UserPromptSubmit` refreshes at each user turn. Mode parsing remains workspace policy,
+  not Host ABI.
+- Official Codex now documents more events, but registering PreToolUse, PreCompact/PostCompact, Stop or permission/tool events would change the
+  product Phase and trusted graph. Their existence is an interface fact only; Phase 4 keeps the installed event set exactly two.
+- Multiple matching Hook commands can run concurrently. Keeping one absolute managed adapter avoids a second repository handler and keeps internal
+  ordering deterministic (plan capture before catch-up). Phase 4 must remain read-only/idempotent so concurrency with unrelated Host hooks cannot
+  corrupt shared workspace state.
+- The current request contract already accepts all four documented `SessionStart.source` values. Cloud evidence has observed startup and resume;
+  clear/compact remain contract-compatible but Phase 5 owns their lifecycle behavior and dedicated Cloud acceptance.
+- `transcript_path` is explicitly non-stable Host data and is relevant only to catch-up. Phase 4 must not couple plan mode/attestation authority to
+  transcript discovery, session-store fallback or undocumented transcript records.
+
+### Opt-in authority and upgrade surprise
+
+- Passing upstream `PWF_INJECT=smart` through the managed child is a poor primary authority: Cloud environment variables can span setup and agent
+  phases and apply broadly, while the current minimal child environment intentionally strips ambient variables. A per-plan marker is narrower and
+  survives Fresh/Resume in an inspectable form.
+- Simply beginning to honor existing `.mode` is not safely opt-in. v0.3.5 deliberately ignores it, so a workspace may already contain stale
+  `autonomous`, `gate` or `inject-smart` tokens created by the pristine Skill. An upgrade that suddenly activates them would change behavior without
+  fresh consent even though legacy is nominally the default.
+- Recommended admission rule: require a new exact token such as `codex-managed-v1` in the same bounded `.mode` file before any managed smart or
+  autonomous behavior is recognized. The owned parser validates the full token set, then projects only the sanitized upstream tokens into the
+  private snapshot. Existing upstream-only markers remain managed legacy.
+- This versioned token is a managed opt-in protocol, not a security secret. It supplies explicit post-upgrade intent and an exact parser version;
+  it does not prove which human/process wrote it. Its lifecycle owner is the plan-context request/policy contract, with review on the next mode
+  protocol rotation and retirement only after all supported installed states have crossed that window.
+- `gate` should remain reserved/unsupported in Phase 4. A file containing `codex-managed-v1 autonomous gate` must not silently provide only the
+  autonomous half while users may believe hard Stop is active. The owned policy should return a reason-coded unsupported state and canary-only
+  output until Phase 8 explicitly admits the completion gate.
+
+### Fresh, Resume and cache implications
+
+- Cloud can restore cached container state and then check out a chat branch/run maintenance. Therefore acceptance must test candidate takeover with
+  a pre-existing ignored upstream `.mode`, an explicitly armed managed token, marker removal, branch/plan changes and real Resume—not only a clean
+  synthetic call.
+- Phase 4 runtime remains read-only, so rollback is primarily code/policy rollback: reinstalling v0.3.5 makes every marker unreachable again and
+  must reproduce legacy output without deleting user files. A successor reinstall must re-enable only a still-valid explicit managed token.
+- No persistent SHA cache is needed. Fresh/Resume should prove both content and refusal paths directly, plus zero owned snapshot residue after
+  success, mismatch, timeout and rollback. Cloud cache reuse must not turn a formerly rejected/stale plan into accepted context.
+
+### D3 boundary conclusion
+
+No-live-Host schema expansion is required for Phase 4. The necessary contract rotation is internal adapter/owned-plan policy and result diagnostics,
+plus a versioned per-plan opt-in token. Phase 5–8 can reuse the same owned state reader later, but must add their own event contracts and gates rather
+than pre-registering them now.
+
+## D4 architecture options
+
+| Option | Shape | Advantages | Blocking costs / decision |
+|---|---|---|---|
+| A. Execute upstream scripts in the real plan directory | adapter/child calls injector, attester and ledger tools against workspace | closest to upstream CLI | rejects current trust model: mutable workspace execution/read paths, shell writers, weak grammar/locking, second Host integration risk; `NO_GO` |
+| B. Copy raw v3 files into the current private snapshot | extend snapshot allowlist and keep pristine injector | small code delta; preserves renderer | raw mode/nonce/ledger parser gaps and helper fallback cross the boundary; old markers auto-activate; insufficient without owned normalization |
+| C. Reimplement the complete renderer/state machine in Python | owned-plan parses and renders every legacy/smart/v3 output | strongest local control | creates a second plan/smart/ledger algorithm and loses pristine output authority; violates adapter/runtime design unless upstream renderer is abandoned through a separate migration; `NO_GO` now |
+| D. Owned admission + normalized private snapshot + pristine renderer | owned-plan strictly captures/validates state, writes sanitized snapshot, pristine injector/ledger helper render it | keeps current safe-read/process supervision and canonical semantics; no workspace writes/new Hook | modest v2 protocol and owned-policy work; requires exact profile/refusal design; **recommended** |
+| E. Store opt-in/attestation in a separate installer-owned database | managed state outside workspace controls approval | stronger principal separation possible | new persistent state, CLI, migration, Cloud cache and cleanup owner; disproportionate for workflow change detection and conflicts with read-only Phase 4; defer unless threat model requires human identity proof |
+
+### Recommended trusted graph
+
+```text
+Codex SessionStart/UserPromptSubmit
+  -> one absolute managed adapter
+  -> exact plan-context request v2 (capability policy, no workspace-derived mode)
+  -> owned-plan v2
+       -> safe resolve + safe capture
+          task_plan.md, optional progress.md, bounded .mode/.nonce/.attestation,
+          bounded admitted ledger-<agent>.jsonl
+       -> exact managed opt-in + digest/state validation
+       -> private normalized snapshot
+          legacy: task + progress
+          smart: task + progress + sanitized inject-smart token
+          autonomous: task + sanitized mode/nonce/generated matching attestation
+                      + normalized ledgers; no raw progress projection
+       -> pristine inject-plan.sh -> required pristine ledger-summary.sh when autonomous
+  -> exact result v2 validation
+  -> canary + safe advisory or verified context (+ independent eligible catch-up)
+```
+
+The snapshot's `.attestation` should be generated from the already verified captured digest rather than copying arbitrary whitespace/content. The
+owned runtime still compares that digest with the safely read workspace marker first; generation only normalizes renderer input. Likewise `.mode`,
+nonce and ledgers are new owned files derived from validated values, never raw copies.
+
+### Ownership and failure split
+
+- Workspace/user owns the proposed mode token, nonce, attestation marker and ledger data. This is workflow state, not installer ownership.
+- `owned-plan` owns grammar, bounds, safe capture, digest comparison, effective profile, normalized snapshot and refusal reason.
+- Pristine injector owns smart/head rendering, delimiter shape and canonical outer plan text; pristine ledger-summary owns the final normalized
+  ledger block only after its inputs have been admitted.
+- Adapter owns only Host payload validation, child supervision/result validation and ordered context composition. It does not parse `.mode`.
+- Installer/bundle owns executable/contract presence, hashes and modes. Autonomous activation must require `ledger-summary` as an effective
+  dependency; missing/drifted helper never permits raw-progress fallback.
+- Invalid or unsupported opt-in, missing/invalid nonce, absent/mismatched attestation, unsafe ledger or state race withholds plan-derived content
+  and returns a small owned advisory. Child/runtime failure leaves canary available. No recognized managed state may silently downgrade to legacy.
+
+### Scope split across future Phases
+
+- Phase 4 implementation candidate: inactive v2 foundation, then explicit smart/autonomous activation using existing two events.
+- Phase 5/6: reuse the owned state reader only if compaction/tool event contracts independently need it; no pre-registration now.
+- Phase 7: advisory completion may read normalized plan state but does not inherit ledger writers automatically.
+- Phase 8: decide `gate`, Stop contract, counters, stall detection and writer/lock model. Only then can `codex-managed-v1 ... gate` become accepted.
+- Phase 9: release only the feature set whose independent gates have passed; no requirement to wait for Phase 5–8 before sealing Phase 4.
+
+## D5 source admission and C2 intersection
+
+### Executable admission
+
+- Recommended Phase 4 adds **no new upstream executable**. Existing pristine `inject-plan.sh`, `ledger-summary.sh` and resolver already form the
+  rendering closure; `attest-plan.sh`, `ledger-append.sh`, `phase-status.sh`, init and gate scripts remain outside managed runtime.
+- `owned-plan.py` changes materially to implement admission/normalization; the adapter changes only for request/result v2 policy/composition.
+- A current single-authority gap must be fixed in bundle v2: `hook_adapter.py` is installed and executed but `install.js` currently prepends it
+  outside `runtime-bundle-v1.json` and hashes the package file dynamically. Add it to v2 `local_files`, then remove the installer special case.
+  License notice remains installed package documentation, not executable runtime; its manifest integrity edge can stay separate.
+- `ledger_summary` becomes a required dependency for the autonomous profile. It stays installed for legacy packages as part of exact source
+  inventory, but the owned runtime must preflight it before accepting autonomous state and never allow injector fallback to raw progress.
+
+### Runtime bundle v2 decision
+
+Use exact structural partitions `upstream_files`, `local_files` and `installed_contracts`:
+
+- `upstream_files`: four existing pristine files, one `pristine_sha256`, exact source/package/installed roots, mode and dependency closure;
+- `local_files`: adapter, owned-plan and owned-catchup with package/installed path, SHA, mode and direct dependencies;
+- `installed_contracts`: all four internal adapter/child ABI schemas—catch-up request/result v1 plus plan request/result v2—so the installed managed
+  package is consistently self-describing and doctor verifies their hashes. This closes the unexplained plan-only/catch-up-source-only asymmetry.
+
+The v2 partitions fully express source class, so entry-level `origin` has no independent consumer and should be removed. Also remove
+`managed_sha256`, empty `overlay_ids`, `language` and `host_dependencies`: Phase 4 admitted no new interpreter surface, and the last two remain
+unchecked declarations rather than prerequisite/dispatch inputs. Human prerequisites stay in DESIGN/README; executable shebang, pinned bytes,
+mode and tested dependency closure remain machine evidence. If a future mixed collection or dependency resolver needs these fields, it must add
+them through a new schema with a real consumer and lifecycle.
+
+### Other C2 decisions now closed
+
+- Manifest schema 4: exact top-level keys, remove duplicate `skill_version`, retain provenance cross-check, required pristine Skill files and
+  bundle/Release/importer/license integrity edges. Once all four internal ABI schemas move into bundle `installed_contracts`, remove the manifest's
+  direct catch-up request/result hashes so the same contract bytes are not anchored twice.
+- Release artifact v2: contract owns every ZIP entry mode; builder drops `EXECUTABLE_PATHS`; remove ignored `state`, `origin`, `reason` and
+  prose `checksum_workflow`; retain exact entries, external asset paths and negative prefixes.
+- Runtime bundle/manifest/Release v1 remain immutable in published v0.3.5 source. Candidate uses only its v2/schema-4 set; no dual-loader fallback.
+- Historical oracles must discover contract paths from each source snapshot's own manifest, so v0.3.5 continues to validate with v1 while the
+  candidate validates with v2.
+
+### Internal plan protocol v2 shape
+
+The request policy should carry trusted adapter capability, not a workspace-derived effective mode:
+
+- `planning_enabled`;
+- ordered `allowed_profiles` (`[legacy]` for inactive foundation; later `[legacy, smart, autonomous]` after activation authorization);
+- exact `opt_in_protocol=codex-managed-v1`.
+
+`owned-plan` alone resolves the effective profile from safely captured workspace state. Result v2 needs a bounded, adapter-consumed advisory
+channel for refusals plus enough exact outcome/effective-profile state to reject impossible combinations. Avoid adding hashes, nonce values,
+ledger counts or other diagnostics unless a named adapter/doctor/test consumer changes behavior or acceptance based on them.
+
+### Placement and gate sequence
+
+Do not publish a separate stable contract-only patch. Use one `0.4.0-alpha.*` train but retain two independently reviewed gates:
+
+1. **F1 inactive foundation:** schema-4 manifest, runtime-bundle/release v2, adapter inventory inclusion, four installed ABI contracts, plan protocol
+   v2 and hybrid code land with `allowed_profiles=[legacy]`. Golden output, installed behavior and Host event set remain v0.3.5-equivalent.
+2. **F2 opt-in activation:** after F1 local/Linux/no-live Cloud PASS, trusted adapter policy permits smart/autonomous. Only a valid
+   `codex-managed-v1` marker can leave legacy; gated remains unsupported.
+3. **F3 live Cloud acceptance:** explicit marker Fresh/UserPrompt/real Resume, mismatch/refusal/cache/rollback and v0.3.5 takeover.
+4. Release/Latest remain later, separately authorized gates.
+
+This sequence combines C2 and Phase 4 where their contracts genuinely intersect without treating foundation PASS as behavior authorization.
+
+### Machine-field lifecycle decisions
+
+| Field / structure | Owner and consumer | Lifecycle / review |
+|---|---|---|
+| v2 structural partitions | importer + installer acquire/project logic | `PERMANENT_CONTRACT`; review only on bundle schema rotation |
+| upstream `pristine_sha256` | importer + installer byte validation | `PERMANENT_CONTRACT` |
+| entry `origin` | none after structural partition | `RETIRE_IN_V2`; recover only for behaviorally mixed collection |
+| `managed_sha256`, `overlay_ids` | no post-overlay consumer | `RETIRE_IN_V2` |
+| `language`, `host_dependencies` | no operational consumer | `RETIRE_IN_V2`; prerequisites move to human docs |
+| `installed_contracts` | installer install + doctor drift; on-site ABI audit | `PERMANENT_CONTRACT`; now contains both internal protocol pairs |
+| request `allowed_profiles` | trusted adapter producer; owned-plan behavioral consumer | `PERMANENT_V2_POLICY`; changes require activation gate/tests |
+| request `opt_in_protocol` | adapter/owned-plan exact grammar agreement | `PERMANENT_UNTIL_PROTOCOL_ROTATION`; review no later than Phase 8 |
+| `.mode` token `codex-managed-v1` | workspace producer; owned-plan consumer | `VERSIONED_OPT_IN`; successor token requires migration/rollback design |
+| result advisory | owned-plan producer; adapter bounded-context consumer | `PERMANENT_V2_PROTOCOL`; exact reason mapping, no arbitrary child text |
+
+## D6 threat, compatibility and validation matrix
+
+### State admission rules
+
+| Observed workspace state | Managed decision | Content behavior |
+|---|---|---|
+| `.mode` absent or safe regular file without `codex-managed-v1` | legacy | byte-equivalent v0.3.5 path; upstream-only old tokens ignored |
+| `.mode` exists but is symlink, hard link, oversized, invalid UTF-8 or changes during capture | unsafe state | canary + bounded advisory; never downgrade to legacy |
+| managed token plus unknown/duplicate/incompatible token | invalid opt-in | canary + bounded advisory; no plan/progress/ledger |
+| managed token plus `gate` | unsupported future profile | canary + bounded advisory; no partial autonomous behavior |
+| managed smart only | smart | safely captured plan rendered by pristine smart extractor; raw progress remains legacy-shaped |
+| managed autonomous with exact nonce and matching attestation | autonomous | attested plan + nonce framing + normalized ledger summary; raw progress not projected |
+| managed autonomous with missing/invalid nonce or attestation | incomplete/refused | canary + bounded advisory; no plan-derived content |
+| digest mismatch or plan/marker race | tampered/state changed | canary + bounded advisory; no plan-derived content |
+| unsafe/malformed/over-budget ledger | autonomous state rejected | no plan-derived content; never fall back to raw progress |
+| child/helper missing, stderr, nonzero, timeout or oversize | runtime failure | canary survives; no downgrade or unverified context |
+
+An unsafe `.mode` is different from an ordinary absent/old marker. Treating a present-but-unreadable marker as absent would let an attacker replace
+an armed managed marker with a symlink and force legacy raw injection; presence must therefore fail closed even before effective profile is known.
+
+### Proposed bounded grammar
+
+- `.mode`: regular single-link UTF-8 file, at most 256 bytes; whitespace-separated exact tokens from
+  `codex-managed-v1`, `inject-smart`, `autonomous`, `gate`; no duplicates. Accepted Phase 4 sets are exactly
+  `{codex-managed-v1, inject-smart}` and `{codex-managed-v1, autonomous}` with optional `inject-smart` on autonomous.
+- `.nonce`: regular single-link file, at most 64 bytes after capture; normalized content must be exactly 16 lowercase hex characters.
+- attestation: regular single-link file, at most 128 bytes; normalized content exactly 64 lowercase hex characters and equal to SHA-256 of captured
+  `task_plan.md` bytes. Hash every invocation; no persistent cache.
+- ledgers: filenames `ledger-<agent>.jsonl`, agent `[A-Za-z0-9][A-Za-z0-9_-]{0,63}`; at most 32 files, 256 KiB each and 1 MiB total.
+  Strict UTF-8 JSONL, at most 10,000 total non-empty lines. Each entry has the upstream seven exact keys; positive bounded integer tick, exact agent
+  match, known event, bounded strings/list and valid timestamp. Normalized snapshot lines retain only safe tick/event data needed by the pristine
+  summary, eliminating summary/timestamp/files prose before the shell reader runs.
+- Plan/progress/output budgets remain current limits unless failing-first tests prove a smaller profile-specific value is needed.
+
+The specific limits are managed safety contracts and must appear once in implementation/schema tests, not be repeated through prose regex across
+multiple governance documents.
+
+### Threat conclusions
+
+- **Tamper:** digest mismatch blocks; matching replacement of plan+attestation remains possible in the same workspace trust domain and is explicitly
+  outside identity-authentication claims.
+- **Nonce/replay:** nonce prevents accidental/static delimiter collision, not a writer who can read it. Reuse across Resume is allowed and not an
+  authentication replay; invalid/missing nonce blocks autonomous managed mode.
+- **Cache:** no correctness cache in Phase 4. Cloud/container cache cannot supply a digest result because none persists.
+- **Race/partial read:** use descriptor-relative no-follow reads and identity checks for every state file; collect a consistent bounded snapshot.
+  Any mixed generation that does not independently validate refuses content. Production performs no workspace writes, so partial-write recovery
+  belongs to the external producer, not Hook mutation logic.
+- **Concurrency:** Hook invocations are read-only, use unique private snapshots and no shared cache/lock. Ledger writers may race upstream, but a
+  malformed/inconsistent capture refuses autonomous context; managed runtime does not repair it.
+- **Prompt injection:** legacy remains intentionally compatible. Smart has the same trust level as legacy. Autonomous reveals plan only after
+  workflow attestation and never injects raw progress/ledger prose; attested plan content itself remains user-approved data, not safe instructions.
+
+### Upgrade and rollback matrix
+
+| Transition | Required result |
+|---|---|
+| clean candidate, no marker | exact legacy golden output and two-event policy |
+| v0.3.5 install with pre-existing upstream `.mode` -> candidate | still legacy; no surprise activation |
+| inactive foundation `[legacy]` with valid managed token | still legacy plus no unsafe partial behavior; activation capability demonstrably closed |
+| activated candidate + valid smart/autonomous token | only requested profile active; removal returns immediately to legacy |
+| activated candidate + token/digest/nonce/ledger tamper | canary/advisory only, zero plan-derived content and zero snapshot residue |
+| candidate -> immutable v0.3.5 | v0.3.5 doctor healthy and markers ignored without deletion |
+| v0.3.5 -> candidate again | only still-valid versioned marker re-arms; exact digest/state revalidated |
+| failed install/contract/unknown key | no backup/write/partial takeover; prior managed bytes unchanged |
+
+### Verification gates
+
+1. **Failing-first unit/seam:** exact mode sets, old-marker compatibility, unsafe file types, missing/mismatched digest, nonce grammar, ledger schema/
+   bounds/filenames, no-cache, helper absence, timeout/process cleanup, advisory combinations and impossible result rejection.
+2. **Golden parity:** every current legacy fixture byte-identical; smart/autonomous canonical output compared with pinned upstream over normalized
+   fixtures; explicit proof raw progress and ledger free text never appear in autonomous output.
+3. **Contract/supply chain:** manifest schema 4, bundle/Release v2 exact-key mutation tests, adapter inside bundle, no deferred writers, four installed
+   ABI schemas, single hash/mode authorities, historical-oracle path discovery and deterministic ZIP.
+4. **Full local:** importer check, `npm test`, Python compile, Node/bootstrap syntax, Git mode and `git diff --check`; Windows POSIX cases honestly skip.
+5. **Linux:** complete zero-failure suite, descriptor/race/symlink/hard-link/process-group cases, install/doctor/repair/uninstall and cross-version
+   takeover; installed inventory/modes/hashes exact.
+6. **No-live Cloud Source/Candidate:** Fresh + real Resume, startup/resume sources, legacy parity, old marker ignored, opt-in profiles, all refusal paths,
+   container cache reuse, rollback/reinstall and `SNAPSHOT_LEFTOVERS=0`.
+7. **Live opt-in/Release:** separately authorized activation first; later immutable alpha/beta/RC/final bytes, published download, Fresh/Resume/doctor and
+   rollback evidence. No local/RC result substitutes for final downloaded assets.
+
+## D7 route freeze
+
+### Decision
+
+`CONDITIONAL_GO_TO_F1_INACTIVE_FOUNDATION`
+
+Phase 4 is architecturally viable without adding Host events, executing workspace scripts, importing deferred upstream writers or weakening the
+owned snapshot boundary. The chosen hybrid route preserves pristine rendering while moving opt-in authority, exact grammar, state capture and
+failure decisions into the owned runtime.
+
+This conclusion does **not** authorize implementation. F1 may begin only after the maintainer explicitly says to implement the frozen inactive
+foundation and the worktree/branch still match the v0.3.5-based `0.4.0-dev` train.
+
+### F1 exact scope when authorized
+
+- failing-first contract/supply-chain/legacy-closure tests;
+- manifest schema 4, runtime-bundle v2 and release-artifact v2 as one atomic contract transaction;
+- bundle admission of adapter, four installed internal ABI schemas and removal of retired/unconsumed v2 fields described in D5;
+- plan request/result v2 plus owned hybrid state code, with trusted `allowed_profiles=[legacy]` so marker files are not read and every current
+  legacy output remains byte-equivalent;
+- importer/installer/builder/historical-oracle migrations required by those contracts;
+- local full regression and Linux/no-live Cloud foundation acceptance designed before any activation.
+
+F1 explicitly excludes a package/Release seal unless separately authorized. A development or alpha identity is frozen only inside the future F1
+task plan; the current branch name is not that identity.
+
+### F1 exit conditions before F2 can be proposed
+
+1. exact-v2/schema-4 loaders fail before write for unknown/missing/old fields and preserve prior managed bytes;
+2. adapter/runtime/contract/mode inventories have one authority each; no second executable set or v1/v2 active fallback exists;
+3. all existing legacy golden, SessionStart/UserPromptSubmit, catch-up, tamper, process/snapshot and installer behavior remains green;
+4. `[legacy]` policy proves `.mode`, nonce, attestation and ledger remain unreachable, including unsafe/malicious markers;
+5. deterministic candidate ZIP, installed package, doctor, v0.3.5 takeover/rollback and Linux/no-live Cloud foundation gates pass;
+6. no production writer, new Hook event, persistent cache, gated token or live opt-in exists.
+
+Only after those conditions and a new maintainer authorization may F2 enable `[legacy, smart, autonomous]`. F2 must start with the D6 marker/refusal
+tests and may not absorb Stop/gated behavior. F3 live Cloud, Release sealing/publication and Latest promotion remain subsequent independent gates.
+
+### Closed questions
+
+- `origin`: remove in bundle/Release v2 because structural partitions and real consumers fully express source.
+- Deferred upstream writers: remain denied; Phase 4 read-only rendering does not need them.
+- Schema placement: install all four internal adapter/child ABI schemas through bundle authority; remove duplicate manifest anchors.
+- Host events: remain exactly SessionStart and UserPromptSubmit.
+- Attestation claim: workflow change detector only, not identity authentication.
+- Cache: none in Phase 4 correctness path.
+- Gated mode: reserved for Phase 8 and rejected if paired with the managed Phase 4 token.
+
+### Discovery conclusion
+
+D1–D7 are complete. The next action is not more Discovery and not activation: wait for explicit authorization to open an F1 implementation plan.
+If upstream pin, official Host ABI, Cloud lifecycle, accepted baseline or branch state changes first, reopen evidence rather than applying this route
+mechanically.
