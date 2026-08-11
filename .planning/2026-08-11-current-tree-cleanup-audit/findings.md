@@ -284,14 +284,55 @@
   多层验证；`0.x.y (y>0)` 正是同一 minor 行为合同内的兼容修复身份。candidate 仍需 Source/Candidate、publication、
   Published Release 与 promotion 四步，当前授权只到本地 source/candidate 准备和提交。
 
+## C1.1 assertion classification
+
+| 分类 | 目标 | 处置与替代证据 |
+|---|---|---|
+| `KEEP_STRUCTURAL` | contract exact keys/inventory、四个 pristine hash、Phase 4 denied-source、runtime dependency、mode、Release exclusions、active planning 三件套、candidate + accepted 文件窗口、source-level call order、forbidden zones | 原样保留；这些断言直接阻止 trusted graph、供应链或 lifecycle 边界漂移。 |
+| `KEEP_STRUCTURAL` | 文档显式英文 anchors、唯一 history 入口、DESIGN test-module exact reverse index、published acceptance 的精确身份与 installed inventory | 原样保留；它们验证可寻址结构或不可变版本证据，不锁中文同义改写。 |
+| `REPLACE_WITH_STRUCTURAL` | `ARCHITECTURE` runtime/lifecycle 长串中文/英文 prose regex；ROADMAP Discovery、Release、pre-1 compatibility 的段落顺序 regex | 只保留既有 stable anchor/section presence；行为由 adapter/runtime/installer/package tests，角色与 Release 关系由 machine contract 和 repository boundary 直接验证。 |
+| `REPLACE_WITH_STRUCTURAL` | history advisory 与 repository-governance retirement 的逐句 prose regex | 保留 history 单一入口与 Release/trusted-source 排除、governance stable anchors、candidate + accepted 实际文件窗口；不再要求指南逐句复述 owner/PENDING/顺序。 |
+| `DELETE_DUPLICATE` | `retired prototype conclusions remain covered...` 标题元测试 | 删除；完整 suite 直接运行目标 production safety tests，DESIGN exact module mapping 仍防止测试模块无归属。 |
+| `DELETE_DUPLICATE` | 通用 repository/package test 中固定 `21` 和固定 `v0.3.4` | 用 `artifact.entries.length`、`package.json`、artifact version、外部 bootstrap path/default version 的关系断言替代；精确已发布数字继续留在版本 acceptance/publication oracle。 |
+
+- notice guard 已先于正文修改加入 `tests/contracts.test.js`。旧文本按预期失败于缺少
+  `byte-for-byte pristine`，并仍明确声明 compatibility overlay；这证明测试锁定的是当前错误事实，而非未来文案样式。
+- 动态 Release 测试同时覆盖 sealed accepted bootstrap 和 zero-hash unpublished candidate：前者必须等于确定性 ZIP
+  SHA，后者只允许出现在 candidate 与 accepted 不同的开发窗口。
+
+## C1.2/C1.3 landing and candidate state
+
+- notice 已改为四文件 byte-for-byte pristine + repository-owned wrappers 的准确 attribution；manifest 固定的新
+  notice SHA-256 为 `10415e608418192d20d0e7095cfb4d77339850576043f65e796e695699424703`。runtime bundle
+  schema/inventory、upstream bytes 和安装集合均未变化。
+- `v0.3.5-dev` 已建立为 package、Release artifact、ROADMAP、CHANGELOG、candidate acceptance 与外部 bootstrap
+  一致的 source identity；v0.3.4 accepted 与 v0.3.3 immediate fallback 文件/资产继续保留。新 bootstrap 与 v0.3.4
+  版本逐字只差默认 version 和默认 checksum 两行，checksum 为 64 位 zero hash，默认下载必然 fail closed。
+- Release artifact 变更后的真实 SHA 已同步回 manifest integrity index；这只是既有 v1 hash edge 的版本传播，未改变
+  contract schema。candidate ZIP 双构建逐字一致，当前开发字节 SHA-256 为
+  `d5687d4318a34dd514a5e203d71bd3918e6ef758ab49bde894de1b9c2b867b5f`，但在 Source/Candidate Cloud 与正式
+  seal 之前不得写入 bootstrap 或冒充 immutable asset。
+- prose-lock 收缩后仍有直接安全证据：完整 suite 会运行 runtime/tamper/ownership/rollback/publication tests；
+  architecture/repository guards 继续验证 stable anchors、exact trusted/Release sets、candidate+accepted 文件窗口、
+  immutable published identity、forbidden zones 与 adapter source call-order。
+- C1 对 Phase 4～9 的影响仍是正向隔离：没有删除 `ledger-summary.sh`、installed schemas、host dependencies 或
+  Phase 4 denied-source guards；没有新增 Phase 4 source、ABI、event 或 dispatch。后续 C2/Phase 4 Discovery 仍可独立
+  决定 contract-v2 placement，不需要恢复本 gate 删除的任何运行时 seam。
+
 ## Verification
 
-- `npm test`：126 tests，114 pass，0 fail，12 个 POSIX/Linux-only case 在 Windows 如实 SKIP。
-- `python tools/import_upstream_runtime.py check`：healthy，四个 pristine upstream hash 全部匹配。
+- C1.0 baseline `npm test`：126 tests，114 pass，0 fail，12 个 POSIX/Linux-only case 在 Windows 如实 SKIP。
+- C1.0 baseline `python tools/import_upstream_runtime.py check`：healthy，四个 pristine upstream hash 全部匹配。
 - Python compile（`hook_adapter.py`、`owned-plan.py`、`owned-catchup.py`）和 `node --check install.js`：通过。
 - `git ls-files --stage runtime/upstream`：四个且仅四个 upstream runtime 文件均为 `100755`。
 - `bash -n init-cloud-sandbox-v0.3.4.bash`：受限 Windows sandbox 首次因 Git Bash signal pipe `Win32 error 5`
   无法启动；在非受限只读执行上下文重跑通过，分类为 platform limitation，不是脚本缺陷。
-- deterministic Release build/check：21 项 exact allowlist，build 与 check 均为 healthy，同一临时 ZIP SHA-256 为
+- C1.0 baseline deterministic Release build/check：21 项 exact allowlist，build 与 check 均为 healthy，同一临时 ZIP SHA-256 为
   `497e92a861bd7882129f05b28df1e23a55330db98bebe76891db5b9761bdec3b`；临时文件验证后安全删除。
 - `git diff --check`：通过。
+- C1 完整 suite：124 tests，112 pass，0 fail，12 个 Windows POSIX/Linux-only case 如实 SKIP。
+- C1 focused architecture/contracts/repository/Release：19/19；bootstrap focused：4/4。
+- C1 candidate 双构建/check：21 entries、77,807 bytes，两份 SHA-256 均为
+  `d5687d4318a34dd514a5e203d71bd3918e6ef758ab49bde894de1b9c2b867b5f`；临时 ZIP 已安全删除。
+- C1 Python compile、Node syntax、accepted/candidate Bash syntax、四文件 `100755` mode、importer check 与
+  `git diff --check`：全部通过。

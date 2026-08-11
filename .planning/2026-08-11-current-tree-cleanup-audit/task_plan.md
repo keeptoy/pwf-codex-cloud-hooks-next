@@ -30,13 +30,14 @@
 
 ## Next Step
 
-执行 C1.1：先建立 notice 的失败优先直接断言，再对目标 prose regex 做逐条
-`KEEP_STRUCTURAL / REPLACE_WITH_STRUCTURAL / DELETE_DUPLICATE` 分类，并把通用 Release candidate 测试改成
-由 package/artifact contract 派生身份。C1.1 闭合前不修改 notice、history 或 candidate 字节。
+停在 `C1_SOURCE_CANDIDATE_READY / CLOUD_NOT_AUTHORIZED`。维护者下一步先审阅本地 C1 commit，再按
+`docs/cloud-hard-acceptance-template.md` 授权并执行 `v0.3.5-dev` Source/Candidate Cloud；必须绑定 exact checkout、
+zero-hash bootstrap 和显式 candidate ZIP URL/SHA override。该通道 PASS 前不得收敛 stable identity、写 sealed ZIP
+hash 或进入 publication；远端 push/tag/Release/Latest 仍由维护者执行。
 
 ## Decision
 
-`C1_LOCAL_IMPLEMENTATION_AUTHORIZED / 0.3.5-DEV / C2_AND_PHASE4_NOT_AUTHORIZED / REMOTE_WRITES_MAINTAINER_ONLY`
+`C1_SOURCE_CANDIDATE_READY / V0.3.5-DEV_ZERO_HASH / CLOUD_AND_RELEASE_NOT_AUTHORIZED / C2_AND_PHASE4_NOT_AUTHORIZED`
 
 ## Route invariants
 
@@ -61,7 +62,7 @@
 3. 运行 importer check、完整 suite、Python/Node/Bash syntax、deterministic ZIP check 与 `git diff --check`，记录
    Windows POSIX skip 基线；任何基线 product failure 先分类，不带病开始清理。
 
-### C1.1 Failing-first guards and assertion classification
+### C1.1 Failing-first guards and assertion classification（完成）
 
 1. 在 notice 最近的 contract/package boundary 增加直接断言：四个 upstream 文件为 pristine，notice 不得再声明
    session-catchup overlay；先让该断言对当前旧文字失败。
@@ -70,7 +71,7 @@
 3. 给 Release candidate 测试增加动态身份断言：package version、artifact package version、bootstrap filename/default
    version 必须关系一致；builder 报告的 entry count 与 `artifact.entries.length` 一致，不再复制固定版本和数字。
 
-### C1.2 Minimal edits
+### C1.2 Minimal edits（完成）
 
 1. 修正 `THIRD_PARTY_NOTICES.md`：明确四个 `runtime/upstream/*` 文件都是 pinned v3.8.2 的逐字 pristine copy，
    compatibility/security boundary 位于 repository-owned wrappers，而不是 upstream overlay。
@@ -88,7 +89,7 @@
 6. 在 Phase 3.8 摘要末尾新增独立 `Subsequent landing` 尾注，并最小更新 history index：保留原文“当时只关闭
    Discovery、尚未实施”，另行说明 bundle-authority migration 后续已由 v0.3.4 落地，不重写 cold history。
 
-### C1.3 Candidate and Release rotation
+### C1.3 Candidate and Release rotation（本地 candidate 准备完成；外部 gates 待授权）
 
 1. 按所选 candidate 同步 package、Release contract、版本 acceptance 与外部 bootstrap identity；不把版本号硬编码
    回稳定架构文档或通用测试。
@@ -175,3 +176,7 @@ Phase 4 Discovery 的前置发布；两轮 Discovery 必须先区分 Phase-4-neu
 | 受限 sandbox 不允许创建 `.git/index.lock`，planning-only 自动提交未开始暂存 | 1 | 工作树内容未受损；按权限规则在沙箱外重跑精确 `git add` / `git commit` |
 | 首次 resumed-route `rg` 把 PowerShell 双引号与 `\"mode\"` 组合成未闭合 regex；同一命令的 ROADMAP 查询成功 | 1 | 改用 PowerShell 单引号包围 pattern，完整恢复 notice/contract/builder/test consumer 图 |
 | Phase 4 预埋搜索把 `contracts/*.schema.json` 作为 Windows literal path 传给 `rg`，其余文件证据已输出但命令 exit 1 | 1 | 改用 `contracts -g '*.schema.json'`，成功恢复四份 exact-v1 schema 的 event/profile/unknown-key 边界 |
+| 受限 Windows sandbox 中 Git Bash 无法创建 signal pipe（Win32 error 5），同一 PowerShell 批次被后续成功命令掩盖 | 1 | 单独在非受限只读上下文重跑两个 bootstrap 的 `bash -n`，均通过；记录为 platform limitation |
+| 多文件 `apply_patch` 因 task plan 中文 Next Step hunk 上下文未精确匹配而整体拒绝 | 3 | 每次均未发生部分写入；拆成单文件最小 hunk 后成功，并在 `git diff --check` 中复核 |
+| C1.2 修改 Release 输入后，package test 仍绑定 sealed v0.3.4 hash | 1 | 识别为预期 unsealed identity transition；不改写 v0.3.4，原子轮转到 v0.3.5-dev zero-hash candidate |
+| 首次 v0.3.5-dev focused/full run 暴露 manifest Release-contract SHA、ROADMAP prose locks 与 bootstrap sealed-only 假设 | 3 | 同步真实 contract SHA；删除被动态角色解析覆盖的 prose locks；bootstrap 测试按 candidate/accepted 关系验证 zero/sealed checksum，focused 与完整 suite 全绿 |

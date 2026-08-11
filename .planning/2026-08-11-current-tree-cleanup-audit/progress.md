@@ -64,3 +64,35 @@
   failure，下一步进入 C1.1 failing-first guards 与断言分类。
 - 一次组合 `apply_patch` 因 task plan hunk 上下文未精确匹配而整体未应用；拆成最小 hunk 后成功，未造成部分写入
   或内容损失。
+- 本地提交 `98792cd`（`docs: open v0.3.5 compatible cleanup`）只包含活动 planning 三件套；维护者已有五组旧
+  planning deletions 未被暂存。
+- C1.1 notice guard 已加入合同边界；修改正文前的 focused run 按预期 1/2 失败，失败内容正是旧 notice 的 overlay
+  声明和缺失 pristine/wrapper 事实。动态 Release 与 repository boundary focused run 10/10 通过。
+- 已删除仅检查其他测试标题的元测试和通用固定 entry count；`release-package.test.js` 改从 package/artifact 派生
+  candidate、bootstrap 与 entry count，并区分 zero-hash unpublished candidate 和 sealed accepted identity。
+- 已冻结 `KEEP_STRUCTURAL / REPLACE_WITH_STRUCTURAL / DELETE_DUPLICATE` 分类表。两次只读盘点命令分别因
+  PowerShell 嵌套 range 类型和 Windows 不展开 `tests/*.test.js` glob 失败；均改用逐文件行号/目录级 `rg` 完成，
+  未产生文件修改。另一次组合 planning patch 因 Next Step 上下文匹配失败而整体未应用，拆成最小 hunk 后成功。
+  C1.1 闭合，进入 C1.2 最小编辑。
+- C1.2 已修正 notice 并同步 SHA-256 `10415e608418192d20d0e7095cfb4d77339850576043f65e796e695699424703`；
+  importer check healthy。Phase 3.8 摘要增加独立 subsequent-landing 尾注，索引保留“当时未实施”的时间语义。
+- 按分类表删除标题元测试与 prose/order locks，保留 stable anchors、exact inventory、forbidden zones、role windows、
+  Release exclusion 和 source call-order。focused run 18/19：合同/架构/仓库边界全绿，唯一失败是已改 ZIP 输入仍搭配
+  sealed v0.3.4 bootstrap hash（旧 `497e...`，新构建 `fff589...`）。分类为预期 unsealed identity transition，证明
+  已发布 v0.3.4 不可改写；C1.2 不单独提交红色中间态，立即进入 C1.3 原子 candidate rotation。
+- 已建立 `v0.3.5-dev` local identity：package、Release contract、ROADMAP/CHANGELOG、candidate acceptance 与新
+  bootstrap 一致；v0.3.4 accepted 文件保留。新 bootstrap 只从 accepted 版本复制并改默认 version/zero hash，两个
+  bootstrap 的 `bash -n` 均通过。
+- 身份轮转首轮 focused run 先暴露 Release contract SHA 未同步和两条剩余 ROADMAP prose locks；同步 manifest SHA、
+  删除由动态角色解析覆盖的措辞锁后，focused architecture/contracts/repository/Release 19/19 通过。
+- 完整 suite 首轮 111 pass/1 fail/12 skip，唯一失败是 `bootstrap.test.js` 仍假设当前 bootstrap 必然 sealed；改为
+  从 ROADMAP 解析 accepted role，并要求 unpublished candidate 默认 zero/fail-closed、accepted 默认 nonzero 后，
+  bootstrap focused 4/4、完整 suite 124 tests / 112 pass / 0 fail / 12 honest Windows skips。
+- 最终 importer healthy；Python compile、Node syntax、accepted/candidate Bash syntax、四个 upstream `100755` mode
+  与 `git diff --check` 通过。candidate ZIP 双构建/check 均为 21 entries、77,807 bytes、SHA-256
+  `d5687d4318a34dd514a5e203d71bd3918e6ef758ab49bde894de1b9c2b867b5f`，临时资产已删除；该开发 hash 未写入
+  zero-hash bootstrap。
+- C1 本地 source-candidate 已准备完成；按授权停在 Source/Candidate Cloud 之前，不执行 push/tag/Release/Latest，
+  不进入 C2 或 Phase 4。
+- 本地提交 `cb59ad7`（`chore: prepare v0.3.5 compatible candidate`）只包含 15 个 C1 source-candidate 文件；
+  活动 planning 证据另行提交，维护者已有 15 个旧 planning tracked deletions 继续未暂存。
