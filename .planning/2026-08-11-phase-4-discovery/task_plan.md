@@ -23,9 +23,9 @@
   lifecycle；未改变 package/machine identity。
 - [x] D1 — Evidence recovery and inventory：扫描 pinned upstream v3 mode/attestation/nonce/ledger 文件、
   当前 owned snapshot 投影、Host contracts、Cloud fixtures、source/install/ZIP inventory 与 denied surfaces。
-- [ ] D2 — Upstream semantic model（进行中）：画出 legacy/autonomous/gated 与正交 smart-injection opt-in 的输入、读写、
+- [x] D2 — Upstream semantic model：画出 legacy/autonomous/gated 与正交 smart-injection opt-in 的输入、读写、
   attestation、nonce、ledger、completion 与失败语义，区分 parser/helper、CLI 与真实依赖 closure。
-- [ ] D3 — Host/Cloud ABI reconciliation：以当前官方文档和带日期 Cloud 证据核对事件、input/output、并发、managed
+- [ ] D3 — Host/Cloud ABI reconciliation（进行中）：以当前官方文档和带日期 Cloud 证据核对事件、input/output、并发、managed
   policy、cache/Fresh/Resume；把 Phase 5～8 新 Host 能力与 Phase 4 明确隔离。
 - [ ] D4 — Architecture options：比较最小 snapshot projection、owned wrapper/state machine、上游 CLI 调用等路线，
   冻结 trusted graph、状态 owner、原子性、并发和 fail-open/fail-closed 边界。
@@ -38,13 +38,13 @@
 
 ## Next Step
 
-执行 D2 semantic model：冻结 legacy、smart-only、autonomous 与 gated token 在两个当前 Hook context 中的精确输出、
-所需输入、缺失/篡改/并发语义；把 gated context behavior 与 Phase 8 Stop activation 分开。只写 findings，不修改
-contracts/production/Release inputs。
+执行 D3 Host/Cloud reconciliation：把官方 Hook 并发、SessionStart source、transcript 非稳定性与 Cloud
+setup/cache/Resume 生命周期映射到 Phase 4 所需输入；明确哪些可用现有两个 managed events完成，哪些必须延后。
+只写 findings，不修改 contracts/production/Release inputs。
 
 ## Current decision
 
-`PHASE4_DISCOVERY_AUTHORIZED / D1_COMPLETE / D2_IN_PROGRESS / IMPLEMENTATION_NOT_AUTHORIZED / LEGACY_DEFAULT_FROZEN`
+`PHASE4_DISCOVERY_AUTHORIZED / D1-D2_COMPLETE / D3_IN_PROGRESS / IMPLEMENTATION_NOT_AUTHORIZED / LEGACY_DEFAULT_FROZEN`
 
 ## Invariants
 
@@ -91,3 +91,6 @@ contracts/production/Release inputs。
 | 盘点命令读取不存在的 `contracts/managed-hook-request-v1.json` | 1 | 用 `rg --files contracts` 恢复真实名称，改读 `adapter-plan-context-request-v1.schema.json` 与 result contract |
 | Windows `node --test <two files>` 在 runner 启动子进程时报 `spawn EPERM` | 1 | 分类为本地 runner/sandbox limitation；改用 `node <test-file>` 单进程逐文件执行同一断言，不跳过测试 |
 | 沙箱内 `git commit` 无法创建 `.git/index.lock` | 1 | 工作树无冲突；按仓库纪律仅请求沙箱外本地 add/commit，不执行 push |
+| `python -m unittest <hyphenated-path>` 把 `planning-with-files-3.8.2` 解析为 module name | 1 | 改在 pinned extraction 根目录直接逐个执行测试脚本，避免错误 module discovery |
+| upstream Python tests 无权写系统 `%TEMP%` fixture | 1 | 分类为沙箱 tempfile limitation；在沙箱外运行相同只读源码/临时 fixture 测试，不写仓库或外部系统 |
+| Windows 默认 GBK 解码 upstream UTF-8 Hook 输出失败 | 1 | 设置 `PYTHONUTF8=1` 后重跑完整 targeted group；不修改 upstream tests 或输出 |

@@ -163,3 +163,53 @@ Observed facts relevant to this Discovery:
 D1 conclusion: no additional executable is required merely to make the existing pristine injector understand a safely projected opt-in state.
 The likely new trusted code is an owned reader/state-policy extension, not a bulk import of three deferred shell writers. Any writer admission must
 be justified by a later producer/consumer graph rather than by upstream directory membership.
+
+## D2 semantic model
+
+### Mode composition
+
+| Effective state | Upstream inputs | Current managed Hook effect if safely enabled | Attestation | Progress/context source |
+|---|---|---|---|---|
+| legacy | no recognized v3 token | existing SessionStart/UserPromptSubmit output | optional; mismatch blocks | plan head + normalized raw progress tail |
+| smart-only | `PWF_INJECT=smart` or `inject-smart` marker | structure-aware plan selection at the same two turn-start events | optional, like legacy | smart plan extract + raw progress tail |
+| autonomous | `autonomous` marker | turn-start plan only; upstream pre-tool suppression is irrelevant because managed has no PreToolUse | mandatory to reveal plan | plan/smart extract + ledger summary |
+| gated | `autonomous gate` marker | same turn-start context family as autonomous; distinct forced re-hash | mandatory to reveal plan | plan/smart extract + ledger summary |
+| hard completion gate | gated marker plus Stop/check-complete/gate state | no current managed equivalent | separate from context rendering | Phase 8 only |
+
+Smart selection is orthogonal: `inject-smart` alone does not create autonomous mode, and it may compose with autonomous. Gated context rendering is
+not proof that the completion gate is active. Treating `.mode="autonomous gate"` as a complete Phase 4 feature would therefore be a partial and
+misleading implementation while `Stop` remains intentionally absent.
+
+### Failure semantics inherited and required
+
+- No plan: injector is silent; adapter still emits the managed canary. This remains advisory fail-open for the Codex loop.
+- Autonomous/gated without attestation: upstream emits a one-line refusal and hides plan and progress/ledger context. Managed result should expose
+  a reason-coded non-injecting outcome rather than accepting a warning string as successful plan context.
+- Digest mismatch or digest computation failure: upstream sets tampered and hides plan/progress. Managed must verify the digest against the exact
+  safely captured plan bytes itself, fail closed for content, and never let a child cache decide trusted state.
+- Nonce missing or invalid: upstream silently falls back to static delimiters. For a managed v3 opt-in this weakens the promised framing; candidate
+  policy should require the exact nonce shape or reject the opt-in state. Legacy continues to use static delimiters unchanged.
+- Ledger helper absent: upstream falls back to raw `progress.md`, contradicting the autonomous reason for replacing un-attested free text. Managed
+  autonomous must instead treat the renderer/dependency or normalized ledger state as required and withhold optional context if unavailable.
+- Child timeout/error/oversize remains advisory fail-open to canary, but cannot downgrade an explicitly recognized v3 state into legacy raw context.
+
+### Parser and untrusted-data gaps
+
+- Upstream recognizes mode components with substring `grep`, not exact tokens: arbitrary text containing `autonomous`, `gate` or `inject-smart`
+  can activate behavior. The managed reader needs a bounded exact grammar and must reject unknown, duplicate or ambiguous tokens.
+- Upstream accepts any non-empty alphanumeric nonce and does not impose the initializer's documented 16-lowercase-hex shape. Managed admission
+  should enforce the producer's exact shape before projection.
+- `ledger-summary.sh` counts lines by textual patterns, enumerates an unbounded filename glob, injects agent names derived from filenames and emits
+  the first in-progress phase heading. Thus “no free text” is only approximately true: summary prose/timestamps are excluded, but some workspace
+  text still reaches context. A managed path must bound ledger count/bytes, validate names and event schema, and decide whether the attested phase
+  heading is acceptable before creating a normalized snapshot/summary.
+- The attestation and the plan live in the same workspace trust domain. It is useful as a workflow approval/change detector against accidental or
+  unsanctioned plan edits, but it is not cryptographic proof of a separate human principal: a writer able to replace both files can forge a matching
+  digest. Managed documentation and outcomes must not overclaim identity or authorization.
+
+### Cache conclusion
+
+The upstream mtime cache is a performance hint, not part of correctness. Its mtime has second-level resolution and non-gated modes may reuse a
+cached digest on a path+mtime match. The current private snapshot makes it ephemeral, so the safest Phase 4 route is to compute SHA-256 directly
+over the owned captured bytes on every Hook invocation and keep no persistent attestation cache. Gated forced re-hash then adds no distinct Phase 4
+value; any future cache requires its own private owner, atomic format, bounded cleanup and same-second replacement tests.

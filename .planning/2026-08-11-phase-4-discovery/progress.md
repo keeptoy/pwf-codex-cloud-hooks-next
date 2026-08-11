@@ -41,3 +41,17 @@
   `node --test` 命令，15/15 PASS，`git diff --check` PASS。D1 研究记录可独立提交。
 - 首次本地 commit 尝试因沙箱禁止创建 `.git/index.lock` 失败；没有文件被 staged 或提交，准备使用获批沙箱外
   本地 Git 完成同一范围的 commit，不含远端动作。
+- D1 已创建本地 commit `92933e8`（`docs: freeze phase 4 source inventory`），未 push。
+- D2 已冻结 mode composition 与主要失败语义：smart 是正交选择；gated 的 context 半边不等于 Phase 8 Stop gate；
+  upstream substring mode parser、invalid-nonce static fallback、ledger helper 缺失时 raw-progress fallback，以及 ledger
+  filename/heading 注入面都需要 owned policy 收紧。attestation 只定义为 workflow change detector，不宣称独立身份认证。
+- D2 targeted upstream test 首次用 `python -m unittest` 加带连字符目录路径，loader 将路径误当 module name，5 个
+  `_FailedTest` 均未执行真实断言；改为在 pinned extraction 根目录逐脚本运行。
+- 逐脚本运行后，首个 upstream test 的 21 cases 中 5 个只读 case 通过、16 个在创建系统 `%TEMP%` fixture 时
+  `PermissionError`；后续四个脚本因 fail-fast 未运行。分类为沙箱 tempfile limitation，准备在沙箱外重跑同一组。
+- 沙箱外首个脚本 21/21 PASS；第二个 smart-injection 脚本因 Windows Python 默认 GBK 无法解码 Hook 输出中的
+  UTF-8 标点而出现 reader-thread `UnicodeDecodeError`，7 个 case 随后拿到 `stdout=None`。分类为平台编码设置，
+  以 `PYTHONUTF8=1` 重跑全部 targeted scripts；未弱化断言。
+- 设置 `PYTHONUTF8=1` 后，五个 pinned upstream targeted scripts 分别 21/21、8/8、7/7、7/7、12/12 PASS，
+  共 55/55。该结果证明已记录的 upstream 当前语义；不证明 proposed managed policy 或 Linux/Cloud acceptance。
+- D2 完成：冻结 legacy/smart/autonomous/gated 组合、失败/缓存语义与 parser/data gaps；进入 D3 Host/Cloud ABI 对齐。
