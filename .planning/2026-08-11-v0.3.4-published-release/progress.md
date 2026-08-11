@@ -45,3 +45,12 @@
   lifecycle 17/17 PASS。远端三处 v0.3.4 identity 仍为空。
 - fetch 发现 origin/main 是 dc20 的 content-identical PR merge ancestry；本地以 contentless merge
   `1b69fd9` 汇合，tree、ZIP 与 bootstrap SHA 均未变化。R3 complete，Next Step 为 R4 immutable publication。
+- R3 planning closure 后最终 source 为 `59a999f`；`0.3.4-dev`、`main` 与 lightweight `v0.3.4` tag 已推送并
+  指向同一 source。
+- 已创建公开 `v0.3.4` prerelease 并上传 sealed ZIP/bootstrap；GitHub asset metadata 与本地 seal 的 filename、
+  size、SHA 完全一致，v0.3.3 仍保持 Latest。
+- 两项资产从公开 Release URL 重新下载复核通过；ZIP builder/importer/Node checks 通过。R4 complete，
+  Next Step 为独立 Fresh Cloud 的 4.2、B-PR、C、D、E1/E2 与 9.2；尚未执行 R5、R6 或 promotion。
+- R4 治理回写后 focused lifecycle/Release suite 11/11 PASS；完整 Windows suite 114 PASS、12 个诚实的
+  POSIX/Linux SKIP、0 FAIL；`git diff --check` PASS。回写只涉及 docs/planning/tests，未改变 sealed
+  ZIP/bootstrap 或任何 production/runtime byte。

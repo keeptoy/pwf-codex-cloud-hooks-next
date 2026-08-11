@@ -112,3 +112,21 @@
   exact ZIP/bootstrap SHA。
 - R3 结论：source reproducibility、accepted/fallback oracles、identity vacancy、main ancestry 与 sealed
   bytes 全部闭合，可以进入 R4。尚未推送本地 commits、创建 v0.3.4 tag 或上传资产。
+
+## R4 immutable publication
+
+- 最终 tagged source 为 `59a999f705701ec67463649e9424f3d059863c81`；`0.3.4-dev` 与 `main` 都已
+  fast-forward 到该 commit，lightweight `v0.3.4` tag 指向同一 source。
+- GitHub `v0.3.4` 已作为公开 prerelease 创建，避免在 Published Release Cloud 前移动 Latest：
+  `https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/tag/v0.3.4`。
+- 公开 ZIP URL 为
+  `https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/v0.3.4/pwf-codex-cloud-hooks-v0.3.4.zip`；
+  21 entries、77,777 bytes、SHA-256 `497e92a861bd7882129f05b28df1e23a55330db98bebe76891db5b9761bdec3b`。
+- 公开 bootstrap URL 为
+  `https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/v0.3.4/init-cloud-sandbox-v0.3.4.bash`；
+  21,565 bytes、SHA-256 `9a3df089720f4d2a3aefe5b6d12a567a23177fca7c5cab186aa9a8d52695cd40`。
+- 两项资产已从公开 URL 重新下载到
+  `C:\Users\Lenovo\AppData\Local\Temp\pwf-v034-public-b17daac0cd4b40df8696062a941beb0f`，filename/size/SHA
+  均与 seal 一致；下载 ZIP 的 builder check、self-contained importer check 与 Node syntax 通过。
+- R4 只建立 immutable published bytes，不证明独立 Fresh Cloud；v0.3.3 继续承担 accepted/Latest，R5 是当前
+  唯一 Next Step。

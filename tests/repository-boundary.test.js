@@ -275,11 +275,15 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(provenance, new RegExp(publishedRoleVersion.replaceAll(".", "\\.")));
   }
   if (candidate !== accepted) {
-    assert.doesNotMatch(
-      provenance,
-      new RegExp(candidate.replaceAll(".", "\\.")),
-      "unpublished candidate must not enter the published provenance ledger",
-    );
+    const candidateIsPublished = roadmap.includes("immutable publication 与公开下载复核已 PASS");
+    const candidatePattern = new RegExp(candidate.replaceAll(".", "\\."));
+    if (candidateIsPublished) {
+      assert.match(provenance, candidatePattern,
+        "published candidate must enter the role-neutral provenance ledger");
+    } else {
+      assert.doesNotMatch(provenance, candidatePattern,
+        "unpublished candidate must not enter the published provenance ledger");
+    }
   }
   assert.match(provenance, /^## 1\. 已发布身份账本$/m);
   assert.match(provenance, /持续维护的\*\*冷证据账本\*\*/);
