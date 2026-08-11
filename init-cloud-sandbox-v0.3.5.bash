@@ -32,11 +32,11 @@ readonly POWERSHELL_PACKAGE="${POWERSHELL_PACKAGE:-powershell_${POWERSHELL_VERSI
 readonly POWERSHELL_URL="${POWERSHELL_URL:-https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VERSION}/${POWERSHELL_PACKAGE}}"
 readonly POWERSHELL_SHA256="${POWERSHELL_SHA256:-1d551a739ac5db6957ca9d71bd2e332a7b688e85ea5fb43c73fd42395042ef94}"
 
-readonly HOOKS_VERSION="${HOOKS_VERSION:-v0.3.5-dev}"
+readonly HOOKS_VERSION="${HOOKS_VERSION:-v0.3.5}"
 readonly HOOKS_PACKAGE="${HOOKS_PACKAGE:-pwf-codex-cloud-hooks-${HOOKS_VERSION}.zip}"
 readonly HOOKS_ARCHIVE_ROOT="${HOOKS_ARCHIVE_ROOT:-pwf-codex-cloud-hooks}"
 readonly HOOKS_URL="${HOOKS_URL:-https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/${HOOKS_VERSION}/${HOOKS_PACKAGE}}"
-readonly HOOKS_SHA256="${HOOKS_SHA256:-0000000000000000000000000000000000000000000000000000000000000000}"
+readonly HOOKS_SHA256="${HOOKS_SHA256:-7d351cfe0eaa60e93bc279645ed3f480dc9e83efdff1c6abf13c14d84c286f0b}"
 
 # Mutable state is limited to disposable workspace and the bounded Skill replacement transaction.
 WORK_DIR=""

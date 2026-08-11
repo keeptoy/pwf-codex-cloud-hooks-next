@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.5-dev`；修正 attribution、精简低价值静态锁并解耦通用 candidate tests，当前为 zero-hash Source/Candidate |
+| 当前开发列车 | `v0.3.5`；zero-hash Source/Candidate Cloud 已 PASS，stable identity 已在本地封板，尚未发布 stable 资产 |
 | 当前已接受版本 | `v0.3.4`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.3` immediate fallback |
 | 回退证据链 | immutable `v0.3.2` deeper fallback；更早发布里程碑见 provenance museum |
@@ -34,8 +34,9 @@ v0.3.4/v0.3.3 tag、source、ZIP/bootstrap、URL、size 与 digest 均未改写�
 [`CHANGELOG.md`](CHANGELOG.md)，精确 source/资产/SHA 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，
 最终 Cloud 与晋级证据见 [`docs/v0.3.4-cloud-hard-acceptance.md`](docs/v0.3.4-cloud-hard-acceptance.md)。
 
-`v0.3.5-dev` 是该 accepted baseline 之上的未封板兼容 candidate。它只改变 attribution、治理测试与历史摘要，
-不冒充 tag/Release，也不改变 v0.3.4/v0.3.3 的不可变资产或当前 rollback 角色。
+`v0.3.5` 是该 accepted baseline 之上的已封板兼容 candidate。它只改变 attribution、治理测试与历史摘要；
+`v0.3.5-dev` Source/Candidate Cloud、构建测试和下载安装验收已通过，stable publication 尚未执行。它不冒充
+tag/Release，也不改变 v0.3.4/v0.3.3 的不可变资产或当前 rollback 角色。
 
 ## 3. 已完成的基线 `v0.3.4`
 
@@ -60,18 +61,19 @@ baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta
 
 ## 4. 当前开发列车与 Product Phase 路线
 
-`v0.3.5-dev` 是 v0.3.4 accepted baseline 之上的兼容维护列车：修正已过时的 overlay attribution，删除只检查
+`v0.3.5` 是 v0.3.4 accepted baseline 之上的兼容维护列车：修正已过时的 overlay attribution，删除只检查
 其他测试标题的元测试，收缩中文 prose/order locks，并让通用 Release 测试从 machine identity 动态派生。
 它不改变 production dispatch、Host ABI、trusted graph、runtime/installed inventory 或 upstream runtime bytes，
 也不授权 Phase 4。Phase 4 仍停在 Discovery authorization 之前，尚未建立 `0.4.0-*` machine identity、开发
 分支或实现 gate。
 
-本列车当前只完成本地 C1 source cleanup 与 zero-hash candidate 准备；Source/Candidate Cloud、stable seal、
-immutable publication、Published Release Cloud 与 pointer-only promotion 尚未授权执行。精确 Next Step 和停止条件
-只见活动 task plan；已完成 v0.3.4 基线与 rollback 证据仍见第 3 节及 provenance/acceptance。
+本列车的 zero-hash Source/Candidate Cloud 已 PASS，构建测试与候选 ZIP 下载安装验收也已由维护者确认；
+stable identity、确定性 ZIP 和外部 bootstrap 已在本地 seal。stable push、immutable publication、Published
+Release Cloud 与 pointer-only promotion 尚未执行。精确 Next Step 和停止条件只见活动 task plan；已完成
+v0.3.4 基线与 rollback 证据仍见第 3 节及 provenance/acceptance。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
-bootstrap/acceptance；当前窗口为 v0.3.5-dev candidate + v0.3.4 accepted。v0.3.3 immediate fallback 与
+bootstrap/acceptance；当前窗口为 v0.3.5 candidate + v0.3.4 accepted。v0.3.3 immediate fallback 与
 v0.3.2 deeper fallback
 均由 immutable commit、tag、Release、exact acceptance 与 publication oracle 恢复；更早历史只留在精选
 provenance。
