@@ -307,7 +307,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotMatch(changelog, /Successor 迁移来源链/);
 
   assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));
-  if (candidate.endsWith("-dev")) {
+  if (candidate !== accepted) {
     const sourceCandidateComplete = roadmap.includes("zero-hash Source/Candidate Cloud 已 PASS");
     if (sourceCandidateComplete) {
       assert.match(acceptance, /Source\/Candidate Cloud hard acceptance 已.*完成/s);

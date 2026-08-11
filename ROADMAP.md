@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.4-dev`；清理 runtime contract 的历史 programme metadata，并把重复 manifest inventory 收敛到 verified bundle authority；zero-hash Source/Candidate Cloud 已 PASS，Published Release gate 已授权并进入 Release planning，seal/publication 尚未执行 |
+| 当前开发列车 | `v0.3.4` sealed candidate；清理 runtime contract 的历史 programme metadata，并把重复 manifest inventory 收敛到 verified bundle authority；zero-hash Source/Candidate Cloud 已 PASS，R2 已冻结 exact ZIP/bootstrap bytes，publication 尚未执行 |
 | 当前已接受版本 | `v0.3.3`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.2` immediate fallback |
 | 回退证据链 | immutable `v0.3.1` deeper fallback；更早发布里程碑见 provenance museum |
@@ -54,21 +54,22 @@ baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta
 
 ## 4. 当前开发列车与 Product Phase 路线
 
-`v0.3.4-dev` 是 v0.3.3 accepted baseline 之上的兼容维护列车：把历史 programme annotation 从 runtime
+`v0.3.4` 是 v0.3.3 accepted baseline 之上的稳定兼容候选：它先以 `v0.3.4-dev` 完成 Source/Candidate，随后把历史 programme annotation 从 runtime
 machine contract 迁出，并把 manifest 的重复 source/install projection 收敛到经 SHA 验证的 runtime bundle；
 exact current inventory guard 继续阻止未授权脚本准入。它不改变 production
 dispatch、Host ABI、trusted graph、installed inventory 或 upstream runtime bytes，也不授权 Phase 4。
 Phase 4 仍停在 Discovery authorization 之前，尚未建立 `0.4.0-*` machine identity、开发分支或实现 gate。
 
 本列车的 Source/Candidate Linux、完整行为黑盒与 post-resume deep check 已按
-[`v0.3.4-dev acceptance`](docs/v0.3.4-dev-cloud-hard-acceptance.md#v0-3-4-dev-source-candidate-result) 闭合；这只完成
+[`v0.3.4 acceptance`](docs/v0.3.4-cloud-hard-acceptance.md#v0-3-4-source-candidate-result) 闭合；这只完成
 zero-hash candidate gate，不构成 seal、publication、公开资产下载、Published Release Cloud 或 rollback 晋级。
-维护者现已独立授权 Published Release gate；精确 Next Step、seal 输入、PENDING 与失败记录只由活动 Release
-task plan 管理。授权不跳过第 7 节的最终字节冻结、publication audit、重新下载和独立 Fresh Cloud，也不包含
-rollback/Latest promotion 或 Product Phase 4。
+维护者现已独立授权 Published Release gate，R1 已把 machine/package/bootstrap/acceptance 身份收敛为
+`v0.3.4` stable candidate，R2 已按确定性双构建冻结 exact ZIP 与 bootstrap bytes；精确 Next Step、seal 输入、
+PENDING 与失败记录只由活动 Release task plan 管理。这仍不构成 publication；授权不跳过第 7 节的
+publication audit、重新下载和独立 Fresh Cloud，也不包含 rollback/Latest promotion 或 Product Phase 4。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
-bootstrap/acceptance；当前窗口为 v0.3.4-dev candidate + v0.3.3 accepted。v0.3.2 immediate fallback 与 v0.3.1 deeper fallback
+bootstrap/acceptance；当前窗口为 v0.3.4 sealed candidate + v0.3.3 accepted。v0.3.2 immediate fallback 与 v0.3.1 deeper fallback
 均由 immutable commit、tag、Release、exact acceptance 与 publication oracle 恢复；更早历史只留在精选
 provenance。
 trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。

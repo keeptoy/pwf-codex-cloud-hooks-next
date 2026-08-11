@@ -246,7 +246,7 @@ test("v0.3.3 upgrade and rollback keep the published managed state recoverable",
       result = runPackageInstaller(currentPackage, home, "doctor");
       assert.equal(result.status, 0, result.stderr);
       let manifest = JSON.parse(fs.readFileSync(path.join(home, "hooks", "planning-with-files", "installed-manifest.json"), "utf8"));
-      assert.equal(manifest.installer_version, "0.3.4-dev");
+      assert.equal(manifest.installer_version, "0.3.4");
 
       result = runPackageInstaller(acceptedPackage, home, "install");
       assert.equal(result.status, 0, result.stderr);

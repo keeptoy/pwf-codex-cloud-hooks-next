@@ -27,10 +27,11 @@ Host ABI、trusted graph 或 Product Phase 4 边界。
 ## Gates
 
 - [x] R0 — Entry/freeze：固化文档职责，审计 exact Release inputs、目标 identity、资产名与停止条件。
-- [ ] R1 — Stable identity：把 machine/package/bootstrap/acceptance 身份从 `0.3.4-dev` 原子收敛为 `0.3.4`，
-  同步 contracts/hashes/docs/tests，并完成完整本地/Linux 回归和双构建检查。
-- [ ] R2 — Seal：冻结全部 ZIP 输入，双构建逐字一致，计算最终 ZIP SHA，写入 ZIP 外 bootstrap，再计算
-  bootstrap SHA；任何输入变化都回到 R2 起点。
+- [x] R1 — Stable identity：把 machine/package/bootstrap/acceptance 身份从 `0.3.4-dev` 原子收敛为 `0.3.4`，
+  同步 contracts/hashes/docs/tests，并完成完整本地回归和双构建检查；production/runtime bytes 未变，已有
+  Source/Candidate Linux 120/120 与行为黑盒继续覆盖该行为面，不重复执行同一 Cloud 通道。
+- [x] R2 — Seal：冻结全部 ZIP 输入，双构建逐字一致，计算最终 ZIP SHA，写入 ZIP 外 bootstrap，再计算
+  bootstrap SHA；sealed source 完整回归通过，任何后续 ZIP/bootstrap 输入变化都必须回到 R2 起点。
 - [ ] R3 — Publication audit：在具备 exact refs 的维护环境验证 tag/source/asset oracle 和完整 suite。
 - [ ] R4 — Immutable publication：创建并发布最终 tag 与双资产，重新下载并核对 filename/size/SHA/内容。
 - [ ] R5 — Published Release Cloud：在独立 Fresh Cloud 中从 immutable public bootstrap 执行 B-PR/C/D/E1/E2
@@ -39,12 +40,13 @@ Host ABI、trusted graph 或 Product Phase 4 边界。
 
 ## Next Step
 
-进入 R1：原子收敛 `0.3.4` stable machine identity，重命名 bootstrap/acceptance，同步 release contract、
-manifest integrity、版本文档和边界测试；完成完整本地/Linux 回归与双构建后停在 R2 seal 前复核。
+执行 R3 publication audit：提交当前 sealed source，在干净 HEAD 上重建并复核相同 ZIP/bootstrap identity，
+然后检查完整 refs、tag/source/asset prerequisites 与 publication oracle。R3 不创建远端 tag 或上传资产；
+只有 audit 全部通过后才进入 R4 immutable publication。
 
 ## Decision
 
-`PUBLISHED_RELEASE_GATE_AUTHORIZED / R0_COMPLETE / R1_NEXT / SEAL_NOT_STARTED / PHASE4_NOT_AUTHORIZED`
+`PUBLISHED_RELEASE_GATE_AUTHORIZED / R2_COMPLETE / R3_NEXT / PUBLICATION_NOT_STARTED / PHASE4_NOT_AUTHORIZED`
 
 ## Stop Conditions
 
@@ -60,3 +62,7 @@ manifest integrity、版本文档和边界测试；完成完整本地/Linux 回�
 | Error | Attempt | Resolution |
 |---|---:|---|
 | Windows sandbox 内 `node --test` 因 child-process `spawn EPERM` 未执行断言 | 1 | 在获准的沙箱外重跑 focused suite，17/17 PASS；完整 `npm test` 同样在沙箱外通过 |
+| R1 `bash -n` 在受限 Windows sandbox 因 Git Bash 无法创建 signal pipe（Win32 error 5）未完成语法检查 | 1 | 归类为 sandbox platform limitation；改为在获准的沙箱外重跑，不把后续 PowerShell 命令的零退出码误记为 Bash PASS |
+| 本机只有 `wsl.exe` 占位入口但未安装 Linux distribution，Docker/Podman 也不可用 | 1 | 归类为 platform limitation；保留 12 个 POSIX/Linux SKIP，R1 停在 exact committed candidate 的 Linux 0-skip gate |
+| 首次 `gh release view v0.3.4` 以预期的 `release not found` 返回 1，使并行聚合命令整体非零 | 1 | 改为显式区分 absent 与 query failure；复核 LOCAL_TAG、REMOTE_TAG、REMOTE_RELEASE 均为 ABSENT |
+| R2 首次完整 suite 仅因 release-package test 仍匹配 ROADMAP 的 `stable candidate` 旧角色文字而失败 | 1 | 归类为 test fixture drift；更新为 `sealed candidate`，不弱化 ZIP/bootstrap SHA 断言后重跑完整 suite |

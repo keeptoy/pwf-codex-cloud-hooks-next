@@ -53,3 +53,48 @@
 - architecture/repository focused governance：17 pass、0 fail。
 - 完整 Windows suite：114 pass、12 个诚实的 POSIX/Linux skip、0 fail。
 - importer check、Release build/check 与 `git diff --check` 均通过；尚未修改 stable identity、tag 或公开资产。
+
+## R1 stable identity evidence
+
+- package、Release artifact、bootstrap 与 acceptance 已收敛为 `0.3.4`/`v0.3.4`；旧 dev 文件从当前角色窗口
+  删除，新 stable 文件各只保留一份。branch transport 仍可使用 `0.3.4-dev`，但不再是 machine/package identity。
+- `contracts/release-artifact-v1.json` 新 SHA-256 为
+  `26d6962155a7e35f4834a7aab3a5419c87a9f347e1316d5b2ff4a4f4a18c4ae4`，已写入
+  `upstream-manifest.json.managed_runtime.contracts.release_artifact.sha256`；importer check 通过。
+- `install.js` 继续从 `package.json` 派生版本；v0.3.3 → current → v0.3.3 roundtrip 证明 installed manifest
+  记录 `0.3.4` 且 immutable v0.3.3 可以重新接管。
+- lifecycle test 不再用 `-dev` 后缀推断 publication：当 candidate 与 accepted 不同时，stable candidate 仍按
+  当前薄 acceptance/未发布边界验证；suffix 不再冒充 lifecycle authority。
+- 两次 R1 ZIP build/check 逐字一致：21 entries、77,777 bytes、SHA-256
+  `497e92a861bd7882129f05b28df1e23a55330db98bebe76891db5b9761bdec3b`。该值仅是 R1 候选构建结果；bootstrap
+  仍为 64 位 zero hash，尚未 seal。
+- focused identity/artifact/roundtrip/lifecycle suite 为 19/19 PASS；完整 Windows suite 为 114 PASS、12 个
+  POSIX/Linux SKIP、0 FAIL；Bash syntax、Node syntax、importer check 和 `git diff --check` 均通过。
+- 本机未安装 WSL distribution，Docker/Podman 也不存在；因此不能把 Windows 数字冒充 Linux 0-skip。
+  R1 identity/local/double-build 已完成，但 Linux 子门槛仍 open，R2 被阻塞在计划内前置条件。
+
+## R1 Linux evidence decision
+
+- 维护者要求按最小改动重新评估重复 Cloud gate。R1 diff 证明 production `hooks/`、`runtime/`、`install.js`、
+  `tools/` 与 runtime schemas 均未变化；ZIP 只改变 package version、Release contract identity 和跟随更新的
+  manifest integrity SHA，外部 bootstrap 只改变 filename/default version。
+- 已完成的 Source/Candidate Linux 120/120 与 B～E 行为黑盒仍绑定完全相同的 runtime/installer logic；R1
+  Windows full suite、roundtrip、importer、Bash syntax 与双构建覆盖身份和完整性增量。
+- 因此取消“R1 再跑一次完整 Linux/Source-Candidate”的重复门槛，增量风险评为低。不可取消的是 R2 本地
+  deterministic seal，以及 R4 后从公开资产执行的独立 Published Release Cloud；后者验证此次真正新增的
+  public URL/bootstrap/default ZIP 链。
+
+## R2 sealed identity
+
+- preflight 确认本地 `v0.3.4` tag、远端 `v0.3.4` tag 与 GitHub `v0.3.4` Release 均不存在，identity 未占用。
+- R2 两次独立 build/check 逐字一致；final ZIP 为 `pwf-codex-cloud-hooks-v0.3.4.zip`，21 entries、
+  77,777 bytes、SHA-256 `497e92a861bd7882129f05b28df1e23a55330db98bebe76891db5b9761bdec3b`。
+- exact ZIP SHA 已写入 ZIP 外 `init-cloud-sandbox-v0.3.4.bash`；sealed bootstrap 为 21,565 bytes、SHA-256
+  `9a3df089720f4d2a3aefe5b6d12a567a23177fca7c5cab186aa9a8d52695cd40`。
+- sealed ZIP 保存在
+  `C:\Users\Lenovo\AppData\Local\Temp\pwf-v034-seal-2c2cc8a30e654f3eb7832f4749c3dbfe\pwf-codex-cloud-hooks-v0.3.4.zip`；
+  comparison ZIP 同目录保留到 publication audit。
+- 封板后完整 Windows suite 为 114 PASS、12 POSIX/Linux SKIP、0 FAIL；Bash syntax/default checksum、
+  Node syntax、importer check 与 `git diff --check` 均通过。
+- 首轮 sealed suite 的唯一失败是 release-package 仍匹配旧 ROADMAP `stable candidate` 文案；同步为
+  `sealed candidate` 后完整 suite 全绿，未更改任何产品或 SHA 安全断言。

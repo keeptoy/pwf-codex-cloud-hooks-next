@@ -4,12 +4,13 @@
 [`ROADMAP.md`](ROADMAP.md)；当前唯一行动与授权边界见活动 `task_plan.md`；精确 source、资产、大小和
 SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 acceptance。
 
-## v0.3.4-dev
+## v0.3.4
 
 ### Changed
 
-- 建立 64 位 zero-hash、fail-closed 的下一兼容 Source/Candidate identity；不 seal、不发布，也不改变
-  v0.3.3 accepted/Latest 与 v0.3.2 immediate fallback。
+- 先以 64 位 zero-hash、fail-closed 的 `v0.3.4-dev` Source/Candidate identity 完成 Linux/Cloud 验收，再
+  原子收敛为 `v0.3.4` stable candidate；R2 在确定性双构建后把 exact ZIP SHA 固定进外部 bootstrap，但在
+  immutable publication 和公开下载复核前不冒充已发布资产，也不改变 v0.3.3 accepted/Latest 与 v0.3.2 immediate fallback。
 - 从 runtime bundle 退休只表达早期 rollout 计划、从未被 production 消费的 `activation_phase` 与
   `deferred_upstream_candidates`；未授权脚本继续由 exact id/source inventory guard 排除。
 - 将 runtime bundle 确立为唯一 source/install inventory authority：importer 与 installer 先验证
@@ -18,7 +19,7 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - 保留 `installed-manifest.json.runtime_files` 安装状态快照与 Release artifact ZIP allowlist；不删除
   `ledger-summary.sh`，不改变 runtime/installed inventory、Host ABI 或 production dispatch，也不进入 Product Phase 4。
 - 当前 gate 与后续 Cloud 状态见
-  [`docs/v0.3.4-dev-cloud-hard-acceptance.md`](docs/v0.3.4-dev-cloud-hard-acceptance.md)。
+  [`docs/v0.3.4-cloud-hard-acceptance.md`](docs/v0.3.4-cloud-hard-acceptance.md)。
 
 ## v0.3.3
 
