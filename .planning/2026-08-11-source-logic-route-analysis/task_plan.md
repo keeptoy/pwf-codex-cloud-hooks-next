@@ -7,7 +7,7 @@
 
 ## Authorization
 
-- 只授权只读分析、必要的 planning 记录与相称验证。
+- 已追加授权：把冻结的架构理解整理为 `docs/history/` 中的 Phase 3.9.1 里程碑，并接入唯一历史索引。
 - 不授权修改 production/runtime/contracts/tests，不授权 Phase 4、Release、部署或远端写操作。
 - 结论必须区分当前已实现行为、供应链/安装维护路径、历史兼容证据与尚未授权路线。
 
@@ -18,14 +18,17 @@
 - [x] A2 — Supply-chain and install graph：阅读 contracts、importer、installer 与 release builder，冻结 source 到 installed/runtime 的信任链。
 - [x] A3 — Test and roadmap synthesis：把测试保护面映射到实现，并区分近期兼容清理、独立 contract gate 与未来 Product Phase。
 - [x] A4 — Verification and report：运行只读/相称验证，形成最终分析和可继续阅读的源码导航。
+- [x] A5 — Phase 3.9.1 maintainer milestone：按历史模板提炼 v0.3.4 逻辑分析、接入索引并验证。
 
 ## Next Step
 
-分析已完成，停在 `SOURCE_LOGIC_ROUTE_ANALYSIS_PASS / NO_PRODUCTION_CHANGES / PHASE4_NOT_AUTHORIZED`；等待维护者选择下一兼容清理 gate、独立 contract-v2 Discovery，或 Phase 4 Discovery。
+本地文档 gate 已闭合；交接 Phase 3.9.1 摘要、历史索引、验证结果与精确本地 commit，不进入任何后继实施 gate。
 
 ## Decision
 
-`READ_ONLY_ANALYSIS / NO_PRODUCTION_CHANGES / PHASE4_NOT_AUTHORIZED / REMOTE_WRITES_MAINTAINER_ONLY`
+`DOCUMENTATION_MILESTONE_COMPLETE / NO_PRODUCTION_CHANGES / PHASE4_NOT_AUTHORIZED / REMOTE_WRITES_MAINTAINER_ONLY`
+
+补充：维护者已授权新增 Phase 3.9.1 历史摘要与索引行；该文档动作不扩大 production、Release 或 Phase 4 权限。
 
 ## Stop Conditions
 

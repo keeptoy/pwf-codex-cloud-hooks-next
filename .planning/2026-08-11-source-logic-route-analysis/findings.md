@@ -180,3 +180,28 @@
 - 当前树的核心质量不在“代码短”，而在每一层 authority单一且失败可组合：adapter薄、plan/catch-up各自拥有数据边界、bundle拥有inventory、installer拥有现场、Release contract拥有ZIP。
 - 没有发现第二套production dispatch、global Skill执行回流、overlay/patcher复活或未授权 Phase 4 source准入。
 - 当前最值得继续的不是重写 runtime，而是按风险分三条支线：兼容版修正低风险残留；独立 contract-v2收敛无consumer metadata/mode authority；新 Product Phase必须重新Discovery。
+
+## Phase 3.9.1 documentation gate
+
+### Adjacent history conventions
+
+- Phase 3.6 separates runtime behavior retirement from supply-chain retirement; the new milestone should inherit the final call graph and trust boundary instead of replaying every migration step.
+- Phase 3.7 demonstrates how to label a retrospective analysis as non-formal while still explaining the relationship between current architecture and retired debt.
+- Phase 3.9.1 should therefore describe the accepted v0.3.4 mental model, preserve one cold source snapshot, use stable explicit anchors, and avoid becoming another live authority for release state, lifecycle, hashes, or test counts.
+
+### Phase 3.8 and immutable baseline evidence
+
+- Phase 3.8 records the historical reason for duplicate runtime inventories and the later decision to make the bundle the sole source/install authority; Phase 3.9.1 should explain the resulting four-lifecycle model rather than reopening that decision.
+- `BASELINE_PROVENANCE.md`, the v0.3.4 acceptance, and the local tag all agree that the accepted v0.3.4 source is commit `59a999f705701ec67463649e9424f3d059863c81`.
+- That immutable commit is the correct single cold source snapshot for the new retrospective milestone. Release sizes, digests, and test counts remain in their dedicated authorities and should not be copied into the history summary.
+
+### Documentation verification boundary
+
+- The new history file follows the repository template, uses Phase-specific explicit anchors, contains one immutable source link, and is registered only in the history index.
+- The focused Node governance run initially failed before loading either test file because the Windows sandbox denied test-worker spawn with `EPERM`; the same read-only command passed outside the sandbox, confirming a platform execution limitation rather than a document defect.
+- The full repository suite also passed outside the sandbox with 126 total, 114 pass, 0 fail, and 12 honest Windows POSIX/Linux-only skips; this count belongs in the active progress evidence, not the frozen history summary.
+
+- 维护者已删除五组过时 planning scopes；这些 tracked deletions属于维护者现有改动，本轮保留原状，不恢复、不暂存进智能体提交。
+- 新摘要应定位为回顾性 maintainer/architecture-analysis milestone：解释 v0.3.4 accepted architecture 已经怎样闭合，不冒充原 programme 的正式 Product Phase，也不产生下一 gate 授权。
+- 文件必须按历史模板自洽，但正文重点覆盖维护者指定的五块：当前逻辑主脉络、运行时关键点、供应链与安装逻辑、架构演进路线、建议的后续路线。
+- 只在 `docs/history/README.md` 登记，避免在 README/ROADMAP/CHANGELOG 再造第二份当前状态或版本 delta。

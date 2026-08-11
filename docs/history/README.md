@@ -35,6 +35,7 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 | Phase 3.6 | 回顾性架构迁移标签：v0.3.2 → v0.3.3-dev 退休不可达 catch-up overlay supply-chain，收敛为四文件 pristine upstream + owned boundary；只关闭本地 source migration，不宣称 Cloud/Release | [`phase-3.6-pristine-catchup-migration.md`](phase-3.6-pristine-catchup-migration.md) |
 | Phase 3.7 | 回顾性 contract-cleanup 标签：退休只由测试维护、production 从未读取的早期 programme 元数据，以 exact inventory guard 保留准入边界；不是正式 Product Phase | [`phase-3.7-runtime-contract-metadata-cleanup.md`](phase-3.7-runtime-contract-metadata-cleanup.md) |
 | Phase 3.8 | 回顾性 supply-chain Discovery 标签：追溯 manifest/bundle inventory 双写根因，选择 bundle authority 并冻结迁移边界；只关闭方案决策，不表示已经实施 | [`phase-3.8-runtime-inventory-authority-discovery.md`](phase-3.8-runtime-inventory-authority-discovery.md) |
+| Phase 3.9.1 | 回顾性维护者里程碑：把 v0.3.4 已验收的运行时、供应链/安装、演进路线与后续建议整理为新人心智模型；不是正式 Product Phase，也不产生新授权 | [`phase-3.9.1-v0.3.4-architecture-analysis.md`](phase-3.9.1-v0.3.4-architecture-analysis.md) |
 
 ## 阅读方式
 

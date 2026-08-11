@@ -1,5 +1,15 @@
 # Progress: Source Logic and Route Analysis
 
+## Phase 3.9.1 documentation work
+
+- The first patch attempt used an over-specific translated bullet as context and made no file changes when that context did not match; the retry anchors only on stable ASCII headings.
+- Read the history template, history index, and adjacent Phase 3.6/3.7 summaries; froze the document role as retrospective architecture onboarding rather than a formal Product Phase or current-state authority.
+- Read Phase 3.8 and cross-checked the v0.3.4 acceptance, provenance ledger, and local tag; selected accepted source commit `59a999f705701ec67463649e9424f3d059863c81` as the document's only cold snapshot.
+- Added `docs/history/phase-3.9.1-v0.3.4-architecture-analysis.md` and its single history-index entry, covering the runtime call graph, safe-read/transcript boundaries, supply-chain/install authority model, architecture evolution, and staged future recommendations.
+- Focused Node governance tests hit the known sandbox `spawn EPERM` limitation, then passed outside the sandbox: 17 tests, 0 failures.
+- Full `npm test` passed outside the sandbox: 126 total, 114 pass, 0 fail, 12 Windows POSIX/Linux-only skips. `git diff --check` passed before final staging.
+- A5 is complete: the retrospective milestone and history index are ready for an exact local documentation commit; no production, contract, test, Release, remote, or maintainer-owned deletion is included.
+
 ## 2026-08-11
 
 - 完成 planning-with-files session catch-up；进入本轮时工作树干净。
@@ -24,3 +34,4 @@
 - 首次并行验证因 Windows sandbox中的 Git Bash signal-pipe平台错误中止且未保留分项输出；已记录并改为顺序验证，不重复同一聚合方式。
 - importer check healthy；`npm test` 沙箱内因 worker spawn EPERM无有效产品结果，沙箱外完整重跑通过 126/114/0/12 SKIP。
 - Python compile、Node syntax、external Bash syntax与 `git diff --check` 全部通过；A4完成，结论与后续三层路线已冻结，未修改production/contracts/tests/Release输入。
+- 维护者授权把结论提升为 Phase 3.9.1 新人参考里程碑；已恢复历史模板与索引边界，开始 A5，维护者已有 planning deletions保持不动。
