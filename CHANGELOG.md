@@ -8,9 +8,9 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 
 ### Changed
 
-- 先以 64 位 zero-hash、fail-closed 的 `v0.3.5-dev` 完成 Source/Candidate Cloud、构建测试与下载安装验收，
-  再冻结 `v0.3.5` stable package、确定性 ZIP 与外部 bootstrap；本地封板不改变 v0.3.4 accepted/Latest 与
-  v0.3.3 immediate fallback，也不冒充尚未执行的 stable publication。
+- 先以 64 位 zero-hash、fail-closed 的 `v0.3.5-dev` 完成 Source/Candidate Cloud，再冻结 `v0.3.5` stable
+  package、确定性 ZIP 与外部 bootstrap；immutable publication、公开下载/安装验收和 pointer-only postflight
+  闭合后，v0.3.5 晋级为推荐基线，v0.3.4 转为直接回退版本。
 - 修正 installed/Release notice 中已经过时的 overlay attribution，明确四个 packaged upstream runtime 均为
   pinned v3.8.2 的 byte-for-byte pristine copy，兼容与安全边界由 repository-owned wrappers 承担。
 - 删除只检查其他测试标题的元测试，通用 Release 测试改从 package/artifact 派生 candidate、bootstrap 与

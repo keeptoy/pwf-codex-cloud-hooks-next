@@ -120,3 +120,28 @@
   `7d351cfe0eaa60e93bc279645ed3f480dc9e83efdff1c6abf13c14d84c286f0b`，bootstrap SHA-256 仍为
   `33d7fcaca56c617ef70e33c9708af804a8737d587cc58571382b945e5bff58a5`；`.planning` 外工作树无差异。
 - C1 本地 stable seal 已完成；按授权停止在 push/publication 前，不执行远端动作，不进入 C2 或 Phase 4。
+- 维护者回传已 push `HEAD=5d01b55890c1da2a5088e2b991b152a9fb1c3f87`，Cloud Source/Candidate setup
+  与 Post-Resume 全部通过：Linux 118/118、0 fail、0 skip；ZIP 21 entries、77,800 bytes、SHA-256
+  `7d351cfe0eaa60e93bc279645ed3f480dc9e83efdff1c6abf13c14d84c286f0b`；doctor healthy/managed，installed
+  runtime 10 项、upstream pristine 4 项、bundle inventory authoritative、policy adapter-only、snapshot leftovers 0。
+- 维护者同时确认 GitHub 已发布，公开 ZIP 下载与安装测试通过。该回传先作为待只读核验的 C1 external evidence
+  记录；尚未据此宣称 Latest/pointer promotion，后续先核验远端 tag/source/双资产 identity 与 lifecycle 角色。
+- 只读 `git ls-remote` 已确认 `origin/0.3.5-dev` 与 tag `v0.3.5` 均指向 exact sealed HEAD
+  `5d01b55890c1da2a5088e2b991b152a9fb1c3f87`。同一批次的 `gh release view` 因本机代理
+  `127.0.0.1:3080` 拒绝连接而未取得 Release/Latest metadata；转用独立只读 Web 通道，不重复同一失败路径。
+- 公共 Web 通道未能读取/索引目标 Release，只返回无关公开搜索结果；不据此判定目标 Release 缺失。下一步用
+  已认证 `gh` 在单次命令内清除失效 proxy 环境后只读查询，仍不执行任何远端写。
+- 清除失效 proxy 后只读 API 核验成功：`v0.3.5` Release 非 draft、非 prerelease，Latest 指向同一 tag；ZIP 与
+  bootstrap 的远端 filename/size/digest 精确匹配本地 seal。
+- 已从 immutable Release URL 下载双资产到受控临时目录：ZIP 77,800 bytes / `7d351cfe…6f0b`，bootstrap
+  21,565 bytes / `33d7fcac…58a5`；ZIP 内自带 builder/contract check 为 21 entries、healthy，bootstrap Bash
+  syntax 通过，临时目录随后安全删除。C1 远端 postflight PASS，开始同步正式 acceptance/provenance/ROADMAP。
+- publication oracle 预检发现本地尚无 `refs/tags/v0.3.5`，但 `origin/0.3.5-dev` 已在 exact sealed HEAD；下一步
+  只 fetch 远端单个 `v0.3.5` tag，不移动 branch、不覆盖用户文件。
+- 已 fetch `v0.3.5` tag；Git 的 reachable-tag auto-follow 同时取得远端 `v0.3.5-dev` tag。加引号复核后，
+  `v0.3.5^{commit}=5d01b55890c1da2a5088e2b991b152a9fb1c3f87`；工作树只保留活动 planning 变更。
+- 已同步 v0.3.5 exact dual-channel acceptance、published provenance、CHANGELOG 与 ROADMAP 角色：v0.3.5
+  accepted/Latest，v0.3.4 immediate fallback，v0.3.3 deeper fallback。按单一 candidate+accepted role window 删除
+  current-tree 的 v0.3.4 bootstrap/acceptance；历史证据改由 immutable source URL/provenance 恢复。
+- C1 closure focused repository/publication/Release 16/16 通过；完整 suite 为 124 tests / 112 pass / 0 fail /
+  12 honest Windows skips。角色轮转只改 governance/acceptance/provenance 文件，不改变 ZIP/sealed runtime bytes。

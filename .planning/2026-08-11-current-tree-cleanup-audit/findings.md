@@ -373,3 +373,27 @@
   `7d351cfe0eaa60e93bc279645ed3f480dc9e83efdff1c6abf13c14d84c286f0b`；写入 bootstrap 后 post-pin 复建仍一致。
 - product commit 后从同一工作树再次 build/check，ZIP 与 bootstrap SHA-256 均保持上述 sealed identity，且
   `.planning` 之外没有未提交 product diff。
+
+## C1 remote return audit
+
+- 维护者回传的 Linux Source/Candidate 证据绑定 exact pushed source
+  `5d01b55890c1da2a5088e2b991b152a9fb1c3f87`：118/118、0 fail、0 skip；两次 ZIP 构建与本地 seal 完全一致，
+  setup 安装、doctor、SessionStart/UserPromptSubmit adapter 探测和 Post-Resume inventory/policy/residue 全部 PASS。
+- `git ls-remote` 已只读确认 `origin/0.3.5-dev` 与 lightweight tag `v0.3.5` 都精确指向
+  `5d01b55890c1da2a5088e2b991b152a9fb1c3f87`。因此 pushed branch/tag source 没有发生 seal 后漂移。
+- GitHub CLI 的 Release/Latest API 查询被本机失效代理 `127.0.0.1:3080` 拒绝；这不推翻维护者回传或已确认的
+  Git refs，但在改写 Published Release/Latest 权威前仍需通过另一只读通道核验 Release metadata 与双资产。
+- 公共 Web 打开/搜索没有返回该仓库的 Release 页面，搜索结果只命中无关公开仓库；这与目标仓库不可公开索引
+  的表现一致，不能作为 Release 缺失证据。下一只读路线是保留现有 GitHub 身份认证、仅清除失效的本机代理环境。
+- 清除失效 proxy 后，已认证 GitHub API 确认 `v0.3.5` Release `draft=false`、`prerelease=false`，且 `/releases/latest`
+  指向同一 tag；远端 ZIP 为 77,800 bytes / `sha256:7d351cfe…6f0b`，bootstrap 为 21,565 bytes /
+  `sha256:33d7fcac…58a5`，与本地 seal 完全一致。
+- 从 immutable Release URL 独立下载两项资产后，实际 size/hash 再次匹配；解压 ZIP 并使用 ZIP 内 builder/contract
+  检查得到 21 entries、healthy、同一 SHA，下载 bootstrap 的 `bash -n` 也通过。临时下载目录已安全删除。
+- 结合维护者回传的公开下载/安装、Source/Candidate、Post-Resume/doctor/inventory 证据，C1 外部 Release 与 Latest
+  postflight 已闭合；接下来只需把已发生事实写入 acceptance/provenance/ROADMAP 并通过 publication guards。
+- C1 role rotation 已按 retirement contract 收口：v0.3.5 是 accepted/Latest，v0.3.4 是 immediate fallback，
+  v0.3.3 是 deeper fallback；当前 role window 收敛为单一 v0.3.5 bootstrap/acceptance，v0.3.4 本地版本文件退出
+  current tree，但 immutable tag/source/资产/acceptance 继续由 provenance 与 publication oracle 恢复。
+- focused repository/publication/Release 16/16 与完整 suite 124/112/0/12 全绿；publication oracle 已证明
+  v0.3.5/v0.3.4 installers 双向接管和 rollback recoverability。C1 没有修改任何 ZIP 输入或 sealed asset。
