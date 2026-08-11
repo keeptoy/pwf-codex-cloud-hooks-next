@@ -499,9 +499,9 @@
 | Contract / field | 当前 producer / validator | production consumer | 初步裁决 | 理由与未来 owner |
 |---|---|---|---|---|
 | bundle `contract_id` | JSON + importer/installer exact identity | 两个 loader 的 schema admission | `STRICTLY_CONSUME` | 保留；它与 schema_version 共同阻止错误 contract 被当作 bundle |
-| bundle upstream `origin` | JSON + 两个 loader exact enum | trust classification | `STRICTLY_CONSUME` | 保留 `upstream_pristine`；这是 supply-chain 声明，不是说明文字 |
+| bundle upstream `origin` | JSON + 两个 loader exact enum | 固定常量校验；分区/path 已表达来源 | `REVIEW_IN_V2` | 若改为明确 `upstream_files` 分区则优先删除；只有找到独立 trust consumer 才保留 |
 | bundle upstream `managed_sha256` | JSON；两个 loader 校验等于 pristine | importer output/destination drift、installer install projection | `REMOVE_IN_V2` | 迁移所有 operational reads 到 `pristine_sha256` 后原子删除；不能先删 JSON |
-| bundle upstream `overlay_ids` | JSON；两个 loader要求 exact empty | 无投影 consumer | `REMOVE_IN_V2` | v2 exact keys 必须反向拒绝该旧 key，保持 overlay 不可复活的安全意图 |
+| bundle upstream `overlay_ids` | JSON；两个 loader要求 exact empty | 无投影 consumer | `REMOVE_IN_V2` | v2 用通用 exact-key 规则拒绝所有 unknown fields；不再给该历史字段建立专用永久防线 |
 | bundle `language` | JSON；两个 loader只检查非空 | 无 capability/dependency consumer | `RETAIN_WITH_OWNER` | 暂由 runtime admission metadata 持有；Phase 4 Discovery 决定是否成为准入条件 |
 | bundle `host_dependencies` | JSON；两个 loader只检查 string list | 无 prerequisite/doctor/dispatch consumer | `RETAIN_WITH_OWNER` | 同上；在 Phase 4 之前既不删除，也不假装当前已执行 dependency resolution |
 | bundle `installed_contracts` | JSON + exact validator | installer install/drift projection | `KEEP` | 是真实安装 inventory；schema install asymmetry交由 Phase 4 Discovery |
@@ -527,8 +527,9 @@
 
 - 新 identity/path 应为 `PWF_MANAGED_RUNTIME_BUNDLE_V2` / `contracts/runtime-bundle-v2.json`，不在名为
   v1 的文件中静默改 schema。
-- upstream file exact keys 删除 `managed_sha256`、`overlay_ids`；保留 `origin=upstream_pristine`、
-  `pristine_sha256`、mode、paths、dependencies、language/host_dependencies。
+- upstream file exact keys 删除 `managed_sha256`、`overlay_ids`；`origin` 继续复核。首选把 `files` 明确为
+  `upstream_files` 后用分区、受限 paths 与 `pristine_sha256` 表达来源；mode、dependencies、
+  language/host_dependencies 暂保留。
 - importer 的 archive byte check、import expected bytes、destination drift，以及 installer 的 source projection
   全部改为只读 `pristine_sha256`。v1 key 回流因 unknown key 在任何 acquire/write 前失败。
 - local files 与 installed contracts 的 shape、runtime 数量、package/installed paths、mode 和字节都不变。
@@ -616,7 +617,7 @@ v2 contract 又都进入 Release entries；拆开发布会制造旧 path、旧 h
 
 | Gate | 必须证明的内容 |
 |---|---|
-| failing-first unit | 两个 loader 拒绝 manifest unknown/missing key、bundle v1 identity、`managed_sha256`/`overlay_ids` 回流；builder 拒绝 unknown/missing/invalid mode、unknown keys、错误 identity 与不安全/重复 path |
+| failing-first unit | 两个 loader 拒绝 manifest unknown/missing key、bundle v1 identity与任意 unknown entry field；builder 拒绝 unknown/missing/invalid mode、unknown keys、错误 identity 与不安全/重复 path |
 | authority guards | importer/installer 只读 `pristine_sha256`；builder source 中无 `EXECUTABLE_PATHS`，build/check 只读 entry mode；manifest 顶层和 v2 contract 全部 exact-key |
 | focused regression | contracts、importer、installer、Release package、repository boundary、architecture contracts 与跨版本 published oracles 全绿 |
 | full local | importer check、完整 `npm test`、Python compile、`node --check install.js`、所有 bootstrap `bash -n`、Git mode 检查与 `git diff --check` |
@@ -629,7 +630,7 @@ v2 contract 又都进入 Release entries；拆开发布会制造旧 path、旧 h
 Windows 上的 POSIX skip 只能作为本地事实；Linux/Cloud 结果是 future implementation 的退出条件，不能由
 本轮 C2 planning-only 验证替代。
 
-## C2 final decision
+## C2 previous preliminary decision（已重新打开）
 
 `CONDITIONAL_GO`，首选落位是 Phase 4 Discovery 之后的 `0.4.0-alpha.*` inactive foundation gate，而不是
 再切一个没有用户行为变化的稳定 `0.3.x` patch。理由：
@@ -644,5 +645,52 @@ Windows 上的 POSIX skip 只能作为本地事实；Linux/Cloud 结果是 futur
   PASS 不自动授权后者。
 
 若 Phase 4 Discovery 发现 attestation/nonce/v3 modes 要求不同的 bundle/Release entry shape，则本方案停在
-Discovery 并修订，不实施当前 v2。C2 本身已经完成；当前没有 contract implementation、successor identity 或
-Phase 4 授权。
+Discovery 并修订，不实施当前 v2。该结论曾按完成记录；现已因 tombstone/专用 guard 的长期 owner 质疑重新打开。
+当前仍没有 contract implementation、successor package identity 或 Phase 4 授权。
+
+## C2 reopened review：tombstone 是否值得长期保留
+
+维护者指出：当前架构已明确选择 pristine upstream + owned private snapshot，ARCHITECTURE 也要求每次路线切换
+重新进入 Discovery；因此把 overlay 当作会被大模型“无意复活”的长期威胁，可能属于防患过度。
+
+复核后的方向：这个质疑成立。需要分开三件事：
+
+1. **历史 tombstone**：`managed_sha256 == pristine_sha256` 与 `overlay_ids=[]` 只解释 overlay 退役过渡；迁移已闭合
+   后没有独立 runtime consumer，不能仅因当年是有意设计就永久保留。
+2. **machine schema 完整性**：v2 exact-key validation 仍有价值，但价值是拒绝任何未知/拼错/漂移字段，不是专门
+   防止大模型选择 overlay。它应由通用 unknown-key tests 证明。
+3. **架构路线治理**：当前正向 contract 只需 `origin=upstream_pristine`、单一 `pristine_sha256`、无 transformer/
+   patcher production path。未来若 snapshot 的真实 Linux/Cloud 证据失败，ARCHITECTURE 明确允许重新 Discovery；
+   静态测试不应把这一合法路线误写成“overlay 永远不得出现”。
+
+因此更合适的 v2 目标是：删除两个 tombstone；保留通用 exact-key validation 与正向 pristine/hash 断言；把
+overlay 专用 negative case 改成通用 unknown-field case，或在已被通用 case覆盖时删除。保留 repository trusted-zone
+与 production call-graph 断言即可防止 patcher/第二执行路径被普通改动悄悄夹带。治理重点是“不得静默改变路线”，
+不是“任何未来都不得经授权重新评估 overlay”。
+
+进一步看，测试也不应承担“防止大模型做出错误架构选择”的职责。模型若要真正恢复 overlay，必须同时改变
+importer/installer、hash projection、bundle schema、Release inputs 与 tests；这不是一个字段会自行激活的能力。
+正确控制点是架构评审和 Discovery authorization。测试只证明已经批准的当前合同：import 后字节等于 pinned
+pristine bytes、trusted graph 不存在 transformer、未知 schema 字段不能被 consumer 静默忽略。
+
+`origin=upstream_pristine` 也应在 C2 继续审查，而不是自动保留：如果 v2 把 `files` 明确重命名为
+`upstream_files`，并严格约束 canonical source/package/installed roots 与单一 pristine hash，那么固定 origin
+常量可能和数组分区重复。两个可接受方案是“保留 origin 作为显式 trust label”或“用结构表达 origin 并删除常量”；
+最终应按是否存在独立 consumer 决定，不能因为它措辞积极就免于 owner 审计。
+
+### overlay 专用断言盘点
+
+- `contracts.test.js`、`release-package.test.js`、`repository-boundary.test.js` 三处重复点名旧
+  `patches/patch_planning_skill.py` 与 `contracts/compatibility-overlays-v1.json` 不得进入 ZIP；manifest 还单独断言
+  `compatibility_patches`、`historical_patched_skill_files`、`compatibility_overlays` 不存在。
+- 这些断言在 transition 期有价值，但 v2 若补齐 manifest/bundle/Release exact-key schema，继续逐个冻结旧字段名和
+  旧路径会把历史迁移清单变成永久合同。它们无法阻止换一个新名字实现 transformer，真正保护当前行为的是 pinned
+  archive -> pristine hash -> imported byte equality，以及 trusted source/Release exact inventory。
+- `pristine-catchup-boundary.test.js` 名为“avoid CLI overlays”的 case 实际验证 managed/pristine helper closure 相等和
+  import-time surface bounded；行为仍有价值，但标题可改成路线中性的 pristine/helper-closure 描述。
+- notice 的“不得声称 applied overlays”属于事实准确性，不是架构防线；只要 notice 继续描述当前 pristine source，
+  该断言可以保留或改成正向 pristine 文案断言，不需要承担永恒路线禁止。
+
+初步收敛：v2 implementation 时应删除专用 tombstone 数据和大部分逐名 absence guards；保留一组通用
+unknown-key tests、一组 imported/package bytes 等于 pinned pristine bytes 的行为测试，以及 exact trusted inventory。
+这比“每个旧名字永不出现”更少、更强，也与 ARCHITECTURE 允许经新 Discovery 重新评估路线保持一致。

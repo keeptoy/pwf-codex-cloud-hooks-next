@@ -20,6 +20,8 @@
   Source/Candidate setup 118/118 与 Post-Resume 全绿，并确认 GitHub publication、公开 ZIP 下载和安装通过；结合
   先前约定，授权恢复 C1 只读 publication/postflight 核验，C1 accepted closure 成立后进入 C2 Discovery。该授权
   仍不包含任何远端写、contract-v2 implementation 或 Phase 4。
+- 维护者已授权从当前 closure HEAD 创建并切换本地 `0.4.0-dev` 分支，同时重新打开 C2 tombstone 取舍讨论。
+  该分支名不等于 package/machine identity、Phase 4 implementation 或 Release 授权。
 - 所有结论必须区分 production reachability、source/import/install/ZIP authority、未来已规划能力与测试价值。
 
 ## Gates
@@ -32,18 +34,17 @@
   顺序、验证和停止条件；未实施任何清理。
 - [x] C1 — Next compatible cleanup：`v0.3.5` exact source/tag、非 prerelease Release、Latest、双资产、Cloud/下载
   验收与 accepted/fallback 角色轮转全部闭合；未改变 runtime/ABI/trusted graph 或夹带 contract-v2。
-- [x] C2 — Contract/Release-v2 Discovery：已冻结 bundle tombstone、manifest exact schema/metadata、Release
-  entry mode、跨版本 rollback、验证矩阵与 implementation placement；Discovery 中未实施任何 schema/source。
+- [ ] C2 — Contract/Release-v2 Discovery（观点复核中）：重新判断 overlay tombstone/专用反复活断言是否有
+  长期价值，区分通用 exact-schema 完整性、正向 pristine contract 与架构路线治理；不实施 schema/source。
 
 ## Next Step
 
-当前清理 audit 到此停止。下一独立任务是在维护者另行授权后创建 **Phase 4 Discovery**：恢复 attestation、nonce、
-opt-in v3 modes、legacy 默认、schema install asymmetry 与 Cloud 事实，再与本 C2 的 phase-neutral v2 方案联合裁决
-implementation placement。不得直接创建 `0.4.0-*` identity、修改 contracts 或激活 Phase 4 source。
+在本地 `0.4.0-dev` 上继续 C2 讨论态：复核“删除 tombstone 后是否还需要 overlay 专用 absence/negative guard”。
+只允许更新证据与取舍；不得修改 machine contract、production、package identity 或激活 Phase 4 source。
 
 ## Decision
 
-`C1_ACCEPTED_CLOSURE_PASS / C2_DISCOVERY_PASS_CONDITIONAL_GO / STOP_NO_IMPLEMENTATION / PHASE4_NOT_AUTHORIZED`
+`C1_ACCEPTED_CLOSURE_PASS / C2_DISCOVERY_REOPENED_FOR_TOMBSTONE_REVIEW / NO_IMPLEMENTATION / PHASE4_NOT_AUTHORIZED`
 
 ## Route invariants
 
@@ -148,7 +149,7 @@ implementation placement。不得直接创建 `0.4.0-*` identity、修改 contra
    transaction，还是 `0.4.0-*` 列车中先于行为激活的 inactive foundation gate；Discovery 结束即停，只有维护者
    另行授权才创建 implementation gate。
 
-### C2.3 Final route decision（完成）
+### C2.3 Preliminary route decision（待复核）
 
 - 总裁决：`CONDITIONAL_GO`。bundle v2 + manifest schema 4 + Release artifact v2 在技术上可以组成
   phase-neutral、inactive、单次原子 transaction；它不需要改变 runtime bytes、Host ABI、trusted graph、
@@ -162,8 +163,20 @@ implementation placement。不得直接创建 `0.4.0-*` identity、修改 contra
 - 条件：Phase 4 Discovery 必须确认 attestation/nonce/v3 mode 不需要改变本 C2 的 entry semantics，确认保留字段
   owner 与 schema asymmetry 决策，并冻结 successor identity/branch/gates。若发现 shape 冲突，则回到 Discovery
   修订 v2，而不是先实施再二次旋转。
-- C2 closure 只提交 planning 证据；不修改 README/ARCHITECTURE/DESIGN/ROADMAP 当前稳定事实，不创建 release
-  candidate，不运行 publication 或 Cloud 写操作。
+- 此前 C2 closure 只提交 planning 证据；本次 reopened review 仅同步本地分支/C2 lifecycle 到 ROADMAP，仍不创建
+  package candidate，不修改 machine contract，不运行 publication 或 Cloud 写操作。
+
+### C2.4 Tombstone review（讨论中）
+
+- 不把“overlay 退役提交曾有意保留 tombstone”直接推导为“v2 必须长期保留 overlay 专用防线”。历史动机只能
+  解释 v1，不能自动取得 v2 owner。
+- 待冻结的区分：通用 exact-key validation 保护 machine schema 不被未知字段静默扩展；
+  单一 `pristine_sha256`、受限 source roots 与 import byte equality 保护当前正向供应链事实；
+  ARCHITECTURE/Discovery gate 管理未来是否重新选择 overlay。三者不应再由空 `overlay_ids` 或双 hash 重复表达。
+- 重点判断专用 overlay negative test 是否应退休为通用 unknown-key test，而不是继续冻结历史字段名和“永不复活”
+  叙事。当前无 implementation 授权。
+- 同步复核固定 `origin=upstream_pristine` 是否有独立 owner；若 v2 用明确 `upstream_files` 分区和路径/hash 约束
+  完整表达来源，origin 常量也可能属于重复 machine metadata。该取舍尚未冻结。
 
 ## Post-cleanup next task hint — Phase 4 Discovery
 
@@ -205,7 +218,7 @@ Phase 4 Discovery 的前置发布；两轮 Discovery 必须先区分 Phase-4-neu
 | 首次 v0.3.5-dev focused/full run 暴露 manifest Release-contract SHA、ROADMAP prose locks 与 bootstrap sealed-only 假设 | 3 | 同步真实 contract SHA；删除被动态角色解析覆盖的 prose locks；bootstrap 测试按 candidate/accepted 关系验证 zero/sealed checksum，focused 与完整 suite 全绿 |
 | 预封板审计误用了不存在的 `tools/build_release_artifact.py` | 1 | 回读 README 与实际工具入口，改用 `tools/build_release.py build/check`；随后开发候选和 stable 双构建均通过 |
 | 组合只读查询引用了不存在的 `docs/v0.3.4-release-acceptance.md`，使 `rg` 最终 exit 1 | 1 | 从 repository role-window 测试确认真实文件为 `docs/v0.3.4-cloud-hard-acceptance.md`；后续只读取动态 candidate acceptance 与现存路径 |
-| planning 更新后的 focused `node --test` 在受限 Windows sandbox 创建 test-runner 子进程时返回 `spawn EPERM` | 2 | 两次均在非受限测试上下文原命令复跑，repository boundary 8/8 通过；分类为 sandbox platform limitation |
+| planning 更新后的 focused `node --test` 在受限 Windows sandbox 创建 test-runner 子进程时返回 `spawn EPERM` | 3 | 均在非受限测试上下文原命令复跑通过；本次 architecture/repository focused suite 15/15 PASS，分类为 sandbox platform limitation |
 | `gh release view v0.3.5` 与 latest 查询通过本机代理 `127.0.0.1:3080` 连接 GitHub API 时被拒绝 | 1 | `git ls-remote` 已成功确认 branch/tag exact source；Release/Latest metadata 改用独立只读 Web 通道，不重复失效代理路径 |
 | 公共 Web open/search 未返回目标 Release，搜索只命中无关公开仓库 | 1 | 目标仓库未被公共索引时 Web 结果不具否定力；保留已认证 GitHub CLI，仅在单次只读命令中清除失效 proxy 环境重试 |
 | 本地 `show-ref refs/tags/v0.3.5` 失败：维护者已创建远端 tag，但本地 refs 尚未 fetch | 1 | 远端 tag source 已由 `ls-remote` 证明；在不触碰工作树的前提下精确 fetch 单个 tag，供 publication oracle 使用 |

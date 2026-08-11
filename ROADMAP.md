@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.5` accepted baseline；C2 Contract/Release-v2 Discovery 进行中，尚无 successor identity |
+| 当前开发列车 | `v0.3.5` accepted baseline；本地 `0.4.0-dev` 探路分支上的 C2 观点复核，尚无 successor package/machine identity |
 | 当前已接受版本 | `v0.3.5`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.4` immediate fallback |
 | 回退证据链 | immutable `v0.3.3` deeper fallback；更早发布里程碑见 provenance museum |
@@ -58,11 +58,11 @@ baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta
 ## 4. 当前开发列车与 Product Phase 路线
 
 `v0.3.5` 的 zero-hash Source/Candidate Cloud 已 PASS，Published Release Cloud hard acceptance 已 PASS，
-publication 与 Latest postflight 也已闭合。当前工作转入 C2 Contract/Release-v2 Discovery，只研究 bundle
-tombstone、manifest exact schema/metadata、Release entry mode 与 ownerless metadata 的去留；没有 contract-v2
-implementation、Release identity 或 `0.4.0-*` successor 授权。
+publication 与 Latest postflight 也已闭合。当前已切出本地 `0.4.0-dev` 探路分支，重新复核 C2 中 bundle
+tombstone、通用 exact schema、Release entry mode 与 ownerless metadata 的去留；没有 contract-v2
+implementation、Release identity 或 `0.4.0-*` package/machine identity 授权。
 
-Phase 4 仍停在 Discovery authorization 之前，尚未建立 `0.4.0-*` machine identity、开发分支或实现 gate。
+Phase 4 仍停在 Discovery authorization 之前；本地分支名不建立 `0.4.0-*` machine identity 或实现 gate。
 精确 Next Step 和停止条件只见活动 task plan；已完成 v0.3.5 基线与 rollback 证据仍见第 3 节及
 provenance/acceptance。
 

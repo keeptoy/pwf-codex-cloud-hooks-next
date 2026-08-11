@@ -178,3 +178,15 @@
 - C2 closure validation：`git diff --check` PASS；repository-boundary focused test 在受限 Windows sandbox
   首次因 `spawn EPERM` 未启动，在已授权非受限上下文原命令重跑 8/8 PASS。未运行 production/Release/Cloud
   gate，因为本轮仅修改 `.planning` 且明确无 implementation 权限。
+- 创建并切换本地分支 `0.4.0-dev`，基点为 `6ce09bb`；未 push、未改变 package/machine identity。
+- 维护者重新打开 C2 tombstone 观点复核。已记录：历史上“有意保留”不等于长期 owner；v2 应以通用 exact schema、
+  正向 pristine contract 和 Discovery 治理分别承担职责，不再把 overlay 专用 tombstone/断言当永久安全边界。
+- 盘点 overlay 专用断言：三个测试重复禁止两个旧 ZIP path，manifest/bundle 另有逐名 tombstone/absence guards；
+  它们应在 v2 由通用 unknown-key、pinned pristine byte equality 与 exact trusted inventory 取代，不把历史名称
+  固化为永久合同。当前仅记录观点，未修改 tests/contracts/production。
+- C2 观点/ROADMAP focused test 在受限 Windows sandbox 因 Node test-runner `spawn EPERM` 未启动；按已确认的
+  platform limitation 转到已授权非受限上下文重跑，不据此判定文档或产品失败。`git diff --check` 已通过。
+- 非受限上下文 focused governance suite 15/15 PASS（architecture contracts 7、repository boundary 8）；
+  本轮只有 ROADMAP 与活动 planning 变更，没有执行 contract/production/Release/Cloud gate。
+- C2 表内 `origin=upstream_pristine` 从自动保留改为待复核：若 v2 使用明确 `upstream_files` 分区、受限 paths
+  与单一 pristine hash，固定 origin 常量可能同样无独立 owner。仍未冻结最终 schema。
