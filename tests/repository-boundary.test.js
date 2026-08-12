@@ -138,12 +138,21 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   const acceptanceTemplate = read("docs/cloud-hard-acceptance-template.md");
   assert.match(acceptanceTemplate, /^<a name="cloud-hard-acceptance-template"><\/a>$/m);
   assert.match(acceptanceTemplate, /^<a name="acceptance-document-responsibilities"><\/a>$/m);
+  assert.match(acceptanceTemplate, /^<a name="version-gate-status-ledger"><\/a>$/m);
   assert.match(acceptanceTemplate, /^<a name="version-acceptance-delta"><\/a>$/m);
-  assert.match(acceptanceTemplate, /本模板[\s\S]*稳定执行协议[\s\S]*活动 Release task plan[\s\S]*Next Step[\s\S]*版本专项 acceptance[\s\S]*最终不可变结论/);
-  assert.match(acceptanceTemplate, /通道尚未完成[\s\S]*进度只写活动 Release task plan[\s\S]*不在版本 acceptance 预建 PENDING/);
-  assert.match(acceptanceTemplate, /development identity 收敛为 stable identity[\s\S]*重命名[\s\S]*不得让 dev\/stable 两份 acceptance 并存/);
-  assert.match(acceptanceTemplate, /“本版本验收增量”（可选）[\s\S]*没有验收增量时[\s\S]*整个章节直接省略/);
-  assert.match(acceptanceTemplate, /B～E 黑盒提示词是否变化[\s\S]*版本文件不得再次复制脚本、提示词或完整执行步骤/);
+  assert.match(acceptanceTemplate, /\| 本模板 \| Source\/Candidate 与 Published Release 的稳定执行协议/);
+  assert.match(acceptanceTemplate, /\| 活动 Release task plan \|[^\n]*Next Step/);
+  assert.match(acceptanceTemplate, /\| 版本专项 acceptance \|[^\n]*最终结论/);
+  assert.match(acceptanceTemplate, /多 gate 开发版本可以维护一张简洁的版本内 gate 验收状态表/);
+  assert.match(acceptanceTemplate, /\| 版本专项 acceptance \|[^\n]*\| 逐步骤流水账/);
+  assert.match(acceptanceTemplate, /CURRENT \/ CLOUD_ACCEPTANCE_PENDING[\s\S]*NOT_AUTHORIZED/);
+  assert.match(acceptanceTemplate, /一次性版本没有中间 gate 时整个状态表省略/);
+  assert.match(acceptanceTemplate, /development identity 收敛为 stable identity/);
+  assert.match(acceptanceTemplate, /不得让 dev\/stable\s+两份 acceptance 并存/);
+  assert.match(acceptanceTemplate, /### 0\.3 “当前 gate 验收增量”（可选）/);
+  assert.match(acceptanceTemplate, /没有验收增量时/);
+  assert.match(acceptanceTemplate, /B～E 黑盒提示词是否变化/);
+  assert.match(acceptanceTemplate, /版本文件不得再次复制脚本、提示词或完整执行步骤/);
   assert.match(acceptanceTemplate, /Environment variables（“环境变量”）[\s\S]*PWF_ACCEPTANCE_NODE_MAJOR[\s\S]*不要只在 setup script 中/);
   assert.match(acceptanceTemplate, /### 4\.2 Published Release[\s\S]*__IMMUTABLE_BOOTSTRAP_URL__[\s\S]*__IMMUTABLE_BOOTSTRAP_SHA256__/);
   assert.match(acceptanceTemplate, /### 9\.2 Published Release[\s\S]*__IMMUTABLE_ZIP_URL__[\s\S]*__IMMUTABLE_ZIP_SHA256__/);
@@ -293,6 +302,22 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotMatch(changelog, /Successor 迁移来源链/);
 
   assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));
+  assert.match(acceptance, /^<a name="v0-4-0-dev-gate-status"><\/a>$/m);
+  assert.match(acceptance, /F0 development identity \/ guardrails[^\n]*`PASS`/);
+  assert.match(acceptance, /F1A contract\/source foundation[^\n]*`PASS`/);
+  assert.match(acceptance, /F1B inactive runtime foundation[^\n]*`PASS`/);
+  assert.match(acceptance, /F2A local implementation[^\n]*`PASS`/);
+  assert.match(acceptance, /F2A Source\/Candidate\/no-live Cloud[^\n]*`CURRENT \/ CLOUD_ACCEPTANCE_PENDING`/);
+  assert.equal((acceptance.match(/`NOT_AUTHORIZED`/g) || []).length, 2);
+  assert.match(acceptance, /^<a name="v0-4-0-dev-f2a-acceptance-delta"><\/a>$/m);
+  for (const fragment of [
+    "source-candidate-sequence", "source-candidate-setup", "source-candidate-deep-check",
+    "blackbox-canonical-baseline", "blackbox-canonical-context", "blackbox-real-resume",
+  ]) assert.match(acceptance, new RegExp(`cloud-hard-acceptance-template\\.md#${fragment}`));
+  for (const sentinel of [
+    "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_COMPLETED_V1",
+    "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_ACTIVE_V1",
+  ]) assert.equal((acceptance.match(new RegExp(sentinel, "g")) || []).length, 1);
   const currentTrainLine = roadmap.split(/\r?\n/)
     .find(line => line.startsWith("| 当前开发列车 |")) || "";
   const publishedReleaseComplete = candidate === accepted
@@ -325,7 +350,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-setup/);
   assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-deep-check/);
   assert.doesNotMatch(acceptance,
-    /## 1\. 执行输入与边界|维护者执行顺序|回传证据|NOT EXECUTED|NOT AUTHORIZED|PENDING|Next Step|当前状态|尚未开始|尚未完成|待验收/);
+    /## 1\. 执行输入与边界|维护者执行顺序|回传证据|^## Next Step$|^## Errors Encountered$|第一次失败|重试命令|恢复位置/m);
 
   if (publishedReleaseComplete) {
     const publishedRow = provenance.split(/\r?\n/)

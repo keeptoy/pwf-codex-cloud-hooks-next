@@ -223,16 +223,17 @@ Release notes；不要提前创建大量按版本 archive 文件。
   版本中立黑盒提示词、deep-check 结构、停止条件和 evidence schema；
 - 模板不得保存具体版本、commit、资产名/size/SHA、测试计数、某次 gate 的 PASS/PENDING、Latest/rollback
   或 programme 状态，也不占用 candidate + accepted 文件窗口；
-- 活动 Release task plan 保存当次授权、seal 输入、URL/SHA、Next Step、PENDING、失败记录和恢复位置；
-- 版本专项 acceptance 只引用模板，并在相应通道完整通过后一次性登记 exact source、资产身份、Cloud 原始
-  输出和最终结论；不得复制模板脚本或保存施工进度表；
+- 活动 Release task plan 保存当次授权、执行到哪一步、seal 输入、URL/SHA、Next Step、失败记录和恢复位置；
+- 多 gate 版本的专项 acceptance 可以维护简洁的 gate 验收状态表和当前 gate 的模板/提示词增量；状态表只回答
+  已通过、当前待验收和未授权，不保存逐步骤流水账、失败重试或 Next Step。相应通道完整通过后再一次性登记
+  exact source、资产身份、Cloud 原始输出和最终结论；一次性版本可以省略中间状态表；
 - development identity 收敛为 stable identity 时重命名同一份 acceptance，不得同时保留 dev/stable 两份；
 - 已发布 acceptance 是带时间语义的冷证据，不因模板改进而批量回写；模板只在 lifecycle、Host ABI、
   trusted graph、Release boundary 或稳定观测协议变化时更新；
 - 模板和所有版本 acceptance 都必须被 Release、installed inventory 与 trusted execution graph 排除。
 
-这种拆分允许执行协议跨 patch 版本复用，让动态状态只活在可归档的 task plan，并让版本 acceptance 保持为
-完成后才写入的不可变证据。
+这种拆分允许执行协议跨 patch 版本复用：细粒度执行状态只活在可归档的 task plan，版本 acceptance 保留
+粗粒度 gate 索引、验收增量和已完成不可变证据，两者不会互相冒充。
 
 ## 12. Promotion 与 eviction 是一个事务
 

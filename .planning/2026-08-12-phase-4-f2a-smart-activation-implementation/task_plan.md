@@ -14,8 +14,9 @@
 
 ## Next Step
 
-等待维护者 push F2A implementation 与 lifecycle/Cloud protocol follow-up 两个 commits，按更新后的 markerless legacy
-canonical fixture 执行 Linux/Source-Candidate/no-live Cloud hard acceptance。验收结果回传前不进入 F2B/F3。
+等待维护者 push F2A implementation、lifecycle/Cloud protocol follow-up 与 multi-gate acceptance correction 三个 commits，
+按更新后的 markerless legacy canonical fixture 执行 Linux/Source-Candidate/no-live Cloud hard acceptance。验收结果
+回传前不进入 F2B/F3。
 
 ## Phases
 
@@ -27,6 +28,7 @@ canonical fixture 执行 Linux/Source-Candidate/no-live Cloud hard acceptance。
 | P3 Supply-chain and documentation closure | completed | bundle/manifest/Release hash、current docs、历史状态尾注与 residue scan 自洽 |
 | P4 Local acceptance and commit | completed | full local suite、syntax/compile、deterministic ZIP/install checks、diff checks 全绿并本地 commit |
 | P5 Lifecycle and Cloud protocol follow-up | completed | Phase 4.4 实施后冷对账、markerless legacy 黑盒判别、版本 evidence/current-state 职责与 tests 闭合并独立 commit |
+| P6 Multi-gate acceptance status correction | completed | 恢复版本内 gate 状态与当前验收增量，模板/治理/测试职责一致并独立 commit |
 
 ## Migration lifecycle ledger
 
@@ -45,7 +47,8 @@ canonical fixture 执行 Linux/Source-Candidate/no-live Cloud hard acceptance。
 | activation procedure/probe docs | current user docs | ADD | no writer bundled; probe reuses production request/result | F3 Cloud lifecycle review |
 | Phase 4.4 implementation ledger | cold history / successor review | ADD post-implementation reconciliation | actual owner、consumer、executable evidence、retirement trigger | each F2B/F3 migration audit |
 | Cloud canonical completed/active sentinels | stable acceptance template | ADD markerless profile discriminator | D/E2 must observe both without activation files | review when default profile or renderer contract changes |
-| version acceptance pending/current section | active plan/ROADMAP should own it | RETIRE/MOVE | repository boundary forbids dynamic pending prose in acceptance | completed exact evidence only |
+| version acceptance step-by-step execution state | active plan should own it | RETIRE/MOVE | repository boundary forbids command-level progress/retry/Next Step in acceptance | completed exact evidence only |
+| version acceptance coarse gate ledger | version acceptance | KEEP/RESTORE | PASS/current pending/not-authorized + template/delta links | retire when one-shot acceptance has no intermediate gates |
 
 ## Stop Conditions
 
@@ -66,6 +69,10 @@ canonical fixture 执行 Linux/Source-Candidate/no-live Cloud hard acceptance。
 | First patch for removing the pending acceptance section missed its exact line wrapping | 1 | Read the numbered UTF-8 lines and applied a narrower exact-context patch; no partial file mutation occurred. |
 | First lifecycle assertion over-locked Chinese sentence ordering around the two sentinels | 1 | Replaced it with exact behavioral checks: each sentinel must occur in C, D and E2, plus the no-activation-file boundary. |
 | Combined verification command assumed Git Bash lived on `C:` while this workstation installs it on `D:` | 1 | Derived Bash from `Get-Command bash` and reran bootstrap syntax separately; prior successful test/importer/compile results remained valid. |
+| P5 over-corrected acceptance ownership by removing the whole current-gate section | 1 | Distinguish coarse version gate status from command-level execution state; restore the former and keep the latter in the active plan. |
+| First P6 boundary run exposed an old cross-row Chinese ordering regex | 1 | Split it into independent exact responsibility-row assertions; keep role semantics without freezing paragraph order. |
+| Second P6 run exposed one newly added cross-section ordering regex with a wording mismatch | 1 | Replaced it with independent exact multi-gate permission and forbidden-step-ledger assertions. |
+| Third P6 run exposed a legacy assertion that treated a Markdown line wrap inside `dev/stable 两份` as semantic drift | 1 | Audited the remaining cluster and split it into anchor/stable-keyword assertions tolerant of prose wrapping. |
 
 ## Current status
 

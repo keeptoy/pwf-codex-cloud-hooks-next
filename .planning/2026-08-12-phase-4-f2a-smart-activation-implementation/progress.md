@@ -49,3 +49,23 @@
   rerun separately using the discovered executable rather than treating that command defect as a product failure.
 - Discovered-path bootstrap syntax and final `git diff --check` passed. P5 is locally closed; the next external action is maintainer
   push followed by the updated Linux/Source-Candidate/no-live Cloud run. No F2B/F3 work is authorized.
+
+## 2026-08-13
+
+- Maintainer identified that `v0.4.0-dev` is a multi-gate version and therefore still needs a coarse gate status ledger. Recovered the
+  clean post-P5 tree and re-audited template, version acceptance, governance guide and lifecycle assertions.
+- Corrected the responsibility model: version acceptance owns PASS/current-pending/not-authorized gate indexing plus current-gate
+  template/prompt delta; active task plan alone owns per-step progress, retries, exact pending execution inputs and Next Step.
+- Restored an F0/F1/F2A/F2B/F3 status table and an F2A validation-delta section that links the current Source/Candidate scripts and
+  C/D/E2 prompts, including both exact markerless legacy sentinels. No source/ZIP/hash evidence is prefilled before Cloud completion.
+- First focused boundary run passed 8/9. The sole failure was an old regex coupling the order of three documentation-responsibility
+  rows; replaced it with independent row-level responsibility assertions rather than changing the new ownership model.
+- Second focused run again passed 8/9 and exposed only a newly introduced cross-section wording/order assertion. Split it into exact
+  permission and prohibition checks so the test protects ownership semantics without freezing prose layout.
+- Third focused run exposed the same class in a legacy dev/stable line-wrap assertion. Audited the remaining responsibility cluster
+  and converted compound prose-order checks to explicit anchors and stable keywords.
+- Full-text consistency scan found and removed one contradictory tail rule that still banned all unfinished-gate status tables; it
+  now bans only prefilled exact evidence. Split F0, F1A and F1B into separate PASS rows so the version ledger maps the actual gates.
+- Full local regression passed 146 tests: 128 pass, 0 fail and 18 honest Windows/POSIX skips. Importer, Python compile, Node syntax,
+  discovered-path bootstrap syntax and diff checks passed. Linked F2A local PASS to the Phase 4.4 implementation lifecycle
+  reconciliation; P6 is locally complete and remains stopped before F2B/F3.

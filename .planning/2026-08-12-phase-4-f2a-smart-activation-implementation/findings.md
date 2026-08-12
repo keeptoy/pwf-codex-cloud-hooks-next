@@ -73,5 +73,9 @@
   markerless legacy from an accidentally activated smart selector.
 - A structured plan containing one completed sentinel and one active sentinel provides that discriminator: markerless legacy must
   expose both; smart selection would omit the completed phase. The no-live route still must not create real activation files.
-- Version acceptance is completed immutable evidence, not the owner of pending/current gate prose. F1B exact evidence remains under
-  its historical gate heading; F2A exact evidence is appended only after the maintainer returns a completed Cloud run.
+- Follow-up correction: version acceptance is not limited to completed evidence when one version contains several independently
+  tested gates. It may own a coarse gate ledger and current-gate validation delta; only command-level progress, retry state and Next
+  Step remain exclusive to the active plan. F1B exact evidence stays historical, while F2A exact source/ZIP evidence is still appended
+  only after a completed Cloud run.
+- The current-gate delta must be useful before execution, so it records the exact outputs that will constitute PASS rather than
+  pretending those outputs already exist. Exact source/ZIP/hash values remain forbidden until the Cloud run completes.

@@ -5,9 +5,10 @@
 本文件是 `pwf-codex-cloud-hooks` 新版本 Cloud hard acceptance 的稳定写作与执行模板，不是任何版本的
 验收结果，也不维护任何已发生的 candidate、accepted、Latest、rollback、PASS/PENDING、测试数量或资产大小。
 
-版本专项 acceptance 直接引用本模板，只在通道完成后登记 exact source、资产 identity 和实际证据。模板
-本身只在 Cloud lifecycle、trusted graph、Host ABI、Release boundary 或稳定观测协议变化时修改；普通版本
-轮换不得把运行状态回填到这里，也不得整份复制模板脚本。
+版本专项 acceptance 直接引用本模板。多 gate 开发版本可以维护一张简洁的版本内 gate 验收状态表，并说明当前
+gate 相对模板新增了什么验证；只有通道完成后才能登记 exact source、资产 identity 和实际证据。模板本身只在
+Cloud lifecycle、trusted graph、Host ABI、Release boundary 或稳定观测协议变化时修改；普通版本轮换不得把
+运行状态回填到这里，也不得整份复制模板脚本。
 
 ## 0. 使用规则
 
@@ -18,25 +19,36 @@
 | 位置 | 唯一职责 | 不得保存 |
 |---|---|---|
 | 本模板 | Source/Candidate 与 Published Release 的稳定执行协议、停止条件和 evidence schema | 具体版本、当前进度、资产 SHA 或某次 PASS |
-| 活动 Release task plan | 当前授权、seal 输入、URL/SHA、Next Step、PENDING、失败记录和恢复位置 | 已完成版本的长期不可变证据 |
-| 版本专项 acceptance | 已经完成的版本增量、exact source/资产身份、Cloud 原始结果和最终不可变结论 | 施工进度表、PENDING/NOT EXECUTED、模板脚本副本 |
+| 活动 Release task plan | 当前授权、执行到哪一步、seal 输入、URL/SHA、Next Step、失败记录和恢复位置 | 已完成版本的长期不可变证据 |
+| 版本专项 acceptance | 版本内 gate 验收状态、当前 gate 验收增量/模板同步、已完成 gate 的 exact evidence 与最终结论 | 逐步骤流水账、重试记录、Next Step、模板脚本副本 |
 | ROADMAP | programme 角色、宏观 Release 授权与 lifecycle 结论 | seal 流水账、逐资产 SHA、逐步骤状态 |
 
-一个通道尚未完成时，它的进度只写活动 Release task plan，不在版本 acceptance 预建 PENDING 表格或占位章节；
-通道完成后，再把证据一次性写入同一份版本 acceptance。development identity 收敛为 stable identity 时，
-重命名这份文件并更新内容，不得让 dev/stable 两份 acceptance 并存。
+多 gate 版本的状态表只回答“哪些 gate 已通过、当前验收哪个 gate、哪些 gate 尚未授权”，不能展开成执行到第几步、
+第一次失败、重跑命令或下一步操作。当前 gate 可以标为 `CLOUD_ACCEPTANCE_PENDING`，但不能预填 source/ZIP/hash 或
+伪造 PASS；通道完成后再把 exact evidence 一次性追加到同一文件。只有一次整体验收的版本可以省略状态表，直接
+保存最终证据。development identity 收敛为 stable identity 时，重命名这份文件并更新内容，不得让 dev/stable
+两份 acceptance 并存。
+
+<a name="version-gate-status-ledger"></a>
+
+### 0.2 版本内 gate 验收状态（多 gate 版本）
+
+状态表至少包含 gate、粗粒度状态、模板/证据入口和不授权边界。允许的状态语义是：已完成 gate 写 `PASS` 并链接
+完成证据；唯一当前 gate 写 `CURRENT / CLOUD_ACCEPTANCE_PENDING` 并链接当前模板小节；未来 gate 写
+`NOT_AUTHORIZED`。它是“这个版本各阶段测到哪里”的索引，不取代 ROADMAP 的 programme 状态，也不取代活动 task
+plan 的执行控制。一次性版本没有中间 gate 时整个状态表省略。
 
 <a name="version-acceptance-delta"></a>
 
-### 0.2 “本版本验收增量”（可选）
+### 0.3 “当前 gate 验收增量”（可选）
 
-只有当前版本相对本模板新增或修改了验证面时，版本 acceptance 才写“本版本验收增量”；没有验收增量时，
+只有当前 gate 相对本模板新增或修改了验证面时，版本 acceptance 才写“当前 gate 验收增量”；没有验收增量时，
 整个章节直接省略，不写“无”或占位文字。该章节至少回答：
 
 1. 本版本改变了哪个 contract、信任边界或风险面，因此需要增加什么证明；
 2. 增量落在模板哪个稳定 anchor、哪项 portable/publication test 或哪个 machine oracle；
 3. B～E 黑盒提示词是否变化；若变化，指出模板中的具体小节和变化理由，若未变化则明确复用原协议；
-4. 已完成证据中的哪个输出或结论证明这项增量通过。
+4. gate 未完成时，哪项 exact output/结论将作为完成判据；完成后，再绑定实际返回的对应证据。
 
 会被后续版本复用的共同验证必须先进入本模板，版本 acceptance 只链接对应小节并解释本版本为何需要它；
 版本文件不得再次复制脚本、提示词或完整执行步骤。只针对一次 immutable identity 的检查可以链接相应
@@ -758,8 +770,8 @@ printf 'PWF_PUBLIC_POST_RESUME=PASS\n'
 - publication oracle、失败的首次输出、停止点，以及是否从 Fresh 环境重新开始；
 - GitHub Latest、rollback baseline 或下一 Product Phase 的授权应另行记录，不能由 Cloud 结果自动推导。
 
-版本专项文件可以有已完成通道的冻结结果表；不得预建未完成通道的状态表，也不得反向把版本号、测试计数、
-资产 identity 或动态状态写回本模板。
+多 gate 版本专项文件可以维护粗粒度 gate 状态表；未完成 gate 只能写 current/pending 与模板入口，不能预建 exact
+evidence 表或填写 source/asset identity。任何版本号、测试计数、资产 identity 或动态状态都不得反向写回本模板。
 
 ## 11. 模板的非权威边界
 
