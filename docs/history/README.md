@@ -38,6 +38,7 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 | Phase 3.9.1 | 回顾性维护者里程碑：把 v0.3.4 已验收的运行时、供应链/安装、演进路线与后续建议整理为新人心智模型；不是正式 Product Phase，也不产生新授权 | [`phase-3.9.1-v0.3.4-architecture-analysis.md`](phase-3.9.1-v0.3.4-architecture-analysis.md) |
 | Phase 3.9.2 | 回顾性 contract-design 讨论里程碑：区分 overlay 退役 tombstone、通用 exact schema、正向 pristine 证据与未来路线治理；不表示 v2 已实施 | [`phase-3.9.2-contract-v2-tombstone-review.md`](phase-3.9.2-contract-v2-tombstone-review.md) |
 | Phase 3.9.3 | 回顾性字段生命周期讨论里程碑：为 `origin` 冻结有触发点的待审状态，并建立 machine field 的 owner、transition、review 与 retirement 最小表；不表示 v2 或 Phase 4 已实施 | [`phase-3.9.3-machine-field-lifecycle-and-origin.md`](phase-3.9.3-machine-field-lifecycle-and-origin.md) |
+| Phase 4.1 | Phase 4 第一轮 Discovery 里程碑：冻结 managed v3 mode 的 hybrid owned-boundary、versioned opt-in、contract/source convergence、threat/rollback matrix 与 F1 conditional-go；不表示 foundation 或行为已实施 | [`phase-4.1-managed-v3-discovery.md`](phase-4.1-managed-v3-discovery.md) |
 
 ## 阅读方式
 

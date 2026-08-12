@@ -76,3 +76,13 @@
   live Cloud、Release 继续是独立授权。Discovery 到此停止。
 - Discovery 封板 focused governance 15/15 PASS，`git diff --check` PASS；全程未修改 production、machine contracts、
   tests、package/Release identity 或远端状态。
+
+## 2026-08-12
+
+- 按维护者要求，把已封板的 Discovery 结果整理为 `docs/history/phase-4.1-managed-v3-discovery.md`，并登记历史索引。
+  文档把 Phase 4.1 明确标为第一轮 Discovery 里程碑，不把 F1 foundation、smart/autonomous activation 或 Release
+  描述为已实施事实；活动 Next Step 仍是等待维护者决定是否授权 F1。
+- 恢复 authority 时误用不存在的 PowerShell `Get-RawContent`；已改用标准 `Get-Content -Raw -Encoding UTF8`，没有
+  文件改动或证据丢失。
+- Phase 4.1 历史摘要与索引完成后，repository/architecture focused governance 15/15 PASS，`git diff --check`
+  PASS；未改变 production、contracts、tests、Release inputs 或活动 F1 未授权状态。

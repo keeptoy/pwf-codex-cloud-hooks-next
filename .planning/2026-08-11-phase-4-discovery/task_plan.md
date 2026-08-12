@@ -94,3 +94,4 @@ package identity 或 Release inputs，不进入 F2 opt-in activation。
 | upstream Python tests 无权写系统 `%TEMP%` fixture | 1 | 分类为沙箱 tempfile limitation；在沙箱外运行相同只读源码/临时 fixture 测试，不写仓库或外部系统 |
 | Windows 默认 GBK 解码 upstream UTF-8 Hook 输出失败 | 1 | 设置 `PYTHONUTF8=1` 后重跑完整 targeted group；不修改 upstream tests 或输出 |
 | 读取不存在的 Cloud fixture `source-candidate-observations.json` | 1 | 用 `rg` 恢复真实 authority：`hook-observations-v1.json`，并读取其 consumer `cloud-fixtures.test.js` |
+| 恢复文档时误用不存在的 PowerShell `Get-RawContent` | 1 | 改用 `Get-Content -Raw -Encoding UTF8`；同一组合命令的其他只读输出有效 |
