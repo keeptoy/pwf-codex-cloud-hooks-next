@@ -10,7 +10,8 @@ const { test } = require("node:test");
 
 const root = path.resolve(__dirname, "..");
 const importer = path.join(root, "tools", "import_upstream_runtime.py");
-const bundlePath = path.join(root, "contracts", "runtime-bundle-v1.json");
+const manifest = JSON.parse(fs.readFileSync(path.join(root, "upstream-manifest.json"), "utf8"));
+const bundlePath = path.join(root, manifest.managed_runtime.contracts.runtime_bundle.path);
 const manifestPath = path.join(root, "upstream-manifest.json");
 const fixtureSkill = path.join(root, "tests", "fixtures", "planning-with-files");
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
@@ -72,10 +73,9 @@ function createFixture() {
 
   const bundle = JSON.parse(fs.readFileSync(bundlePath, "utf8"));
   bundle.upstream.license_sha256 = sha256(Buffer.from(license));
-  for (const item of bundle.files) {
+  for (const item of bundle.upstream_files) {
     const pristine = fs.readFileSync(path.join(source, item.source_path));
     item.pristine_sha256 = sha256(pristine);
-    item.managed_sha256 = item.pristine_sha256;
   }
   const archive = path.join(workspace, "upstream.zip");
   bundle.upstream.release_archive_sha256 = makeZip(source, archive);
@@ -163,7 +163,7 @@ test("runtime importer validates bundle sections that are not part of its upstre
     },
     {
       name: "duplicate cross-section id",
-      mutateBundle: bundle => { bundle.local_files[0].id = bundle.files[0].id; },
+      mutateBundle: bundle => { bundle.local_files[0].id = bundle.upstream_files[0].id; },
       expected: /duplicate or invalid runtime file id/,
     },
     {
@@ -173,7 +173,7 @@ test("runtime importer validates bundle sections that are not part of its upstre
     },
     {
       name: "unknown local dependency",
-      mutateBundle: bundle => { bundle.local_files[0].direct_file_dependencies[0].id = "not_admitted"; },
+      mutateBundle: bundle => { bundle.local_files[0].direct_dependencies[0].id = "not_admitted"; },
       expected: /unknown dependency/,
     },
   ];
@@ -203,7 +203,7 @@ test("runtime importer validates bundle sections that are not part of its upstre
 
 test("runtime import is allowlisted, deterministic, idempotent, and checkable", () => {
   const repositoryBundle = JSON.parse(fs.readFileSync(bundlePath, "utf8"));
-  const importedPaths = repositoryBundle.files.map(item => item.package_path);
+  const importedPaths = repositoryBundle.upstream_files.map(item => item.package_path);
   const index = spawnSync("git", ["ls-files", "--stage", "--", ...importedPaths], {
     cwd: root,
     encoding: "utf8",
@@ -227,10 +227,10 @@ test("runtime import is allowlisted, deterministic, idempotent, and checkable", 
 
     const bundle = JSON.parse(fs.readFileSync(fixture.contract, "utf8"));
     const actual = fs.readdirSync(fixture.destination).sort();
-    assert.deepEqual(actual, bundle.files.map(item => path.basename(item.package_path)).sort());
-    for (const item of bundle.files) {
+    assert.deepEqual(actual, bundle.upstream_files.map(item => path.basename(item.package_path)).sort());
+    for (const item of bundle.upstream_files) {
       const target = path.join(fixture.destination, path.basename(item.package_path));
-      assert.equal(sha256(fs.readFileSync(target)), item.managed_sha256, item.id);
+      assert.equal(sha256(fs.readFileSync(target)), item.pristine_sha256, item.id);
     }
 
     result = runImporter(fixture, "import");
@@ -262,11 +262,10 @@ test("runtime import rejects archive checksum and pristine source drift", () => 
     const prior = JSON.parse(fs.readFileSync(fixture.contract, "utf8"));
     bundle.upstream.license_sha256 = prior.upstream.license_sha256;
     bundle.upstream.release_archive_sha256 = makeZip(fixture.source, fixture.archive);
-    for (const item of bundle.files) {
+    for (const item of bundle.upstream_files) {
       if (item.id !== "session_catchup") {
         const content = fs.readFileSync(path.join(fixture.source, item.source_path));
         item.pristine_sha256 = sha256(content);
-        item.managed_sha256 = item.pristine_sha256;
       }
     }
     writeAnchoredBundle(fixture, bundle);
@@ -278,16 +277,16 @@ test("runtime import rejects archive checksum and pristine source drift", () => 
   }
 });
 
-test("runtime import rejects overlay, non-pristine origin, and divergent managed hash declarations", () => {
+test("runtime import rejects retired overlay-era fields", () => {
   const fixture = createFixture();
   try {
     for (const [mutate, expected] of [
-      [item => { item.origin = "upstream_with_managed_overlay"; }, /runtime file is not pristine/],
-      [item => { item.managed_sha256 = "0".repeat(64); }, /pristine\/managed hash mismatch/],
-      [item => { item.overlay_ids = ["RETIRED_OVERLAY"]; }, /runtime file declares an overlay/],
+      [item => { item.origin = "upstream_pristine"; }, /invalid fields/],
+      [item => { item.managed_sha256 = item.pristine_sha256; }, /invalid fields/],
+      [item => { item.overlay_ids = []; }, /invalid fields/],
     ]) {
       const bundle = JSON.parse(fs.readFileSync(bundlePath, "utf8"));
-      mutate(bundle.files[0]);
+      mutate(bundle.upstream_files[0]);
       writeAnchoredBundle(fixture, bundle);
       const result = runImporter(fixture, "check");
       assert.equal(result.status, 1);

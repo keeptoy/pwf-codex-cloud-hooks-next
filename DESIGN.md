@@ -57,8 +57,8 @@ pinned upstream + provenance
 | 布局 | 由谁产生 | 放什么 | 不承担什么 |
 |---|---|---|---|
 | repository source | Git checkout | 源码、contracts、importer/builder、tests 和文档 | 不因本地存在就成为 Release 或 installed runtime |
-| Release ZIP | [`tools/build_release.py`](tools/build_release.py) 按 [`release-artifact-v1.json`](contracts/release-artifact-v1.json) 构建 | 可安装 runtime、installer 及 allowlist 明确要求的维护输入 | 不包含 bootstrap，也不自动表示已发布或验收 |
-| installed managed runtime | [`install.js`](install.js) 校验后复制 | adapter、两个 owned runtime、四个 pristine upstream runtime、两个 plan contracts、notice 和 installed manifest | 不带 builder、importer、测试、维护文档或其余 repository contracts |
+| Release ZIP | [`tools/build_release.py`](tools/build_release.py) 按 manifest 指定的 [`release-artifact-v2.json`](contracts/release-artifact-v2.json) 构建 | 可安装 runtime、installer 及 allowlist 明确要求的维护输入；entry 自带 ZIP mode | 不包含 bootstrap，也不自动表示已发布或验收 |
+| installed managed runtime | [`install.js`](install.js) 校验后复制 | adapter、两个 owned runtime、四个 pristine upstream runtime、四个 runtime ABI contracts、notice 和 installed manifest | 不带 builder、importer、测试、维护文档或其余 repository contracts |
 | Managed policy | installer 合并到共享 requirements | 指向 installed adapter 的绝对命令 | 不直接注册 plan、catch-up 或 upstream child |
 | global PWF Skill | 独立上游 Skill 安装 | pristine reference 和 bootstrap 校验输入 | production 不从这里执行可变脚本 |
 
@@ -97,8 +97,8 @@ trusted surface；allowed helper roots、传递闭包和 pristine/managed 等价
 | plan → adapter result | [`plan-context-result-v1.schema.json`](contracts/plan-context-result-v1.schema.json) | owned-plan producer、adapter validator、activation tests |
 | adapter → catch-up request / result | [`adapter-runtime-request-v1.schema.json`](contracts/adapter-runtime-request-v1.schema.json) / [`runtime-result-v1.schema.json`](contracts/runtime-result-v1.schema.json) | adapter、owned-catchup、runtime/activation tests |
 | upstream provenance / bundle integrity index | [`upstream-manifest.json`](upstream-manifest.json) | importer、installer 与 manifest/contracts integrity tests；不得在这里重建 runtime inventory mirror |
-| runtime source/install inventory | [`runtime-bundle-v1.json`](contracts/runtime-bundle-v1.json) | importer、installer、upstream manifest integrity index、import/installer/contracts/pristine-helper tests |
-| candidate ZIP identity/inventory | [`release-artifact-v1.json`](contracts/release-artifact-v1.json) | package identity、builder、bootstrap boundary、release tests |
+| runtime source/install inventory | [`runtime-bundle-v2.json`](contracts/runtime-bundle-v2.json) | importer、installer、upstream manifest integrity index、import/installer/contracts/pristine-helper tests |
+| candidate ZIP identity/inventory/mode | [`release-artifact-v2.json`](contracts/release-artifact-v2.json) | package identity、builder、bootstrap boundary、release tests；不得在 builder 保留第二份 executable-path authority |
 
 大白话对应关系是：manifest 是 bundle 的封条和索引，bundle 是唯一装箱清单，installed manifest 是安装后的
 状态快照，Release artifact 是 ZIP 外层 allowlist。前两者共同建立 source/install 信任链，后两者分别服务 drift

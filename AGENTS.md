@@ -60,9 +60,9 @@
 - 当前唯一支持的集成是 `OthmanAdi/planning-with-files v3.8.2`，不得描述为通用转换器。
 - global PWF Skill 必须 pristine。production 只能执行 installer 管理、manifest/allowlist 固定并
   校验的 owned runtime；不得从用户 Skill 目录执行可变脚本。
-- runtime source/install inventory 只由 `contracts/runtime-bundle-v1.json` 定义；`upstream-manifest.json` 只固定
+- runtime source/install inventory 只由 `contracts/runtime-bundle-v2.json` 定义；`upstream-manifest.json` 只固定
   provenance、bundle path/SHA 和非重复 integrity references。importer/installer 必须先校验 bundle 原始 SHA 再解析。
-- `installed-manifest.json.runtime_files` 是安装状态快照，`release-artifact-v1.json.entries` 是 ZIP allowlist；
+- `installed-manifest.json.runtime_files` 是安装状态快照，`release-artifact-v2.json.entries` 是 ZIP allowlist；
   两者不得作为重复 inventory 删除或改写为 source authority。
 - Managed policy 只注册 absolute adapter。`owned-plan.py`、`owned-catchup.py` 是 adapter sibling，
   不是平台 handler。
@@ -109,7 +109,7 @@ git diff --check
 ## Release 规则
 
 - 禁止 moving branch、`latest` 或无 checksum artifact。
-- ZIP 必须由 `contracts/release-artifact-v1.json` 精确 allowlist 构建；bootstrap 永远在 ZIP 外。
+- ZIP 必须由 `upstream-manifest.json` 指定的当前 Release contract 精确 allowlist 构建；bootstrap 永远在 ZIP 外。
 - 普通 development bootstrap 使用 64 位 zero hash 并 fail closed；正式 candidate 只能在全部 ZIP
   输入冻结、双构建一致后写入该 ZIP 的精确 hash，封板后任一 ZIP 输入变化都要求重新开始 seal。
 - 正式顺序：冻结版本/ZIP 输入 → build/check ZIP → 计算 ZIP SHA → 写入 bootstrap → 计算

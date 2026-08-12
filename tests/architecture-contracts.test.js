@@ -8,6 +8,9 @@ const test = require("node:test");
 const root = path.resolve(__dirname, "..");
 const readJson = relative => JSON.parse(fs.readFileSync(path.join(root, relative), "utf8"));
 const readText = relative => fs.readFileSync(path.join(root, relative), "utf8");
+const currentManifest = readJson("upstream-manifest.json");
+const currentArtifactPath = currentManifest.managed_runtime.contracts.release_artifact.path;
+const currentBundlePath = currentManifest.managed_runtime.contracts.runtime_bundle.path;
 
 test("cross-document fragments use stable explicit anchors", () => {
   const authorityDocs = [
@@ -38,7 +41,7 @@ test("cross-document fragments use stable explicit anchors", () => {
 
 test("MAINTAINER_HANDOFF is a triage desk, not another mutable runbook", () => {
   const handoff = readText("MAINTAINER_HANDOFF.md");
-  const artifact = readJson("contracts/release-artifact-v1.json");
+  const artifact = readJson(currentArtifactPath);
 
   for (const heading of [
     "# 维护者接手导诊",
@@ -73,8 +76,8 @@ test("MAINTAINER_HANDOFF is a triage desk, not another mutable runbook", () => {
 test("canonical plan-context architecture is exact, plan-first, and adapter-thin", () => {
   const request = readJson("contracts/adapter-plan-context-request-v1.schema.json");
   const result = readJson("contracts/plan-context-result-v1.schema.json");
-  const bundle = readJson("contracts/runtime-bundle-v1.json");
-  const artifact = readJson("contracts/release-artifact-v1.json");
+  const bundle = readJson(currentBundlePath);
+  const artifact = readJson(currentArtifactPath);
   const upstream = readJson("upstream-manifest.json");
   const architecture = readText("ARCHITECTURE.md");
   const catchup = readText("runtime/owned-catchup.py");
@@ -102,7 +105,7 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.match(installer, /timeout = 30/);
 
   assert.equal((bundle.local_files || []).some(item => item.id === "owned_plan"), true);
-  assert.equal(upstream.managed_runtime.schema_version, 2);
+  assert.equal(upstream.managed_runtime.schema_version, 3);
   assert.equal(Object.hasOwn(upstream.managed_runtime, "local_files"), false);
   assert.equal(Object.hasOwn(upstream.managed_runtime, "files"), false);
   assert.match(installer, /const RUNTIME_BUNDLE = loadVerifiedRuntimeBundle\(\)/);
@@ -136,7 +139,7 @@ test("README owns the document map while DESIGN owns the repository implementati
   const design = readText("DESIGN.md");
   const roadmap = readText("ROADMAP.md");
   const agents = readText("AGENTS.md");
-  const artifact = readJson("contracts/release-artifact-v1.json");
+  const artifact = readJson(currentArtifactPath);
   const ownedPlan = readText("runtime/owned-plan.py");
   const adapter = readText("hooks/hook_adapter.py");
 
@@ -178,7 +181,7 @@ test("ARCHITECTURE preserves system reasoning while DESIGN routes implementation
   assert.match(design, /^<a name="module-responsibilities"><\/a>$/m);
 
   for (const target of [
-    "contracts/runtime-bundle-v1.json", "contracts/release-artifact-v1.json",
+    "contracts/runtime-bundle-v2.json", "contracts/release-artifact-v2.json",
     "tests/installer.test.js", "tests/hook-adapter.test.js", "tests/owned-plan-runtime.test.js",
     "tests/owned-runtime.test.js", "tests/import-runtime.test.js", "tests/release-package.test.js",
     "tests/published-release-oracles.test.js",

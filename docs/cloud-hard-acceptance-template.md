@@ -156,18 +156,18 @@ for value in (
     compile(path.read_text(encoding="utf-8"), str(path), "exec")
 
 package = json.loads(Path("package.json").read_text(encoding="utf-8"))
-artifact = json.loads(Path("contracts/release-artifact-v1.json").read_text(encoding="utf-8"))
 manifest = json.loads(Path("upstream-manifest.json").read_text(encoding="utf-8"))
 managed = manifest["managed_runtime"]
+artifact_ref = managed["contracts"]["release_artifact"]
+artifact = json.loads(Path(artifact_ref["path"]).read_text(encoding="utf-8"))
 
 assert artifact["package_version"] == package["version"]
 assert set(managed) == {"schema_version", "contracts", "importer", "license_provenance"}
-assert managed["schema_version"] == 2
+assert managed["schema_version"] == 3
 assert set(managed["contracts"]) == {
     "runtime_bundle",
-    "adapter_runtime_request",
-    "runtime_result",
     "release_artifact",
+    "installed_state_transition",
 }
 for retired in ("package_root", "local_package_root", "local_files", "files"):
     assert retired not in managed
@@ -177,12 +177,12 @@ bundle_path = Path(bundle_ref["path"])
 bundle_bytes = bundle_path.read_bytes()
 assert hashlib.sha256(bundle_bytes).hexdigest() == bundle_ref["sha256"]
 bundle = json.loads(bundle_bytes.decode("utf-8"))
-assert bundle["contract_id"] == "PWF_MANAGED_RUNTIME_BUNDLE_V1"
-assert bundle["schema_version"] == 1
+assert bundle["contract_id"] == "PWF_MANAGED_RUNTIME_BUNDLE_V2"
+assert bundle["schema_version"] == 2
 
 admitted = {
     item["package_path"]
-    for section in ("local_files", "files", "installed_contracts")
+    for section in ("upstream_files", "local_files", "installed_contracts")
     for item in bundle[section]
 }
 for candidate in ("attest-plan.sh", "ledger-append.sh", "phase-status.sh"):
@@ -196,8 +196,10 @@ BOOTSTRAP="$(python3 - <<'PY'
 import json
 from pathlib import Path
 
-artifact = json.loads(Path("contracts/release-artifact-v1.json").read_text(encoding="utf-8"))
-assets = [item["path"] for item in artifact["external_release_assets"]]
+manifest = json.loads(Path("upstream-manifest.json").read_text(encoding="utf-8"))
+artifact_path = manifest["managed_runtime"]["contracts"]["release_artifact"]["path"]
+artifact = json.loads(Path(artifact_path).read_text(encoding="utf-8"))
+assets = artifact["external_release_assets"]
 assert len(assets) == 1
 print(assets[0])
 PY
@@ -231,7 +233,9 @@ EXPECTED_ENTRIES="$(python3 - <<'PY'
 import json
 from pathlib import Path
 
-artifact = json.loads(Path("contracts/release-artifact-v1.json").read_text(encoding="utf-8"))
+manifest = json.loads(Path("upstream-manifest.json").read_text(encoding="utf-8"))
+artifact_path = manifest["managed_runtime"]["contracts"]["release_artifact"]["path"]
+artifact = json.loads(Path(artifact_path).read_text(encoding="utf-8"))
 print(len(artifact["entries"]))
 PY
 )"
@@ -246,8 +250,7 @@ ACTUAL_ZIP_SHA256="$(sha256sum "$ZIP_A" | awk '{print $1}')"
 
 unzip -q "$ZIP_A" -d "$PROBE_DIR/extracted"
 PACKAGE_ROOT="$PROBE_DIR/extracted/pwf-codex-cloud-hooks"
-python3 "$PACKAGE_ROOT/tools/build_release.py" check \
-  --contract "$PACKAGE_ROOT/contracts/release-artifact-v1.json" --archive "$ZIP_A"
+python3 "$PACKAGE_ROOT/tools/build_release.py" check --archive "$ZIP_A"
 python3 "$PACKAGE_ROOT/tools/import_upstream_runtime.py" check
 
 if [ -e "$TARGET_CODEX_HOME/hooks/planning-with-files" ]; then
@@ -513,13 +516,14 @@ skill_root = pathlib.Path(sys.argv[4])
 requirements_path = pathlib.Path(sys.argv[5])
 
 package = json.loads((package_root / "package.json").read_text(encoding="utf-8"))
-artifact = json.loads((package_root / "contracts/release-artifact-v1.json").read_text(encoding="utf-8"))
-bundle = json.loads((package_root / "contracts/runtime-bundle-v1.json").read_text(encoding="utf-8"))
 upstream_manifest = json.loads((package_root / "upstream-manifest.json").read_text(encoding="utf-8"))
+contracts = upstream_manifest["managed_runtime"]["contracts"]
+artifact = json.loads((package_root / contracts["release_artifact"]["path"]).read_text(encoding="utf-8"))
+bundle = json.loads((package_root / contracts["runtime_bundle"]["path"]).read_text(encoding="utf-8"))
 
 assert artifact["package_version"] == package["version"]
 assert artifact["entries"]
-assert bundle["files"]
+assert bundle["upstream_files"]
 assert doctor["healthy"] is True
 assert doctor["repairable"] is False
 assert doctor["managed"] is True
@@ -537,8 +541,8 @@ actual = sorted(
 )
 
 installed_root = pathlib.PurePosixPath("hooks/planning-with-files")
-bundle_authority = ["hook_adapter.py", "THIRD_PARTY_NOTICES.md"]
-for section in ("local_files", "files", "installed_contracts"):
+bundle_authority = ["THIRD_PARTY_NOTICES.md"]
+for section in ("upstream_files", "local_files", "installed_contracts"):
     for item in bundle[section]:
         relative = pathlib.PurePosixPath(item["installed_path"]).relative_to(installed_root)
         bundle_authority.append(relative.as_posix())
@@ -553,15 +557,12 @@ assert not any("compatibility" in item or item.startswith("patches/") for item i
 def sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
-for item in bundle["files"]:
-    assert item["origin"] == "upstream_pristine"
-    assert item["managed_sha256"] == item["pristine_sha256"]
-    assert item["overlay_ids"] == []
-    relative = pathlib.PurePosixPath(item["package_path"]).relative_to("runtime")
-    assert sha256(runtime / pathlib.Path(*relative.parts)) == item["managed_sha256"]
+for item in bundle["upstream_files"]:
+    relative = pathlib.PurePosixPath(item["installed_path"]).relative_to(installed_root)
+    assert sha256(runtime / pathlib.Path(*relative.parts)) == item["pristine_sha256"]
 
 owned_catchup = next(item for item in bundle["local_files"] if item["id"] == "owned_catchup")
-assert owned_catchup["direct_file_dependencies"][0]["allowed_symbols"] == [
+assert owned_catchup["direct_dependencies"][0]["allowed_symbols"] == [
     "extract_messages_after",
     "find_last_planning_update",
     "same_project_path",
@@ -588,7 +589,7 @@ print("POST_RESUME_DOCTOR=PASS")
 print("INSTALLER_VERSION=" + package["version"])
 print("RELEASE_ARTIFACT_ENTRIES=" + str(len(artifact["entries"])))
 print("INSTALLED_RUNTIME_FILES=" + str(len(actual)))
-print("UPSTREAM_PRISTINE_FILES=" + str(len(bundle["files"])))
+print("UPSTREAM_PRISTINE_FILES=" + str(len(bundle["upstream_files"])))
 print("BUNDLE_INSTALLED_INVENTORY=AUTHORITATIVE")
 print("MANAGED_POLICY=ADAPTER_ONLY")
 print("INSTALLED_RUNTIME_INVENTORY=" + json.dumps(actual, ensure_ascii=False))
@@ -642,8 +643,7 @@ test -f "$PACKAGE_ROOT/install.js"
 test -f "$PACKAGE_ROOT/tools/build_release.py"
 test -f "$PACKAGE_ROOT/tools/import_upstream_runtime.py"
 
-python3 "$PACKAGE_ROOT/tools/build_release.py" check \
-  --contract "$PACKAGE_ROOT/contracts/release-artifact-v1.json" --archive "$ZIP"
+python3 "$PACKAGE_ROOT/tools/build_release.py" check --archive "$ZIP"
 python3 "$PACKAGE_ROOT/tools/import_upstream_runtime.py" check
 
 PACKAGE_VERSION="$(node -p "require('$PACKAGE_ROOT/package.json').version")"
@@ -663,17 +663,15 @@ doctor = json.loads(sys.argv[1])
 package_root = pathlib.Path(sys.argv[2])
 package_version = sys.argv[3]
 package = json.loads((package_root / "package.json").read_text(encoding="utf-8"))
-artifact = json.loads((package_root / "contracts/release-artifact-v1.json").read_text(encoding="utf-8"))
-bundle = json.loads((package_root / "contracts/runtime-bundle-v1.json").read_text(encoding="utf-8"))
+upstream_manifest = json.loads((package_root / "upstream-manifest.json").read_text(encoding="utf-8"))
+contracts = upstream_manifest["managed_runtime"]["contracts"]
+artifact = json.loads((package_root / contracts["release_artifact"]["path"]).read_text(encoding="utf-8"))
+bundle = json.loads((package_root / contracts["runtime_bundle"]["path"]).read_text(encoding="utf-8"))
 
 assert package["version"] == package_version
 assert artifact["package_version"] == package_version
 assert artifact["entries"]
-assert bundle["files"]
-for item in bundle["files"]:
-    assert item["origin"] == "upstream_pristine"
-    assert item["managed_sha256"] == item["pristine_sha256"]
-    assert item["overlay_ids"] == []
+assert bundle["upstream_files"]
 
 assert doctor["healthy"] is True
 assert doctor["repairable"] is False
@@ -710,7 +708,7 @@ print("PUBLIC_PACKAGE_IDENTITY=" + package_version)
 print("POST_RESUME_DOCTOR=PASS")
 print("RELEASE_ARTIFACT_ENTRIES=" + str(len(artifact["entries"])))
 print("INSTALLED_RUNTIME_FILES=" + str(len(actual)))
-print("UPSTREAM_PRISTINE_FILES=" + str(len(bundle["files"])))
+print("UPSTREAM_PRISTINE_FILES=" + str(len(bundle["upstream_files"])))
 print("MANAGED_POLICY=ADAPTER_ONLY")
 print("INSTALLED_RUNTIME_INVENTORY=" + json.dumps(actual, ensure_ascii=False))
 PY

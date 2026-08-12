@@ -19,7 +19,9 @@ const sha256 = value => crypto.createHash("sha256").update(value).digest("hex");
 const expectedRuntimeFiles = [
   "THIRD_PARTY_NOTICES.md",
   "contracts/adapter-plan-context-request-v1.schema.json",
+  "contracts/adapter-runtime-request-v1.schema.json",
   "contracts/plan-context-result-v1.schema.json",
+  "contracts/runtime-result-v1.schema.json",
   "hook_adapter.py",
   "installed-manifest.json",
   "owned-catchup.py",
@@ -97,7 +99,8 @@ function runtimeFiles(home) {
 }
 
 async function withMutatedRuntimeBundle(scenario, action) {
-  const bundlePath = path.join(cliWorkspace, "contracts", "runtime-bundle-v1.json");
+  const currentManifest = JSON.parse(fs.readFileSync(path.join(cliWorkspace, "upstream-manifest.json"), "utf8"));
+  const bundlePath = path.join(cliWorkspace, currentManifest.managed_runtime.contracts.runtime_bundle.path);
   const manifestPath = path.join(cliWorkspace, "upstream-manifest.json");
   const originalBundle = fs.readFileSync(bundlePath);
   const originalManifest = fs.readFileSync(manifestPath);
@@ -120,6 +123,26 @@ async function withMutatedRuntimeBundle(scenario, action) {
     await action();
   } finally {
     fs.writeFileSync(bundlePath, originalBundle);
+    fs.writeFileSync(manifestPath, originalManifest);
+  }
+}
+
+async function withMutatedTransition(mutate, action) {
+  const manifestPath = path.join(cliWorkspace, "upstream-manifest.json");
+  const originalManifest = fs.readFileSync(manifestPath);
+  const manifest = JSON.parse(originalManifest.toString("utf8"));
+  const transitionPath = path.join(cliWorkspace, manifest.managed_runtime.contracts.installed_state_transition.path);
+  const originalTransition = fs.readFileSync(transitionPath);
+  try {
+    const transition = JSON.parse(originalTransition.toString("utf8"));
+    mutate(transition);
+    const bytes = Buffer.from(`${JSON.stringify(transition, null, 2)}\n`, "utf8");
+    fs.writeFileSync(transitionPath, bytes);
+    manifest.managed_runtime.contracts.installed_state_transition.sha256 = sha256(bytes);
+    fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    await action();
+  } finally {
+    fs.writeFileSync(transitionPath, originalTransition);
     fs.writeFileSync(manifestPath, originalManifest);
   }
 }
@@ -159,17 +182,17 @@ test("managed install rejects an unverified or invalid runtime bundle before any
     { name: "invalid JSON", raw: () => "{\n" },
     { name: "unsupported schema", mutate: bundle => { bundle.schema_version = 999; return bundle; } },
     { name: "retired manifest inventory mirror", mutate: bundle => bundle, mutateManifest: manifest => { manifest.managed_runtime.package_root = "runtime/upstream"; } },
-    { name: "unsafe bundle reference", mutate: bundle => bundle, mutateManifest: manifest => { manifest.managed_runtime.contracts.runtime_bundle.path = "../runtime-bundle-v1.json"; } },
+    { name: "unsafe bundle reference", mutate: bundle => bundle, mutateManifest: manifest => { manifest.managed_runtime.contracts.runtime_bundle.path = "../runtime-bundle-v2.json"; } },
     { name: "unsafe package path", mutate: bundle => { bundle.local_files[0].package_path = "../owned-catchup.py"; return bundle; } },
     { name: "unsafe installed path", mutate: bundle => { bundle.installed_contracts[0].installed_path = "../adapter-plan-context-request-v1.schema.json"; return bundle; } },
-    { name: "duplicate package path", mutate: bundle => { bundle.files[1].package_path = bundle.files[0].package_path; return bundle; } },
+    { name: "duplicate package path", mutate: bundle => { bundle.upstream_files[1].package_path = bundle.upstream_files[0].package_path; return bundle; } },
     { name: "duplicate installed path", mutate: bundle => { bundle.installed_contracts[1].installed_path = bundle.installed_contracts[0].installed_path; return bundle; } },
-    { name: "duplicate runtime id", mutate: bundle => { bundle.files[1].id = bundle.files[0].id; return bundle; } },
-    { name: "duplicate cross-section id", mutate: bundle => { bundle.local_files[0].id = bundle.files[0].id; return bundle; } },
+    { name: "duplicate runtime id", mutate: bundle => { bundle.upstream_files[1].id = bundle.upstream_files[0].id; return bundle; } },
+    { name: "duplicate cross-section id", mutate: bundle => { bundle.local_files[0].id = bundle.upstream_files[0].id; return bundle; } },
     { name: "malformed runtime id", mutate: bundle => { bundle.local_files[0].id = "Phase-4"; return bundle; } },
-    { name: "invalid mode", mutate: bundle => { bundle.files[0].mode = "0777"; return bundle; } },
+    { name: "invalid mode", mutate: bundle => { bundle.upstream_files[0].mode = "0777"; return bundle; } },
     { name: "invalid content hash", mutate: bundle => { bundle.local_files[0].sha256 = "not-a-sha256"; return bundle; } },
-    { name: "unknown dependency", mutate: bundle => { bundle.local_files[0].direct_file_dependencies[0].id = "not_admitted"; return bundle; } },
+    { name: "unknown dependency", mutate: bundle => { bundle.local_files[0].direct_dependencies[0].id = "not_admitted"; return bundle; } },
   ];
 
   for (const scenario of scenarios) {
@@ -189,6 +212,35 @@ test("managed install rejects an unverified or invalid runtime bundle before any
           assertSnapshot(protectedState);
           assert.equal(fs.existsSync(path.join(home, "hooks", "planning-with-files")), false,
             `${scenario.name} wrote a managed runtime before validation completed`);
+        });
+      } finally {
+        fs.rmSync(home, { recursive: true, force: true });
+      }
+    });
+  }
+});
+
+test("managed install rejects ambiguous predecessor transition inventories before any managed write", async t => {
+  const scenarios = [
+    ["duplicate manifest key", transition => transition.predecessor.manifest_keys.push(transition.predecessor.manifest_keys[0])],
+    ["duplicate event", transition => transition.predecessor.events.push(transition.predecessor.events[0])],
+    ["duplicate runtime id", transition => { transition.predecessor.runtime_files[1].id = transition.predecessor.runtime_files[0].id; }],
+    ["duplicate runtime path", transition => { transition.predecessor.runtime_files[1].path = transition.predecessor.runtime_files[0].path; }],
+  ];
+  for (const [name, mutate] of scenarios) {
+    await t.test(name, async () => {
+      const home = fixture();
+      const protectedState = snapshot([
+        path.join(home, "config.toml"), path.join(home, "hooks.json"),
+        path.join(home, "etc", "codex", "requirements.toml"),
+      ]);
+      try {
+        await withMutatedTransition(mutate, () => {
+          const result = run(home, "install");
+          assert.equal(result.status, 1, `installer accepted ${name}`);
+          assert.match(result.stderr, /BLOCKED_PACKAGE_DRIFT/);
+          assertSnapshot(protectedState);
+          assert.equal(fs.existsSync(path.join(home, "hooks", "planning-with-files")), false);
         });
       } finally {
         fs.rmSync(home, { recursive: true, force: true });
@@ -461,13 +513,11 @@ test("doctor and repair preserve third-party array drift and report ambiguous ow
 
 test("installation backup can restore every pre-existing managed file byte-for-byte", () => {
   const home = fixture(), requirements = path.join(home, "etc", "codex", "requirements.toml"), runtime = path.join(home, "hooks", "planning-with-files");
-  fs.mkdirSync(runtime, { recursive: true });
-  fs.writeFileSync(path.join(runtime, "hook_adapter.py"), "# previous adapter\n");
-  fs.writeFileSync(path.join(runtime, "installed-manifest.json"), '{"schema_version":3,"owner":"pwf-codex-cloud-hooks"}\n');
   const unmanaged = snapshot([path.join(home, "config.toml"), path.join(home, "hooks.json")]);
-  const files = [requirements, path.join(runtime, "hook_adapter.py"), path.join(runtime, "installed-manifest.json")];
+  let result = run(home, "install"); assert.equal(result.status, 0, result.stderr);
+  const files = [requirements, ...expectedRuntimeFiles.map(relative => path.join(runtime, ...relative.split("/")))];
   const before = snapshot(files);
-  const result = run(home, "install"); assert.equal(result.status, 0, result.stderr);
+  result = run(home, "install"); assert.equal(result.status, 0, result.stderr);
   assertSnapshot(unmanaged);
   assert.equal(fs.existsSync(path.join(result.json.backup, "config.toml")), false);
   assert.equal(fs.existsSync(path.join(result.json.backup, "hooks.json")), false);

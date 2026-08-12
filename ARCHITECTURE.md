@@ -177,7 +177,7 @@ Release ZIP
   -> owned runtimes 只从已安装的 sibling upstream runtime 进入明确允许的调用点
 ```
 
-`runtime-bundle-v1.json` 独占 repository source 到 installed path 的 runtime/contract inventory；
+`runtime-bundle-v2.json` 独占 repository source 到 installed path 的 runtime/contract inventory；
 `upstream-manifest.json` 是 provenance 与 integrity index，不再镜像 bundle arrays 或 installed-contract projections。
 importer 和 installer 共享同一条 `manifest → raw bundle SHA → strict parse → inventory` 信任边。
 installed manifest 的 `runtime_files` 是安装状态快照，Release artifact 的 `entries` 是 ZIP 层 allowlist；它们分别
@@ -328,9 +328,10 @@ process-group cleanup 语义。
 
 ## 9. 来源与 pristine helper boundary
 
-四个 upstream runtime 文件都由 pinned v3.8.2 archive 逐字生成并保持 pristine。Runtime bundle 同时固定
-source/package/installed path、mode、pristine SHA 和 owned runtime 的直接依赖；importer 要求
-`managed_sha256 == pristine_sha256`、`origin=upstream_pristine` 且 `overlay_ids=[]`。
+四个 upstream runtime 文件都由 pinned v3.8.2 archive 逐字生成并保持 pristine。Runtime bundle 以
+`upstream_files`、`local_files` 和 `installed_contracts` 的结构分区表达来源，同时固定
+source/package/installed path、mode、单一内容 SHA 和直接依赖。schema 2 exact-key validation 会拒绝已经退休的
+`origin`、`managed_sha256`、`overlay_ids` 等 overlay-era 字段；当前架构不再用永久 tombstone 描述已结束的迁移。
 
 `owned-catchup.py` 会动态加载完整的 fixed `session-catchup.py` module，因此 module initialization 中的 UTF-8
 stdio 配置与 optional `orjson` import 仍属于真实 trusted surface；但后续只允许进入

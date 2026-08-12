@@ -135,18 +135,14 @@ function packageSource(relative, label) {
 }
 function validateDependencies(entries, runtimeIds) {
   for (const entry of entries) {
-    if (!Array.isArray(entry.direct_file_dependencies)) packageDrift(`invalid dependencies for ${entry.id}`);
+    if (!Array.isArray(entry.direct_dependencies)) packageDrift(`invalid dependencies for ${entry.id}`);
     const seen = new Set();
-    for (const dependency of entry.direct_file_dependencies) {
+    for (const dependency of entry.direct_dependencies) {
       const keys = Object.hasOwn(dependency || {}, "allowed_symbols")
-        ? ["id", "condition", "required", "allowed_symbols"]
-        : ["id", "condition", "required"];
+        ? ["id", "allowed_symbols"] : ["id"];
       exactObject(dependency, keys, `${entry.id} dependency`);
       if (typeof dependency.id !== "string" || !runtimeIds.has(dependency.id) || dependency.id === entry.id || seen.has(dependency.id)) {
         packageDrift(`unknown or duplicate dependency for ${entry.id}: ${dependency.id}`);
-      }
-      if (typeof dependency.condition !== "string" || !dependency.condition || typeof dependency.required !== "boolean") {
-        packageDrift(`invalid dependency metadata for ${entry.id}: ${dependency.id}`);
       }
       if (Object.hasOwn(dependency, "allowed_symbols")) stringList(dependency.allowed_symbols, `${entry.id}.${dependency.id}.allowed_symbols`);
       seen.add(dependency.id);
@@ -155,27 +151,26 @@ function validateDependencies(entries, runtimeIds) {
 }
 function validateRuntimeBundle(bundle) {
   exactObject(bundle, [
-    "schema_version", "contract_id", "upstream", "package_root", "local_package_root",
-    "installed_root", "local_files", "installed_contracts", "files",
+    "schema_version", "contract_id", "upstream", "roots", "local_files", "installed_contracts", "upstream_files",
   ], "runtime bundle");
-  if (bundle.schema_version !== 1 || bundle.contract_id !== "PWF_MANAGED_RUNTIME_BUNDLE_V1") packageDrift("unsupported runtime bundle schema or identity");
+  if (bundle.schema_version !== 2 || bundle.contract_id !== "PWF_MANAGED_RUNTIME_BUNDLE_V2") packageDrift("unsupported runtime bundle schema or identity");
   const upstream = exactObject(bundle.upstream, [
-    "repository", "release", "commit", "release_archive_url", "release_archive_sha256", "canonical_source_root",
-    "license", "copyright", "license_source_path", "license_sha256",
+    "repository", "release", "commit", "release_archive_url", "release_archive_sha256", "license", "copyright", "license_source_path", "license_sha256",
   ], "runtime bundle upstream");
-  for (const key of ["repository", "release", "commit", "release_archive_url", "canonical_source_root", "license", "copyright"]) {
+  for (const key of ["repository", "release", "commit", "release_archive_url", "license", "copyright"]) {
     if (typeof upstream[key] !== "string" || !upstream[key]) packageDrift(`invalid runtime bundle upstream ${key}`);
   }
   if (!upstream.release_archive_url.startsWith("https://github.com/")) packageDrift("runtime bundle archive URL is not an HTTPS GitHub URL");
   contentHash(upstream.release_archive_sha256, "release archive");
   contentHash(upstream.license_sha256, "upstream license");
   safePackagePath(upstream.license_source_path, "upstream license");
-  const packageRoot = safePackagePath(bundle.package_root, "package root");
-  const localPackageRoot = safePackagePath(bundle.local_package_root, "local package root");
-  const installedRoot = safePackagePath(bundle.installed_root, "installed root");
-  const managedRoot = path.posix.dirname(installedRoot);
-  const sourceRoot = safePackagePath(upstream.canonical_source_root, "canonical source root");
-  for (const [name, value] of [["files", bundle.files], ["local_files", bundle.local_files], ["installed_contracts", bundle.installed_contracts]]) {
+  const roots = exactObject(bundle.roots, ["upstream_source", "upstream_package", "local_packages", "contract_package", "installed"], "runtime bundle roots");
+  const packageRoot = safePackagePath(roots.upstream_package, "upstream package root");
+  const sourceRoot = safePackagePath(roots.upstream_source, "upstream source root");
+  const installedRoot = safePackagePath(roots.installed, "installed root");
+  const contractRoot = safePackagePath(roots.contract_package, "contract package root");
+  stringList(roots.local_packages, "local package roots").forEach(item => safePackagePath(item, "local package root"));
+  for (const [name, value] of [["upstream_files", bundle.upstream_files], ["local_files", bundle.local_files], ["installed_contracts", bundle.installed_contracts]]) {
     if (!Array.isArray(value) || !value.length) packageDrift(`runtime bundle ${name} is incomplete`);
   }
   const seenIds = new Set(), seenPackages = new Set(), seenInstalled = new Set();
@@ -185,10 +180,9 @@ function validateRuntimeBundle(bundle) {
     if (seenInstalled.has(installedPath)) packageDrift(`duplicate installed path: ${installedPath}`);
     seenIds.add(entry.id); seenPackages.add(packagePath); seenInstalled.add(installedPath);
   };
-  for (const entry of bundle.files) {
+  for (const entry of bundle.upstream_files) {
     exactObject(entry, [
-      "id", "source_path", "package_path", "installed_path", "origin", "language", "mode", "pristine_sha256",
-      "managed_sha256", "direct_file_dependencies", "host_dependencies", "overlay_ids",
+      "id", "source_path", "package_path", "installed_path", "mode", "pristine_sha256", "direct_dependencies",
     ], "upstream runtime file");
     const sourcePath = safePackagePath(entry.source_path, `${entry.id} source`);
     const packagePath = safePackagePath(entry.package_path, `${entry.id} package`);
@@ -197,46 +191,43 @@ function validateRuntimeBundle(bundle) {
     belowRoot(packagePath, packageRoot, `${entry.id} package`);
     belowRoot(installedPath, installedRoot, `${entry.id} installed`);
     register(entry, packagePath, installedPath);
-    if (entry.origin !== "upstream_pristine" || entry.mode !== "0755" || typeof entry.language !== "string" || !entry.language) packageDrift(`invalid upstream runtime metadata for ${entry.id}`);
-    const pristine = contentHash(entry.pristine_sha256, `${entry.id} pristine`);
-    if (contentHash(entry.managed_sha256, `${entry.id} managed`) !== pristine) packageDrift(`pristine/managed hash mismatch for ${entry.id}`);
-    if (!Array.isArray(entry.overlay_ids) || entry.overlay_ids.length) packageDrift(`runtime file declares an overlay: ${entry.id}`);
-    stringList(entry.host_dependencies, `${entry.id} host dependencies`);
+    if (entry.mode !== "0755") packageDrift(`invalid upstream runtime mode for ${entry.id}`);
+    contentHash(entry.pristine_sha256, `${entry.id} pristine`);
   }
   for (const entry of bundle.local_files) {
     exactObject(entry, [
-      "id", "package_path", "installed_path", "origin", "language", "mode", "sha256",
-      "direct_file_dependencies", "host_dependencies",
+      "id", "package_path", "installed_path", "mode", "sha256", "direct_dependencies",
     ], "local runtime file");
     const packagePath = safePackagePath(entry.package_path, `${entry.id} package`);
     const installedPath = safePackagePath(entry.installed_path, `${entry.id} installed`);
-    belowRoot(packagePath, localPackageRoot, `${entry.id} package`);
-    belowRoot(installedPath, managedRoot, `${entry.id} installed`);
+    if (!roots.local_packages.some(root => { try { belowRoot(packagePath, root, `${entry.id} package`); return true; } catch { return false; } })) packageDrift(`${entry.id} package escapes local roots`);
+    belowRoot(installedPath, installedRoot, `${entry.id} installed`);
     register(entry, packagePath, installedPath);
-    if (entry.origin !== "local_managed_runtime" || entry.mode !== "0755" || typeof entry.language !== "string" || !entry.language) packageDrift(`invalid local runtime metadata for ${entry.id}`);
+    if (entry.mode !== "0755") packageDrift(`invalid local runtime mode for ${entry.id}`);
     contentHash(entry.sha256, entry.id);
-    stringList(entry.host_dependencies, `${entry.id} host dependencies`);
   }
   for (const entry of bundle.installed_contracts) {
     exactObject(entry, ["id", "package_path", "installed_path", "mode", "sha256"], "installed contract");
     const packagePath = safePackagePath(entry.package_path, `${entry.id} package`);
     const installedPath = safePackagePath(entry.installed_path, `${entry.id} installed`);
-    belowRoot(packagePath, "contracts", `${entry.id} package`);
-    belowRoot(installedPath, managedRoot, `${entry.id} installed`);
+    belowRoot(packagePath, contractRoot, `${entry.id} package`);
+    belowRoot(installedPath, installedRoot, `${entry.id} installed`);
     register(entry, packagePath, installedPath);
     if (entry.mode !== "0644") packageDrift(`invalid installed contract mode for ${entry.id}`);
     contentHash(entry.sha256, entry.id);
   }
-  const runtimeEntries = [...bundle.files, ...bundle.local_files];
+  const runtimeEntries = [...bundle.upstream_files, ...bundle.local_files];
   validateDependencies(runtimeEntries, new Set(runtimeEntries.map(entry => entry.id)));
   return bundle;
 }
 function loadVerifiedRuntimeBundle() {
+  exactObject(UPSTREAM, ["schema_version", "upstream", "release", "commit", "release_archive_url", "release_archive_sha256", "required_skill_files", "managed_runtime"], "source manifest");
+  if (UPSTREAM.schema_version !== 4) packageDrift("unsupported source manifest schema");
   const managed = UPSTREAM.managed_runtime;
   exactObject(managed, ["schema_version", "contracts", "importer", "license_provenance"], "managed runtime manifest");
-  if (managed.schema_version !== 2) packageDrift("unsupported managed runtime manifest schema");
+  if (managed.schema_version !== 3) packageDrift("unsupported managed runtime manifest schema");
   const contracts = exactObject(managed.contracts, [
-    "runtime_bundle", "adapter_runtime_request", "runtime_result", "release_artifact",
+    "runtime_bundle", "release_artifact", "installed_state_transition",
   ], "managed runtime contracts");
   for (const [identifier, value] of Object.entries(contracts)) {
     exactObject(value, ["path", "sha256"], `${identifier} integrity reference`);
@@ -275,15 +266,44 @@ function loadVerifiedRuntimeBundle() {
   return bundle;
 }
 const RUNTIME_BUNDLE = loadVerifiedRuntimeBundle();
+function loadInstalledStateTransition() {
+  const reference = UPSTREAM.managed_runtime.contracts.installed_state_transition;
+  const relative = safePackagePath(reference.path, "installed state transition");
+  const expected = contentHash(reference.sha256, "installed state transition");
+  const source = packageSource(relative, "installed state transition");
+  const bytes = fs.readFileSync(source);
+  if (sha256(bytes) !== expected) packageDrift("installed state transition SHA-256 mismatch");
+  let contract;
+  try { contract = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)); }
+  catch { packageDrift("installed state transition is invalid JSON"); }
+  exactObject(contract, ["schema_version", "contract_id", "predecessor"], "installed state transition");
+  if (contract.schema_version !== 1 || contract.contract_id !== "PWF_INSTALLED_STATE_TRANSITION_V1") packageDrift("unsupported installed state transition");
+  const predecessor = exactObject(contract.predecessor, [
+    "package_version", "installed_manifest_schema", "owner", "manifest_keys", "upstream_canonical_sha256",
+    "adapter_sha256", "events", "runtime_files",
+  ], "installed state predecessor");
+  if (typeof predecessor.package_version !== "string" || !predecessor.package_version || predecessor.installed_manifest_schema !== 3 || predecessor.owner !== OWNER) packageDrift("invalid installed state predecessor identity");
+  stringList(predecessor.manifest_keys, "installed predecessor manifest keys");
+  contentHash(predecessor.upstream_canonical_sha256, "installed predecessor upstream");
+  contentHash(predecessor.adapter_sha256, "installed predecessor adapter");
+  stringList(predecessor.events, "installed predecessor events");
+  if (!Array.isArray(predecessor.runtime_files) || !predecessor.runtime_files.length) packageDrift("installed predecessor runtime inventory is empty");
+  const seenIds = new Set(), seenPaths = new Set();
+  for (const file of predecessor.runtime_files) {
+    exactObject(file, ["id", "path", "sha256", "mode"], "installed predecessor runtime file");
+    if (typeof file.id !== "string" || !/^[a-z][a-z0-9_]*$/.test(file.id) || seenIds.has(file.id)) packageDrift("invalid or duplicate installed predecessor runtime id");
+    const relative = safePackagePath(file.path, `${file.id} predecessor runtime`);
+    if (seenPaths.has(relative)) packageDrift("duplicate installed predecessor runtime path");
+    contentHash(file.sha256, `${file.id} predecessor runtime`);
+    if (!new Set(["0644", "0755"]).has(file.mode)) packageDrift(`invalid installed predecessor mode for ${file.id}`);
+    seenIds.add(file.id); seenPaths.add(relative);
+  }
+  return contract;
+}
+const INSTALLED_STATE_TRANSITION = loadInstalledStateTransition();
 function sourceRuntimeFiles() {
   const managed = UPSTREAM.managed_runtime;
-  const files = [{
-    id: "adapter",
-    relative: "hook_adapter.py",
-    source: path.join(ROOT, "hooks", "hook_adapter.py"),
-    expected: fileHash(path.join(ROOT, "hooks", "hook_adapter.py")),
-    mode: 0o755,
-  }];
+  const files = [];
   for (const item of RUNTIME_BUNDLE.local_files) {
     files.push({
       id: item.id,
@@ -293,12 +313,12 @@ function sourceRuntimeFiles() {
       mode: Number.parseInt(item.mode, 8),
     });
   }
-  for (const item of RUNTIME_BUNDLE.files) {
+  for (const item of RUNTIME_BUNDLE.upstream_files) {
     files.push({
       id: item.id,
       relative: belowRoot(item.installed_path, "hooks/planning-with-files", `${item.id} installed`),
       source: packageSource(item.package_path, item.id),
-      expected: item.managed_sha256,
+      expected: item.pristine_sha256,
       mode: Number.parseInt(item.mode, 8),
     });
   }
@@ -680,10 +700,26 @@ function assertSafeRuntimeForInstall(paths) {
   if (!entries.length) return;
   const { manifest, error } = readManifest(paths);
   if (error) throw new Error(`BLOCKED_UNKNOWN_RUNTIME: ${error}`);
-  if (manifest.schema_version !== MANIFEST_SCHEMA || manifest.owner !== OWNER) {
-    throw new Error("BLOCKED_UNKNOWN_RUNTIME: installed manifest identity mismatch");
+  let expectedInventory;
+  if (manifest.schema_version === MANIFEST_SCHEMA && manifest.owner === OWNER && manifest.installer_version === VERSION) {
+    expectedInventory = runtimeInventory();
+  } else {
+    const predecessor = INSTALLED_STATE_TRANSITION.predecessor;
+    if (manifest.schema_version !== predecessor.installed_manifest_schema || manifest.owner !== predecessor.owner || manifest.installer_version !== predecessor.package_version) {
+      throw new Error("BLOCKED_UNKNOWN_RUNTIME: installed manifest identity mismatch");
+    }
+    if (canonical(Object.keys(manifest).sort()) !== canonical([...predecessor.manifest_keys].sort())) throw new Error("BLOCKED_UNKNOWN_RUNTIME: predecessor manifest fields mismatch");
+    if (sha256(canonical(manifest.upstream)) !== predecessor.upstream_canonical_sha256) throw new Error("BLOCKED_UNKNOWN_RUNTIME: predecessor upstream mismatch");
+    if (manifest.adapter_sha256 !== predecessor.adapter_sha256 || canonical(manifest.events) !== canonical(predecessor.events)) throw new Error("BLOCKED_UNKNOWN_RUNTIME: predecessor identity metadata mismatch");
+    if (canonical(manifest.runtime_files) !== canonical(predecessor.runtime_files)) throw new Error("BLOCKED_UNKNOWN_RUNTIME: predecessor runtime inventory mismatch");
+    if (manifest.requirements_file !== paths.requirements || !fs.existsSync(paths.requirements) || sha256(fs.readFileSync(paths.requirements)) !== manifest.requirements_sha256) throw new Error("BLOCKED_UNKNOWN_RUNTIME: predecessor requirements mismatch");
+    let unowned;
+    try { unowned = sha256(removeOwnedRequirements(fs.readFileSync(paths.requirements, "utf8"))); }
+    catch { throw new Error("BLOCKED_UNKNOWN_RUNTIME: predecessor requirements ownership mismatch"); }
+    if (unowned !== manifest.unowned_requirements_sha256) throw new Error("BLOCKED_UNKNOWN_RUNTIME: predecessor unowned requirements mismatch");
+    expectedInventory = predecessor.runtime_files;
   }
-  const allowedFiles = new Set(sourceRuntimeFiles().map(file => file.relative));
+  const allowedFiles = new Set(expectedInventory.map(file => file.path));
   allowedFiles.add(path.basename(paths.manifest));
   const allowedDirectories = new Set();
   for (const relative of allowedFiles) {
@@ -692,6 +728,11 @@ function assertSafeRuntimeForInstall(paths) {
   }
   const unknown = entries.filter(entry => entry.directory ? !allowedDirectories.has(entry.relative) : !allowedFiles.has(entry.relative)).map(entry => entry.relative).sort();
   if (unknown.length) throw new Error(`BLOCKED_UNKNOWN_RUNTIME: ${unknown.join(", ")}`);
+  for (const file of expectedInventory) {
+    const target = path.join(paths.runtime, ...file.path.split("/"));
+    if (!fs.existsSync(target) || fileHash(target) !== file.sha256) throw new Error(`BLOCKED_UNKNOWN_RUNTIME: ${file.id} managed content mismatch`);
+    if (process.platform !== "win32" && (fs.statSync(target).mode & 0o777) !== Number.parseInt(file.mode, 8)) throw new Error(`BLOCKED_UNKNOWN_RUNTIME: ${file.id} managed mode mismatch`);
+  }
 }
 function install(options) {
   const paths = pathsFor(options.codexHome, options.managedRequirements), skill = resolveSkill(options.skillRoot, paths.home);

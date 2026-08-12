@@ -173,8 +173,9 @@ renormalize 和 fresh-clone 复验步骤见完整源码仓库的
 
 ## 构建开发 ZIP
 
-Release allowlist 由 `contracts/release-artifact-v1.json` 唯一决定。构建器固定路径顺序、时间戳、
-权限、压缩参数和 archive root；`check` 再核对 entries、mode、metadata 与源文件字节。
+Release allowlist 由 `upstream-manifest.json` 指向的当前
+[`release-artifact-v2.json`](contracts/release-artifact-v2.json) 唯一决定。每个 entry 自带 ZIP mode；构建器固定
+路径顺序、时间戳、压缩参数和 archive root，`check` 再核对 entries、mode、metadata 与源文件字节。
 
 PowerShell：
 
@@ -208,7 +209,7 @@ ZIP 内已经生成的 owned runtime。源码重建/生产执行分层、已退�
 边界见 [`ARCHITECTURE.md`](ARCHITECTURE.md)；各版本实际 package delta 见 [`CHANGELOG.md`](CHANGELOG.md)。
 
 runtime source/install inventory 的唯一 machine authority 是
-[`runtime-bundle-v1.json`](contracts/runtime-bundle-v1.json)。`upstream-manifest.json` 只保存上游 provenance、
+[`runtime-bundle-v2.json`](contracts/runtime-bundle-v2.json)。`upstream-manifest.json` 只保存上游 provenance、
 bundle path/SHA 和非重复 integrity references；importer 与 installer 都必须先按 manifest 校验 bundle 原始字节，
 再严格解析并消费 inventory。`installed-manifest.json.runtime_files` 仍是安装状态快照，Release artifact entries
 仍是 ZIP 层 allowlist，两者不属于重复的 source authority。

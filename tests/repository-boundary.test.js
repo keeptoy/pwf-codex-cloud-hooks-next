@@ -12,6 +12,9 @@ const trustedPrefixes = ["contracts/", "hooks/", "patches/", "runtime/", "tools/
 const trustedRootPaths = new Set(["install.js", "package.json", "upstream-manifest.json"]);
 const planningFiles = ["findings.md", "progress.md", "task_plan.md"];
 const versionPattern = "v\\d+\\.\\d+\\.\\d+(?:-[A-Za-z0-9.]+)?";
+const currentManifest = JSON.parse(read("upstream-manifest.json"));
+const currentArtifactPath = currentManifest.managed_runtime.contracts.release_artifact.path;
+const currentBundlePath = currentManifest.managed_runtime.contracts.runtime_bundle.path;
 
 function repositoryPaths() {
   const result = spawnSync("git", ["-c", "core.quotepath=false", "ls-files", "--cached", "--others", "--exclude-standard"], {
@@ -44,23 +47,23 @@ function currentRoleWindow() {
   return { accepted, candidate, immediateFallback, roadmap };
 }
 
-test("Phase 4 F0 opens the exact development identity window", () => {
+test("Phase 4 F1A keeps the development identity window and stops before F1B", () => {
   const { accepted, candidate, roadmap } = currentRoleWindow();
   assert.equal(candidate, "v0.4.0-dev");
   assert.equal(accepted, "v0.3.5");
   assert.notEqual(candidate, accepted);
-  assert.match(roadmap, /F0[^\n]*complete[^\n]*F1A[^\n]*未授权/);
+  assert.match(roadmap, /F0[^\n]*complete/);
 });
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
   const actual = repositoryPaths();
-  const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
+  const artifact = JSON.parse(read(currentArtifactPath));
   const releasePaths = artifact.entries.map(item => item.path);
   const expectedTrusted = releasePaths.filter(isTrustedSource).sort();
   const actualTrusted = actual.filter(isTrustedSource).sort();
 
   assert.deepEqual(actualTrusted, expectedTrusted);
-  for (const relative of [...releasePaths, ...artifact.external_release_assets.map(item => item.path)]) {
+  for (const relative of [...releasePaths, ...artifact.external_release_assets]) {
     assert.equal(actual.includes(relative), true, relative);
     assert.equal(fs.existsSync(path.join(root, relative)), true, `${relative} must exist in the working tree`);
   }
@@ -113,7 +116,7 @@ test("planning lifecycle has one valid active pointer and complete scoped record
 
 test("documentation lifecycle paths stay portable and outside the Release artifact", () => {
   const actual = repositoryPaths();
-  const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
+  const artifact = JSON.parse(read(currentArtifactPath));
   const releasePaths = artifact.entries.map(item => item.path);
   const docs = actual.filter(item => item.startsWith("docs/"));
   const { accepted, candidate } = currentRoleWindow();
@@ -184,8 +187,8 @@ test("portable repository governance keeps stable retirement anchors", () => {
 });
 
 test("cold history stays on immutable refs and outside runtime, Release, and adapter dispatch", () => {
-  const runtime = read("contracts/runtime-bundle-v1.json");
-  const release = read("contracts/release-artifact-v1.json");
+  const runtime = read(currentBundlePath);
+  const release = read(currentArtifactPath);
   const adapter = read("hooks/hook_adapter.py");
   const installer = read("install.js");
   const provenance = read("BASELINE_PROVENANCE.md");
@@ -199,7 +202,7 @@ test("cold history stays on immutable refs and outside runtime, Release, and ada
   assert.equal(artifact.entries.some(item => item.path === "patches/patch_planning_skill.py"), false);
   assert.equal(artifact.entries.some(item => item.path === "contracts/compatibility-overlays-v1.json"), false);
   assert.equal(artifact.entries.some(item => item.path.startsWith("docs/") || item.path.startsWith("tests/")), false);
-  assert.deepEqual(artifact.external_release_assets.map(item => item.path), [`init-cloud-sandbox-${candidate}.bash`]);
+  assert.deepEqual(artifact.external_release_assets, [`init-cloud-sandbox-${candidate}.bash`]);
   assert.match(installer, /\[\[hooks\.SessionStart\.hooks\]\]/);
   assert.match(installer, /\[\[hooks\.UserPromptSubmit\.hooks\]\]/);
   for (const immutable of [
@@ -219,8 +222,8 @@ test("change history, programme, provenance, and current acceptance keep separat
   const architecture = read("ARCHITECTURE.md");
   const design = read("DESIGN.md");
   const agents = read("AGENTS.md");
-  const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
-  const runtimeBundle = JSON.parse(read("contracts/runtime-bundle-v1.json"));
+  const artifact = JSON.parse(read(currentArtifactPath));
+  const runtimeBundle = JSON.parse(read(currentBundlePath));
   const { accepted, candidate, immediateFallback, roadmap } = currentRoleWindow();
   const acceptancePath = `docs/${candidate}-cloud-hard-acceptance.md`;
   const acceptance = read(acceptancePath);
@@ -292,7 +295,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   }
   assert.match(acceptance, /64 位 zero hash.*fail closed/s);
   assert.match(acceptance, /Cloud hard acceptance template/);
-  assert.match(acceptance, /不授予 (?:Product Phase 4|F1A)/);
+  assert.match(acceptance, /不授予 F1B/);
   assert.match(acceptance, /exact current id\/source inventory guard/);
   assert.match(acceptance, /本次验收增量没有改写 B～E 黑盒提示词/);
   assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-setup/);
@@ -315,7 +318,7 @@ test("change history, programme, provenance, and current acceptance keep separat
       "hook_adapter.py",
       ...runtimeBundle.local_files.map(item => item.installed_path.slice(installedPrefix.length)),
       ...runtimeBundle.installed_contracts.map(item => item.installed_path.slice(installedPrefix.length)),
-      ...runtimeBundle.files.map(item => item.installed_path.slice(installedPrefix.length)),
+      ...runtimeBundle.upstream_files.map(item => item.installed_path.slice(installedPrefix.length)),
     ];
     assert.match(acceptance, /## 3\. Published Release 完成证据/);
     assert.match(acceptance, new RegExp(`tag \`${escapedCandidate}\`；source \`${publishedSource[1]}\``));
@@ -327,8 +330,8 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, new RegExp(`exact ${expectedInstalled.length} 项`));
     for (const installedPath of expectedInstalled) assert.match(acceptance,
       new RegExp(installedPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-    assert.match(acceptance, new RegExp(`${runtimeBundle.files.length} 个 upstream runtime 均保持 pristine`));
-    for (const upstream of runtimeBundle.files) assert.match(acceptance, new RegExp(upstream.pristine_sha256));
+    assert.match(acceptance, new RegExp(`${runtimeBundle.upstream_files.length} 个 upstream runtime 均保持 pristine`));
+    for (const upstream of runtimeBundle.upstream_files) assert.match(acceptance, new RegExp(upstream.pristine_sha256));
     assert.match(acceptance, /MANAGED_POLICY=ADAPTER_ONLY/);
     assert.match(acceptance, /SNAPSHOT_LEFTOVERS=0/);
     assert.match(acceptance, /R5-SC=PASS[\s\S]*R5-PR=PASS[\s\S]*CLOUD-HARD-ACCEPTANCE-PASS/);

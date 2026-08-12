@@ -10,7 +10,8 @@ const test = require("node:test");
 
 const root = path.resolve(__dirname, "..");
 const builder = path.join(root, "tools", "build_release.py");
-const contract = path.join(root, "contracts", "release-artifact-v1.json");
+const manifest = JSON.parse(fs.readFileSync(path.join(root, "upstream-manifest.json"), "utf8"));
+const contract = path.join(root, manifest.managed_runtime.contracts.release_artifact.path);
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 const sha256 = file => crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
 const release032ZipSha256 = "b42aecafaba650e5595acef8c138d142747da38dde04fa78bfb0a7f4235e5081";
@@ -74,17 +75,8 @@ test("current candidate ZIP is deterministic, self-contained, and bound to its e
     assert.equal(artifact.entries.some(entry => entry.path === "patches/patch_planning_skill.py"), false);
     assert.equal(artifact.entries.some(entry => entry.path === "contracts/compatibility-overlays-v1.json"), false);
     assert.equal(artifact.entries.some(entry => entry.path.startsWith("init-cloud-sandbox-")), false);
-    assert.deepEqual(artifact.external_release_assets.map(entry => entry.path), [expectedBootstrap]);
-    assert.deepEqual(artifact.checksum_workflow, [
-      "freeze all required entries",
-      "import and verify allowlisted upstream files",
-      "build deterministic ZIP from this exact entry list",
-      "inspect entry list and compute ZIP SHA-256",
-      "write the exact version, package name, and ZIP SHA-256 into the external bootstrap",
-      "compute the sealed external bootstrap SHA-256",
-      "publish both immutable assets",
-      "download both published assets and verify their SHA-256 values",
-    ]);
+    assert.deepEqual(artifact.external_release_assets, [expectedBootstrap]);
+    assert.ok(artifact.entries.every(entry => ["0644", "0755"].includes(entry.mode)));
     const bootstrap = fs.readFileSync(path.join(root, expectedBootstrap), "utf8");
     assert.equal(bootstrap.includes(`HOOKS_VERSION="\${HOOKS_VERSION:-${candidate}}"`), true);
     assert.match(bootstrap, /keeptoy\/pwf-codex-cloud-hooks-next\/releases\/download/);
@@ -109,7 +101,7 @@ test("current candidate ZIP is deterministic, self-contained, and bound to its e
 
     const releasePaths = [
       ...artifact.entries.map(entry => entry.path),
-      ...artifact.external_release_assets.map(entry => entry.path),
+      ...artifact.external_release_assets,
     ];
     const attributes = spawnSync("git", ["check-attr", "eol", "--", ...releasePaths], {
       cwd: root,
@@ -142,6 +134,30 @@ test("Release builder rejects package and artifact candidate identity drift", ()
       const result = run("build", path.join(workspace, `${field}.zip`), driftedContract);
       assert.equal(result.status, 1, result.stdout);
       assert.match(result.stderr, message);
+    }
+  } finally {
+    fs.rmSync(workspace, { recursive: true, force: true });
+  }
+});
+
+test("Release builder rejects malformed v2 mode and boundary lists", () => {
+  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-release-v2-boundary-"));
+  try {
+    const cases = [
+      [artifact => { artifact.entries[0].mode = "0777"; }, /artifact entry is not ready/],
+      [artifact => { artifact.external_release_assets = "bootstrap.bash"; }, /external release assets must be a non-empty string list/],
+      [artifact => { artifact.external_release_assets.push(artifact.external_release_assets[0]); }, /external release asset list contains duplicates/],
+      [artifact => { artifact.excluded_prefixes = "docs/"; }, /excluded prefixes must be a string list/],
+      [artifact => { artifact.excluded_prefixes.push(artifact.excluded_prefixes[0]); }, /excluded prefix list contains duplicates/],
+    ];
+    for (const [mutate, expected] of cases) {
+      const artifact = JSON.parse(fs.readFileSync(contract, "utf8"));
+      mutate(artifact);
+      const driftedContract = path.join(workspace, `${crypto.randomUUID()}.json`);
+      fs.writeFileSync(driftedContract, `${JSON.stringify(artifact, null, 2)}\n`);
+      const result = run("build", path.join(workspace, `${crypto.randomUUID()}.zip`), driftedContract);
+      assert.equal(result.status, 1, result.stdout);
+      assert.match(result.stderr, expected);
     }
   } finally {
     fs.rmSync(workspace, { recursive: true, force: true });

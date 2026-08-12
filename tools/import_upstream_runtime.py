@@ -88,17 +88,13 @@ def validate_dependencies(value: object, owner: str, runtime_ids: set[str]) -> N
     for raw in value:
         if not isinstance(raw, dict):
             raise ValueError(f"invalid dependency for {owner}")
-        allowed = {"id", "condition", "required", "allowed_symbols"} if "allowed_symbols" in raw else {"id", "condition", "required"}
+        allowed = {"id", "allowed_symbols"} if "allowed_symbols" in raw else {"id"}
         require_exact_keys(raw, allowed, f"{owner} dependency")
         dependency = raw.get("id")
         if not isinstance(dependency, str) or not dependency or dependency == owner or dependency in seen:
             raise ValueError(f"invalid dependency id for {owner}: {dependency}")
         if dependency not in runtime_ids:
             raise ValueError(f"unknown dependency for {owner}: {dependency}")
-        if not isinstance(raw.get("condition"), str) or not raw["condition"]:
-            raise ValueError(f"invalid dependency condition for {owner}: {dependency}")
-        if not isinstance(raw.get("required"), bool):
-            raise ValueError(f"invalid dependency requirement for {owner}: {dependency}")
         if "allowed_symbols" in raw:
             require_string_list(raw["allowed_symbols"], f"{owner}.{dependency}.allowed_symbols")
         seen.add(dependency)
@@ -106,19 +102,18 @@ def validate_dependencies(value: object, owner: str, runtime_ids: set[str]) -> N
 
 def validate_contracts(bundle: dict) -> tuple[list[dict], dict]:
     require_exact_keys(bundle, {
-        "schema_version", "contract_id", "upstream", "package_root", "local_package_root",
-        "installed_root", "local_files", "installed_contracts", "files",
+        "schema_version", "contract_id", "upstream", "roots", "local_files", "installed_contracts", "upstream_files",
     }, "runtime bundle")
-    if bundle.get("schema_version") != 1:
+    if bundle.get("schema_version") != 2:
         raise ValueError("unsupported runtime bundle schema")
-    if bundle.get("contract_id") != "PWF_MANAGED_RUNTIME_BUNDLE_V1":
+    if bundle.get("contract_id") != "PWF_MANAGED_RUNTIME_BUNDLE_V2":
         raise ValueError("unsupported runtime bundle identity")
 
     upstream = require_exact_keys(bundle.get("upstream"), {
         "repository", "release", "commit", "release_archive_url", "release_archive_sha256",
-        "canonical_source_root", "license", "copyright", "license_source_path", "license_sha256",
+        "license", "copyright", "license_source_path", "license_sha256",
     }, "runtime bundle upstream")
-    files = bundle.get("files")
+    files = bundle.get("upstream_files")
     local_files = bundle.get("local_files")
     installed_contracts = bundle.get("installed_contracts")
     if not isinstance(files, list) or not files or not isinstance(local_files, list) or not local_files or not isinstance(installed_contracts, list) or not installed_contracts:
@@ -129,23 +124,25 @@ def validate_contracts(bundle: dict) -> tuple[list[dict], dict]:
     require_hash(upstream.get("release_archive_sha256"), "release archive")
     require_hash(upstream.get("license_sha256"), "upstream license")
     safe_relative(upstream.get("license_source_path"), "upstream license")
-    for field in ("repository", "release", "commit", "canonical_source_root", "license", "copyright"):
+    for field in ("repository", "release", "commit", "license", "copyright"):
         if not isinstance(upstream.get(field), str) or not upstream[field]:
             raise ValueError(f"invalid runtime bundle upstream {field}")
 
-    package_root = safe_relative(bundle.get("package_root"), "package root")
-    local_package_root = safe_relative(bundle.get("local_package_root"), "local package root")
-    installed_root = safe_relative(bundle.get("installed_root"), "installed root")
-    managed_root = installed_root.parent
-    canonical_source_root = safe_relative(upstream.get("canonical_source_root"), "canonical source root")
+    roots = require_exact_keys(bundle.get("roots"), {
+        "upstream_source", "upstream_package", "local_packages", "contract_package", "installed",
+    }, "runtime bundle roots")
+    package_root = safe_relative(roots.get("upstream_package"), "upstream package root")
+    local_package_roots = [safe_relative(item, "local package root") for item in require_string_list(roots.get("local_packages"), "local package roots")]
+    installed_root = safe_relative(roots.get("installed"), "installed root")
+    contract_root = safe_relative(roots.get("contract_package"), "contract package root")
+    canonical_source_root = safe_relative(roots.get("upstream_source"), "canonical source root")
     seen_ids: set[str] = set()
     seen_packages: set[PurePosixPath] = set()
     seen_installed: set[PurePosixPath] = set()
     normalized: list[dict] = []
     for raw in files:
         require_exact_keys(raw, {
-            "id", "source_path", "package_path", "installed_path", "origin", "language", "mode",
-            "pristine_sha256", "managed_sha256", "direct_file_dependencies", "host_dependencies", "overlay_ids",
+            "id", "source_path", "package_path", "installed_path", "mode", "pristine_sha256", "direct_dependencies",
         }, "upstream runtime file")
         identifier = require_identifier(raw.get("id"), "upstream runtime file")
         if identifier in seen_ids:
@@ -162,17 +159,7 @@ def validate_contracts(bundle: dict) -> tuple[list[dict], dict]:
             raise ValueError(f"duplicate installed path: {installed_path}")
         if raw.get("mode") != "0755":
             raise ValueError(f"unsupported mode for {raw['id']}: {raw.get('mode')}")
-        if not isinstance(raw.get("language"), str) or not raw["language"]:
-            raise ValueError(f"invalid language for {raw['id']}")
-        if raw.get("origin") != "upstream_pristine":
-            raise ValueError(f"runtime file is not pristine: {raw['id']}")
         pristine_hash = require_hash(raw.get("pristine_sha256"), f"{raw['id']} pristine")
-        managed_hash = require_hash(raw.get("managed_sha256"), f"{raw['id']} managed")
-        if managed_hash != pristine_hash:
-            raise ValueError(f"pristine/managed hash mismatch for {raw['id']}")
-        if raw.get("overlay_ids") != []:
-            raise ValueError(f"runtime file declares an overlay: {raw['id']}")
-        require_string_list(raw.get("host_dependencies"), f"{raw['id']} host dependencies")
         seen_ids.add(raw["id"])
         seen_packages.add(package_path)
         seen_installed.add(installed_path)
@@ -180,26 +167,23 @@ def validate_contracts(bundle: dict) -> tuple[list[dict], dict]:
 
     for raw in local_files:
         require_exact_keys(raw, {
-            "id", "package_path", "installed_path", "origin", "language", "mode", "sha256",
-            "direct_file_dependencies", "host_dependencies",
+            "id", "package_path", "installed_path", "mode", "sha256", "direct_dependencies",
         }, "local runtime file")
         identifier = require_identifier(raw.get("id"), "local runtime file")
         if identifier in seen_ids:
             raise ValueError(f"duplicate or invalid runtime file id: {identifier}")
         package_path = safe_relative(raw.get("package_path"), identifier)
         installed_path = safe_relative(raw.get("installed_path"), f"{identifier} installed")
-        relative_to(package_path, local_package_root, "local package path")
-        relative_to(installed_path, managed_root, "local installed path")
+        if not any(package_path.is_relative_to(root) and package_path != root for root in local_package_roots):
+            raise ValueError(f"local package path escapes allowed roots: {package_path}")
+        relative_to(installed_path, installed_root, "local installed path")
         if package_path in seen_packages:
             raise ValueError(f"duplicate package path: {package_path}")
         if installed_path in seen_installed:
             raise ValueError(f"duplicate installed path: {installed_path}")
-        if raw.get("origin") != "local_managed_runtime" or raw.get("mode") != "0755":
-            raise ValueError(f"invalid local runtime origin or mode for {identifier}")
-        if not isinstance(raw.get("language"), str) or not raw["language"]:
-            raise ValueError(f"invalid language for {identifier}")
+        if raw.get("mode") != "0755":
+            raise ValueError(f"invalid local runtime mode for {identifier}")
         require_hash(raw.get("sha256"), identifier)
-        require_string_list(raw.get("host_dependencies"), f"{identifier} host dependencies")
         seen_ids.add(identifier)
         seen_packages.add(package_path)
         seen_installed.add(installed_path)
@@ -211,8 +195,8 @@ def validate_contracts(bundle: dict) -> tuple[list[dict], dict]:
             raise ValueError(f"duplicate or invalid runtime file id: {identifier}")
         package_path = safe_relative(raw.get("package_path"), identifier)
         installed_path = safe_relative(raw.get("installed_path"), f"{identifier} installed")
-        relative_to(package_path, PurePosixPath("contracts"), "contract package path")
-        relative_to(installed_path, managed_root, "contract installed path")
+        relative_to(package_path, contract_root, "contract package path")
+        relative_to(installed_path, installed_root, "contract installed path")
         if package_path in seen_packages:
             raise ValueError(f"duplicate package path: {package_path}")
         if installed_path in seen_installed:
@@ -226,7 +210,7 @@ def validate_contracts(bundle: dict) -> tuple[list[dict], dict]:
 
     runtime_ids = {item["id"] for item in files + local_files}
     for raw in files + local_files:
-        validate_dependencies(raw.get("direct_file_dependencies"), raw["id"], runtime_ids)
+        validate_dependencies(raw.get("direct_dependencies"), raw["id"], runtime_ids)
 
     return normalized, upstream
 
@@ -234,13 +218,19 @@ def validate_contracts(bundle: dict) -> tuple[list[dict], dict]:
 def load_verified_bundle(manifest_path: Path, bundle_override: Path | None) -> dict:
     manifest_path = manifest_path.resolve(strict=True)
     manifest = load_json(manifest_path)
+    require_exact_keys(manifest, {
+        "schema_version", "upstream", "release", "commit", "release_archive_url",
+        "release_archive_sha256", "required_skill_files", "managed_runtime",
+    }, "source manifest")
+    if manifest.get("schema_version") != 4:
+        raise ValueError("unsupported source manifest schema")
     managed = require_exact_keys(manifest.get("managed_runtime"), {
         "schema_version", "contracts", "importer", "license_provenance",
     }, "managed runtime manifest")
-    if managed.get("schema_version") != 2:
+    if managed.get("schema_version") != 3:
         raise ValueError("unsupported managed runtime manifest schema")
     contracts = require_exact_keys(managed.get("contracts"), {
-        "runtime_bundle", "adapter_runtime_request", "runtime_result", "release_artifact",
+        "runtime_bundle", "release_artifact", "installed_state_transition",
     }, "managed runtime contracts")
     for identifier, value in contracts.items():
         label = identifier.replace("_", " ")
@@ -354,9 +344,6 @@ def build_expected(archive: Path, bundle: dict) -> tuple[list[dict], dict[PurePo
         actual = sha256_bytes(content)
         if actual != item["pristine_sha256"]:
             raise ValueError(f"pristine SHA-256 mismatch for {item['id']}: {actual}")
-        actual_managed = sha256_bytes(content)
-        if actual_managed != item["managed_sha256"]:
-            raise ValueError(f"managed SHA-256 mismatch for {item['id']}: {actual_managed}")
         expected[item["relative"]] = content
     return files, expected
 
@@ -392,7 +379,7 @@ def check_destination(destination: Path, files: list[dict]) -> dict:
     for relative, item in expected.items():
         target = destination.joinpath(*relative.parts)
         actual_hash = sha256_bytes(target.read_bytes())
-        if actual_hash != item["managed_sha256"]:
+        if actual_hash != item["pristine_sha256"]:
             raise ValueError(f"runtime SHA-256 mismatch for {item['id']}: {actual_hash}")
         if os.name != "nt" and stat.S_IMODE(target.stat().st_mode) != int(item["mode"], 8):
             raise ValueError(f"runtime mode mismatch for {item['id']}")

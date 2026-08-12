@@ -1,39 +1,34 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "upstream": "OthmanAdi/planning-with-files",
   "release": "v3.8.2",
   "commit": "b04ffd9c8f9f93919649d197e5d4ec1bfc06fa14",
   "release_archive_url": "https://github.com/OthmanAdi/planning-with-files/archive/refs/tags/v3.8.2.zip",
   "release_archive_sha256": "7dab03ae283da38d33b9d551c7ec621d1818b9f0f17cf9ced566d4accbfc6dd1",
-  "skill_version": "3.8.2",
   "required_skill_files": {
     "SKILL.md": "bfcdbbbf883bc0db95f84d095d58021fc1a6b97eeeab23cd373f6261779fb232",
     "scripts/resolve-plan-dir.sh": "38a1c5effb35f9506e2e371ccabb6be6e4f4170acc18f1811f08d634f5f0e9bd",
     "scripts/session-catchup.py": "6476fd9024d0cbb9bfb850119fd0beff7fb7cfab9c6683ce10e4cc8d830ce6de"
   },
   "managed_runtime": {
-    "schema_version": 2,
+    "schema_version": 3,
     "contracts": {
       "runtime_bundle": {
-        "path": "contracts/runtime-bundle-v1.json",
-        "sha256": "d707a65d6f0d6c5229cd9b4a03c76a2377b97a14411a8a2c5ecf76432d7e3567"
-      },
-      "adapter_runtime_request": {
-        "path": "contracts/adapter-runtime-request-v1.schema.json",
-        "sha256": "a86588e3c7d55cbbeddc74110403ba815ad8715735c149d77dd0c47996ee72d5"
-      },
-      "runtime_result": {
-        "path": "contracts/runtime-result-v1.schema.json",
-        "sha256": "1cb545d9487c8d0ef9f4ccd270a786d0dc998629813e81a2cc05463b23b62ed7"
+        "path": "contracts/runtime-bundle-v2.json",
+        "sha256": "62e3fbc1487d44c70251683675f0d5cb15186b58b79dd13ab3fc15d8c1cd44b9"
       },
       "release_artifact": {
-        "path": "contracts/release-artifact-v1.json",
-        "sha256": "c9d0282ef39a8b105fc20645a29b8aa5e8dde72d28e0108166f98c82c280dd34"
+        "path": "contracts/release-artifact-v2.json",
+        "sha256": "398007622a5dab04499f6258e812a6b06e5347c4b5a81c733dbc5cf54607466d"
+      },
+      "installed_state_transition": {
+        "path": "contracts/installed-state-transition-v1.json",
+        "sha256": "0339d34c5f842a2ab4f598b2f75330ad5575bd6cf21f229135f2fe7daa028379"
       }
     },
     "importer": {
       "path": "tools/import_upstream_runtime.py",
-      "sha256": "f969e7b3d3534149aa40e1151f73da75370dc57c5d43fe9fd35ef7e186900cef"
+      "sha256": "2c1d24f3f2464dd3dd6769ea5f73a416bb3f659574ebc72e12ae5edb3b0236b0"
     },
     "license_provenance": {
       "spdx": "MIT",

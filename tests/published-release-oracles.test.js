@@ -155,10 +155,11 @@ function buildPublishedPackage(workspace, release) {
 }
 
 function buildCurrentPackage(workspace) {
+  const manifest = JSON.parse(fs.readFileSync(path.join(root, "upstream-manifest.json"), "utf8"));
   const releaseZip = path.join(workspace, "current-roundtrip.zip");
   const result = buildFromSource(
     releaseZip,
-    path.join(root, "contracts", "release-artifact-v1.json"),
+    path.join(root, manifest.managed_runtime.contracts.release_artifact.path),
     path.join(root, "tools", "build_release.py"),
     root,
   );
@@ -239,7 +240,8 @@ test(`${acceptedVersion} accepted and ${fallbackVersion} fallback keep managed s
       assert.equal(result.status, 0, result.stderr);
       const before = managedState(home);
 
-      const candidateBundle = path.join(currentPackage, "contracts", "runtime-bundle-v1.json");
+      const currentManifest = JSON.parse(fs.readFileSync(path.join(currentPackage, "upstream-manifest.json"), "utf8"));
+      const candidateBundle = path.join(currentPackage, currentManifest.managed_runtime.contracts.runtime_bundle.path);
       const originalBundle = fs.readFileSync(candidateBundle);
       try {
         fs.appendFileSync(candidateBundle, " ");
@@ -253,6 +255,42 @@ test(`${acceptedVersion} accepted and ${fallbackVersion} fallback keep managed s
 
       result = runPackageInstaller(acceptedPackage, home, "doctor");
       assert.equal(result.status, 0, result.stderr);
+    });
+
+    await t.test("the exact accepted installation migrates forward and can roll back by clean install", () => {
+      const home = installHome(workspace, "accepted-forward-home");
+      let result = runPackageInstaller(acceptedPackage, home, "install");
+      assert.equal(result.status, 0, result.stderr);
+
+      result = runPackageInstaller(currentPackage, home, "install");
+      assert.equal(result.status, 0, result.stderr);
+      result = runPackageInstaller(currentPackage, home, "doctor");
+      assert.equal(result.status, 0, result.stderr);
+      let manifest = JSON.parse(fs.readFileSync(path.join(home, "hooks", "planning-with-files", "installed-manifest.json"), "utf8"));
+      assert.equal(manifest.installer_version, "0.4.0-dev");
+
+      result = runPackageInstaller(currentPackage, home, "uninstall");
+      assert.equal(result.status, 0, result.stderr);
+      result = runPackageInstaller(acceptedPackage, home, "install");
+      assert.equal(result.status, 0, result.stderr);
+      result = runPackageInstaller(acceptedPackage, home, "doctor");
+      assert.equal(result.status, 0, result.stderr);
+      manifest = JSON.parse(fs.readFileSync(path.join(home, "hooks", "planning-with-files", "installed-manifest.json"), "utf8"));
+      assert.equal(manifest.installer_version, accepted.version.slice(1));
+    });
+
+    await t.test("tampered accepted state is rejected before backup or mutation", () => {
+      const home = installHome(workspace, "tampered-predecessor-home");
+      let result = runPackageInstaller(acceptedPackage, home, "install");
+      assert.equal(result.status, 0, result.stderr);
+      const adapter = path.join(home, "hooks", "planning-with-files", "hook_adapter.py");
+      fs.appendFileSync(adapter, "# transition tamper\n");
+      const before = managedState(home);
+
+      result = runPackageInstaller(currentPackage, home, "install");
+      assert.equal(result.status, 1);
+      assert.match(result.stderr, /BLOCKED_UNKNOWN_RUNTIME: adapter managed content mismatch/);
+      assert.deepEqual(managedState(home), before);
     });
 
     await t.test("accepted and immediate fallback installers can take ownership back in both directions", () => {

@@ -15,6 +15,13 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - Source/Candidate Cloud 尚未执行，版本增量与模板入口见
   [`docs/v0.4.0-dev-cloud-hard-acceptance.md`](docs/v0.4.0-dev-cloud-hard-acceptance.md)；已发布资产身份仍只由
   [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 记录。
+- 完成 F1A contract/source foundation：source manifest 升至 exact schema 4，runtime bundle 与 Release artifact
+  升至 v2；adapter 和四项 v1 runtime ABI 统一纳入 bundle 安装投影，ZIP mode 由 Release entry 单点定义。
+- 当前 source 不再双读 v1 contract，也不再保留 `origin`、重复 managed hash、空 overlay list 等 overlay-era
+  tombstone；来源改由 `upstream_files`、`local_files`、`installed_contracts` 结构表达并由 exact-key validation
+  拒绝旧字段复活。
+- installer 只准入当前完整安装或 transition contract 精确列出的 v0.3.5 predecessor；已证明前向迁移、篡改状态
+  写前拒绝和 candidate uninstall 后的 v0.3.5 clean rollback。plan request/result、Host 输出与 legacy runtime 行为未变。
 
 ## v0.3.5
 

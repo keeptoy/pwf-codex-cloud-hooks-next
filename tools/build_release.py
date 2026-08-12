@@ -14,19 +14,6 @@ import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_CONTRACT = ROOT / "contracts" / "release-artifact-v1.json"
-EXECUTABLE_PATHS = {
-    "install.js",
-    "hooks/hook_adapter.py",
-    "tools/build_release.py",
-    "tools/import_upstream_runtime.py",
-    "runtime/owned-catchup.py",
-    "runtime/owned-plan.py",
-    "runtime/upstream/session-catchup.py",
-    "runtime/upstream/resolve-plan-dir.sh",
-    "runtime/upstream/inject-plan.sh",
-    "runtime/upstream/ledger-summary.sh",
-}
 ZIP_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 
 
@@ -43,9 +30,37 @@ def safe_path(value: object) -> str:
     return path.as_posix()
 
 
-def load_contract(path: Path) -> tuple[dict, list[str]]:
+def default_contract() -> Path:
+    manifest = json.loads((ROOT / "upstream-manifest.json").read_text(encoding="utf-8"))
+    if set(manifest) != {
+        "schema_version", "upstream", "release", "commit", "release_archive_url",
+        "release_archive_sha256", "required_skill_files", "managed_runtime",
+    } or manifest.get("schema_version") != 4:
+        raise ValueError("unsupported source manifest schema or fields")
+    managed = manifest.get("managed_runtime")
+    if not isinstance(managed, dict) or set(managed) != {"schema_version", "contracts", "importer", "license_provenance"} or managed.get("schema_version") != 3:
+        raise ValueError("unsupported managed runtime manifest schema or fields")
+    contracts = managed.get("contracts")
+    if not isinstance(contracts, dict) or set(contracts) != {"runtime_bundle", "release_artifact", "installed_state_transition"}:
+        raise ValueError("unsupported managed runtime contract fields")
+    reference = contracts.get("release_artifact")
+    if not isinstance(reference, dict) or set(reference) != {"path", "sha256"}:
+        raise ValueError("invalid release artifact integrity reference")
+    relative = safe_path(reference.get("path"))
+    target = ROOT.joinpath(*PurePosixPath(relative).parts).resolve(strict=True)
+    if target.parent != (ROOT / "contracts").resolve():
+        raise ValueError("release artifact contract escapes contracts root")
+    if sha256_bytes(target.read_bytes()) != reference.get("sha256"):
+        raise ValueError("release artifact contract SHA-256 mismatch")
+    return target
+
+
+def load_contract(path: Path) -> tuple[dict, list[tuple[str, int]]]:
     contract = json.loads(path.read_text(encoding="utf-8"))
-    if contract.get("schema_version") != 1:
+    if set(contract) != {
+        "schema_version", "contract_id", "package_name", "package_version", "archive_root",
+        "ordering", "timestamp", "compression", "entries", "external_release_assets", "excluded_prefixes",
+    } or contract.get("schema_version") != 2 or contract.get("contract_id") != "PWF_RELEASE_ARTIFACT_V2":
         raise ValueError("unsupported release artifact schema")
     package = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
     for contract_key, package_key in (("package_name", "name"), ("package_version", "version")):
@@ -68,20 +83,31 @@ def load_contract(path: Path) -> tuple[dict, list[str]]:
     entries = contract.get("entries")
     if not isinstance(entries, list) or not entries:
         raise ValueError("artifact entry list is empty")
-    paths: list[str] = []
+    paths: list[tuple[str, int]] = []
     for entry in entries:
-        if not isinstance(entry, dict) or entry.get("state") != "present":
+        if not isinstance(entry, dict) or set(entry) != {"path", "mode"} or entry.get("mode") not in {"0644", "0755"}:
             raise ValueError(f"artifact entry is not ready: {entry}")
-        paths.append(safe_path(entry.get("path")))
-    if len(paths) != len(set(paths)):
+        paths.append((safe_path(entry.get("path")), int(entry["mode"], 8)))
+    path_names = [item[0] for item in paths]
+    if len(path_names) != len(set(path_names)):
         raise ValueError("artifact entry list contains duplicates")
-    for external in contract.get("external_release_assets", []):
-        if safe_path(external.get("path")) in paths:
+    external_assets = contract.get("external_release_assets")
+    if not isinstance(external_assets, list) or not external_assets or any(not isinstance(item, str) for item in external_assets):
+        raise ValueError("external release assets must be a non-empty string list")
+    if len(external_assets) != len(set(external_assets)):
+        raise ValueError("external release asset list contains duplicates")
+    for external in external_assets:
+        if safe_path(external) in path_names:
             raise ValueError("external release asset entered ZIP allowlist")
-    for prefix in contract.get("excluded_prefixes", []):
-        if not isinstance(prefix, str) or any(item == prefix.rstrip("/") or item.startswith(prefix) for item in paths):
+    excluded_prefixes = contract.get("excluded_prefixes")
+    if not isinstance(excluded_prefixes, list) or any(not isinstance(item, str) for item in excluded_prefixes):
+        raise ValueError("excluded prefixes must be a string list")
+    if len(excluded_prefixes) != len(set(excluded_prefixes)):
+        raise ValueError("excluded prefix list contains duplicates")
+    for prefix in excluded_prefixes:
+        if not prefix.endswith("/") or safe_path(prefix[:-1]) != prefix[:-1] or any(item == prefix[:-1] or item.startswith(prefix) for item in path_names):
             raise ValueError(f"excluded prefix entered ZIP allowlist: {prefix}")
-    return contract, sorted(paths, key=lambda item: item.encode("utf-8"))
+    return contract, sorted(paths, key=lambda item: item[0].encode("utf-8"))
 
 
 def source_bytes(relative: str) -> bytes:
@@ -91,7 +117,7 @@ def source_bytes(relative: str) -> bytes:
     return target.read_bytes()
 
 
-def build_bytes(contract: dict, paths: list[str], output: Path) -> None:
+def build_bytes(contract: dict, paths: list[tuple[str, int]], output: Path) -> None:
     archive_root = contract["archive_root"]
     temporary = output.with_name(f".{output.name}.pwf-build-{os.getpid()}")
     if temporary.exists() or temporary.is_symlink():
@@ -99,11 +125,10 @@ def build_bytes(contract: dict, paths: list[str], output: Path) -> None:
     try:
         output.parent.mkdir(parents=True, exist_ok=True)
         with zipfile.ZipFile(temporary, "x", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
-            for relative in paths:
+            for relative, mode in paths:
                 info = zipfile.ZipInfo(f"{archive_root}{relative}", ZIP_TIMESTAMP)
                 info.create_system = 3
                 info.compress_type = zipfile.ZIP_DEFLATED
-                mode = 0o755 if relative in EXECUTABLE_PATHS else 0o644
                 info.external_attr = (stat.S_IFREG | mode) << 16
                 archive.writestr(info, source_bytes(relative), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
         os.replace(temporary, output)
@@ -114,18 +139,17 @@ def build_bytes(contract: dict, paths: list[str], output: Path) -> None:
             pass
 
 
-def inspect_archive(archive_path: Path, contract: dict, paths: list[str]) -> dict:
+def inspect_archive(archive_path: Path, contract: dict, paths: list[tuple[str, int]]) -> dict:
     archive_root = contract["archive_root"]
-    expected_names = [f"{archive_root}{relative}" for relative in paths]
+    expected_names = [f"{archive_root}{relative}" for relative, _ in paths]
     with zipfile.ZipFile(archive_path) as archive:
         infos = archive.infolist()
         names = [info.filename for info in infos]
         if names != expected_names:
             raise ValueError("artifact inventory or ordering mismatch")
-        for relative, info in zip(paths, infos):
+        for (relative, expected_mode), info in zip(paths, infos):
             if info.is_dir() or info.date_time != ZIP_TIMESTAMP or info.compress_type != zipfile.ZIP_DEFLATED:
                 raise ValueError(f"artifact metadata mismatch: {relative}")
-            expected_mode = 0o755 if relative in EXECUTABLE_PATHS else 0o644
             if stat.S_IMODE(info.external_attr >> 16) != expected_mode:
                 raise ValueError(f"artifact mode mismatch: {relative}")
             if archive.read(info) != source_bytes(relative):
@@ -143,7 +167,7 @@ def inspect_archive(archive_path: Path, contract: dict, paths: list[str]) -> dic
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=("build", "check"))
-    parser.add_argument("--contract", type=Path, default=DEFAULT_CONTRACT)
+    parser.add_argument("--contract", type=Path)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--archive", type=Path)
     args = parser.parse_args()
@@ -157,7 +181,8 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     try:
         args = parse_args()
-        contract, paths = load_contract(args.contract.resolve(strict=True))
+        contract_path = args.contract.resolve(strict=True) if args.contract else default_contract()
+        contract, paths = load_contract(contract_path)
         target = args.output if args.command == "build" else args.archive
         archive_path = Path(os.path.abspath(target))
         if args.command == "build":

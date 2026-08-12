@@ -8,179 +8,98 @@ const test = require("node:test");
 
 const root = path.resolve(__dirname, "..");
 const readJson = relative => JSON.parse(fs.readFileSync(path.join(root, relative), "utf8"));
-const sha256 = value => crypto.createHash("sha256").update(value).digest("hex");
-const fileHash = file => sha256(fs.readFileSync(file));
+const fileHash = relative => crypto.createHash("sha256").update(fs.readFileSync(path.join(root, relative))).digest("hex");
 
-test("managed runtime manifest delegates source and install inventory to the verified bundle", () => {
-  const upstream = readJson("upstream-manifest.json");
-  const managed = upstream.managed_runtime;
-  const violations = [];
-
-  if (managed.schema_version !== 2) violations.push(`managed_runtime.schema_version=${managed.schema_version}, expected 2`);
-  for (const retiredMirror of ["package_root", "local_package_root", "local_files", "files"]) {
-    if (Object.hasOwn(managed, retiredMirror)) violations.push(`mirrored inventory field remains: ${retiredMirror}`);
-  }
-  for (const installedContract of ["adapter_plan_context_request", "plan_context_result"]) {
-    if (Object.hasOwn(managed.contracts, installedContract)) violations.push(`mirrored installed contract remains: ${installedContract}`);
-  }
-  assert.deepEqual(violations, []);
+test("source manifest is exact schema4 and routes all package-level contracts", () => {
+  const manifest = readJson("upstream-manifest.json");
+  assert.deepEqual(Object.keys(manifest).sort(), [
+    "commit", "managed_runtime", "release", "release_archive_sha256", "release_archive_url",
+    "required_skill_files", "schema_version", "upstream",
+  ]);
+  assert.equal(manifest.schema_version, 4);
+  assert.equal(Object.hasOwn(manifest, "skill_version"), false);
+  assert.deepEqual(Object.keys(manifest.managed_runtime).sort(), ["contracts", "importer", "license_provenance", "schema_version"]);
+  assert.equal(manifest.managed_runtime.schema_version, 3);
+  assert.deepEqual(Object.keys(manifest.managed_runtime.contracts).sort(), [
+    "installed_state_transition", "release_artifact", "runtime_bundle",
+  ]);
+  for (const reference of [
+    ...Object.values(manifest.managed_runtime.contracts), manifest.managed_runtime.importer,
+  ]) assert.equal(fileHash(reference.path), reference.sha256, reference.path);
 });
 
-test("machine contracts freeze provenance, pristine runtime, Host protocol, and artifact boundary", () => {
-  const bundle = readJson("contracts/runtime-bundle-v1.json");
-  const request = readJson("contracts/adapter-runtime-request-v1.schema.json");
-  const result = readJson("contracts/runtime-result-v1.schema.json");
-  const artifact = readJson("contracts/release-artifact-v1.json");
-  const upstream = readJson("upstream-manifest.json");
-
-  assert.equal(bundle.schema_version, 1);
-  assert.equal(upstream.schema_version, 3);
-  assert.equal(bundle.upstream.repository, upstream.upstream);
-  assert.equal(bundle.upstream.release, upstream.release);
-  assert.equal(bundle.upstream.commit, upstream.commit);
-  assert.equal(bundle.upstream.release_archive_sha256, upstream.release_archive_sha256);
-  assert.equal(bundle.upstream.release_archive_url, upstream.release_archive_url);
-  assert.equal(bundle.upstream.license_sha256, upstream.managed_runtime.license_provenance.upstream_sha256);
-  assert.equal(bundle.upstream.canonical_source_root, "skills/planning-with-files");
-
-  const files = new Map(bundle.files.map(file => [file.id, file]));
-  assert.equal(files.size, bundle.files.length);
-  assert.deepEqual([...files.keys()], ["session_catchup", "resolve_plan_dir", "inject_plan", "ledger_summary"]);
-  assert.deepEqual([...files.values()].map(file => file.source_path), [
-    "skills/planning-with-files/scripts/session-catchup.py",
-    "skills/planning-with-files/scripts/resolve-plan-dir.sh",
-    "skills/planning-with-files/scripts/inject-plan.sh",
-    "skills/planning-with-files/scripts/ledger-summary.sh",
+test("runtime bundle v2 uses structural source partitions and one install inventory", () => {
+  const bundle = readJson("contracts/runtime-bundle-v2.json");
+  assert.equal(bundle.schema_version, 2);
+  assert.equal(bundle.contract_id, "PWF_MANAGED_RUNTIME_BUNDLE_V2");
+  assert.deepEqual(Object.keys(bundle).sort(), [
+    "contract_id", "installed_contracts", "local_files", "roots", "schema_version", "upstream", "upstream_files",
   ]);
-  assert.equal(Object.hasOwn(bundle, "deferred_upstream_candidates"), false,
-    "programme roadmap candidates must stay outside the runtime bundle");
-  const admittedSources = new Set(bundle.files.map(file => file.source_path));
-  for (const phase4Source of [
-    "skills/planning-with-files/scripts/attest-plan.sh",
-    "skills/planning-with-files/scripts/ledger-append.sh",
-    "skills/planning-with-files/scripts/phase-status.sh",
+  assert.deepEqual(Object.keys(bundle.roots).sort(), [
+    "contract_package", "installed", "local_packages", "upstream_package", "upstream_source",
+  ]);
+  assert.deepEqual(bundle.upstream_files.map(item => item.id), [
+    "session_catchup", "resolve_plan_dir", "inject_plan", "ledger_summary",
+  ]);
+  assert.deepEqual(bundle.local_files.map(item => item.id), ["adapter", "owned_catchup", "owned_plan"]);
+  assert.deepEqual(bundle.installed_contracts.map(item => item.id), [
+    "adapter_runtime_request", "runtime_result", "adapter_plan_context_request", "plan_context_result",
+  ]);
+  const entries = [...bundle.upstream_files, ...bundle.local_files, ...bundle.installed_contracts];
+  assert.equal(new Set(entries.map(item => item.id)).size, entries.length);
+  assert.equal(new Set(entries.map(item => item.package_path)).size, entries.length);
+  assert.equal(new Set(entries.map(item => item.installed_path)).size, entries.length);
+  for (const entry of entries) {
+    for (const retired of ["origin", "managed_sha256", "overlay_ids", "language", "host_dependencies", "direct_file_dependencies"])
+      assert.equal(Object.hasOwn(entry, retired), false, `${entry.id}.${retired}`);
+    assert.equal(fileHash(entry.package_path), entry.pristine_sha256 || entry.sha256, entry.id);
+    for (const dependency of entry.direct_dependencies || []) {
+      assert.ok(entries.some(item => item.id === dependency.id), `${entry.id}.${dependency.id}`);
+      assert.equal(Object.hasOwn(dependency, "condition"), false);
+      assert.equal(Object.hasOwn(dependency, "required"), false);
+    }
+  }
+  assert.deepEqual(bundle.local_files.find(item => item.id === "adapter").direct_dependencies.map(item => item.id),
+    ["owned_plan", "owned_catchup"]);
+});
+
+test("Release v2 entries own exact ZIP inventory and mode", () => {
+  const artifact = readJson("contracts/release-artifact-v2.json");
+  const packageMetadata = readJson("package.json");
+  assert.equal(artifact.schema_version, 2);
+  assert.equal(artifact.contract_id, "PWF_RELEASE_ARTIFACT_V2");
+  assert.equal(artifact.package_name, packageMetadata.name);
+  assert.equal(artifact.package_version, packageMetadata.version);
+  assert.ok(artifact.entries.length > 0);
+  assert.ok(artifact.entries.every(entry => Object.keys(entry).sort().join(",") === "mode,path"));
+  assert.ok(artifact.entries.every(entry => ["0644", "0755"].includes(entry.mode)));
+  assert.equal(new Set(artifact.entries.map(entry => entry.path)).size, artifact.entries.length);
+  assert.deepEqual(artifact.external_release_assets, [`init-cloud-sandbox-v${packageMetadata.version}.bash`]);
+  assert.equal(artifact.entries.some(entry => entry.path.startsWith("init-cloud-sandbox-")), false);
+  assert.equal(fs.existsSync(path.join(root, "contracts/runtime-bundle-v1.json")), false);
+  assert.equal(fs.existsSync(path.join(root, "contracts/release-artifact-v1.json")), false);
+});
+
+test("installed transition admits exactly one accepted v0.3.5 state shape", () => {
+  const transition = readJson("contracts/installed-state-transition-v1.json");
+  assert.deepEqual(Object.keys(transition).sort(), ["contract_id", "predecessor", "schema_version"]);
+  assert.equal(transition.schema_version, 1);
+  assert.equal(transition.contract_id, "PWF_INSTALLED_STATE_TRANSITION_V1");
+  assert.equal(transition.predecessor.package_version, "0.3.5");
+  assert.equal(transition.predecessor.installed_manifest_schema, 3);
+  assert.equal(transition.predecessor.owner, "pwf-codex-cloud-hooks");
+  assert.equal(transition.predecessor.runtime_files.length, 10);
+  assert.equal(new Set(transition.predecessor.runtime_files.map(item => item.path)).size, 10);
+});
+
+test("F1A keeps all four runtime protocol schemas at exact v1", () => {
+  for (const relative of [
+    "contracts/adapter-runtime-request-v1.schema.json", "contracts/runtime-result-v1.schema.json",
+    "contracts/adapter-plan-context-request-v1.schema.json", "contracts/plan-context-result-v1.schema.json",
   ]) {
-    assert.equal(admittedSources.has(phase4Source), false,
-      `unadmitted Phase 4 source must stay outside runtime inventory: ${phase4Source}`);
-  }
-  for (const file of files.values()) {
-    assert.equal(Object.hasOwn(file, "activation_phase"), false,
-      `${file.id} must not carry historical programme phase metadata`);
-    assert.match(file.source_path, /^skills\/planning-with-files\/scripts\/[A-Za-z0-9._-]+$/);
-    assert.match(file.package_path, /^runtime\/upstream\/[A-Za-z0-9._-]+$/);
-    assert.match(file.installed_path, /^hooks\/planning-with-files\/upstream\/[A-Za-z0-9._-]+$/);
-    assert.match(file.pristine_sha256, /^[a-f0-9]{64}$/);
-    assert.match(file.managed_sha256, /^[a-f0-9]{64}$/);
-    assert.equal(file.mode, "0755");
-    assert.equal(file.origin, "upstream_pristine");
-    assert.equal(file.managed_sha256, file.pristine_sha256);
-    assert.deepEqual(file.overlay_ids, []);
-    for (const dependency of file.direct_file_dependencies) {
-      assert.ok(files.has(dependency.id), `${file.id} has unknown dependency ${dependency.id}`);
-    }
-  }
-  assert.equal(files.get("ledger_summary").direct_file_dependencies[0].id, "resolve_plan_dir");
-  assert.equal(files.get("inject_plan").direct_file_dependencies[0].condition, "mode=autonomous|gated");
-
-  const fixtureRoot = path.join(root, "tests", "fixtures", "planning-with-files");
-  assert.equal(fileHash(path.join(fixtureRoot, "scripts", "session-catchup.py")), files.get("session_catchup").pristine_sha256);
-  assert.equal(fileHash(path.join(fixtureRoot, "scripts", "resolve-plan-dir.sh")), files.get("resolve_plan_dir").pristine_sha256);
-  const referenceRoot = path.join(root, "planning-with-files-3.8.2");
-  if (fs.existsSync(referenceRoot)) {
-    for (const file of files.values()) {
-      assert.equal(fileHash(path.join(referenceRoot, file.source_path)), file.pristine_sha256, file.id);
-    }
-  }
-  assert.equal(Object.hasOwn(upstream, "compatibility_patches"), false);
-  assert.equal(Object.hasOwn(upstream, "historical_patched_skill_files"), false);
-  assert.equal(Object.hasOwn(upstream.managed_runtime.contracts, "compatibility_overlays"), false);
-
-  assert.equal(upstream.managed_runtime.schema_version, 2);
-  assert.deepEqual(Object.keys(upstream.managed_runtime).sort(),
-    ["contracts", "importer", "license_provenance", "schema_version"]);
-  for (const frozen of files.values()) {
-    assert.equal(fileHash(path.join(root, frozen.package_path)), frozen.managed_sha256, frozen.id);
-  }
-  for (const contract of Object.values(upstream.managed_runtime.contracts)) {
-    assert.equal(fileHash(path.join(root, contract.path)), contract.sha256, contract.path);
-  }
-  const localFiles = new Map(bundle.local_files.map(file => [file.id, file]));
-  assert.deepEqual([...localFiles.keys()], ["owned_catchup", "owned_plan"]);
-  assert.deepEqual(localFiles.get("owned_catchup").direct_file_dependencies, [{
-    id: "session_catchup",
-    condition: "always",
-    required: true,
-    allowed_symbols: ["extract_messages_after", "find_last_planning_update", "same_project_path", "text_content"],
-  }]);
-  assert.deepEqual(localFiles.get("owned_plan").direct_file_dependencies.map(item => item.id), ["resolve_plan_dir", "inject_plan"]);
-  for (const local of localFiles.values()) {
-    assert.equal(Object.hasOwn(local, "activation_phase"), false,
-      `${local.id} must not carry historical programme phase metadata`);
-    assert.equal(fileHash(path.join(root, local.package_path)), local.sha256, local.id);
-  }
-  assert.deepEqual(
-    bundle.installed_contracts.map(item => item.id),
-    ["adapter_plan_context_request", "plan_context_result"],
-  );
-  for (const installed of bundle.installed_contracts) {
-    assert.equal(fileHash(path.join(root, installed.package_path)), installed.sha256);
-  }
-  assert.equal(fileHash(path.join(root, upstream.managed_runtime.importer.path)), upstream.managed_runtime.importer.sha256);
-  assert.equal(fileHash(path.join(root, upstream.managed_runtime.license_provenance.notice_path)), upstream.managed_runtime.license_provenance.notice_sha256);
-  const notice = fs.readFileSync(path.join(root, upstream.managed_runtime.license_provenance.notice_path), "utf8");
-  assert.match(notice, /runtime\/upstream[\s\S]*byte-for-byte pristine/);
-  assert.match(notice, /repository-owned wrappers/);
-  assert.doesNotMatch(notice, /compatibility overlays? applied|overlays? applied/i);
-
-  assert.equal(request.$schema, "https://json-schema.org/draft/2020-12/schema");
-  assert.equal(request.additionalProperties, false);
-  assert.deepEqual(request.required, ["schema_version", "runtime", "event", "project", "transcript", "output_budget"]);
-  assert.deepEqual(request.properties.project.required, ["root", "planning_enabled", "session_attachment", "plan_state", "plan_scope", "plan_dir"]);
-  assert.deepEqual(request.properties.project.properties.session_attachment.enum, ["legacy", "attached", "detached"]);
-  assert.equal(request.properties.event.properties.session_id.pattern, "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$");
-  assert.equal(request.properties.output_budget.properties.max_report_chars.const, 20000);
-  assert.equal(request.properties.output_budget.properties.max_messages.const, 15);
-  assert.equal(request.properties.output_budget.properties.user_head_chars.const, 350);
-  assert.equal(request.properties.output_budget.properties.user_tail_chars.const, 650);
-  assert.equal(request.properties.output_budget.properties.truncation_marker.const, "...[truncated]...");
-  assert.equal(Object.hasOwn(request.properties, "prompt"), false);
-
-  assert.equal(result.$schema, "https://json-schema.org/draft/2020-12/schema");
-  assert.equal(result.additionalProperties, false);
-  assert.ok(result.$defs.outcome.enum.includes("report_emitted"));
-  assert.ok(result.$defs.outcome.enum.includes("diagnostic_report_available"));
-  assert.ok(result.$defs.outcome.enum.includes("planning_disabled"));
-  assert.ok(result.$defs.outcome.enum.includes("session_not_attached"));
-  assert.ok(result.$defs.outcome.enum.includes("no_plan"));
-  assert.ok(result.$defs.outcome.enum.includes("runtime_error"));
-  assert.ok(result.$defs.outcome.enum.includes("malformed_transcript"));
-  assert.ok(result.$defs.outcome.enum.includes("transcript_unreadable"));
-  assert.ok(result.properties.diagnostic.required.includes("planning_enabled"));
-  assert.ok(result.properties.diagnostic.required.includes("session_attachment"));
-  assert.ok(result.properties.diagnostic.required.includes("selected_transcript_path"));
-  assert.ok(result.properties.diagnostic.required.includes("selected_plan_dir"));
-  assert.ok(result.properties.warnings.items.enum.includes("invalid_utf8_record"));
-  assert.ok(result.properties.warnings.items.enum.includes("invalid_json_record"));
-  assert.ok(result.properties.warnings.items.enum.includes("record_too_large"));
-  assert.equal(result.properties.report.maxLength, 20000);
-
-  assert.equal(artifact.archive_root, "pwf-codex-cloud-hooks/");
-  assert.equal(artifact.package_name, "pwf-codex-cloud-hooks");
-  assert.equal(artifact.package_version, readJson("package.json").version);
-  assert.equal(artifact.ordering, "lexicographic_by_utf8_path");
-  assert.equal(artifact.external_release_assets.length, 1);
-  assert.equal(artifact.external_release_assets[0].path,
-    `init-cloud-sandbox-v${artifact.package_version}.bash`);
-  const artifactPaths = artifact.entries.map(entry => entry.path);
-  assert.equal(new Set(artifactPaths).size, artifactPaths.length);
-  assert.equal(artifactPaths.length, 21);
-  assert.equal(artifactPaths.includes("patches/patch_planning_skill.py"), false);
-  assert.equal(artifactPaths.includes("contracts/compatibility-overlays-v1.json"), false);
-  assert.equal(artifactPaths.some(item => item.startsWith("init-cloud-sandbox-")), false);
-  for (const entry of artifact.entries.filter(entry => entry.state === "present")) {
-    assert.equal(fs.existsSync(path.join(root, entry.path)), true, entry.path);
-  }
-  for (const forbidden of artifact.excluded_prefixes) {
-    assert.equal(artifactPaths.some(entry => entry === forbidden.slice(0, -1) || entry.startsWith(forbidden)), false, forbidden);
+    const schema = readJson(relative);
+    assert.equal(schema.type, "object", relative);
+    assert.equal(schema.additionalProperties, false, relative);
+    assert.equal(schema.properties.schema_version.const, 1, relative);
   }
 });

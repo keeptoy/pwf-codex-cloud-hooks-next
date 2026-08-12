@@ -11,13 +11,13 @@ const pristineSkill = path.join(root, "tests", "fixtures", "planning-with-files"
 const manifestPath = path.join(root, "upstream-manifest.json");
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 const packageVersion = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")).version;
-const releaseArtifact = JSON.parse(fs.readFileSync(path.join(root, "contracts", "release-artifact-v1.json"), "utf8"));
+const releaseArtifact = JSON.parse(fs.readFileSync(path.join(root, manifest.managed_runtime.contracts.release_artifact.path), "utf8"));
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 const bash = process.env.BASH || (process.platform === "win32" ? "D:\\Program Files\\Git\\bin\\bash.exe" : "bash");
 const currentVersion = `v${packageVersion}`;
 const isDevelopmentIdentity = packageVersion.endsWith("-dev");
 assert.equal(releaseArtifact.external_release_assets.length, 1);
-const candidateBootstrap = path.join(root, releaseArtifact.external_release_assets[0].path);
+const candidateBootstrap = path.join(root, releaseArtifact.external_release_assets[0]);
 
 function bashPath(value) {
   const normalized = value.replaceAll("\\", "/");
