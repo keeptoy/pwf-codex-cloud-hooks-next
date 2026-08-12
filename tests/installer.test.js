@@ -18,9 +18,9 @@ const sha256 = value => crypto.createHash("sha256").update(value).digest("hex");
 
 const expectedRuntimeFiles = [
   "THIRD_PARTY_NOTICES.md",
-  "contracts/adapter-plan-context-request-v1.schema.json",
+  "contracts/adapter-plan-context-request-v2.schema.json",
   "contracts/adapter-runtime-request-v1.schema.json",
-  "contracts/plan-context-result-v1.schema.json",
+  "contracts/plan-context-result-v2.schema.json",
   "contracts/runtime-result-v1.schema.json",
   "hook_adapter.py",
   "installed-manifest.json",
@@ -184,7 +184,7 @@ test("managed install rejects an unverified or invalid runtime bundle before any
     { name: "retired manifest inventory mirror", mutate: bundle => bundle, mutateManifest: manifest => { manifest.managed_runtime.package_root = "runtime/upstream"; } },
     { name: "unsafe bundle reference", mutate: bundle => bundle, mutateManifest: manifest => { manifest.managed_runtime.contracts.runtime_bundle.path = "../runtime-bundle-v2.json"; } },
     { name: "unsafe package path", mutate: bundle => { bundle.local_files[0].package_path = "../owned-catchup.py"; return bundle; } },
-    { name: "unsafe installed path", mutate: bundle => { bundle.installed_contracts[0].installed_path = "../adapter-plan-context-request-v1.schema.json"; return bundle; } },
+    { name: "unsafe installed path", mutate: bundle => { bundle.installed_contracts[0].installed_path = "../adapter-runtime-request-v1.schema.json"; return bundle; } },
     { name: "duplicate package path", mutate: bundle => { bundle.upstream_files[1].package_path = bundle.upstream_files[0].package_path; return bundle; } },
     { name: "duplicate installed path", mutate: bundle => { bundle.installed_contracts[1].installed_path = bundle.installed_contracts[0].installed_path; return bundle; } },
     { name: "duplicate runtime id", mutate: bundle => { bundle.upstream_files[1].id = bundle.upstream_files[0].id; return bundle; } },
@@ -267,6 +267,18 @@ test("managed install uses the verified bundle with no manifest inventory mirror
   } finally {
     fs.rmSync(home, { recursive: true, force: true });
   }
+});
+
+test("verified predecessor replacement retires only exact superseded ABI paths", () => {
+  const installer = fs.readFileSync(path.join(cliWorkspace, "install.js"), "utf8");
+  const installBody = installer.slice(installer.indexOf("function install(options)"),
+    installer.indexOf("function repair(options)"));
+  assert.match(installBody, /const retiredFiles = assertSafeRuntimeForInstall\(paths\)/);
+  assert.match(installBody, /retireVerifiedPredecessorFiles\(paths, retiredFiles\)/);
+  assert.ok(installBody.indexOf("const backupDir = backup(paths, captures)") <
+    installBody.indexOf("retireVerifiedPredecessorFiles(paths, retiredFiles)"));
+  assert.ok(installBody.indexOf("retireVerifiedPredecessorFiles(paths, retiredFiles)") <
+    installBody.indexOf("writeRuntimeFiles(paths)"));
 });
 
 test("managed install is merge-preserving, idempotent, diagnosable and uninstallable", () => {
@@ -412,8 +424,8 @@ test("installed runtime permissions are cross-user readable on the Linux target"
     assert.equal(fs.statSync(path.join(runtime, "hook_adapter.py")).mode & 0o777, 0o755);
     assert.equal(fs.statSync(path.join(runtime, "owned-catchup.py")).mode & 0o777, 0o755);
     assert.equal(fs.statSync(path.join(runtime, "owned-plan.py")).mode & 0o777, 0o755);
-    assert.equal(fs.statSync(path.join(runtime, "contracts", "adapter-plan-context-request-v1.schema.json")).mode & 0o777, 0o644);
-    assert.equal(fs.statSync(path.join(runtime, "contracts", "plan-context-result-v1.schema.json")).mode & 0o777, 0o644);
+    assert.equal(fs.statSync(path.join(runtime, "contracts", "adapter-plan-context-request-v2.schema.json")).mode & 0o777, 0o644);
+    assert.equal(fs.statSync(path.join(runtime, "contracts", "plan-context-result-v2.schema.json")).mode & 0o777, 0o644);
     assert.equal(fs.statSync(path.join(runtime, "upstream", "session-catchup.py")).mode & 0o777, 0o755);
   } finally { fs.rmSync(home, { recursive: true, force: true }); }
 });

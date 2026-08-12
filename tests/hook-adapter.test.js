@@ -30,7 +30,7 @@ const planStub = [
   " outcome='no_plan'; inject=False; context=None; state='none'; scope='none'; plan_dir=None",
   "else:",
   " outcome='context_emitted'; inject=True; context=os.environ.get('PWF_TEST_PLAN_CONTEXT','OWNED_PORTABLE_CONTEXT'); state='resolved'; scope='scoped'; plan_dir=str(pathlib.Path(root).parent/'outside') if mode=='outside' else plan",
-  "result={'schema_version':1,'outcome':outcome,'inject':inject,'context':context,'project':{'root':root,'planning_enabled':enabled,'session_attachment':attachment,'plan_state':state,'plan_scope':scope,'plan_dir':plan_dir},'warnings':warnings,'diagnostic':{'event_name':request['event']['name'],'plan_id_state':plan_id_state,'selected_plan_scope':scope,'selected_plan_dir':plan_dir}}",
+  "result={'schema_version':2,'outcome':outcome,'inject':inject,'context':context,'effective_profile':'legacy','advisory':None,'project':{'root':root,'planning_enabled':enabled,'session_attachment':attachment,'plan_state':state,'plan_scope':scope,'plan_dir':plan_dir},'warnings':warnings,'diagnostic':{'event_name':request['event']['name'],'plan_id_state':plan_id_state,'selected_plan_scope':scope,'selected_plan_dir':plan_dir}}",
   "print(json.dumps(result))",
 ].join("\n");
 

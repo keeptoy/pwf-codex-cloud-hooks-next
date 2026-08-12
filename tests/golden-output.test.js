@@ -27,10 +27,12 @@ assert.equal(canonicalPlanFixture.scenarios.length, 2);
 function planResult(rootPath, event, scope, relative, context) {
   if (!context) {
     return {
-      schema_version: 1,
+      schema_version: 2,
       outcome: "no_plan",
       inject: false,
       context: null,
+      effective_profile: "legacy",
+      advisory: null,
       project: {
         root: rootPath,
         planning_enabled: true,
@@ -50,10 +52,12 @@ function planResult(rootPath, event, scope, relative, context) {
   }
   const planDir = scope === "legacy_root" ? rootPath : path.join(rootPath, ...relative.split("/"));
   return {
-    schema_version: 1,
+    schema_version: 2,
     outcome: "context_emitted",
     inject: true,
     context,
+    effective_profile: "legacy",
+    advisory: null,
     project: {
       root: rootPath,
       planning_enabled: true,

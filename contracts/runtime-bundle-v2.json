@@ -63,7 +63,7 @@
       "package_path": "hooks/hook_adapter.py",
       "installed_path": "hooks/planning-with-files/hook_adapter.py",
       "mode": "0755",
-      "sha256": "7c6e7a07459d22d8bf63619e8f24f0178e80ce6bc8936d93b6762221bd33f6ba",
+      "sha256": "6f4c32414b22ea70b14164ec6946df3b731c1d1d0ff402254b0f3d61896240d4",
       "direct_dependencies": [{ "id": "owned_plan" }, { "id": "owned_catchup" }]
     },
     {
@@ -82,14 +82,14 @@
       "package_path": "runtime/owned-plan.py",
       "installed_path": "hooks/planning-with-files/owned-plan.py",
       "mode": "0755",
-      "sha256": "1d8098d12ae6fdc9389b1047fc3691d1f792c813d21575ace7db0daa85c32595",
+      "sha256": "378714ee2d6b053fc2b9c914468bac9fa7ba517b6705e6e3506014d0c149708f",
       "direct_dependencies": [{ "id": "resolve_plan_dir" }, { "id": "inject_plan" }]
     }
   ],
   "installed_contracts": [
     { "id": "adapter_runtime_request", "package_path": "contracts/adapter-runtime-request-v1.schema.json", "installed_path": "hooks/planning-with-files/contracts/adapter-runtime-request-v1.schema.json", "mode": "0644", "sha256": "a86588e3c7d55cbbeddc74110403ba815ad8715735c149d77dd0c47996ee72d5" },
     { "id": "runtime_result", "package_path": "contracts/runtime-result-v1.schema.json", "installed_path": "hooks/planning-with-files/contracts/runtime-result-v1.schema.json", "mode": "0644", "sha256": "1cb545d9487c8d0ef9f4ccd270a786d0dc998629813e81a2cc05463b23b62ed7" },
-    { "id": "adapter_plan_context_request", "package_path": "contracts/adapter-plan-context-request-v1.schema.json", "installed_path": "hooks/planning-with-files/contracts/adapter-plan-context-request-v1.schema.json", "mode": "0644", "sha256": "c0c904451cf5042d621c8702d475af65b757ca5e45d74da50d9541a55b469262" },
-    { "id": "plan_context_result", "package_path": "contracts/plan-context-result-v1.schema.json", "installed_path": "hooks/planning-with-files/contracts/plan-context-result-v1.schema.json", "mode": "0644", "sha256": "5d739740d82e01abf06c4b18b3a1eeb533a1f8e7513a24827b4bdcb36d484172" }
+    { "id": "adapter_plan_context_request", "package_path": "contracts/adapter-plan-context-request-v2.schema.json", "installed_path": "hooks/planning-with-files/contracts/adapter-plan-context-request-v2.schema.json", "mode": "0644", "sha256": "590a65961ebbb7f8379de12b2c25485ac1e210208b721e4dd063f3882f42d939" },
+    { "id": "plan_context_result", "package_path": "contracts/plan-context-result-v2.schema.json", "installed_path": "hooks/planning-with-files/contracts/plan-context-result-v2.schema.json", "mode": "0644", "sha256": "2d0623215dcb95002a21ecf59e9f20714b85ab42684e00e7e8ea1f8c39d2e372" }
   ]
 }

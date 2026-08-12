@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://keeptoy.github.io/pwf-codex-cloud-hooks/contracts/adapter-plan-context-request-v1.schema.json",
-  "title": "planning-with-files adapter to owned plan-context request v1",
-  "$comment": "Exact-v1 managed canonical plan-context request used by both supported lifecycle events. It preserves managed_legacy behavior; future opt-in modes require a separately reviewed contract.",
+  "$id": "https://keeptoy.github.io/pwf-codex-cloud-hooks/contracts/adapter-plan-context-request-v2.schema.json",
+  "title": "planning-with-files adapter to owned plan-context request v2",
+  "$comment": "Exact-v2 managed canonical plan-context request. F1B produces only allowed_profiles=[legacy]; wider sequences are reserved for separately reviewed activation gates.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "runtime", "event", "project", "policy", "output_budget"],
   "properties": {
-    "schema_version": { "const": 1 },
+    "schema_version": { "const": 2 },
     "runtime": { "const": "codex" },
     "event": {
       "type": "object",
@@ -60,10 +60,22 @@
     "policy": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["planning_enabled", "behavior_profile"],
+      "required": ["planning_enabled", "allowed_profiles", "opt_in_protocol"],
       "properties": {
         "planning_enabled": { "type": "boolean" },
-        "behavior_profile": { "const": "managed_legacy" }
+        "allowed_profiles": {
+          "type": "array",
+          "prefixItems": [
+            { "const": "legacy" },
+            { "const": "smart" },
+            { "const": "autonomous" }
+          ],
+          "items": false,
+          "minItems": 1,
+          "maxItems": 3,
+          "uniqueItems": true
+        },
+        "opt_in_protocol": { "const": "codex-managed-v1" }
       }
     },
     "output_budget": {

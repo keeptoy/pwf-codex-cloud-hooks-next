@@ -92,14 +92,23 @@ test("installed transition admits exactly one accepted v0.3.5 state shape", () =
   assert.equal(new Set(transition.predecessor.runtime_files.map(item => item.path)).size, 10);
 });
 
-test("F1A keeps all four runtime protocol schemas at exact v1", () => {
+test("F1B rotates only the plan protocol to exact v2", () => {
   for (const relative of [
     "contracts/adapter-runtime-request-v1.schema.json", "contracts/runtime-result-v1.schema.json",
-    "contracts/adapter-plan-context-request-v1.schema.json", "contracts/plan-context-result-v1.schema.json",
   ]) {
     const schema = readJson(relative);
     assert.equal(schema.type, "object", relative);
     assert.equal(schema.additionalProperties, false, relative);
     assert.equal(schema.properties.schema_version.const, 1, relative);
   }
+  const request = readJson("contracts/adapter-plan-context-request-v2.schema.json");
+  const result = readJson("contracts/plan-context-result-v2.schema.json");
+  assert.equal(request.properties.schema_version.const, 2);
+  assert.deepEqual(request.properties.policy.required,
+    ["planning_enabled", "allowed_profiles", "opt_in_protocol"]);
+  assert.equal(request.properties.policy.properties.opt_in_protocol.const, "codex-managed-v1");
+  assert.deepEqual(result.properties.effective_profile.enum, ["legacy", "smart", "autonomous", null]);
+  assert.ok(result.properties.advisory.enum.includes("profile_unsupported"));
+  assert.equal(fs.existsSync(path.join(root, "contracts/adapter-plan-context-request-v1.schema.json")), false);
+  assert.equal(fs.existsSync(path.join(root, "contracts/plan-context-result-v1.schema.json")), false);
 });

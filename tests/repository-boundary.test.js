@@ -47,12 +47,15 @@ function currentRoleWindow() {
   return { accepted, candidate, immediateFallback, roadmap };
 }
 
-test("Phase 4 F1A keeps the development identity window and stops before F1B", () => {
+test("Phase 4 foundation keeps the candidate and accepted identity window distinct", () => {
   const { accepted, candidate, roadmap } = currentRoleWindow();
   assert.equal(candidate, "v0.4.0-dev");
   assert.equal(accepted, "v0.3.5");
   assert.notEqual(candidate, accepted);
   assert.match(roadmap, /F0[^\n]*complete/);
+  assert.match(roadmap, /F1A[^\n]*complete/);
+  assert.match(roadmap, /F1B[^\n]*local checkpoint complete/);
+  assert.match(roadmap, /F2A[^\n]*未授权/);
 });
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {

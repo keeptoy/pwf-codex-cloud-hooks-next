@@ -16,11 +16,15 @@ const LINUX = process.platform === "linux";
 
 function request(root, overrides = {}) {
   const value = {
-    schema_version: 1,
+    schema_version: 2,
     runtime: "codex",
     event: { name: "UserPromptSubmit", source: null, session_id: null, turn_id: null },
     project: { root, plan_id: null },
-    policy: { planning_enabled: true, behavior_profile: "managed_legacy" },
+    policy: {
+      planning_enabled: true,
+      allowed_profiles: ["legacy"],
+      opt_in_protocol: "codex-managed-v1",
+    },
     output_budget: { max_context_chars: 20000, max_plan_lines: 50, max_progress_lines: 20 },
   };
   for (const [key, item] of Object.entries(overrides)) {
@@ -80,7 +84,7 @@ function readLinuxProcStat(pid) {
   }
 }
 
-test("owned plan runtime validates exact v1 and short-circuits disabled planning", () => {
+test("owned plan runtime validates exact v2 and short-circuits disabled planning", () => {
   const syntheticFields = ["Z", "1", "5086", "5086", ...Array(15).fill("0"), "120505"];
   const syntheticStat = parseLinuxProcStat(`5087 (sleep worker) ${syntheticFields.join(" ")}`);
   assert.deepEqual(syntheticStat, {
@@ -92,8 +96,10 @@ test("owned plan runtime validates exact v1 and short-circuits disabled planning
   assert.equal(invalid.inject, false);
   assert.equal(invalid.context, null);
   assert.deepEqual(Object.keys(invalid).sort(), [
-    "context", "diagnostic", "inject", "outcome", "project", "schema_version", "warnings",
+    "advisory", "context", "diagnostic", "effective_profile", "inject", "outcome", "project", "schema_version", "warnings",
   ]);
+  assert.equal(invalid.schema_version, 2);
+  assert.equal(invalid.effective_profile, null);
 
   const disabled = run(request("/workspace/does-not-need-to-exist", {
     policy: { planning_enabled: false },
@@ -101,6 +107,146 @@ test("owned plan runtime validates exact v1 and short-circuits disabled planning
   assert.equal(disabled.outcome, "planning_disabled");
   assert.equal(disabled.project.planning_enabled, false);
   assert.equal(disabled.project.plan_state, "none");
+  assert.equal(disabled.effective_profile, "legacy");
+  assert.equal(disabled.advisory, null);
+});
+
+test("owned plan rejects future profiles before inactive state capture", () => {
+  const source = String.raw`
+import importlib.util, json, pathlib, sys
+spec = importlib.util.spec_from_file_location("owned_plan", sys.argv[1])
+m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+def forbidden(*args, **kwargs): raise AssertionError("state capture became reachable")
+m.capture_owned_state = forbidden
+value = json.loads(sys.stdin.read())
+print(json.dumps(m.run_request(value)))
+`;
+  const future = request("/workspace/not-opened", {
+    policy: { allowed_profiles: ["legacy", "smart"] },
+  });
+  const result = spawnSync(PYTHON, ["-c", source, RUNTIME], {
+    input: JSON.stringify(future), encoding: "utf8",
+  });
+  assert.equal(result.status, 0, result.stderr);
+  const value = JSON.parse(result.stdout);
+  assert.equal(value.outcome, "invalid_request");
+  assert.equal(value.inject, false);
+  assert.equal(value.context, null);
+  assert.equal(value.effective_profile, null);
+  assert.equal(value.advisory, "profile_unsupported");
+});
+
+test("inactive mode normalizer is bounded, exact, and does not arm old markers", () => {
+  const source = String.raw`
+import importlib.util, json, sys
+spec = importlib.util.spec_from_file_location("owned_plan", sys.argv[1])
+m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+values = [None, "autonomous gate inject-smart\n", "codex-managed-v1 inject-smart\n", "codex-managed-v1 autonomous inject-smart\n", "codex-managed-v1 gate\n", "codex-managed-v1 unknown\n", "codex-managed-v1 inject-smart inject-smart\n"]
+results = []
+for value in values:
+    try: results.append(m.normalize_mode_state(None if value is None else value.encode("utf-8")))
+    except m.StateAdmissionFailure as error: results.append({"error": error.advisory})
+print(json.dumps(results))
+`;
+  const result = spawnSync(PYTHON, ["-c", source, RUNTIME], { encoding: "utf8" });
+  assert.equal(result.status, 0, result.stderr);
+  const values = JSON.parse(result.stdout);
+  assert.deepEqual(values[0], { managed_opt_in: false, requested_profile: "legacy" });
+  assert.deepEqual(values[1], { managed_opt_in: false, requested_profile: "legacy" });
+  assert.deepEqual(values[2], { managed_opt_in: true, requested_profile: "smart" });
+  assert.deepEqual(values[3], { managed_opt_in: true, requested_profile: "autonomous" });
+  assert.deepEqual(values[4], { error: "profile_unsupported" });
+  assert.deepEqual(values[5], { error: "opt_in_invalid" });
+  assert.deepEqual(values[6], { error: "opt_in_invalid" });
+});
+
+test("legacy production paths never call inactive state capture", { skip: !LINUX }, () => {
+  const active = fixture("active");
+  const empty = fixture("empty");
+  fs.rmSync(path.join(empty.plan, "task_plan.md"));
+  const source = String.raw`
+import importlib.util, json, pathlib, sys
+spec = importlib.util.spec_from_file_location("owned_plan", sys.argv[1])
+m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+def forbidden(*args, **kwargs): raise AssertionError("state capture became reachable")
+m.capture_owned_state = forbidden
+requests = json.loads(sys.stdin.read())
+print(json.dumps([m.run_request(value) for value in requests]))
+`;
+  try {
+    const requests = [
+      request(active.root),
+      request(active.root, { event: { name: "SessionStart", source: "startup" } }),
+      request(empty.root),
+      request(active.root, { policy: { planning_enabled: false } }),
+    ];
+    const result = spawnSync(PYTHON, ["-c", source, RUNTIME], {
+      input: JSON.stringify(requests), encoding: "utf8",
+    });
+    assert.equal(result.status, 0, result.stderr);
+    assert.deepEqual(JSON.parse(result.stdout).map(item => item.outcome), [
+      "context_emitted", "context_emitted", "no_plan", "planning_disabled",
+    ]);
+  } finally {
+    cleanup(active);
+    cleanup(empty);
+  }
+});
+
+test("inactive state capture rejects unsafe mode files and races", { skip: !LINUX }, () => {
+  const value = fixture();
+  const outside = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-mode-outside-"));
+  const source = String.raw`
+import importlib.util, json, os, pathlib, sys
+spec = importlib.util.spec_from_file_location("owned_plan", sys.argv[1])
+m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+plan = pathlib.Path(sys.argv[2]); action = sys.argv[3]
+fd = os.open(plan, os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW)
+def race():
+    replacement = plan / ".mode.next"
+    replacement.write_text("codex-managed-v1 inject-smart\n", encoding="utf-8")
+    replacement.replace(plan / ".mode")
+try:
+    result = m.capture_owned_state(fd, race_probe=race if action == "race" else None)
+except m.StateAdmissionFailure as error:
+    result = {"error": error.advisory}
+finally:
+    os.close(fd)
+print(json.dumps(result))
+`;
+  const invoke = action => {
+    const result = spawnSync(PYTHON, ["-c", source, RUNTIME, value.plan, action], { encoding: "utf8" });
+    assert.equal(result.status, 0, result.stderr);
+    return JSON.parse(result.stdout);
+  };
+  try {
+    const mode = path.join(value.plan, ".mode");
+    fs.writeFileSync(mode, "codex-managed-v1 inject-smart\n");
+    assert.deepEqual(invoke("normal"), { managed_opt_in: true, requested_profile: "smart" });
+
+    fs.writeFileSync(mode, "x".repeat(257));
+    assert.deepEqual(invoke("oversize"), { error: "state_over_budget" });
+
+    fs.writeFileSync(mode, Buffer.from([0xff, 0xfe]));
+    assert.deepEqual(invoke("utf8"), { error: "state_unsafe" });
+
+    fs.rmSync(mode);
+    const target = path.join(outside, "mode");
+    fs.writeFileSync(target, "codex-managed-v1 inject-smart\n");
+    fs.symlinkSync(target, mode);
+    assert.deepEqual(invoke("symlink"), { error: "state_unsafe" });
+
+    fs.rmSync(mode);
+    fs.linkSync(target, mode);
+    assert.deepEqual(invoke("hardlink"), { error: "state_unsafe" });
+
+    fs.rmSync(mode);
+    fs.writeFileSync(mode, "codex-managed-v1 inject-smart\n");
+    assert.deepEqual(invoke("race"), { error: "state_changed" });
+  } finally {
+    cleanup(value);
+    fs.rmSync(outside, { recursive: true, force: true });
+  }
 });
 
 test("owned plan emits pristine managed-legacy context from a private snapshot", { skip: !LINUX }, () => {

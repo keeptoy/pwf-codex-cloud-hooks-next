@@ -681,7 +681,7 @@ function inspectInstallation(paths, skill) {
   return { errors, blockers, manifest, requirements, healthy: errors.length === 0, repairable: errors.length > 0 && blockers.length === 0 };
 }
 function assertSafeRuntimeForInstall(paths) {
-  if (!fs.existsSync(paths.runtime)) return;
+  if (!fs.existsSync(paths.runtime)) return [];
   for (const component of [path.join(paths.home, "hooks"), paths.runtime]) {
     if (fs.lstatSync(component).isSymbolicLink()) throw new Error(`BLOCKED_UNKNOWN_RUNTIME: symlinked path ${component}`);
   }
@@ -697,7 +697,7 @@ function assertSafeRuntimeForInstall(paths) {
     }
   }
   walk(paths.runtime);
-  if (!entries.length) return;
+  if (!entries.length) return [];
   const { manifest, error } = readManifest(paths);
   if (error) throw new Error(`BLOCKED_UNKNOWN_RUNTIME: ${error}`);
   let expectedInventory;
@@ -733,6 +733,13 @@ function assertSafeRuntimeForInstall(paths) {
     if (!fs.existsSync(target) || fileHash(target) !== file.sha256) throw new Error(`BLOCKED_UNKNOWN_RUNTIME: ${file.id} managed content mismatch`);
     if (process.platform !== "win32" && (fs.statSync(target).mode & 0o777) !== Number.parseInt(file.mode, 8)) throw new Error(`BLOCKED_UNKNOWN_RUNTIME: ${file.id} managed mode mismatch`);
   }
+  const currentPaths = new Set(runtimeInventory().map(file => file.path));
+  return expectedInventory.map(file => file.path).filter(relative => !currentPaths.has(relative));
+}
+function retireVerifiedPredecessorFiles(paths, retiredFiles) {
+  for (const relative of retiredFiles) {
+    fs.rmSync(path.join(paths.runtime, ...relative.split("/")));
+  }
 }
 function install(options) {
   const paths = pathsFor(options.codexHome, options.managedRequirements), skill = resolveSkill(options.skillRoot, paths.home);
@@ -747,9 +754,10 @@ function install(options) {
     const captures = captureSharedState(paths);
     const currentRequirements = capturedText(captures, paths.requirements);
     const proposedRequirements = managedRequirements(currentRequirements, paths);
-    assertSafeRuntimeForInstall(paths);
+    const retiredFiles = assertSafeRuntimeForInstall(paths);
     const backupDir = backup(paths, captures);
     assertSharedState(captures);
+    retireVerifiedPredecessorFiles(paths, retiredFiles);
     writeRuntimeFiles(paths);
     atomicWrite(paths.requirements, proposedRequirements, 0o644, captures.get(paths.requirements));
     atomicJson(paths.manifest, buildManifest(paths, skill, proposedRequirements), captures.get(paths.manifest));

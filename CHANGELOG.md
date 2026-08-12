@@ -22,6 +22,10 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   拒绝旧字段复活。
 - installer 只准入当前完整安装或 transition contract 精确列出的 v0.3.5 predecessor；已证明前向迁移、篡改状态
   写前拒绝和 candidate uninstall 后的 v0.3.5 clean rollback。plan request/result、Host 输出与 legacy runtime 行为未变。
+- F1B 将内部 plan request/result 原子轮转为 exact v2：adapter 与 owned runtime 的 production capability 都固定为
+  `[legacy]`，result 只增加 bounded effective-profile/advisory decision；现有 Host context 与 legacy 行为保持不变。
+- 新增 `.mode` 的 descriptor-safe、bounded、exact normalize unit seam，但 production 没有调用边；nonce、attestation、
+  ledger、smart/autonomous 行为与 workspace writer 仍未实现，必须等待各自 F2 gate。
 
 ## v0.3.5
 

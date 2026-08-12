@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://keeptoy.github.io/pwf-codex-cloud-hooks/contracts/plan-context-result-v1.schema.json",
-  "title": "planning-with-files owned plan-context result v1",
-  "$comment": "Exact-v1 managed canonical plan-context result returned by the owned plan runtime. It preserves managed_legacy behavior; future opt-in modes require a separately reviewed contract.",
+  "$id": "https://keeptoy.github.io/pwf-codex-cloud-hooks/contracts/plan-context-result-v2.schema.json",
+  "title": "planning-with-files owned plan-context result v2",
+  "$comment": "Exact-v2 managed canonical plan-context result. Effective profile and bounded advisory codes expose decisions without returning workspace data or raw diagnostics.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "outcome", "inject", "context", "project", "warnings", "diagnostic"],
+  "required": ["schema_version", "outcome", "inject", "context", "effective_profile", "advisory", "project", "warnings", "diagnostic"],
   "properties": {
-    "schema_version": { "const": 1 },
+    "schema_version": { "const": 2 },
     "outcome": {
       "enum": [
         "context_emitted",
@@ -24,6 +24,20 @@
     },
     "inject": { "type": "boolean" },
     "context": { "type": ["string", "null"], "maxLength": 20000 },
+    "effective_profile": {
+      "enum": ["legacy", "smart", "autonomous", null]
+    },
+    "advisory": {
+      "enum": [
+        "state_unsafe",
+        "opt_in_invalid",
+        "profile_unsupported",
+        "state_incomplete",
+        "state_changed",
+        "state_over_budget",
+        null
+      ]
+    },
     "project": {
       "type": "object",
       "additionalProperties": false,
@@ -87,6 +101,32 @@
     }
   },
   "allOf": [
+    {
+      "if": {
+        "properties": { "outcome": { "const": "invalid_request" } },
+        "required": ["outcome"]
+      },
+      "then": {
+        "properties": {
+          "inject": { "const": false },
+          "context": { "type": "null" },
+          "effective_profile": { "type": "null" }
+        }
+      },
+      "else": {
+        "properties": {
+          "effective_profile": { "enum": ["legacy", "smart", "autonomous"] },
+          "advisory": { "type": "null" }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "advisory": { "type": "string" } },
+        "required": ["advisory"]
+      },
+      "then": { "properties": { "outcome": { "const": "invalid_request" } } }
+    },
     {
       "if": {
         "properties": { "outcome": { "const": "context_emitted" } },

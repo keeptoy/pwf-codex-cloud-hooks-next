@@ -138,7 +138,12 @@ test("plan request/result seam is exact and relational across production activat
       turn_id: "turn-plan-seam",
     });
     assert.deepEqual(request.project, { root, plan_id: null });
-    assert.deepEqual(request.policy, { planning_enabled: true, behavior_profile: "managed_legacy" });
+    assert.equal(request.schema_version, 2);
+    assert.deepEqual(request.policy, {
+      planning_enabled: true,
+      allowed_profiles: ["legacy"],
+      opt_in_protocol: "codex-managed-v1",
+    });
 
     const nullableTurnRequest = callHarness({
       op: "plan_request",
@@ -169,10 +174,12 @@ test("plan request/result seam is exact and relational across production activat
 
     const plan = path.join(root, ".planning", "active");
     const result = {
-      schema_version: 1,
+      schema_version: 2,
       outcome: "context_emitted",
       inject: true,
       context: "OWNED_PLAN_CONTEXT",
+      effective_profile: "legacy",
+      advisory: null,
       project: {
         root,
         planning_enabled: true,
@@ -190,6 +197,38 @@ test("plan request/result seam is exact and relational across production activat
       },
     };
     assert.equal(callHarness({ op: "plan_validate", request, result }), true);
+    const refused = {
+      ...result,
+      outcome: "invalid_request",
+      inject: false,
+      context: null,
+      effective_profile: null,
+      advisory: "profile_unsupported",
+      project: {
+        ...result.project,
+        plan_state: "none",
+        plan_scope: "none",
+        plan_dir: null,
+      },
+      diagnostic: {
+        ...result.diagnostic,
+        selected_plan_scope: "none",
+        selected_plan_dir: null,
+      },
+    };
+    assert.equal(callHarness({ op: "plan_validate", request, result: refused }), true);
+    assert.equal(callHarness({
+      op: "plan_validate", request,
+      result: { ...refused, effective_profile: "legacy" },
+    }), false);
+    assert.equal(callHarness({
+      op: "plan_validate", request,
+      result: { ...refused, advisory: "raw workspace detail" },
+    }), false);
+    assert.equal(callHarness({
+      op: "plan_validate", request,
+      result: { ...result, effective_profile: "smart" },
+    }), false);
     const runtime = path.join(root, "valid-plan.py");
     fs.writeFileSync(runtime, `import json\nprint(json.dumps(json.loads(${JSON.stringify(JSON.stringify(result))})))\n`);
     assert.deepEqual(callHarness({ op: "plan_invoke", runtime, request, timeout: 1 }), [result, null]);

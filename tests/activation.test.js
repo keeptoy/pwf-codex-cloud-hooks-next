@@ -62,7 +62,7 @@ function writePlanStub(layout, { context = "OWNED_PLAN_CONTEXT", exitCode = 0 } 
     "if capture: pathlib.Path(capture).write_text(json.dumps(request),encoding='utf-8')",
     "plan=str(pathlib.Path(request['project']['root'])/'.planning'/'active')",
     `context=${JSON.stringify(context)}`,
-    "result={'schema_version':1,'outcome':'context_emitted','inject':True,'context':context,'project':{'root':request['project']['root'],'planning_enabled':request['policy']['planning_enabled'],'session_attachment':'legacy','plan_state':'resolved','plan_scope':'scoped','plan_dir':plan},'warnings':[],'diagnostic':{'event_name':request['event']['name'],'plan_id_state':'absent' if request['project']['plan_id'] is None else 'accepted','selected_plan_scope':'scoped','selected_plan_dir':plan}}",
+    "result={'schema_version':2,'outcome':'context_emitted','inject':True,'context':context,'effective_profile':'legacy','advisory':None,'project':{'root':request['project']['root'],'planning_enabled':request['policy']['planning_enabled'],'session_attachment':'legacy','plan_state':'resolved','plan_scope':'scoped','plan_dir':plan},'warnings':[],'diagnostic':{'event_name':request['event']['name'],'plan_id_state':'absent' if request['project']['plan_id'] is None else 'accepted','selected_plan_scope':'scoped','selected_plan_dir':plan}}",
     "print(json.dumps(result))",
   ].join("\n");
   fs.writeFileSync(path.join(layout.managed, "owned-plan.py"), source);

@@ -70,6 +70,10 @@ PLAN_WARNINGS = {
     "plan_id_rejected", "active_plan_rejected", "candidate_escape_rejected",
     "progress_unreadable", "stale_cleanup_skipped", "stale_cleanup_failed",
 }
+PLAN_ADVISORIES = {
+    "state_unsafe", "opt_in_invalid", "profile_unsupported", "state_incomplete",
+    "state_changed", "state_over_budget",
+}
 PLAN_DIAGNOSTIC_FIELDS = {
     "event_name", "plan_id_state", "selected_plan_scope", "selected_plan_dir",
 }
@@ -199,7 +203,7 @@ def build_runtime_request(event: str, payload: dict, project: dict) -> dict | No
 
 
 def build_plan_context_request(event: str, payload: dict, root: Path) -> dict | None:
-    """Build the exact-v1 request for the active owned-plan sibling."""
+    """Build the exact-v2 legacy-only request for the active owned-plan sibling."""
     root_value = str(root)
     if event not in EVENTS or not root.is_absolute() or not (2 <= len(root_value) <= 4096):
         return None
@@ -230,7 +234,7 @@ def build_plan_context_request(event: str, payload: dict, root: Path) -> dict | 
         else None
     )
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "runtime": "codex",
         "event": {
             "name": event,
@@ -241,7 +245,8 @@ def build_plan_context_request(event: str, payload: dict, root: Path) -> dict | 
         "project": {"root": root_value, "plan_id": plan_id},
         "policy": {
             "planning_enabled": os.environ.get("PLANNING_DISABLED") != "1",
-            "behavior_profile": "managed_legacy",
+            "allowed_profiles": ["legacy"],
+            "opt_in_protocol": "codex-managed-v1",
         },
         "output_budget": dict(PLAN_OUTPUT_BUDGET),
     }
@@ -303,10 +308,11 @@ def _plan_shape_is_valid(root_value: str, plan_value: str, scope: str) -> bool:
 
 def _valid_plan_context_result(value: object, request: dict | None = None) -> bool:
     if request is None or not isinstance(value, dict) or set(value) != {
-        "schema_version", "outcome", "inject", "context", "project", "warnings", "diagnostic"
+        "schema_version", "outcome", "inject", "context", "effective_profile", "advisory",
+        "project", "warnings", "diagnostic"
     }:
         return False
-    if value.get("schema_version") != 1 or value.get("outcome") not in PLAN_OUTCOMES:
+    if value.get("schema_version") != 2 or value.get("outcome") not in PLAN_OUTCOMES:
         return False
     if not isinstance(value.get("inject"), bool) or not isinstance(value.get("warnings"), list):
         return False
@@ -318,11 +324,24 @@ def _valid_plan_context_result(value: object, request: dict | None = None) -> bo
         request_event = request["event"]["name"]
         request_root = request["project"]["root"]
         request_enabled = request["policy"]["planning_enabled"]
+        request_profiles = request["policy"]["allowed_profiles"]
+        request_protocol = request["policy"]["opt_in_protocol"]
     except (KeyError, TypeError):
         return False
     if request_event not in EVENTS or not isinstance(request_root, str) or not (2 <= len(request_root) <= 4096):
         return False
-    if not isinstance(request_enabled, bool):
+    if (
+        not isinstance(request_enabled, bool)
+        or request_profiles != ["legacy"]
+        or request_protocol != "codex-managed-v1"
+    ):
+        return False
+    effective_profile = value.get("effective_profile")
+    advisory = value.get("advisory")
+    if value["outcome"] == "invalid_request":
+        if effective_profile is not None or advisory not in PLAN_ADVISORIES | {None}:
+            return False
+    elif effective_profile != "legacy" or advisory is not None:
         return False
     project = value.get("project")
     if not isinstance(project, dict) or set(project) != {

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Active managed plan-context runtime using the exact v1 JSON protocol.
+"""Active managed plan-context runtime using the exact v2 JSON protocol.
 
 The adapter dispatches this sibling before catch-up for both supported Hook events.
 """
@@ -24,7 +24,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 sys.dont_write_bytecode = True
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 EVENTS = {"SessionStart", "UserPromptSubmit"}
 SESSION_SOURCES = {"startup", "resume", "clear", "compact"}
 SESSION_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
@@ -42,6 +42,15 @@ WARNINGS = {
     "stale_cleanup_skipped",
     "stale_cleanup_failed",
 }
+ALLOWED_PROFILE_SEQUENCES = {
+    ("legacy",),
+    ("legacy", "smart"),
+    ("legacy", "smart", "autonomous"),
+}
+SUPPORTED_PROFILES = ("legacy",)
+OPT_IN_PROTOCOL = "codex-managed-v1"
+MODE_TOKENS = {OPT_IN_PROTOCOL, "inject-smart", "autonomous", "gate"}
+MAX_MODE_BYTES = 256
 
 RUNTIME_ROOT = Path(__file__).resolve().parent
 RESOLVER = RUNTIME_ROOT / "upstream" / "resolve-plan-dir.sh"
@@ -63,7 +72,15 @@ TRUSTED_BASE_PREFIX = "pwf-codex-cloud-hooks-"
 
 
 class InvalidRequest(ValueError):
-    """Raised when adapter input does not satisfy the exact v1 contract."""
+    """Raised when adapter input does not satisfy the exact v2 contract."""
+
+
+class StateAdmissionFailure(ValueError):
+    """A bounded reason for rejecting captured managed opt-in state."""
+
+    def __init__(self, advisory: str):
+        super().__init__(advisory)
+        self.advisory = advisory
 
 
 class PlanFailure(Exception):
@@ -129,11 +146,22 @@ def validate_request(value: Any) -> Dict[str, Any]:
     if plan_id is not None and PLAN_ID.fullmatch(plan_id) is None:
         raise InvalidRequest("project.plan_id is invalid")
 
-    policy = _exact_object(request["policy"], {"planning_enabled", "behavior_profile"}, "policy")
-    if not isinstance(policy["planning_enabled"], bool) or policy["behavior_profile"] != "managed_legacy":
+    policy = _exact_object(
+        request["policy"],
+        {"planning_enabled", "allowed_profiles", "opt_in_protocol"},
+        "policy",
+    )
+    profiles = policy["allowed_profiles"]
+    if (
+        not isinstance(policy["planning_enabled"], bool)
+        or not isinstance(profiles, list)
+        or any(not isinstance(profile, str) for profile in profiles)
+        or tuple(profiles) not in ALLOWED_PROFILE_SEQUENCES
+        or policy["opt_in_protocol"] != OPT_IN_PROTOCOL
+    ):
         raise InvalidRequest("policy is invalid")
     if request["output_budget"] != EXPECTED_BUDGET:
-        raise InvalidRequest("output_budget does not match contract v1")
+        raise InvalidRequest("output_budget does not match contract v2")
     return request
 
 
@@ -201,6 +229,8 @@ def plan_result(
     project: Optional[Dict[str, Any]] = None,
     warnings: Optional[List[str]] = None,
     plan_id_state: Optional[str] = None,
+    effective_profile: Optional[str] = "legacy",
+    advisory: Optional[str] = None,
 ) -> Dict[str, Any]:
     project = project or empty_project(request)
     unique_warnings = [item for item in dict.fromkeys(warnings or []) if item in WARNINGS]
@@ -210,6 +240,8 @@ def plan_result(
         "outcome": outcome,
         "inject": inject,
         "context": context if inject else None,
+        "effective_profile": effective_profile,
+        "advisory": advisory,
         "project": project,
         "warnings": unique_warnings,
         "diagnostic": {
@@ -373,6 +405,8 @@ def safe_read_file(
     *,
     required: bool,
     race_probe: Optional[Callable[[], None]] = None,
+    max_bytes: int = MAX_INPUT_BYTES,
+    oversize_outcome: str = "plan_unreadable",
 ) -> Optional[bytes]:
     file_fd: Optional[int] = None
     verify_fd: Optional[int] = None
@@ -384,20 +418,22 @@ def safe_read_file(
                 raise PlanFailure("plan_unreadable")
             return None
         before = os.fstat(file_fd)
-        if not stat.S_ISREG(before.st_mode) or before.st_size > MAX_INPUT_BYTES:
+        if not stat.S_ISREG(before.st_mode):
             raise PlanFailure("plan_unreadable")
+        if before.st_size > max_bytes:
+            raise PlanFailure(oversize_outcome)
         if before.st_nlink != 1:
             raise PlanFailure("plan_unreadable")
         chunks: List[bytes] = []
         total = 0
         while True:
-            chunk = os.read(file_fd, min(65_536, MAX_INPUT_BYTES + 1 - total))
+            chunk = os.read(file_fd, min(65_536, max_bytes + 1 - total))
             if not chunk:
                 break
             chunks.append(chunk)
             total += len(chunk)
-            if total > MAX_INPUT_BYTES:
-                raise PlanFailure("plan_unreadable")
+            if total > max_bytes:
+                raise PlanFailure(oversize_outcome)
         after = os.fstat(file_fd)
         if race_probe is not None:
             race_probe()
@@ -422,6 +458,61 @@ def safe_read_file(
             os.close(file_fd)
         if verify_fd is not None:
             os.close(verify_fd)
+
+
+def normalize_mode_state(content: Optional[bytes]) -> Dict[str, Any]:
+    """Normalize captured mode bytes without activating any profile."""
+    if content is None:
+        return {"managed_opt_in": False, "requested_profile": "legacy"}
+    if len(content) > MAX_MODE_BYTES:
+        raise StateAdmissionFailure("state_over_budget")
+    try:
+        text = content.decode("utf-8")
+    except UnicodeDecodeError:
+        raise StateAdmissionFailure("state_unsafe") from None
+    tokens = text.split()
+    if OPT_IN_PROTOCOL not in tokens:
+        return {"managed_opt_in": False, "requested_profile": "legacy"}
+    if len(tokens) != len(set(tokens)) or any(token not in MODE_TOKENS for token in tokens):
+        raise StateAdmissionFailure("opt_in_invalid")
+    token_set = set(tokens)
+    if "gate" in token_set:
+        raise StateAdmissionFailure("profile_unsupported")
+    if "autonomous" in token_set:
+        return {"managed_opt_in": True, "requested_profile": "autonomous"}
+    if "inject-smart" in token_set:
+        return {"managed_opt_in": True, "requested_profile": "smart"}
+    raise StateAdmissionFailure("state_incomplete")
+
+
+def capture_owned_state(
+    plan_fd: int,
+    *,
+    race_probe: Optional[Callable[[], None]] = None,
+) -> Dict[str, Any]:
+    """Safely capture the inactive managed mode seam for direct unit testing.
+
+    F1B production intentionally has no call edge to this helper.
+    """
+    try:
+        content = safe_read_file(
+            plan_fd,
+            ".mode",
+            required=False,
+            race_probe=race_probe,
+            max_bytes=MAX_MODE_BYTES,
+            oversize_outcome="state_over_budget",
+        )
+    except PlanFailure as failure:
+        advisory = (
+            failure.outcome
+            if failure.outcome in {"plan_state_changed", "state_over_budget"}
+            else "state_unsafe"
+        )
+        if advisory == "plan_state_changed":
+            advisory = "state_changed"
+        raise StateAdmissionFailure(advisory) from None
+    return normalize_mode_state(content)
 
 
 def _marker_attachment(root_fd: int, session_id: Optional[str]) -> str:
@@ -755,6 +846,13 @@ def _execute(
     temp_parent: Path,
     deadline: Optional[float],
 ) -> Dict[str, Any]:
+    if tuple(request["policy"]["allowed_profiles"]) != SUPPORTED_PROFILES:
+        return plan_result(
+            "invalid_request",
+            request,
+            effective_profile=None,
+            advisory="profile_unsupported",
+        )
     if os.name != "posix" or not all(hasattr(os, name) for name in ("O_DIRECTORY", "O_NOFOLLOW", "geteuid")):
         return plan_result("runtime_error", request)
     deadline = deadline if deadline is not None else time.monotonic() + OWNED_PLAN_SECONDS
@@ -897,7 +995,14 @@ def run_request(
     try:
         request = validate_request(value)
     except InvalidRequest:
-        return plan_result("invalid_request", value)
+        return plan_result("invalid_request", value, effective_profile=None)
+    if tuple(request["policy"]["allowed_profiles"]) != SUPPORTED_PROFILES:
+        return plan_result(
+            "invalid_request",
+            request,
+            effective_profile=None,
+            advisory="profile_unsupported",
+        )
     if not request["policy"]["planning_enabled"]:
         return plan_result("planning_disabled", request, project=empty_project(request, attachment="legacy"))
     try:

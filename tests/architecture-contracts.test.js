@@ -74,26 +74,28 @@ test("MAINTAINER_HANDOFF is a triage desk, not another mutable runbook", () => {
 });
 
 test("canonical plan-context architecture is exact, plan-first, and adapter-thin", () => {
-  const request = readJson("contracts/adapter-plan-context-request-v1.schema.json");
-  const result = readJson("contracts/plan-context-result-v1.schema.json");
+  const request = readJson("contracts/adapter-plan-context-request-v2.schema.json");
+  const result = readJson("contracts/plan-context-result-v2.schema.json");
   const bundle = readJson(currentBundlePath);
   const artifact = readJson(currentArtifactPath);
   const upstream = readJson("upstream-manifest.json");
   const architecture = readText("ARCHITECTURE.md");
   const catchup = readText("runtime/owned-catchup.py");
+  const ownedPlan = readText("runtime/owned-plan.py");
   const installer = readText("install.js");
 
-  assert.equal(request.properties.schema_version.const, 1);
+  assert.equal(request.properties.schema_version.const, 2);
   assert.equal(request.properties.runtime.const, "codex");
   assert.deepEqual(request.properties.event.properties.name.enum, ["SessionStart", "UserPromptSubmit"]);
-  assert.equal(request.properties.policy.properties.behavior_profile.const, "managed_legacy");
+  assert.equal(request.properties.policy.properties.allowed_profiles.prefixItems[0].const, "legacy");
+  assert.equal(request.properties.policy.properties.opt_in_protocol.const, "codex-managed-v1");
   assert.equal(request.properties.output_budget.properties.max_context_chars.const, 20000);
   assert.equal(request.properties.output_budget.properties.max_plan_lines.const, 50);
   assert.equal(request.properties.output_budget.properties.max_progress_lines.const, 20);
   assert.equal(Object.hasOwn(request.properties, "transcript"), false);
   assert.equal(JSON.stringify(request).includes('"prompt"'), false);
 
-  assert.equal(result.properties.schema_version.const, 1);
+  assert.equal(result.properties.schema_version.const, 2);
   assert.ok(result.properties.outcome.enum.includes("context_emitted"));
   assert.ok(result.properties.outcome.enum.includes("plan_state_changed"));
   assert.ok(result.properties.outcome.enum.includes("output_budget_exceeded"));
@@ -110,9 +112,12 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.equal(Object.hasOwn(upstream.managed_runtime, "files"), false);
   assert.match(installer, /const RUNTIME_BUNDLE = loadVerifiedRuntimeBundle\(\)/);
   assert.equal(artifact.entries.some(item => item.path === "runtime/owned-plan.py"), true);
-  assert.equal(artifact.entries.some(item => item.path === "contracts/adapter-plan-context-request-v1.schema.json"), true);
-  assert.equal(artifact.entries.some(item => item.path === "contracts/plan-context-result-v1.schema.json"), true);
+  assert.equal(artifact.entries.some(item => item.path === "contracts/adapter-plan-context-request-v2.schema.json"), true);
+  assert.equal(artifact.entries.some(item => item.path === "contracts/plan-context-result-v2.schema.json"), true);
   assert.equal(artifact.entries.some(item => item.path === "patches/patch_planning_skill.py"), false);
+  assert.match(ownedPlan, /def capture_owned_state\(/);
+  assert.equal((ownedPlan.match(/capture_owned_state\(/g) || []).length, 1,
+    "F1B production must not call the inactive state seam");
 
   const adapter = readText("hooks/hook_adapter.py");
   assert.match(adapter, /"plan": "owned-plan\.py"/);

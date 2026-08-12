@@ -24,7 +24,7 @@ Managed policy 只注册一个绝对路径 adapter，事件集固定为：
 | `SessionStart` | canary → canonical owned plan → 可选 owned catch-up → plan context |
 | `UserPromptSubmit` | canary → canonical owned plan context |
 
-两个事件都会先调用 sibling `owned-plan.py`。只有 exact-v1 result 通过严格校验且
+两个事件都会先调用 sibling `owned-plan.py`。只有 exact-v2 result 通过严格校验且
 `inject=true` 时才注入 planning context。`SessionStart` 再把 result 中已验证的六字段
 `project` 原样交给 `owned-catchup.py`。
 

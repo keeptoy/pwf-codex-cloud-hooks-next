@@ -113,7 +113,7 @@ $CODEX_HOME/hooks/planning-with-files/
   |-- owned-plan.py
   |-- owned-catchup.py
   |-- upstream/{resolve-plan-dir.sh,inject-plan.sh,ledger-summary.sh,session-catchup.py}
-  |-- contracts/{adapter-plan-context-request-v1,plan-context-result-v1}
+  |-- contracts/{adapter-plan-context-request-v2,plan-context-result-v2}
   |-- THIRD_PARTY_NOTICES.md
   `-- installed-manifest.json
 
@@ -201,7 +201,7 @@ Codex Hook stdin JSON
 hook_adapter.py
   |-- parse and validate event/Host fields
   |-- prepare mandatory PWF_GLOBAL_HOOK_CANARY_V1 (not streamed yet)
-  |-- supervise owned-plan.py with exact-v1 request
+  |-- supervise owned-plan.py with exact-v2 legacy-only request
   |      `-- resolve plan + private safe snapshot + pristine inject-plan.sh
   |-- SessionStart + validated plan result with inject=true only:
   |      forward the exact validated six-field project result
@@ -228,11 +228,12 @@ normalization 和 report rendering 仍由 owned wrapper 负责。
 
 ## 5. Canonical plan contract
 
-`adapter-plan-context-request-v1` 固定：
+`adapter-plan-context-request-v2` 固定：
 
 - runtime：`codex`；
 - events：`SessionStart` / `UserPromptSubmit`；
-- behavior profile：`managed_legacy`；
+- ordered allowed profiles；当前 F1B producer 与 runtime capability 都固定为 `[legacy]`；
+- opt-in protocol identity：`codex-managed-v1`，但 F1B 不读取 marker，也不激活该协议；
 - plan/progress 输出上限：50 / 20 行；
 - context 上限：20,000 字符；
 - 不传 prompt 或 transcript 内容。
@@ -247,7 +248,8 @@ normalization 和 report rendering 仍由 owned wrapper 负责。
 6. timeout、process-group kill、bounded output、cleanup 和 stale cleanup；
 7. exact result schema 与 structured diagnostic。
 
-Adapter 只接受完整、关系一致、位于 request root 下的 exact-v1 result。失败或 `inject=false` 时不做
+Adapter 只接受完整、关系一致、位于 request root 下的 exact-v2 result。result 的 effective profile 与 advisory
+只能是合同内 bounded decision，不携带 raw marker、nonce、hash、ledger 或路径诊断。失败或 `inject=false` 时不做
 filesystem fallback。
 
 ### 5.1 Upstream invocation strategy boundary
@@ -255,7 +257,9 @@ filesystem fallback。
 对当前 pinned PWF v3.8.2，private snapshot 是 `owned-plan.py` 内部的 integration-specific 调用策略，
 不是 Codex Host ABI，也不是已证明可复用于任意 Skill 的 Driver contract。选择它是为了在不增加第二个
 upstream patch point 的情况下保持 resolver/injector pristine，并通过最小文件投影和环境清洗
-强制 `managed_legacy`；安全读取、权限、预算、超时和清理成本由 owned runtime 明确承担。
+强制 legacy profile；安全读取、权限、预算、超时和清理成本由 owned runtime 明确承担。F1B 虽提供 `.mode`
+安全捕获/规范化的内部 unit seam，但 production 对它没有调用边；nonce、attestation 与 ledger 也没有 reader，只有
+未来独立 activation gate 才能把这些状态接入生产路径。
 
 这里的“第二个 patch point”特指当时为 plan resolver/injector 比较过的多目标 overlay，不表示 private
 snapshot 直接替换了 catch-up overlay。Catch-up 是另一条 invocation domain：Phase 2 的 owned wrapper 已

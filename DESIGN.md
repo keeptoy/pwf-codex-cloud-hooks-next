@@ -93,8 +93,8 @@ trusted surface；allowed helper roots、传递闭包和 pristine/managed 等价
 
 | 接口/清单 | Machine authority | 谁必须一起复核 |
 |---|---|---|
-| adapter → plan request | [`adapter-plan-context-request-v1.schema.json`](contracts/adapter-plan-context-request-v1.schema.json) | adapter producer、owned-plan consumer、两侧 seam tests |
-| plan → adapter result | [`plan-context-result-v1.schema.json`](contracts/plan-context-result-v1.schema.json) | owned-plan producer、adapter validator、activation tests |
+| adapter → plan request | [`adapter-plan-context-request-v2.schema.json`](contracts/adapter-plan-context-request-v2.schema.json) | adapter producer、owned-plan consumer、两侧 seam tests；F1B producer 仅允许 `legacy` |
+| plan → adapter result | [`plan-context-result-v2.schema.json`](contracts/plan-context-result-v2.schema.json) | owned-plan producer、adapter validator、activation tests；profile/advisory 只传 bounded decision |
 | adapter → catch-up request / result | [`adapter-runtime-request-v1.schema.json`](contracts/adapter-runtime-request-v1.schema.json) / [`runtime-result-v1.schema.json`](contracts/runtime-result-v1.schema.json) | adapter、owned-catchup、runtime/activation tests |
 | upstream provenance / bundle integrity index | [`upstream-manifest.json`](upstream-manifest.json) | importer、installer 与 manifest/contracts integrity tests；不得在这里重建 runtime inventory mirror |
 | runtime source/install inventory | [`runtime-bundle-v2.json`](contracts/runtime-bundle-v2.json) | importer、installer、upstream manifest integrity index、import/installer/contracts/pristine-helper tests |
