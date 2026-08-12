@@ -44,6 +44,14 @@ function currentRoleWindow() {
   return { accepted, candidate, immediateFallback, roadmap };
 }
 
+test("Phase 4 F0 opens the exact development identity window", () => {
+  const { accepted, candidate, roadmap } = currentRoleWindow();
+  assert.equal(candidate, "v0.4.0-dev");
+  assert.equal(accepted, "v0.3.5");
+  assert.notEqual(candidate, accepted);
+  assert.match(roadmap, /F0[^\n]*complete[^\n]*F1A[^\n]*未授权/);
+});
+
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
   const actual = repositoryPaths();
   const artifact = JSON.parse(read("contracts/release-artifact-v1.json"));
@@ -268,10 +276,12 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotMatch(changelog, /Successor 迁移来源链/);
 
   assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));
+  const currentTrainLine = roadmap.split(/\r?\n/)
+    .find(line => line.startsWith("| 当前开发列车 |")) || "";
   const sourceCandidateComplete = candidate === accepted
-    || roadmap.includes("zero-hash Source/Candidate Cloud 已 PASS");
+    || currentTrainLine.includes("zero-hash Source/Candidate Cloud 已 PASS");
   const publishedReleaseComplete = candidate === accepted
-    || roadmap.includes("Published Release Cloud hard acceptance 已 PASS");
+    || currentTrainLine.includes("Published Release Cloud hard acceptance 已 PASS");
   if (sourceCandidateComplete) {
     assert.match(acceptance, /Source\/Candidate Cloud hard acceptance 已.*完成/s);
     assert.match(acceptance, /SOURCE_CANDIDATE_CLOUD_PASS \/ I3_COMPLETE/);
@@ -282,7 +292,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   }
   assert.match(acceptance, /64 位 zero hash.*fail closed/s);
   assert.match(acceptance, /Cloud hard acceptance template/);
-  assert.match(acceptance, /不授予 Product Phase 4/);
+  assert.match(acceptance, /不授予 (?:Product Phase 4|F1A)/);
   assert.match(acceptance, /exact current id\/source inventory guard/);
   assert.match(acceptance, /本次验收增量没有改写 B～E 黑盒提示词/);
   assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-setup/);

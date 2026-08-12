@@ -4,6 +4,18 @@
 [`ROADMAP.md`](ROADMAP.md)；当前唯一行动与授权边界见活动 `task_plan.md`；精确 source、资产、大小和
 SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 acceptance。
 
+## v0.4.0-dev
+
+### Changed
+
+- 建立 Phase 4 的独立 F0 development identity：package 与 Release candidate 同步轮转为 `v0.4.0-dev`，新增
+  64 位 zero-hash、fail-closed 的外部 bootstrap；已发布 `v0.3.5` baseline 文件保持不变。
+- 当前 candidate/accepted 双身份窗口、F0 programme 状态与后续 gate 边界见 [`ROADMAP.md`](ROADMAP.md)；
+  本轮只准备身份与治理，不改变 runtime dispatch、Host ABI、trusted graph、installed inventory 或用户行为。
+- Source/Candidate Cloud 尚未执行，版本增量与模板入口见
+  [`docs/v0.4.0-dev-cloud-hard-acceptance.md`](docs/v0.4.0-dev-cloud-hard-acceptance.md)；已发布资产身份仍只由
+  [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 记录。
+
 ## v0.3.5
 
 ### Changed
