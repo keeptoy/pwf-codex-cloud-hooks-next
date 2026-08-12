@@ -45,3 +45,11 @@
 - The failing zero-call test deleted only `task_plan.md` while retaining `.planning/.active_plan`, the selected plan directory and `progress.md`. That is a selected but damaged plan, so production correctly returned fail-closed `plan_unreadable`.
 - The test intends to exercise the distinct `no_plan` production path. Use a workspace with no `.planning` directory for that request; do not weaken the expected outcome to `plan_unreadable`.
 - Existing resolver tests already cover safe no-plan fallback, and unsafe-input tests independently require missing/linked/non-regular required plan content to remain `plan_unreadable`. The correction changes no production behavior or trusted graph.
+
+## F1 acceptance and lifecycle closeout
+
+- Maintainer-reported exact Cloud source `fb61ca74517de399e80835a38ef4b2444d9e6468` passed the complete Source/Candidate/no-live route: Linux 133/133 with zero skips, deterministic 22-entry/80,800-byte ZIP at SHA-256 `1866d56503a38dbd8269362c475c63ba1f4638ab7f69f66bad3b6ac9d5653dc9`, setup and post-Resume PASS, 12 installed runtime files, four pristine upstream files, adapter-only policy and zero snapshot residue.
+- F1 is complete as an inactive foundation. This does not grant F2 activation or Published Release identity.
+- The v0.3.5 predecessor transition contract and installer branch are live compatibility behavior for this train, not disposable F1 scaffolding. Review/replace them when the accepted/predecessor window rotates; never rewrite a published artifact.
+- The `.mode` seam is a bounded F2A handoff. Activate and update its lifecycle under F2A `GO`; remove it before Phase 9 if F2A is `NO_GO` and it remains consumerless.
+- `[legacy]`, future-profile refusal and zero-read guards remain until F2A atomically replaces them with profile-specific admission/read proofs. Exact-key/denied-source guards remain schema safety, not historical tombstones.

@@ -193,6 +193,45 @@ F1B 再以 plan-v2 证明 state foundation 存在但不可达。任何一步若�
 F1B 完成后，下一步只能是请求 F2A Discovery/implementation 授权。activation/disarm commit point、smart activation、
 autonomous attestation/nonce/ledger 与 F3 Cloud/rollback 仍分别属于后续 gate。
 
+<a name="phase-4-3-f1-implementation-postscript"></a>
+
+## Post-implementation status（2026-08-12）
+
+本节是 F1 实施完成后的尾注，不改写上文“当时尚未实施、只完成施工图”的历史语义。后继活动计划已经按本施工图
+完成 F0、F1A 与 F1B；exact source `fb61ca74517de399e80835a38ef4b2444d9e6468` 又通过 Linux/no-live
+Source/Candidate Cloud：133/133 tests、0 fail、0 skip，22-entry deterministic ZIP、override install、B～E、
+post-Resume doctor/inventory/policy/residue 全部闭合。精确可变验收状态只见当前
+[`v0.4.0-dev` acceptance](../v0.4.0-dev-cloud-hard-acceptance.md#v0-4-0-dev-source-candidate-evidence)，programme
+状态只见 [`ROADMAP`](../../ROADMAP.md)。
+
+实施结果与施工图一致：
+
+- F1A 以 schema4、bundle/Release v2、entry-owned mode 与 exact installed transition 收敛供应链；
+- F1B 只轮转 plan request/result v2，并把 `.mode` normalizer 作为无 production call edge 的 inactive seam；
+- adapter/runtime 仍只支持 `[legacy]`，旧 upstream marker、nonce、attestation 与 ledger 不影响 production；
+- v0.3.5 exact forward takeover、tamper-before-write refusal、candidate-controlled clean rollback 与 legacy-equivalent
+  Host 输出均已由本地/ref-aware tests 和 Linux/no-live Cloud 分工证明；
+- F1 PASS 没有扩大 Host event set、trusted graph 或 workspace write 权限，也不授权 F2A。
+
+### F1 closeout lifecycle disposition
+
+F1 完成不等于“把所有带 transition/inactive 名字的代码删掉”。这些对象按真实 consumer 和退出条件分为四类：
+
+| 对象 | 当前状态 | 为什么现在不能删 | review / retirement trigger |
+|---|---|---|---|
+| v1 current plan schema/path 与 retired v1 metadata | `RETIRED` | current source 已由 v2 取代；只允许在 immutable history、v0.3.5 predecessor inventory 和 current absence guard 中出现 | current residue 继续禁止；历史证据不改写 |
+| `installed-state-transition-v1.json`、installer predecessor validator 与精确旧文件 retirement branch | `KEEP — active compatibility` | 它们是 v0.3.5 → 当前 candidate 的真实升级合同，不是施工脚手架；删除会直接失去 accepted baseline takeover | 本列车直至 seal 必须保留，发布后其 sealed bytes 永久保留；下一开发列车建立时按新的 accepted baseline 替换/复核单一 predecessor window |
+| installed-manifest schema3、`runtime_files` 与 `adapter_sha256` | `KEEP — active installed snapshot` | installer/doctor 和 v0.3.5 predecessor validation 仍有真实 consumer；它们不是 source inventory authority | 只在新的 installed-manifest schema gate 且新旧安装/repair/rollback 已闭合时轮转；`runtime_files` 继续作为现场快照，不按 source mirror 删除 |
+| `.mode` reader/normalizer inactive seam | `KEEP — F2 handoff` | F2A 需要在同一受控 reader 上增加 production admission；提前删除会在下一 gate 原样重建 | F2A `GO` 时建立受控 call edge并更新生命周期；若 F2A `NO_GO`，Phase 9 前删除无 consumer seam |
+| `[legacy]` capability、future-profile refusal 与 production zero-read guards | `KEEP — safety gate` | 它们证明 F1 未偷偷激活行为，是进入 F2A 前的可执行边界 | F2A 若激活 smart，必须由 profile-specific admission/read matrix 原子替换，不能先删断言后施工；F2A 不进入则继续保留 |
+| v2 exact-key 与 retired-field/denied-source guards | `KEEP — schema safety` | 安全意图已由结构和 exact schema 表达；guards 防止旧字段或未准入 writer 回流，不是 runtime tombstone | 下一次 schema/source-admission 轮转时按新 exact-key 正向测试复核，禁止无替代删除 |
+| zero-hash bootstrap、current candidate acceptance 与 dev governance | `KEEP — train lifecycle` | 当前仍是未 seal、未发布的开发列车身份 | F3/Phase 9 seal 与 publication gate 原子轮转，不在 F1 closeout 清理 |
+
+因此当前不做一次笼统的“F1 过渡代码清理”，也不等到 Phase 4 全部结束后再无差别删除。正确规则是：每个对象在自己的
+consumer 结束或替代 authority 落地时退出；F2A 负责 inactive seam 和 `[legacy]` gate 的接管判断，F3/Phase 9 负责
+candidate/Release lifecycle 审计，下一 accepted-window rotation 负责 predecessor transition 的替换。这样既不保留无期限
+死代码，也不会为了表面整洁删除仍承担升级和下一 gate 安全职责的实现。
+
 <a name="phase-4-3-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

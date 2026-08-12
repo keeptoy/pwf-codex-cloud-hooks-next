@@ -12,7 +12,7 @@
 
 ## Next Step
 
-完成 P0 exact producer/consumer/state-surface inventory，恢复 Phase 4.1/4.3 冻结的 v2 shape；随后先写 failing-first plan-v2、legacy zero-read、forged-profile refusal 与 state-reader unit seam tests。
+F1 foundation 已完成并停止。等待维护者补充后续观点或另行授权 F2A Discovery；不得自动进入 activation、seal、publication 或远端操作。
 
 ## Stop Conditions
 
@@ -33,6 +33,7 @@
 | P5 Local commit and stop | completed | 独立 commit，工作树干净，F2A 未授权 |
 | P6 Cloud acceptance handoff calibration | completed | v0.4.0-dev acceptance 增量准确覆盖 F1B，聚焦文档验证通过，独立本地文档 commit |
 | P7 Linux fixture correction and Cloud retry handoff | completed | no-plan fixture 与 fail-closed damaged-plan 语义分离，完整本地回归通过，独立本地 commit |
+| P8 F1 Cloud acceptance and lifecycle closeout | completed | exact Cloud evidence 写回，ROADMAP/Phase 4.3 状态同步，过渡对象退出条件冻结，独立本地 commit |
 
 ## Migration lifecycle ledger
 
@@ -60,4 +61,4 @@
 
 ## Current status
 
-`F1B_LOCAL_GREEN / SOURCE_CANDIDATE_RETRY_REQUIRED / F2A_NOT_AUTHORIZED`
+`F1_FOUNDATION_COMPLETE / SOURCE_CANDIDATE_CLOUD_PASS / F2A_NOT_AUTHORIZED`

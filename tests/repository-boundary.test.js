@@ -54,7 +54,8 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.notEqual(candidate, accepted);
   assert.match(roadmap, /F0[^\n]*complete/);
   assert.match(roadmap, /F1A[^\n]*complete/);
-  assert.match(roadmap, /F1B[^\n]*local checkpoint complete/);
+  assert.match(roadmap, /F1 foundation complete/);
+  assert.match(roadmap, /Source\/Candidate\/no-live Cloud PASS/);
   assert.match(roadmap, /F2A[^\n]*未授权/);
 });
 
@@ -290,7 +291,7 @@ test("change history, programme, provenance, and current acceptance keep separat
     || currentTrainLine.includes("Published Release Cloud hard acceptance 已 PASS");
   if (sourceCandidateComplete) {
     assert.match(acceptance, /Source\/Candidate Cloud hard acceptance 已.*完成/s);
-    assert.match(acceptance, /SOURCE_CANDIDATE_CLOUD_PASS \/ I3_COMPLETE/);
+    assert.match(acceptance, /SOURCE_CANDIDATE_CLOUD_PASS \/ F1_FOUNDATION_COMPLETE/);
     assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
   } else {
     assert.match(acceptance, /Source\/Candidate.*Cloud hard acceptance 尚未(?:开始|完成)/s);

@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.0-dev` zero-hash development candidate；F0/F1A complete，F1B local checkpoint complete、平台 acceptance pending |
+| 当前开发列车 | `v0.4.0-dev` zero-hash development candidate；F0/F1A/F1B complete；zero-hash Source/Candidate Cloud 已 PASS；F2A 未授权 |
 | 当前已接受版本 | `v0.3.5`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.4` immediate fallback |
 | 回退证据链 | immutable `v0.3.3` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4 Discovery 已完成并 `CONDITIONAL_GO_TO_F1`；F0～F3 路线已采纳，F0/F1A complete；F1B 已授权，F2A 及后续 activation 未授权 |
+| 当前 programme 边界 | Product Phase 4 Discovery 已完成；F0～F3 路线已采纳，F1 foundation complete；F2A 及后续 activation 未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.3.5` 已完成 immutable publication、公开下载/安装验收与 pointer-only promotion；只读 postflight 确认它为
@@ -67,7 +67,7 @@ implementation authorization。
 
 Phase 4 Discovery 已完成并冻结为 `CONDITIONAL_GO_TO_F1_INACTIVE_FOUNDATION`；Phase 4.3 又闭合了 F0、F1A、F1B
 文件/authority、hash、测试、平台与 installed-state migration 施工图。F0 已建立未封板的 `v0.4.0-dev`
-package/machine identity 和 zero-hash bootstrap；F1A 已完成 contract/source foundation；F1B 已闭合本地 implementation、完整回归与 deterministic ZIP，但 Linux/no-live Cloud acceptance 尚未执行。行为激活、seal 与 publication 仍未授权。精确 Next Step
+package/machine identity 和 zero-hash bootstrap；F1A 已完成 contract/source foundation；F1B 已闭合 implementation、完整回归、deterministic ZIP 与 Linux/no-live Cloud acceptance。F1 foundation 已完成；行为激活、seal 与 publication 仍未授权。精确 Next Step
 和停止条件只见活动 task plan；已完成 v0.3.5 基线与 rollback 证据仍见第 3 节及 provenance/acceptance。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
@@ -81,7 +81,7 @@ pre-release；多个低风险 Phase 也只有在独立评审后才能进入同�
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 development identity → F1A/F1B inactive foundation → F2A smart → F2B autonomous → F3 Fresh/Resume/rollback Cloud；legacy 默认不变 | F0/F1A complete；F1B local checkpoint complete、Linux/no-live Cloud pending；F2 未授权 |
+| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 development identity → F1A/F1B inactive foundation → F2A smart → F2B autonomous → F3 Fresh/Resume/rollback Cloud；legacy 默认不变 | F1 foundation complete；Source/Candidate/no-live Cloud PASS；F2 未授权 |
 | 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest 各自独立 gate；必须有 use case、latency/token budget 与 Cloud 证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7 前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan 时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6 进入 Discovery |
@@ -109,8 +109,8 @@ Phase 4 保持 Phase 4.1 冻结的 hybrid owned-boundary 与两个现有 turn-st
 
 F0 是 Phase 4 的正式前置 gate，不是 F1A 内部顺手改版本号。它只建立可变的开发身份；现已独立完成。
 F1A 也已闭合 schema 4、bundle/Release v2、placement、entry mode 与 exact v0.3.5 installed-state transition，且未改变
-legacy runtime behavior。`v0.4.0-dev` 仍是 zero-hash、未封板且未完成 Cloud 验收的 source candidate；programme
-F1B inactive foundation 的本地 checkpoint 已完成；Linux/no-live Cloud acceptance 仍待后续独立执行。当前必须停止，不能自动进入 F2A。
+legacy runtime behavior。`v0.4.0-dev` 仍是 zero-hash、未封板且未发布的 source candidate，但其
+Source/Candidate/no-live Cloud foundation 已 PASS。F1B inactive foundation 至此关闭；当前必须停止，不能自动进入 F2A。
 
 F1A/F1B 是独立审查、测试和停止点，不强制形成两个可发布的半成品。只要 runtime/schema bytes 会影响 bundle、
 manifest 或 ZIP hash，最终 candidate 就必须在同一完整 transaction 内使 contract、代码、inventory、mode 与 hash
