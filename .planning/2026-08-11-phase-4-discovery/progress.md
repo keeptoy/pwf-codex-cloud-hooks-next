@@ -94,3 +94,10 @@
   machine contracts、tests 或 Release inputs；活动 Next Step 继续等待维护者决定是否授权 F1。
 - Phase 4.2 文档、索引与 planning 记录完成后，repository/architecture focused governance 15/15 PASS，
   `git diff --check` PASS；验证没有把讨论建议提升为当前 programme authority。
+- 维护者明确采纳 Phase 4.2 的六项路线校准。摘要已将 F1A/F1B/F2A/F2B/F3、F2 前 activation/disarm、
+  Phase 5 compact-source-first、Phase 6 optional NO_GO、Phase 7/8 shared evaluator 与 Phase 9 standing gate
+  从候选建议升级为下一轮规划必须继承的决策输入。
+- 本轮仍只记录决策，不修改 ROADMAP 或活动授权，不进入 F1A/F1B implementation。下一轮先复核 Phase 4 Discovery
+  之后的分步实施计划是否需要按原子 contract/hash、依赖和验证边界微调。
+- 已采纳校准写回 Phase 4.2 后，repository/architecture focused governance 15/15 PASS，
+  `git diff --check` PASS；历史记录仍保持 advisory，不越权成为 programme authority。

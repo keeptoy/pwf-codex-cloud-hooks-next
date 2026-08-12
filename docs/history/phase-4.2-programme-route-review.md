@@ -1,6 +1,6 @@
 <a name="phase-4-2-historical-position"></a>
 
-# Phase 4.2：Phase 4～9 路线复核与校准
+# Phase 4.2：Phase 4～9 路线复核与已采纳校准
 
 ## Historical position
 
@@ -8,9 +8,12 @@
 里程碑**。它回答两个问题：Phase 4.1 是否真正继承了 Phase 3.9.3 的 machine-field 生命周期原则；现有
 ROADMAP 的 Phase 4～9 风险顺序是否仍适合当前架构与探路结果。
 
-本记录不代表新的 Product Phase、programme 状态或实施授权。文中 F1A/F1B、F2A/F2B 等名称是后续细化
-gate 时的建议；在维护者另行决定并修改当前 authority 前，ROADMAP 与活动 task plan 仍是唯一有效状态，
-`CONDITIONAL_GO_TO_F1` 也没有因此自动变成 implementation go。
+维护者随后明确采纳本记录的六项路线校准。文中 F1A/F1B、F2A/F2B/F3、activation/disarm protocol、
+Phase 5～9 边界不再只是待选建议，而是下一轮分步规划必须继承的决策输入。
+
+采纳路线不等于授权实施，也不代表 ROADMAP 与活动 task plan 已经完成同步：本记录不创建新的 Product Phase、
+package identity 或 programme gate，不把 `CONDITIONAL_GO_TO_F1` 自动提升为 implementation go。下一轮必须先把
+这些决策翻译成可执行步骤、依赖、测试矩阵和停止条件，再由当前 authority 承载授权。
 
 <a name="phase-4-2-questions-reviewed"></a>
 
@@ -62,13 +65,13 @@ Phase 9  当前获批列车的 Release 收口
 才进入 Release。特别是 Phase 7 必须在 Phase 8 前：先证明 completion evaluator 能稳定、安静、bounded 地给出
 建议，再允许同一判断参与阻断。
 
-需要调整的是 gate 粒度、前置协议和状态措辞，不是产品架构方向。
+需要调整的是 gate 粒度、前置协议和状态措辞，不是产品架构方向。维护者已采纳以下校准。
 
 <a name="phase-4-2-phase-4-gate-calibration"></a>
 
 ## Phase 4 gate calibration
 
-后续若修改活动计划，建议把 Phase 4 细分为以下检查点：
+后续活动计划必须把 Phase 4 细分为以下检查点；具体实施依赖和退出条件留给下一轮规划复核：
 
 ### F1A — contract and source foundation
 
@@ -160,10 +163,10 @@ Phase 9 仍不机械等于 `0.9.0`。它只封板当时已经分别通过 featur
 
 <a name="phase-4-2-acceptance-conclusion"></a>
 
-## Acceptance conclusion
+## Adopted decision and acceptance conclusion
 
 本轮结论是：Phase 4.1 已结合 Phase 3.9.3，并已触发 `origin` 等待审字段的退出判断；Phase 4～9 的总体风险
-顺序正确，适合继续使用。建议只做六项 programme 校准：
+顺序正确，适合继续使用。维护者已采纳六项 programme 校准：
 
 1. Phase 4 拆为 F1A/F1B/F2A/F2B/F3，但保持 candidate contract/hash 原子闭合；
 2. F2 前冻结显式 activation/disarm 协议；
@@ -172,8 +175,10 @@ Phase 9 仍不机械等于 `0.9.0`。它只封板当时已经分别通过 featur
 5. Phase 7/8 复用 evaluator，Phase 8 重新审计 mutable state；
 6. Phase 9 改为 standing Release gate，并区分 v0.3.5 已完成实例与当前列车状态。
 
-这些是后续更新 ROADMAP/F1 plan 的候选输入，不是本记录自行生效的 programme 变更。当前最小 Next Step 仍由
-活动 task plan 决定。
+这六项是后续更新 ROADMAP 和 Phase 4 implementation plan 的已决输入，不再重新讨论“是否采用”；下一轮只复核
+如何拆成安全、可验证、可停止的实施步骤，以及 F1A/F1B 是否因 hash/contract 原子关系需要在同一 candidate 中
+闭合。它们尚未自行生效为 programme 状态或 implementation authorization，当前最小 Next Step 仍由活动 task plan
+决定。
 
 <a name="phase-4-2-explicit-non-goals"></a>
 
@@ -183,16 +188,18 @@ Phase 9 仍不机械等于 `0.9.0`。它只封板当时已经分别通过 featur
 - 不授权 F1、F2、Cloud、Release，也不创建 `0.4.0-*` machine identity。
 - 不提前激活 smart/autonomous/gated，不准入上游 writer 或新 Host event。
 - 不为了生命周期整洁删除未来可能有 Phase 4 consumer 的字段；只按已确认 consumer 与结构表达做决定。
-- 不在这份历史讨论记录中直接改写 ROADMAP 当前状态。
+- 不在这份决策记录中直接改写 ROADMAP 当前状态；programme authority 的同步留给下一轮分步规划。
 
 <a name="phase-4-2-successor-inheritance"></a>
 
 ## Successor inheritance
 
-后续维护者若授权 F1，应先把上述子 gate、原子 transaction 和 legacy-equivalence 退出条件落实到活动 task plan；
-若决定调整 programme，再由 ROADMAP 统一表达 Phase 5、Phase 6 和 Phase 9 的新措辞。任何 machine field 新增都应
-同时登记 producer、consumer、owner、failure behavior、review trigger 与 retirement condition，避免再次形成“只知道
-为什么引入，却没人负责何时删除”的残留。
+下一轮 Phase 4 分步规划必须继承上述子 gate、原子 transaction、activation/disarm 顺序和 legacy-equivalence
+退出条件，判断每一步的依赖、测试与停止点；授权仍需由新的活动 task plan 明确给出。ROADMAP 随后应统一表达
+Phase 5、Phase 6 和 Phase 9 的已采纳措辞，避免历史摘要成为第二份 programme authority。
+
+任何 machine field 新增都应同时登记 producer、consumer、owner、failure behavior、review trigger 与 retirement
+condition，避免再次形成“只知道为什么引入，却没人负责何时删除”的残留。
 
 如果未来证据证明结构分区不能完整表达来源，可以通过新 schema 重新增加来源标签；这属于基于真实 consumer 的
 设计演进，不应成为永久保留重复常量的理由。
