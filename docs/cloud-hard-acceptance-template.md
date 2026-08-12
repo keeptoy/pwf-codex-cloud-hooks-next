@@ -79,7 +79,8 @@ tagless checkout 不应伪造 remote/tag；Published Release 也不能使用 wor
 - 两次 ZIP 不逐字一致、builder/importer check 失败、bootstrap 进入 ZIP 或 Release inventory 漂移；
 - global PWF Skill 不 pristine，Managed policy 不再 adapter-only，或 installed manifest/inventory 漂移；
 - Fresh 与 Resume 的 SessionStart source 不符合安装时序；
-- canonical plan、real Resume catch-up、tail marker或 canary/plan/catch-up 顺序不符合 current contract；
+- canonical plan、real Resume catch-up、tail marker或 canary/plan/catch-up 顺序不符合 current contract；markerless
+  canonical fixture 的 completed/active 两个 legacy sentinel 未同时出现也属于失败；
 - doctor 不健康、repairable、存在 error/blocker 或 snapshot residue；
 - Published 脚本仍有占位符，或者使用 moving URL、未校验字节、本地 override 或 checkout 工具。
 
@@ -374,19 +375,29 @@ SessionStart 与 UserPromptSubmit 必须被观察到，SessionStart source 必�
 这是 planning-with-files canonical planning baseline 创建步骤。
 
 请使用 apply_patch：
-1. 创建 .planning/pwf-cloud-acceptance-v1/task_plan.md，第一行必须是：
+1. 创建 .planning/pwf-cloud-acceptance-v1/task_plan.md，内容必须按顺序包含：
    # PWF_CLOUD_ACCEPTANCE_CANONICAL_V1
+   ## Phases
+   ### Phase 1
+   **Status:** complete
+   PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_COMPLETED_V1
+   ### Phase 2
+   **Status:** in_progress
+   PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_ACTIVE_V1
 2. 创建同目录 progress.md，内容必须包含：
    PWF Cloud acceptance baseline created by apply_patch.
 3. 创建同目录 findings.md，内容必须包含：
    planning-with-files Cloud acceptance fixture.
-4. 把 .planning/.active_plan 设置为：
+4. 不要创建或修改任何 .pwf-codex-managed、.mode 或其他 activation/profile 文件。
+5. 把 .planning/.active_plan 设置为：
    pwf-cloud-acceptance-v1
-5. 完成后只回复：
+6. 完成后只回复：
    PWF_CLOUD_ACCEPTANCE_BASELINE_CREATED
 ~~~
 
-必须实际产生 structured planning update，并收到精确 acknowledgment。
+必须实际产生 structured planning update，并收到精确 acknowledgment。这个 fixture 故意保持 markerless：completed
+与 active 两个 sentinel 在后续同时出现，才证明默认 profile 仍是 legacy；若只出现 active sentinel，必须按 profile
+漂移停止，不能把它解释为更聪明的等价输出。
 
 <a name="blackbox-canonical-context"></a>
 
@@ -402,6 +413,8 @@ C 完成后立即原样发送：
 请严格汇总：
 UserPromptSubmit canary: OBSERVED 或 NOT_OBSERVED
 PWF_CLOUD_ACCEPTANCE_CANONICAL_V1: OBSERVED 或 NOT_OBSERVED
+PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_COMPLETED_V1: OBSERVED 或 NOT_OBSERVED
+PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_ACTIVE_V1: OBSERVED 或 NOT_OBSERVED
 [planning-with-files] ACTIVE PLAN: OBSERVED 或 NOT_OBSERVED
 ===BEGIN PLAN DATA===: OBSERVED 或 NOT_OBSERVED
 === recent progress ===: OBSERVED 或 NOT_OBSERVED
@@ -410,7 +423,8 @@ Planning context: OBSERVED 或 NOT_OBSERVED
 没有实际看到的项必须写 NOT_OBSERVED。不要使用工具补救验证。
 ~~~
 
-六项必须全部被观察到。
+八项必须全部被观察到。completed 与 active sentinel 同时存在是 markerless legacy 的 profile-discriminating 证据，
+不是一般 planning context 的辅助观察。
 
 <a name="blackbox-real-resume"></a>
 
@@ -470,13 +484,16 @@ Unsynced messages: 实际数字或 NOT_OBSERVED
 PWF_CLOUD_ACCEPTANCE_REAL_RESUME_TAIL 出现在 UNSYNCED CONTEXT: OBSERVED 或 NOT_OBSERVED
 Catch-up 位于 planning context 之前: OBSERVED 或 NOT_OBSERVED
 PWF_CLOUD_ACCEPTANCE_CANONICAL_V1: OBSERVED 或 NOT_OBSERVED
+PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_COMPLETED_V1: OBSERVED 或 NOT_OBSERVED
+PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_ACTIVE_V1: OBSERVED 或 NOT_OBSERVED
 ===BEGIN PLAN DATA===: OBSERVED 或 NOT_OBSERVED
 Planning context: OBSERVED 或 NOT_OBSERVED
 
 没有实际看到的项必须写 NOT_OBSERVED。不要使用工具补救验证。
 ~~~
 
-所有汇总项必须被观察到；Unsynced messages 数字不预设，SessionStart source 必须是真实 Resume source且
+所有汇总项必须被观察到；两个 markerless legacy sentinel 必须再次同时出现。Unsynced messages 数字不预设，
+SessionStart source 必须是真实 Resume source且
 不能为 startup。黑盒只证明 observable behavior；helper closure、immutable bytes、overlay absence 与不调用
 upstream CLI `main()` 由 source/inventory assertions 和 portable negative suite证明。
 
@@ -735,7 +752,8 @@ printf 'PWF_PUBLIC_POST_RESUME=PASS\n'
   两次 ZIP build/check、entry count、size、SHA 与 override 安装输出；
 - Published Release：exact tag/source、bootstrap 与 ZIP 的 immutable URL、filename、size、SHA，以及公开
   重新下载输出；
-- 两条通道各自的 B～E 原始提示词、模型原始回复、SessionStart source、Unsynced messages 和顺序观察；
+- 两条通道各自的 B～E 原始提示词、模型原始回复、SessionStart source、markerless legacy completed/active
+  sentinel、Unsynced messages 和顺序观察；
 - 两条通道各自的 doctor JSON、installed inventory、upstream/helper、adapter-only policy 与 residue 输出；
 - publication oracle、失败的首次输出、停止点，以及是否从 Fresh 环境重新开始；
 - GitHub Latest、rollback baseline 或下一 Product Phase 的授权应另行记录，不能由 Cloud 结果自动推导。

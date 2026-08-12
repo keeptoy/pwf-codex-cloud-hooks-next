@@ -61,3 +61,17 @@
   erasing evidence while also preventing old source/ZIP hashes from masquerading as current F2A acceptance.
 - Windows local verification is complete. Linux-only safety and real adapter/runtime composition tests remain unchanged and mandatory;
   the absence of WSL/container support is a platform limitation, so F2A is not yet a completed Cloud gate.
+
+## Post-implementation acceptance audit
+
+- Phase 4.4 already had a six-row handoff and a status tail, but it did not reconcile every implemented seam with its actual
+  owner/consumer, executable evidence and retirement trigger. A cold post-implementation table is warranted; current status must
+  still remain in ROADMAP/task plan.
+- The Source/Candidate setup discovers all non-publication `*.test.js` dynamically, so F2A portable/Linux behavior tests already enter
+  the zero-skip Cloud gate without a new shell test list.
+- The old B–E canonical fixture contained only a flat title. It could prove planning context existed, but could not distinguish
+  markerless legacy from an accidentally activated smart selector.
+- A structured plan containing one completed sentinel and one active sentinel provides that discriminator: markerless legacy must
+  expose both; smart selection would omit the completed phase. The no-live route still must not create real activation files.
+- Version acceptance is completed immutable evidence, not the owner of pending/current gate prose. F1B exact evidence remains under
+  its historical gate heading; F2A exact evidence is appended only after the maintainer returns a completed Cloud run.

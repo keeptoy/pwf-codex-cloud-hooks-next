@@ -32,3 +32,20 @@
   evidence, not a seal or Published Release identity.
 - Local F2A implementation is complete. Stop before F2B/F3 and wait for the maintainer's Linux/Source-Candidate/no-live Cloud
   acceptance with zero skipped tests.
+- Maintainer authorized a post-implementation documentation and Cloud-protocol follow-up before push/acceptance.
+- Audited Phase 4.4, the reusable Cloud template, the current version acceptance, lifecycle governance tests and the active plan.
+  Confirmed that the Linux suite already discovers F2A tests dynamically, while the old canonical black box could not discriminate
+  markerless legacy from accidental smart selection.
+- Added a Phase 4.4 post-implementation lifecycle reconciliation covering retired F1 grammar, active commit-point/profile/admission/
+  schema/private-renderer seams, temporary user UX, denied F2B/Phase-8 state and explicit review/retirement triggers.
+- Strengthened C/D/E2 with a structured markerless fixture: completed and active legacy sentinels must both be observed, and the
+  canonical workspace is forbidden to create activation/profile files.
+- Removed dynamic F2A pending prose from the version acceptance. ROADMAP/task plan retain current state; the version file keeps only
+  completed F1B exact evidence until F2A Cloud evidence is actually returned.
+- The first focused boundary run reached 8/9 pass; the only failure was an over-specific Chinese sentence-order regex. Replaced it
+  with exact sentinel placement/count and no-activation-file assertions instead of weakening the behavioral boundary.
+- Full local regression passed 146 tests: 128 pass, 0 fail and 18 honest Windows/POSIX skips. Importer check, Python compile and Node
+  syntax passed. The combined command's hard-coded `C:` Git Bash path was invalid on this `D:` installation; bootstrap syntax is
+  rerun separately using the discovered executable rather than treating that command defect as a product failure.
+- Discovered-path bootstrap syntax and final `git diff --check` passed. P5 is locally closed; the next external action is maintainer
+  push followed by the updated Linux/Source-Candidate/no-live Cloud run. No F2B/F3 work is authorized.

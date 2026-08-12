@@ -148,6 +148,16 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(acceptanceTemplate, /### 4\.2 Published Release[\s\S]*__IMMUTABLE_BOOTSTRAP_URL__[\s\S]*__IMMUTABLE_BOOTSTRAP_SHA256__/);
   assert.match(acceptanceTemplate, /### 9\.2 Published Release[\s\S]*__IMMUTABLE_ZIP_URL__[\s\S]*__IMMUTABLE_ZIP_SHA256__/);
   assert.match(acceptanceTemplate, /PWF_CLOUD_ACCEPTANCE_CANONICAL_V1[\s\S]*PWF_CLOUD_ACCEPTANCE_REAL_RESUME_TAIL/);
+  assert.match(acceptanceTemplate,
+    /PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_COMPLETED_V1[\s\S]*PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_ACTIVE_V1/);
+  for (const sentinel of [
+    "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_COMPLETED_V1",
+    "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_ACTIVE_V1",
+  ]) {
+    assert.equal((acceptanceTemplate.match(new RegExp(sentinel, "g")) || []).length, 3,
+      `${sentinel} must remain in canonical creation, UserPromptSubmit, and real Resume`);
+  }
+  assert.match(acceptanceTemplate, /不要创建或修改任何 \.pwf-codex-managed、\.mode/);
   assert.match(acceptanceTemplate, /版本专项 acceptance 应保存以下原始证据/);
   assert.doesNotMatch(acceptanceTemplate, new RegExp(versionPattern, "i"));
   assert.doesNotMatch(acceptanceTemplate, /\b[a-f0-9]{40,64}\b/i);
@@ -285,29 +295,27 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));
   const currentTrainLine = roadmap.split(/\r?\n/)
     .find(line => line.startsWith("| 当前开发列车 |")) || "";
-  const sourceCandidateComplete = candidate === accepted
-    || currentTrainLine.includes("zero-hash Source/Candidate Cloud 已 PASS");
   const publishedReleaseComplete = candidate === accepted
     || currentTrainLine.includes("Published Release Cloud hard acceptance 已 PASS");
-  if (sourceCandidateComplete) {
+  const sourceCandidateEvidenceComplete = /SOURCE_CANDIDATE_CLOUD_PASS/.test(acceptance);
+  if (candidate === accepted) {
+    assert.equal(sourceCandidateEvidenceComplete, true,
+      "accepted baseline must retain completed Source/Candidate evidence");
+  }
+  if (sourceCandidateEvidenceComplete) {
     assert.match(acceptance, /Source\/Candidate Cloud hard acceptance 已.*完成/s);
     assert.match(acceptance, /SOURCE_CANDIDATE_CLOUD_PASS \/ F1_FOUNDATION_COMPLETE/);
     assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
-  } else {
-    assert.match(acceptance, /Source\/Candidate.*Cloud hard acceptance 尚未(?:开始|完成)/s);
+  }
+  if (candidate !== accepted && /\b[a-f0-9]{64}\b/i.test(acceptance)) {
     const historicalEvidenceHeading = "## F1B Source/Candidate evidence (historical gate instance)";
     const historicalEvidenceAt = acceptance.indexOf(historicalEvidenceHeading);
-    const currentGateStatus = historicalEvidenceAt < 0
-      ? acceptance
-      : acceptance.slice(0, historicalEvidenceAt);
-    assert.doesNotMatch(currentGateStatus, /\b[a-f0-9]{64}\b/i,
-      "pending current-gate status must not inherit exact evidence from a completed earlier gate");
-    if (/\b[a-f0-9]{64}\b/i.test(acceptance)) {
-      assert.notEqual(historicalEvidenceAt, -1,
-        "retained exact evidence must live under an explicitly historical gate heading");
-      assert.match(acceptance.slice(historicalEvidenceAt),
-        /SOURCE_CANDIDATE_CLOUD_PASS \/ F1_FOUNDATION_COMPLETE/);
-    }
+    assert.notEqual(historicalEvidenceAt, -1,
+      "retained pre-current-gate evidence must live under an explicitly historical gate heading");
+    assert.doesNotMatch(acceptance.slice(0, historicalEvidenceAt), /\b[a-f0-9]{64}\b/i,
+      "historical exact evidence must not leak above its completed-gate heading");
+    assert.match(acceptance.slice(historicalEvidenceAt),
+      /SOURCE_CANDIDATE_CLOUD_PASS \/ F1_FOUNDATION_COMPLETE/);
   }
   assert.match(acceptance, /64 位 zero hash.*fail closed/s);
   assert.match(acceptance, /Cloud hard acceptance template/);
@@ -316,7 +324,8 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, /本次验收增量没有改写 B～E 黑盒提示词/);
   assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-setup/);
   assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-deep-check/);
-  assert.doesNotMatch(acceptance, /## 1\. 执行输入与边界|维护者执行顺序|回传证据|NOT EXECUTED|NOT AUTHORIZED|PENDING|Next Step|当前状态/);
+  assert.doesNotMatch(acceptance,
+    /## 1\. 执行输入与边界|维护者执行顺序|回传证据|NOT EXECUTED|NOT AUTHORIZED|PENDING|Next Step|当前状态|尚未开始|尚未完成|待验收/);
 
   if (publishedReleaseComplete) {
     const publishedRow = provenance.split(/\r?\n/)

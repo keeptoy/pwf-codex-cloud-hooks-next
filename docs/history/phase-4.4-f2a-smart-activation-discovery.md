@@ -155,6 +155,30 @@ adapter/runtime 组合测试接管 F1 临时 seam。当前状态是本地实现�
 Cloud hard acceptance 尚未完成，因此本尾注不把 F2A 标为 gate PASS，也不产生 F2B/F3 授权。精确 current 状态
 只见 [`ROADMAP`](../../ROADMAP.md) 与活动 task plan。
 
+<a name="phase-4-4-post-implementation-lifecycle-reconciliation"></a>
+
+## Post-implementation lifecycle reconciliation
+
+下面不是第二份 current authority，而是 F2A 实施后的冷对账：它把 Discovery 时的“准备怎么接管”更新为“实际由谁
+接管、靠什么证明、何时必须重审”。当前 gate 状态、Next Step 与授权仍只见 `ROADMAP` 和活动 task plan。
+
+| 对象 / seam | 实施后状态 | 当前 owner / consumer | 可执行证据 | 重审或退休条件 |
+|---|---|---|---|---|
+| F1 `.mode` 同文件 managed-token grammar | **RETIRED**；不再接受 `codex-managed-v1` | 无 production consumer；只剩负向 residue guard | normalizer、旧 marker inert 与 repository residue tests | 不得复活；未来协议只能走独立 commit point 或新 schema |
+| `.pwf-codex-managed` / `ACTIVATION_FILE` | **ACTIVE**；exact `codex-managed-v1\n` commit point | 用户是 producer；`owned-plan.py` 是唯一 reader | exact-byte、unsafe-file、race、disarm/re-arm 与 zero-read tests | F2B 复用；protocol v2 或 Phase 4 retirement 必须重审 |
+| `.mode` / `MODE_FILE` | **ACTIVE**；仅在 valid activation 后读取 exact `inject-smart\n` | 用户是 producer；owned runtime 是唯一 reader | unarmed zero-read、exact smart、invalid/incomplete refusal、post-render revalidation | F2B 可原子扩 autonomous；Phase 8 才重审 gate vocabulary |
+| `SUPPORTED_PROFILES` 与 adapter `allowed_profiles` | **ACTIVE capability lock**；均为 `[legacy, smart]` | adapter producer、owned runtime 与 result validator | relational contract tests、真实 adapter→runtime composition | F2B 必须在一个 gate 内原子扩展，禁止单边漂移 |
+| `safe_capture_file()` / `capture_owned_state()` / `revalidate_owned_state()` | **ACTIVE state-admission authority** | `owned-plan.py` | symlink/hardlink/UTF-8/size/race/identity tests | 只有新的单一 admission authority 提供等价或更强证明后才能替换 |
+| F1B no-production-call / legacy-only fixture | **REPLACED** | 更强的 armed/unarmed/refusal/race/disarm matrix | production call-edge 与完整 runtime tests | Phase 4 内保留；不得用标题元测试代替行为测试 |
+| request/result schema v2 与 request-schema hash chain | **ACTIVE machine contract** | adapter、owned runtime、installer、bundle | exact schema、producer/consumer、bundle/manifest/hash tests | 只有真实 consumer 语义变化才轮转 schema |
+| child-only `PWF_INJECT=smart` | **ACTIVE private integration seam** | owned runtime → pristine renderer | ambient env stripping、private snapshot、raw marker exclusion tests | F2B renderer 设计时重审；只有 renderer authority 改变才退休 |
+| README 手工 prepare/commit/probe/disarm 流程 | **ACTIVE temporary user surface** | 用户与 production parser 共用 exact bytes | 只读 probe 复用 production request/result；F3 待做真实 lifecycle | 有 bounded official writer/status UX 且语义等价后退休 |
+| nonce、attestation、ledger reader/writer、gated state | **DENIED / DEFERRED** | F2B / Phase 8 尚未授权 | source-residue、call-edge 与 future-profile refusal tests | 只能经对应 Discovery + implementation gate 准入 |
+
+`ledger-summary.sh` 仍因 pristine autonomous/gated 供应链依赖留在 bundle；这不等于 F2A owned runtime 已读取 ledger。
+F2A Source/Candidate Cloud 证据完成后，应在版本 acceptance 新增独立 evidence 段，不能改写本历史表，也不能让
+F1B 的旧 hash 冒充 F2A 当前 bytes。
+
 <a name="phase-4-4-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

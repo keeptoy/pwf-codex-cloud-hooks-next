@@ -14,8 +14,8 @@
 
 ## Next Step
 
-本地 implementation 已闭合并提交；等待维护者 push 后执行 Linux/Source-Candidate/no-live Cloud hard acceptance。
-验收结果回传前不进入 F2B/F3。
+等待维护者 push F2A implementation 与 lifecycle/Cloud protocol follow-up 两个 commits，按更新后的 markerless legacy
+canonical fixture 执行 Linux/Source-Candidate/no-live Cloud hard acceptance。验收结果回传前不进入 F2B/F3。
 
 ## Phases
 
@@ -26,6 +26,7 @@
 | P2 Runtime and adapter implementation | completed | exact activation admission、smart private rendering、two-pass revalidation 与 relational adapter validation 闭合 |
 | P3 Supply-chain and documentation closure | completed | bundle/manifest/Release hash、current docs、历史状态尾注与 residue scan 自洽 |
 | P4 Local acceptance and commit | completed | full local suite、syntax/compile、deterministic ZIP/install checks、diff checks 全绿并本地 commit |
+| P5 Lifecycle and Cloud protocol follow-up | completed | Phase 4.4 实施后冷对账、markerless legacy 黑盒判别、版本 evidence/current-state 职责与 tests 闭合并独立 commit |
 
 ## Migration lifecycle ledger
 
@@ -42,6 +43,9 @@
 | runtime/adapter bytes | bundle/manifest/Release/install | REPLACE + HASH PROPAGATE | one authority chain; deterministic build/check/install | each later runtime change |
 | nonce/attestation/ledger/gated/writer | future F2B/Phase 8 | KEEP DENIED | residue/call-edge tests | F2B/Phase 8 Discovery |
 | activation procedure/probe docs | current user docs | ADD | no writer bundled; probe reuses production request/result | F3 Cloud lifecycle review |
+| Phase 4.4 implementation ledger | cold history / successor review | ADD post-implementation reconciliation | actual owner、consumer、executable evidence、retirement trigger | each F2B/F3 migration audit |
+| Cloud canonical completed/active sentinels | stable acceptance template | ADD markerless profile discriminator | D/E2 must observe both without activation files | review when default profile or renderer contract changes |
+| version acceptance pending/current section | active plan/ROADMAP should own it | RETIRE/MOVE | repository boundary forbids dynamic pending prose in acceptance | completed exact evidence only |
 
 ## Stop Conditions
 
@@ -58,6 +62,10 @@
 | Docker and Podman probes found no installed local container runner | 1 | Retained the Linux-only matrix unchanged and assigned its zero-skip execution to the mandatory post-commit Cloud gate. |
 | Sandboxed Node test runner failed to spawn test files with `EPERM`; sandboxed Git Bash could not create its signal pipe | 1 | Re-ran the same Node and Bash checks outside the workspace sandbox; both completed successfully. |
 | Repository lifecycle test assumed a candidate acceptance file could not retain an earlier gate's exact evidence while a later gate was pending | 1 | Preserved F1B evidence under an explicit historical-gate heading and scoped the no-hash assertion to the pending F2A status section. |
+| Follow-up audit found that the prior workaround still stored dynamic F2A pending status in the version acceptance | 1 | Retire that pending section entirely; keep current status in ROADMAP/task plan and let acceptance retain only completed exact gate evidence. |
+| First patch for removing the pending acceptance section missed its exact line wrapping | 1 | Read the numbered UTF-8 lines and applied a narrower exact-context patch; no partial file mutation occurred. |
+| First lifecycle assertion over-locked Chinese sentence ordering around the two sentinels | 1 | Replaced it with exact behavioral checks: each sentinel must occur in C, D and E2, plus the no-activation-file boundary. |
+| Combined verification command assumed Git Bash lived on `C:` while this workstation installs it on `D:` | 1 | Derived Bash from `Get-Command bash` and reran bootstrap syntax separately; prior successful test/importer/compile results remained valid. |
 
 ## Current status
 
