@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.0-dev` zero-hash development candidate；F0/F1A/F1B complete；zero-hash Source/Candidate Cloud 已 PASS；F2A 未授权 |
+| 当前开发列车 | `v0.4.0-dev` zero-hash development candidate；F0/F1A/F1B complete；zero-hash Source/Candidate Cloud 已 PASS；F2A Discovery conditional-go，implementation 未授权 |
 | 当前已接受版本 | `v0.3.5`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.4` immediate fallback |
 | 回退证据链 | immutable `v0.3.3` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4 Discovery 已完成；F0～F3 路线已采纳，F1 foundation complete；F2A 及后续 activation 未授权 |
+| 当前 programme 边界 | Product Phase 4 总体 Discovery 与 F2A 专项 Discovery 已完成；F1 foundation complete；F2A implementation 及后续 activation 未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.3.5` 已完成 immutable publication、公开下载/安装验收与 pointer-only promotion；只读 postflight 确认它为
@@ -70,6 +70,11 @@ Phase 4 Discovery 已完成并冻结为 `CONDITIONAL_GO_TO_F1_INACTIVE_FOUNDATIO
 package/machine identity 和 zero-hash bootstrap；F1A 已完成 contract/source foundation；F1B 已闭合 implementation、完整回归、deterministic ZIP 与 Linux/no-live Cloud acceptance。F1 foundation 已完成；行为激活、seal 与 publication 仍未授权。精确 Next Step
 和停止条件只见活动 task plan；已完成 v0.3.5 基线与 rollback 证据仍见第 3 节及 provenance/acceptance。
 
+F2A 专项 Discovery 随后冻结为 `CONDITIONAL_GO_TO_F2A_IMPLEMENTATION`：managed activation commit point 与
+upstream `.mode` profile 分离，未 armed 时 production 不读取旧 `.mode`；F2A 复用 request/result v2 和 pristine
+smart renderer，不扩大 Host event、upstream inventory 或 workspace-write 边界。该结论只完成施工设计，F2A
+implementation 仍需维护者单独授权。
+
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
 bootstrap/acceptance；当前窗口为 v0.4.0-dev candidate + v0.3.5 accepted。v0.3.4
 immediate fallback 与 v0.3.3 deeper fallback 均由 immutable commit、tag、Release、exact acceptance 与
@@ -81,7 +86,7 @@ pre-release；多个低风险 Phase 也只有在独立评审后才能进入同�
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 development identity → F1A/F1B inactive foundation → F2A smart → F2B autonomous → F3 Fresh/Resume/rollback Cloud；legacy 默认不变 | F1 foundation complete；Source/Candidate/no-live Cloud PASS；F2 未授权 |
+| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 development identity → F1A/F1B inactive foundation → F2A smart → F2B autonomous → F3 Fresh/Resume/rollback Cloud；legacy 默认不变 | F1 foundation complete；Source/Candidate/no-live Cloud PASS；F2A Discovery conditional-go，implementation 未授权 |
 | 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest 各自独立 gate；必须有 use case、latency/token budget 与 Cloud 证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7 前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan 时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6 进入 Discovery |
@@ -103,14 +108,15 @@ Phase 4 保持 Phase 4.1 冻结的 hybrid owned-boundary 与两个现有 turn-st
 | F0 — Development identity preparation | package/Release candidate 轮转到 `0.4.0-dev`、zero-hash bootstrap、candidate acceptance/CHANGELOG/ROADMAP 同步 | 不改 runtime、machine contract 或用户行为；不宣称 alpha/RC/accepted | identity、bootstrap、governance |
 | F1A — Contract/source foundation | manifest schema 4、bundle/Release v2、adapter 纳入 bundle、schema placement 收敛 | runtime 行为仍为 legacy；manifest/bundle/Release 作为原子 contract transaction | contracts、importer、installer、builder |
 | F1B — Inactive runtime foundation | plan request/result v2、owned state reader/normalizer、production `allowed_profiles=[legacy]` | marker 仍不可达；现有 Host 输出与 v0.3.5 等价 | owned runtime、adapter/runtime protocol |
-| F2A — Smart activation | versioned managed opt-in，只改变 plan 选段 | 不读取 nonce/attestation/ledger；不接受 gated | smart selection 与 opt-in policy |
+| F2A — Smart activation | 独立 versioned managed commit point + upstream smart profile，只改变 plan 选段 | 未 armed 时不读取旧 `.mode`；不读取 nonce/attestation/ledger；不接受 gated | smart selection、state admission 与 opt-in policy |
 | F2B — Autonomous activation | attestation、exact nonce、normalized ledger | raw progress 不得回退；无效或不完整状态拒绝，不降级 legacy | state validation、tamper/refusal、ledger rendering |
 | F3 — Cloud and rollback acceptance | Fresh、UserPrompt、real Resume、cache reuse、opt-out/re-arm 与双向 rollback | live Cloud 不等于 Release；失败不得产生 partial takeover 或 snapshot residue | Cloud lifecycle、takeover、rollback |
 
 F0 是 Phase 4 的正式前置 gate，不是 F1A 内部顺手改版本号。它只建立可变的开发身份；现已独立完成。
 F1A 也已闭合 schema 4、bundle/Release v2、placement、entry mode 与 exact v0.3.5 installed-state transition，且未改变
 legacy runtime behavior。`v0.4.0-dev` 仍是 zero-hash、未封板且未发布的 source candidate，但其
-Source/Candidate/no-live Cloud foundation 已 PASS。F1B inactive foundation 至此关闭；当前必须停止，不能自动进入 F2A。
+Source/Candidate/no-live Cloud foundation 已 PASS。F1B 结束后的停止点已经履行；维护者随后只授权并完成 F2A
+Discovery，当前再次停在 implementation 未授权边界。
 
 F1A/F1B 是独立审查、测试和停止点，不强制形成两个可发布的半成品。只要 runtime/schema bytes 会影响 bundle、
 manifest 或 ZIP hash，最终 candidate 就必须在同一完整 transaction 内使 contract、代码、inventory、mode 与 hash
@@ -125,10 +131,13 @@ leaf → contract → manifest → installer/builder → Release 顺序闭合，
 
 ### 4.2 F2 activation/disarm 前置协议
 
-F1A/F1B 可以先规划和实施；任何 F2 behavior activation 前必须另行冻结用户如何安全启用和退出：
+F1A/F1B 可以先规划和实施；F2A Discovery 已把 smart 的启用/退出冻结为以下协议，F2B 仍需在 autonomous
+状态加入后复核并扩展：
 
-1. versioned managed token 是 activation commit point，也是显式 opt-in，不是 secret 或身份凭据；
-2. smart 所需状态准备完成后最后写 token；删除 token 即退出 managed opt-in；
+1. plan-local `.pwf-codex-managed` 的 exact `codex-managed-v1` 内容是独立 activation commit point，也是显式
+   opt-in，不是 secret 或身份凭据；
+2. smart profile 先在 upstream `.mode` 中准备为 exact `inject-smart`，最后原子写 activation file；删除
+   activation file 即退出 managed opt-in，未 armed 时 runtime 不读取旧 `.mode`；
 3. autonomous 先由 pristine Skill/用户侧流程建立 nonce、attestation 与所需状态，确认 attestation 成功后最后写 token；
 4. token 存在但其他状态不完整或非法时只拒绝，不能按“未启用”降级到 legacy；
 5. managed Hook/runtime 继续只读 workspace，上游 writer 不进入 production trusted graph。
