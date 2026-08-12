@@ -145,6 +145,16 @@ Discovery。activation token 始终是非秘密常量，不得承载身份、授
 [`ROADMAP` 的 F2 activation/disarm 协议](../../ROADMAP.md#phase-4-f2-activation-protocol) 为准；本尾注只说明后继
 复核如何继承本里程碑，不把历史摘要升级为第二份 current authority。
 
+<a name="phase-4-4-post-implementation-status"></a>
+
+## Post-implementation status
+
+后继 F2A implementation 已按本里程碑的独立 commit point、activation-first zero-read、two-pass revalidation 与
+schema-v2 reuse 路线落到 `v0.4.0-dev` 当前树，并由更强的 armed/unarmed/refusal/race/disarm 与真实
+adapter/runtime 组合测试接管 F1 临时 seam。当前状态是本地实现与供应链闭合；Linux/Source-Candidate/no-live
+Cloud hard acceptance 尚未完成，因此本尾注不把 F2A 标为 gate PASS，也不产生 F2B/F3 授权。精确 current 状态
+只见 [`ROADMAP`](../../ROADMAP.md) 与活动 task plan。
+
 <a name="phase-4-4-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

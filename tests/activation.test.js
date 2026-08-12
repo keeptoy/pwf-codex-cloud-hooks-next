@@ -200,6 +200,58 @@ test("Linux root/root activation executes both real owned runtimes", { skip: pro
   } finally { fs.rmSync(layout.workspace, { recursive: true, force: true }); }
 });
 
+test("Linux adapter activates exact smart state and disarms back to legacy", { skip: process.platform === "win32" }, () => {
+  const layout = fixture({ actualRuntime: true });
+  const task = [
+    "# Smart adapter integration", "", "## Goal", "Prove the production composition.", "",
+    "## Phases", "", "### Phase 1", "**Status:** complete", "ADAPTER_OLD_COMPLETED", "",
+    "### Phase 2", "**Status:** in_progress", "ADAPTER_ACTIVE_SMART", "",
+    "## Decisions Made", "", "| Decision | Why |", "|---|---|", "| exact | bounded |", "",
+  ].join("\n");
+  try {
+    fs.writeFileSync(path.join(layout.plan, "task_plan.md"), task);
+    fs.writeFileSync(path.join(layout.plan, ".mode"), "inject-smart\n");
+
+    let result = invoke(layout, "UserPromptSubmit", { turn_id: "turn-smart-1" }, { PWF_INJECT: "smart" });
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.json.hookSpecificOutput.additionalContext, /ADAPTER_OLD_COMPLETED/,
+      "ambient smart and an unarmed .mode must remain legacy");
+
+    fs.writeFileSync(path.join(layout.plan, ".pwf-codex-managed"), "codex-managed-v1\n");
+    result = invoke(layout, "UserPromptSubmit", { turn_id: "turn-smart-2" });
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.json.hookSpecificOutput.additionalContext, /ADAPTER_ACTIVE_SMART/);
+    assert.doesNotMatch(result.json.hookSpecificOutput.additionalContext, /ADAPTER_OLD_COMPLETED/);
+
+    fs.rmSync(path.join(layout.plan, ".pwf-codex-managed"));
+    fs.writeFileSync(path.join(layout.plan, ".mode"), Buffer.from([0xff, 0xfe]));
+    result = invoke(layout, "UserPromptSubmit", { turn_id: "turn-smart-3" });
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.json.hookSpecificOutput.additionalContext, /ADAPTER_OLD_COMPLETED/,
+      "disarm must make even an unsafe old .mode inert again");
+  } finally { fs.rmSync(layout.workspace, { recursive: true, force: true }); }
+});
+
+test("Linux armed incomplete state is canary-only and suppresses catch-up", { skip: process.platform === "win32" }, () => {
+  const layout = fixture({ actualRuntime: true });
+  const sessionId = "session-smart-incomplete";
+  try {
+    fs.writeFileSync(path.join(layout.plan, ".pwf-codex-managed"), "codex-managed-v1\n");
+    fs.writeFileSync(layout.transcript, [
+      JSON.stringify({ type: "session_meta", payload: { id: sessionId, session_id: sessionId, cwd: layout.project } }),
+      JSON.stringify({ type: "response_item", payload: { type: "message", role: "user", content: [
+        { type: "input_text", text: "MUST_NOT_REACH_CATCHUP" },
+      ] } }),
+    ].join("\n") + "\n");
+    const result = invoke(layout, "SessionStart", {
+      source: "resume", session_id: sessionId, transcript_path: layout.transcript,
+    });
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.json.hookSpecificOutput.additionalContext,
+      "PWF_GLOBAL_HOOK_CANARY_V1 event=SessionStart source=resume");
+  } finally { fs.rmSync(layout.workspace, { recursive: true, force: true }); }
+});
+
 test("Linux synthetic install-user/Hook-user split executes both real owned runtimes", {
   skip: process.platform === "win32" || typeof process.getuid !== "function" || process.getuid() !== 0,
 }, () => {

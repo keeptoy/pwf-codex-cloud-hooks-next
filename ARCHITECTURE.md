@@ -201,8 +201,9 @@ Codex Hook stdin JSON
 hook_adapter.py
   |-- parse and validate event/Host fields
   |-- prepare mandatory PWF_GLOBAL_HOOK_CANARY_V1 (not streamed yet)
-  |-- supervise owned-plan.py with exact-v2 legacy-only request
-  |      `-- resolve plan + private safe snapshot + pristine inject-plan.sh
+  |-- supervise owned-plan.py with exact-v2 [legacy, smart] request
+  |      `-- resolve plan -> activation-first admission -> private safe snapshot
+  |          -> pristine inject-plan.sh -> state revalidation
   |-- SessionStart + validated plan result with inject=true only:
   |      forward the exact validated six-field project result
   |      to owned-catchup.py
@@ -232,8 +233,8 @@ normalization 和 report rendering 仍由 owned wrapper 负责。
 
 - runtime：`codex`；
 - events：`SessionStart` / `UserPromptSubmit`；
-- ordered allowed profiles；当前 F1B producer 与 runtime capability 都固定为 `[legacy]`；
-- opt-in protocol identity：`codex-managed-v1`，但 F1B 不读取 marker，也不激活该协议；
+- ordered allowed profiles；当前 F2A producer 与 runtime capability 精确固定为 `[legacy, smart]`；
+- opt-in protocol identity：`codex-managed-v1`；独立 `.pwf-codex-managed` 缺失时不读取旧 `.mode`；
 - plan/progress 输出上限：50 / 20 行；
 - context 上限：20,000 字符；
 - 不传 prompt 或 transcript 内容。
@@ -244,9 +245,11 @@ normalization 和 report rendering 仍由 owned wrapper 负责。
 2. active pointer → newest scoped → legacy root 的 canonical precedence；
 3. path containment、regular-file、symlink/hard-link、size、UTF-8 和 race 检查；
 4. 0700/0600 private snapshot；
-5. 用 pristine `inject-plan.sh` 生成 managed-legacy context；
-6. timeout、process-group kill、bounded output、cleanup 和 stale cleanup；
-7. exact result schema 与 structured diagnostic。
+5. 只在 exact activation commit point 后读取 `inject-smart` profile；armed invalid state 拒绝且不降级 legacy；
+6. 用 pristine `inject-plan.sh` 生成 legacy 或 smart context，smart 只通过 owned child environment 传入；
+7. renderer 返回后重新读取并核对 activation/mode 的 identity 与 exact bytes，变化时丢弃输出；
+8. timeout、process-group kill、bounded output、cleanup 和 stale cleanup；
+9. exact result schema 与 structured diagnostic。
 
 Adapter 只接受完整、关系一致、位于 request root 下的 exact-v2 result。result 的 effective profile 与 advisory
 只能是合同内 bounded decision，不携带 raw marker、nonce、hash、ledger 或路径诊断。失败或 `inject=false` 时不做
@@ -257,9 +260,9 @@ filesystem fallback。
 对当前 pinned PWF v3.8.2，private snapshot 是 `owned-plan.py` 内部的 integration-specific 调用策略，
 不是 Codex Host ABI，也不是已证明可复用于任意 Skill 的 Driver contract。选择它是为了在不增加第二个
 upstream patch point 的情况下保持 resolver/injector pristine，并通过最小文件投影和环境清洗
-强制 legacy profile；安全读取、权限、预算、超时和清理成本由 owned runtime 明确承担。F1B 虽提供 `.mode`
-安全捕获/规范化的内部 unit seam，但 production 对它没有调用边；nonce、attestation 与 ledger 也没有 reader，只有
-未来独立 activation gate 才能把这些状态接入生产路径。
+强制由 owned decision 选择 legacy/smart profile；安全读取、权限、预算、超时和清理成本由 owned runtime 明确承担。
+F2A production 只在独立 activation commit point 有效后调用 `.mode` 安全捕获/规范化 seam；nonce、attestation 与
+ledger 仍没有 reader，只有未来独立 activation gate 才能把这些状态接入生产路径。
 
 这里的“第二个 patch point”特指当时为 plan resolver/injector 比较过的多目标 overlay，不表示 private
 snapshot 直接替换了 catch-up overlay。Catch-up 是另一条 invocation domain：Phase 2 的 owned wrapper 已

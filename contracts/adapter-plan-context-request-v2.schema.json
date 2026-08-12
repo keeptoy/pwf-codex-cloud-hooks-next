@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://keeptoy.github.io/pwf-codex-cloud-hooks/contracts/adapter-plan-context-request-v2.schema.json",
   "title": "planning-with-files adapter to owned plan-context request v2",
-  "$comment": "Exact-v2 managed canonical plan-context request. F1B produces only allowed_profiles=[legacy]; wider sequences are reserved for separately reviewed activation gates.",
+  "$comment": "Exact-v2 managed canonical plan-context request. F2A produces allowed_profiles=[legacy, smart]; autonomous remains reserved for a separately reviewed activation gate.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "runtime", "event", "project", "policy", "output_budget"],

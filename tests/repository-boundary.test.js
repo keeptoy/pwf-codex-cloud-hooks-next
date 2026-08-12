@@ -295,7 +295,19 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
   } else {
     assert.match(acceptance, /Source\/Candidate.*Cloud hard acceptance 尚未(?:开始|完成)/s);
-    assert.doesNotMatch(acceptance, /\b[a-f0-9]{64}\b/i);
+    const historicalEvidenceHeading = "## F1B Source/Candidate evidence (historical gate instance)";
+    const historicalEvidenceAt = acceptance.indexOf(historicalEvidenceHeading);
+    const currentGateStatus = historicalEvidenceAt < 0
+      ? acceptance
+      : acceptance.slice(0, historicalEvidenceAt);
+    assert.doesNotMatch(currentGateStatus, /\b[a-f0-9]{64}\b/i,
+      "pending current-gate status must not inherit exact evidence from a completed earlier gate");
+    if (/\b[a-f0-9]{64}\b/i.test(acceptance)) {
+      assert.notEqual(historicalEvidenceAt, -1,
+        "retained exact evidence must live under an explicitly historical gate heading");
+      assert.match(acceptance.slice(historicalEvidenceAt),
+        /SOURCE_CANDIDATE_CLOUD_PASS \/ F1_FOUNDATION_COMPLETE/);
+    }
   }
   assert.match(acceptance, /64 位 zero hash.*fail closed/s);
   assert.match(acceptance, /Cloud hard acceptance template/);

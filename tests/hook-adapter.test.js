@@ -15,6 +15,7 @@ const planStub = [
   "capture=os.environ.get('PWF_TEST_PLAN_CAPTURE')",
   "if capture: pathlib.Path(capture).write_text(json.dumps(request),encoding='utf-8')",
   "mode=os.environ.get('PWF_TEST_PLAN_MODE','context')",
+  "profile=os.environ.get('PWF_TEST_PLAN_PROFILE','legacy')",
   "root=request['project']['root']",
   "plan_id=request['project']['plan_id'] or 'portable-test'",
   "plan=str(pathlib.Path(root)/'.planning'/plan_id)",
@@ -30,7 +31,7 @@ const planStub = [
   " outcome='no_plan'; inject=False; context=None; state='none'; scope='none'; plan_dir=None",
   "else:",
   " outcome='context_emitted'; inject=True; context=os.environ.get('PWF_TEST_PLAN_CONTEXT','OWNED_PORTABLE_CONTEXT'); state='resolved'; scope='scoped'; plan_dir=str(pathlib.Path(root).parent/'outside') if mode=='outside' else plan",
-  "result={'schema_version':2,'outcome':outcome,'inject':inject,'context':context,'effective_profile':'legacy','advisory':None,'project':{'root':root,'planning_enabled':enabled,'session_attachment':attachment,'plan_state':state,'plan_scope':scope,'plan_dir':plan_dir},'warnings':warnings,'diagnostic':{'event_name':request['event']['name'],'plan_id_state':plan_id_state,'selected_plan_scope':scope,'selected_plan_dir':plan_dir}}",
+  "result={'schema_version':2,'outcome':outcome,'inject':inject,'context':context,'effective_profile':profile,'advisory':None,'project':{'root':root,'planning_enabled':enabled,'session_attachment':attachment,'plan_state':state,'plan_scope':scope,'plan_dir':plan_dir},'warnings':warnings,'diagnostic':{'event_name':request['event']['name'],'plan_id_state':plan_id_state,'selected_plan_scope':scope,'selected_plan_dir':plan_dir}}",
   "print(json.dumps(result))",
 ].join("\n");
 
@@ -109,6 +110,22 @@ test("UserPromptSubmit emits event canary and authoritative owned plan context",
     assert.equal(result.status, 0, result.stderr);
     assert.equal(result.json.hookSpecificOutput.additionalContext,
       "PWF_GLOBAL_HOOK_CANARY_V1 event=UserPromptSubmit\n\nOWNED_PROMPT_PLAN_CONTEXT");
+  } finally { fs.rmSync(layout.workspace, { recursive: true, force: true }); }
+});
+
+test("adapter advertises smart capability and accepts a requested smart result", () => {
+  const layout = projectFixture();
+  const capture = path.join(layout.workspace, "plan-request.json");
+  try {
+    const result = invoke(layout, "UserPromptSubmit", {}, {
+      PWF_TEST_PLAN_CAPTURE: capture,
+      PWF_TEST_PLAN_PROFILE: "smart",
+      PWF_TEST_PLAN_CONTEXT: "OWNED_SMART_CONTEXT",
+    });
+    assert.equal(result.status, 0, result.stderr);
+    const request = JSON.parse(fs.readFileSync(capture, "utf8"));
+    assert.deepEqual(request.policy.allowed_profiles, ["legacy", "smart"]);
+    assert.match(result.json.hookSpecificOutput.additionalContext, /OWNED_SMART_CONTEXT/);
   } finally { fs.rmSync(layout.workspace, { recursive: true, force: true }); }
 });
 

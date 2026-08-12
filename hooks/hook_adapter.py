@@ -203,7 +203,7 @@ def build_runtime_request(event: str, payload: dict, project: dict) -> dict | No
 
 
 def build_plan_context_request(event: str, payload: dict, root: Path) -> dict | None:
-    """Build the exact-v2 legacy-only request for the active owned-plan sibling."""
+    """Build the exact-v2 legacy+smart request for the active owned-plan sibling."""
     root_value = str(root)
     if event not in EVENTS or not root.is_absolute() or not (2 <= len(root_value) <= 4096):
         return None
@@ -245,7 +245,7 @@ def build_plan_context_request(event: str, payload: dict, root: Path) -> dict | 
         "project": {"root": root_value, "plan_id": plan_id},
         "policy": {
             "planning_enabled": os.environ.get("PLANNING_DISABLED") != "1",
-            "allowed_profiles": ["legacy"],
+            "allowed_profiles": ["legacy", "smart"],
             "opt_in_protocol": "codex-managed-v1",
         },
         "output_budget": dict(PLAN_OUTPUT_BUDGET),
@@ -332,7 +332,7 @@ def _valid_plan_context_result(value: object, request: dict | None = None) -> bo
         return False
     if (
         not isinstance(request_enabled, bool)
-        or request_profiles != ["legacy"]
+        or request_profiles != ["legacy", "smart"]
         or request_protocol != "codex-managed-v1"
     ):
         return False
@@ -341,7 +341,7 @@ def _valid_plan_context_result(value: object, request: dict | None = None) -> bo
     if value["outcome"] == "invalid_request":
         if effective_profile is not None or advisory not in PLAN_ADVISORIES | {None}:
             return False
-    elif effective_profile != "legacy" or advisory is not None:
+    elif effective_profile not in request_profiles or advisory is not None:
         return False
     project = value.get("project")
     if not isinstance(project, dict) or set(project) != {

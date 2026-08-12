@@ -26,6 +26,13 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   `[legacy]`，result 只增加 bounded effective-profile/advisory decision；现有 Host context 与 legacy 行为保持不变。
 - 新增 `.mode` 的 descriptor-safe、bounded、exact normalize unit seam，但 production 没有调用边；nonce、attestation、
   ledger、smart/autonomous 行为与 workspace writer 仍未实现，必须等待各自 F2 gate。
+- F2A 以独立 plan-local `.pwf-codex-managed` exact file 建立 smart activation commit point；未 armed 时 production
+  完全不读取旧 `.mode`，armed 后只接受 exact `inject-smart`，任何 unsafe/incomplete/future/raced state 都拒绝且
+  不降级 legacy。
+- adapter/runtime capability 原子扩为 `[legacy, smart]`；owned-plan 只把验证后的 smart decision 通过 private child
+  environment 交给 pristine renderer，并在输出前重新核对 activation/mode identity 与 bytes。request/result 继续
+  使用 v2，Host event、workspace-write、upstream inventory、canary/catch-up 顺序保持不变；autonomous/nonce/
+  attestation/ledger 仍属 F2B。
 
 ## v0.3.5
 

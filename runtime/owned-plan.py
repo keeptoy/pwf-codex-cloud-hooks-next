@@ -47,9 +47,11 @@ ALLOWED_PROFILE_SEQUENCES = {
     ("legacy", "smart"),
     ("legacy", "smart", "autonomous"),
 }
-SUPPORTED_PROFILES = ("legacy",)
+SUPPORTED_PROFILES = ("legacy", "smart")
 OPT_IN_PROTOCOL = "codex-managed-v1"
-MODE_TOKENS = {OPT_IN_PROTOCOL, "inject-smart", "autonomous", "gate"}
+ACTIVATION_FILE = ".pwf-codex-managed"
+MODE_FILE = ".mode"
+FUTURE_MODE_TOKENS = {"autonomous", "gate"}
 MAX_MODE_BYTES = 256
 
 RUNTIME_ROOT = Path(__file__).resolve().parent
@@ -253,12 +255,19 @@ def plan_result(
     }
 
 
-def minimal_env(*, temp_root: Optional[str] = None, plan_id: Optional[str] = None) -> Dict[str, str]:
+def minimal_env(
+    *,
+    temp_root: Optional[str] = None,
+    plan_id: Optional[str] = None,
+    inject_profile: Optional[str] = None,
+) -> Dict[str, str]:
     env = {"PATH": SAFE_PATH, "LC_ALL": "C", "LANG": "C"}
     if temp_root is not None:
         env["TMPDIR"] = temp_root
     if plan_id is not None:
         env["PLAN_ID"] = plan_id
+    if inject_profile == "smart":
+        env["PWF_INJECT"] = "smart"
     return env
 
 
@@ -399,7 +408,7 @@ def _directory_identity(info: os.stat_result) -> Tuple[int, ...]:
     )
 
 
-def safe_read_file(
+def safe_capture_file(
     parent_fd: int,
     name: str,
     *,
@@ -407,7 +416,7 @@ def safe_read_file(
     race_probe: Optional[Callable[[], None]] = None,
     max_bytes: int = MAX_INPUT_BYTES,
     oversize_outcome: str = "plan_unreadable",
-) -> Optional[bytes]:
+) -> Optional[Tuple[bytes, Tuple[int, ...]]]:
     file_fd: Optional[int] = None
     verify_fd: Optional[int] = None
     try:
@@ -448,7 +457,7 @@ def safe_read_file(
             content.decode("utf-8")
         except UnicodeDecodeError:
             raise PlanFailure("plan_unreadable") from None
-        return content
+        return content, _file_identity(current)
     except PlanFailure:
         raise
     except OSError:
@@ -460,59 +469,148 @@ def safe_read_file(
             os.close(verify_fd)
 
 
-def normalize_mode_state(content: Optional[bytes]) -> Dict[str, Any]:
-    """Normalize captured mode bytes without activating any profile."""
+def safe_read_file(
+    parent_fd: int,
+    name: str,
+    *,
+    required: bool,
+    race_probe: Optional[Callable[[], None]] = None,
+    max_bytes: int = MAX_INPUT_BYTES,
+    oversize_outcome: str = "plan_unreadable",
+) -> Optional[bytes]:
+    captured = safe_capture_file(
+        parent_fd,
+        name,
+        required=required,
+        race_probe=race_probe,
+        max_bytes=max_bytes,
+        oversize_outcome=oversize_outcome,
+    )
+    return None if captured is None else captured[0]
+
+
+def normalize_activation_state(content: Optional[bytes]) -> bool:
+    """Admit only the exact, non-secret managed activation commit point."""
     if content is None:
-        return {"managed_opt_in": False, "requested_profile": "legacy"}
+        return False
+    if len(content) > MAX_MODE_BYTES:
+        raise StateAdmissionFailure("state_over_budget")
+    try:
+        content.decode("utf-8")
+    except UnicodeDecodeError:
+        raise StateAdmissionFailure("state_unsafe") from None
+    if content == (OPT_IN_PROTOCOL + "\n").encode("utf-8"):
+        return True
+    raise StateAdmissionFailure("opt_in_invalid")
+
+
+def normalize_mode_state(content: Optional[bytes]) -> str:
+    """Admit the exact F2A smart selector after managed activation."""
+    if content in {None, b""}:
+        raise StateAdmissionFailure("state_incomplete")
     if len(content) > MAX_MODE_BYTES:
         raise StateAdmissionFailure("state_over_budget")
     try:
         text = content.decode("utf-8")
     except UnicodeDecodeError:
         raise StateAdmissionFailure("state_unsafe") from None
-    tokens = text.split()
-    if OPT_IN_PROTOCOL not in tokens:
-        return {"managed_opt_in": False, "requested_profile": "legacy"}
-    if len(tokens) != len(set(tokens)) or any(token not in MODE_TOKENS for token in tokens):
-        raise StateAdmissionFailure("opt_in_invalid")
-    token_set = set(tokens)
-    if "gate" in token_set:
+    if content == b"inject-smart\n":
+        return "smart"
+    tokens = set(text.split())
+    if tokens & FUTURE_MODE_TOKENS:
         raise StateAdmissionFailure("profile_unsupported")
-    if "autonomous" in token_set:
-        return {"managed_opt_in": True, "requested_profile": "autonomous"}
-    if "inject-smart" in token_set:
-        return {"managed_opt_in": True, "requested_profile": "smart"}
-    raise StateAdmissionFailure("state_incomplete")
+    raise StateAdmissionFailure("opt_in_invalid")
+
+
+def _state_advisory(failure: PlanFailure) -> str:
+    if failure.outcome == "plan_state_changed":
+        return "state_changed"
+    if failure.outcome == "state_over_budget":
+        return "state_over_budget"
+    return "state_unsafe"
 
 
 def capture_owned_state(
     plan_fd: int,
     *,
-    race_probe: Optional[Callable[[], None]] = None,
+    race_probe: Optional[Callable[[str], None]] = None,
 ) -> Dict[str, Any]:
-    """Safely capture the inactive managed mode seam for direct unit testing.
-
-    F1B production intentionally has no call edge to this helper.
-    """
+    """Capture activation first; an absent commit point keeps mode completely inert."""
     try:
-        content = safe_read_file(
+        activation = safe_capture_file(
             plan_fd,
-            ".mode",
+            ACTIVATION_FILE,
             required=False,
-            race_probe=race_probe,
+            race_probe=(lambda: race_probe(ACTIVATION_FILE)) if race_probe else None,
             max_bytes=MAX_MODE_BYTES,
             oversize_outcome="state_over_budget",
         )
     except PlanFailure as failure:
-        advisory = (
-            failure.outcome
-            if failure.outcome in {"plan_state_changed", "state_over_budget"}
-            else "state_unsafe"
+        raise StateAdmissionFailure(_state_advisory(failure)) from None
+    if activation is None:
+        return {
+            "managed_opt_in": False,
+            "requested_profile": "legacy",
+            "activation_identity": None,
+            "mode_identity": None,
+        }
+    activation_content, activation_identity = activation
+    normalize_activation_state(activation_content)
+    try:
+        mode = safe_capture_file(
+            plan_fd,
+            MODE_FILE,
+            required=False,
+            race_probe=(lambda: race_probe(MODE_FILE)) if race_probe else None,
+            max_bytes=MAX_MODE_BYTES,
+            oversize_outcome="state_over_budget",
         )
-        if advisory == "plan_state_changed":
-            advisory = "state_changed"
-        raise StateAdmissionFailure(advisory) from None
-    return normalize_mode_state(content)
+    except PlanFailure as failure:
+        raise StateAdmissionFailure(_state_advisory(failure)) from None
+    mode_content = None if mode is None else mode[0]
+    requested_profile = normalize_mode_state(mode_content)
+    return {
+        "managed_opt_in": True,
+        "requested_profile": requested_profile,
+        "activation_identity": activation_identity,
+        "mode_identity": None if mode is None else mode[1],
+    }
+
+
+def _revalidate_state_file(
+    plan_fd: int,
+    name: str,
+    expected_identity: Optional[Tuple[int, ...]],
+    expected_content: Optional[bytes],
+) -> None:
+    try:
+        current = safe_capture_file(
+            plan_fd,
+            name,
+            required=expected_identity is not None,
+            max_bytes=MAX_MODE_BYTES,
+            oversize_outcome="state_over_budget",
+        )
+        if expected_identity is None:
+            if current is not None:
+                raise StateAdmissionFailure("state_changed")
+            return
+        if current is None or current[1] != expected_identity or current[0] != expected_content:
+            raise StateAdmissionFailure("state_changed")
+    except PlanFailure:
+        raise StateAdmissionFailure("state_changed") from None
+
+
+def revalidate_owned_state(plan_fd: int, state: Dict[str, Any]) -> None:
+    """Discard rendered output if the activation decision changed in flight."""
+    _revalidate_state_file(
+        plan_fd,
+        ACTIVATION_FILE,
+        state["activation_identity"],
+        (OPT_IN_PROTOCOL + "\n").encode("utf-8") if state["managed_opt_in"] else None,
+    )
+    if state["managed_opt_in"]:
+        _revalidate_state_file(plan_fd, MODE_FILE, state["mode_identity"], b"inject-smart\n")
 
 
 def _marker_attachment(root_fd: int, session_id: Optional[str]) -> str:
@@ -875,6 +973,7 @@ def _execute(
         return plan_result("plan_unreadable", request, warnings=preflight_warnings)
     snapshot: Optional[Path] = None
     plan_fd: Optional[int] = None
+    effective_profile = "legacy"
     try:
         attachment = _marker_attachment(root_fd, request["event"]["session_id"])
         base_project = empty_project(request, root=str(canonical_root), attachment=attachment)
@@ -922,6 +1021,20 @@ def _execute(
                 "plan_dir": str(plan_dir),
             }
 
+            try:
+                owned_state = capture_owned_state(plan_fd)
+            except StateAdmissionFailure as failure:
+                return plan_result(
+                    "invalid_request",
+                    request,
+                    project=project,
+                    warnings=warnings,
+                    plan_id_state=plan_id_state,
+                    effective_profile=None,
+                    advisory=failure.advisory,
+                )
+            effective_profile = owned_state["requested_profile"]
+
             snapshot = Path(tempfile.mkdtemp(prefix=SNAPSHOT_PREFIX, dir=base))
             os.chmod(snapshot, 0o700)
             snapshot_info = snapshot.lstat()
@@ -946,7 +1059,10 @@ def _execute(
             output = run_child(
                 ["/bin/sh", str(injector), "--context=userprompt"],
                 cwd=snapshot,
-                env=minimal_env(temp_root=str(snapshot)),
+                env=minimal_env(
+                    temp_root=str(snapshot),
+                    inject_profile="smart" if effective_profile == "smart" else None,
+                ),
                 deadline=child_deadline,
             )
             try:
@@ -958,6 +1074,18 @@ def _execute(
             if len(context) > request["output_budget"]["max_context_chars"]:
                 raise PlanFailure("output_budget_exceeded", warnings)
 
+            try:
+                revalidate_owned_state(plan_fd, owned_state)
+            except StateAdmissionFailure as failure:
+                return plan_result(
+                    "invalid_request",
+                    request,
+                    project=project,
+                    warnings=warnings,
+                    plan_id_state=plan_id_state,
+                    effective_profile=None,
+                    advisory=failure.advisory,
+                )
             directory_after_child = os.fstat(plan_fd)
             if _directory_identity(directory_after_child) != expected_directory:
                 raise PlanFailure("plan_state_changed", warnings)
@@ -969,6 +1097,7 @@ def _execute(
                 project=project,
                 warnings=warnings,
                 plan_id_state=plan_id_state,
+                effective_profile=effective_profile,
             )
         except PlanFailure as failure:
             return plan_result(
@@ -976,6 +1105,7 @@ def _execute(
                 request,
                 project=base_project,
                 warnings=preflight_warnings + failure.warnings,
+                effective_profile=effective_profile,
             )
     finally:
         if plan_fd is not None:

@@ -141,7 +141,7 @@ test("plan request/result seam is exact and relational across production activat
     assert.equal(request.schema_version, 2);
     assert.deepEqual(request.policy, {
       planning_enabled: true,
-      allowed_profiles: ["legacy"],
+      allowed_profiles: ["legacy", "smart"],
       opt_in_protocol: "codex-managed-v1",
     });
 
@@ -228,6 +228,10 @@ test("plan request/result seam is exact and relational across production activat
     assert.equal(callHarness({
       op: "plan_validate", request,
       result: { ...result, effective_profile: "smart" },
+    }), true);
+    assert.equal(callHarness({
+      op: "plan_validate", request,
+      result: { ...result, effective_profile: "autonomous" },
     }), false);
     const runtime = path.join(root, "valid-plan.py");
     fs.writeFileSync(runtime, `import json\nprint(json.dumps(json.loads(${JSON.stringify(JSON.stringify(result))})))\n`);

@@ -37,6 +37,70 @@ Managed policy 只注册一个绝对路径 adapter，事件集固定为：
 
 详细调用链、信任图和失败语义见 [`ARCHITECTURE.md`](ARCHITECTURE.md)。
 
+### 显式 smart opt-in
+
+默认仍是 legacy。只有当前 resolved plan directory 同时存在以下 exact state，owned runtime 才选择 pristine smart
+renderer：
+
+```text
+.mode                 = inject-smart\n
+.pwf-codex-managed    = codex-managed-v1\n
+```
+
+`.pwf-codex-managed` 必须最后通过同目录临时文件与原子 rename 写入；它是非秘密的 product activation commit point，
+不是账户凭据。managed Hook/runtime 只读这两个文件，不负责创建或修复。删除 `.pwf-codex-managed` 即 disarm；残留
+`.mode` 会立即恢复为 inert，下一次 Hook 使用 legacy。activation 存在但 mode 缺失、损坏、future-only 或执行中发生
+替换时 fail closed，只保留 canary，不降级 legacy。
+
+Linux/Cloud 中可在独立终端按下面的最小顺序启用；先把 `PLAN_DIR` 换成已经人工核对的 exact plan directory：
+
+```bash
+PLAN_DIR=/absolute/project/.planning/plan-id
+test -d "$PLAN_DIR" || exit 1
+
+mode_tmp="$(mktemp "$PLAN_DIR/.mode.tmp.XXXXXX")" || exit 1
+activation_tmp="$(mktemp "$PLAN_DIR/.pwf-codex-managed.tmp.XXXXXX")" || exit 1
+trap 'rm -f -- "$mode_tmp" "$activation_tmp"' EXIT
+printf 'inject-smart\n' >"$mode_tmp"
+printf 'codex-managed-v1\n' >"$activation_tmp"
+chmod 644 "$mode_tmp" "$activation_tmp"
+mv -- "$mode_tmp" "$PLAN_DIR/.mode"
+mv -- "$activation_tmp" "$PLAN_DIR/.pwf-codex-managed"  # commit point，必须最后写
+trap - EXIT
+```
+
+退出 smart 只删除 commit point：
+
+```bash
+rm -- "$PLAN_DIR/.pwf-codex-managed"
+```
+
+用户侧写入后，可把 installed `owned-plan.py` 的 exact-v2 request 通过 stdin 送入并检查 JSON result；只有
+`outcome=context_emitted`、`effective_profile=smart`、`advisory=null` 才表示该 plan 已被 production admission
+确认。这个只读 probe 复用 production parser，不需要第二个 status 工具。`OWNED_PLAN`、`PROJECT_ROOT` 与 `PLAN_ID`
+必须替换为当前安装和计划的 exact 值：
+
+```bash
+OWNED_PLAN=/opt/codex/hooks/planning-with-files/owned-plan.py
+PROJECT_ROOT=/absolute/project
+PLAN_ID=plan-id
+python3 - "$PROJECT_ROOT" "$PLAN_ID" <<'PY' | "$OWNED_PLAN"
+import json, sys
+print(json.dumps({
+    "schema_version": 2,
+    "runtime": "codex",
+    "event": {"name": "UserPromptSubmit", "source": None, "session_id": None, "turn_id": None},
+    "project": {"root": sys.argv[1], "plan_id": sys.argv[2]},
+    "policy": {"planning_enabled": True, "allowed_profiles": ["legacy", "smart"], "opt_in_protocol": "codex-managed-v1"},
+    "output_budget": {"max_context_chars": 20000, "max_plan_lines": 50, "max_progress_lines": 20},
+}))
+PY
+```
+
+任何 activation 命令、文件或 probe 输出都不要
+放 secret、身份或授权码。Cloud 中 prepare/review/commit、Fresh/Resume/cache 与 opt-out/re-arm 尚需 F3 live gate，
+当前本地能力不得描述成 Cloud lifecycle PASS。
+
 ## 安装与运维
 
 ### 前置条件
