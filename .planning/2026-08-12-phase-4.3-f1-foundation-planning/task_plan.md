@@ -10,9 +10,8 @@
 
 ## Authorization
 
-- 维护者本轮只授权创建 Phase 4.3 占位并明确定位；尚未授权开始 F1A/F1B 证据扫描或方案冻结。
-- 下一轮维护者明确要求“开始 Phase 4.3/F1A-F1B 探路”后，才允许只读源码/contracts/tests/history 扫描、
-  非生产验证与本 planning 三文件更新。
+- 维护者已明确要求开始 Phase 4.3 探路；授权只读源码/contracts/tests/history 扫描、非生产验证与本 planning
+  三文件更新，以冻结 F1A/F1B 实施计划。
 - 当前没有 production、machine-contract rotation、tests、package identity、Release inputs、Cloud 写入、部署、
   installed-state mutation 或远端变更授权。
 
@@ -30,26 +29,26 @@
 
 ## Gates
 
-- [ ] P0 — Start authorization and evidence refresh：维护者明确启动探路后，恢复 branch/worktree、Phase 4.1/4.2、
+- [x] P0 — Start authorization and evidence refresh：恢复 branch/worktree、Phase 4.1/4.2、
   ROADMAP、current contracts/source/tests 与 v0.3.5 rollback facts。
-- [ ] P1 — Exact file and authority map：划分 F1A/F1B 文件、producer/consumer/owner、字段 lifecycle 与 denied surface。
-- [ ] P2 — Dependency and atomicity map：画出 schema/runtime → bundle → manifest → installer/doctor → Release/hash 传播，
+- [x] P1 — Exact file and authority map：划分 F1A/F1B 文件、producer/consumer/owner、字段 lifecycle 与 denied surface。
+- [x] P2 — Dependency and atomicity map：画出 schema/runtime → bundle → manifest → installer/doctor → Release/hash 传播，
   判断独立 checkpoint 与完整 candidate transaction 的关系。
-- [ ] P3 — Failing-first and regression design：冻结每个 gate 最近边界测试、legacy equivalence、exact-key refusal、
+- [x] P3 — Failing-first and regression design：冻结每个 gate 最近边界测试、legacy equivalence、exact-key refusal、
   marker unreachable 与 partial takeover guards。
-- [ ] P4 — Platform validation and rollback design：冻结 Windows/local Linux/no-live Cloud、deterministic ZIP、
+- [x] P4 — Platform validation and rollback design：冻结 Windows/local Linux/no-live Cloud、deterministic ZIP、
   candidate → v0.3.5 → candidate 双向 takeover/rollback 矩阵。
-- [ ] P5 — Exit/stop conditions and route freeze：输出 `GO / CONDITIONAL_GO / NO_GO`，决定是否请求 F1A implementation。
-- [ ] P6 — Closeout：将讨论结论回写完整；闭合后再整理为 `docs/history/` Phase 4.3 摘要并停止。
+- [x] P5 — Exit/stop conditions and route freeze：输出 `GO / CONDITIONAL_GO / NO_GO`，决定是否请求 F1A implementation。
+- [x] P6 — Closeout：将讨论结论回写完整；整理为 `docs/history/` Phase 4.3 摘要并停止。
 
 ## Next Step
 
-等待维护者下一轮明确要求开始 Phase 4.3 F1A/F1B 实施规划探路。在此之前只保留本占位，不执行 P0，不扫描
-源码/contracts，不修改 production、tests、package/Release identity 或 installed state。
+Phase 4.3 已关闭并停止。下一步等待维护者另行授权 F0 development identity preparation；不得自动进入
+F0/F1A implementation。
 
 ## Current decision
 
-`RESERVED / NOT_STARTED / IMPLEMENTATION_NOT_AUTHORIZED`
+`DISCOVERY_COMPLETE / CONDITIONAL_GO_TO_SEPARATE_F0_THEN_F1A / CLOSEOUT_COMPLETE / IMPLEMENTATION_NOT_AUTHORIZED`
 
 ## Invariants
 
@@ -84,3 +83,11 @@
 | Error | Attempt | Resolution |
 |---|---:|---|
 | 在旧 Phase 4 Discovery scope 增加自定义 Phase 4.3 markdown，被 planning lifecycle test 拒绝 | 1 | 改建本标准三文件 scope；Phase 4.3 的持续结论写入 findings/progress，闭合后才建立 history 摘要 |
+| 组合 `rg` 命令中的 PowerShell 双引号/转义被错误拆成多个路径 | 1 | 其他读取结果有效；后续按文件使用简单单引号 pattern 分段读取，不重复复杂嵌套转义 |
+| `rg` 收到字面量 `*.md`，Windows 将其当作非法路径，导致一组并行读取返回 exit 1 | 1 | 有效 path inventory 已保留；后续用 `--glob '*.md'` 或显式目录，不向 `rg` 传 shell glob 位置参数 |
+| 并行只读组中一个 `rg` pattern 无匹配返回 exit 1，使编排器把整组标为 failed | 1 | 已读取内容有效；后续对允许无匹配的 inventory 使用 PowerShell `Select-String` 或显式吞掉仅“无匹配”状态 |
+| Phase 4.1 planning scope 的目录名首轮猜成 `2026-08-12-phase-4-discovery` | 1 | 用 `rg` 恢复真实目录 `2026-08-11-phase-4-discovery`；改读真实 authority，不创建替代文件 |
+| 沙箱内 `npm test` 的 Node runner 对 16 个 test file 全部报 `spawn EPERM` | 1 | 分类为 Windows sandbox process limitation；获批后在沙箱外运行同一命令，112 pass、0 fail、12 个 POSIX case 诚实 SKIP |
+| 一次 `rg` 只读命令的 PowerShell pattern 缺少字符串终止符 | 1 | 改用单引号 pattern 后读取 installer uninstall/backup 边界；未修改文件 |
+| 大段 findings patch 的定位句使用“即使”，实际文件为“即便”而校验失败 | 1 | 读取文件尾确认原文，用精确上下文重试成功；无部分写入 |
+| focused repository-boundary test 在 sandbox 内调用 Git 时返回 null status | 1 | 同组 architecture/contracts tests 已通过；沙箱外重跑原 repository test 8/8 PASS，不修改测试 |

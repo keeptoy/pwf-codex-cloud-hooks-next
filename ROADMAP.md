@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.5` accepted baseline；本地 `0.4.0-dev` 已完成 Phase 4 Discovery 与路线校准，下一步细化 F1A～F3 实施计划，尚无 successor package/machine identity |
+| 当前开发列车 | `v0.3.5` accepted baseline；本地 `0.4.0-dev` 已完成 Phase 4 Discovery、路线校准与 F1A/F1B 实施规划，下一步等待独立 F0 development identity preparation 授权，尚无 successor package/machine identity |
 | 当前已接受版本 | `v0.3.5`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.4` immediate fallback |
 | 回退证据链 | immutable `v0.3.3` deeper fallback；更早发布里程碑见 provenance museum |
@@ -64,10 +64,10 @@ entry mode、兼容/rollback 与 placement 收敛为 `CONDITIONAL_GO` 输入；�
 F1 conditional go。后续路线校准已把它细分为 F1A、F1B、F2A、F2B 与 F3；这是 programme 顺序，不是
 implementation authorization。
 
-Phase 4 Discovery 已完成并冻结为 `CONDITIONAL_GO_TO_F1_INACTIVE_FOUNDATION`；当前只授权把已采纳路线翻译为
-分步实施计划、依赖、测试矩阵和退出条件。没有 contract-v2 implementation、行为激活、Release identity 或
-`0.4.0-*` package/machine identity 授权。本地分支名不建立这些身份或实现 gate。精确 Next Step 和停止条件只见
-活动 task plan；已完成 v0.3.5 基线与 rollback 证据仍见第 3 节及 provenance/acceptance。
+Phase 4 Discovery 已完成并冻结为 `CONDITIONAL_GO_TO_F1_INACTIVE_FOUNDATION`；Phase 4.3 又闭合了 F0、F1A、F1B
+文件/authority、hash、测试、平台与 installed-state migration 施工图。当前没有 F0/F1A implementation、行为激活、
+Release identity 或 `0.4.0-*` package/machine identity 授权。本地分支名不建立这些身份或实现 gate。精确 Next Step
+和停止条件只见活动 task plan；已完成 v0.3.5 基线与 rollback 证据仍见第 3 节及 provenance/acceptance。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
 bootstrap/acceptance；当前 candidate 与 accepted 都是 v0.3.5，因此窗口收敛为单一 v0.3.5 文件。v0.3.4
@@ -80,7 +80,7 @@ pre-release；多个低风险 Phase 也只有在独立评审后才能进入同�
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F1A/F1B inactive foundation → F2A smart → F2B autonomous → F3 Fresh/Resume/rollback Cloud；legacy 默认不变 | Discovery/路线校准 complete；分步 planning next；implementation 未授权 |
+| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F1A/F1B inactive foundation → F2A smart → F2B autonomous → F3 Fresh/Resume/rollback Cloud；legacy 默认不变 | Discovery/路线/实施规划 complete；F0/F1 implementation 未授权 |
 | 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest 各自独立 gate；必须有 use case、latency/token budget 与 Cloud 证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7 前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan 时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6 进入 Discovery |
