@@ -38,3 +38,10 @@
 - The no-live run must use only `4.1 -> 5.1 -> 6 -> 7 -> 8.1 -> 8.2 -> 9.1`. Published Release sections are inapplicable because `v0.4.0-dev` remains zero-hash, unsealed and unpublished.
 - The ref-aware v0.3.5 takeover/tamper/rollback oracle is intentionally excluded from a tagless Source/Candidate checkout. Its completed local result remains prerequisite evidence; the Cloud run must not fabricate refs or relabel that oracle as no-live evidence.
 - F1B does not change the B-E black-box prompts because observable Host behavior must remain legacy-equivalent. The incremental acceptance value is Linux zero-skip source proof plus exact installed candidate/deep-check proof.
+
+## First Linux Cloud failure classification
+
+- Source/Candidate setup at `8c26de68c73642c229dc9dabf684d9f89969ea8d` stopped before ZIP build/install: 133 tests, 132 pass, 1 fail, 0 skip. No managed runtime was left behind.
+- The failing zero-call test deleted only `task_plan.md` while retaining `.planning/.active_plan`, the selected plan directory and `progress.md`. That is a selected but damaged plan, so production correctly returned fail-closed `plan_unreadable`.
+- The test intends to exercise the distinct `no_plan` production path. Use a workspace with no `.planning` directory for that request; do not weaken the expected outcome to `plan_unreadable`.
+- Existing resolver tests already cover safe no-plan fallback, and unsafe-input tests independently require missing/linked/non-regular required plan content to remain `plan_unreadable`. The correction changes no production behavior or trusted graph.

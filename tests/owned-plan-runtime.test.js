@@ -163,7 +163,7 @@ print(json.dumps(results))
 test("legacy production paths never call inactive state capture", { skip: !LINUX }, () => {
   const active = fixture("active");
   const empty = fixture("empty");
-  fs.rmSync(path.join(empty.plan, "task_plan.md"));
+  fs.rmSync(path.join(empty.root, ".planning"), { recursive: true });
   const source = String.raw`
 import importlib.util, json, pathlib, sys
 spec = importlib.util.spec_from_file_location("owned_plan", sys.argv[1])

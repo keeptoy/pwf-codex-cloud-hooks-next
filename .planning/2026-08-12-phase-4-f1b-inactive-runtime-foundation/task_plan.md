@@ -32,6 +32,7 @@
 | P4 Full validation and lifecycle reconciliation | completed | focused/full suite、golden parity、deterministic ZIP、syntax/mode/residue scans 通过 |
 | P5 Local commit and stop | completed | 独立 commit，工作树干净，F2A 未授权 |
 | P6 Cloud acceptance handoff calibration | completed | v0.4.0-dev acceptance 增量准确覆盖 F1B，聚焦文档验证通过，独立本地文档 commit |
+| P7 Linux fixture correction and Cloud retry handoff | completed | no-plan fixture 与 fail-closed damaged-plan 语义分离，完整本地回归通过，独立本地 commit |
 
 ## Migration lifecycle ledger
 
@@ -55,7 +56,8 @@
 | Windows sandbox blocked Node test-runner child creation with `spawn EPERM` | 1 | Re-ran the focused command outside the sandbox; obtained the intended six product red failures. |
 | Full suite exposed superseded v1 ABI files surviving exact v0.3.5 takeover | 1 | Installer now derives exact retired paths only after full predecessor validation, backs up, retires them, then writes v2; cross-version oracle is green. |
 | Cloud handoff governance test still required “F1B not authorized” after F1B completion | 1 | Advanced the lifecycle guard to require that F2A/F2B activation remains unauthorized. |
+| First Linux Source/Candidate run returned `plan_unreadable` where the zero-read test expected `no_plan` | 1 | Classified as a fixture defect: the active plan directory remained but its required `task_plan.md` was removed. Construct a genuine no-plan workspace; retain separate damaged-plan fail-closed coverage. |
 
 ## Current status
 
-`F1B_LOCAL_CHECKPOINT_COMPLETE / CLOUD_HANDOFF_READY / F2A_NOT_AUTHORIZED`
+`F1B_LOCAL_GREEN / SOURCE_CANDIDATE_RETRY_REQUIRED / F2A_NOT_AUTHORIZED`

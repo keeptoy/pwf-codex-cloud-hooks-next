@@ -293,7 +293,7 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /SOURCE_CANDIDATE_CLOUD_PASS \/ I3_COMPLETE/);
     assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
   } else {
-    assert.match(acceptance, /Source\/Candidate.*Cloud hard acceptance 尚未开始/s);
+    assert.match(acceptance, /Source\/Candidate.*Cloud hard acceptance 尚未(?:开始|完成)/s);
     assert.doesNotMatch(acceptance, /\b[a-f0-9]{64}\b/i);
   }
   assert.match(acceptance, /64 位 zero hash.*fail closed/s);
