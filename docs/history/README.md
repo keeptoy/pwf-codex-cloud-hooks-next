@@ -39,6 +39,7 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 | Phase 3.9.2 | 回顾性 contract-design 讨论里程碑：区分 overlay 退役 tombstone、通用 exact schema、正向 pristine 证据与未来路线治理；不表示 v2 已实施 | [`phase-3.9.2-contract-v2-tombstone-review.md`](phase-3.9.2-contract-v2-tombstone-review.md) |
 | Phase 3.9.3 | 回顾性字段生命周期讨论里程碑：为 `origin` 冻结有触发点的待审状态，并建立 machine field 的 owner、transition、review 与 retirement 最小表；不表示 v2 或 Phase 4 已实施 | [`phase-3.9.3-machine-field-lifecycle-and-origin.md`](phase-3.9.3-machine-field-lifecycle-and-origin.md) |
 | Phase 4.1 | Phase 4 第一轮 Discovery 里程碑：冻结 managed v3 mode 的 hybrid owned-boundary、versioned opt-in、contract/source convergence、threat/rollback matrix 与 F1 conditional-go；不表示 foundation 或行为已实施 | [`phase-4.1-managed-v3-discovery.md`](phase-4.1-managed-v3-discovery.md) |
+| Phase 4.2 | Phase 4～9 路线复核讨论里程碑：确认 Phase 4.1 已落实字段生命周期原则，保留 programme 风险顺序，并提出 F1/F2 子 gate、activation protocol、可选 Phase 6、共用 evaluator 与 standing Release gate 校准；不产生实施授权 | [`phase-4.2-programme-route-review.md`](phase-4.2-programme-route-review.md) |
 
 ## 阅读方式
 

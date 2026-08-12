@@ -86,3 +86,11 @@
   文件改动或证据丢失。
 - Phase 4.1 历史摘要与索引完成后，repository/architecture focused governance 15/15 PASS，`git diff --check`
   PASS；未改变 production、contracts、tests、Release inputs 或活动 F1 未授权状态。
+- 按维护者要求，把“Phase 4.1 是否继承 Phase 3.9.3、Phase 4～9 是否需要调路”的复核结论整理为
+  `docs/history/phase-4.2-programme-route-review.md` 并登记索引。记录确认总体风险顺序不变，提出 F1A/F1B、
+  F2A/F2B/F3、activation/disarm protocol、Phase 6 可选 NO_GO、Phase 7/8 共用 evaluator 与 Phase 9 standing
+  Release gate 等后续校准输入。
+- Phase 4.2 只保存讨论溯源：未修改 ROADMAP 当前 authority，未授权 F1/F2/Cloud/Release，也未修改 production、
+  machine contracts、tests 或 Release inputs；活动 Next Step 继续等待维护者决定是否授权 F1。
+- Phase 4.2 文档、索引与 planning 记录完成后，repository/architecture focused governance 15/15 PASS，
+  `git diff --check` PASS；验证没有把讨论建议提升为当前 programme authority。
