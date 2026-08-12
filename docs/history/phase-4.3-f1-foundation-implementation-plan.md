@@ -96,6 +96,52 @@ state reader/normalizer 先作为 `owned-plan.py` 内部受控 seam，复用已�
 边界。unit tests 可以直接验证它，但 production 对 `.mode`、nonce、attestation、ledger 的 open/read 次数必须为零。
 result v2 只增加 exact effective profile 与 bounded advisory reason code；不传 raw text、hash、nonce 或 ledger diagnostics。
 
+### 6. 大迁移必须维护对象级生命周期总账
+
+本轮原本已经记录了字段 lifecycle、hash propagation、transition window、absence guards、entry/exit/stop conditions，
+所以不是完全缺少生命周期治理；缺口是这些证据分散在 contract、runtime、installer 和测试各节，没有一张能在迁移
+前后逐项核对的总账。大迁移若只盯 JSON schema，很容易删了字段却漏掉旧常量、特殊分支、固定路径、测试 fixture、
+文档命令或 Release hash edge，几个月后才发现又留下半套历史实现。
+
+因此 F0 及其后每个 implementation gate 都必须在当时的活动 planning 中建立 migration lifecycle ledger。它是施工
+清单和审计证据，不是新的 machine contract，也不取代 bundle、manifest、Release 或 installed snapshot authority。
+每一行至少记录：
+
+| 必填项 | 回答的问题 |
+|---|---|
+| object/path/symbol | 迁移的是哪个文件、字段、常量、函数分支、固定路径、测试或文档入口 |
+| current producer/consumer/owner | 谁创建它、谁实际读取它、谁对退出负责 |
+| lifecycle action | 本 gate 是 `KEEP`、`REPLACE`、`RETIRE` 还是带期限 `DEFER` |
+| landing gate/window | 它在哪个 gate 改变，服务哪个兼容窗口 |
+| propagation edges | 会影响哪些 schema、hash、inventory、installer/doctor、builder、bootstrap、tests 和 docs |
+| proof and failure behavior | 哪些正向/负向测试证明已迁移，遗漏或未知状态如何 fail closed |
+| post-gate state | 新 authority 在哪里，旧对象应当完全消失还是只允许存在于 immutable history |
+| review/retirement condition | deferred/compatibility 项由什么证据、最迟在哪个 gate 重新审核或删除 |
+
+Phase 4 已知需要逐项入账的高风险对象包括：
+
+| 对象族 | 迁移时重点核对 |
+|---|---|
+| identity | `package.json`、Release package version、bootstrap filename/hash、candidate acceptance、CHANGELOG/ROADMAP role |
+| contract paths | `runtime-bundle-v1`、`release-artifact-v1`、plan schema v1 到 current v2 路由及 historical oracle 自发现 |
+| retired fields | `origin`、`managed_sha256`、`overlay_ids`、`language`、`host_dependencies`、dependency condition/required |
+| code constants/branches | `MANIFEST_SCHEMA`、builder `DEFAULT_CONTRACT`/`EXECUTABLE_PATHS`、installer bundle 外 adapter 拼接、plan `behavior_profile` 与 future `SUPPORTED_PROFILES` |
+| installed compatibility | installed-manifest schema3、`runtime_files`、`adapter_sha256`、v0.3.5 transition profile 与 candidate-controlled rollback |
+| proof surfaces | exact-key mutation、absence/denied-source guards、golden parity、current/historical path scan、Git/ZIP mode、deterministic build、Cloud template/current docs |
+
+每个 gate 按三个时点对账：
+
+1. **迁移前：**全仓扫描旧名称、schema version、常量、特殊分支和固定路径，冻结 baseline inventory；不能只列计划修改的文件。
+2. **迁移中：**按 leaf bytes → contract entries/hashes → manifest references → installer/doctor/builder → Release/bootstrap/docs
+   的传播顺序逐行关闭，任何临时兼容代码同时写 owner 和 sunset。
+3. **迁移后：**既做正向 authority/inventory 对账，也做反向残留扫描；旧符号只能命中明确分类的 immutable history/
+   published oracle，current production、current contracts、Release、测试 helper 和 current 文档不得留下半套旧路线。
+
+gate closeout 必须列出 ledger 中所有未关闭行。`DEFER` 不是“以后再说”，必须带 owner、原因、review trigger 和最迟
+裁决 gate；没有 owner、证据或退出条件的遗留会阻断 PASS。后续 Phase 9 standing Release gate 再对本列车所有已关闭
+ledger 做一次 retirement audit，检查兼容窗口、zero-hash/dev 文件、旧 candidate acceptance、临时测试和文档入口是否
+已按生命周期退出。
+
 <a name="phase-4-3-completed-delivery"></a>
 
 ## Completed delivery
@@ -108,6 +154,7 @@ result v2 只增加 exact effective profile 与 bounded advisory reason code；�
 - 冻结 failing-first 次序、Windows/Linux/no-live Cloud 职责分流；
 - 补上 v0.3.5 exact forward migration 与 candidate-controlled rollback 的非对称合同；
 - 冻结每个 gate 的 entry、exit、stop 和重新 Discovery 条件。
+- 冻结 object-level migration lifecycle ledger 与迁移前/中/后残留审计，覆盖字段、代码常量/分支、路径、hash、测试和文档。
 
 Cloud 使用也按风险收敛：F0 和 F1A 先做 local/Linux；完整 F1B 闭合后只跑一次 no-live Cloud foundation；
 已激活 smart/autonomous 的 Fresh/Resume/opt-out/tamper 验收仍留给 F3，避免为只改身份或合同的 checkpoint
@@ -138,7 +185,8 @@ Linux/no-live Cloud、alpha 或 Release 已完成。
 
 ## Successor inheritance
 
-后继实施必须严格按 F0 → F1A → F1B 逐 gate 授权、测试、commit 和停止。F1A 先以 plan-v1 证明纯供应链迁移；
+后继实施必须严格按 F0 → F1A → F1B 逐 gate 授权、测试、commit 和停止，并在每个活动 implementation planning 中
+维护 object-level migration ledger。F1A 先以 plan-v1 证明纯供应链迁移；
 F1B 再以 plan-v2 证明 state foundation 存在但不可达。任何一步若需要 dual schema fallback、放宽 unknown-file、
 改变 legacy output、扩大 trusted graph 或写 workspace，都必须停止并重开设计/Discovery。
 

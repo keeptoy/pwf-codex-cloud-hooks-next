@@ -26,7 +26,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 当前已接受版本 | `v0.3.5`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.4` immediate fallback |
 | 回退证据链 | immutable `v0.3.3` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4 Discovery 已完成并 `CONDITIONAL_GO_TO_F1`；F1A～F3 路线已采纳，implementation/activation 未授权 |
+| 当前 programme 边界 | Product Phase 4 Discovery 已完成并 `CONDITIONAL_GO_TO_F1`；F0～F3 路线已采纳，F0 当前暂停，implementation/activation 未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.3.5` 已完成 immutable publication、公开下载/安装验收与 pointer-only promotion；只读 postflight 确认它为
@@ -61,7 +61,8 @@ baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta
 publication 与 Latest postflight 也已闭合。C2 已把 bundle tombstone、通用 exact schema、字段生命周期、Release
 entry mode、兼容/rollback 与 placement 收敛为 `CONDITIONAL_GO` 输入；本地 `0.4.0-dev` 上的 Phase 4 Discovery
 已联合复核 attestation、nonce、opt-in v3 modes、source admission 与 contract foundation shape，并冻结为
-F1 conditional go。后续路线校准已把它细分为 F1A、F1B、F2A、F2B 与 F3；这是 programme 顺序，不是
+F1 conditional go。后续路线校准与 Phase 4.3 实施规划已把完整施工顺序冻结为
+F0、F1A、F1B、F2A、F2B 与 F3；这是 programme 顺序，不是
 implementation authorization。
 
 Phase 4 Discovery 已完成并冻结为 `CONDITIONAL_GO_TO_F1_INACTIVE_FOUNDATION`；Phase 4.3 又闭合了 F0、F1A、F1B
@@ -80,7 +81,7 @@ pre-release；多个低风险 Phase 也只有在独立评审后才能进入同�
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F1A/F1B inactive foundation → F2A smart → F2B autonomous → F3 Fresh/Resume/rollback Cloud；legacy 默认不变 | Discovery/路线/实施规划 complete；F0/F1 implementation 未授权 |
+| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 development identity → F1A/F1B inactive foundation → F2A smart → F2B autonomous → F3 Fresh/Resume/rollback Cloud；legacy 默认不变 | Discovery/路线/实施规划 complete；F0 paused，implementation 未授权 |
 | 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest 各自独立 gate；必须有 use case、latency/token budget 与 Cloud 证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7 前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan 时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6 进入 Discovery |
@@ -94,19 +95,31 @@ Phase 经独立 gate 后被明确合并，则封板当时获批的同一版本�
 ### 4.1 Phase 4 已采纳 gate 路线
 
 Phase 4 保持 Phase 4.1 冻结的 hybrid owned-boundary 与两个现有 turn-start events，不改变主架构；内部按
-风险和故障域拆成五个 gate：
+风险和故障域拆成六个 gate。完整 programme 顺序为
+`F0 → F1A → F1B → F2A → F2B → F3`：
 
 | Gate | 范围 | 必须保持的边界 | 典型故障归属 |
 |---|---|---|---|
+| F0 — Development identity preparation | package/Release candidate 轮转到 `0.4.0-dev`、zero-hash bootstrap、candidate acceptance/CHANGELOG/ROADMAP 同步 | 不改 runtime、machine contract 或用户行为；不宣称 alpha/RC/accepted | identity、bootstrap、governance |
 | F1A — Contract/source foundation | manifest schema 4、bundle/Release v2、adapter 纳入 bundle、schema placement 收敛 | runtime 行为仍为 legacy；manifest/bundle/Release 作为原子 contract transaction | contracts、importer、installer、builder |
 | F1B — Inactive runtime foundation | plan request/result v2、owned state reader/normalizer、production `allowed_profiles=[legacy]` | marker 仍不可达；现有 Host 输出与 v0.3.5 等价 | owned runtime、adapter/runtime protocol |
 | F2A — Smart activation | versioned managed opt-in，只改变 plan 选段 | 不读取 nonce/attestation/ledger；不接受 gated | smart selection 与 opt-in policy |
 | F2B — Autonomous activation | attestation、exact nonce、normalized ledger | raw progress 不得回退；无效或不完整状态拒绝，不降级 legacy | state validation、tamper/refusal、ledger rendering |
 | F3 — Cloud and rollback acceptance | Fresh、UserPrompt、real Resume、cache reuse、opt-out/re-arm 与双向 rollback | live Cloud 不等于 Release；失败不得产生 partial takeover 或 snapshot residue | Cloud lifecycle、takeover、rollback |
 
+F0 是 Phase 4 的正式前置 gate，不是 F1A 内部顺手改版本号。它只建立可变的开发身份；完成后必须独立验证、
+commit 并停止，不能自动进入 F1A。当前维护者已明确暂停 F0，因此 programme 停在 F0 entry 之前。
+
 F1A/F1B 是独立审查、测试和停止点，不强制形成两个可发布的半成品。只要 runtime/schema bytes 会影响 bundle、
 manifest 或 ZIP hash，最终 candidate 就必须在同一完整 transaction 内使 contract、代码、inventory、mode 与 hash
 全部自洽；不得发布只完成一半或无法 deterministic build/check 的中间状态。
+
+每个迁移 gate 都必须在活动 planning 中维护一张迁移生命周期总账，至少覆盖文件/路径、schema 字段、代码常量与
+分支、producer/consumer、hash/inventory、测试和 current 文档。每一项同时记录 owner、`KEEP/REPLACE/RETIRE/DEFER`
+动作、落地 gate、依赖传播、验证证据、迁移后状态与再次 review/retirement 条件。开工前做全仓 inventory，施工中按
+leaf → contract → manifest → installer/builder → Release 顺序闭合，退出前同时做旧符号/旧路径残留扫描与新 authority
+正向对账；允许留在 immutable history 的命中必须显式分类，不能和 current residue 混为一谈。未关闭或无 owner 的行
+会阻断 gate PASS；不得另建第二份 machine authority 来保存这张治理账。
 
 ### 4.2 F2 activation/disarm 前置协议
 

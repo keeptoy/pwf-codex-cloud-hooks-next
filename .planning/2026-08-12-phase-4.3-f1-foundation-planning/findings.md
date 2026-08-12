@@ -417,3 +417,13 @@ F0 已绿色 commit。
 F1A/F1B 的文件、authority、hash、测试、升级与平台边界已经足够清晰，可以结束实施规划探路。唯一新增的重要校准
 是 installed-state transition：forward upgrade 与 rollback 必须按真实文件集合设计成非对称流程，不能继续笼统写成“旧新
 installer 直接双向 takeover”。这个校准不改变 Phase 4.1 hybrid 架构或 Phase 4.2 gate 顺序，只把 F1/F3 的兼容证据说实。
+
+## Post-closeout maintainer clarification
+
+- ROADMAP 的状态文字曾提到 F0，但正式 Phase 4 顺序和 gate table 从 F1A 开始；现已确认这是 programme 表达缺口，
+  F0 应作为正式独立前置 gate，完整顺序为 `F0 → F1A → F1B → F2A → F2B → F3`。
+- Phase 4.3 原有字段 lifecycle、hash propagation、absence guards 和 retirement conditions，但缺少跨字段/代码/路径/
+  测试/文档的一张对象级迁移总账。历史摘要与 ROADMAP 已补充 ledger 最小字段、迁移前/中/后对账、current residue 与
+  immutable history 分类、deferred owner/sunset 以及 Phase 9 retirement audit。
+- ledger 只存在于未来各 gate 的活动 planning，服务施工和回溯；不得复制为新的 machine authority。
+- 维护者当前明确暂停 F0；上述文档完善不产生 F0/F1A implementation 授权。

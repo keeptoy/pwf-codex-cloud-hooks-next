@@ -43,12 +43,12 @@
 
 ## Next Step
 
-Phase 4.3 已关闭并停止。下一步等待维护者另行授权 F0 development identity preparation；不得自动进入
-F0/F1A implementation。
+Phase 4.3 已关闭并停止。维护者已明确暂停 F0；等待维护者以后另行授权 F0 development identity preparation，
+不得自动进入 F0/F1A implementation。
 
 ## Current decision
 
-`DISCOVERY_COMPLETE / CONDITIONAL_GO_TO_SEPARATE_F0_THEN_F1A / CLOSEOUT_COMPLETE / IMPLEMENTATION_NOT_AUTHORIZED`
+`DISCOVERY_COMPLETE / CLOSEOUT_COMPLETE / F0_PAUSED_BY_MAINTAINER / IMPLEMENTATION_NOT_AUTHORIZED`
 
 ## Invariants
 

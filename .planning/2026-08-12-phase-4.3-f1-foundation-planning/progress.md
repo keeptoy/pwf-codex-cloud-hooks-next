@@ -46,3 +46,10 @@
   因 Git child status=null 失败，沙箱外重跑原命令 8/8 PASS；`git diff --check` PASS。
 - 最终完整回归 `npm test`：124 tests，112 pass、0 fail、12 个 Windows POSIX-only case 诚实 SKIP；importer check、
   Python compile、`node --check install.js` 与 `git diff --check` 同时 PASS。Phase 4.3 可封板为 planning-only commit。
+- 维护者在 F0 施工前暂停 implementation，并指出 ROADMAP 正式 Phase 4 gate table 漏列 F0、Phase 4.3 缺少集中式
+  对象级迁移生命周期总账。复核确认两项均成立：原文已零散覆盖生命周期证据，但不足以支持大迁移后的逐项残留审计。
+- ROADMAP 已把完整 programme 顺序更新为 `F0 → F1A → F1B → F2A → F2B → F3`，补 F0 gate 和跨 gate ledger
+  要求；Phase 4.3 历史摘要补充字段/常量/分支/路径/hash/测试/文档的生命周期表，以及迁移前、中、后和 Phase 9
+  retirement audit。活动状态明确为 `F0_PAUSED_BY_MAINTAINER / IMPLEMENTATION_NOT_AUTHORIZED`。
+- 补充完成后，architecture 7/7、machine contracts 2/2、repository lifecycle 8/8 与完整 `npm test` 全部通过；
+  最终为 124 tests、112 pass、0 fail、12 个 Windows POSIX-only SKIP，`git diff --check` PASS。
