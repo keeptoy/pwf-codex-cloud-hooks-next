@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.3.5` accepted baseline；本地 `0.4.0-dev` 已完成 Phase 4 Discovery，等待 F1 授权，尚无 successor package/machine identity |
+| 当前开发列车 | `v0.3.5` accepted baseline；本地 `0.4.0-dev` 已完成 Phase 4 Discovery 与路线校准，下一步细化 F1A～F3 实施计划，尚无 successor package/machine identity |
 | 当前已接受版本 | `v0.3.5`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.4` immediate fallback |
 | 回退证据链 | immutable `v0.3.3` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4 Discovery 已完成并 `CONDITIONAL_GO_TO_F1`；implementation/activation 未授权 |
+| 当前 programme 边界 | Product Phase 4 Discovery 已完成并 `CONDITIONAL_GO_TO_F1`；F1A～F3 路线已采纳，implementation/activation 未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.3.5` 已完成 immutable publication、公开下载/安装验收与 pointer-only promotion；只读 postflight 确认它为
@@ -60,12 +60,14 @@ baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta
 `v0.3.5` 的 zero-hash Source/Candidate Cloud 已 PASS，Published Release Cloud hard acceptance 已 PASS，
 publication 与 Latest postflight 也已闭合。C2 已把 bundle tombstone、通用 exact schema、字段生命周期、Release
 entry mode、兼容/rollback 与 placement 收敛为 `CONDITIONAL_GO` 输入；本地 `0.4.0-dev` 上的 Phase 4 Discovery
-已联合复核 attestation、nonce、opt-in v3 modes、source admission 与 contract foundation shape，并冻结为 F1 conditional go。
+已联合复核 attestation、nonce、opt-in v3 modes、source admission 与 contract foundation shape，并冻结为
+F1 conditional go。后续路线校准已把它细分为 F1A、F1B、F2A、F2B 与 F3；这是 programme 顺序，不是
+implementation authorization。
 
-Phase 4 Discovery 已完成并冻结为 `CONDITIONAL_GO_TO_F1_INACTIVE_FOUNDATION`；没有 contract-v2 implementation、
-行为激活、Release identity 或 `0.4.0-*` package/machine identity 授权。本地分支名不建立这些身份或实现 gate。
-精确 Next Step 和停止条件只见活动 task plan；已完成 v0.3.5 基线与 rollback 证据仍见第 3 节及
-provenance/acceptance。
+Phase 4 Discovery 已完成并冻结为 `CONDITIONAL_GO_TO_F1_INACTIVE_FOUNDATION`；当前只授权把已采纳路线翻译为
+分步实施计划、依赖、测试矩阵和退出条件。没有 contract-v2 implementation、行为激活、Release identity 或
+`0.4.0-*` package/machine identity 授权。本地分支名不建立这些身份或实现 gate。精确 Next Step 和停止条件只见
+活动 task plan；已完成 v0.3.5 基线与 rollback 证据仍见第 3 节及 provenance/acceptance。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
 bootstrap/acceptance；当前 candidate 与 accepted 都是 v0.3.5，因此窗口收敛为单一 v0.3.5 文件。v0.3.4
@@ -78,15 +80,58 @@ pre-release；多个低风险 Phase 也只有在独立评审后才能进入同�
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | attestation、nonce 与 opt-in v3 modes | legacy 默认不变；tamper/cache/rollback 与 Fresh/Resume | Discovery complete；F1 conditional go；implementation 未授权 |
-| 5 | `0.5.0-*` | compaction lifecycle | 先观测 `clear`/`compact` Host schema；无重复或丢失 context | pending |
-| 6 | `0.6.0-*` | selective tool/permission hooks | 逐事件测量 latency/token/噪声；先 advisory、后扩展 | pending |
-| 7 | `0.7.0-*` | advisory completion | bounded、non-recursive、无 plan 时安静 | pending |
-| 8 | `0.8.0-*` | optional hard gating | 明确 Stop contract、上限、逃生路径、rollback 与隔离 Cloud | pending |
-| 9 | 当前列车的 `rc.N` → stable | 完整矩阵、最终字节、canary retirement、正式发布 | RC 与最终资产分别验收；重新下载双资产；可逆 | complete — `v0.3.5` publication、dual-channel Cloud 与 baseline promotion PASS |
+| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F1A/F1B inactive foundation → F2A smart → F2B autonomous → F3 Fresh/Resume/rollback Cloud；legacy 默认不变 | Discovery/路线校准 complete；分步 planning next；implementation 未授权 |
+| 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
+| 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest 各自独立 gate；必须有 use case、latency/token budget 与 Cloud 证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7 前置 |
+| 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan 时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6 进入 Discovery |
+| 8 | `0.8.0-*` | optional hard gating，复用 Phase 7 evaluator | 重新 Discovery writer/counter/atomicity/lock/cache/Resume/rollback；再增加 block cap、escape hatch 与 stall state | pending；implementation 前必须重新 Discovery |
+| 9 | 当前列车的 `rc.N` → stable | standing Release 收口：完整矩阵、最终字节、canary retirement、正式发布 | RC 与最终资产分别验收；重新下载双资产；可逆 | standing gate；`v0.3.5` instance complete；当前 `0.4.0-dev` train 尚未进入 |
 
 Phase 9 是 Release 收口，不机械等于 `0.9.0`。例如只完成 Phase 4 时，它可以封板 `0.4.0`；如果多个
-Phase 经独立 gate 后被明确合并，则封板当时获批的同一版本列车。
+Phase 经独立 gate 后被明确合并，则封板当时获批的同一版本列车。`v0.3.5` 的 Phase 9 instance 已完成，
+但 Phase 9 本身是每条未来列车都要重新进入的 standing gate，不能继承上一版本的 PASS。
+
+### 4.1 Phase 4 已采纳 gate 路线
+
+Phase 4 保持 Phase 4.1 冻结的 hybrid owned-boundary 与两个现有 turn-start events，不改变主架构；内部按
+风险和故障域拆成五个 gate：
+
+| Gate | 范围 | 必须保持的边界 | 典型故障归属 |
+|---|---|---|---|
+| F1A — Contract/source foundation | manifest schema 4、bundle/Release v2、adapter 纳入 bundle、schema placement 收敛 | runtime 行为仍为 legacy；manifest/bundle/Release 作为原子 contract transaction | contracts、importer、installer、builder |
+| F1B — Inactive runtime foundation | plan request/result v2、owned state reader/normalizer、production `allowed_profiles=[legacy]` | marker 仍不可达；现有 Host 输出与 v0.3.5 等价 | owned runtime、adapter/runtime protocol |
+| F2A — Smart activation | versioned managed opt-in，只改变 plan 选段 | 不读取 nonce/attestation/ledger；不接受 gated | smart selection 与 opt-in policy |
+| F2B — Autonomous activation | attestation、exact nonce、normalized ledger | raw progress 不得回退；无效或不完整状态拒绝，不降级 legacy | state validation、tamper/refusal、ledger rendering |
+| F3 — Cloud and rollback acceptance | Fresh、UserPrompt、real Resume、cache reuse、opt-out/re-arm 与双向 rollback | live Cloud 不等于 Release；失败不得产生 partial takeover 或 snapshot residue | Cloud lifecycle、takeover、rollback |
+
+F1A/F1B 是独立审查、测试和停止点，不强制形成两个可发布的半成品。只要 runtime/schema bytes 会影响 bundle、
+manifest 或 ZIP hash，最终 candidate 就必须在同一完整 transaction 内使 contract、代码、inventory、mode 与 hash
+全部自洽；不得发布只完成一半或无法 deterministic build/check 的中间状态。
+
+### 4.2 F2 activation/disarm 前置协议
+
+F1A/F1B 可以先规划和实施；任何 F2 behavior activation 前必须另行冻结用户如何安全启用和退出：
+
+1. versioned managed token 是 activation commit point，也是显式 opt-in，不是 secret 或身份凭据；
+2. smart 所需状态准备完成后最后写 token；删除 token 即退出 managed opt-in；
+3. autonomous 先由 pristine Skill/用户侧流程建立 nonce、attestation 与所需状态，确认 attestation 成功后最后写 token；
+4. token 存在但其他状态不完整或非法时只拒绝，不能按“未启用”降级到 legacy；
+5. managed Hook/runtime 继续只读 workspace，上游 writer 不进入 production trusted graph。
+
+这条顺序防止 initializer 吞掉 attestation failure 后留下“看似已激活、实际状态残缺”的 mode。F2A 与 F2B
+仍分别授权；完成 F1 不会自动授权任何 opt-in behavior。
+
+### 4.3 Phase 5～8 已采纳边界
+
+- **Phase 5：** 先重新核对实际 Cloud payload，比较现有 `SessionStart source=clear|compact` 与
+  PreCompact/PostCompact 的时序和恢复能力。现有事件足够时不扩大 managed event set；只有真实 context 丢失或
+  时序缺口才能提议新增 Hook。
+- **Phase 6：** 是可跳过的可选能力。PreToolUse、PostToolUse、PermissionRequest 分别建立 use case、预算、
+  噪声和 Cloud gate；没有明确收益就 `NO_GO`，也不阻塞 Phase 7。
+- **Phase 7：** 建立唯一的 read-only completion evaluator，只给 advisory，不阻断、不写 mutable gate state。
+- **Phase 8：** 复用 Phase 7 evaluator，只新增 blocking decision 与可恢复的 mutable state。实施前必须重新
+  Discovery ledger/counter owner、atomicity/lock、cache/Resume inheritance 与 rollback residue；不得直接把上游
+  best-effort shell lock 提升为 managed authority。
 
 ## 5. 版本号与晋级语义
 

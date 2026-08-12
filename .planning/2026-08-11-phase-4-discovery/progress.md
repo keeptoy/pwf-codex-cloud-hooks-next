@@ -101,3 +101,10 @@
   之后的分步实施计划是否需要按原子 contract/hash、依赖和验证边界微调。
 - 已采纳校准写回 Phase 4.2 后，repository/architecture focused governance 15/15 PASS，
   `git diff --check` PASS；历史记录仍保持 advisory，不越权成为 programme authority。
+- 按维护者确定的最佳顺序，先把已采纳路线提升到 programme authority：ROADMAP 现已记录 Phase 4 的
+  F1A/F1B/F2A/F2B/F3、F1 原子 candidate 边界、F2 activation/disarm 前置协议，以及 Phase 5 compact-source-first、
+  Phase 6 optional NO_GO、Phase 7/8 shared evaluator 与 Phase 9 standing gate。
+- 活动 Next Step 已切换为“新开 Phase 4 分步实施 planning”；本轮不设计具体文件 patch、不授权 implementation、
+  activation、Cloud、Release 或 package identity。
+- ROADMAP 与活动 planning 同步后，repository/architecture focused governance 15/15 PASS，`git diff --check`
+  PASS；当前角色窗口仍为 v0.3.5 accepted/candidate，0.4.0-dev 仍没有 package/machine identity。

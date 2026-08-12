@@ -38,12 +38,14 @@
 
 ## Next Step
 
-等待维护者决定是否按冻结路线授权 F1 inactive foundation。未获授权前不修改 production、machine contracts、tests、
-package identity 或 Release inputs，不进入 F2 opt-in activation。
+新开 Phase 4 分步实施 planning，把 ROADMAP 已采纳的 F1A/F1B/F2A/F2B/F3 翻译为文件范围、依赖、
+failing-first tests、退出条件和停止条件，并复核 F1A/F1B 如何在独立审查的同时保持最终 contract/hash
+原子闭合。该 planning 未冻结并获得维护者实施授权前，不修改 production、machine contracts、tests、package
+identity 或 Release inputs，不进入任何 behavior activation。
 
 ## Current decision
 
-`PHASE4_DISCOVERY_COMPLETE / CONDITIONAL_GO_TO_F1 / IMPLEMENTATION_NOT_AUTHORIZED / LEGACY_DEFAULT_FROZEN`
+`PHASE4_DISCOVERY_COMPLETE / ROUTE_CALIBRATION_ADOPTED / IMPLEMENTATION_PLANNING_NEXT / IMPLEMENTATION_NOT_AUTHORIZED / LEGACY_DEFAULT_FROZEN`
 
 ## Invariants
 
