@@ -15,3 +15,8 @@
   handoff, model-visible-data rule and the exact future trigger for reconsidering a click-to-activate surface.
 - `git diff --check` passed. Full Windows regression passed: 141 tests, 127 pass, 0 fail and 14 honest Linux/POSIX skips.
 - Closed this documentation-only review. F2A implementation, real opt-in, Cloud lifecycle, external service and Release remain paused.
+- At maintainer request, added a concise post-discovery clarification to Phase 4.4. It links to the current ROADMAP authority instead
+  of duplicating the complete protocol and does not reopen F2A implementation.
+- The first sandboxed re-run was blocked before loading all 16 test files by the known Windows `spawn EPERM` policy limitation.
+  The identical suite outside the sandbox passed: 141 tests, 127 pass, 0 fail and 14 honest Linux/POSIX skips; `git diff --check`
+  also passed.

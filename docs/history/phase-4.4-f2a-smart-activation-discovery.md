@@ -127,6 +127,24 @@ UserPrompt、real Resume、cache reuse、opt-out/re-arm 与双向 rollback 仍�
 schema-v2 reuse 和测试分工为施工输入。F2A 本地/Linux/no-live acceptance 完成后必须再次停止；不得自动进入 F2B
 或把 no-live 结果包装成 F3 lifecycle PASS。
 
+<a name="phase-4-4-post-discovery-clarification"></a>
+
+## Post-discovery clarification
+
+后继 opt-in surface 复核进一步区分了三层“授权”：system-managed trust/registration 决定 Cloud 是否执行 Hook，
+Codex sandbox/approval policy 决定 agent 此刻能否执行某个动作，plan-local activation state 才决定 PWF 是否对 exact
+plan 启用 smart。前两层不能自动充当第三层，第三层也不能绕过前两层。
+
+因此，本文件冻结的独立 `.pwf-codex-managed` commit point 仍是本地 CLI 与 Cloud 共用的可移植产品协议；本地交互
+approval 不是额外 machine state，Cloud 也不能被假定具有相同的任务中确认框。Cloud 中 prepare、人工复核、最后
+commit、Fresh/Resume/cache 持久性和 opt-out/re-arm 必须留给 F3 live gate 证明，不能由 F2A no-live acceptance 代替。
+
+当前也不采用“生成链接、点击后激活”的外部路线：现有公开 Host contract 没有 authenticated、bounded、可审计且能
+原子绑定 exact user/repository/commit/plan/state 的 consent callback。只有将来出现这种官方 ABI 才重开独立
+Discovery。activation token 始终是非秘密常量，不得承载身份、授权码或账户凭据。现行完整边界以
+[`ROADMAP` 的 F2 activation/disarm 协议](../../ROADMAP.md#phase-4-f2-activation-protocol) 为准；本尾注只说明后继
+复核如何继承本里程碑，不把历史摘要升级为第二份 current authority。
+
 <a name="phase-4-4-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)
