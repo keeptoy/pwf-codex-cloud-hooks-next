@@ -151,4 +151,4 @@ autonomous attestation/nonce/ledger 与 F3 Cloud/rollback 仍分别属于后续 
 
 - [Immutable source snapshot](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/71f8f71df87c3c57ea52181159dd8a67817302ae)
 
-该链接只证明本轮实施规划封板时的仓库状态，不解释未来实现；当前 contract、programme 与授权以当前仓库 authority 为准。
+该链接只证明本轮实施规划开始时的仓库基线，不解释未来实现；当前 contract、programme 与授权以当前仓库 authority 为准。
