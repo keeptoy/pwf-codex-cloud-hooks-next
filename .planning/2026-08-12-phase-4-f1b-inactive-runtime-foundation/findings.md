@@ -30,3 +30,11 @@
 - `safe_read_file` gained caller-selected byte bounds and an oversize outcome so plan files retain their existing 1 MiB/`plan_unreadable` behavior while `.mode` uses 256 bytes/`state_over_budget`.
 - The installed-state transition remains the singular accepted v0.3.5 predecessor window. The unpublished F1A checkpoint is deliberately not elevated into a machine compatibility promise.
 - Current v1 plan schema paths are removed from source/bundle/Release. Their only non-history occurrence is the exact v0.3.5 predecessor inventory, where those paths are immutable evidence needed for forward takeover.
+
+## Cloud handoff calibration
+
+- The generic Cloud hard-acceptance template is already candidate-driven: it derives the current Release contract, bundle inventory, hashes and entry count instead of freezing F1A values.
+- Its Linux Source/Candidate setup runs every non-publication test and requires zero skips, so the F1B descriptor, unsafe-link/race, future-profile refusal and production zero-read proofs are part of the Cloud gate.
+- The no-live run must use only `4.1 -> 5.1 -> 6 -> 7 -> 8.1 -> 8.2 -> 9.1`. Published Release sections are inapplicable because `v0.4.0-dev` remains zero-hash, unsealed and unpublished.
+- The ref-aware v0.3.5 takeover/tamper/rollback oracle is intentionally excluded from a tagless Source/Candidate checkout. Its completed local result remains prerequisite evidence; the Cloud run must not fabricate refs or relabel that oracle as no-live evidence.
+- F1B does not change the B-E black-box prompts because observable Host behavior must remain legacy-equivalent. The incremental acceptance value is Linux zero-skip source proof plus exact installed candidate/deep-check proof.

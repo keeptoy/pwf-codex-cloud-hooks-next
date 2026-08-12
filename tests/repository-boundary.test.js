@@ -298,7 +298,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   }
   assert.match(acceptance, /64 位 zero hash.*fail closed/s);
   assert.match(acceptance, /Cloud hard acceptance template/);
-  assert.match(acceptance, /不授予 F1B/);
+  assert.match(acceptance, /不授予 F2A\/F2B activation/);
   assert.match(acceptance, /exact current id\/source inventory guard/);
   assert.match(acceptance, /本次验收增量没有改写 B～E 黑盒提示词/);
   assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-setup/);
