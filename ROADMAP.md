@@ -129,6 +129,8 @@ leaf → contract → manifest → installer/builder → Release 顺序闭合，
 正向对账；允许留在 immutable history 的命中必须显式分类，不能和 current residue 混为一谈。未关闭或无 owner 的行
 会阻断 gate PASS；不得另建第二份 machine authority 来保存这张治理账。
 
+<a name="phase-4-f2-activation-protocol"></a>
+
 ### 4.2 F2 activation/disarm 前置协议
 
 F1A/F1B 可以先规划和实施；F2A Discovery 已把 smart 的启用/退出冻结为以下协议，F2B 仍需在 autonomous
@@ -144,6 +146,20 @@ F1A/F1B 可以先规划和实施；F2A Discovery 已把 smart 的启用/退出�
 
 这条顺序防止 initializer 吞掉 attestation failure 后留下“看似已激活、实际状态残缺”的 mode。F2A 与 F2B
 仍分别授权；完成 F1 不会自动授权任何 opt-in behavior。
+
+这里的“授权”必须继续分成三层：system-managed requirements 决定 Cloud 是否信任并执行 Hook；Codex 的 sandbox/
+approval policy 决定 agent 此刻能否执行某个命令；plan-local activation state 才决定 PWF 是否对 exact plan 启用
+smart/autonomous。前两层不得直接充当或隐式写入第三层，第三层也不能绕过前两层。
+
+本地 CLI 可通过交互 approval 或用户在独立终端手工执行显式状态变更；Cloud 是后台任务后查看结果/diff、再 follow-up
+的工作面，不能假定存在相同的任务中确认框。F2A 只冻结跨端共用的 exact plan-local protocol；Cloud 中 prepare、人工
+复核、最后 commit、Fresh/Resume/cache 持久性和 opt-out/re-arm 是否成立，统一留给 F3 live gate。F3 通过前不得宣称
+Cloud opt-in 已可用。
+
+当前不采用“生成链接、用户点击即激活”：公开 Host contract 没有提供能把点击原子绑定到 exact user、repository、
+commit、plan 与容器内 state 的 consent callback。只有未来出现 authenticated、bounded、可审计的官方 Host ABI 时，
+才重新打开独立 Discovery；不得先引入外部认证服务、网络 callback、secret 或 chat-wide environment variable 来模拟。
+`.pwf-codex-managed` 始终是可被 runtime 读取的非秘密常量，不能承载用户身份、授权码或账户凭据。
 
 ### 4.3 Phase 5～8 已采纳边界
 

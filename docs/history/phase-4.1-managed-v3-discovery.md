@@ -243,6 +243,19 @@ smart/autonomous behavior、Linux/Cloud acceptance 或 `0.4.0` Release 已经存
 workspace write policy、Host event set、legacy default、attestation claim、persistent state 或 Phase 8 边界，则必须重新打开
 Discovery，而不能作为普通实现细节处理。
 
+<a name="phase-4-1-post-implementation-status"></a>
+
+## Post-implementation status
+
+后续 F1 foundation 已实施并通过 Source/Candidate/no-live Cloud 验收；F2A implementation 仍未授权。本轮后继
+Discovery 还对 Phase 4.1 做了一个必要的微调：当时“token 放在同一个 `.mode`”只是推荐示例，不是架构不变量。
+独立 plan-local `.pwf-codex-managed` commit-point 文件可以保证“未显式 opt-in 就完全不读取旧 `.mode`”，因此更严格地
+落实 legacy 默认不变。
+
+这个调整没有改变本里程碑冻结的 hybrid owned-boundary、只读 workspace、versioned opt-in、fail-closed refusal、
+trusted graph 或 Host event set；它只是用更强的物理零读取边界替换了尚未实施的同文件示例。当前协议与授权状态以
+[`ROADMAP`](../../ROADMAP.md#phase-4-f2-activation-protocol) 和 Phase 4.4 后继 Discovery 为准。
+
 <a name="phase-4-1-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)
