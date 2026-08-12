@@ -108,3 +108,7 @@
   activation、Cloud、Release 或 package identity。
 - ROADMAP 与活动 planning 同步后，repository/architecture focused governance 15/15 PASS，`git diff --check`
   PASS；当前角色窗口仍为 v0.3.5 accepted/candidate，0.4.0-dev 仍没有 package/machine identity。
+- 首次把 Phase 4.3 自定义文档放进旧 scope 后，focused governance 14/15：planning lifecycle 只允许每个 scope
+  包含标准三文件。已按治理合同改建独立 `.planning/2026-08-12-phase-4.3-f1-foundation-planning`，切换 active
+  pointer，并把该错误登记到 task plan；没有弱化测试。
+- Phase 4 Discovery scope 至此完成 successor handoff。本轮没有开始 F1A/F1B 源码/contract 探路或 implementation。

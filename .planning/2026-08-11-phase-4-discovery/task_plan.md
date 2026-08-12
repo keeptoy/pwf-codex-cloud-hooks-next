@@ -38,14 +38,13 @@
 
 ## Next Step
 
-新开 Phase 4 分步实施 planning，把 ROADMAP 已采纳的 F1A/F1B/F2A/F2B/F3 翻译为文件范围、依赖、
-failing-first tests、退出条件和停止条件，并复核 F1A/F1B 如何在独立审查的同时保持最终 contract/hash
-原子闭合。该 planning 未冻结并获得维护者实施授权前，不修改 production、machine contracts、tests、package
-identity 或 Release inputs，不进入任何 behavior activation。
+Phase 4.1 Discovery 与 Phase 4.2 路线校准已经交接给新的活动 scope
+`.planning/2026-08-12-phase-4.3-f1-foundation-planning`。下一轮由 Phase 4.3 正式开始 F1A/F1B 实施规划探路；
+本 scope 保持关闭，不再承载当前 Next Step。
 
 ## Current decision
 
-`PHASE4_DISCOVERY_COMPLETE / ROUTE_CALIBRATION_ADOPTED / IMPLEMENTATION_PLANNING_NEXT / IMPLEMENTATION_NOT_AUTHORIZED / LEGACY_DEFAULT_FROZEN`
+`PHASE4_DISCOVERY_COMPLETE / ROUTE_CALIBRATION_ADOPTED / HANDOFF_TO_PHASE4_3_COMPLETE / IMPLEMENTATION_NOT_AUTHORIZED / LEGACY_DEFAULT_FROZEN`
 
 ## Invariants
 
@@ -97,3 +96,4 @@ identity 或 Release inputs，不进入任何 behavior activation。
 | Windows 默认 GBK 解码 upstream UTF-8 Hook 输出失败 | 1 | 设置 `PYTHONUTF8=1` 后重跑完整 targeted group；不修改 upstream tests 或输出 |
 | 读取不存在的 Cloud fixture `source-candidate-observations.json` | 1 | 用 `rg` 恢复真实 authority：`hook-observations-v1.json`，并读取其 consumer `cloud-fixtures.test.js` |
 | 恢复文档时误用不存在的 PowerShell `Get-RawContent` | 1 | 改用 `Get-Content -Raw -Encoding UTF8`；同一组合命令的其他只读输出有效 |
+| 在旧 scope 增加自定义 Phase 4.3 markdown 导致 planning lifecycle test 拒绝 | 1 | 遵守每个 scope 仅含 `task_plan.md`、`findings.md`、`progress.md` 的治理合同；改建独立 Phase 4.3 标准 scope 并切换 active pointer |
