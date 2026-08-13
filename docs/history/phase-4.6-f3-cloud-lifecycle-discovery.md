@@ -118,20 +118,66 @@ runtime文件。四文件仍只是当前 exact inventory，不是永久上限；
 bundle/manifest/Release/trust gate。F3A Linux/Source-Candidate no-live验收仍待维护者执行；F3B live activation、F3C rollback、
 seal、publication和远端写入仍未授权。
 
+<a name="phase-4-6-post-implementation-design-reconciliation"></a>
+
+## Post-implementation design reconciliation — F3A
+
+本节参照 Phase 4.5 的写法，只比较“F3 Discovery/F3A 职责冻结时准备怎么做”与 `bdbc5a3` 实际落地了什么；不把
+本地 fixture、source helper 或 no-live candidate 误写成真实 Cloud lifecycle 证据。结论是：**主路线没有偏航，权限面和
+Release 面也没有扩张；差异集中在 verifier 分层、测试复用和后继 transition guard 三项实现细化。**
+
+| Discovery / F3A 约束 | 实际落点 | 分类 | 后续含义 |
+|---|---|---|---|
+| 只对 active scoped plan 开放 exact machine state | `repository-boundary.test.js` 把 active scope 交给共享 verifier；inactive/history scope 仍精确限制为三份 Markdown 记录 | 按计划落地 | 不能把 machine state 搬入历史 scope，也不能为了 F3B 方便而放宽未知文件、链接、hard-link、预算或 state-combination 拒绝 |
+| repository admission 不能只做文件名 allowlist | verifier 同时核对 regular file、hard-link count、exact mode/token/nonce/attestation、task digest、ledger filename/aggregate budget 与完整状态组合 | 按计划落地并具体化 | 文件名合法但状态残缺、profile/token 错配或 digest 漂移仍阻断；F3B 不得把这些负向断言改成 advisory |
+| 不建立第二套 runtime/ledger parser | repository verifier 对固定 framing 与 Git shape负责；ledger record语义直接调用当前 exact source 的 `owned-plan.py.normalize_ledger`，prepared-state副本再交给 installed `owned-plan.py` 做完整 admission | 实现细化 | JS helper不是独立 runtime authority；若 Python normalizer接口重构，helper、tests和runbook必须在同一 transaction内调整，不能让两套 grammar 漂移 |
+| 使用版本化命令与现有只读 probe，默认不新增 shipped executable | 实际分成版本化 runbook、`tests/f3-lifecycle-helpers.js` repository-only verifier和 installed production probe三层；全部位于 Release 外 | 实现细化，不是 trusted-graph 扩张 | helper虽位于 `tests/`，同时被runbook消费，准确定位应是 repository-only source verifier；若未来要做长期用户CLI，必须另开 producer/distribution设计，不能直接把它搬进managed inventory |
+| preparation inert，activation最后且独立 | disposable Git fixture证明 preparation后继 commit只能新增 `.pwf-codex-managed`，disarm commit只能删除同一路径；runbook同时核对direct parent、task digest和clean worktree | 按计划落地 | F3B只能从reviewed preparation进入activation；任何额外路径、模糊parent或task变化立即停止 |
+| F3A不在真实仓库创建activation state | 所有smart/autonomous写入只发生在系统临时目录；真实active planning由repository test显式要求为markerless `legacy` | 更强的停止点证明 | 这个exact `legacy`断言是F3A过渡守卫，不是永久产品合同；见下方transition说明 |
+| F3A建立专用runbook，不把未证明live行为塞进通用模板 | 新建版本专用F3 runbook；通用B～E和9.1脚本保持不变，版本acceptance只增加F3A pending增量 | 按计划落地 | no-live PASS只更新F3A Cloud行；F3B/F3C必须各自追加独立状态与exact evidence，不得覆盖F3A证据 |
+| managed runtime、Host ABI、bundle/Release和四文件inventory保持不变 | 两次candidate build仍与F2B字节完全一致；新增文件全部在`.planning/`、`docs/`或`tests/` | 按计划落地并得到字节证据 | F3A不能被用作新增upstream文件已获准的先例；四文件只是当前inventory，未来扩充仍需原子供应链gate |
+| local/Linux/no-live是F3A退出面，live与rollback后置 | local已闭合；Linux/Source-Candidate no-live仍pending，F3B/F3C仍明确未授权 | 按计划停止 | 当前只能说`F3A_LOCAL_COMPLETE`，不能说F3A Cloud PASS或Cloud opt-in可用 |
+
+### F3A → F3B transition guard
+
+当前 `repository-boundary.test.js` 不仅调用结构 verifier，还要求真实active planning结果精确为 `legacy`。这在F3A很有价值：
+它机器证明本轮没有偷偷创建真实state。但它不能原样跨入F3B，否则合法的preparation会返回`smart_prepared`或
+`autonomous_prepared`，合法的activation又会返回相应`*_armed`，从而让测试与产品生命周期互相冲突。
+
+因此F3B preparation commit必须在**同一个reviewed preparation transaction**中完成两件事：加入完整但inert的state，
+并把“真实仓库必须等于`legacy`”替换为“真实仓库必须通过exact lifecycle verifier且处于本轮获批profile的prepared/armed
+闭包”。后续activation-only和disarm-only commit不再修改测试；它们只增删commit point，state由仓库字节本身表达。
+这不是放宽结构准入，而是退役F3A的no-live临时断言。若F3B最终`NO_GO`，必须恢复markerless legacy守卫，或随
+autonomous/smart product-pending route一并退役对应state和runbook，不能留下无owner的宽窗口。
+
 <a name="phase-4-6-post-implementation-lifecycle-reconciliation"></a>
 
-## Post-implementation lifecycle reconciliation
+## Post-implementation lifecycle reconciliation — F3A
 
-| 对象 / seam | 实施后状态 | owner / consumer | 下一次复核或退役条件 |
-|---|---|---|---|
-| active-scope path/state admission | **ACTIVE SOURCE GOVERNANCE** | repository tests / maintainer review | F3B PASS 后晋级；F3 NO_GO 或 protocol replacement 时退役 |
-| inactive/history state denial | **ACTIVE PERMANENT GUARD** | repository tests | 仅全新 repository lifecycle Discovery 可改变 |
-| Node repository helper | **TEST-ONLY STRUCTURE CHECKER** | repository/F3 tests | 不得演化成第二套 ledger/runtime parser；职责扩大即重审 |
-| production prepared-state verification | **REUSE VIA DISPOSABLE COPY** | installed `owned-plan.py` | request/result、renderer或 protocol变化时同步更新 runbook |
-| F3 versioned runbook | **LOCAL COMPLETE / CLOUD-PENDING** | maintainer + F3B/F3C operator | no-live PASS 后可请求 F3B；lifecycle NO_GO 时退役 |
-| managed/upstream writer | **DENIED / ABSENT** | none | 独立 producer Discovery 或 Phase 8 writer gate |
-| four current pristine runtime files | **KEEP — CURRENT INVENTORY** | runtime bundle | demand-driven atomic supply-chain gate；数量不是永久常量 |
-| real activation/disarm/rollback evidence | **ABSENT / NOT AUTHORIZED** | future F3B/F3C | 只有 exact live gate可创建，不从本地 fixture推断 |
+下表是F3A本地实施后的对象级快照。当前programme状态仍只由ROADMAP与活动task plan维护；这里负责回答“为什么存在、
+谁消费、何时晋级/替换/删除”，防止F3B/F3C或版本轮转后留下无owner残留。
+
+| 对象 / seam | 实施后生命周期状态 | owner / producer → consumer | 当前可执行证据 | 晋级、复核或退役条件 |
+|---|---|---|---|---|
+| active-scope structural/state admission | **ACTIVE SOURCE GOVERNANCE** | repository bytes → shared verifier → repository boundary | complete smart/autonomous、partial/mismatch/unknown/link/inactive refusal tests | supported lifecycle存在期间保留；protocol replacement时原子更新；F3 route整体`NO_GO`时收缩回markerless规则 |
+| inactive/history three-record denial | **ACTIVE LONG-LIVED GUARD** | repository inventory → repository boundary | inactive scope machine-state refusal | 不随F3B激活放宽；只有全新repository lifecycle Discovery可改变 |
+| real-active-scope exact `legacy` expectation | **TRANSITIONAL F3A NO-LIVE GUARD** | current checkout → repository boundary | 当前真实planning markerless断言 | F3B preparation commit中原子替换为获批profile的prepared/armed闭包；F3B `NO_GO`则恢复或保留legacy-only |
+| `tests/f3-lifecycle-helpers.js` | **REPOSITORY-ONLY SOURCE VERIFIER / PRODUCT-PENDING** | repository tests与F3 runbook → framing/Git-shape检查；ledger语义委托source normalizer | focused tests、repository test、runbook静态合同 | F3B/F3C期间保留；不得进入ZIP/managed graph；若长期CLI/producer出现则评估迁入专用tools或退休，不能永久借`tests/`充当隐式产品API |
+| `owned-plan.py.normalize_ledger` test-side import | **BORROWED INTERNAL AUTHORITY** | exact source module → repository verifier | malformed ledger refusal与no-bytecode-cache guard | 不是新增public API；函数签名/模块边界变化时同transaction更新调用方，或改用等强production probe后退休 |
+| disposable prepared-state project | **EPHEMERAL VERIFICATION FIXTURE** | runbook/test → installed `owned-plan.py` | preparation production-probe protocol与cleanup命令 | 每轮必须清理；不得缓存、提交、作为consent或correctness authority |
+| installed production read-only probe | **REUSED CORRECTNESS AUTHORITY** | exact request → installed `owned-plan.py` | expectedprofile、outcome/inject/advisory检查 | request/result、renderer、installed identity或opt-in protocol变化时原子复核 |
+| preparation/activation/disarm Git relation tests | **ACTIVE PRODUCT-PROTOCOL GUARD** | disposable Git commits → F3 tests | exact direct parent与single-path A/D assertions | Git-backed lifecycle被支持期间保留；官方bounded approval ABI替代或F3 route退休时重审 |
+| `docs/v0.4.0-dev-f3-cloud-lifecycle-runbook.md` | **VERSIONED OPERATING PROTOCOL / LOCAL COMPLETE / CLOUD-PENDING** | maintainer → F3B/F3C operator | anchors、Bash syntax、boundary static tests | F3A no-live PASS后仍保留给F3B/F3C；`v0.4.0` identity冻结时随版本文档策略迁移/改名；列车结束后由immutable Git保留历史，current tree按retirement DoD清退 |
+| v0.4.0-dev acceptance F3A pending row | **CURRENT GATE POINTER** | activity/Cloud evidence → version acceptance | repository governance parser | no-live PASS后改为PASS并追加exact evidence；不得被F3B证据覆盖；dev→stable时按单一acceptance规则迁移 |
+| managed/upstream writer | **DENIED / ABSENT** | none | inventory/call-edge与runbook边界 | 独立producer Discovery或Phase 8 writer gate前不得准入 |
+| current four pristine runtime files | **KEEP — CURRENT INVENTORY, NOT A CAP** | runtime bundle → installer/owned runtime | unchanged deterministic ZIP与bundle checks | 只在真实managed execution需要时通过atomic bundle/manifest/Release/trust gate扩充；不能因工作区有完整upstream树自动加入 |
+| optional ledger files in F3 lifecycle | **ZERO ALLOWED / EXTERNAL PRODUCER UNOWNED** | future user-side flow → read-only consumer | zero-ledger fixture与production normalizer | F3B只证明实际使用的零/有限ledger路线；writer ownership、lock、durability和rollback residue仍归Phase 8 Discovery |
+| real activation/disarm/Fresh/Resume evidence | **ABSENT / NOT AUTHORIZED** | future F3B | none from F3A | 只能由exact live gate创建；local fixture、source candidate或runbook存在均不能晋级 |
+| rollback/disarm-first evidence | **ABSENT / F3C NOT AUTHORIZED** | future F3C | lifecycle design only | F3B PASS并获得独立授权后才创建；runtime-only rollback仍为denied route |
+
+最终生命周期判断：F3A没有产生需要“等Phase 4全部结束再统一删除”的临时production代码。当前需要后继明确处理的
+过渡对象只有real-scope `legacy`断言、dev-version runbook/acceptance指针，以及F3 route失败时的product-pending verifier/
+protocol tests。它们各自已有退出条件，不应现在删除，也不应无期限保留。
 
 ## Cold evidence (not current authority)
 

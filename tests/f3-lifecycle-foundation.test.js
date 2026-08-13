@@ -155,3 +155,16 @@ test("F3 runbook freezes the no-live boundary and exact lifecycle checks", () =>
     assert.equal(syntax.status, 0, `F3 runbook bash block ${index + 1}: ${syntax.stderr}`);
   }
 });
+
+test("Phase 4.6 records F3A implementation drift and object retirement without promoting live evidence", () => {
+  const history = fs.readFileSync(path.join(root, "docs", "history", "phase-4.6-f3-cloud-lifecycle-discovery.md"), "utf8");
+  assert.match(history, /<a name="phase-4-6-post-implementation-design-reconciliation"><\/a>/);
+  assert.match(history, /主路线没有偏航/);
+  assert.match(history, /REPOSITORY-ONLY SOURCE VERIFIER \/ PRODUCT-PENDING/);
+  assert.match(history, /TRANSITIONAL F3A NO-LIVE GUARD/);
+  assert.match(history, /F3B preparation commit/);
+  assert.match(history, /BORROWED INTERNAL AUTHORITY/);
+  assert.match(history, /CURRENT INVENTORY, NOT A CAP/);
+  assert.match(history, /real activation\/disarm\/Fresh\/Resume evidence[^\n]*ABSENT \/ NOT AUTHORIZED/);
+  assert.match(history, /rollback\/disarm-first evidence[^\n]*ABSENT \/ F3C NOT AUTHORIZED/);
+});

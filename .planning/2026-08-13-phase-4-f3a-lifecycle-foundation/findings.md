@@ -41,3 +41,18 @@ transaction rather than weakening active-scope structural admission.
 
 F3A can prove that the source/repository protocol is executable and rejects unsafe states. It cannot prove that a real Cloud user can
 complete Fresh/Resume/disarm/re-arm or that rollback is safe. Those conclusions remain exclusively F3B and F3C.
+
+## Post-implementation reconciliation
+
+- No architecture, permission, trusted-graph or Release-surface drift occurred. F3A stayed repository-only and the candidate bytes
+  remained identical to F2B.
+- The planned “versioned commands + production probe” became a three-layer implementation: versioned runbook, repository-only JS
+  verifier, and installed production probe. This is a bounded implementation refinement, not a second runtime.
+- The JS verifier is consumed by both tests and the runbook, so its lifecycle is more accurately `REPOSITORY-ONLY SOURCE VERIFIER`
+  than merely `TEST-ONLY`. It must stay outside Release/managed inventory and must not become an implicit long-term product CLI.
+- The verifier delegates ledger record semantics to the exact source `owned-plan.py.normalize_ledger`; that call is an internal
+  coupling, not a new public API. Refactors must update it atomically or retire it in favor of an equally strong production probe.
+- The current repository's exact `legacy` assertion is a deliberate F3A transition guard. F3B preparation must replace it in the same
+  reviewed commit with an exact approved-profile prepared/armed closure, so later activation/disarm commits remain commit-point-only.
+- Version-specific runbook and acceptance pointers have explicit train-end retirement/migration conditions; Git relation tests and
+  inactive/history denial remain while the supported lifecycle exists.

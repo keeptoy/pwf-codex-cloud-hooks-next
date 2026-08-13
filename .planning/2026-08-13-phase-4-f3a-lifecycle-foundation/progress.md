@@ -27,3 +27,15 @@
   `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`. This is evidence that F3A added no Release/runtime byte.
 - F3A local implementation is complete. Stopped before Linux/Source-Candidate no-live acceptance and before any real state creation,
   F3B live Cloud lifecycle, F3C rollback, remote write, seal or publication.
+- Per maintainer request, compared the F3A plan and `bdbc5a3` implementation seam-by-seam using the Phase 4.5 reconciliation pattern.
+  Confirmed no architecture/Release drift; classified the runbook + repository verifier + production probe split as an implementation
+  refinement and identified the real-scope `legacy` assertion as an explicit F3A-to-F3B transition guard.
+- Expanded Phase 4.6 with a design-reconciliation matrix and a five-column lifecycle ledger covering verifier ownership, borrowed
+  normalizer authority, disposable copies, Git relation tests, version-document retirement, pending evidence and F3B/F3C handoff.
+
+## 2026-08-13 — F3A post-implementation reconciliation verification
+
+- 按维护者要求复核 F3A 规划与实际施工差异，并扩充 Phase 4.6 的 post-implementation design/lifecycle reconciliation。
+- focused verification：`tests/f3-lifecycle-foundation.test.js` 5/5、`tests/repository-boundary.test.js` 9/9，`git diff --check` 通过。
+- 完整 `npm test`：157 tests，134 pass，0 fail，23 skipped；跳过项均为 Windows 上诚实跳过的 Linux/POSIX case。
+- 本轮只修改历史设计记录、活动 planning 证据和防回归测试；没有修改 production runtime、contract、bundle、installer 或 Release inventory。
