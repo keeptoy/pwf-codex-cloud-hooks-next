@@ -14,9 +14,10 @@
 
 ## Next Step
 
-等待维护者 push F2A implementation、lifecycle/Cloud protocol follow-up 与 multi-gate acceptance correction 三个 commits，
-按更新后的 markerless legacy canonical fixture 执行 Linux/Source-Candidate/no-live Cloud hard acceptance。验收结果
-回传前不进入 F2B/F3。
+Cloud 9.1 的外部旧 v1 脚本失败已分类为只读 test-harness drift；修正后的完整 v2 invocation 计为 9.1 PASS。
+完成 stale-script guard/deep-check hardening 并提交后，等待维护者回传同一 Source/Candidate run 的 4.1 exact HEAD/
+ZIP、Linux suite 与 B/D/E2 双 sentinel 摘要，闭合 evidence writeback。证据无法绑定时才 Fresh 重跑；封账前不进入
+F2B/F3。
 
 ## Phases
 
@@ -29,6 +30,7 @@
 | P4 Local acceptance and commit | completed | full local suite、syntax/compile、deterministic ZIP/install checks、diff checks 全绿并本地 commit |
 | P5 Lifecycle and Cloud protocol follow-up | completed | Phase 4.4 实施后冷对账、markerless legacy 黑盒判别、版本 evidence/current-state 职责与 tests 闭合并独立 commit |
 | P6 Multi-gate acceptance status correction | completed | 恢复版本内 gate 状态与当前验收增量，模板/治理/测试职责一致并独立 commit |
+| P7 Stale deep-check diagnosis and hardening | completed | 分类首次 Cloud 9.1、强化 v2 root/hash authority、加入 protocol/HEAD marker 并闭合复验规则 |
 
 ## Migration lifecycle ledger
 
@@ -49,6 +51,8 @@
 | Cloud canonical completed/active sentinels | stable acceptance template | ADD markerless profile discriminator | D/E2 must observe both without activation files | review when default profile or renderer contract changes |
 | version acceptance step-by-step execution state | active plan should own it | RETIRE/MOVE | repository boundary forbids command-level progress/retry/Next Step in acceptance | completed exact evidence only |
 | version acceptance coarse gate ledger | version acceptance | KEEP/RESTORE | PASS/current pending/not-authorized + template/delta links | retire when one-shot acceptance has no intermediate gates |
+| 9.1/9.2 deep-check protocol marker | Cloud template / maintainer evidence | ADD | exact v2 marker + Source HEAD; rejects stale saved scripts | rotate only on deep-check contract change |
+| installed runtime root in deep checks | runtime bundle `roots.installed` | REPLACE hard-coded path suffix | v2 partition inventory + per-entry hash checks | bundle schema/root semantic change |
 
 ## Stop Conditions
 
@@ -73,7 +77,10 @@
 | First P6 boundary run exposed an old cross-row Chinese ordering regex | 1 | Split it into independent exact responsibility-row assertions; keep role semantics without freezing paragraph order. |
 | Second P6 run exposed one newly added cross-section ordering regex with a wording mismatch | 1 | Replaced it with independent exact multi-gate permission and forbidden-step-ledger assertions. |
 | Third P6 run exposed a legacy assertion that treated a Markdown line wrap inside `dev/stable 两份` as semantic drift | 1 | Audited the remaining cluster and split it into anchor/stable-keyword assertions tolerant of prose wrapping. |
+| Initial P7 `rg` query had an unclosed escaped group | 1 | Re-ran as fixed-string multi-pattern search; no file mutation occurred. |
+| Cloud 9.1 first invocation used a retired external v1 post-resume script | 1 | Current template was already manifest-routed v2. The stale script was read-only; accept the corrected complete v2 invocation as 9.1 evidence, add protocol/HEAD guards, and require exact linkage to the preceding run before gate PASS. |
+| First P7 governance run found a line-wrap-sensitive one-shot-version assertion and a removed sequence link | 1 | Made the assertion whitespace-tolerant and restored the stable Source/Candidate sequence link in the gate ledger. |
 
 ## Current status
 
-`F2A_IMPLEMENTATION / LOCAL_COMPLETE / CLOUD_ACCEPTANCE_PENDING`
+`F2A_IMPLEMENTATION / LOCAL_COMPLETE / NO_LIVE_EXECUTION_COMPLETE / EVIDENCE_WRITEBACK_PENDING`

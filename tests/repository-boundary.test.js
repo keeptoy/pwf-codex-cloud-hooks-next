@@ -145,8 +145,10 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(acceptanceTemplate, /\| 版本专项 acceptance \|[^\n]*最终结论/);
   assert.match(acceptanceTemplate, /多 gate 开发版本可以维护一张简洁的版本内 gate 验收状态表/);
   assert.match(acceptanceTemplate, /\| 版本专项 acceptance \|[^\n]*\| 逐步骤流水账/);
-  assert.match(acceptanceTemplate, /CURRENT \/ CLOUD_ACCEPTANCE_PENDING[\s\S]*NOT_AUTHORIZED/);
-  assert.match(acceptanceTemplate, /一次性版本没有中间 gate 时整个状态表省略/);
+  assert.match(acceptanceTemplate, /CURRENT \/ CLOUD_ACCEPTANCE_PENDING/);
+  assert.match(acceptanceTemplate, /CURRENT \/ EVIDENCE_WRITEBACK_PENDING/);
+  assert.match(acceptanceTemplate, /`NOT_AUTHORIZED`/);
+  assert.match(acceptanceTemplate, /一次性版本没有中间 gate 时\s*整个状态表省略/);
   assert.match(acceptanceTemplate, /development identity 收敛为 stable identity/);
   assert.match(acceptanceTemplate, /不得让 dev\/stable\s+两份 acceptance 并存/);
   assert.match(acceptanceTemplate, /### 0\.3 “当前 gate 验收增量”（可选）/);
@@ -167,6 +169,13 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
       `${sentinel} must remain in canonical creation, UserPromptSubmit, and real Resume`);
   }
   assert.match(acceptanceTemplate, /不要创建或修改任何 \.pwf-codex-managed、\.mode/);
+  assert.equal((acceptanceTemplate.match(/PWF_DEEP_CHECK_PROTOCOL=MANIFEST_ROUTED_BUNDLE_V2/g) || []).length, 3,
+    "deep-check protocol must remain a hard stop plus Source/Candidate and Published outputs");
+  assert.match(acceptanceTemplate, /bundle\["roots"\]\["installed"\]/);
+  assert.equal((acceptanceTemplate.match(/for section in \("upstream_files", "local_files", "installed_contracts"\):/g) || []).length, 4,
+    "both deep checks must derive inventory and hashes from all v2 bundle partitions");
+  assert.equal((acceptanceTemplate.match(/hash_key = "pristine_sha256" if section == "upstream_files" else "sha256"/g) || []).length, 2);
+  assert.doesNotMatch(acceptanceTemplate, /release-artifact-v1|runtime-bundle-v1|bundle\["files"\]/);
   assert.match(acceptanceTemplate, /版本专项 acceptance 应保存以下原始证据/);
   assert.doesNotMatch(acceptanceTemplate, new RegExp(versionPattern, "i"));
   assert.doesNotMatch(acceptanceTemplate, /\b[a-f0-9]{40,64}\b/i);
@@ -307,9 +316,13 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, /F1A contract\/source foundation[^\n]*`PASS`/);
   assert.match(acceptance, /F1B inactive runtime foundation[^\n]*`PASS`/);
   assert.match(acceptance, /F2A local implementation[^\n]*`PASS`/);
-  assert.match(acceptance, /F2A Source\/Candidate\/no-live Cloud[^\n]*`CURRENT \/ CLOUD_ACCEPTANCE_PENDING`/);
+  assert.match(acceptance, /F2A Source\/Candidate\/no-live Cloud[^\n]*`CURRENT \/ EVIDENCE_WRITEBACK_PENDING`/);
   assert.equal((acceptance.match(/`NOT_AUTHORIZED`/g) || []).length, 2);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f2a-acceptance-delta"><\/a>$/m);
+  assert.match(acceptance, /F2A 9\.1 test-harness deviation 与通过结果/);
+  assert.match(acceptance, /stale external acceptance script/);
+  assert.match(acceptance, /PWF_DEEP_CHECK_PROTOCOL=MANIFEST_ROUTED_BUNDLE_V2/);
+  assert.match(acceptance, /9\.1 本步骤通过/);
   for (const fragment of [
     "source-candidate-sequence", "source-candidate-setup", "source-candidate-deep-check",
     "blackbox-canonical-baseline", "blackbox-canonical-context", "blackbox-real-resume",

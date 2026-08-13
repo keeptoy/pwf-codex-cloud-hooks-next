@@ -35,8 +35,10 @@ Cloud lifecycle、trusted graph、Host ABI、Release boundary 或稳定观测协
 
 状态表至少包含 gate、粗粒度状态、模板/证据入口和不授权边界。允许的状态语义是：已完成 gate 写 `PASS` 并链接
 完成证据；唯一当前 gate 写 `CURRENT / CLOUD_ACCEPTANCE_PENDING` 并链接当前模板小节；未来 gate 写
-`NOT_AUTHORIZED`。它是“这个版本各阶段测到哪里”的索引，不取代 ROADMAP 的 programme 状态，也不取代活动 task
-plan 的执行控制。一次性版本没有中间 gate 时整个状态表省略。
+`NOT_AUTHORIZED`。如果执行结果已通过但 exact source/asset/黑盒证据还未完整写回，可以短暂使用
+`CURRENT / EVIDENCE_WRITEBACK_PENDING`；它不等于 PASS，也不能跨入下一 gate。状态表是“这个版本各阶段测到哪里”
+的索引，不取代 ROADMAP 的 programme 状态，也不取代活动 task plan 的执行控制。一次性版本没有中间 gate 时
+整个状态表省略。
 
 <a name="version-acceptance-delta"></a>
 
@@ -93,11 +95,18 @@ tagless checkout 不应伪造 remote/tag；Published Release 也不能使用 wor
 - Fresh 与 Resume 的 SessionStart source 不符合安装时序；
 - canonical plan、real Resume catch-up、tail marker或 canary/plan/catch-up 顺序不符合 current contract；markerless
   canonical fixture 的 completed/active 两个 legacy sentinel 未同时出现也属于失败；
+- post-resume deep check 没有输出 `PWF_DEEP_CHECK_PROTOCOL=MANIFEST_ROUTED_BUNDLE_V2`，或实际执行的是以前保存的
+  `/tmp`/聊天脚本而不是当前 checkout/template 中的 9.1/9.2；
 - doctor 不健康、repairable、存在 error/blocker 或 snapshot residue；
 - Published 脚本仍有占位符，或者使用 moving URL、未校验字节、本地 override 或 checkout 工具。
 
 产品或资产字节修复后，必须从对应通道的 Fresh setup 重新开始。任何已发布字节变化都需要新 identity、
 新 SHA 和新的 downloaded-asset/Cloud evidence。
+
+如果失败被证明发生在当前模板执行前或由外部保存的旧脚本造成，而且该脚本只读、未改变安装/workspace 状态，
+已经完成的前序 Host 黑盒观测可以保留。修正后的新 invocation 只有在脚本语义与当前 checkout/template 一致、
+原始输出完整且 exact source、installed bundle 与前序通道可绑定时，才算该步骤的 gate evidence；否则只算诊断。
+无法证明这些条件或只读性时，仍从 Fresh setup 重跑整个通道。
 
 ## 3. 执行顺序
 
@@ -515,15 +524,18 @@ upstream CLI `main()` 由 source/inventory assertions 和 portable negative suit
 
 ### 9.1 Source/Candidate
 
-E2 完成后，只在 Source/Candidate 的精确 checkout 运行：
+E2 完成后，只在 Source/Candidate 的精确 checkout 运行。必须从当前 checkout 的本节重新取得脚本，不得复用以前
+保存的 `/tmp/post-resume.sh`、聊天片段或旧版本 acceptance 副本：
 
 ~~~bash
 set -Eeuo pipefail
 
 PACKAGE_ROOT="$(git rev-parse --show-toplevel)"
+RUNBOOK_HEAD="$(git rev-parse HEAD)"
 TARGET_CODEX_HOME="${CODEX_HOME:-/opt/codex}"
 SKILL_ROOT="$HOME/.agents/skills/planning-with-files"
 REQUIREMENTS="/etc/codex/requirements.toml"
+test -z "$(git status --short)"
 
 DOCTOR_JSON="$(node "$PACKAGE_ROOT/install.js" doctor --json \
   --codex-home "$TARGET_CODEX_HOME" \
@@ -552,6 +564,8 @@ bundle = json.loads((package_root / contracts["runtime_bundle"]["path"]).read_te
 
 assert artifact["package_version"] == package["version"]
 assert artifact["entries"]
+assert artifact["schema_version"] == 2
+assert bundle["schema_version"] == 2
 assert bundle["upstream_files"]
 assert doctor["healthy"] is True
 assert doctor["repairable"] is False
@@ -560,7 +574,10 @@ assert doctor["events"] == ["SessionStart", "UserPromptSubmit"]
 assert doctor["errors"] == []
 assert doctor["blockers"] == []
 
-runtime = codex_home / "hooks" / "planning-with-files"
+installed_root = pathlib.PurePosixPath(bundle["roots"]["installed"])
+assert not installed_root.is_absolute()
+assert ".." not in installed_root.parts
+runtime = codex_home / pathlib.Path(*installed_root.parts)
 installed = json.loads((runtime / "installed-manifest.json").read_text(encoding="utf-8"))
 installed_snapshot = sorted(item["path"] for item in installed["runtime_files"])
 actual = sorted(
@@ -569,7 +586,6 @@ actual = sorted(
     if path.is_file() and path.name != "installed-manifest.json"
 )
 
-installed_root = pathlib.PurePosixPath("hooks/planning-with-files")
 bundle_authority = ["THIRD_PARTY_NOTICES.md"]
 for section in ("upstream_files", "local_files", "installed_contracts"):
     for item in bundle[section]:
@@ -586,9 +602,11 @@ assert not any("compatibility" in item or item.startswith("patches/") for item i
 def sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
-for item in bundle["upstream_files"]:
-    relative = pathlib.PurePosixPath(item["installed_path"]).relative_to(installed_root)
-    assert sha256(runtime / pathlib.Path(*relative.parts)) == item["pristine_sha256"]
+for section in ("upstream_files", "local_files", "installed_contracts"):
+    hash_key = "pristine_sha256" if section == "upstream_files" else "sha256"
+    for item in bundle[section]:
+        relative = pathlib.PurePosixPath(item["installed_path"]).relative_to(installed_root)
+        assert sha256(runtime / pathlib.Path(*relative.parts)) == item[hash_key]
 
 owned_catchup = next(item for item in bundle["local_files"] if item["id"] == "owned_catchup")
 assert owned_catchup["direct_dependencies"][0]["allowed_symbols"] == [
@@ -615,6 +633,7 @@ for event in ("SessionStart", "UserPromptSubmit"):
     assert "session-catchup.py" not in command
 
 print("POST_RESUME_DOCTOR=PASS")
+print("PWF_DEEP_CHECK_PROTOCOL=MANIFEST_ROUTED_BUNDLE_V2")
 print("INSTALLER_VERSION=" + package["version"])
 print("RELEASE_ARTIFACT_ENTRIES=" + str(len(artifact["entries"])))
 print("INSTALLED_RUNTIME_FILES=" + str(len(actual)))
@@ -623,6 +642,9 @@ print("BUNDLE_INSTALLED_INVENTORY=AUTHORITATIVE")
 print("MANAGED_POLICY=ADAPTER_ONLY")
 print("INSTALLED_RUNTIME_INVENTORY=" + json.dumps(actual, ensure_ascii=False))
 PY
+
+test "$RUNBOOK_HEAD" = "$(git rev-parse HEAD)"
+printf 'PWF_DEEP_CHECK_HEAD=%s\n' "$RUNBOOK_HEAD"
 
 SNAPSHOT_BASE="${TMPDIR:-/tmp}/pwf-codex-cloud-hooks/snapshots"
 LEFTOVERS=0
@@ -683,6 +705,7 @@ DOCTOR_JSON="$(node "$PACKAGE_ROOT/install.js" doctor --json \
 printf '%s\n' "$DOCTOR_JSON"
 
 python3 - "$DOCTOR_JSON" "$PACKAGE_ROOT" "$PACKAGE_VERSION" <<'PY'
+import hashlib
 import json
 import pathlib
 import sys
@@ -700,6 +723,8 @@ bundle = json.loads((package_root / contracts["runtime_bundle"]["path"]).read_te
 assert package["version"] == package_version
 assert artifact["package_version"] == package_version
 assert artifact["entries"]
+assert artifact["schema_version"] == 2
+assert bundle["schema_version"] == 2
 assert bundle["upstream_files"]
 
 assert doctor["healthy"] is True
@@ -709,7 +734,10 @@ assert doctor["events"] == ["SessionStart", "UserPromptSubmit"]
 assert doctor["errors"] == []
 assert doctor["blockers"] == []
 
-runtime = pathlib.Path("/opt/codex/hooks/planning-with-files")
+installed_root = pathlib.PurePosixPath(bundle["roots"]["installed"])
+assert not installed_root.is_absolute()
+assert ".." not in installed_root.parts
+runtime = pathlib.Path("/opt/codex") / pathlib.Path(*installed_root.parts)
 manifest = json.loads((runtime / "installed-manifest.json").read_text(encoding="utf-8"))
 expected = sorted(item["path"] for item in manifest["runtime_files"])
 actual = sorted(
@@ -720,6 +748,24 @@ actual = sorted(
 assert manifest["installer_version"] == package_version
 assert expected == actual
 assert not any("compatibility" in item or item.startswith("patches/") for item in actual)
+
+bundle_authority = ["THIRD_PARTY_NOTICES.md"]
+for section in ("upstream_files", "local_files", "installed_contracts"):
+    for item in bundle[section]:
+        relative = pathlib.PurePosixPath(item["installed_path"]).relative_to(installed_root)
+        bundle_authority.append(relative.as_posix())
+bundle_authority = sorted(bundle_authority)
+assert len(bundle_authority) == len(set(bundle_authority))
+assert expected == bundle_authority
+
+def sha256(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+for section in ("upstream_files", "local_files", "installed_contracts"):
+    hash_key = "pristine_sha256" if section == "upstream_files" else "sha256"
+    for item in bundle[section]:
+        relative = pathlib.PurePosixPath(item["installed_path"]).relative_to(installed_root)
+        assert sha256(runtime / pathlib.Path(*relative.parts)) == item[hash_key]
 
 policy = tomllib.loads(pathlib.Path("/etc/codex/requirements.toml").read_text(encoding="utf-8"))
 for event in ("SessionStart", "UserPromptSubmit"):
@@ -735,9 +781,11 @@ for event in ("SessionStart", "UserPromptSubmit"):
 
 print("PUBLIC_PACKAGE_IDENTITY=" + package_version)
 print("POST_RESUME_DOCTOR=PASS")
+print("PWF_DEEP_CHECK_PROTOCOL=MANIFEST_ROUTED_BUNDLE_V2")
 print("RELEASE_ARTIFACT_ENTRIES=" + str(len(artifact["entries"])))
 print("INSTALLED_RUNTIME_FILES=" + str(len(actual)))
 print("UPSTREAM_PRISTINE_FILES=" + str(len(bundle["upstream_files"])))
+print("BUNDLE_INSTALLED_INVENTORY=AUTHORITATIVE")
 print("MANAGED_POLICY=ADAPTER_ONLY")
 print("INSTALLED_RUNTIME_INVENTORY=" + json.dumps(actual, ensure_ascii=False))
 PY

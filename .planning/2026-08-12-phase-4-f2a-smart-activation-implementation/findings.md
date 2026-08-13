@@ -79,3 +79,15 @@
   only after a completed Cloud run.
 - The current-gate delta must be useful before execution, so it records the exact outputs that will constitute PASS rather than
   pretending those outputs already exist. Exact source/ZIP/hash values remain forbidden until the Cloud run completes.
+
+## First Cloud 9.1 diagnosis
+
+- The reported failing script explicitly referenced retired v1 paths/keys, while the committed 9.1 already resolved both contracts
+  through `upstream-manifest.json` and used all three v2 partitions. Repository-wide current-doc/source/test search found v1 operational
+  syntax only in cold planning/history and published v0.3.x oracles, not in the current Cloud template.
+- Therefore the first failure is stale external acceptance-script drift, not product/install/current-template failure. Because the
+  stale check was read-only and the corrected invocation reran the complete v2 assertions, its green output is valid 9.1 step evidence;
+  final gate PASS still requires linkage to the exact preceding Source/Candidate identity and Host blackbox evidence.
+- The Cloud feedback still exposed useful defense-in-depth: deep checks should derive the install root from `bundle.roots.installed`,
+  verify every upstream/local/contract installed byte against the correct v2 hash key, and emit an exact protocol marker plus source
+  HEAD so stale `/tmp` scripts cannot be mistaken for the current runbook.

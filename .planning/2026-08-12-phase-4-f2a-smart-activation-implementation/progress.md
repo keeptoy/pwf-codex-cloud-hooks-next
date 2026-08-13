@@ -69,3 +69,13 @@
 - Full local regression passed 146 tests: 128 pass, 0 fail and 18 honest Windows/POSIX skips. Importer, Python compile, Node syntax,
   discovered-path bootstrap syntax and diff checks passed. Linked F2A local PASS to the Phase 4.4 implementation lifecycle
   reconciliation; P6 is locally complete and remains stopped before F2B/F3.
+- Maintainer returned the first F2A Cloud 9.1 failure and a same-container corrected run. Compared its v1 paths/keys against current
+  9.1 and classified it as stale external script drift; current template was already manifest-routed v2.
+- Accepted the corrected complete read-only v2 invocation as 9.1 step PASS and moved the coarse gate to evidence-writeback pending;
+  exact 4.1 identity/Linux/ZIP and B/D/E2 evidence are still required before final PASS. Strengthened 9.1/9.2 to derive
+  `roots.installed`, validate all v2 partition bytes, emit an exact protocol marker, and bind the Source deep check to HEAD.
+- First P7 governance run left only two documentation-test defects: a Markdown line-wrap assumption and a status-row link removed
+  during wording edits. Restored the sequence link and made the one-shot-version assertion whitespace-tolerant.
+- Focused architecture/lifecycle verification now passes 16/16; embedded Python and all four Bash template blocks pass syntax checks.
+- Full local regression passed 146 tests: 128 pass, 0 fail and 18 honest Windows/POSIX skips. Importer, Python compile, Node syntax,
+  bootstrap syntax and diff checks passed. P7 is locally complete; only same-run F2A Cloud evidence writeback remains before PASS.
