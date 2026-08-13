@@ -208,7 +208,7 @@ F2A 快照，本节对其作后继状态承接，不篡改原文。
 
 ## Post-implementation F3 disposition
 
-F2B 本地 PASS 与 Linux/Source-Candidate no-live PASS（待执行）最多证明“候选 consumer 在目标平台可安装、可运行且没有破坏
+F2B 本地 PASS 与 Linux/Source-Candidate no-live PASS（后继状态见下方 Cloud acceptance note）最多证明“候选 consumer 在目标平台可安装、可运行且没有破坏
 legacy/smart”；它们都不能证明“用户能在 Cloud 中可靠地准备、审核、最后激活、撤销并恢复 autonomous”。因此 F3 必须给出
 明确去向：
 
@@ -221,3 +221,15 @@ legacy/smart”；它们都不能证明“用户能在 Cloud 中可靠地准备�
   F2B 的 read-only normalization 当成写侧设计已经完成。
 
 这里不冻结 commit、测试数量或候选 ZIP hash；这些易变执行证据只保存在活动 planning 与当前版本 acceptance 中。
+
+<a name="phase-4-5-post-cloud-acceptance-note"></a>
+
+## Post-F2B Cloud acceptance note
+
+后继 Linux/Source-Candidate/no-live Cloud gate 已从同一 exact F2B source 闭合零 fail/skip portable suite、deterministic
+candidate、安装/doctor、B～E markerless legacy 黑盒与 manifest-routed v2 deep check。该结果把上表 autonomous consumer
+从“仅本地证明”推进为“目标 Linux/Cloud no-live candidate 已证明”，但 producer 与真实 activation lifecycle 仍保持
+`F3-UNPROVEN`；没有任何 token、nonce、attestation 或 ledger 因这次验收被真实创建或激活。
+
+本尾注不复制动态 source、计数或 ZIP hash；精确证据只见
+[`v0.4.0-dev` F2B acceptance](../v0.4.0-dev-cloud-hard-acceptance.md#v0-4-0-dev-f2b-source-candidate-evidence)。

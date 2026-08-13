@@ -34,3 +34,15 @@
   than indefinite half-activation. Updated the history index to distinguish the original conditional-go from the later local landing.
 - Focused history/architecture boundary verification passed 16/16 after the managed Windows sandbox's test-worker `spawn EPERM` was
   classified and the same read-only command was rerun with approved escalation; `git diff --check` also passed.
+- Maintainer returned the complete F2B Linux/Source-Candidate no-live gate from exact HEAD
+  `aeffc4d4c9e709ae59de2b193dabe5d092c5cb42`: 144/144 portable tests passed with zero skips; two 22-entry,
+  85,533-byte candidate builds were byte-identical at SHA-256
+  `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`.
+- Bootstrap install, pinned upstream v3.8.2, requirements/feature checks, doctor and both adapter probes passed. Post-Resume deep check
+  dynamically routed manifest schema 4 to Release/bundle v2, reconciled 12 installed files and 4 pristine upstream files, retained
+  adapter-only policy, found zero snapshot leftovers and returned both Source/Candidate PASS markers. Setup stayed clean; 9.1 observed
+  planning-only changes and the exact same HEAD; no branch, commit or PR was created in Cloud.
+- Wrote the exact evidence into the version acceptance, advanced ROADMAP and the active status to F2B Cloud no-live PASS, and appended
+  a non-duplicating Phase 4.5 Cloud note. F3 and real activation remain unauthorized.
+- Final documentation/repository boundary regression passed 16/16 after one over-specific F1 prose assertion was narrowed to its
+  same-line semantic anchor; `git diff --check` passed and no production/contract/Release bytes changed in this evidence-only closure.

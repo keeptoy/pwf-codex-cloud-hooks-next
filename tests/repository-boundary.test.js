@@ -54,9 +54,9 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.notEqual(candidate, accepted);
   assert.match(roadmap, /F0[^\n]*complete/);
   assert.match(roadmap, /F1A[^\n]*complete/);
-  assert.match(roadmap, /F1 foundation complete/);
+  assert.match(roadmap, /F1 foundation[^\n]*complete/);
   assert.match(roadmap, /F2A[^\n]*Cloud PASS/);
-  assert.match(roadmap, /F2B[^\n]*Cloud no-live 待验收/);
+  assert.match(roadmap, /F2B[^\n]*Source\/Candidate Cloud PASS/);
   assert.match(roadmap, /F3 未授权/);
 });
 
@@ -341,9 +341,10 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, /F2A local implementation[^\n]*`PASS`/);
   assert.match(acceptance, /F2A Source\/Candidate\/no-live Cloud[^\n]*`PASS`/);
   assert.match(acceptance, /F2B local autonomous implementation[^\n]*`PASS`/);
-  assert.match(acceptance, /F2B Source\/Candidate\/no-live Cloud[^\n]*`CURRENT \/ CLOUD_ACCEPTANCE_PENDING`/);
+  assert.match(acceptance, /F2B Source\/Candidate\/no-live Cloud[^\n]*`PASS`/);
   assert.equal((acceptance.match(/`NOT_AUTHORIZED`/g) || []).length, 1);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f2a-acceptance-delta"><\/a>$/m);
+  assert.match(acceptance, /^<a name="v0-4-0-dev-f2b-source-candidate-evidence"><\/a>$/m);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f2a-source-candidate-evidence"><\/a>$/m);
   assert.match(acceptance, /F2A test-harness deviation 与协议修正/);
   assert.match(acceptance, /stale external acceptance script/);
@@ -354,7 +355,13 @@ test("change history, programme, provenance, and current acceptance keep separat
     "source-candidate-sequence", "source-candidate-setup", "source-candidate-deep-check",
     "blackbox-canonical-baseline", "blackbox-canonical-context", "blackbox-real-resume",
   ]) assert.match(acceptance, new RegExp(`cloud-hard-acceptance-template\\.md#${fragment}`));
+  const f2bEvidenceStart = acceptance.indexOf('<a name="v0-4-0-dev-f2b-source-candidate-evidence"></a>');
   const f2aDeltaStart = acceptance.indexOf('<a name="v0-4-0-dev-f2a-acceptance-delta"></a>');
+  const f2bEvidence = acceptance.slice(f2bEvidenceStart, f2aDeltaStart);
+  assert.match(f2bEvidence, /aeffc4d4c9e709ae59de2b193dabe5d092c5cb42/);
+  assert.match(f2bEvidence, /144 tests，144 pass，0 fail，0 skipped/);
+  assert.match(f2bEvidence, /df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c/);
+  assert.match(f2bEvidence, /F2B_SOURCE_CANDIDATE_CLOUD_PASS \/ STOP_BEFORE_F3/);
   const f2aEvidenceStart = acceptance.indexOf('<a name="v0-4-0-dev-f2a-source-candidate-evidence"></a>');
   const f2aDelta = acceptance.slice(f2aDeltaStart, f2aEvidenceStart);
   for (const sentinel of [
@@ -382,7 +389,7 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
   }
   if (candidate !== accepted && /\b[a-f0-9]{64}\b/i.test(acceptance)) {
-    const currentEvidenceHeading = "## F2A Source/Candidate evidence";
+    const currentEvidenceHeading = "## F2B Source/Candidate evidence";
     const currentEvidenceAt = acceptance.indexOf(currentEvidenceHeading);
     assert.notEqual(currentEvidenceAt, -1,
       "current completed gate lacks an exact evidence heading");

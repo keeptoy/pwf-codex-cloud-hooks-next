@@ -11,6 +11,8 @@ bounded normalized ledger；保持 legacy/smart 行为、managed workspace read-
 - Maintainer authorization: 直接进入 F2B 实现。
 - Maintainer follow-up authorization: 在尚未推送前补齐 Phase 4.5 的 post-implementation 设计差异、对象生命周期与 F3
   disposition 对账，并并入同一 F2B 本地提交。
+- Maintainer acceptance authorization: 核实并回写 F2B Linux/Source-Candidate/no-live Cloud exact evidence，关闭本 scope；
+  不进入 F3。
 - Authorized: production runtime/adapter、相关 tests/contracts hash/inventory、README/ARCHITECTURE/DESIGN/ROADMAP/CHANGELOG、
   current acceptance template 必要同步；本地完整回归、deterministic candidate、独立本地 commit。
 - Not authorized: 创建真实用户项目 activation/nonce/attestation/ledger；Cloud Git-backed 或 same-chat activation；F3；新增
@@ -18,8 +20,8 @@ bounded normalized ledger；保持 legacy/smart 行为、managed workspace read-
 
 ## Next Step
 
-维护者推送补齐实施后对账的 F2B 本地提交，并按 current acceptance 执行 Linux/Source-Candidate no-live Cloud gate；
-回传 exact HEAD、零 skip suite、deterministic ZIP、install/doctor 与 adapter probe 证据后停止，不进入 F3。
+等待维护者另行决定是否授权 F3 Discovery。不得把 F2B no-live PASS 当成真实 activation lifecycle PASS，也不得创建
+autonomous state、进入 live Cloud、seal 或远端写入。
 
 ## Phases
 
@@ -32,6 +34,7 @@ bounded normalized ledger；保持 legacy/smart 行为、managed workspace read-
 | I4 Local verification and commit | completed | focused + full suite、import/check、compile、syntax、deterministic ZIP、diff checks 通过并提交 |
 | I5 Cloud no-live handoff | completed | 精确 HEAD/模板/预期输出交给维护者；不自行 push、不进入 F3 |
 | I6 Phase 4.5 post-implementation reconciliation | completed | 方案与落地差异、对象 lifecycle、F3 PASS/NO_GO 处置及历史索引闭合 |
+| I7 Cloud no-live evidence closure | completed | exact HEAD、Linux 零 skip、deterministic ZIP、install/doctor、B～E 与 9.1 evidence 写回并停在 F3 前 |
 
 ## Lifecycle ledger
 
@@ -71,7 +74,8 @@ bounded normalized ledger；保持 legacy/smart 行为、managed workspace read-
 | Combined final checks reached Git Bash syntax validation but sandbox denied its signal pipe | 1 | Earlier checks in the command passed; rerun only `bash -n` with approved escalation, then run status separately. |
 | Local stage/commit could not create `.git/index.lock` inside the managed sandbox | 1 | No staging or commit occurred; rerun the exact scoped git add/check/commit outside the sandbox. |
 | Phase 4.5 documentation boundary tests could not spawn Node test workers in the managed Windows sandbox (`spawn EPERM`) | 1 | No test file executed and no repository file changed; record the platform limitation and rerun the exact read-only focused tests with approved escalation. |
+| First F2B Cloud evidence boundary run had 1 failure because the test required the contiguous prose `F1 foundation complete` | 1 | ROADMAP still stated F1 foundation and all F2 gates complete on one line; classify as assertion drift and narrow the regex to preserve the semantic same-line anchor without freezing word order. |
 
 ## Current status
 
-`F2B_LOCAL_PASS / CLOUD_NO_LIVE_PENDING / F3_NOT_AUTHORIZED`
+`F2B_LOCAL_PASS / F2B_CLOUD_NO_LIVE_PASS / F3_NOT_AUTHORIZED`

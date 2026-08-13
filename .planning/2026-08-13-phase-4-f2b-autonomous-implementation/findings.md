@@ -22,6 +22,9 @@
   changing the existing four-file upstream inventory or pristine bytes.
 - Failing-first tests now demonstrate the intended deltas: autonomous capability is rejected, adapter still emits only smart, the
   new state constants/readers are absent, and activation/mode normalization rejects autonomous. Windows honestly skips POSIX rendering.
+- Linux/Source-Candidate no-live Cloud later closed from the exact local F2B commit with zero failed/skipped portable tests, a
+  byte-identical candidate ZIP and healthy installed adapter-only runtime. This proves the read-only consumer on the target platform,
+  not the Git-backed or same-chat activation producer/lifecycle reserved for F3.
 
 ## Implementation bounds
 
