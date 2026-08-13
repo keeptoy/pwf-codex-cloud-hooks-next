@@ -182,11 +182,17 @@ F2B 不需要改变 Phase 4.1 的 hybrid owned-boundary，也不新增 Host even
 bounded ledger 先准备并验证，activation 最后原子写入。invalid/incomplete/mutated/over-budget state 只拒绝，且
 autonomous 永不回退 raw `progress.md`。
 
-Cloud 的 prepare → review → explicit follow-up activation → later Hook visibility 只是假设，不是当前功能事实。F2B
-implementation 若获授权，应先完成 read-only consumer、关系合同、race/tamper 与 Source/Candidate no-live gate 后停止；
-F3 再用 Fresh/Resume/cache、disarm/re-arm 和 rollback 证据决定该工作流能否成为受支持能力。如果 F3 `NO_GO`，不得为了
-保留“以后可能有用”而发布 unreachable reader/writer；当前 request/result enum、adapter capability lock、runtime refusal
-和 negative tests 已经是足够的未来接口。完整取舍与生命周期由 README 文档地图指向的唯一 Phase 历史索引保存。
+Cloud activation 只是假设，不是当前功能事实。F3 先验证 Git-backed 双阶段路线：准备 state 与最后 activation 分属两个
+经用户检查/merge 的 commit/PR，再从 exact activated commit 启动新任务；只有目标仓库无法安全承载该状态时，才测试同一
+Cloud chat 的 review + follow-up 备选，并把 cache/worktree 持续性作为显式风险。F2B implementation 若获授权，应先完成
+read-only consumer、关系合同、race/tamper 与 Source/Candidate no-live gate 后停止；F3 再用 Fresh/Resume/cache、disarm/
+re-arm 和 rollback 证据决定工作流能否成为受支持能力。两条路线都失败则 `NO_GO/defer`，不得为了保留“以后可能有用”而
+发布 unreachable reader/writer；当前 request/result enum、adapter capability lock、runtime refusal 和 negative tests 已经
+是足够的未来接口。完整取舍与生命周期由 README 文档地图指向的唯一 Phase 历史索引保存。
+
+首选失败后切换备选仍属于未发布 `v0.4.0-dev` programme：使用新的 alpha/beta candidate，撤销失败 bytes 并重新闭合
+hash、ZIP、Cloud 与 rollback gates，不自动改成 `v0.4.1`。如果先发布 smart-only stable `v0.4.0`，以后新增 autonomous
+会改变授权与用户行为，应重新安排下一 minor programme；`0.x.y (y>0)` 继续只承担同一 minor 内兼容修复。
 
 ### 4.4 Phase 5～8 已采纳边界
 

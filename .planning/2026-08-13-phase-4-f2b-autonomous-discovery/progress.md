@@ -26,3 +26,10 @@
   historical macro entrance and the stable `F1 foundation complete` governance anchor after the boundary test caught both issues.
 - `git diff --check` passed. Focused repository-boundary verification passed 9/9 after rerunning outside the Windows sandbox, where
   the first test-runner spawn attempt failed with `EPERM` before executing test bodies.
+- Re-reviewed official checkout/diff/PR/follow-up facts and the repository's v0.1 legacy-trust → v0.2 system-managed lesson. Updated
+  Phase 4.5 to prefer two reviewed Git commit/PR boundaries, retain same-chat review/follow-up only as fallback, and fail closed if
+  neither preserves exact state.
+- Clarified version semantics: route switching remains within unpublished `v0.4.0-dev` via new alpha/beta candidates and full re-gates;
+  after stable `v0.4.0`, autonomous is a later-minor behavior change rather than a `v0.4.1` compatibility patch.
+- `git diff --check` passed. Focused repository-boundary verification passed 9/9 outside the Windows sandbox; the sandboxed runner
+  again failed before test execution with the known `spawn EPERM` platform limitation.

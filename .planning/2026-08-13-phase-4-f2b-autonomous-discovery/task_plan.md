@@ -17,8 +17,9 @@ attestation、nonce、normalized ledger、activation/consent 与 Cloud lifecycle
 ## Next Step
 
 等待维护者决定是否接受并授权两项后继实施前提：使用 exact `codex-managed-v1 autonomous\n` 作为 profile-bound、
-last-written commit point；把 Cloud prepare/review/follow-up activation 作为 F3 可失败的 live hypothesis。未明确授权前保持
-当前 smart-only production、autonomous unreachable seam 与 negative guards，不修改 runtime/contract/Release bytes。
+last-written commit point；F3 按 Git-backed 双阶段首选、same-chat review/follow-up 备选、两者失败则 `NO_GO/defer` 的
+顺序验证。未明确授权前保持当前 smart-only production、autonomous unreachable seam 与 negative guards，不修改
+runtime/contract/Release bytes。
 
 ## Phases
 
@@ -58,6 +59,7 @@ last-written commit point；把 Cloud prepare/review/follow-up activation 作为
 |---|---:|---|
 | Official docs search did not surface a dedicated Cloud in-task consent callback | 1 | Opened current official approval, Cloud and environment pages directly; record only established local/Cloud surfaces and treat callback absence as unproven, not impossible forever. |
 | Compact upstream test fixture does not contain initializer or attester scripts | 1 | Treat absence as current denied-source evidence; use pinned injector/helper bytes plus prior archive audit, and do not download or admit writers during Discovery. |
+| Initial Cloud route ranked same-chat follow-up before Git-backed state | 1 | Re-reviewed documented checkout/diff/PR primitives and historical trust-route lesson; promoted two reviewed Git commits/PRs to preferred, retained same-chat continuity as explicit fallback. |
 
 ## Current status
 

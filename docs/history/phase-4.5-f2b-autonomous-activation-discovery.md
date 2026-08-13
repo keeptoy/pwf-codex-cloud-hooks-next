@@ -58,15 +58,36 @@ repository/plan/state 的 consent。
 - [Codex cloud](https://learn.chatgpt.com/docs/cloud)
 - [Cloud environments](https://learn.chatgpt.com/docs/environments/cloud-environment)
 
-当前唯一值得进 F3 验证的 Cloud 路线是一个明确标注为**推测**的两任务协议：
+F2B 不把未经证实的 Cloud 行为压成一条路线，而是按证据强度冻结首选与备选；两者都只是待 F3 实测的 hypothesis。
 
-1. prepare task 只生成 mode/nonce/attestation/ledger，不写 activation；
-2. 用户 review diff 后明确发起 follow-up，第二个动作最后写 profile-bound activation；
-3. 后续 UserPromptSubmit/Resume 证明 exact state 可见，再测试 disarm/re-arm、cache 与 rollback。
+### 首选：Git-backed 双阶段 activation
 
-follow-up 是可审计的工作流意图，不是加密身份。如果 Cloud checkout/cache 不能保持同一组已复核状态，F3 就应判失败。
-不使用“模型生成链接让用户点击”、外部认证服务、setup secret 或环境变量模拟缺失的 Host ABI；未来只有官方出现 authenticated、
-bounded、可绑定 exact state 的接口时才重新 Discovery。
+1. preparation commit/PR 只加入 exact mode、nonce、attestation 和初始 bounded ledger，不写 activation；
+2. 用户检查并 merge 该 diff；
+3. 第二个独立 commit/PR 只加入 profile-bound activation，用户再次检查并 merge；
+4. 从包含 activation 的 exact commit 启动新 Cloud task，再验证 UserPromptSubmit/Resume、disarm/re-arm、cache 与 rollback。
+
+这条路线优先使用官方已经明确的 branch/commit checkout、diff review 与 PR/follow-up 原语。它把“准备了什么”和“最后
+同意启用什么”分成两个可审计 Git 边界，不依赖同一容器未提交 worktree 恰好继续存在。activation 仍只是 repository/
+plan-local workflow intent，不是用户身份或签名凭据；attestation 仍必须匹配最终 exact task bytes。
+
+如果目标仓库不允许提交这些 plan-local 状态、状态被 `.gitignore` 排除、branch protection 无法表达第二个 commit，或
+mutable ledger 的 Git lifecycle 无法闭合，首选路线立即停止，不能绕过审查偷偷写 token。
+
+### 备选：同一 Cloud chat 的 review + follow-up activation
+
+1. prepare task 在当前 worktree 生成 mode/nonce/attestation/ledger，但不写 activation；
+2. 用户在任务结果页检查 summary/diff 后明确发 follow-up，只允许最后写 profile-bound activation；
+3. 后续 Hook 先核对 exact HEAD、plan identity、task digest 和 state fingerprint，再决定是否接受；
+4. F3 必须覆盖 cache hit/miss、maintenance、Fresh、real Resume、超时和容器重建，不能只证明一次 happy path。
+
+这条路线的弱点是依赖同一 chat/worktree/cache 的持续性；官方文档说明 Cloud 支持 review、follow-up 和至多 12 小时的
+container cache，但没有把未提交 plan state 的持续性定义成 F2B 所需的原子授权 ABI。因此它只在首选确实不可行后尝试，
+且失败就 fail closed，不再继续降级。
+
+两条路线都失败时，F2B Cloud activation 为 `NO_GO/defer`。不使用“模型生成链接让用户点击”、外部认证服务、setup
+secret、环境变量或推断的本地 approval 作为第三种兜底；未来只有官方出现 authenticated、bounded、可绑定 exact state
+的接口时才重新 Discovery。
 
 ## 为什么现在不先堆 inactive 实现
 
@@ -100,11 +121,23 @@ bounded、可绑定 exact state 的接口时才重新 Discovery。
 | autonomous schema seam | KEEP，production unreachable | adapter/runtime relational contract | F2B 重启或 protocol replacement |
 | nonce/attestation/ledger readers | ABSENT | future F2B owned runtime | 只在获批实施 gate 增加 |
 | upstream writer scripts | DENIED / UNINSTALLED | external pristine Skill/user flow | 独立 producer audit 或官方授权表面变化 |
-| Cloud two-task flow | UNPROVEN HYPOTHESIS | F3 live acceptance | exact lifecycle 证据通过才接受 |
+| Git-backed two-stage Cloud consent | PREFERRED / UNPROVEN | F3 live acceptance | 两次受审 commit 边界与 exact lifecycle 证据通过才接受 |
+| same-chat follow-up consent | FALLBACK / UNPROVEN | F3 live acceptance | 仅首选不可行后测试；state/cache 有歧义即退休 |
 | external click/callback | ABSENT | none | 仅 authenticated official Host ABI 出现时重开 Discovery |
+
+## 版本列车与失败切换
+
+F2B 首选、备选都在尚未发布的 `v0.4.0-dev` programme 内验证。首选失败不自动产生 `v0.4.1`：可以在新的
+`0.4.0-alpha.N` / `beta.N` candidate 中撤销失败 bytes、切换备选并重新执行 hash、ZIP、Cloud 与 rollback gates。
+任何失败 candidate 都不能晋级为 stable。
+
+如果两条路线都失败，允许从 candidate 完整撤回 autonomous implementation，只以已经成立的 F1/F2A 能力继续评估是否
+封板 smart-only `v0.4.0`。一旦 stable `v0.4.0` 已发布，后续新增 autonomous 会改变显式授权与用户行为，不符合当前
+ROADMAP 对 `0.x.y (y>0)`“只做同一 minor 兼容修复”的约束；届时必须重新安排下一 minor programme，而不是用
+`v0.4.1` 偷渡。具体 minor 编号需与当时 Phase 5～9 路线一起重排，不在本 Discovery 预占。
 
 ## 交接
 
-当前适合进入的下一步不是直接施工，而是由维护者决定是否接受两项实施前提：profile-bound autonomous token，以及把 Cloud
-two-task flow 留给 F3 作可失败的真实假设。明确授权后才建立 F2B implementation scope；否则维持现状，现有 smart 行为和
-legacy 默认均不受影响。
+当前适合进入的下一步不是直接施工，而是由维护者决定是否接受两项实施前提：profile-bound autonomous token，以及在 F3
+按“Git-backed 双阶段首选 → same-chat follow-up 备选 → 两者失败则 NO_GO/defer”的顺序验证。明确授权后才建立 F2B
+implementation scope；否则维持现状，现有 smart 行为和 legacy 默认均不受影响。

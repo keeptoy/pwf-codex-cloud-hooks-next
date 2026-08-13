@@ -127,15 +127,18 @@ Local CLI can stop for an approval or let the user run a state-producing command
 establishes an isolated task, a result/diff review and follow-up workflow. It does not establish an authenticated in-task callback
 that can be bound to this exact repository, plan and state.
 
-A possible Cloud product flow is therefore a **two-task inference**, which only F3 live evidence may accept:
+F3 must test two ordered hypotheses rather than assume one Cloud flow:
 
-1. a prepare task writes mode/nonce/attestation/ledger but not activation;
-2. the user reviews the diff and explicitly requests a follow-up that writes the profile-bound activation file last;
-3. a later UserPromptSubmit/Resume proves the same exact state is visible, and opt-out/re-arm/cache/rollback are exercised.
+1. **Preferred — Git-backed two-stage activation.** A preparation commit/PR contains mode/nonce/attestation/ledger but no activation;
+   after user review/merge, a second independently reviewed commit/PR adds only the profile-bound activation; a new task starts from
+   that exact activated commit. This uses documented checkout/diff/PR primitives and does not depend on uncommitted cache continuity.
+2. **Fallback — same-chat review + follow-up.** A prepare task leaves an inspectable diff; an explicit follow-up writes activation last;
+   later Hook invocations must prove the exact HEAD/plan/state and survive cache hit/miss, maintenance, Fresh and Resume. Official docs
+   support review/follow-up and bounded caching, but do not promise an atomic uncommitted-state consent ABI.
 
-The follow-up prompt is workflow consent, not cryptographic identity. If Cloud checkout/cache semantics do not preserve and expose the
-reviewed state exactly, the flow fails closed. No link-click service, setup secret, chat-wide environment variable or inferred local
-approval is an acceptable substitute.
+Both are workflow consent, not cryptographic identity. The preferred route stops if the target repository cannot safely track the
+plan-local state; the fallback stops on any worktree/cache ambiguity. If both fail, F2B Cloud activation is `NO_GO/defer`. No link-click
+service, setup secret, chat-wide environment variable or inferred local approval is an acceptable third fallback.
 
 ### Options
 
@@ -143,7 +146,7 @@ approval is an acceptable substitute.
 |---|---|---|---|
 | Implement autonomous consumer and activate in production immediately | shortest path | silently assumes Cloud consent/lifecycle and weakens the Phase 4 gate split | reject |
 | Add a large unreachable F2B implementation now | creates a future probe target | leaves unconsumed security code and a new lifecycle burden; current seam already exists | reject |
-| Implement one read-only F2B transaction after explicit authorization, then require F3 live acceptance before Release | validates the real consumer without admitting writers; failures remain attributable | requires exact state/race tests and may still fail Cloud lifecycle | conditional recommendation |
+| Implement one read-only F2B transaction after explicit authorization, then test Git-backed activation first and same-chat follow-up second in F3 | validates the real consumer without admitting managed writers; failures remain attributable | requires exact state/race tests and may still fail Cloud lifecycle | conditional recommendation |
 | Defer/NO_GO and retain only the current schema capability plus production refusal | no new dead code or trusted edge | autonomous remains unavailable | mandatory fallback |
 
 The fallback interface already exists: request/result v2 reserve `autonomous`, adapter capability stops at smart, runtime refuses the
@@ -157,8 +160,8 @@ managed protocol is replaced.
 
 F2B is technically implementable without changing the hybrid owned-boundary, Host event set, workspace-write boundary or schema-v2
 shape. A future implementation gate may proceed only after the maintainer explicitly authorizes the profile-bound activation grammar
-and accepts F3's two-task Cloud workflow as the hypothesis to test. It must land runtime, adapter capability, tests, hashes/inventory
-and current documentation as one coherent candidate transaction, then stop before F3.
+and accepts F3's ordered hypotheses: Git-backed two-stage activation first, same-chat review/follow-up second. It must land runtime,
+adapter capability, tests, hashes/inventory and current documentation as one coherent candidate transaction, then stop before F3.
 
 This conclusion does not claim Cloud opt-in works. If F3 cannot prove prepare → review → activate-last → later Hook visibility plus
 opt-out/re-arm/cache/rollback, autonomous must not enter an accepted Release. The correct fallback is the existing unreachable seam
@@ -186,5 +189,14 @@ and refusal guard—not a half-active runtime and not extra tombstone code.
 | autonomous schema enum/capability sequence | keep reserved and unreachable now | adapter/runtime relational contract | F2B restart or protocol replacement |
 | nonce/attestation/ledger owned readers | do not add during Discovery | future F2B owned runtime | add only in authorized implementation; otherwise absent |
 | upstream writers | keep denied and uninstalled | external pristine Skill/user flow only | separate producer audit or official surface change |
-| two-task Cloud consent hypothesis | unproven | F3 live acceptance | accept only with exact Fresh/Resume/cache/rollback evidence |
+| Git-backed two-stage Cloud consent | preferred, unproven | F3 live acceptance | accept only with two reviewed commit boundaries and exact Fresh/Resume/cache/rollback evidence |
+| same-chat follow-up consent | fallback, unproven | F3 live acceptance | test only if Git-backed route is infeasible; retire on state/cache ambiguity |
 | external link/callback seam | absent | none | reopen only for an authenticated, bounded official Host ABI |
+
+## Version-train decision
+
+- Both Cloud hypotheses are experiments inside the unpublished `v0.4.0-dev` programme. A failed preferred candidate may be removed
+  and replaced by a new `0.4.0-alpha.N`/`beta.N` candidate using the fallback, with all hashes, ZIP, Cloud and rollback gates rerun.
+- If both fail, remove autonomous implementation from the candidate and decide separately whether F1/F2A justify smart-only `v0.4.0`.
+- After stable `v0.4.0` publication, adding autonomous changes opt-in and user behavior. Under the current ROADMAP it is not a
+  compatibility patch and must be scheduled in a later minor programme, not smuggled into `v0.4.1`.
