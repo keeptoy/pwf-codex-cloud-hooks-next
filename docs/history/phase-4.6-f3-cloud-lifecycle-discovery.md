@@ -115,7 +115,8 @@ preparation为 parent且只有一个新增路径；disarm同理只有一个删�
 
 本地实施没有修改 production、Host ABI、contracts、runtime bundle、installer、Release entries、bootstrap或当前四个 pristine
 runtime文件。四文件仍只是当前 exact inventory，不是永久上限；未来扩充必须按实际 managed execution需求另开原子的
-bundle/manifest/Release/trust gate。F3A Linux/Source-Candidate no-live验收仍待维护者执行；F3B live activation、F3C rollback、
+bundle/manifest/Release/trust gate。后继 exact source 已闭合 F3A Linux/Source-Candidate no-live 验收；该结果只把
+repository/source foundation 推进到目标 Linux 与 no-live Cloud，不是 live opt-in 证据。F3B live activation、F3C rollback、
 seal、publication和远端写入仍未授权。
 
 <a name="phase-4-6-post-implementation-design-reconciliation"></a>
@@ -136,7 +137,7 @@ Release 面也没有扩张；差异集中在 verifier 分层、测试复用和�
 | F3A不在真实仓库创建activation state | 所有smart/autonomous写入只发生在系统临时目录；真实active planning由repository test显式要求为markerless `legacy` | 更强的停止点证明 | 这个exact `legacy`断言是F3A过渡守卫，不是永久产品合同；见下方transition说明 |
 | F3A建立专用runbook，不把未证明live行为塞进通用模板 | 新建版本专用F3 runbook；通用B～E和9.1脚本保持不变，版本acceptance只增加F3A pending增量 | 按计划落地 | no-live PASS只更新F3A Cloud行；F3B/F3C必须各自追加独立状态与exact evidence，不得覆盖F3A证据 |
 | managed runtime、Host ABI、bundle/Release和四文件inventory保持不变 | 两次candidate build仍与F2B字节完全一致；新增文件全部在`.planning/`、`docs/`或`tests/` | 按计划落地并得到字节证据 | F3A不能被用作新增upstream文件已获准的先例；四文件只是当前inventory，未来扩充仍需原子供应链gate |
-| local/Linux/no-live是F3A退出面，live与rollback后置 | local已闭合；Linux/Source-Candidate no-live仍pending，F3B/F3C仍明确未授权 | 按计划停止 | 当前只能说`F3A_LOCAL_COMPLETE`，不能说F3A Cloud PASS或Cloud opt-in可用 |
+| local/Linux/no-live是F3A退出面，live与rollback后置 | local与 Linux/Source-Candidate no-live 均已闭合；F3B/F3C仍明确未授权 | 按计划闭合 F3A | 当前可说 `F3A_SOURCE_CANDIDATE_NO_LIVE_CLOUD_PASS`，仍不能说 Cloud opt-in lifecycle 可用 |
 
 ### F3A → F3B transition guard
 
@@ -167,8 +168,8 @@ autonomous/smart product-pending route一并退役对应state和runbook，不能
 | disposable prepared-state project | **EPHEMERAL VERIFICATION FIXTURE** | runbook/test → installed `owned-plan.py` | preparation production-probe protocol与cleanup命令 | 每轮必须清理；不得缓存、提交、作为consent或correctness authority |
 | installed production read-only probe | **REUSED CORRECTNESS AUTHORITY** | exact request → installed `owned-plan.py` | expectedprofile、outcome/inject/advisory检查 | request/result、renderer、installed identity或opt-in protocol变化时原子复核 |
 | preparation/activation/disarm Git relation tests | **ACTIVE PRODUCT-PROTOCOL GUARD** | disposable Git commits → F3 tests | exact direct parent与single-path A/D assertions | Git-backed lifecycle被支持期间保留；官方bounded approval ABI替代或F3 route退休时重审 |
-| `docs/v0.4.0-dev-f3-cloud-lifecycle-runbook.md` | **VERSIONED OPERATING PROTOCOL / LOCAL COMPLETE / CLOUD-PENDING** | maintainer → F3B/F3C operator | anchors、Bash syntax、boundary static tests | F3A no-live PASS后仍保留给F3B/F3C；`v0.4.0` identity冻结时随版本文档策略迁移/改名；列车结束后由immutable Git保留历史，current tree按retirement DoD清退 |
-| v0.4.0-dev acceptance F3A pending row | **CURRENT GATE POINTER** | activity/Cloud evidence → version acceptance | repository governance parser | no-live PASS后改为PASS并追加exact evidence；不得被F3B证据覆盖；dev→stable时按单一acceptance规则迁移 |
+| `docs/v0.4.0-dev-f3-cloud-lifecycle-runbook.md` | **VERSIONED OPERATING PROTOCOL / F3A NO-LIVE PROVEN** | maintainer → F3B/F3C operator | local anchors/Bash/boundary tests + Linux zero-skip Source/Candidate | 继续保留给F3B/F3C；`v0.4.0` identity冻结时随版本文档策略迁移/改名；列车结束后由immutable Git保留历史，current tree按retirement DoD清退 |
+| v0.4.0-dev acceptance F3A row | **PASS EVIDENCE / CURRENT GATE POINTER** | exact Cloud evidence → version acceptance | exact HEAD、149/149、deterministic ZIP、B～E、9.1 | 不得被F3B证据覆盖；dev→stable时按单一acceptance规则迁移 |
 | managed/upstream writer | **DENIED / ABSENT** | none | inventory/call-edge与runbook边界 | 独立producer Discovery或Phase 8 writer gate前不得准入 |
 | current four pristine runtime files | **KEEP — CURRENT INVENTORY, NOT A CAP** | runtime bundle → installer/owned runtime | unchanged deterministic ZIP与bundle checks | 只在真实managed execution需要时通过atomic bundle/manifest/Release/trust gate扩充；不能因工作区有完整upstream树自动加入 |
 | optional ledger files in F3 lifecycle | **ZERO ALLOWED / EXTERNAL PRODUCER UNOWNED** | future user-side flow → read-only consumer | zero-ledger fixture与production normalizer | F3B只证明实际使用的零/有限ledger路线；writer ownership、lock、durability和rollback residue仍归Phase 8 Discovery |

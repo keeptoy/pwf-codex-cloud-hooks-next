@@ -57,7 +57,7 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap, /F1 foundation[^\n]*complete/);
   assert.match(roadmap, /F2A[^\n]*Cloud PASS/);
   assert.match(roadmap, /F2B[^\n]*Source\/Candidate Cloud PASS/);
-  assert.match(roadmap, /F3A lifecycle foundation 已完成本地实施/);
+  assert.match(roadmap, /F2A\/F2B\/F3A Source\/Candidate Cloud PASS/);
   assert.match(roadmap, /F3B\/F3C 未授权/);
 });
 
@@ -339,9 +339,17 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, /F2B Source\/Candidate\/no-live Cloud[^\n]*`PASS`/);
   assert.match(acceptance, /F3 Discovery[^\n]*`CONDITIONAL_GO_TO_F3A`/);
   assert.match(acceptance, /F3A local lifecycle foundation[^\n]*`PASS`/);
-  assert.match(acceptance, /F3A Source\/Candidate\/no-live Cloud[^\n]*`CURRENT \/ CLOUD_ACCEPTANCE_PENDING`/);
+  assert.match(acceptance, /F3A Source\/Candidate\/no-live Cloud[^\n]*`PASS`/);
   assert.match(acceptance, /F3B live lifecycle \/ F3C rollback[^\n]*`NOT_AUTHORIZED`/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3a-acceptance-delta"><\/a>$/m);
+  assert.match(acceptance, /^<a name="v0-4-0-dev-f3a-source-candidate-evidence"><\/a>$/m);
+  const f3aEvidenceStart = acceptance.indexOf('<a name="v0-4-0-dev-f3a-source-candidate-evidence"></a>');
+  const f2bDeltaStart = acceptance.indexOf("## F2B 验收增量与模板同步");
+  const f3aEvidence = acceptance.slice(f3aEvidenceStart, f2bDeltaStart);
+  assert.match(f3aEvidence, /90d00de3f643defe566b1457064f46106ac791ae/);
+  assert.match(f3aEvidence, /149 tests，149 pass，0 fail，0 skipped/);
+  assert.match(f3aEvidence, /df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c/);
+  assert.match(f3aEvidence, /F3A_SOURCE_CANDIDATE_NO_LIVE_CLOUD_PASS \/ STOP_BEFORE_F3B/);
   assert.match(acceptance, /本增量没有改写通用 B～E 提示词或 9\.1 deep-check 脚本/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f2a-acceptance-delta"><\/a>$/m);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f2b-source-candidate-evidence"><\/a>$/m);
@@ -391,7 +399,7 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
   }
   if (candidate !== accepted && /\b[a-f0-9]{64}\b/i.test(acceptance)) {
-    const currentEvidenceHeading = "## F2B Source/Candidate evidence";
+    const currentEvidenceHeading = "## F3A Source/Candidate evidence";
     const currentEvidenceAt = acceptance.indexOf(currentEvidenceHeading);
     assert.notEqual(currentEvidenceAt, -1,
       "current completed gate lacks an exact evidence heading");

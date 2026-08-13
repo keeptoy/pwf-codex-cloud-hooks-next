@@ -39,3 +39,21 @@
 - focused verification：`tests/f3-lifecycle-foundation.test.js` 5/5、`tests/repository-boundary.test.js` 9/9，`git diff --check` 通过。
 - 完整 `npm test`：157 tests，134 pass，0 fail，23 skipped；跳过项均为 Windows 上诚实跳过的 Linux/POSIX case。
 - 本轮只修改历史设计记录、活动 planning 证据和防回归测试；没有修改 production runtime、contract、bundle、installer 或 Release inventory。
+
+## 2026-08-13 — F3A Linux / Source-Candidate no-live acceptance
+
+- Maintainer returned successful full-gate evidence from exact HEAD `90d00de3f643defe566b1457064f46106ac791ae`.
+- 4.1 final exit code 0: Linux portable suite 149/149 with zero fail/skip; deterministic candidate remained 22 entries,
+  85,533 bytes and SHA-256 `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`.
+- B–E completed under the unchanged markerless-legacy no-live prompts; the maintainer supplied only partial summarized output, so
+  this record does not invent omitted per-marker text.
+- 9.1 final exit code 0: healthy managed doctor, authoritative bundle/install inventory, four pristine upstream files,
+  adapter-only policy, zero snapshot residue and `PWF_SC_POST_RESUME=PASS` on the same exact HEAD.
+- Synced acceptance, programme, history and active planning to `F3A_COMPLETE`; stopped before F3B/F3C and any real state creation.
+- The first post-sync focused run in the restricted Windows harness reproduced the known child-process `status=null` limitation for
+  Python/Git/Bash calls. No product assertion returned a nonzero child exit; routed the exact files to the permitted local runner.
+- The permitted run proved F3A tests 5/5, then exposed two stale repository-governance expectations left at the pre-Cloud state.
+  Updated only the F3A programme phrase and current exact-evidence heading; the exact-evidence placement guard remains fail closed.
+- Final focused rerun passed: F3A 5/5 and repository governance 9/9. Full Windows regression exited 0 with 157 tests,
+  134 pass, 0 fail and 23 honest POSIX skips; `git diff --check` passed. The Cloud portable 149/149 count correctly excludes
+  publication-only oracle coverage and therefore does not conflict with the full local count.

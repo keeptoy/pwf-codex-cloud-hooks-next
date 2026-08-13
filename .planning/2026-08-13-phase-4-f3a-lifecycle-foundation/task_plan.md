@@ -18,8 +18,8 @@ activation state、不运行 live Cloud lifecycle，也不执行 rollback。
 
 ## Next Step
 
-完成 F3A source/repository foundation、本地完整验证和本地 commit；随后停止并等待维护者执行 Linux/Source-Candidate
-no-live gate。该 gate PASS 后仍须再次停下，只有新的明确授权才能进入 F3B live lifecycle。
+F3A source/repository foundation、本地验证与 Linux/Source-Candidate no-live gate 已全部闭合。当前唯一 Next Step 是停止，
+等待维护者决定是否授权独立 F3B live lifecycle；在新授权前不得创建真实 preparation/activation state。
 
 ## Phases
 
@@ -30,6 +30,7 @@ no-live gate。该 gate PASS 后仍须再次停下，只有新的明确授权才
 | A2 Prepare/verify and runbook | completed | smart/autonomous preparation、activation-only relation、disarm 与 evidence schema 可执行；不依赖 shipped writer |
 | A3 Local verification and authority sync | completed | focused/full suite、syntax/import/hash/build checks通过；ROADMAP/acceptance/current planning一致 |
 | A4 Local commit and stop | completed | 单一 F3A commit 完成；明确停在 Linux/no-live 与 F3B 之前 |
+| A5 Linux/Source-Candidate no-live acceptance | completed | exact HEAD、Linux 零 skip、deterministic ZIP、B～E legacy 与 9.1 deep check 闭合；停止在 F3B 前 |
 
 ## Stop Conditions
 
@@ -50,7 +51,9 @@ no-live gate。该 gate PASS 后仍须再次停下，只有新的明确授权才
 | First full suite found the new F3A test module missing from DESIGN's test-to-capability reverse index | 1 | Added the required module row with its repository/Git/runbook boundary and platform scope; no product assertion failed. |
 | Combined auxiliary validation reached bootstrap syntax then Git Bash could not create its Windows sandbox signal pipe (`Win32 error 5`) | 1 | Importer/Python/Node checks before it passed; rerun the remaining Bash/Release/diff checks outside the restricted process sandbox and require an explicit final exit code. |
 | Test-only helper imported `owned-plan.py` without disabling bytecode and created `runtime/__pycache__`, tripping the existing no-cache guard | 1 | Invoke Python with `-B` plus `PYTHONDONTWRITEBYTECODE=1`; remove only the verified generated cache directory, then rerun focused/full suites. |
+| Post-Cloud status-sync focused run again returned `status=null` for Python/Git/Bash child processes in the restricted Windows harness | 1 | Classified as the already-known local process sandbox limitation, not an assertion failure; rerun the exact focused files with child-process permission and require a final exit code. |
+| First permitted post-sync repository-governance run retained two pre-PASS expectations (`F3A` local-only wording and `F2B` as current evidence heading) | 1 | Updated the assertions to the new F3A programme/evidence boundary while preserving the no-evidence-before-heading rule. |
 
 ## Current status
 
-`F3A_LOCAL_COMPLETE / LINUX_SOURCE_CANDIDATE_NO_LIVE_PENDING / REAL_STATE_CREATION_FORBIDDEN / F3B_NOT_AUTHORIZED / F3C_NOT_AUTHORIZED`
+`F3A_COMPLETE / SOURCE_CANDIDATE_NO_LIVE_CLOUD_PASS / REAL_STATE_CREATION_FORBIDDEN / F3B_NOT_AUTHORIZED / F3C_NOT_AUTHORIZED`

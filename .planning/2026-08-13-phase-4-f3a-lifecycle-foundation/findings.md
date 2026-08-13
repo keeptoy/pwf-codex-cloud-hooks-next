@@ -56,3 +56,13 @@ complete Fresh/Resume/disarm/re-arm or that rollback is safe. Those conclusions 
   reviewed commit with an exact approved-profile prepared/armed closure, so later activation/disarm commits remain commit-point-only.
 - Version-specific runbook and acceptance pointers have explicit train-end retirement/migration conditions; Git relation tests and
   inactive/history denial remain while the supported lifecycle exists.
+
+## Linux / Source-Candidate no-live acceptance
+
+- Exact source `90d00de3f643defe566b1457064f46106ac791ae` completed the full no-live Source/Candidate sequence.
+- 4.1 exited 0 with 149/149 Linux tests, zero fail/skip, byte-identical 22-entry candidate ZIP (85,533 bytes,
+  `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`) and healthy override installation.
+- 9.1 exited 0 with healthy/non-repairable managed doctor, manifest-routed Release/bundle v2, 12 installed files, four pristine
+  upstream files, adapter-only policy and zero snapshot residue.
+- The maintainer confirmed the complete B–E no-live sequence; only the long raw marker transcript was omitted from the writeback.
+- This closes F3A only. It does not establish real prepare/activation/Fresh/Resume/disarm/re-arm or rollback evidence.
