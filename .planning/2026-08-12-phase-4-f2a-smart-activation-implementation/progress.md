@@ -79,3 +79,14 @@
 - Focused architecture/lifecycle verification now passes 16/16; embedded Python and all four Bash template blocks pass syntax checks.
 - Full local regression passed 146 tests: 128 pass, 0 fail and 18 honest Windows/POSIX skips. Importer, Python compile, Node syntax,
   bootstrap syntax and diff checks passed. P7 is locally complete; only same-run F2A Cloud evidence writeback remains before PASS.
+- Maintainer clarified that the mismatched deep-check HEAD came from the Cloud model automatically repairing the stale script and
+  creating a PR, not from an initially wrong candidate checkout. Classified this as an acceptance write-authority gap.
+- Started P8: replaced the self-reported protocol marker with manifest-routed facts; added a no-branch/commit/push/PR/auto-repair task
+  prefix; made C append-only with date + run ID; and made 9.1 require the exact four uncommitted canonical fixture paths while binding
+  its HEAD and candidate ZIP SHA to state saved by 4.1.
+- Applied the same fixture-only worktree oracle to Published 9.2 so the shared write-authority rule is machine-checked in both channels.
+- Added an isolated Git-repository test for the embedded worktree oracle: the exact four C changes pass, and one extra repository file
+  is rejected. Registered the new test module in DESIGN's reverse index.
+- P8 full local regression passed 147 tests: 129 pass, 0 fail and 18 honest Windows/POSIX skips. All four embedded Bash blocks and
+  eight embedded Python blocks compile; importer, owned Python compile, Node syntax, bootstrap syntax and diff checks pass. F2A stays
+  `CLOUD_ACCEPTANCE_PENDING` until the maintainer pushes this commit and returns a Fresh no-live Cloud run from one exact HEAD.

@@ -70,6 +70,20 @@ contract/test/oracle，不必把它提升为通用黑盒协议。
 模板里的 `__...__` 是 fail-closed 占位符。实际执行副本或命令开始运行前不得残留任何占位符；占位符和
 替换后的动态值只属于当次 Release task plan/执行环境，不写回稳定模板。
 
+### 0.4 Cloud task 验收权限前缀
+
+每个新 Cloud task 的第一条用户消息必须先带上下面这段权限前缀，再附该 task 对应的脚本或 B～E 提示词。它只
+冻结验收期间的仓库写权限，不禁止 setup 安装到受控 CODEX_HOME、在临时目录构建候选或执行只读检查：
+
+~~~text
+本轮是验收任务，不是开发或修复任务。禁止创建或切换 branch，禁止 commit、push、创建或更新 PR/Release，禁止调用任何会写远端的 GitHub 操作。发现脚本、文档、产品或环境问题时立即停止并原样报告，不得自行修复后继续记 PASS。
+
+除 Cloud hard acceptance 模板 C 段明确列出的 canonical planning fixture 与 .planning/.active_plan 外，不得修改仓库文件；C 段改动只保留在工作树，不得提交。不得修改 runtime、contracts、manifest、installer、builder、bootstrap 或其他候选/Release 输入。
+~~~
+
+同一 task 后续消息继续受该前缀约束。模型违反该边界、自动修复后 commit，或创建 PR，当前通道立即作废；不能用
+自动 PR 的新 HEAD 冒充原始 Source/Candidate checkout。
+
 ## 1. 双通道合同
 
 | 通道 | 身份来源 | 安装路径 | 证明范围 |
@@ -95,8 +109,9 @@ tagless checkout 不应伪造 remote/tag；Published Release 也不能使用 wor
 - Fresh 与 Resume 的 SessionStart source 不符合安装时序；
 - canonical plan、real Resume catch-up、tail marker或 canary/plan/catch-up 顺序不符合 current contract；markerless
   canonical fixture 的 completed/active 两个 legacy sentinel 未同时出现也属于失败；
-- post-resume deep check 没有输出 `PWF_DEEP_CHECK_PROTOCOL=MANIFEST_ROUTED_BUNDLE_V2`，或实际执行的是以前保存的
-  `/tmp`/聊天脚本而不是当前 checkout/template 中的 9.1/9.2；
+- 验收期间出现 branch/commit/push/PR/Release 写入、自动修复，或 C 段之外的仓库改动；
+- post-resume deep check 没有从 manifest 当前路由打印 release/bundle contract path、id、schema 和 installed root，
+  或实际执行的是以前保存的 `/tmp`/聊天脚本而不是当前 checkout/template 中的 9.1/9.2；
 - doctor 不健康、repairable、存在 error/blocker 或 snapshot residue；
 - Published 脚本仍有占位符，或者使用 moving URL、未校验字节、本地 override 或 checkout 工具。
 
@@ -150,6 +165,7 @@ set -Eeuo pipefail
 readonly REQUIRED_NODE_MAJOR="${PWF_ACCEPTANCE_NODE_MAJOR:-}"
 readonly TARGET_CODEX_HOME="${CODEX_HOME:-/opt/codex}"
 readonly PUBLICATION_ORACLE_SUITE="tests/published-release-oracles.test.js"
+readonly ACCEPTANCE_STATE="${TMPDIR:-/tmp}/pwf-source-candidate-acceptance.json"
 
 case "$REQUIRED_NODE_MAJOR" in
   ''|*[!0-9]*) printf 'Source/Candidate setup is blocked: PWF_ACCEPTANCE_NODE_MAJOR must be numeric\n' >&2; exit 64 ;;
@@ -159,6 +175,7 @@ PROBE_DIR="$(mktemp -d)"
 trap 'rm -rf -- "$PROBE_DIR"' EXIT
 
 test -z "$(git status --short)"
+test ! -e "$ACCEPTANCE_STATE"
 readonly RUNBOOK_HEAD="$(git rev-parse HEAD)"
 test "$(node -p 'process.versions.node.split(".")[0]')" = "$REQUIRED_NODE_MAJOR"
 git diff --check
@@ -283,6 +300,19 @@ fi
 HOOKS_URL="file://$ZIP_A" HOOKS_SHA256="$ACTUAL_ZIP_SHA256" bash "$BOOTSTRAP" all
 
 test -z "$(git status --short)"
+umask 077
+python3 - "$ACCEPTANCE_STATE" "$RUNBOOK_HEAD" "$ACTUAL_ZIP_SHA256" <<'PY'
+import json
+import os
+import sys
+
+path, head, zip_sha256 = sys.argv[1:]
+flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
+fd = os.open(path, flags, 0o600)
+with os.fdopen(fd, "w", encoding="utf-8") as output:
+    json.dump({"runbook_head": head, "candidate_zip_sha256": zip_sha256}, output, sort_keys=True)
+    output.write("\n")
+PY
 printf 'PWF_SC_RUNBOOK_HEAD=%s\n' "$RUNBOOK_HEAD"
 printf 'PWF_SC_LINUX_SUITE=PASS tests=%s pass=%s fail=0 skipped=0\n' "$TESTS" "$PASSES"
 printf 'PWF_SC_ZIP_ENTRIES=%s\n' "$EXPECTED_ENTRIES"
@@ -396,7 +426,8 @@ SessionStart 与 UserPromptSubmit 必须被观察到，SessionStart source 必�
 这是 planning-with-files canonical planning baseline 创建步骤。
 
 请使用 apply_patch：
-1. 创建 .planning/pwf-cloud-acceptance-v1/task_plan.md，内容必须按顺序包含：
+1. 为本轮生成一个新的 plan ID，格式必须是 YYYY-MM-DD-pwf-cloud-acceptance-v1-xxxxxxxx，其中日期使用当前 UTC 日期，xxxxxxxx 是本轮新生成的 8 位小写十六进制 run ID。以下用 PLAN_ID 表示这个具体值。只能用 apply_patch 的 Add File 创建新文件；如果目标目录或任一目标文件已经存在，立即停止并报告冲突，不得覆盖、删除或改用 Update File。
+2. 创建 .planning/PLAN_ID/task_plan.md，内容必须按顺序包含：
    # PWF_CLOUD_ACCEPTANCE_CANONICAL_V1
    ## Phases
    ### Phase 1
@@ -405,20 +436,20 @@ SessionStart 与 UserPromptSubmit 必须被观察到，SessionStart source 必�
    ### Phase 2
    **Status:** in_progress
    PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_ACTIVE_V1
-2. 创建同目录 progress.md，内容必须包含：
+3. 创建同目录 progress.md，内容必须包含：
    PWF Cloud acceptance baseline created by apply_patch.
-3. 创建同目录 findings.md，内容必须包含：
+4. 创建同目录 findings.md，内容必须包含：
    planning-with-files Cloud acceptance fixture.
-4. 不要创建或修改任何 .pwf-codex-managed、.mode 或其他 activation/profile 文件。
-5. 把 .planning/.active_plan 设置为：
-   pwf-cloud-acceptance-v1
-6. 完成后只回复：
-   PWF_CLOUD_ACCEPTANCE_BASELINE_CREATED
+5. 不要创建或修改任何 .pwf-codex-managed、.mode 或其他 activation/profile 文件。
+6. 只允许更新 .planning/.active_plan，使其内容为本轮具体 PLAN_ID。不要修改任何其他仓库文件，不要 commit、push 或创建 PR。
+7. 完成后只回复一行，并把占位符替换为本轮具体值：
+   PWF_CLOUD_ACCEPTANCE_BASELINE_CREATED plan_id=PLAN_ID
 ~~~
 
 必须实际产生 structured planning update，并收到精确 acknowledgment。这个 fixture 故意保持 markerless：completed
 与 active 两个 sentinel 在后续同时出现，才证明默认 profile 仍是 legacy；若只出现 active sentinel，必须按 profile
-漂移停止，不能把它解释为更聪明的等价输出。
+漂移停止，不能把它解释为更聪明的等价输出。日期前缀与 upstream slug-mode 习惯一致，8 位 run ID 才负责避免
+同一天循环验收发生目录碰撞；production resolver 仍兼容合法的无日期历史 plan ID。
 
 <a name="blackbox-canonical-context"></a>
 
@@ -525,17 +556,55 @@ upstream CLI `main()` 由 source/inventory assertions 和 portable negative suit
 ### 9.1 Source/Candidate
 
 E2 完成后，只在 Source/Candidate 的精确 checkout 运行。必须从当前 checkout 的本节重新取得脚本，不得复用以前
-保存的 `/tmp/post-resume.sh`、聊天片段或旧版本 acceptance 副本：
+保存的 `/tmp/post-resume.sh`、聊天片段或旧版本 acceptance 副本。只执行并报告；任何失败都不得自动修改、commit
+或创建 PR：
 
 ~~~bash
 set -Eeuo pipefail
 
 PACKAGE_ROOT="$(git rev-parse --show-toplevel)"
 RUNBOOK_HEAD="$(git rev-parse HEAD)"
+ACCEPTANCE_STATE="${TMPDIR:-/tmp}/pwf-source-candidate-acceptance.json"
 TARGET_CODEX_HOME="${CODEX_HOME:-/opt/codex}"
 SKILL_ROOT="$HOME/.agents/skills/planning-with-files"
 REQUIREMENTS="/etc/codex/requirements.toml"
-test -z "$(git status --short)"
+test -f "$ACCEPTANCE_STATE"
+
+python3 - "$PACKAGE_ROOT" <<'PY'
+import pathlib
+import re
+import subprocess
+import sys
+
+root = pathlib.Path(sys.argv[1])
+active = root / ".planning" / ".active_plan"
+plan_id = active.read_text(encoding="utf-8").strip()
+assert re.fullmatch(r"\d{4}-\d{2}-\d{2}-pwf-cloud-acceptance-v1-[0-9a-f]{8}", plan_id)
+plan = root / ".planning" / plan_id
+
+expected = {
+    ".planning/.active_plan": " M",
+    f".planning/{plan_id}/task_plan.md": "??",
+    f".planning/{plan_id}/progress.md": "??",
+    f".planning/{plan_id}/findings.md": "??",
+}
+raw = subprocess.run(
+    ["git", "-C", str(root), "status", "--porcelain=v1", "-z", "--untracked-files=all"],
+    check=True,
+    stdout=subprocess.PIPE,
+).stdout.decode("utf-8")
+actual = {record[3:]: record[:2] for record in raw.split("\0") if record}
+assert actual == expected
+
+task = (plan / "task_plan.md").read_text(encoding="utf-8")
+assert "PWF_CLOUD_ACCEPTANCE_CANONICAL_V1" in task
+assert "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_COMPLETED_V1" in task
+assert "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_ACTIVE_V1" in task
+assert not (plan / ".pwf-codex-managed").exists()
+assert not (plan / ".mode").exists()
+print("PWF_CANONICAL_WORKTREE=EXACT_FIXTURE_ONLY")
+print("PWF_CANONICAL_PLAN_ID=" + plan_id)
+PY
 
 DOCTOR_JSON="$(node "$PACKAGE_ROOT/install.js" doctor --json \
   --codex-home "$TARGET_CODEX_HOME" \
@@ -543,10 +612,12 @@ DOCTOR_JSON="$(node "$PACKAGE_ROOT/install.js" doctor --json \
   --managed-requirements "$REQUIREMENTS")"
 printf '%s\n' "$DOCTOR_JSON"
 
-python3 - "$DOCTOR_JSON" "$PACKAGE_ROOT" "$TARGET_CODEX_HOME" "$SKILL_ROOT" "$REQUIREMENTS" <<'PY'
+python3 - "$DOCTOR_JSON" "$PACKAGE_ROOT" "$TARGET_CODEX_HOME" "$SKILL_ROOT" "$REQUIREMENTS" "$ACCEPTANCE_STATE" "$RUNBOOK_HEAD" <<'PY'
 import hashlib
 import json
+import os
 import pathlib
+import stat
 import sys
 import tomllib
 
@@ -555,12 +626,27 @@ package_root = pathlib.Path(sys.argv[2])
 codex_home = pathlib.Path(sys.argv[3])
 skill_root = pathlib.Path(sys.argv[4])
 requirements_path = pathlib.Path(sys.argv[5])
+acceptance_state_path = pathlib.Path(sys.argv[6])
+runbook_head = sys.argv[7]
+
+state_stat = acceptance_state_path.stat(follow_symlinks=False)
+assert stat.S_ISREG(state_stat.st_mode)
+assert state_stat.st_uid == os.getuid()
+assert stat.S_IMODE(state_stat.st_mode) == 0o600
+assert state_stat.st_nlink == 1
+acceptance_state = json.loads(acceptance_state_path.read_text(encoding="utf-8"))
+assert set(acceptance_state) == {"runbook_head", "candidate_zip_sha256"}
+assert acceptance_state["runbook_head"] == runbook_head
+assert len(acceptance_state["candidate_zip_sha256"]) == 64
+assert all(char in "0123456789abcdef" for char in acceptance_state["candidate_zip_sha256"])
 
 package = json.loads((package_root / "package.json").read_text(encoding="utf-8"))
 upstream_manifest = json.loads((package_root / "upstream-manifest.json").read_text(encoding="utf-8"))
 contracts = upstream_manifest["managed_runtime"]["contracts"]
-artifact = json.loads((package_root / contracts["release_artifact"]["path"]).read_text(encoding="utf-8"))
-bundle = json.loads((package_root / contracts["runtime_bundle"]["path"]).read_text(encoding="utf-8"))
+artifact_path = contracts["release_artifact"]["path"]
+bundle_path = contracts["runtime_bundle"]["path"]
+artifact = json.loads((package_root / artifact_path).read_text(encoding="utf-8"))
+bundle = json.loads((package_root / bundle_path).read_text(encoding="utf-8"))
 
 assert artifact["package_version"] == package["version"]
 assert artifact["entries"]
@@ -633,7 +719,15 @@ for event in ("SessionStart", "UserPromptSubmit"):
     assert "session-catchup.py" not in command
 
 print("POST_RESUME_DOCTOR=PASS")
-print("PWF_DEEP_CHECK_PROTOCOL=MANIFEST_ROUTED_BUNDLE_V2")
+print("PWF_DEEP_CHECK_MANIFEST_SCHEMA=" + str(upstream_manifest["schema_version"]))
+print("PWF_DEEP_CHECK_RELEASE_CONTRACT_PATH=" + artifact_path)
+print("PWF_DEEP_CHECK_RELEASE_CONTRACT_ID=" + artifact["contract_id"])
+print("PWF_DEEP_CHECK_RELEASE_SCHEMA=" + str(artifact["schema_version"]))
+print("PWF_DEEP_CHECK_BUNDLE_CONTRACT_PATH=" + bundle_path)
+print("PWF_DEEP_CHECK_BUNDLE_CONTRACT_ID=" + bundle["contract_id"])
+print("PWF_DEEP_CHECK_BUNDLE_SCHEMA=" + str(bundle["schema_version"]))
+print("PWF_DEEP_CHECK_INSTALLED_ROOT=" + bundle["roots"]["installed"])
+print("PWF_DEEP_CHECK_CANDIDATE_ZIP_SHA256=" + acceptance_state["candidate_zip_sha256"])
 print("INSTALLER_VERSION=" + package["version"])
 print("RELEASE_ARTIFACT_ENTRIES=" + str(len(artifact["entries"])))
 print("INSTALLED_RUNTIME_FILES=" + str(len(actual)))
@@ -666,6 +760,7 @@ set -Eeuo pipefail
 
 readonly ZIP_URL="__IMMUTABLE_ZIP_URL__"
 readonly ZIP_SHA256="__IMMUTABLE_ZIP_SHA256__"
+WORKSPACE_ROOT="$(git rev-parse --show-toplevel)"
 
 case "$ZIP_URL$ZIP_SHA256" in
   *__*) printf 'Published deep check is blocked: immutable ZIP inputs are unresolved\n' >&2; exit 64 ;;
@@ -678,6 +773,42 @@ test "${#ZIP_SHA256}" -eq 64
 case "$ZIP_SHA256" in
   *[!0-9a-f]*) printf 'Published deep check requires a lowercase SHA-256\n' >&2; exit 64 ;;
 esac
+
+python3 - "$WORKSPACE_ROOT" <<'PY'
+import pathlib
+import re
+import subprocess
+import sys
+
+root = pathlib.Path(sys.argv[1])
+active = root / ".planning" / ".active_plan"
+plan_id = active.read_text(encoding="utf-8").strip()
+assert re.fullmatch(r"\d{4}-\d{2}-\d{2}-pwf-cloud-acceptance-v1-[0-9a-f]{8}", plan_id)
+plan = root / ".planning" / plan_id
+
+expected = {
+    ".planning/.active_plan": " M",
+    f".planning/{plan_id}/task_plan.md": "??",
+    f".planning/{plan_id}/progress.md": "??",
+    f".planning/{plan_id}/findings.md": "??",
+}
+raw = subprocess.run(
+    ["git", "-C", str(root), "status", "--porcelain=v1", "-z", "--untracked-files=all"],
+    check=True,
+    stdout=subprocess.PIPE,
+).stdout.decode("utf-8")
+actual = {record[3:]: record[:2] for record in raw.split("\0") if record}
+assert actual == expected
+
+task = (plan / "task_plan.md").read_text(encoding="utf-8")
+assert "PWF_CLOUD_ACCEPTANCE_CANONICAL_V1" in task
+assert "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_COMPLETED_V1" in task
+assert "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_ACTIVE_V1" in task
+assert not (plan / ".pwf-codex-managed").exists()
+assert not (plan / ".mode").exists()
+print("PWF_CANONICAL_WORKTREE=EXACT_FIXTURE_ONLY")
+print("PWF_CANONICAL_PLAN_ID=" + plan_id)
+PY
 
 VERIFY_DIR="$(mktemp -d)"
 trap 'rm -rf -- "$VERIFY_DIR"' EXIT
@@ -781,7 +912,14 @@ for event in ("SessionStart", "UserPromptSubmit"):
 
 print("PUBLIC_PACKAGE_IDENTITY=" + package_version)
 print("POST_RESUME_DOCTOR=PASS")
-print("PWF_DEEP_CHECK_PROTOCOL=MANIFEST_ROUTED_BUNDLE_V2")
+print("PWF_DEEP_CHECK_MANIFEST_SCHEMA=" + str(upstream_manifest["schema_version"]))
+print("PWF_DEEP_CHECK_RELEASE_CONTRACT_PATH=" + contracts["release_artifact"]["path"])
+print("PWF_DEEP_CHECK_RELEASE_CONTRACT_ID=" + artifact["contract_id"])
+print("PWF_DEEP_CHECK_RELEASE_SCHEMA=" + str(artifact["schema_version"]))
+print("PWF_DEEP_CHECK_BUNDLE_CONTRACT_PATH=" + contracts["runtime_bundle"]["path"])
+print("PWF_DEEP_CHECK_BUNDLE_CONTRACT_ID=" + bundle["contract_id"])
+print("PWF_DEEP_CHECK_BUNDLE_SCHEMA=" + str(bundle["schema_version"]))
+print("PWF_DEEP_CHECK_INSTALLED_ROOT=" + bundle["roots"]["installed"])
 print("RELEASE_ARTIFACT_ENTRIES=" + str(len(artifact["entries"])))
 print("INSTALLED_RUNTIME_FILES=" + str(len(actual)))
 print("UPSTREAM_PRISTINE_FILES=" + str(len(bundle["upstream_files"])))

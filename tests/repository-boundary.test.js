@@ -165,12 +165,37 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
     "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_COMPLETED_V1",
     "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_ACTIVE_V1",
   ]) {
-    assert.equal((acceptanceTemplate.match(new RegExp(sentinel, "g")) || []).length, 3,
-      `${sentinel} must remain in canonical creation, UserPromptSubmit, and real Resume`);
+    for (const section of [
+      acceptanceTemplate.slice(acceptanceTemplate.indexOf("## 6. C"), acceptanceTemplate.indexOf("## 7. D")),
+      acceptanceTemplate.slice(acceptanceTemplate.indexOf("## 7. D"), acceptanceTemplate.indexOf("## 8. E")),
+      acceptanceTemplate.slice(acceptanceTemplate.indexOf("### 8.2 E2"), acceptanceTemplate.indexOf("## 9. Post-resume")),
+    ]) assert.match(section, new RegExp(sentinel), `${sentinel} must remain in C, D, and E2`);
   }
   assert.match(acceptanceTemplate, /不要创建或修改任何 \.pwf-codex-managed、\.mode/);
-  assert.equal((acceptanceTemplate.match(/PWF_DEEP_CHECK_PROTOCOL=MANIFEST_ROUTED_BUNDLE_V2/g) || []).length, 3,
-    "deep-check protocol must remain a hard stop plus Source/Candidate and Published outputs");
+  assert.match(acceptanceTemplate, /禁止创建或切换 branch，禁止 commit、push、创建或更新 PR\/Release/);
+  assert.match(acceptanceTemplate, /C 段改动只保留在工作树，不得提交/);
+  assert.match(acceptanceTemplate, /YYYY-MM-DD-pwf-cloud-acceptance-v1-xxxxxxxx/);
+  assert.match(acceptanceTemplate, /PWF_CLOUD_ACCEPTANCE_BASELINE_CREATED plan_id=PLAN_ID/);
+  assert.equal((acceptanceTemplate.match(/PWF_CANONICAL_WORKTREE=EXACT_FIXTURE_ONLY/g) || []).length, 2,
+    "both deep-check channels must enforce fixture-only repository writes");
+  assert.match(acceptanceTemplate, /PWF_DEEP_CHECK_CANDIDATE_ZIP_SHA256/);
+  assert.doesNotMatch(acceptanceTemplate, /PWF_DEEP_CHECK_PROTOCOL=MANIFEST_ROUTED_BUNDLE_V2/);
+  for (const fact of [
+    "PWF_DEEP_CHECK_MANIFEST_SCHEMA",
+    "PWF_DEEP_CHECK_RELEASE_CONTRACT_PATH",
+    "PWF_DEEP_CHECK_RELEASE_CONTRACT_ID",
+    "PWF_DEEP_CHECK_RELEASE_SCHEMA",
+    "PWF_DEEP_CHECK_BUNDLE_CONTRACT_PATH",
+    "PWF_DEEP_CHECK_BUNDLE_CONTRACT_ID",
+    "PWF_DEEP_CHECK_BUNDLE_SCHEMA",
+    "PWF_DEEP_CHECK_INSTALLED_ROOT",
+  ]) {
+    assert.equal((acceptanceTemplate.match(new RegExp(fact, "g")) || []).length, 2,
+      `${fact} must be emitted by both deep-check channels`);
+  }
+  assert.match(acceptanceTemplate, /acceptance_state\["runbook_head"\] == runbook_head/);
+  assert.match(acceptanceTemplate, /os\.O_WRONLY \| os\.O_CREAT \| os\.O_EXCL/);
+  assert.doesNotMatch(acceptanceTemplate, /^\. "\$ACCEPTANCE_STATE"$/m);
   assert.match(acceptanceTemplate, /bundle\["roots"\]\["installed"\]/);
   assert.equal((acceptanceTemplate.match(/for section in \("upstream_files", "local_files", "installed_contracts"\):/g) || []).length, 4,
     "both deep checks must derive inventory and hashes from all v2 bundle partitions");
@@ -316,13 +341,14 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, /F1A contract\/source foundation[^\n]*`PASS`/);
   assert.match(acceptance, /F1B inactive runtime foundation[^\n]*`PASS`/);
   assert.match(acceptance, /F2A local implementation[^\n]*`PASS`/);
-  assert.match(acceptance, /F2A Source\/Candidate\/no-live Cloud[^\n]*`CURRENT \/ EVIDENCE_WRITEBACK_PENDING`/);
+  assert.match(acceptance, /F2A Source\/Candidate\/no-live Cloud[^\n]*`CURRENT \/ CLOUD_ACCEPTANCE_PENDING`/);
   assert.equal((acceptance.match(/`NOT_AUTHORIZED`/g) || []).length, 2);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f2a-acceptance-delta"><\/a>$/m);
-  assert.match(acceptance, /F2A 9\.1 test-harness deviation 与通过结果/);
+  assert.match(acceptance, /F2A test-harness deviation 与协议修正/);
   assert.match(acceptance, /stale external acceptance script/);
-  assert.match(acceptance, /PWF_DEEP_CHECK_PROTOCOL=MANIFEST_ROUTED_BUNDLE_V2/);
-  assert.match(acceptance, /9\.1 本步骤通过/);
+  assert.match(acceptance, /不作为最终 exact F2A gate 封账/);
+  assert.match(acceptance, /manifest 当前路由打印 release\/bundle contract/);
+  assert.doesNotMatch(acceptance, /PWF_DEEP_CHECK_PROTOCOL=MANIFEST_ROUTED_BUNDLE_V2|9\.1 本步骤通过/);
   for (const fragment of [
     "source-candidate-sequence", "source-candidate-setup", "source-candidate-deep-check",
     "blackbox-canonical-baseline", "blackbox-canonical-context", "blackbox-real-resume",

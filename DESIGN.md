@@ -145,6 +145,7 @@ trusted surface；allowed helper roots、传递闭包和 pristine/managed 等价
 | 测试文件 | 主要保护内容 | 直接对象/边界 | 平台属性 |
 |---|---|---|---|
 | [`activation.test.js`](tests/activation.test.js) | production 事件顺序、plan/catch-up 组合和 child failure 降级 | adapter 与两个 owned runtime 的集成 seam | 组合断言跨平台；真实 runtime/cross-user case 需要 Linux |
+| [`acceptance-template.test.js`](tests/acceptance-template.test.js) | Cloud 验收模板的 repository write authority 与 canonical fixture-only worktree oracle | 9.1/9.2 deep-check、Git worktree、C 段唯一 fixture | 跨平台隔离 Git 仓库；不替代 live Cloud gate |
 | [`architecture-contracts.test.js`](tests/architecture-contracts.test.js) | 版本无关的文档 authority、稳定锚点、Architecture/Design 分工和 handoff 治理 | 根级稳定文档与 machine/architecture 边界；不得冻结版本 acceptance、commit 或资产 hash | 跨平台静态治理 |
 | [`cloud-fixtures.test.js`](tests/cloud-fixtures.test.js) | 带日期 Cloud lifecycle/Hook fixture 与 wrapper catch-up 兼容性 | Cloud-shaped fixture、owned catch-up | 跨平台重放；不替代 live Cloud gate |
 | [`contracts.test.js`](tests/contracts.test.js) | schema、manifest、overlay、runtime bundle 与 Release boundary 的关系 | machine contracts 与 integrity edges | 跨平台静态/关系断言 |

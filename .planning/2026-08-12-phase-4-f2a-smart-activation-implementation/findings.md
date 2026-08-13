@@ -91,3 +91,18 @@
 - The Cloud feedback still exposed useful defense-in-depth: deep checks should derive the install root from `bundle.roots.installed`,
   verify every upstream/local/contract installed byte against the correct v2 hash key, and emit an exact protocol marker plus source
   HEAD so stale `/tmp` scripts cannot be mistaken for the current runbook.
+
+## Acceptance write-authority correction
+
+- The reported `96119dd` candidate versus later deep-check HEAD was explained by the Cloud model automatically fixing the stale
+  script and creating a PR. The product checkout was not initially wrong; the acceptance task had granted an implicit repair path.
+- A no-PR note must also forbid branch, commit, push and automatic repair. Otherwise a local commit still advances HEAD and hides the
+  canonical fixture from the dirty-worktree evidence.
+- C intentionally modifies `.planning/.active_plan` and creates three fixture files, so the old 9.1 clean-worktree assertion was
+  incompatible with a correct no-commit run. 9.1 must accept exactly those four paths and reject every other repository mutation.
+- A fixed `pwf-cloud-acceptance-v1` directory is not invalid—the resolver intentionally supports legacy undated slugs—but it collides
+  on repeated runs. UTC date plus an 8-hex run ID follows upstream naming practice and makes each fixture append-only.
+- A protocol slogan only proves that a script printed the slogan. Better evidence is the manifest-routed contract path/id/schema,
+  installed root, exact Source HEAD and candidate ZIP SHA. Exact v2 structural assertions remain legitimate consumer contract checks.
+- Cross-task identity state must remain data, not executable shell. The setup therefore creates a 0600 JSON file with `O_EXCL`; 9.1
+  checks regular-file type, current uid, exact mode, single link, exact keys and values before consuming it.
