@@ -43,7 +43,7 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 | Phase 4.3 | F1 foundation 实施规划里程碑：冻结 F0/F1A/F1B 文件与 authority、hash 传播、failing-first/platform gates、对象级迁移生命周期总账，并把 v0.3.5 forward migration 与 candidate-controlled rollback 明确为非对称合同；不表示 implementation 已授权或完成 | [`phase-4.3-f1-foundation-implementation-plan.md`](phase-4.3-f1-foundation-implementation-plan.md) |
 | Phase 4.4 | F2A smart activation Discovery 里程碑：选择独立 managed commit point、upstream profile 分区、two-pass state revalidation、schema-v2 reuse 与 F2A/F3 验收分工；里程碑本身为 conditional-go，后继实现状态与逐 seam 生命周期冷对账只见其尾注，current 状态仍只见 current authority | [`phase-4.4-f2a-smart-activation-discovery.md`](phase-4.4-f2a-smart-activation-discovery.md) |
 | Phase 4.5 | F2B autonomous activation Discovery 里程碑：冻结 profile-bound commit point、owned attestation/nonce/ledger admission、Git-backed 首选与 same-chat 备选 Cloud consent 路线、版本失败切换和现有不可达 seam 兜底；原结论为 conditional-go，后继本地实现、设计差异与对象生命周期对账只见文件尾注，不把 F3/Cloud opt-in 写成已验收 | [`phase-4.5-f2b-autonomous-activation-discovery.md`](phase-4.5-f2b-autonomous-activation-discovery.md) |
-| Phase 4.6 | F3 Cloud lifecycle Discovery 里程碑：选择 Git-backed preparation/activation-only commits，冻结 frozen-plan、active-scope state governance、disarm-first rollback 与 F3A/F3B/F3C 分门；结论只 conditional-go 到 F3A，不表示 live activation 已授权或验收 | [`phase-4.6-f3-cloud-lifecycle-discovery.md`](phase-4.6-f3-cloud-lifecycle-discovery.md) |
+| Phase 4.6 | F3 Cloud lifecycle Discovery 里程碑：选择 Git-backed preparation/activation-only commits，冻结 frozen-plan、active-scope state governance、disarm-first rollback 与 F3A/F3B/F3C 分门；原结论只 conditional-go 到 F3A，后继 F3A 本地实施与生命周期对账只见文件尾注，不表示 live activation 已授权或验收 | [`phase-4.6-f3-cloud-lifecycle-discovery.md`](phase-4.6-f3-cloud-lifecycle-discovery.md) |
 
 ## 阅读方式
 

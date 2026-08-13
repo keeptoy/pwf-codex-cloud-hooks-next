@@ -38,6 +38,10 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   和 nonce，严格限制 ledger 文件数、单项/总字节与 JSONL record，再只向 private snapshot 投影 `tick/event`；零 ledger
   合法，raw progress 不读取，invalid/incomplete/raced state 不注入且不回退。`gate`、workspace writer、Host event 和
   Release inventory 保持不变；真实 Cloud activation/disarm/Resume/cache 仍待 F3。
+- F3A 增加 repository-only active-scope machine-state admission 与版本化 Git-backed lifecycle runbook：inactive/history
+  scope继续只允许三份 planning 记录，smart/autonomous preparation、activation-only commit、production read-only probe
+  与 disarm-only commit均有 fail-closed检查。production/runtime、managed trusted graph、Release inventory和当前四项
+  pristine upstream inventory不变；真实 Cloud activation、Fresh/Resume、cache、re-arm 与 rollback仍须后继独立 gate。
 
 ## v0.3.5
 

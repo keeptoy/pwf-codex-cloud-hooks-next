@@ -5,12 +5,12 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const test = require("node:test");
+const { validatePlanningScopes } = require("./f3-lifecycle-helpers");
 
 const root = path.resolve(__dirname, "..");
 const read = relative => fs.readFileSync(path.join(root, relative), "utf8");
 const trustedPrefixes = ["contracts/", "hooks/", "patches/", "runtime/", "tools/"];
 const trustedRootPaths = new Set(["install.js", "package.json", "upstream-manifest.json"]);
-const planningFiles = ["findings.md", "progress.md", "task_plan.md"];
 const versionPattern = "v\\d+\\.\\d+\\.\\d+(?:-[A-Za-z0-9.]+)?";
 const currentManifest = JSON.parse(read("upstream-manifest.json"));
 const currentArtifactPath = currentManifest.managed_runtime.contracts.release_artifact.path;
@@ -57,8 +57,8 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap, /F1 foundation[^\n]*complete/);
   assert.match(roadmap, /F2A[^\n]*Cloud PASS/);
   assert.match(roadmap, /F2B[^\n]*Source\/Candidate Cloud PASS/);
-  assert.match(roadmap, /F3 Discovery conditional-go 到 F3A/);
-  assert.match(roadmap, /F3A[^\n]*未授权/);
+  assert.match(roadmap, /F3A lifecycle foundation 已完成本地实施/);
+  assert.match(roadmap, /F3B\/F3C 未授权/);
 });
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
@@ -76,6 +76,7 @@ test("trusted source zones are exact while repository governance paths remain li
   for (const required of [
     "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
     "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "docs/cloud-hard-acceptance-template.md",
+    "docs/v0.4.0-dev-f3-cloud-lifecycle-runbook.md",
     "docs/repository-governance-guide.md",
   ]) {
     assert.equal(actual.includes(required), true, required);
@@ -98,21 +99,10 @@ test("trusted source zones are exact while repository governance paths remain li
 test("planning lifecycle has one valid active pointer and complete scoped records", () => {
   const actual = repositoryPaths();
   const activePlan = read(".planning/.active_plan").trim();
-  const scopeFiles = new Map();
 
   assert.match(activePlan, /^\d{4}-\d{2}-\d{2}-[a-z0-9][a-z0-9.-]*$/);
-  for (const relative of actual.filter(item => item.startsWith(".planning/") && item !== ".planning/.active_plan")) {
-    const match = relative.match(/^\.planning\/(\d{4}-\d{2}-\d{2}-[a-z0-9][a-z0-9.-]*)\/(findings\.md|progress\.md|task_plan\.md)$/);
-    assert.ok(match, `unexpected planning lifecycle path: ${relative}`);
-    const [, scope, file] = match;
-    if (!scopeFiles.has(scope)) scopeFiles.set(scope, []);
-    scopeFiles.get(scope).push(file);
-  }
-
-  assert.equal(scopeFiles.has(activePlan), true, `active planning scope is not tracked: ${activePlan}`);
-  for (const [scope, files] of scopeFiles) {
-    assert.deepEqual(files.sort(), [...planningFiles].sort(), `incomplete planning scope: ${scope}`);
-  }
+  assert.equal(validatePlanningScopes(root, activePlan, actual), "legacy",
+    "the repository's real active planning scope must remain markerless during F3A");
 
   const activeTask = read(`.planning/${activePlan}/task_plan.md`);
   for (const heading of ["Authorization", "Next Step", "Stop Conditions"]) {
@@ -348,8 +338,11 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, /F2B local autonomous implementation[^\n]*`PASS`/);
   assert.match(acceptance, /F2B Source\/Candidate\/no-live Cloud[^\n]*`PASS`/);
   assert.match(acceptance, /F3 Discovery[^\n]*`CONDITIONAL_GO_TO_F3A`/);
-  assert.match(acceptance, /F3A lifecycle foundation[^\n]*`NOT_AUTHORIZED`/);
+  assert.match(acceptance, /F3A local lifecycle foundation[^\n]*`PASS`/);
+  assert.match(acceptance, /F3A Source\/Candidate\/no-live Cloud[^\n]*`CURRENT \/ CLOUD_ACCEPTANCE_PENDING`/);
   assert.match(acceptance, /F3B live lifecycle \/ F3C rollback[^\n]*`NOT_AUTHORIZED`/);
+  assert.match(acceptance, /^<a name="v0-4-0-dev-f3a-acceptance-delta"><\/a>$/m);
+  assert.match(acceptance, /本增量没有改写通用 B～E 提示词或 9\.1 deep-check 脚本/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f2a-acceptance-delta"><\/a>$/m);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f2b-source-candidate-evidence"><\/a>$/m);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f2a-source-candidate-evidence"><\/a>$/m);
