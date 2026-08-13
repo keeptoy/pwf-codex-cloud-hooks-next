@@ -113,7 +113,7 @@ test("UserPromptSubmit emits event canary and authoritative owned plan context",
   } finally { fs.rmSync(layout.workspace, { recursive: true, force: true }); }
 });
 
-test("adapter advertises smart capability and accepts a requested smart result", () => {
+test("adapter advertises smart and autonomous capabilities and accepts requested results", () => {
   const layout = projectFixture();
   const capture = path.join(layout.workspace, "plan-request.json");
   try {
@@ -124,7 +124,7 @@ test("adapter advertises smart capability and accepts a requested smart result",
     });
     assert.equal(result.status, 0, result.stderr);
     const request = JSON.parse(fs.readFileSync(capture, "utf8"));
-    assert.deepEqual(request.policy.allowed_profiles, ["legacy", "smart"]);
+    assert.deepEqual(request.policy.allowed_profiles, ["legacy", "smart", "autonomous"]);
     assert.match(result.json.hookSpecificOutput.additionalContext, /OWNED_SMART_CONTEXT/);
   } finally { fs.rmSync(layout.workspace, { recursive: true, force: true }); }
 });

@@ -117,18 +117,19 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.equal(artifact.entries.some(item => item.path === "patches/patch_planning_skill.py"), false);
   assert.match(ownedPlan, /def capture_owned_state\(/);
   assert.equal((ownedPlan.match(/capture_owned_state\(/g) || []).length, 2,
-    "F2A production must call the one managed state admission seam");
+    "F2B production must call the one managed state admission seam");
   assert.match(ownedPlan, /ACTIVATION_FILE = "\.pwf-codex-managed"/);
   assert.match(ownedPlan, /revalidate_owned_state\(plan_fd, owned_state\)/);
-  assert.doesNotMatch(ownedPlan, /\.nonce|attestation|ledger/,
-    "F2A owned-plan must not acquire F2B state readers");
+  assert.match(ownedPlan, /NONCE_FILE = "\.nonce"/);
+  assert.match(ownedPlan, /ATTESTATION_FILE = "\.attestation"/);
+  assert.match(ownedPlan, /def capture_normalized_ledgers\(/);
 
   const adapter = readText("hooks/hook_adapter.py");
   assert.match(adapter, /"plan": "owned-plan\.py"/);
   assert.match(adapter, /def build_plan_context_request\(/);
   assert.match(adapter, /def _valid_plan_context_result\(/);
   assert.match(adapter, /def invoke_plan_runtime\(/);
-  assert.match(adapter, /"allowed_profiles": \["legacy", "smart"\]/);
+  assert.match(adapter, /"allowed_profiles": \["legacy", "smart", "autonomous"\]/);
   assert.match(adapter, /ADAPTER_DEADLINE_SECONDS = 27\.0/);
   assert.match(adapter, /CATCHUP_SECONDS = 15\.0/);
   assert.match(adapter, /FINALIZATION_RESERVE_SECONDS = 1\.0/);

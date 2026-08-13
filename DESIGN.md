@@ -93,7 +93,7 @@ trusted surface；allowed helper roots、传递闭包和 pristine/managed 等价
 
 | 接口/清单 | Machine authority | 谁必须一起复核 |
 |---|---|---|
-| adapter → plan request | [`adapter-plan-context-request-v2.schema.json`](contracts/adapter-plan-context-request-v2.schema.json) | adapter producer、owned-plan consumer、两侧 seam tests；F2A producer 精确允许 `legacy, smart` |
+| adapter → plan request | [`adapter-plan-context-request-v2.schema.json`](contracts/adapter-plan-context-request-v2.schema.json) | adapter producer、owned-plan consumer、两侧 seam tests；F2B producer 精确允许 `legacy, smart, autonomous` |
 | plan → adapter result | [`plan-context-result-v2.schema.json`](contracts/plan-context-result-v2.schema.json) | owned-plan producer、adapter validator、activation tests；profile/advisory 只传 bounded decision |
 | adapter → catch-up request / result | [`adapter-runtime-request-v1.schema.json`](contracts/adapter-runtime-request-v1.schema.json) / [`runtime-result-v1.schema.json`](contracts/runtime-result-v1.schema.json) | adapter、owned-catchup、runtime/activation tests |
 | upstream provenance / bundle integrity index | [`upstream-manifest.json`](upstream-manifest.json) | importer、installer 与 manifest/contracts integrity tests；不得在这里重建 runtime inventory mirror |
@@ -113,7 +113,7 @@ trusted surface；allowed helper roots、传递闭包和 pristine/managed 等价
 |---|---|---|---|
 | install、doctor、repair 或 uninstall | `install.js` | runtime bundle、upstream manifest、installer tests | runtime 选择算法或 shared third-party policy ownership |
 | Hook 事件接入、child 调度或输出组合 | `hook_adapter.py` | 两组 request/result contracts、adapter/supervisor/activation tests | 在 adapter 中重新实现 plan selection 或 transcript parser |
-| plan 定位、attachment、smart opt-in、安全读取或 context 生成 | `owned-plan.py` | resolver/injector、plan contracts、owned-plan tests | 让 adapter 直接读取 planning 文件，或让 runtime 写 activation state |
+| plan 定位、attachment、smart/autonomous opt-in、安全读取或 context 生成 | `owned-plan.py` | resolver/injector、plan contracts、owned-plan tests | 让 adapter 直接读取 planning 文件，或让 runtime 写 activation state |
 | Resume/catch-up transcript 行为 | `owned-catchup.py` | owned upstream catch-up、runtime contracts、runtime/cloud fixture tests | 使用未验证 transcript 或产生 partial report |
 | 上游版本、文件来源或 helper entrypoint | provenance → runtime bundle → importer | upstream manifest、owned pristine copy、import/contracts/helper-closure tests | 修改 global Skill、重新引入 source transformation 或绕过 hash gate |
 | ZIP 内容、mode、metadata 或外部 bootstrap 边界 | release artifact contract → builder | package identity、release/repository tests、README 打包入口 | 把本地 ZIP、zero-hash bootstrap 或文件名当成 Release |

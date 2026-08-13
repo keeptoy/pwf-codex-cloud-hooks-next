@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.0-dev` zero-hash development candidate；F0/F1A/F1B complete；F2A implementation 与 Source/Candidate/no-live Cloud PASS；F2B Discovery conditional-go，implementation/F3 未授权 |
+| 当前开发列车 | `v0.4.0-dev` zero-hash development candidate；F0/F1A/F1B complete；F2A Cloud PASS；F2B read-only implementation 本地完成，Cloud no-live 待验收；F3 未授权 |
 | 当前已接受版本 | `v0.3.5`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.4` immediate fallback |
 | 回退证据链 | immutable `v0.3.3` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4 总体与 F2A/F2B Discovery complete；F1 foundation complete；F2A Source/Candidate/no-live Cloud complete；F2B implementation/F3 未授权 |
+| 当前 programme 边界 | Product Phase 4 与 F2A/F2B Discovery complete；F1 foundation complete；F2A Cloud complete；F2B local implementation complete，停在 Source/Candidate/no-live Cloud；F3 未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.3.5` 已完成 immutable publication、公开下载/安装验收与 pointer-only promotion；只读 postflight 确认它为
@@ -78,9 +78,9 @@ implementation 已获维护者授权并按该设计施工；本地闭合与 Sour
 
 F2B 专项 Discovery 已冻结为 `CONDITIONAL_GO_TO_F2B_READ_ONLY_IMPLEMENTATION`：旧 smart token 不得静默扩大为
 autonomous 授权；候选 autonomous commit point 必须与 profile 绑定、最后写入。owned runtime 可在既有只读 private-
-snapshot boundary 内完成 exact attestation、nonce 与 bounded ledger admission；Cloud prepare/review/follow-up-activate
-仍只是待 F3 证明的产品假设。当前只完成探路，F2B implementation 与 F3 均未授权；如果 Cloud lifecycle 最终不可行，
-兜底是保留现有不可达 schema seam 与拒绝 guard，不新增 inactive writer/parser。
+snapshot boundary 内完成 exact attestation、nonce 与 bounded ledger admission；该 read-only implementation 已获授权并在
+本地闭合，当前等待 Source/Candidate/no-live Cloud gate。Cloud prepare/review/follow-up-activate 仍只是待 F3 证明的
+产品假设，F3 未授权；如果 lifecycle 最终不可行，兜底仍是回退 smart-only 或 defer，不能发布 unreachable code。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
 bootstrap/acceptance；当前窗口为 v0.4.0-dev candidate + v0.3.5 accepted。v0.3.4
@@ -93,7 +93,7 @@ pre-release；多个低风险 Phase 也只有在独立评审后才能进入同�
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 development identity → F1A/F1B inactive foundation → F2A smart → F2B autonomous → F3 Fresh/Resume/rollback Cloud；legacy 默认不变 | F1 foundation/Cloud PASS；F2A implementation 与 Source/Candidate/no-live Cloud PASS；F2B Discovery conditional-go，implementation/F3 未授权 |
+| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 development identity → F1A/F1B inactive foundation → F2A smart → F2B autonomous → F3 Fresh/Resume/rollback Cloud；legacy 默认不变 | F1/F2A Cloud PASS；F2B local implementation complete、Cloud no-live pending；F3 未授权 |
 | 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest 各自独立 gate；必须有 use case、latency/token budget 与 Cloud 证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7 前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan 时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6 进入 Discovery |
@@ -126,7 +126,8 @@ Source/Candidate/no-live Cloud foundation 已 PASS。F1B 结束后的停止点�
 Discovery 与 implementation。首次 Linux/Source-Candidate no-live 执行暴露 Cloud 模型自动修复并创建 PR 的验收
 写权限缺口，只保留为诊断/功能证据；协议修正后的 Fresh run 已从同一 exact HEAD 闭合 Linux 零 skip、deterministic
 ZIP、B～E blackbox 与 manifest-routed v2 deep check。F2A Source/Candidate/no-live Cloud 因此 PASS。维护者随后只授权
-F2B Discovery；该探路已 conditional-go，当前停止线是等待维护者决定是否授权 F2B implementation，仍不自动进入 F3。
+F2B Discovery；该探路已 conditional-go，维护者随后授权并完成本地 read-only implementation。当前停止线是
+Source/Candidate/no-live Cloud 验收；即使通过也不自动进入 F3。
 
 F1A/F1B 是独立审查、测试和停止点，不强制形成两个可发布的半成品。只要 runtime/schema bytes 会影响 bundle、
 manifest 或 ZIP hash，最终 candidate 就必须在同一完整 transaction 内使 contract、代码、inventory、mode 与 hash
@@ -143,8 +144,7 @@ leaf → contract → manifest → installer/builder → Release 顺序闭合，
 
 ### 4.2 F2 activation/disarm 前置协议
 
-F1A/F1B 可以先规划和实施；F2A Discovery 已把 smart 的启用/退出冻结为以下协议，F2B 仍需在 autonomous
-状态加入后复核并扩展：
+F1A/F1B 可以先规划和实施；F2A/F2B 已把 smart/autonomous 的启用与退出冻结为以下协议：
 
 1. plan-local `.pwf-codex-managed` 的 exact `codex-managed-v1` 内容是独立 activation commit point，也是显式
    opt-in，不是 secret 或身份凭据；
@@ -176,11 +176,11 @@ commit、plan 与容器内 state 的 consent callback。只有未来出现 authe
 
 ### 4.3 F2B Discovery 交接
 
-F2B 不需要改变 Phase 4.1 的 hybrid owned-boundary，也不新增 Host event、managed writer 或 schema generation。
-后继 implementation 的最小路线是：旧 `codex-managed-v1\n` 保持 smart-only；新增 exact
-`codex-managed-v1 autonomous\n` 作为候选 autonomous commit point；`.mode=autonomous\n`、nonce、attestation 与
-bounded ledger 先准备并验证，activation 最后原子写入。invalid/incomplete/mutated/over-budget state 只拒绝，且
-autonomous 永不回退 raw `progress.md`。
+F2B 没有改变 Phase 4.1 的 hybrid owned-boundary，也没有新增 Host event、managed writer 或 schema generation。
+实现保持旧 `codex-managed-v1\n` 为 smart-only，并以 exact `codex-managed-v1 autonomous\n` 绑定 autonomous；
+`.mode=autonomous\n`、nonce、attestation 与 bounded ledger 先准备，activation 最后原子写入。owned runtime 每次
+验证 captured task digest 和全部 state，只把 ledger `tick/event` 写进 private snapshot；零 ledger 合法，raw
+`progress.md` 不读取。invalid/incomplete/mutated/over-budget state 只拒绝。
 
 Cloud activation 只是假设，不是当前功能事实。F3 先验证 Git-backed 双阶段路线：准备 state 与最后 activation 分属两个
 经用户检查/merge 的 commit/PR，再从 exact activated commit 启动新任务；只有目标仓库无法安全承载该状态时，才测试同一

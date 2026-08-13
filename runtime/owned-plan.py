@@ -6,6 +6,8 @@ The adapter dispatches this sibling before catch-up for both supported Hook even
 
 from __future__ import annotations
 
+from datetime import datetime
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -47,16 +49,30 @@ ALLOWED_PROFILE_SEQUENCES = {
     ("legacy", "smart"),
     ("legacy", "smart", "autonomous"),
 }
-SUPPORTED_PROFILES = ("legacy", "smart")
+SUPPORTED_PROFILES = ("legacy", "smart", "autonomous")
 OPT_IN_PROTOCOL = "codex-managed-v1"
 ACTIVATION_FILE = ".pwf-codex-managed"
 MODE_FILE = ".mode"
-FUTURE_MODE_TOKENS = {"autonomous", "gate"}
+NONCE_FILE = ".nonce"
+ATTESTATION_FILE = ".attestation"
+ROOT_ATTESTATION_FILE = ".plan-attestation"
+DENIED_MODE_TOKENS = {"gate"}
 MAX_MODE_BYTES = 256
+MAX_NONCE_BYTES = 64
+MAX_ATTESTATION_BYTES = 128
+MAX_LEDGER_FILES = 32
+MAX_LEDGER_BYTES = 256 * 1024
+MAX_LEDGER_TOTAL_BYTES = 1024 * 1024
+MAX_LEDGER_RECORDS = 10_000
+MAX_LEDGER_TICK = 9_223_372_036_854_775_807
+LEDGER_NAME = re.compile(r"^ledger-([A-Za-z0-9][A-Za-z0-9_-]{0,63})\.jsonl$")
+LEDGER_EVENTS = {"progress", "phase_complete", "error", "gate_block", "attest", "note"}
+LEDGER_TIMESTAMP = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
 
 RUNTIME_ROOT = Path(__file__).resolve().parent
 RESOLVER = RUNTIME_ROOT / "upstream" / "resolve-plan-dir.sh"
 INJECTOR = RUNTIME_ROOT / "upstream" / "inject-plan.sh"
+LEDGER_SUMMARY = RUNTIME_ROOT / "upstream" / "ledger-summary.sh"
 SAFE_PATH = "/usr/local/bin:/usr/bin:/bin"
 MAX_REQUEST_BYTES = 100_000
 MAX_INPUT_BYTES = 1_000_000
@@ -306,6 +322,7 @@ def run_child(
             stderr=subprocess.PIPE,
             start_new_session=True,
             close_fds=True,
+            umask=0o077,
         )
     except (OSError, TypeError, ValueError):
         raise PlanFailure("runtime_error") from None
@@ -489,10 +506,10 @@ def safe_read_file(
     return None if captured is None else captured[0]
 
 
-def normalize_activation_state(content: Optional[bytes]) -> bool:
-    """Admit only the exact, non-secret managed activation commit point."""
+def normalize_activation_state(content: Optional[bytes]) -> Optional[str]:
+    """Map an exact non-secret commit point to the profile it authorizes."""
     if content is None:
-        return False
+        return None
     if len(content) > MAX_MODE_BYTES:
         raise StateAdmissionFailure("state_over_budget")
     try:
@@ -500,12 +517,14 @@ def normalize_activation_state(content: Optional[bytes]) -> bool:
     except UnicodeDecodeError:
         raise StateAdmissionFailure("state_unsafe") from None
     if content == (OPT_IN_PROTOCOL + "\n").encode("utf-8"):
-        return True
+        return "smart"
+    if content == (OPT_IN_PROTOCOL + " autonomous\n").encode("utf-8"):
+        return "autonomous"
     raise StateAdmissionFailure("opt_in_invalid")
 
 
 def normalize_mode_state(content: Optional[bytes]) -> str:
-    """Admit the exact F2A smart selector after managed activation."""
+    """Admit one exact renderer selector after managed activation."""
     if content in {None, b""}:
         raise StateAdmissionFailure("state_incomplete")
     if len(content) > MAX_MODE_BYTES:
@@ -516,10 +535,158 @@ def normalize_mode_state(content: Optional[bytes]) -> str:
         raise StateAdmissionFailure("state_unsafe") from None
     if content == b"inject-smart\n":
         return "smart"
+    if content == b"autonomous\n":
+        return "autonomous"
     tokens = set(text.split())
-    if tokens & FUTURE_MODE_TOKENS:
+    if tokens & DENIED_MODE_TOKENS:
         raise StateAdmissionFailure("profile_unsupported")
     raise StateAdmissionFailure("opt_in_invalid")
+
+
+def _normalize_exact_line(content: bytes, pattern: re.Pattern[str], advisory: str) -> str:
+    try:
+        text = content.decode("utf-8")
+    except UnicodeDecodeError:
+        raise StateAdmissionFailure("state_unsafe") from None
+    value = text[:-1] if text.endswith("\n") else text
+    if "\n" in value or pattern.fullmatch(value) is None:
+        raise StateAdmissionFailure(advisory)
+    return value
+
+
+def _unique_json_object(pairs: List[Tuple[str, Any]]) -> Dict[str, Any]:
+    value: Dict[str, Any] = {}
+    for key, item in pairs:
+        if key in value:
+            raise ValueError("duplicate JSON key")
+        value[key] = item
+    return value
+
+
+def _ledger_string(value: Any, maximum: int) -> bool:
+    return isinstance(value, str) and len(value) <= maximum and "\x00" not in value
+
+
+def normalize_ledger(content: bytes, expected_agent: str) -> Tuple[bytes, int]:
+    """Validate exact upstream JSONL and project only renderer-safe tick/event fields."""
+    try:
+        text = content.decode("utf-8")
+    except UnicodeDecodeError:
+        raise StateAdmissionFailure("state_unsafe") from None
+    normalized: List[str] = []
+    records = 0
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        records += 1
+        if records > MAX_LEDGER_RECORDS:
+            raise StateAdmissionFailure("state_over_budget")
+        try:
+            value = json.loads(line, object_pairs_hook=_unique_json_object)
+        except (json.JSONDecodeError, TypeError, ValueError):
+            raise StateAdmissionFailure("state_unsafe") from None
+        if not isinstance(value, dict) or set(value) != {
+            "tick", "ts", "agent", "phase", "event", "summary", "files"
+        }:
+            raise StateAdmissionFailure("state_unsafe")
+        tick = value["tick"]
+        files = value["files"]
+        timestamp_valid = True
+        try:
+            datetime.strptime(value["ts"], "%Y-%m-%dT%H:%M:%SZ")
+        except (TypeError, ValueError):
+            timestamp_valid = False
+        if (
+            isinstance(tick, bool)
+            or not isinstance(tick, int)
+            or not 1 <= tick <= MAX_LEDGER_TICK
+            or value["agent"] != expected_agent
+            or value["event"] not in LEDGER_EVENTS
+            or not _ledger_string(value["ts"], 20)
+            or LEDGER_TIMESTAMP.fullmatch(value["ts"]) is None
+            or not timestamp_valid
+            or not _ledger_string(value["phase"], 128)
+            or not _ledger_string(value["summary"], 200)
+            or not isinstance(files, list)
+            or len(files) > 64
+            or any(not _ledger_string(item, 4096) for item in files)
+        ):
+            raise StateAdmissionFailure("state_unsafe")
+        normalized.append(json.dumps({"tick": tick, "event": value["event"]}, separators=(",", ":")))
+    rendered = "" if not normalized else "\n".join(normalized) + "\n"
+    return rendered.encode("utf-8"), records
+
+
+def _capture_state_file(
+    plan_fd: int,
+    name: str,
+    *,
+    required: bool,
+    max_bytes: int,
+    race_probe: Optional[Callable[[str], None]],
+) -> Optional[Tuple[bytes, Tuple[int, ...]]]:
+    try:
+        return safe_capture_file(
+            plan_fd,
+            name,
+            required=required,
+            race_probe=(lambda: race_probe(name)) if race_probe else None,
+            max_bytes=max_bytes,
+            oversize_outcome="state_over_budget",
+        )
+    except PlanFailure as failure:
+        raise StateAdmissionFailure(_state_advisory(failure)) from None
+
+
+def capture_normalized_ledgers(
+    plan_fd: int,
+    *,
+    race_probe: Optional[Callable[[str], None]] = None,
+) -> List[Dict[str, Any]]:
+    try:
+        names: List[Tuple[str, str]] = []
+        with os.scandir(plan_fd) as entries:
+            for entry in entries:
+                if not (entry.name.startswith("ledger-") and entry.name.endswith(".jsonl")):
+                    continue
+                match = LEDGER_NAME.fullmatch(entry.name)
+                if match is None:
+                    raise StateAdmissionFailure("state_unsafe")
+                names.append((entry.name, match.group(1)))
+    except StateAdmissionFailure:
+        raise
+    except OSError:
+        raise StateAdmissionFailure("state_unsafe") from None
+    if len(names) > MAX_LEDGER_FILES:
+        raise StateAdmissionFailure("state_over_budget")
+    captured: List[Dict[str, Any]] = []
+    total_bytes = 0
+    total_records = 0
+    for name, agent in sorted(names):
+        item = _capture_state_file(
+            plan_fd,
+            name,
+            required=True,
+            max_bytes=MAX_LEDGER_BYTES,
+            race_probe=race_probe,
+        )
+        if item is None:
+            raise StateAdmissionFailure("state_changed")
+        content, identity = item
+        total_bytes += len(content)
+        if total_bytes > MAX_LEDGER_TOTAL_BYTES:
+            raise StateAdmissionFailure("state_over_budget")
+        normalized, records = normalize_ledger(content, agent)
+        total_records += records
+        if total_records > MAX_LEDGER_RECORDS:
+            raise StateAdmissionFailure("state_over_budget")
+        captured.append({
+            "name": name,
+            "content": content,
+            "identity": identity,
+            "normalized": normalized,
+        })
+    return captured
 
 
 def _state_advisory(failure: PlanFailure) -> str:
@@ -533,48 +700,80 @@ def _state_advisory(failure: PlanFailure) -> str:
 def capture_owned_state(
     plan_fd: int,
     *,
+    task_content: Optional[bytes] = None,
+    attestation_name: str = ATTESTATION_FILE,
     race_probe: Optional[Callable[[str], None]] = None,
 ) -> Dict[str, Any]:
     """Capture activation first; an absent commit point keeps mode completely inert."""
-    try:
-        activation = safe_capture_file(
-            plan_fd,
-            ACTIVATION_FILE,
-            required=False,
-            race_probe=(lambda: race_probe(ACTIVATION_FILE)) if race_probe else None,
-            max_bytes=MAX_MODE_BYTES,
-            oversize_outcome="state_over_budget",
-        )
-    except PlanFailure as failure:
-        raise StateAdmissionFailure(_state_advisory(failure)) from None
+    activation = _capture_state_file(
+        plan_fd, ACTIVATION_FILE, required=False, max_bytes=MAX_MODE_BYTES, race_probe=race_probe
+    )
     if activation is None:
         return {
             "managed_opt_in": False,
             "requested_profile": "legacy",
             "activation_identity": None,
+            "activation_content": None,
             "mode_identity": None,
+            "mode_content": None,
+            "nonce_identity": None,
+            "nonce_content": None,
+            "attestation_name": attestation_name,
+            "attestation_identity": None,
+            "attestation_content": None,
+            "ledgers": [],
         }
     activation_content, activation_identity = activation
-    normalize_activation_state(activation_content)
-    try:
-        mode = safe_capture_file(
-            plan_fd,
-            MODE_FILE,
-            required=False,
-            race_probe=(lambda: race_probe(MODE_FILE)) if race_probe else None,
-            max_bytes=MAX_MODE_BYTES,
-            oversize_outcome="state_over_budget",
-        )
-    except PlanFailure as failure:
-        raise StateAdmissionFailure(_state_advisory(failure)) from None
+    authorized_profile = normalize_activation_state(activation_content)
+    mode = _capture_state_file(
+        plan_fd, MODE_FILE, required=False, max_bytes=MAX_MODE_BYTES, race_probe=race_probe
+    )
     mode_content = None if mode is None else mode[0]
     requested_profile = normalize_mode_state(mode_content)
-    return {
+    if authorized_profile != requested_profile:
+        raise StateAdmissionFailure("opt_in_invalid")
+    state = {
         "managed_opt_in": True,
         "requested_profile": requested_profile,
         "activation_identity": activation_identity,
+        "activation_content": activation_content,
         "mode_identity": None if mode is None else mode[1],
+        "mode_content": mode_content,
+        "nonce_identity": None,
+        "nonce_content": None,
+        "attestation_name": attestation_name,
+        "attestation_identity": None,
+        "attestation_content": None,
+        "ledgers": [],
     }
+    if requested_profile != "autonomous":
+        return state
+    if task_content is None:
+        raise StateAdmissionFailure("state_incomplete")
+    nonce = _capture_state_file(
+        plan_fd, NONCE_FILE, required=False, max_bytes=MAX_NONCE_BYTES, race_probe=race_probe
+    )
+    attestation = _capture_state_file(
+        plan_fd, attestation_name, required=False, max_bytes=MAX_ATTESTATION_BYTES, race_probe=race_probe
+    )
+    if nonce is None or attestation is None:
+        raise StateAdmissionFailure("state_incomplete")
+    nonce_value = _normalize_exact_line(nonce[0], re.compile(r"^[0-9a-f]{16}$"), "state_unsafe")
+    attestation_value = _normalize_exact_line(
+        attestation[0], re.compile(r"^[0-9a-f]{64}$"), "state_unsafe"
+    )
+    if not hashlib.sha256(task_content).hexdigest() == attestation_value:
+        raise StateAdmissionFailure("state_unsafe")
+    state.update({
+        "nonce_identity": nonce[1],
+        "nonce_content": nonce[0],
+        "nonce_value": nonce_value,
+        "attestation_identity": attestation[1],
+        "attestation_content": attestation[0],
+        "attestation_value": attestation_value,
+        "ledgers": capture_normalized_ledgers(plan_fd, race_probe=race_probe),
+    })
+    return state
 
 
 def _revalidate_state_file(
@@ -582,13 +781,15 @@ def _revalidate_state_file(
     name: str,
     expected_identity: Optional[Tuple[int, ...]],
     expected_content: Optional[bytes],
+    *,
+    max_bytes: int = MAX_MODE_BYTES,
 ) -> None:
     try:
         current = safe_capture_file(
             plan_fd,
             name,
             required=expected_identity is not None,
-            max_bytes=MAX_MODE_BYTES,
+            max_bytes=max_bytes,
             oversize_outcome="state_over_budget",
         )
         if expected_identity is None:
@@ -607,10 +808,31 @@ def revalidate_owned_state(plan_fd: int, state: Dict[str, Any]) -> None:
         plan_fd,
         ACTIVATION_FILE,
         state["activation_identity"],
-        (OPT_IN_PROTOCOL + "\n").encode("utf-8") if state["managed_opt_in"] else None,
+        state["activation_content"],
     )
     if state["managed_opt_in"]:
-        _revalidate_state_file(plan_fd, MODE_FILE, state["mode_identity"], b"inject-smart\n")
+        _revalidate_state_file(plan_fd, MODE_FILE, state["mode_identity"], state["mode_content"])
+    if state["requested_profile"] == "autonomous":
+        _revalidate_state_file(
+            plan_fd, NONCE_FILE, state["nonce_identity"], state["nonce_content"], max_bytes=MAX_NONCE_BYTES
+        )
+        _revalidate_state_file(
+            plan_fd,
+            state["attestation_name"],
+            state["attestation_identity"],
+            state["attestation_content"],
+            max_bytes=MAX_ATTESTATION_BYTES,
+        )
+        try:
+            current = capture_normalized_ledgers(plan_fd)
+        except StateAdmissionFailure:
+            raise StateAdmissionFailure("state_changed") from None
+        expected = state["ledgers"]
+        if [item["name"] for item in current] != [item["name"] for item in expected]:
+            raise StateAdmissionFailure("state_changed")
+        for before, after in zip(expected, current):
+            if before["identity"] != after["identity"] or before["content"] != after["content"]:
+                raise StateAdmissionFailure("state_changed")
 
 
 def _marker_attachment(root_fd: int, session_id: Optional[str]) -> str:
@@ -819,14 +1041,46 @@ def _stale_snapshot_safe(path: Path, now: float) -> bool:
         entries = list(os.scandir(path))
     except OSError:
         return False
+    if len(entries) > MAX_LEDGER_FILES + 6:
+        return False
     if not entries:
         return True
     for entry in entries:
-        if entry.name not in {"task_plan.md", "progress.md"}:
-            return False
         try:
             child = entry.stat(follow_symlinks=False)
         except OSError:
+            return False
+        if entry.name == "pwf-sha":
+            if (
+                not stat.S_ISDIR(child.st_mode)
+                or child.st_uid != os.geteuid()
+                or stat.S_IMODE(child.st_mode) != 0o700
+            ):
+                return False
+            try:
+                cache_entries = list(os.scandir(entry.path))
+            except OSError:
+                return False
+            if len(cache_entries) > 4:
+                return False
+            for cache_entry in cache_entries:
+                try:
+                    cache_info = cache_entry.stat(follow_symlinks=False)
+                except OSError:
+                    return False
+                if (
+                    re.fullmatch(r"[0-9a-f]{16}", cache_entry.name) is None
+                    or not stat.S_ISREG(cache_info.st_mode)
+                    or cache_info.st_nlink != 1
+                    or cache_info.st_uid != os.geteuid()
+                    or stat.S_IMODE(cache_info.st_mode) != 0o600
+                ):
+                    return False
+            continue
+        if (
+            entry.name not in {"task_plan.md", "progress.md", MODE_FILE, NONCE_FILE, ROOT_ATTESTATION_FILE}
+            and LEDGER_NAME.fullmatch(entry.name) is None
+        ):
             return False
         if (
             not stat.S_ISREG(child.st_mode)
@@ -919,6 +1173,31 @@ def _revalidate_plan_directory(root_fd: int, parts: Tuple[str, ...], expected: T
         os.close(reopened)
 
 
+def _revalidate_captured_input(
+    plan_fd: int,
+    name: str,
+    expected: Optional[Tuple[bytes, Tuple[int, ...]]],
+) -> None:
+    try:
+        current = safe_capture_file(plan_fd, name, required=expected is not None)
+    except PlanFailure:
+        raise PlanFailure("plan_state_changed") from None
+    if expected is None:
+        if current is not None:
+            raise PlanFailure("plan_state_changed")
+        return
+    if current is None or current[0] != expected[0] or current[1] != expected[1]:
+        raise PlanFailure("plan_state_changed")
+
+
+def _autonomous_dependency_ready() -> bool:
+    try:
+        info = LEDGER_SUMMARY.lstat()
+    except OSError:
+        return False
+    return stat.S_ISREG(info.st_mode) and info.st_nlink == 1 and bool(stat.S_IMODE(info.st_mode) & 0o111)
+
+
 def execute(
     request: Dict[str, Any],
     *,
@@ -1005,12 +1284,10 @@ def _execute(
             if not stat.S_ISDIR(directory_before.st_mode):
                 raise PlanFailure("plan_unreadable", warnings)
             expected_directory = _directory_identity(directory_before)
-            task = safe_read_file(plan_fd, "task_plan.md", required=True)
-            progress = safe_read_file(plan_fd, "progress.md", required=False)
-            directory_after_reads = os.fstat(plan_fd)
-            if _directory_identity(directory_after_reads) != expected_directory:
-                raise PlanFailure("plan_state_changed", warnings)
-            _revalidate_plan_directory(root_fd, parts, expected_directory)
+            task_capture = safe_capture_file(plan_fd, "task_plan.md", required=True)
+            if task_capture is None:
+                raise PlanFailure("plan_unreadable", warnings)
+            task = task_capture[0]
 
             project = {
                 "root": str(canonical_root),
@@ -1022,7 +1299,13 @@ def _execute(
             }
 
             try:
-                owned_state = capture_owned_state(plan_fd)
+                owned_state = capture_owned_state(
+                    plan_fd,
+                    task_content=task,
+                    attestation_name=(
+                        ROOT_ATTESTATION_FILE if scope == "legacy_root" else ATTESTATION_FILE
+                    ),
+                )
             except StateAdmissionFailure as failure:
                 return plan_result(
                     "invalid_request",
@@ -1034,6 +1317,17 @@ def _execute(
                     advisory=failure.advisory,
                 )
             effective_profile = owned_state["requested_profile"]
+            if effective_profile == "autonomous" and not _autonomous_dependency_ready():
+                raise PlanFailure("runtime_error", warnings)
+            progress_capture = (
+                None
+                if effective_profile == "autonomous"
+                else safe_capture_file(plan_fd, "progress.md", required=False)
+            )
+            directory_after_reads = os.fstat(plan_fd)
+            if _directory_identity(directory_after_reads) != expected_directory:
+                raise PlanFailure("plan_state_changed", warnings)
+            _revalidate_plan_directory(root_fd, parts, expected_directory)
 
             snapshot = Path(tempfile.mkdtemp(prefix=SNAPSHOT_PREFIX, dir=base))
             os.chmod(snapshot, 0o700)
@@ -1047,8 +1341,20 @@ def _execute(
             snapshot_fd = os.open(snapshot, _directory_flags())
             try:
                 write_private_file(snapshot_fd, "task_plan.md", task or b"")
-                if progress is not None:
-                    write_private_file(snapshot_fd, "progress.md", progress)
+                if progress_capture is not None:
+                    write_private_file(snapshot_fd, "progress.md", progress_capture[0])
+                if effective_profile == "autonomous":
+                    write_private_file(snapshot_fd, MODE_FILE, b"autonomous\n")
+                    write_private_file(
+                        snapshot_fd, NONCE_FILE, (owned_state["nonce_value"] + "\n").encode("utf-8")
+                    )
+                    write_private_file(
+                        snapshot_fd,
+                        ROOT_ATTESTATION_FILE,
+                        (owned_state["attestation_value"] + "\n").encode("utf-8"),
+                    )
+                    for ledger in owned_state["ledgers"]:
+                        write_private_file(snapshot_fd, ledger["name"], ledger["normalized"])
             finally:
                 os.close(snapshot_fd)
 
@@ -1086,6 +1392,9 @@ def _execute(
                     effective_profile=None,
                     advisory=failure.advisory,
                 )
+            _revalidate_captured_input(plan_fd, "task_plan.md", task_capture)
+            if effective_profile != "autonomous":
+                _revalidate_captured_input(plan_fd, "progress.md", progress_capture)
             directory_after_child = os.fstat(plan_fd)
             if _directory_identity(directory_after_child) != expected_directory:
                 raise PlanFailure("plan_state_changed", warnings)

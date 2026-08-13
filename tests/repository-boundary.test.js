@@ -55,8 +55,9 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap, /F0[^\n]*complete/);
   assert.match(roadmap, /F1A[^\n]*complete/);
   assert.match(roadmap, /F1 foundation complete/);
-  assert.match(roadmap, /Source\/Candidate\/no-live Cloud PASS/);
-  assert.match(roadmap, /F2A[^\n]*未授权/);
+  assert.match(roadmap, /F2A[^\n]*Cloud PASS/);
+  assert.match(roadmap, /F2B[^\n]*Cloud no-live 待验收/);
+  assert.match(roadmap, /F3 未授权/);
 });
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
@@ -339,7 +340,9 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, /F1B inactive runtime foundation[^\n]*`PASS`/);
   assert.match(acceptance, /F2A local implementation[^\n]*`PASS`/);
   assert.match(acceptance, /F2A Source\/Candidate\/no-live Cloud[^\n]*`PASS`/);
-  assert.equal((acceptance.match(/`NOT_AUTHORIZED`/g) || []).length, 2);
+  assert.match(acceptance, /F2B local autonomous implementation[^\n]*`PASS`/);
+  assert.match(acceptance, /F2B Source\/Candidate\/no-live Cloud[^\n]*`CURRENT \/ CLOUD_ACCEPTANCE_PENDING`/);
+  assert.equal((acceptance.match(/`NOT_AUTHORIZED`/g) || []).length, 1);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f2a-acceptance-delta"><\/a>$/m);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f2a-source-candidate-evidence"><\/a>$/m);
   assert.match(acceptance, /F2A test-harness deviation 与协议修正/);

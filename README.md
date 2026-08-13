@@ -37,7 +37,7 @@ Managed policy 只注册一个绝对路径 adapter，事件集固定为：
 
 详细调用链、信任图和失败语义见 [`ARCHITECTURE.md`](ARCHITECTURE.md)。
 
-### 显式 smart opt-in
+### 显式 smart / autonomous opt-in
 
 默认仍是 legacy。只有当前 resolved plan directory 同时存在以下 exact state，owned runtime 才选择 pristine smart
 renderer：
@@ -91,15 +91,32 @@ print(json.dumps({
     "runtime": "codex",
     "event": {"name": "UserPromptSubmit", "source": None, "session_id": None, "turn_id": None},
     "project": {"root": sys.argv[1], "plan_id": sys.argv[2]},
-    "policy": {"planning_enabled": True, "allowed_profiles": ["legacy", "smart"], "opt_in_protocol": "codex-managed-v1"},
+    "policy": {"planning_enabled": True, "allowed_profiles": ["legacy", "smart", "autonomous"], "opt_in_protocol": "codex-managed-v1"},
     "output_budget": {"max_context_chars": 20000, "max_plan_lines": 50, "max_progress_lines": 20},
 }))
 PY
 ```
 
+Autonomous 使用独立的 profile-bound commit point，旧 smart token 不能因 `.mode` 改变而自动扩权。scoped plan 的
+exact state 是：
+
+```text
+.mode                 = autonomous\n
+.nonce                = 16 个 lowercase hex + \n
+.attestation          = task_plan.md 当前字节的 lowercase SHA-256 + \n
+.pwf-codex-managed    = codex-managed-v1 autonomous\n
+ledger-<agent>.jsonl  = 可选；零个 ledger 也是合法状态
+```
+
+legacy-root plan 使用 `.plan-attestation` 代替 `.attestation`。activation 必须在 mode、nonce、attestation 和 ledger
+准备完成后最后原子写入。owned runtime 每次重新计算 task digest，严格验证 bounded JSONL，再只把 ledger 的 `tick` 和
+`event` 投影到 0700/0600 private snapshot；raw summary、files、timestamp 和 `progress.md` 都不会进入 autonomous
+renderer。状态缺失、错配、超预算、链接、执行中变化或 `gate` token 一律不注入且不回退 legacy。删除 activation file
+即可 disarm，managed runtime 不创建或修复这些 workspace 文件。
+
 任何 activation 命令、文件或 probe 输出都不要
 放 secret、身份或授权码。Cloud 中 prepare/review/commit、Fresh/Resume/cache 与 opt-out/re-arm 尚需 F3 live gate，
-当前本地能力不得描述成 Cloud lifecycle PASS。
+当前 smart/autonomous read-only consumer 能力不得描述成 Cloud lifecycle PASS。
 
 ## 安装与运维
 

@@ -1,6 +1,7 @@
 "use strict";
 
 const assert = require("node:assert/strict");
+const crypto = require("node:crypto");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
@@ -22,7 +23,7 @@ function request(root, overrides = {}) {
     project: { root, plan_id: null },
     policy: {
       planning_enabled: true,
-      allowed_profiles: ["legacy", "smart"],
+      allowed_profiles: ["legacy", "smart", "autonomous"],
       opt_in_protocol: "codex-managed-v1",
     },
     output_budget: { max_context_chars: 20000, max_plan_lines: 50, max_progress_lines: 20 },
@@ -57,6 +58,14 @@ function fixture(name = "active") {
 
 function cleanup(value) {
   fs.rmSync(value.root, { recursive: true, force: true });
+}
+
+function armAutonomous(value) {
+  const task = fs.readFileSync(path.join(value.plan, "task_plan.md"));
+  fs.writeFileSync(path.join(value.plan, ".mode"), "autonomous\n");
+  fs.writeFileSync(path.join(value.plan, ".nonce"), "0123456789abcdef\n");
+  fs.writeFileSync(path.join(value.plan, ".attestation"), `${crypto.createHash("sha256").update(task).digest("hex")}\n`);
+  fs.writeFileSync(path.join(value.plan, ".pwf-codex-managed"), "codex-managed-v1 autonomous\n");
 }
 
 function parseLinuxProcStat(raw) {
@@ -111,13 +120,11 @@ test("owned plan runtime validates exact v2 and short-circuits disabled planning
   assert.equal(disabled.advisory, null);
 });
 
-test("owned plan rejects autonomous capability before managed state capture", () => {
+test("owned plan admits the reviewed autonomous capability sequence", () => {
   const source = String.raw`
 import importlib.util, json, pathlib, sys
 spec = importlib.util.spec_from_file_location("owned_plan", sys.argv[1])
 m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
-def forbidden(*args, **kwargs): raise AssertionError("state capture became reachable")
-m.capture_owned_state = forbidden
 value = json.loads(sys.stdin.read())
 print(json.dumps(m.run_request(value)))
 `;
@@ -129,11 +136,8 @@ print(json.dumps(m.run_request(value)))
   });
   assert.equal(result.status, 0, result.stderr);
   const value = JSON.parse(result.stdout);
-  assert.equal(value.outcome, "invalid_request");
-  assert.equal(value.inject, false);
-  assert.equal(value.context, null);
-  assert.equal(value.effective_profile, null);
-  assert.equal(value.advisory, "profile_unsupported");
+  assert.notEqual(value.advisory, "profile_unsupported");
+  assert.notEqual(value.outcome, "invalid_request");
 });
 
 test("activation and smart profile normalizers are exact and keep old markers inert", () => {
@@ -141,7 +145,7 @@ test("activation and smart profile normalizers are exact and keep old markers in
 import importlib.util, json, sys
 spec = importlib.util.spec_from_file_location("owned_plan", sys.argv[1])
 m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
-activation_values = [None, "codex-managed-v1\n", "codex-managed-v1", "codex-managed-v1 inject-smart\n"]
+activation_values = [None, "codex-managed-v1\n", "codex-managed-v1 autonomous\n", "codex-managed-v1", "codex-managed-v1 inject-smart\n"]
 mode_values = [None, "", "inject-smart\n", "inject-smart", "autonomous\n", "autonomous gate\n", "gate\n", "unknown\n", "inject-smart inject-smart\n"]
 results = {"activation": [], "mode": []}
 for value in activation_values:
@@ -155,13 +159,234 @@ print(json.dumps(results))
   const result = spawnSync(PYTHON, ["-c", source, RUNTIME], { encoding: "utf8" });
   assert.equal(result.status, 0, result.stderr);
   const values = JSON.parse(result.stdout);
-  assert.deepEqual(values.activation, [false, true, { error: "opt_in_invalid" }, { error: "opt_in_invalid" }]);
+  assert.deepEqual(values.activation, [null, "smart", "autonomous", { error: "opt_in_invalid" }, { error: "opt_in_invalid" }]);
   assert.deepEqual(values.mode, [
     { error: "state_incomplete" }, { error: "state_incomplete" }, "smart",
-    { error: "opt_in_invalid" }, { error: "profile_unsupported" },
+    { error: "opt_in_invalid" }, "autonomous",
     { error: "profile_unsupported" }, { error: "profile_unsupported" },
     { error: "opt_in_invalid" }, { error: "opt_in_invalid" },
   ]);
+});
+
+test("autonomous ledger normalization is exact bounded and prose-free", () => {
+  const source = String.raw`
+import importlib.util, json, sys
+spec = importlib.util.spec_from_file_location("owned_plan", sys.argv[1])
+m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+cases = json.loads(sys.stdin.read()); results = []
+for case in cases:
+    try:
+        value, records = m.normalize_ledger(case["line"].encode("utf-8"), case["agent"])
+        results.append({"value": value.decode("utf-8"), "records": records})
+    except m.StateAdmissionFailure as error:
+        results.append({"error": error.advisory})
+print(json.dumps(results))
+`;
+  const base = {
+    tick: 7, ts: "2026-08-13T10:00:00Z", agent: "worker_1", phase: "2",
+    event: "progress", summary: "private prose", files: ["private.txt"],
+  };
+  const cases = [
+    { agent: "worker_1", line: `${JSON.stringify(base)}\n` },
+    { agent: "worker_1", line: "" },
+    { agent: "other", line: `${JSON.stringify(base)}\n` },
+    { agent: "worker_1", line: `${JSON.stringify({ ...base, ts: "2026-02-30T10:00:00Z" })}\n` },
+    { agent: "worker_1", line: `${JSON.stringify({ ...base, event: "unknown" })}\n` },
+    { agent: "worker_1", line: '{"tick":7,"tick":8,"ts":"2026-08-13T10:00:00Z","agent":"worker_1","phase":"2","event":"progress","summary":"x","files":[]}\n' },
+    { agent: "worker_1", line: `${JSON.stringify({ ...base, extra: true })}\n` },
+    { agent: "worker_1", line: `${JSON.stringify({ ...base, summary: "x".repeat(201) })}\n` },
+  ];
+  const result = spawnSync(PYTHON, ["-c", source, RUNTIME], {
+    input: JSON.stringify(cases), encoding: "utf8",
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.deepEqual(JSON.parse(result.stdout), [
+    { value: '{"tick":7,"event":"progress"}\n', records: 1 },
+    { value: "", records: 0 },
+    { error: "state_unsafe" }, { error: "state_unsafe" }, { error: "state_unsafe" },
+    { error: "state_unsafe" }, { error: "state_unsafe" }, { error: "state_unsafe" },
+  ]);
+});
+
+test("owned plan emits attested autonomous context from normalized ledgers", { skip: !LINUX }, () => {
+  const value = fixture();
+  const task = [
+    "# Autonomous managed plan", "", "## Goal", "Keep autonomous context bounded.", "",
+    "## Phases", "", "### Phase 1", "**Status:** complete", "", "### Phase 2", "**Status:** in_progress", "",
+  ].join("\n");
+  const ledger = {
+    tick: 7, ts: "2026-08-13T10:00:00Z", agent: "worker_1", phase: "2",
+    event: "progress", summary: "LEDGER_SUMMARY_MUST_NOT_APPEAR", files: ["secret-name.txt"],
+  };
+  try {
+    fs.writeFileSync(path.join(value.plan, "task_plan.md"), task);
+    fs.writeFileSync(path.join(value.plan, "progress.md"), Buffer.from([0xff, 0xfe]));
+    fs.writeFileSync(path.join(value.plan, ".mode"), "autonomous\n");
+    fs.writeFileSync(path.join(value.plan, ".nonce"), "0123456789abcdef\n");
+    fs.writeFileSync(path.join(value.plan, ".attestation"), `${crypto.createHash("sha256").update(task).digest("hex")}\n`);
+    fs.writeFileSync(path.join(value.plan, ".pwf-codex-managed"), "codex-managed-v1 autonomous\n");
+
+    let result = run(request(value.root, {
+      policy: { allowed_profiles: ["legacy", "smart", "autonomous"] },
+    }));
+    assert.equal(result.outcome, "context_emitted");
+    assert.equal(result.effective_profile, "autonomous");
+    assert.match(result.context, /entries: 0/);
+    fs.writeFileSync(path.join(value.plan, "ledger-worker_1.jsonl"), `${JSON.stringify(ledger)}\n`);
+    fs.writeFileSync(path.join(value.plan, "ledger-agent_a.jsonl"), `${JSON.stringify({
+      ...ledger, tick: 8, agent: "agent_a", event: "phase_complete",
+    })}\n`);
+    result = run(request(value.root));
+    assert.match(result.context, /===BEGIN-PLAN-DATA-0123456789abcdef===/);
+    assert.match(result.context, /Plan-SHA256: [0-9a-f]{64}/);
+    assert.match(result.context, /=== ledger summary ===/);
+    assert.match(result.context, /entries: 2/);
+    assert.ok(result.context.indexOf("agent agent_a: phase_complete") < result.context.indexOf("agent worker_1: progress"));
+    assert.match(result.context, /agent worker_1: progress/);
+    assert.doesNotMatch(result.context, /LEDGER_SUMMARY_MUST_NOT_APPEAR|secret-name\.txt/);
+  } finally {
+    cleanup(value);
+  }
+});
+
+test("autonomous supports the legacy-root attestation filename through the same private snapshot", { skip: !LINUX }, () => {
+  const value = fixture();
+  try {
+    fs.rmSync(path.join(value.root, ".planning"), { recursive: true });
+    fs.writeFileSync(path.join(value.root, "task_plan.md"), "# Root autonomous plan\n");
+    fs.writeFileSync(path.join(value.root, "progress.md"), Buffer.from([0xff, 0xfe]));
+    fs.writeFileSync(path.join(value.root, ".mode"), "autonomous\n");
+    fs.writeFileSync(path.join(value.root, ".nonce"), "0123456789abcdef\n");
+    const task = fs.readFileSync(path.join(value.root, "task_plan.md"));
+    fs.writeFileSync(path.join(value.root, ".plan-attestation"), `${crypto.createHash("sha256").update(task).digest("hex")}\n`);
+    fs.writeFileSync(path.join(value.root, ".pwf-codex-managed"), "codex-managed-v1 autonomous\n");
+    const result = run(request(value.root));
+    assert.equal(result.outcome, "context_emitted");
+    assert.equal(result.effective_profile, "autonomous");
+    assert.equal(result.project.plan_scope, "legacy_root");
+    assert.match(result.context, /===BEGIN-PLAN-DATA-0123456789abcdef===/);
+    assert.match(result.context, /entries: 0/);
+  } finally {
+    cleanup(value);
+  }
+});
+
+test("autonomous activation is profile-bound and refuses incomplete or mismatched state", { skip: !LINUX }, () => {
+  const value = fixture();
+  const autonomousRequest = request(value.root, {
+    policy: { allowed_profiles: ["legacy", "smart", "autonomous"] },
+  });
+  try {
+    fs.writeFileSync(path.join(value.plan, ".mode"), "autonomous\n");
+    fs.writeFileSync(path.join(value.plan, ".pwf-codex-managed"), "codex-managed-v1\n");
+    let result = run(autonomousRequest);
+    assert.equal(result.outcome, "invalid_request");
+    assert.equal(result.advisory, "opt_in_invalid");
+
+    fs.writeFileSync(path.join(value.plan, ".pwf-codex-managed"), "codex-managed-v1 autonomous\n");
+    result = run(autonomousRequest);
+    assert.equal(result.advisory, "state_incomplete");
+
+    fs.writeFileSync(path.join(value.plan, ".nonce"), "0123456789abcdef\n");
+    fs.writeFileSync(path.join(value.plan, ".attestation"), `${"0".repeat(64)}\n`);
+    result = run(autonomousRequest);
+    assert.equal(result.advisory, "state_unsafe");
+    assert.equal(result.context, null);
+  } finally {
+    cleanup(value);
+  }
+});
+
+test("autonomous state rejects unsafe ledger names content links and budgets", { skip: !LINUX }, () => {
+  const value = fixture();
+  const outside = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-autonomous-outside-"));
+  const valid = {
+    tick: 1, ts: "2026-08-13T10:00:00Z", agent: "worker", phase: "1",
+    event: "progress", summary: "ok", files: [],
+  };
+  try {
+    const reset = () => {
+      for (const name of fs.readdirSync(value.plan)) {
+        if (name.startsWith("ledger-")) fs.rmSync(path.join(value.plan, name), { force: true });
+      }
+      armAutonomous(value);
+    };
+    reset();
+    fs.writeFileSync(path.join(value.plan, ".nonce"), "ABCDEF0123456789\n");
+    assert.equal(run(request(value.root)).advisory, "state_unsafe");
+
+    reset();
+    fs.writeFileSync(path.join(value.plan, "ledger-bad.agent.jsonl"), `${JSON.stringify(valid)}\n`);
+    assert.equal(run(request(value.root)).advisory, "state_unsafe");
+
+    reset();
+    fs.writeFileSync(path.join(value.plan, "ledger-worker.jsonl"), `${JSON.stringify({ ...valid, agent: "other" })}\n`);
+    assert.equal(run(request(value.root)).advisory, "state_unsafe");
+
+    reset();
+    fs.writeFileSync(path.join(value.plan, "ledger-worker.jsonl"), "x".repeat(256 * 1024 + 1));
+    assert.equal(run(request(value.root)).advisory, "state_over_budget");
+
+    reset();
+    for (let index = 0; index < 33; index += 1) {
+      fs.writeFileSync(path.join(value.plan, `ledger-a${index}.jsonl`), "");
+    }
+    assert.equal(run(request(value.root)).advisory, "state_over_budget");
+
+    reset();
+    const linked = path.join(outside, "ledger");
+    fs.writeFileSync(linked, `${JSON.stringify(valid)}\n`);
+    fs.symlinkSync(linked, path.join(value.plan, "ledger-worker.jsonl"));
+    assert.equal(run(request(value.root)).advisory, "state_unsafe");
+  } finally {
+    cleanup(value);
+    fs.rmSync(outside, { recursive: true, force: true });
+  }
+});
+
+test("autonomous discards task nonce attestation and ledger mutations after rendering", { skip: !LINUX }, () => {
+  const value = fixture();
+  const mutator = path.join(value.root, "autonomous-mutator.sh");
+  const source = String.raw`
+import importlib.util, json, pathlib, sys
+spec = importlib.util.spec_from_file_location("owned_plan", sys.argv[1])
+m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+result = m.run_request(json.loads(sys.stdin.read()), injector=pathlib.Path(sys.argv[2]))
+print(json.dumps(result))
+`;
+  const record = agent => JSON.stringify({
+    tick: 1, ts: "2026-08-13T10:00:00Z", agent, phase: "1",
+    event: "progress", summary: "ok", files: [],
+  });
+  try {
+    for (const [targetName, replacement, expectedOutcome, expectedAdvisory] of [
+      [".nonce", "fedcba9876543210\n", "invalid_request", "state_changed"],
+      [".attestation", `${"0".repeat(64)}\n`, "invalid_request", "state_changed"],
+      ["ledger-worker.jsonl", `${record("worker")}\n${record("worker")}\n`, "invalid_request", "state_changed"],
+      ["task_plan.md", "# Changed after capture\n", "plan_state_changed", null],
+    ]) {
+      fs.rmSync(path.join(value.plan, "ledger-worker.jsonl"), { force: true });
+      armAutonomous(value);
+      fs.writeFileSync(path.join(value.plan, "ledger-worker.jsonl"), `${record("worker")}\n`);
+      const target = path.join(value.plan, targetName);
+      const next = `${target}.next`;
+      fs.writeFileSync(mutator, [
+        "#!/bin/sh", `printf '%s' ${JSON.stringify(replacement)} > ${JSON.stringify(next)}`,
+        `mv ${JSON.stringify(next)} ${JSON.stringify(target)}`,
+        `exec /bin/sh ${JSON.stringify(path.join(ROOT, "runtime", "upstream", "inject-plan.sh"))} "$@"`, "",
+      ].join("\n"), { mode: 0o700 });
+      const invoked = spawnSync(PYTHON, ["-c", source, RUNTIME, mutator], {
+        input: JSON.stringify(request(value.root)), encoding: "utf8",
+      });
+      assert.equal(invoked.status, 0, invoked.stderr);
+      const result = JSON.parse(invoked.stdout);
+      assert.equal(result.outcome, expectedOutcome, targetName);
+      assert.equal(result.advisory, expectedAdvisory, targetName);
+      assert.equal(result.context, null, targetName);
+    }
+  } finally {
+    cleanup(value);
+  }
 });
 
 test("disabled detached and no-plan paths never capture managed state", { skip: !LINUX }, () => {
@@ -215,7 +440,10 @@ try:
     probe = None
     if action == "activation-race": probe = race
     elif action == "mode-race": probe = lambda name: race(name) if name == ".mode" else None
-    result = m.capture_owned_state(fd, race_probe=probe)
+    raw = m.capture_owned_state(fd, race_probe=probe)
+    result = {key: value for key, value in raw.items() if key in {
+        "managed_opt_in", "requested_profile", "activation_identity", "mode_identity"
+    }}
 except m.StateAdmissionFailure as error:
     result = {"error": error.advisory}
 finally:
@@ -365,7 +593,7 @@ test("armed invalid state refuses and post-render mutation discards smart output
   try {
     fs.writeFileSync(path.join(value.plan, ".pwf-codex-managed"), "codex-managed-v1\n");
     for (const [mode, advisory] of [
-      [null, "state_incomplete"], ["autonomous\n", "profile_unsupported"],
+      [null, "state_incomplete"], ["autonomous\n", "opt_in_invalid"],
       ["gate\n", "profile_unsupported"], ["unknown\n", "opt_in_invalid"],
     ]) {
       const modePath = path.join(value.plan, ".mode");

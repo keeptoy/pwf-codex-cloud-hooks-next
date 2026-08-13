@@ -245,7 +245,7 @@ def build_plan_context_request(event: str, payload: dict, root: Path) -> dict | 
         "project": {"root": root_value, "plan_id": plan_id},
         "policy": {
             "planning_enabled": os.environ.get("PLANNING_DISABLED") != "1",
-            "allowed_profiles": ["legacy", "smart"],
+            "allowed_profiles": ["legacy", "smart", "autonomous"],
             "opt_in_protocol": "codex-managed-v1",
         },
         "output_budget": dict(PLAN_OUTPUT_BUDGET),
@@ -332,7 +332,7 @@ def _valid_plan_context_result(value: object, request: dict | None = None) -> bo
         return False
     if (
         not isinstance(request_enabled, bool)
-        or request_profiles != ["legacy", "smart"]
+        or request_profiles != ["legacy", "smart", "autonomous"]
         or request_protocol != "codex-managed-v1"
     ):
         return False

@@ -33,6 +33,11 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   environment 交给 pristine renderer，并在输出前重新核对 activation/mode identity 与 bytes。request/result 继续
   使用 v2，Host event、workspace-write、upstream inventory、canary/catch-up 顺序保持不变；autonomous/nonce/
   attestation/ledger 仍属 F2B。
+- F2B 将 capability 原子扩为 `[legacy, smart, autonomous]`，并以独立 exact
+  `codex-managed-v1 autonomous` commit point 接入 read-only autonomous consumer。owned-plan 每次核对 task attestation
+  和 nonce，严格限制 ledger 文件数、单项/总字节与 JSONL record，再只向 private snapshot 投影 `tick/event`；零 ledger
+  合法，raw progress 不读取，invalid/incomplete/raced state 不注入且不回退。`gate`、workspace writer、Host event 和
+  Release inventory 保持不变；真实 Cloud activation/disarm/Resume/cache 仍待 F3。
 
 ## v0.3.5
 

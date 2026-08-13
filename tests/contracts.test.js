@@ -61,6 +61,8 @@ test("runtime bundle v2 uses structural source partitions and one install invent
   }
   assert.deepEqual(bundle.local_files.find(item => item.id === "adapter").direct_dependencies.map(item => item.id),
     ["owned_plan", "owned_catchup"]);
+  assert.deepEqual(bundle.local_files.find(item => item.id === "owned_plan").direct_dependencies.map(item => item.id),
+    ["resolve_plan_dir", "inject_plan", "ledger_summary"]);
 });
 
 test("Release v2 entries own exact ZIP inventory and mode", () => {

@@ -63,7 +63,7 @@
       "package_path": "hooks/hook_adapter.py",
       "installed_path": "hooks/planning-with-files/hook_adapter.py",
       "mode": "0755",
-      "sha256": "831a22c47f4a72fbec7458ec25af67dabc060c55b28c0ebda251b97e43e208fb",
+      "sha256": "173a82cf5d39c789f09ff0f860badecf3bbb6b8c6537d7f168781e0e884a8966",
       "direct_dependencies": [{ "id": "owned_plan" }, { "id": "owned_catchup" }]
     },
     {
@@ -82,14 +82,14 @@
       "package_path": "runtime/owned-plan.py",
       "installed_path": "hooks/planning-with-files/owned-plan.py",
       "mode": "0755",
-      "sha256": "7a13635ed8bc6db4a47b382222ff3f89ec89b55a9bca0e04cddaae7364c75e5c",
-      "direct_dependencies": [{ "id": "resolve_plan_dir" }, { "id": "inject_plan" }]
+      "sha256": "9ed4396845b3d2fdac284ab4f7d7933d8df968260cb63e47963e53f802c0b135",
+      "direct_dependencies": [{ "id": "resolve_plan_dir" }, { "id": "inject_plan" }, { "id": "ledger_summary" }]
     }
   ],
   "installed_contracts": [
     { "id": "adapter_runtime_request", "package_path": "contracts/adapter-runtime-request-v1.schema.json", "installed_path": "hooks/planning-with-files/contracts/adapter-runtime-request-v1.schema.json", "mode": "0644", "sha256": "a86588e3c7d55cbbeddc74110403ba815ad8715735c149d77dd0c47996ee72d5" },
     { "id": "runtime_result", "package_path": "contracts/runtime-result-v1.schema.json", "installed_path": "hooks/planning-with-files/contracts/runtime-result-v1.schema.json", "mode": "0644", "sha256": "1cb545d9487c8d0ef9f4ccd270a786d0dc998629813e81a2cc05463b23b62ed7" },
-    { "id": "adapter_plan_context_request", "package_path": "contracts/adapter-plan-context-request-v2.schema.json", "installed_path": "hooks/planning-with-files/contracts/adapter-plan-context-request-v2.schema.json", "mode": "0644", "sha256": "028ad36ffb2fc95c413487458effe0ec25188c182c78ab9f42b9da16e58c401c" },
+    { "id": "adapter_plan_context_request", "package_path": "contracts/adapter-plan-context-request-v2.schema.json", "installed_path": "hooks/planning-with-files/contracts/adapter-plan-context-request-v2.schema.json", "mode": "0644", "sha256": "9de89f130977abcf56ec3def0281113bef1ccca6135ae79b20faf5c83d3b70ff" },
     { "id": "plan_context_result", "package_path": "contracts/plan-context-result-v2.schema.json", "installed_path": "hooks/planning-with-files/contracts/plan-context-result-v2.schema.json", "mode": "0644", "sha256": "2d0623215dcb95002a21ecf59e9f20714b85ab42684e00e7e8ea1f8c39d2e372" }
   ]
 }
