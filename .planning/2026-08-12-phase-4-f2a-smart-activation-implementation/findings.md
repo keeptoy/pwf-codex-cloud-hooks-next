@@ -106,3 +106,13 @@
   installed root, exact Source HEAD and candidate ZIP SHA. Exact v2 structural assertions remain legitimate consumer contract checks.
 - Cross-task identity state must remain data, not executable shell. The setup therefore creates a 0600 JSON file with `O_EXCL`; 9.1
   checks regular-file type, current uid, exact mode, single link, exact keys and values before consuming it.
+
+## Minimal-protocol correction
+
+- Maintainer review correctly identified that the first P8 implementation was disproportionate to the actual failure: a missing
+  no-auto-fix/no-PR instruction. C is the only prompt-authorized repository writer; D/E read its result through Hooks, and 9.1 is a
+  read-only deep check.
+- Retire the cross-task JSON, duplicated 9.1/9.2 exact worktree oracles and their dedicated test. Keep the task permission prefix,
+  unique C plan ID and manifest-routed facts. Source HEAD/ZIP remain explicit 4.1 evidence and are compared during evidence writeback.
+- The minimal 9.1 guard only rejects changes outside `.planning/`. It is defense-in-depth for accidental product edits, not a second
+  machine contract for the exact canonical fixture shape.

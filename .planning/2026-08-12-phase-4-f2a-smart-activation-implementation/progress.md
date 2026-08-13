@@ -90,3 +90,8 @@
 - P8 full local regression passed 147 tests: 129 pass, 0 fail and 18 honest Windows/POSIX skips. All four embedded Bash blocks and
   eight embedded Python blocks compile; importer, owned Python compile, Node syntax, bootstrap syntax and diff checks pass. F2A stays
   `CLOUD_ACCEPTANCE_PENDING` until the maintainer pushes this commit and returns a Fresh no-live Cloud run from one exact HEAD.
+- Maintainer requested a proportionality review before push. Began simplifying P8: removed cross-task JSON, both large exact-worktree
+  oracles, the dedicated isolated-Git test and its DESIGN entry. Retained the actual fixes and one short 9.1 planning-only guard.
+- Minimal P8 regression passed 146 tests: 128 pass, 0 fail and 18 honest Windows/POSIX skips. All four embedded Bash blocks and five
+  remaining embedded Python blocks compile. Relative to the first P8 commit, the simplification removes about 180 lines and returns
+  the suite to its prior module count while preserving no-auto-fix/no-PR, unique C identity and manifest-routed fact evidence.

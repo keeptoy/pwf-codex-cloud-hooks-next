@@ -30,7 +30,7 @@ sentinel 与 9.1 摘要后闭合 evidence writeback；封账前不进入 F2B/F3�
 | P5 Lifecycle and Cloud protocol follow-up | completed | Phase 4.4 实施后冷对账、markerless legacy 黑盒判别、版本 evidence/current-state 职责与 tests 闭合并独立 commit |
 | P6 Multi-gate acceptance status correction | completed | 恢复版本内 gate 状态与当前验收增量，模板/治理/测试职责一致并独立 commit |
 | P7 Stale deep-check diagnosis and hardening | completed | 分类首次 Cloud 9.1、强化 v2 root/hash authority、加入 protocol/HEAD marker 并闭合复验规则 |
-| P8 Acceptance write-authority and repeatability correction | completed | 禁止自动 Git/PR 写入，C 使用唯一 plan ID，9.1/9.2 精确允许 fixture-only dirty tree，并以动态 contract facts 取代 protocol 口号；完整本地验证通过 |
+| P8 Acceptance write-authority and repeatability correction | completed | 保留禁止自动 Git/PR、C 唯一 plan ID 与动态 contract facts；退役跨 task state、重复 oracle 和专门测试，最小 planning-only guard 与完整回归通过 |
 
 ## Migration lifecycle ledger
 
@@ -51,10 +51,10 @@ sentinel 与 9.1 摘要后闭合 evidence writeback；封账前不进入 F2B/F3�
 | Cloud canonical completed/active sentinels | stable acceptance template | ADD markerless profile discriminator | D/E2 must observe both without activation files | review when default profile or renderer contract changes |
 | version acceptance step-by-step execution state | active plan should own it | RETIRE/MOVE | repository boundary forbids command-level progress/retry/Next Step in acceptance | completed exact evidence only |
 | version acceptance coarse gate ledger | version acceptance | KEEP/RESTORE | PASS/current pending/not-authorized + template/delta links | retire when one-shot acceptance has no intermediate gates |
-| 9.1/9.2 deep-check protocol marker | Cloud template / maintainer evidence | RETIRE/REPLACE | 删除自证口号；打印 manifest-routed path/id/schema/root 与 Source HEAD/ZIP | contract routing semantic change |
+| 9.1/9.2 deep-check protocol marker | Cloud template / maintainer evidence | RETIRE/REPLACE | 删除自证口号；打印 manifest-routed path/id/schema/root；Source HEAD/ZIP 由各自产生步骤登记 | contract routing semantic change |
 | installed runtime root in deep checks | runtime bundle `roots.installed` | REPLACE hard-coded path suffix | v2 partition inventory + per-entry hash checks | bundle schema/root semantic change |
-| Cloud repository write authority | acceptance task prefix + 9.1 worktree oracle | ADD | 禁止 branch/commit/push/PR；只准 C 的四项未提交 fixture 改动 | Cloud execution model or fixture flow change |
-| canonical fixture plan ID | C prompt + 9.1 worktree oracle | REPLACE fixed ID | UTC date + 8-hex run ID；不覆盖旧 run | fixture protocol version change |
+| Cloud repository write authority | acceptance task prefix + 9.1 minimal guard | ADD | 禁止 branch/commit/push/PR；9.1 仅拒绝 `.planning/` 外改动 | Cloud execution model or fixture flow change |
+| canonical fixture plan ID | C prompt | REPLACE fixed ID | UTC date + 8-hex run ID；不覆盖旧 run | fixture protocol version change |
 
 ## Stop Conditions
 

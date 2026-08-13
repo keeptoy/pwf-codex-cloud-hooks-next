@@ -165,7 +165,6 @@ set -Eeuo pipefail
 readonly REQUIRED_NODE_MAJOR="${PWF_ACCEPTANCE_NODE_MAJOR:-}"
 readonly TARGET_CODEX_HOME="${CODEX_HOME:-/opt/codex}"
 readonly PUBLICATION_ORACLE_SUITE="tests/published-release-oracles.test.js"
-readonly ACCEPTANCE_STATE="${TMPDIR:-/tmp}/pwf-source-candidate-acceptance.json"
 
 case "$REQUIRED_NODE_MAJOR" in
   ''|*[!0-9]*) printf 'Source/Candidate setup is blocked: PWF_ACCEPTANCE_NODE_MAJOR must be numeric\n' >&2; exit 64 ;;
@@ -175,7 +174,6 @@ PROBE_DIR="$(mktemp -d)"
 trap 'rm -rf -- "$PROBE_DIR"' EXIT
 
 test -z "$(git status --short)"
-test ! -e "$ACCEPTANCE_STATE"
 readonly RUNBOOK_HEAD="$(git rev-parse HEAD)"
 test "$(node -p 'process.versions.node.split(".")[0]')" = "$REQUIRED_NODE_MAJOR"
 git diff --check
@@ -300,19 +298,6 @@ fi
 HOOKS_URL="file://$ZIP_A" HOOKS_SHA256="$ACTUAL_ZIP_SHA256" bash "$BOOTSTRAP" all
 
 test -z "$(git status --short)"
-umask 077
-python3 - "$ACCEPTANCE_STATE" "$RUNBOOK_HEAD" "$ACTUAL_ZIP_SHA256" <<'PY'
-import json
-import os
-import sys
-
-path, head, zip_sha256 = sys.argv[1:]
-flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
-fd = os.open(path, flags, 0o600)
-with os.fdopen(fd, "w", encoding="utf-8") as output:
-    json.dump({"runbook_head": head, "candidate_zip_sha256": zip_sha256}, output, sort_keys=True)
-    output.write("\n")
-PY
 printf 'PWF_SC_RUNBOOK_HEAD=%s\n' "$RUNBOOK_HEAD"
 printf 'PWF_SC_LINUX_SUITE=PASS tests=%s pass=%s fail=0 skipped=0\n' "$TESTS" "$PASSES"
 printf 'PWF_SC_ZIP_ENTRIES=%s\n' "$EXPECTED_ENTRIES"
@@ -564,47 +549,13 @@ set -Eeuo pipefail
 
 PACKAGE_ROOT="$(git rev-parse --show-toplevel)"
 RUNBOOK_HEAD="$(git rev-parse HEAD)"
-ACCEPTANCE_STATE="${TMPDIR:-/tmp}/pwf-source-candidate-acceptance.json"
 TARGET_CODEX_HOME="${CODEX_HOME:-/opt/codex}"
 SKILL_ROOT="$HOME/.agents/skills/planning-with-files"
 REQUIREMENTS="/etc/codex/requirements.toml"
-test -f "$ACCEPTANCE_STATE"
 
-python3 - "$PACKAGE_ROOT" <<'PY'
-import pathlib
-import re
-import subprocess
-import sys
-
-root = pathlib.Path(sys.argv[1])
-active = root / ".planning" / ".active_plan"
-plan_id = active.read_text(encoding="utf-8").strip()
-assert re.fullmatch(r"\d{4}-\d{2}-\d{2}-pwf-cloud-acceptance-v1-[0-9a-f]{8}", plan_id)
-plan = root / ".planning" / plan_id
-
-expected = {
-    ".planning/.active_plan": " M",
-    f".planning/{plan_id}/task_plan.md": "??",
-    f".planning/{plan_id}/progress.md": "??",
-    f".planning/{plan_id}/findings.md": "??",
-}
-raw = subprocess.run(
-    ["git", "-C", str(root), "status", "--porcelain=v1", "-z", "--untracked-files=all"],
-    check=True,
-    stdout=subprocess.PIPE,
-).stdout.decode("utf-8")
-actual = {record[3:]: record[:2] for record in raw.split("\0") if record}
-assert actual == expected
-
-task = (plan / "task_plan.md").read_text(encoding="utf-8")
-assert "PWF_CLOUD_ACCEPTANCE_CANONICAL_V1" in task
-assert "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_COMPLETED_V1" in task
-assert "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_ACTIVE_V1" in task
-assert not (plan / ".pwf-codex-managed").exists()
-assert not (plan / ".mode").exists()
-print("PWF_CANONICAL_WORKTREE=EXACT_FIXTURE_ONLY")
-print("PWF_CANONICAL_PLAN_ID=" + plan_id)
-PY
+NON_PLANNING_CHANGES="$(git status --porcelain=v1 --untracked-files=all | grep -Ev '^.. \.planning/' || true)"
+test -z "$NON_PLANNING_CHANGES"
+printf 'PWF_WORKTREE_CHANGES=PLANNING_ONLY\n'
 
 DOCTOR_JSON="$(node "$PACKAGE_ROOT/install.js" doctor --json \
   --codex-home "$TARGET_CODEX_HOME" \
@@ -612,12 +563,10 @@ DOCTOR_JSON="$(node "$PACKAGE_ROOT/install.js" doctor --json \
   --managed-requirements "$REQUIREMENTS")"
 printf '%s\n' "$DOCTOR_JSON"
 
-python3 - "$DOCTOR_JSON" "$PACKAGE_ROOT" "$TARGET_CODEX_HOME" "$SKILL_ROOT" "$REQUIREMENTS" "$ACCEPTANCE_STATE" "$RUNBOOK_HEAD" <<'PY'
+python3 - "$DOCTOR_JSON" "$PACKAGE_ROOT" "$TARGET_CODEX_HOME" "$SKILL_ROOT" "$REQUIREMENTS" <<'PY'
 import hashlib
 import json
-import os
 import pathlib
-import stat
 import sys
 import tomllib
 
@@ -626,19 +575,6 @@ package_root = pathlib.Path(sys.argv[2])
 codex_home = pathlib.Path(sys.argv[3])
 skill_root = pathlib.Path(sys.argv[4])
 requirements_path = pathlib.Path(sys.argv[5])
-acceptance_state_path = pathlib.Path(sys.argv[6])
-runbook_head = sys.argv[7]
-
-state_stat = acceptance_state_path.stat(follow_symlinks=False)
-assert stat.S_ISREG(state_stat.st_mode)
-assert state_stat.st_uid == os.getuid()
-assert stat.S_IMODE(state_stat.st_mode) == 0o600
-assert state_stat.st_nlink == 1
-acceptance_state = json.loads(acceptance_state_path.read_text(encoding="utf-8"))
-assert set(acceptance_state) == {"runbook_head", "candidate_zip_sha256"}
-assert acceptance_state["runbook_head"] == runbook_head
-assert len(acceptance_state["candidate_zip_sha256"]) == 64
-assert all(char in "0123456789abcdef" for char in acceptance_state["candidate_zip_sha256"])
 
 package = json.loads((package_root / "package.json").read_text(encoding="utf-8"))
 upstream_manifest = json.loads((package_root / "upstream-manifest.json").read_text(encoding="utf-8"))
@@ -727,7 +663,6 @@ print("PWF_DEEP_CHECK_BUNDLE_CONTRACT_PATH=" + bundle_path)
 print("PWF_DEEP_CHECK_BUNDLE_CONTRACT_ID=" + bundle["contract_id"])
 print("PWF_DEEP_CHECK_BUNDLE_SCHEMA=" + str(bundle["schema_version"]))
 print("PWF_DEEP_CHECK_INSTALLED_ROOT=" + bundle["roots"]["installed"])
-print("PWF_DEEP_CHECK_CANDIDATE_ZIP_SHA256=" + acceptance_state["candidate_zip_sha256"])
 print("INSTALLER_VERSION=" + package["version"])
 print("RELEASE_ARTIFACT_ENTRIES=" + str(len(artifact["entries"])))
 print("INSTALLED_RUNTIME_FILES=" + str(len(actual)))
@@ -760,7 +695,6 @@ set -Eeuo pipefail
 
 readonly ZIP_URL="__IMMUTABLE_ZIP_URL__"
 readonly ZIP_SHA256="__IMMUTABLE_ZIP_SHA256__"
-WORKSPACE_ROOT="$(git rev-parse --show-toplevel)"
 
 case "$ZIP_URL$ZIP_SHA256" in
   *__*) printf 'Published deep check is blocked: immutable ZIP inputs are unresolved\n' >&2; exit 64 ;;
@@ -773,42 +707,6 @@ test "${#ZIP_SHA256}" -eq 64
 case "$ZIP_SHA256" in
   *[!0-9a-f]*) printf 'Published deep check requires a lowercase SHA-256\n' >&2; exit 64 ;;
 esac
-
-python3 - "$WORKSPACE_ROOT" <<'PY'
-import pathlib
-import re
-import subprocess
-import sys
-
-root = pathlib.Path(sys.argv[1])
-active = root / ".planning" / ".active_plan"
-plan_id = active.read_text(encoding="utf-8").strip()
-assert re.fullmatch(r"\d{4}-\d{2}-\d{2}-pwf-cloud-acceptance-v1-[0-9a-f]{8}", plan_id)
-plan = root / ".planning" / plan_id
-
-expected = {
-    ".planning/.active_plan": " M",
-    f".planning/{plan_id}/task_plan.md": "??",
-    f".planning/{plan_id}/progress.md": "??",
-    f".planning/{plan_id}/findings.md": "??",
-}
-raw = subprocess.run(
-    ["git", "-C", str(root), "status", "--porcelain=v1", "-z", "--untracked-files=all"],
-    check=True,
-    stdout=subprocess.PIPE,
-).stdout.decode("utf-8")
-actual = {record[3:]: record[:2] for record in raw.split("\0") if record}
-assert actual == expected
-
-task = (plan / "task_plan.md").read_text(encoding="utf-8")
-assert "PWF_CLOUD_ACCEPTANCE_CANONICAL_V1" in task
-assert "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_COMPLETED_V1" in task
-assert "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_ACTIVE_V1" in task
-assert not (plan / ".pwf-codex-managed").exists()
-assert not (plan / ".mode").exists()
-print("PWF_CANONICAL_WORKTREE=EXACT_FIXTURE_ONLY")
-print("PWF_CANONICAL_PLAN_ID=" + plan_id)
-PY
 
 VERIFY_DIR="$(mktemp -d)"
 trap 'rm -rf -- "$VERIFY_DIR"' EXIT

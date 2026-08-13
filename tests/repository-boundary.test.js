@@ -176,9 +176,8 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(acceptanceTemplate, /C 段改动只保留在工作树，不得提交/);
   assert.match(acceptanceTemplate, /YYYY-MM-DD-pwf-cloud-acceptance-v1-xxxxxxxx/);
   assert.match(acceptanceTemplate, /PWF_CLOUD_ACCEPTANCE_BASELINE_CREATED plan_id=PLAN_ID/);
-  assert.equal((acceptanceTemplate.match(/PWF_CANONICAL_WORKTREE=EXACT_FIXTURE_ONLY/g) || []).length, 2,
-    "both deep-check channels must enforce fixture-only repository writes");
-  assert.match(acceptanceTemplate, /PWF_DEEP_CHECK_CANDIDATE_ZIP_SHA256/);
+  assert.match(acceptanceTemplate, /PWF_WORKTREE_CHANGES=PLANNING_ONLY/);
+  assert.match(acceptanceTemplate, /grep -Ev '\^\.\. \\.planning\/'/);
   assert.doesNotMatch(acceptanceTemplate, /PWF_DEEP_CHECK_PROTOCOL=MANIFEST_ROUTED_BUNDLE_V2/);
   for (const fact of [
     "PWF_DEEP_CHECK_MANIFEST_SCHEMA",
@@ -193,9 +192,7 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
     assert.equal((acceptanceTemplate.match(new RegExp(fact, "g")) || []).length, 2,
       `${fact} must be emitted by both deep-check channels`);
   }
-  assert.match(acceptanceTemplate, /acceptance_state\["runbook_head"\] == runbook_head/);
-  assert.match(acceptanceTemplate, /os\.O_WRONLY \| os\.O_CREAT \| os\.O_EXCL/);
-  assert.doesNotMatch(acceptanceTemplate, /^\. "\$ACCEPTANCE_STATE"$/m);
+  assert.doesNotMatch(acceptanceTemplate, /ACCEPTANCE_STATE|pwf-source-candidate-acceptance\.json/);
   assert.match(acceptanceTemplate, /bundle\["roots"\]\["installed"\]/);
   assert.equal((acceptanceTemplate.match(/for section in \("upstream_files", "local_files", "installed_contracts"\):/g) || []).length, 4,
     "both deep checks must derive inventory and hashes from all v2 bundle partitions");
