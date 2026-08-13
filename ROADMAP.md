@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.0-dev` zero-hash development candidate；F0/F1A/F1B complete；F2A/F2B Source/Candidate Cloud PASS；F3 未授权 |
+| 当前开发列车 | `v0.4.0-dev` zero-hash development candidate；F0/F1A/F1B complete；F2A/F2B Source/Candidate Cloud PASS；F3 Discovery conditional-go 到 F3A，implementation/live 未授权 |
 | 当前已接受版本 | `v0.3.5`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.4` immediate fallback |
 | 回退证据链 | immutable `v0.3.3` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4 与 F2A/F2B Discovery complete；F1 foundation 与 F2A/F2B read-only consumer gates complete；停在 F3 Discovery/authorization 之前 |
+| 当前 programme 边界 | Product Phase 4、F2A/F2B 与 F3 Discovery complete；F1 foundation 与 F2A/F2B read-only consumer gates complete；停在 F3A foundation implementation 授权之前 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.3.5` 已完成 immutable publication、公开下载/安装验收与 pointer-only promotion；只读 postflight 确认它为
@@ -79,8 +79,9 @@ implementation 已获维护者授权并按该设计施工；本地闭合与 Sour
 F2B 专项 Discovery 已冻结为 `CONDITIONAL_GO_TO_F2B_READ_ONLY_IMPLEMENTATION`：旧 smart token 不得静默扩大为
 autonomous 授权；候选 autonomous commit point 必须与 profile 绑定、最后写入。owned runtime 可在既有只读 private-
 snapshot boundary 内完成 exact attestation、nonce 与 bounded ledger admission；该 read-only implementation 已获授权，并已
-闭合本地与 Source/Candidate/no-live Cloud gate。Cloud prepare/review/follow-up-activate 仍只是待 F3 证明的
-产品假设，F3 未授权；如果 lifecycle 最终不可行，兜底仍是回退 smart-only 或 defer，不能发布 unreachable code。
+闭合本地与 Source/Candidate/no-live Cloud gate。F3 Discovery 已选择 Git-backed preparation + activation-only commits，
+并将后继拆为 F3A repository/producer/runbook foundation、F3B live lifecycle 与 F3C disarm-first rollback；当前只
+conditional-go 到尚未授权的 F3A。如果 lifecycle 最终不可行，兜底仍是回退 smart-only 或 defer，不能发布 unreachable code。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
 bootstrap/acceptance；当前窗口为 v0.4.0-dev candidate + v0.3.5 accepted。v0.3.4
@@ -93,7 +94,7 @@ pre-release；多个低风险 Phase 也只有在独立评审后才能进入同�
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 development identity → F1A/F1B inactive foundation → F2A smart → F2B autonomous → F3 Fresh/Resume/rollback Cloud；legacy 默认不变 | F1/F2A/F2B Source/Candidate Cloud PASS；F3 未授权 |
+| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | F1/F2A/F2B Source/Candidate Cloud PASS；F3 Discovery conditional-go，F3A 未授权 |
 | 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest 各自独立 gate；必须有 use case、latency/token budget 与 Cloud 证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7 前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan 时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6 进入 Discovery |
@@ -107,8 +108,8 @@ Phase 经独立 gate 后被明确合并，则封板当时获批的同一版本�
 ### 4.1 Phase 4 已采纳 gate 路线
 
 Phase 4 保持 Phase 4.1 冻结的 hybrid owned-boundary 与两个现有 turn-start events，不改变主架构；内部按
-风险和故障域拆成六个 gate。完整 programme 顺序为
-`F0 → F1A → F1B → F2A → F2B → F3`：
+风险和故障域拆成八个 gate。完整 programme 顺序为
+`F0 → F1A → F1B → F2A → F2B → F3A → F3B → F3C`：
 
 | Gate | 范围 | 必须保持的边界 | 典型故障归属 |
 |---|---|---|---|
@@ -117,7 +118,9 @@ Phase 4 保持 Phase 4.1 冻结的 hybrid owned-boundary 与两个现有 turn-st
 | F1B — Inactive runtime foundation | plan request/result v2、owned state reader/normalizer、production `allowed_profiles=[legacy]` | marker 仍不可达；现有 Host 输出与 v0.3.5 等价 | owned runtime、adapter/runtime protocol |
 | F2A — Smart activation | 独立 versioned managed commit point + upstream smart profile，只改变 plan 选段 | 未 armed 时不读取旧 `.mode`；不读取 nonce/attestation/ledger；不接受 gated | smart selection、state admission 与 opt-in policy |
 | F2B — Autonomous activation | attestation、exact nonce、normalized ledger | raw progress 不得回退；无效或不完整状态拒绝，不降级 legacy | state validation、tamper/refusal、ledger rendering |
-| F3 — Cloud and rollback acceptance | Fresh、UserPrompt、real Resume、cache reuse、opt-out/re-arm 与双向 rollback | live Cloud 不等于 Release；失败不得产生 partial takeover 或 snapshot residue | Cloud lifecycle、takeover、rollback |
+| F3A — Lifecycle foundation | active-scope state governance、fail-closed prepare/verify、exact two-commit relation 与专用 runbook | managed runtime 仍只读；无 live activation；`.planning/` 仍在 Release 外 | repository/producer/runbook |
+| F3B — Live Cloud lifecycle | exact activated commit 上的 smart/autonomous Fresh、UserPrompt、real Resume、tamper refusal、disarm/re-arm | cache 不是 correctness boundary；autonomous armed task bytes冻结；不执行 rollback | Cloud lifecycle、takeover |
+| F3C — Disarm-first rollback | committed disarm 后 candidate → immutable v0.3.5 → candidate reinstall 与 Fresh/Resume/doctor | live Cloud 不等于 Release；禁止 runtime-only rollback 后 dormant activation 复活 | installed state、workspace intent、rollback |
 
 F0 是 Phase 4 的正式前置 gate，不是 F1A 内部顺手改版本号。它只建立可变的开发身份；现已独立完成。
 F1A 也已闭合 schema 4、bundle/Release v2、placement、entry mode 与 exact v0.3.5 installed-state transition，且未改变
@@ -127,7 +130,8 @@ Discovery 与 implementation。首次 Linux/Source-Candidate no-live 执行暴�
 写权限缺口，只保留为诊断/功能证据；协议修正后的 Fresh run 已从同一 exact HEAD 闭合 Linux 零 skip、deterministic
 ZIP、B～E blackbox 与 manifest-routed v2 deep check。F2A Source/Candidate/no-live Cloud 因此 PASS。维护者随后只授权
 F2B Discovery；该探路已 conditional-go，维护者随后授权并完成本地 read-only implementation 与
-Source/Candidate/no-live Cloud 验收。当前停止线是 F3 Discovery/authorization 之前；F2B PASS 不自动进入 F3。
+Source/Candidate/no-live Cloud 验收。F3 Discovery 随后已关闭并给出 `CONDITIONAL_GO_TO_F3A_IMPLEMENTATION`；当前停止线是
+F3A foundation implementation 授权之前。F2B/F3 Discovery PASS 都不自动进入 implementation 或 live Cloud。
 
 F1A/F1B 是独立审查、测试和停止点，不强制形成两个可发布的半成品。只要 runtime/schema bytes 会影响 bundle、
 manifest 或 ZIP hash，最终 candidate 就必须在同一完整 transaction 内使 contract、代码、inventory、mode 与 hash
@@ -182,13 +186,14 @@ F2B 没有改变 Phase 4.1 的 hybrid owned-boundary，也没有新增 Host even
 验证 captured task digest 和全部 state，只把 ledger `tick/event` 写进 private snapshot；零 ledger 合法，raw
 `progress.md` 不读取。invalid/incomplete/mutated/over-budget state 只拒绝。
 
-Cloud activation 只是假设，不是当前功能事实。F3 先验证 Git-backed 双阶段路线：准备 state 与最后 activation 分属两个
-经用户检查/merge 的 commit/PR，再从 exact activated commit 启动新任务；只有目标仓库无法安全承载该状态时，才测试同一
-Cloud chat 的 review + follow-up 备选，并把 cache/worktree 持续性作为显式风险。F2B implementation 若获授权，应先完成
-read-only consumer、关系合同、race/tamper 与 Source/Candidate no-live gate 后停止；F3 再用 Fresh/Resume/cache、disarm/
-re-arm 和 rollback 证据决定工作流能否成为受支持能力。两条路线都失败则 `NO_GO/defer`，不得为了保留“以后可能有用”而
-发布 unreachable reader/writer；当前 request/result enum、adapter capability lock、runtime refusal 和 negative tests 已经
-是足够的未来接口。完整取舍与生命周期由 README 文档地图指向的唯一 Phase 历史索引保存。
+Cloud activation 仍不是当前功能事实。F3 Discovery 已确认 Git-backed 双阶段路线为首选：preparation 与最后 activation
+必须是两个经用户检查的 exact commit，Fresh task 从 activated commit 启动；同一 Cloud chat 的未提交 follow-up state
+因没有 durable authorization ABI 而降为 `DEFERRED/EXPERIMENTAL`，不进入首轮稳定验收。后继必须按 F3A → F3B → F3C
+逐门授权：先补 active-scope repository admission、fail-closed prepare/verify 与 runbook；再验 Fresh/Resume、disarm/re-arm；
+最后才做 disarm-first rollback。autonomous armed 时 task bytes冻结，修改计划必须 disarm、重新 attestation、再以新的
+activation-only commit re-arm；只回滚 runtime 而保留 token 会产生未来升级复活风险，属于禁止路线。任何 gate 失败都可
+`NO_GO/defer`，不得为了保留“以后可能有用”而发布 unreachable reader/writer。完整取舍与生命周期只从 README 文档地图
+进入 Phase 历史索引查看。
 
 首选失败后切换备选仍属于未发布 `v0.4.0-dev` programme：使用新的 alpha/beta candidate，撤销失败 bytes 并重新闭合
 hash、ZIP、Cloud 与 rollback gates，不自动改成 `v0.4.1`。如果先发布 smart-only stable `v0.4.0`，以后新增 autonomous
