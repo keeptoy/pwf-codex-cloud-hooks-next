@@ -151,9 +151,10 @@ Discovery。activation token 始终是非秘密常量，不得承载身份、授
 
 后继 F2A implementation 已按本里程碑的独立 commit point、activation-first zero-read、two-pass revalidation 与
 schema-v2 reuse 路线落到 `v0.4.0-dev` 当前树，并由更强的 armed/unarmed/refusal/race/disarm 与真实
-adapter/runtime 组合测试接管 F1 临时 seam。当前状态是本地实现与供应链闭合；Linux/Source-Candidate/no-live
-Cloud hard acceptance 尚未完成，因此本尾注不把 F2A 标为 gate PASS，也不产生 F2B/F3 授权。精确 current 状态
-只见 [`ROADMAP`](../../ROADMAP.md) 与活动 task plan。
+adapter/runtime 组合测试接管 F1 临时 seam。后继 Linux/Source-Candidate/no-live Cloud hard acceptance 已闭合，
+证明 F2A candidate 的 portable Linux、供应链、安装与 markerless legacy 默认成立；它仍不等于真实 smart opt-in
+lifecycle，也不产生 F2B/F3 授权。精确 current 状态只见 [`ROADMAP`](../../ROADMAP.md) 与活动 task plan，exact
+source/ZIP/hash 与黑盒结果只见版本 acceptance。
 
 <a name="phase-4-4-post-implementation-lifecycle-reconciliation"></a>
 
@@ -176,8 +177,22 @@ Cloud hard acceptance 尚未完成，因此本尾注不把 F2A 标为 gate PASS�
 | nonce、attestation、ledger reader/writer、gated state | **DENIED / DEFERRED** | F2B / Phase 8 尚未授权 | source-residue、call-edge 与 future-profile refusal tests | 只能经对应 Discovery + implementation gate 准入 |
 
 `ledger-summary.sh` 仍因 pristine autonomous/gated 供应链依赖留在 bundle；这不等于 F2A owned runtime 已读取 ledger。
-F2A Source/Candidate Cloud 证据完成后，应在版本 acceptance 新增独立 evidence 段，不能改写本历史表，也不能让
-F1B 的旧 hash 冒充 F2A 当前 bytes。
+F2A Source/Candidate Cloud 证据已在版本 acceptance 的独立 evidence 段封账，没有改写本历史表，也没有让 F1B
+的旧 hash 冒充 F2A 当前 bytes。
+
+<a name="phase-4-4-post-acceptance-governance-note"></a>
+
+## Post-acceptance governance note
+
+首次 Cloud deep check 失败来自外部复用的退役 v1 脚本，不是产品、安装或 current template defect；Cloud 模型随后
+自动修复并创建 PR，令 checkout HEAD 漂移，暴露的是验收任务写权限没有收窄。后继模板因此明确禁止自动修复以及
+branch、commit、push、PR：只有 C 可创建带日期与随机 run ID 的 canonical planning fixture，D/E 只通过 Hook 读取，
+9.1 保持只读、打印 manifest-routed contract facts 与 HEAD，并拒绝 `.planning/` 之外的仓库改动。
+
+这些修正只治理验收 harness 的权限、重复运行和证据身份，没有改变本里程碑冻结的独立 commit point、legacy
+zero-read、fail-closed admission、schema-v2 reuse 或生命周期表。精确执行结果继续只由
+[`v0.4.0-dev` acceptance](../v0.4.0-dev-cloud-hard-acceptance.md#v0-4-0-dev-f2a-source-candidate-evidence) 管理；本尾注只解释
+“为什么后来微调验收代码”，不复制动态测试数、source 或 ZIP hash。
 
 <a name="phase-4-4-immutable-evidence"></a>
 
