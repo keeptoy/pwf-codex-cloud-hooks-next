@@ -13,6 +13,8 @@ bounded normalized ledger；保持 legacy/smart 行为、managed workspace read-
   disposition 对账，并并入同一 F2B 本地提交。
 - Maintainer acceptance authorization: 核实并回写 F2B Linux/Source-Candidate/no-live Cloud exact evidence，关闭本 scope；
   不进入 F3。
+- Maintainer harness follow-up: 把 Cloud 模型对异步命令中间输出的误判收敛为通用模板规则和版本事故分类；不修改脚本、
+  production 或 F2B gate 结论。
 - Authorized: production runtime/adapter、相关 tests/contracts hash/inventory、README/ARCHITECTURE/DESIGN/ROADMAP/CHANGELOG、
   current acceptance template 必要同步；本地完整回归、deterministic candidate、独立本地 commit。
 - Not authorized: 创建真实用户项目 activation/nonce/attestation/ledger；Cloud Git-backed 或 same-chat activation；F3；新增
@@ -35,6 +37,7 @@ autonomous state、进入 live Cloud、seal 或远端写入。
 | I5 Cloud no-live handoff | completed | 精确 HEAD/模板/预期输出交给维护者；不自行 push、不进入 F3 |
 | I6 Phase 4.5 post-implementation reconciliation | completed | 方案与落地差异、对象 lifecycle、F3 PASS/NO_GO 处置及历史索引闭合 |
 | I7 Cloud no-live evidence closure | completed | exact HEAD、Linux 零 skip、deterministic ZIP、install/doctor、B～E 与 9.1 evidence 写回并停在 F3 前 |
+| I8 Asynchronous runner completion protocol | completed | 无最终 exit code 不判成败；session 必须轮询；事故分类与防回归断言闭合 |
 
 ## Lifecycle ledger
 
@@ -75,6 +78,8 @@ autonomous state、进入 live Cloud、seal 或远端写入。
 | Local stage/commit could not create `.git/index.lock` inside the managed sandbox | 1 | No staging or commit occurred; rerun the exact scoped git add/check/commit outside the sandbox. |
 | Phase 4.5 documentation boundary tests could not spawn Node test workers in the managed Windows sandbox (`spawn EPERM`) | 1 | No test file executed and no repository file changed; record the platform limitation and rerun the exact read-only focused tests with approved escalation. |
 | First F2B Cloud evidence boundary run had 1 failure because the test required the contiguous prose `F1 foundation complete` | 1 | ROADMAP still stated F1 foundation and all F2 gates complete on one line; classify as assertion drift and narrow the regex to preserve the semantic same-line anchor without freezing word order. |
+| Cloud model treated an intermediate 9.1 stdout chunk as a completed failure and claimed an exit code that the tool had not returned | 1 | Classified as asynchronous tool-state misclassification, not a script/product failure. Polling to explicit exit code returned the remaining PASS output and exit 0; add a general no-final-exit/no-verdict protocol to the Cloud task prefix and hard stops. |
+| First async-protocol boundary run had 1 failure because its regex required the phrase `明确最终 exit_code` to appear after the polling clause | 1 | The template contained all required semantics but in a different clause order; split the guard into independent session/poll/exit and no-final-exit assertions instead of freezing Chinese prose order. |
 
 ## Current status
 

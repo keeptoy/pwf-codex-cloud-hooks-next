@@ -25,6 +25,9 @@
 - Linux/Source-Candidate no-live Cloud later closed from the exact local F2B commit with zero failed/skipped portable tests, a
   byte-identical candidate ZIP and healthy installed adapter-only runtime. This proves the read-only consumer on the target platform,
   not the Git-backed or same-chat activation producer/lifecycle reserved for F3.
+- A Cloud runner may yield partial stdout plus a live session before a long command exits. Stdout markers are observations, not process
+  status: no PASS/FAIL conclusion is valid without the tool's explicit final exit code; a lost/unresolved session is INCOMPLETE/UNKNOWN.
+  This is a general acceptance harness rule, not PWF-specific script logic.
 
 ## Implementation bounds
 

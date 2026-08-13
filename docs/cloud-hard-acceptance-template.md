@@ -79,6 +79,8 @@ contract/test/oracle，不必把它提升为通用黑盒协议。
 本轮是验收任务，不是开发或修复任务。禁止创建或切换 branch，禁止 commit、push、创建或更新 PR/Release，禁止调用任何会写远端的 GitHub 操作。发现脚本、文档、产品或环境问题时立即停止并原样报告，不得自行修复后继续记 PASS。
 
 除 Cloud hard acceptance 模板 C 段明确列出的 canonical planning fixture 与 .planning/.active_plan 外，不得修改仓库文件；C 段改动只保留在工作树，不得提交。不得修改 runtime、contracts、manifest、installer、builder、bootstrap 或其他候选/Release 输入。
+
+命令的 stdout/stderr 分片不代表进程已经结束。若执行工具返回 session_id、running 状态或没有明确最终 exit_code，必须继续轮询同一 session，直到取得真实 exit_code；不得因当前分片尚未出现 PASS、首次等待超时或输出暂时静默而推断成功或失败。只有明确 exit_code=0 才能报告该命令 PASS，明确非零 exit_code 才能报告 FAIL；session 丢失或始终无法取得最终状态时只能报告 INCOMPLETE/UNKNOWN，禁止猜测或补写工具未返回的 exit code。最终汇报必须保留实际执行的命令/脚本身份、最终 exit code 和关键 stdout/stderr。
 ~~~
 
 同一 task 后续消息继续受该前缀约束。模型违反该边界、自动修复后 commit，或创建 PR，当前通道立即作废；不能用
@@ -112,6 +114,8 @@ tagless checkout 不应伪造 remote/tag；Published Release 也不能使用 wor
 - 验收期间出现 branch/commit/push/PR/Release 写入、自动修复，或 C 段之外的仓库改动；
 - post-resume deep check 没有从 manifest 当前路由打印 release/bundle contract path、id、schema 和 installed root，
   或实际执行的是以前保存的 `/tmp`/聊天脚本而不是当前 checkout/template 中的 9.1/9.2；
+- 异步命令仍返回 session/running 或没有明确最终 exit code；此时状态只能是 `INCOMPLETE/UNKNOWN`，必须继续轮询，
+  不得把部分 stdout、缺少 PASS marker 或首次 yield timeout 归类为产品/脚本失败；
 - doctor 不健康、repairable、存在 error/blocker 或 snapshot residue；
 - Published 脚本仍有占位符，或者使用 moving URL、未校验字节、本地 override 或 checkout 工具。
 

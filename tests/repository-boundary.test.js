@@ -175,6 +175,10 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(acceptanceTemplate, /不要创建或修改任何 \.pwf-codex-managed、\.mode/);
   assert.match(acceptanceTemplate, /禁止创建或切换 branch，禁止 commit、push、创建或更新 PR\/Release/);
   assert.match(acceptanceTemplate, /C 段改动只保留在工作树，不得提交/);
+  assert.match(acceptanceTemplate, /stdout\/stderr 分片不代表进程已经结束/);
+  assert.match(acceptanceTemplate, /session_id[\s\S]*继续轮询同一 session[\s\S]*exit_code/);
+  assert.match(acceptanceTemplate, /没有明确最终 exit_code/);
+  assert.match(acceptanceTemplate, /INCOMPLETE\/UNKNOWN[\s\S]*禁止猜测或补写工具未返回的 exit code/);
   assert.match(acceptanceTemplate, /YYYY-MM-DD-pwf-cloud-acceptance-v1-xxxxxxxx/);
   assert.match(acceptanceTemplate, /PWF_CLOUD_ACCEPTANCE_BASELINE_CREATED plan_id=PLAN_ID/);
   assert.match(acceptanceTemplate, /PWF_WORKTREE_CHANGES=PLANNING_ONLY/);
@@ -362,6 +366,8 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(f2bEvidence, /144 tests，144 pass，0 fail，0 skipped/);
   assert.match(f2bEvidence, /df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c/);
   assert.match(f2bEvidence, /F2B_SOURCE_CANDIDATE_CLOUD_PASS \/ STOP_BEFORE_F3/);
+  assert.match(f2bEvidence, /asynchronous tool-state misclassification/);
+  assert.match(f2bEvidence, /stdout 不是进程状态/);
   const f2aEvidenceStart = acceptance.indexOf('<a name="v0-4-0-dev-f2a-source-candidate-evidence"></a>');
   const f2aDelta = acceptance.slice(f2aDeltaStart, f2aEvidenceStart);
   for (const sentinel of [

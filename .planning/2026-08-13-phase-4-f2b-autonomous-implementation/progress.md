@@ -46,3 +46,9 @@
   a non-duplicating Phase 4.5 Cloud note. F3 and real activation remain unauthorized.
 - Final documentation/repository boundary regression passed 16/16 after one over-specific F1 prose assertion was narrowed to its
   same-line semantic anchor; `git diff --check` passed and no production/contract/Release bytes changed in this evidence-only closure.
+- Classified the final Cloud anecdote as asynchronous tool-state misclassification: the first 9.1 response was a partial stdout chunk
+  with a live session and no exit code, while proper polling later returned the remaining PASS output and exit 0. Added a general
+  session/exit-code rule to the reusable Cloud task prefix and hard stops, recorded the concise incident in v0.4.0-dev acceptance, and
+  added repository guards; no script or product byte changed.
+- Final documentation/repository boundary regression passed 16/16 after the first guard was split to avoid Chinese clause-order
+  coupling; `git diff --check` passed. The validation command itself yielded a live session and was correctly polled to explicit exit 0.
