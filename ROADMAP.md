@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.0-dev` zero-hash development candidate；F0/F1A/F1B complete；F2A implementation 本地完成，修正验收写权限后等待 Fresh no-live Cloud 重跑；上一轮 F1 zero-hash Source/Candidate/no-live Cloud PASS |
+| 当前开发列车 | `v0.4.0-dev` zero-hash development candidate；F0/F1A/F1B complete；F2A implementation 与 Source/Candidate/no-live Cloud PASS；F2B/F3 未授权 |
 | 当前已接受版本 | `v0.3.5`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.4` immediate fallback |
 | 回退证据链 | immutable `v0.3.3` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4 总体/F2A Discovery 与 F1 foundation complete；F2A implementation local complete，Cloud acceptance pending；F2B/F3 未授权 |
+| 当前 programme 边界 | Product Phase 4 总体/F2A Discovery 与 F1 foundation complete；F2A Source/Candidate/no-live Cloud complete；F2B/F3 未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.3.5` 已完成 immutable publication、公开下载/安装验收与 pointer-only promotion；只读 postflight 确认它为
@@ -73,7 +73,8 @@ package/machine identity 和 zero-hash bootstrap；F1A 已完成 contract/source
 F2A 专项 Discovery 随后冻结为 `CONDITIONAL_GO_TO_F2A_IMPLEMENTATION`：managed activation commit point 与
 upstream `.mode` profile 分离，未 armed 时 production 不读取旧 `.mode`；F2A 复用 request/result v2 和 pristine
 smart renderer，不扩大 Host event、upstream inventory 或 workspace-write 边界。该结论只完成施工设计，F2A
-implementation 已获维护者授权并按该设计施工；完成本地闭合不等于 Linux/Cloud acceptance，也不授权 F2B/F3。
+implementation 已获维护者授权并按该设计施工；本地闭合与 Source/Candidate/no-live Cloud acceptance 均已通过，
+但仍不等于真实 smart opt-in lifecycle acceptance，也不授权 F2B/F3。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
 bootstrap/acceptance；当前窗口为 v0.4.0-dev candidate + v0.3.5 accepted。v0.3.4
@@ -86,7 +87,7 @@ pre-release；多个低风险 Phase 也只有在独立评审后才能进入同�
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 development identity → F1A/F1B inactive foundation → F2A smart → F2B autonomous → F3 Fresh/Resume/rollback Cloud；legacy 默认不变 | F1 foundation/Cloud PASS；F2A implementation local complete、Fresh no-live Cloud pending；F2B/F3 未授权 |
+| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 development identity → F1A/F1B inactive foundation → F2A smart → F2B autonomous → F3 Fresh/Resume/rollback Cloud；legacy 默认不变 | F1 foundation/Cloud PASS；F2A implementation 与 Source/Candidate/no-live Cloud PASS；F2B/F3 未授权 |
 | 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest 各自独立 gate；必须有 use case、latency/token budget 与 Cloud 证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7 前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan 时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6 进入 Discovery |
@@ -116,9 +117,10 @@ F0 是 Phase 4 的正式前置 gate，不是 F1A 内部顺手改版本号。它�
 F1A 也已闭合 schema 4、bundle/Release v2、placement、entry mode 与 exact v0.3.5 installed-state transition，且未改变
 legacy runtime behavior。`v0.4.0-dev` 仍是 zero-hash、未封板且未发布的 source candidate，但其
 Source/Candidate/no-live Cloud foundation 已 PASS。F1B 结束后的停止点已经履行；维护者随后只授权并完成 F2A
-Discovery，随后已获授权进入 F2A implementation；本地实现已经通过。首次 Linux/Source-Candidate no-live 执行暴露
-Cloud 模型自动修复并创建 PR 的验收写权限缺口，只保留为诊断/功能证据；当前停止线是在协议修正后 Fresh 重跑并
-闭合 exact HEAD/ZIP、Linux suite 与 B/D/E2 原始 evidence，不自动进入 F2B/F3。
+Discovery 与 implementation。首次 Linux/Source-Candidate no-live 执行暴露 Cloud 模型自动修复并创建 PR 的验收
+写权限缺口，只保留为诊断/功能证据；协议修正后的 Fresh run 已从同一 exact HEAD 闭合 Linux 零 skip、deterministic
+ZIP、B～E blackbox 与 manifest-routed v2 deep check。F2A Source/Candidate/no-live Cloud 因此 PASS；当前停止线是等待
+维护者决定是否授权后继 F2B，仍不自动进入 F2B/F3。
 
 F1A/F1B 是独立审查、测试和停止点，不强制形成两个可发布的半成品。只要 runtime/schema bytes 会影响 bundle、
 manifest 或 ZIP hash，最终 candidate 就必须在同一完整 transaction 内使 contract、代码、inventory、mode 与 hash

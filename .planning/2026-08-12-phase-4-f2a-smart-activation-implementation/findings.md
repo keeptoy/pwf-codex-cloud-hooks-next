@@ -116,3 +116,12 @@
   unique C plan ID and manifest-routed facts. Source HEAD/ZIP remain explicit 4.1 evidence and are compared during evidence writeback.
 - The minimal 9.1 guard only rejects changes outside `.planning/`. It is defense-in-depth for accidental product edits, not a second
   machine contract for the exact canonical fixture shape.
+
+## Final F2A acceptance conclusion
+
+- The Fresh successor run preserved one exact source identity from setup through post-Resume deep check and left only the authorized
+  planning fixture dirty. This closes the prior auto-repair/PR ambiguity without adding a second cross-task identity protocol.
+- Linux zero-skip coverage, deterministic candidate bytes, manifest-routed v2 installation checks and markerless legacy Host
+  observations are mutually consistent. F2A Source/Candidate/no-live Cloud can therefore pass.
+- This is not live smart lifecycle evidence. It does not cover activation, opt-out/re-arm, cache/rollback or autonomous state, so the
+  repository must stop before F2B/F3 until the maintainer opens a new gate.

@@ -95,3 +95,18 @@
 - Minimal P8 regression passed 146 tests: 128 pass, 0 fail and 18 honest Windows/POSIX skips. All four embedded Bash blocks and five
   remaining embedded Python blocks compile. Relative to the first P8 commit, the simplification removes about 180 lines and returns
   the suite to its prior module count while preserving no-auto-fix/no-PR, unique C identity and manifest-routed fact evidence.
+- Maintainer returned the successor Fresh no-live Cloud run from exact source
+  `31411b95d126ee9b27986fdcd72044f9474d3816`: the portable Linux suite passed 138/138 with zero skips; both independent
+  22-entry candidate builds were byte-identical at 82,635 bytes with SHA-256
+  `7f1b1bd30d73011b0003d9c7e67e2df31bd302a08932c1302a83a84636ac3db4`; setup finished with
+  `PWF_SOURCE_CANDIDATE_SETUP=PASS`.
+- The canonical fixture used unique plan ID `2026-08-13-pwf-cloud-acceptance-v1-8e109d64`; D observed the canary,
+  canonical marker, both markerless legacy sentinels, active plan, plan data, recent progress and planning context. The maintainer
+  reported the remaining B～E route complete while omitting its verbose raw transcript from the handoff.
+- Post-Resume deep check dynamically resolved manifest schema 4, Release/bundle v2 and the installed root; doctor, 22 Release
+  entries, 12 installed files, 4 pristine upstream files, authoritative bundle inventory, adapter-only policy and zero residue all
+  passed. The deep-check HEAD matched setup, worktree changes were planning-only and `PWF_SC_POST_RESUME=PASS` closed P9.
+- Evidence writeback verification passed the 9-test repository boundary module and the full 146-test local suite (128 pass, 0 fail,
+  18 honest Windows/POSIX skips). Importer, owned Python compile, Node/bootstrap syntax and diff checks passed; a local build/check
+  independently reproduced the reported 22 entries, 82,635 bytes and exact candidate SHA-256.
+- F2A is now `SOURCE_CANDIDATE_NO_LIVE_CLOUD_PASS`. Stop before F2B/F3 and wait for explicit maintainer authorization.

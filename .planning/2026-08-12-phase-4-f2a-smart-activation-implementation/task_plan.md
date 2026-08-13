@@ -14,9 +14,8 @@
 
 ## Next Step
 
-完成 Cloud 验收权限、唯一 canonical fixture、exact dirty-worktree 与 manifest-routed fact 输出修正并提交；等待维护者
-push 后按当前模板 Fresh 重跑。回传同一 Source/Candidate run 的 4.1 exact HEAD/ZIP、Linux suite、B/D/E2 双
-sentinel 与 9.1 摘要后闭合 evidence writeback；封账前不进入 F2B/F3。
+F2A implementation 与 Source/Candidate/no-live Cloud 已封账。等待维护者明确决定是否授权后继 F2B Discovery；
+在新授权前不进入 F2B implementation、F3、seal、publication、promotion 或任何远端写入。
 
 ## Phases
 
@@ -31,6 +30,7 @@ sentinel 与 9.1 摘要后闭合 evidence writeback；封账前不进入 F2B/F3�
 | P6 Multi-gate acceptance status correction | completed | 恢复版本内 gate 状态与当前验收增量，模板/治理/测试职责一致并独立 commit |
 | P7 Stale deep-check diagnosis and hardening | completed | 分类首次 Cloud 9.1、强化 v2 root/hash authority、加入 protocol/HEAD marker 并闭合复验规则 |
 | P8 Acceptance write-authority and repeatability correction | completed | 保留禁止自动 Git/PR、C 唯一 plan ID 与动态 contract facts；退役跨 task state、重复 oracle 和专门测试，最小 planning-only guard 与完整回归通过 |
+| P9 F2A Cloud evidence writeback | completed | exact source/ZIP、Linux 零 skip、B～E blackbox 与 manifest-routed v2 deep check 对账；版本 acceptance、ROADMAP 与活动状态同步 |
 
 ## Migration lifecycle ledger
 
@@ -85,4 +85,4 @@ sentinel 与 9.1 摘要后闭合 evidence writeback；封账前不进入 F2B/F3�
 
 ## Current status
 
-`F2A_IMPLEMENTATION / LOCAL_COMPLETE / CLOUD_ACCEPTANCE_PENDING`
+`F2A_COMPLETE / SOURCE_CANDIDATE_NO_LIVE_CLOUD_PASS / STOP_BEFORE_F2B_F3`

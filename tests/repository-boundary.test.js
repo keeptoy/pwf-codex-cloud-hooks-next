@@ -338,9 +338,10 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, /F1A contract\/source foundation[^\n]*`PASS`/);
   assert.match(acceptance, /F1B inactive runtime foundation[^\n]*`PASS`/);
   assert.match(acceptance, /F2A local implementation[^\n]*`PASS`/);
-  assert.match(acceptance, /F2A Source\/Candidate\/no-live Cloud[^\n]*`CURRENT \/ CLOUD_ACCEPTANCE_PENDING`/);
+  assert.match(acceptance, /F2A Source\/Candidate\/no-live Cloud[^\n]*`PASS`/);
   assert.equal((acceptance.match(/`NOT_AUTHORIZED`/g) || []).length, 2);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f2a-acceptance-delta"><\/a>$/m);
+  assert.match(acceptance, /^<a name="v0-4-0-dev-f2a-source-candidate-evidence"><\/a>$/m);
   assert.match(acceptance, /F2A test-harness deviation 与协议修正/);
   assert.match(acceptance, /stale external acceptance script/);
   assert.match(acceptance, /不作为最终 exact F2A gate 封账/);
@@ -350,10 +351,19 @@ test("change history, programme, provenance, and current acceptance keep separat
     "source-candidate-sequence", "source-candidate-setup", "source-candidate-deep-check",
     "blackbox-canonical-baseline", "blackbox-canonical-context", "blackbox-real-resume",
   ]) assert.match(acceptance, new RegExp(`cloud-hard-acceptance-template\\.md#${fragment}`));
+  const f2aDeltaStart = acceptance.indexOf('<a name="v0-4-0-dev-f2a-acceptance-delta"></a>');
+  const f2aEvidenceStart = acceptance.indexOf('<a name="v0-4-0-dev-f2a-source-candidate-evidence"></a>');
+  const f2aDelta = acceptance.slice(f2aDeltaStart, f2aEvidenceStart);
   for (const sentinel of [
     "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_COMPLETED_V1",
     "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_ACTIVE_V1",
-  ]) assert.equal((acceptance.match(new RegExp(sentinel, "g")) || []).length, 1);
+  ]) assert.equal((f2aDelta.match(new RegExp(sentinel, "g")) || []).length, 1);
+  const f2aEvidence = acceptance.slice(f2aEvidenceStart,
+    acceptance.indexOf("## F1B 验收增量（historical gate instance）"));
+  assert.match(f2aEvidence, /31411b95d126ee9b27986fdcd72044f9474d3816/);
+  assert.match(f2aEvidence, /138 tests，138 pass，0 fail，0 skipped/);
+  assert.match(f2aEvidence, /7f1b1bd30d73011b0003d9c7e67e2df31bd302a08932c1302a83a84636ac3db4/);
+  assert.match(f2aEvidence, /F2A_SOURCE_CANDIDATE_CLOUD_PASS \/ STOP_BEFORE_F2B_F3/);
   const currentTrainLine = roadmap.split(/\r?\n/)
     .find(line => line.startsWith("| 当前开发列车 |")) || "";
   const publishedReleaseComplete = candidate === accepted
@@ -369,12 +379,18 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
   }
   if (candidate !== accepted && /\b[a-f0-9]{64}\b/i.test(acceptance)) {
+    const currentEvidenceHeading = "## F2A Source/Candidate evidence";
+    const currentEvidenceAt = acceptance.indexOf(currentEvidenceHeading);
+    assert.notEqual(currentEvidenceAt, -1,
+      "current completed gate lacks an exact evidence heading");
+    assert.doesNotMatch(acceptance.slice(0, currentEvidenceAt), /\b[a-f0-9]{64}\b/i,
+      "exact evidence must not leak above its completed-gate heading");
     const historicalEvidenceHeading = "## F1B Source/Candidate evidence (historical gate instance)";
     const historicalEvidenceAt = acceptance.indexOf(historicalEvidenceHeading);
     assert.notEqual(historicalEvidenceAt, -1,
       "retained pre-current-gate evidence must live under an explicitly historical gate heading");
-    assert.doesNotMatch(acceptance.slice(0, historicalEvidenceAt), /\b[a-f0-9]{64}\b/i,
-      "historical exact evidence must not leak above its completed-gate heading");
+    assert.ok(historicalEvidenceAt > currentEvidenceAt,
+      "historical gate evidence must remain separate from current completed-gate evidence");
     assert.match(acceptance.slice(historicalEvidenceAt),
       /SOURCE_CANDIDATE_CLOUD_PASS \/ F1_FOUNDATION_COMPLETE/);
   }
