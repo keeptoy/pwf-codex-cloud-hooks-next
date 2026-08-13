@@ -42,6 +42,7 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 | Phase 4.2 | Phase 4～9 路线复核与决策里程碑：确认 Phase 4.1 已落实字段生命周期原则，并采纳 F1A/F1B/F2A/F2B/F3、activation protocol、可选 Phase 6、共用 evaluator 与 standing Release gate 校准；作为后继规划输入，不产生实施授权 | [`phase-4.2-programme-route-review.md`](phase-4.2-programme-route-review.md) |
 | Phase 4.3 | F1 foundation 实施规划里程碑：冻结 F0/F1A/F1B 文件与 authority、hash 传播、failing-first/platform gates、对象级迁移生命周期总账，并把 v0.3.5 forward migration 与 candidate-controlled rollback 明确为非对称合同；不表示 implementation 已授权或完成 | [`phase-4.3-f1-foundation-implementation-plan.md`](phase-4.3-f1-foundation-implementation-plan.md) |
 | Phase 4.4 | F2A smart activation Discovery 里程碑：选择独立 managed commit point、upstream profile 分区、two-pass state revalidation、schema-v2 reuse 与 F2A/F3 验收分工；里程碑本身为 conditional-go，后继实现状态与逐 seam 生命周期冷对账只见其尾注，current 状态仍只见 current authority | [`phase-4.4-f2a-smart-activation-discovery.md`](phase-4.4-f2a-smart-activation-discovery.md) |
+| Phase 4.5 | F2B autonomous activation Discovery 里程碑：冻结 profile-bound commit point、owned attestation/nonce/ledger admission、local/Cloud consent 分层与现有不可达 seam 兜底；结论为 conditional-go，不表示 autonomous 或 Cloud opt-in 已实施 | [`phase-4.5-f2b-autonomous-activation-discovery.md`](phase-4.5-f2b-autonomous-activation-discovery.md) |
 
 ## 阅读方式
 
