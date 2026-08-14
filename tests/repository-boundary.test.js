@@ -59,7 +59,8 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap, /F2B[^\n]*Source\/Candidate Cloud PASS/);
   assert.match(roadmap, /F2A\/F2B\/F3A Source\/Candidate Cloud PASS/);
   assert.match(roadmap, /F3B0 Discovery 与 F3B1 no-live protocol materialization complete/);
-  assert.match(roadmap, /F3B2～F3B4\/F3C 未授权/);
+  assert.match(roadmap, /F3B2 smart live 已授权并进入本地 validation-chain 准备/);
+  assert.match(roadmap, /F3B3\/F3B4\/F3C 未授权/);
 });
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
@@ -344,7 +345,8 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance,
     /F3B0 live-preflight Discovery[^\n]*`CONDITIONAL_GO_TO_F3B1_PROTOCOL_MATERIALIZATION`/);
   assert.match(acceptance, /F3B1 protocol materialization \/ no-live dry run[^\n]*`PASS`/);
-  assert.match(acceptance, /F3B2～F3B4 live \/ F3C rollback[^\n]*`NOT_AUTHORIZED`/);
+  assert.match(acceptance, /F3B2 smart live chain[^\n]*`AUTHORIZED \/ LOCAL_PREPARATION`/);
+  assert.match(acceptance, /F3B3\/F3B4 live \/ F3C rollback[^\n]*`NOT_AUTHORIZED`/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3a-acceptance-delta"><\/a>$/m);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3a-source-candidate-evidence"><\/a>$/m);
   const f3aEvidenceStart = acceptance.indexOf('<a name="v0-4-0-dev-f3a-source-candidate-evidence"></a>');
