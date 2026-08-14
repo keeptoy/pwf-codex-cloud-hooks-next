@@ -149,6 +149,7 @@ trusted surface；allowed helper roots、传递闭包和 pristine/managed 等价
 | [`cloud-fixtures.test.js`](tests/cloud-fixtures.test.js) | 带日期 Cloud lifecycle/Hook fixture 与 wrapper catch-up 兼容性 | Cloud-shaped fixture、owned catch-up | 跨平台重放；不替代 live Cloud gate |
 | [`contracts.test.js`](tests/contracts.test.js) | schema、manifest、overlay、runtime bundle 与 Release boundary 的关系 | machine contracts 与 integrity edges | 跨平台静态/关系断言 |
 | [`f3-lifecycle-foundation.test.js`](tests/f3-lifecycle-foundation.test.js) | active-scope state admission、Git-backed preparation/activation/disarm 关系与 F3 runbook 静态合同 | repository planning lifecycle、test-only structure helper、installed read-only probe seam | 使用 disposable workspace；Git transition 与 Bash syntax跨平台，live Cloud 另行验收 |
+| [`f3b-protocol.test.js`](tests/f3b-protocol.test.js) | F3B 双身份 setup/maintenance、隔离 smart/autonomous DAG 与 exact evidence record | 版本化 F3 runbook、disposable Git graph、test-only evidence validator | repository-only/no-live；真实 Cloud、activation 与 rollback 必须进入后继 gate |
 | [`golden-output.test.js`](tests/golden-output.test.js) | managed-legacy composition 与 canonical plan 输出兼容性 | adapter output golden fixtures | 跨平台 golden replay |
 | [`hook-adapter.test.js`](tests/hook-adapter.test.js) | Host 输入、canary、event dispatch、plan authority 与结果组合 | `hook_adapter.py` 的协议边界 | 跨平台，使用受控 child doubles |
 | [`import-runtime.test.js`](tests/import-runtime.test.js) | pinned archive、allowlist、确定性 import 与 destination drift | importer、upstream manifest、owned copy | 跨平台临时 archive/workspace |

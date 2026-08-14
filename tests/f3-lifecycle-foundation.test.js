@@ -137,7 +137,7 @@ test("F3 runbook freezes the no-live boundary and exact lifecycle checks", () =>
     "f3-safety-boundary", "f3-prepare-state", "f3-activation-only-commit", "f3-production-read-only-probe",
     "f3-disarm-commit", "f3-live-matrix", "f3-evidence-schema",
   ]) assert.match(runbook, new RegExp(`<a name="${anchor}"></a>`));
-  assert.match(runbook, /不得执行下列 prepare、activate、disarm 或 live Cloud 步骤/);
+  assert.match(runbook, /F3B1 不授权真实 prepare、activate、disarm 或 Cloud lifecycle/);
   assert.match(runbook, /activation commit 必须直接以 preparation commit 为 parent/);
   assert.match(runbook, /diff-tree --no-commit-id --name-status --no-renames -r/);
   assert.match(runbook, /A\t\.planning\/\$PLAN_ID\/\.pwf-codex-managed/);

@@ -226,3 +226,42 @@ cache 是否命中允许记为 `UNKNOWN`，只要 cold Fresh、exact identities�
 大白话：路线本身能继续，先把两套身份、环境 setup/maintenance、commit graph 和证据表做成可执行 runbook，
 在本地/无 live 环境演练通过；然后单独授权 smart live。smart 通过并人工复核后才碰 autonomous。整个过程不把
 activation 文件合并回 `0.4.0-dev`，也不因本结论自动授权 F3B1、F3B2、F3B3、F3B4、F3C 或 Release。
+
+<a name="phase-4-7-post-implementation-status"></a>
+
+## Post-implementation status — F3B1
+
+维护者后来只授权了 F3B1。实施与本里程碑冻结的路线一致，没有把 no-live protocol gate 扩大成真实 opt-in：
+
+- F3 runbook 新增一个必须同时复制到 Cloud setup 与 maintenance 的 exact transaction；它从显式
+  `RUNTIME_SOURCE_HEAD` detached fetch/build/check，核对维护者预先给出的 candidate SHA，再通过 manifest 路由找到外部
+  bootstrap、安装并 doctor。build 结果不能反过来充当 expected SHA，cache receipt也没有成为第二份 authority。
+- workspace 侧继续独立记录 `WORKSPACE_LIFECYCLE_HEAD`。smart 与 autonomous 从同一 markerless baseline 分叉，
+  activation/disarm/re-arm 均要求 direct parent + exact one-path diff；autonomous reprepare 只允许 task、nonce、attestation
+  三条路径。
+- bounded tamper 被明确限制为 F3B3 disposable checkout 的单一 `task_plan.md` dirty path；F3B1 只验证命令语法和边界，
+  没有创建真实 tamper、validation ref 或 machine state。
+- 新增 exact evidence validator，拒绝 extra keys、伪造 hash、stage/profile/Hook/worktree/advisory 关系冲突和没有最终
+  `exit_code=0` 的记录。它只服务 repository/runbook evidence，不进入 managed runtime 或 Release ZIP。
+- disposable local Git fixture 已闭合两条完整 DAG；真实 development active scope 仍 markerless。production runtime、
+  contracts、bundle、installer、bootstrap 与 Release inventory没有因 F3B1 增加新对象。
+
+### F3B1 对象生命周期复核
+
+| 对象 | 实施后状态 / owner | 后继动作 | 退休或复核条件 |
+|---|---|---|---|
+| F3 runbook | PROTOCOL-MATERIALIZED / LIVE-PENDING / maintainer | F3B2/F3B3 按授权逐段消费，禁止一次性全跑 | F3B PASS 后转 accepted workflow；NO_GO/协议替换时退休 live claims |
+| exact setup/maintenance transaction | VERSIONED RUNBOOK AUTHORITY / maintainer | 两个 Cloud phase 复制同一 block；expected HEAD/SHA 由维护者配置 | maintenance 无法执行、Cloud lifecycle变化或 runtime supply chain改变时重新 Discovery |
+| `validateF3EvidenceRecord` | REPOSITORY-ONLY EVIDENCE VALIDATOR / tests | F3B2/F3B3 校验 stage records；不复制到 production | F3/F3C closure、evidence schema v2 或专用受信 producer取代时复核/退休 |
+| `f3b-protocol.test.js` disposable DAG | NO-LIVE REGRESSION GUARD / repository tests | 保持 exact parent/path/profile关系和 runbook静态合同 | F3 route NO_GO、Git-backed protocol替换或 history封存时复核 |
+| environment inputs / evidence JSON | FUTURE TASK-SCOPED EPHEMERAL DATA / maintainer | 只在获批 live task 显式提供、采集后随 evidence归档 | 每个 Cloud task结束即失去运行时 authority；不能变成 cache secret/receipt |
+| smart/autonomous validation refs | ABSENT / F3B2/F3B3 maintainer | 当前不创建；后继按独立 gate 添加并冻结 | F3C/Phase 9 retention decision后人工退休 |
+| real profile/activation/tamper state | ABSENT / NOT AUTHORIZED | F3B2 或 F3B3 新授权后才创建 | disarm、environment销毁与 evidence closure |
+| production/contract/bundle/Release对象 | UNCHANGED / existing owners | F3B1 无动作 | 只有新 demand触发独立 trust/Release transaction |
+
+实施后的退出状态是：
+
+`F3B1_PROTOCOL_READY / NO_LIVE_STATE / STOP_BEFORE_F3B2`
+
+它只把未来实验做成可审计协议；不构成 smart/autonomous Cloud PASS，也不授权 F3B2、F3B3、F3B4、F3C、seal、
+publication、promotion 或 baseline rotation。

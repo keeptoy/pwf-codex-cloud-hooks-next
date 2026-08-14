@@ -11,6 +11,12 @@ const FIXED_STATE = new Set([".attestation", ".mode", ".nonce", ".pwf-codex-mana
 const LEDGER_NAME = /^ledger-([A-Za-z0-9][A-Za-z0-9_-]{0,63})\.jsonl$/;
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 const ownedPlan = path.resolve(__dirname, "..", "runtime", "owned-plan.py");
+const F3_EVIDENCE_KEYS = [
+  "advisory", "cache_state", "candidate_sha256", "doctor_healthy", "effective_profile",
+  "final_exit_code", "hook_context", "profile", "runtime_source_head", "schema_version",
+  "session_start_sources", "snapshot_leftovers", "stage", "user_prompt_observed",
+  "workspace_lifecycle_head", "worktree",
+].sort();
 
 function exactFile(file, maximum) {
   const info = fs.lstatSync(file);
@@ -114,4 +120,55 @@ function validatePlanningScopes(root, activePlan, relativePaths) {
   return validateActivePlanState(path.join(root, ".planning", activePlan));
 }
 
-module.exports = { validateActivePlanState, validatePlanningScopes };
+function validateF3EvidenceRecord(record) {
+  assert.ok(record && typeof record === "object" && !Array.isArray(record),
+    "F3 evidence record must be an object");
+  assert.deepEqual(Object.keys(record).sort(), F3_EVIDENCE_KEYS, "F3 evidence record must use exact keys");
+  assert.equal(record.schema_version, 1, "schema_version must be 1");
+  assert.ok(record.profile === "smart" || record.profile === "autonomous", "profile is invalid");
+  const stages = record.profile === "smart"
+    ? new Set(["prepared", "armed", "disarmed", "rearmed"])
+    : new Set(["prepared", "armed", "disarmed", "reprepared", "rearmed", "tampered"]);
+  assert.equal(stages.has(record.stage), true, "stage is invalid for profile");
+  assert.match(record.runtime_source_head, /^[0-9a-f]{40}$/, "runtime_source_head is invalid");
+  assert.match(record.candidate_sha256, /^[0-9a-f]{64}$/, "candidate_sha256 is invalid");
+  assert.match(record.workspace_lifecycle_head, /^[0-9a-f]{40}$/, "workspace_lifecycle_head is invalid");
+  assert.equal(Array.isArray(record.session_start_sources), true, "session_start_sources must be an array");
+  assert.ok(record.session_start_sources.length > 0, "session_start_sources must not be empty");
+  const orderedSources = [...new Set(record.session_start_sources)]
+    .filter(value => value === "startup" || value === "resume")
+    .sort((left, right) => ["startup", "resume"].indexOf(left) - ["startup", "resume"].indexOf(right));
+  assert.deepEqual(record.session_start_sources, orderedSources,
+    "session_start_sources must be the unique ordered startup/resume observations");
+  assert.equal(typeof record.user_prompt_observed, "boolean", "user_prompt_observed must be boolean");
+  assert.ok(["legacy", "smart", "autonomous", "canary_only"].includes(record.hook_context),
+    "hook_context is invalid");
+  assert.ok(record.effective_profile === null
+    || ["legacy", "smart", "autonomous"].includes(record.effective_profile), "effective_profile is invalid");
+  assert.ok(record.advisory === null || record.advisory === "state_unsafe", "advisory is invalid");
+  assert.equal(record.doctor_healthy, true, "doctor_healthy must be true");
+  assert.equal(record.snapshot_leftovers, 0, "snapshot_leftovers must be zero");
+  assert.ok(["reset", "hit", "miss", "unknown"].includes(record.cache_state), "cache_state is invalid");
+  assert.equal(record.final_exit_code, 0, "final_exit_code must be zero");
+
+  if (record.stage === "tampered") {
+    assert.equal(record.profile, "autonomous", "tampered stage requires autonomous profile");
+    assert.equal(record.worktree, "tamper_only", "tampered stage requires exact tamper-only worktree");
+    assert.equal(record.hook_context, "canary_only", "tampered stage/profile relation is invalid");
+    assert.equal(record.effective_profile, null, "tampered stage/profile relation is invalid");
+    assert.equal(record.advisory, "state_unsafe", "tampered stage/profile relation is invalid");
+  } else if (record.stage === "armed" || record.stage === "rearmed") {
+    assert.equal(record.worktree, "clean", "armed stage requires clean worktree");
+    assert.equal(record.hook_context, record.profile, "armed stage/profile relation is invalid");
+    assert.equal(record.effective_profile, record.profile, "armed stage/profile relation is invalid");
+    assert.equal(record.advisory, null, "armed stage/profile relation is invalid");
+  } else {
+    assert.equal(record.worktree, "clean", "inert stage requires clean worktree");
+    assert.equal(record.hook_context, "legacy", "inert stage/profile relation is invalid");
+    assert.equal(record.effective_profile, "legacy", "inert stage/profile relation is invalid");
+    assert.equal(record.advisory, null, "inert stage/profile relation is invalid");
+  }
+  return record;
+}
+
+module.exports = { validateActivePlanState, validateF3EvidenceRecord, validatePlanningScopes };
