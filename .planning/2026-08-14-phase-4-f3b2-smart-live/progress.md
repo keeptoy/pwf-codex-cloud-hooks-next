@@ -23,6 +23,8 @@
 - Final candidate build/check preserved 22 entries, 85,533 bytes and exact SHA-256
   `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`; development branch remained markerless legacy.
 - Local work is ready for a markerless handoff commit. F3B2 remains open because no real Cloud Fresh/UserPrompt/Resume evidence exists.
+- Added a frozen local runtime-source transport ref at the already-verified markerless foundation; it creates no new commit or state and
+  prevents the Cloud handoff from depending on a moving development branch name.
 
 ## Verification log
 
@@ -37,6 +39,7 @@
 | Full Windows regression | 162 total; 139 pass; 0 fail; 23 honest platform skips |
 | Candidate reproducibility | 22 entries; 85,533 bytes; exact pre-F3B2 SHA preserved |
 | Smart validation DAG | four exact local refs; parent/path/state relations pass |
+| Runtime source transport | frozen local ref points exactly to markerless `b37eea4` foundation |
 | Development branch after DAG | clean markerless `0.4.0-dev`; repository state `legacy` |
 | Final focused verification | 18/18 pass |
 | Final full Windows regression | 162 total; 139 pass; 0 fail; 23 honest platform skips |

@@ -41,7 +41,9 @@ all four stage records are obtained from real Host events with final exit codes.
 - The candidate remains 22 entries / 85,533 bytes / SHA-256
   `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`.
 
-The validation refs are intentionally retained for the maintainer's push and Cloud selection. They must stay frozen during F3B2 and must
+The markerless foundation also has a frozen local transport ref, `validation/v0.4.0-dev-f3b2-runtime-source`, so Cloud setup does not
+need to discover an exact source commit through a moving development branch. All validation refs are intentionally retained for the
+maintainer's push and Cloud selection. They must stay frozen during F3B2 and must
 not be merged into `0.4.0-dev`. Remote existence, Cloud Fresh/Resume and installed runtime identity remain unproven until the live gate.
 
 ## Resources

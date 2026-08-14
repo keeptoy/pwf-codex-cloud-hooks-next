@@ -16,7 +16,8 @@ Cloud Fresh、UserPrompt、Resume、disarm/re-arm 验收。
 
 ## Next Step
 
-维护者 push markerless `0.4.0-dev` 与四个冻结的 `validation/*` refs，按 F3 runbook 配置 exact runtime transaction，
+维护者 push markerless `0.4.0-dev`、一个冻结的 runtime-source ref 与四个 workspace stage refs，按 F3 runbook配置
+exact runtime transaction，
 然后依次执行 `S_PREP → S_ARM → S_DISARM → S_REARM` Cloud live stages；每一步回传完整证据后再继续下一步。
 
 ## Current Phase
@@ -48,7 +49,7 @@ F3B2-4 Cloud handoff
 
 | Role | Local ref / exact commit |
 |---|---|
-| markerless runtime source foundation | `b37eea4706fed8d4e764f824eb75a3820f31c9be` |
+| markerless runtime source foundation | `validation/v0.4.0-dev-f3b2-runtime-source` → `b37eea4706fed8d4e764f824eb75a3820f31c9be` |
 | `S_PREP` | `validation/v0.4.0-dev-f3b2-smart-prep` → `a39dc66c755ec19bf29504dc0844de995c6cf67c` |
 | `S_ARM` | `validation/v0.4.0-dev-f3b2-smart-arm` → `1058e704d5ab3496ab1a91a414c20c2e8fe58177` |
 | `S_DISARM` | `validation/v0.4.0-dev-f3b2-smart-disarm` → `c9275ba02073adb184cd73550c5b9f54c6f8178c` |
