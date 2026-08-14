@@ -233,8 +233,27 @@ test("DESIGN maps every test module back to the capability and boundary it prote
 test("ROADMAP keeps stable Discovery and Release governance anchors", () => {
   const roadmap = readText("ROADMAP.md");
   const readme = readText("README.md");
+  assert.match(roadmap, /^<a name="phase-4-opt-in-purpose"><\/a>$/m);
   assert.match(roadmap, /^<a name="discovery-gate-governance"><\/a>$/m);
   assert.match(roadmap, /^<a name="release-four-step-flow"><\/a>$/m);
   assert.match(roadmap, /^<a name="pre-1-compatibility-admission"><\/a>$/m);
   assert.match(readme, /ROADMAP\.md#pre-1-compatibility-admission/);
+});
+
+test("Phase 4 separates platform execution permission from plan-local product consent", () => {
+  const roadmap = readText("ROADMAP.md");
+  const history = readText("docs/history/phase-4.1-managed-v3-discovery.md");
+
+  for (const term of [
+    "本地 sandbox / approval",
+    "Cloud task / container policy",
+    "system-managed Hook trust",
+    "Phase 4 plan-local opt-in",
+  ]) assert.match(roadmap, new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(roadmap, /给计划行为授权，不给模型扩权/);
+  assert.match(roadmap, /`autonomous`[\s\S]{0,180}不表示 Codex 获得更高 OS 权限/);
+  assert.doesNotMatch(roadmap, /“授权”必须继续分成三层/);
+  assert.match(history, /^<a name="phase-4-1-post-implementation-opt-in-clarification"><\/a>$/m);
+  assert.match(history, /Phase 4 的 opt-in 不是 Codex 权限申请/);
+  assert.match(history, /这才是 Phase 4 实现的产品 opt-in/);
 });

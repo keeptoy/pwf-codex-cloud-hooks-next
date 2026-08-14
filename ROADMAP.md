@@ -116,16 +116,44 @@ Phase 4 保持 Phase 4.1 冻结的 hybrid owned-boundary 与两个现有 turn-st
 风险和故障域拆成八个 gate。完整 programme 顺序为
 `F0 → F1A → F1B → F2A → F2B → F3A → F3B → F3C`：
 
-| Gate | 范围 | 必须保持的边界 | 典型故障归属 |
+<a name="phase-4-opt-in-purpose"></a>
+
+#### Phase 4 为什么存在：给计划行为授权，不给模型扩权
+
+Phase 4 的一句话目标是：**在 legacy 默认完全不变的前提下，让维护者/用户能对一个 exact plan 显式、可撤销地选择
+smart 或 autonomous planning context；状态非法时拒绝，绝不静默降级或误激活。** 它不是让模型申请更高系统权限，
+也不是把 Cloud 后台任务、root、联网或本机文件访问包装成产品功能。这里的 `autonomous` 只描述 plan context 的
+attestation/nonce/ledger 语义，不表示 Codex 获得更高 OS 权限或开始自动写 workspace。
+
+新人应把四个容易都叫“授权/opt-in”的开关分开：
+
+| 开关 | 它回答的问题 | 不能替代什么 |
+|---|---|---|
+| 本地 sandbox / approval | 本地 Codex 命令能否越过当前文件、网络或执行边界；边界内例行工作可自动继续 | 不能表示某个 plan 同意启用 smart/autonomous |
+| Cloud task / container policy | 这次远程任务能在隔离容器、checkout 与网络策略内做什么 | 不能访问用户未提供的本机文件，也不能自动产生 PWF profile consent |
+| system-managed Hook trust | Cloud 是否信任并执行 installer 注册的 absolute adapter | 只回答“Hook 能不能跑”，不回答“对哪个 plan 跑什么 profile” |
+| Phase 4 plan-local opt-in | exact plan 是否通过 profile-bound activation-only commit 选择 smart/autonomous | 不授予模型 root、网络、账户身份、workspace writer 或远端写权限 |
+
+OpenAI 官方把本地 sandbox 定义为技术边界、approval 定义为越界时是否停下询问；Cloud 文档则描述远程 container、
+checkout、setup/maintenance 与 agent task 流程。二者都是平台执行权限，不是 PWF 行为授权。Cloud 官方也未把 root 身份
+承诺为稳定 Host contract，且 container state 可能缓存；因此本项目只依赖显式 Host/config 输入和受控探测，不以“Cloud
+默认已经 opt in”或“任务结束立即销毁”为正确性前提。参考 [Sandbox](https://learn.chatgpt.com/docs/sandboxing?surface=app)、
+[Agent approvals & security](https://learn.chatgpt.com/docs/agent-approvals-security) 与
+[Cloud environments](https://learn.chatgpt.com/docs/environments/cloud-environment)。
+
+Phase 4 的施工顺序因此不是“逐步给模型加权限”，而是先铺一条不会误激活的供应链和只读 consumer，再加入显式 profile
+选择，最后证明该选择在真实 Cloud lifecycle 中可进入、可退出、可回滚：
+
+| Gate | 施工目标（大白话） | 必须保持的边界 | 典型故障归属 |
 |---|---|---|---|
-| F0 — Development identity preparation | package/Release candidate 轮转到 `0.4.0-dev`、zero-hash bootstrap、candidate acceptance/CHANGELOG/ROADMAP 同步 | 不改 runtime、machine contract 或用户行为；不宣称 alpha/RC/accepted | identity、bootstrap、governance |
-| F1A — Contract/source foundation | manifest schema 4、bundle/Release v2、adapter 纳入 bundle、schema placement 收敛 | runtime 行为仍为 legacy；manifest/bundle/Release 作为原子 contract transaction | contracts、importer、installer、builder |
-| F1B — Inactive runtime foundation | plan request/result v2、owned state reader/normalizer、production `allowed_profiles=[legacy]` | marker 仍不可达；现有 Host 输出与 v0.3.5 等价 | owned runtime、adapter/runtime protocol |
-| F2A — Smart activation | 独立 versioned managed commit point + upstream smart profile，只改变 plan 选段 | 未 armed 时不读取旧 `.mode`；不读取 nonce/attestation/ledger；不接受 gated | smart selection、state admission 与 opt-in policy |
-| F2B — Autonomous activation | attestation、exact nonce、normalized ledger | raw progress 不得回退；无效或不完整状态拒绝，不降级 legacy | state validation、tamper/refusal、ledger rendering |
-| F3A — Lifecycle foundation | active-scope state governance、fail-closed prepare/verify、exact two-commit relation 与专用 runbook | managed runtime 仍只读；无 live activation；`.planning/` 仍在 Release 外 | repository/producer/runbook |
-| F3B — Live Cloud lifecycle | B0 preflight；B1 protocol materialization；B2 smart；B3 autonomous；B4 evidence closure | runtime/workspace 双身份 exact；cache 不是 correctness boundary；autonomous armed task bytes冻结；不执行 rollback | Cloud lifecycle、takeover |
-| F3C — Disarm-first rollback | committed disarm 后 candidate → immutable v0.3.5 → candidate reinstall 与 Fresh/Resume/doctor | live Cloud 不等于 Release；禁止 runtime-only rollback 后 dormant activation 复活 | installed state、workspace intent、rollback |
+| F0 — Development identity preparation | 先开一条明确的 `0.4.0-dev` 施工列车，让后续试验有身份但不冒充已发布功能 | zero-hash bootstrap；不改 runtime、contract 或用户行为 | identity、bootstrap、governance |
+| F1A — Contract/source foundation | 先让 manifest、bundle、Release 与 installer 能完整、单一权威地运送未来 runtime | 行为仍为 legacy；contract transaction 必须原子闭合 | contracts、importer、installer、builder |
+| F1B — Inactive runtime foundation | 把安全读取、规范化和 v2 协议装好，但 production 只准 legacy，证明“能力存在≠已经启用” | marker 不可达；Host 输出与 v0.3.5 等价 | owned runtime、adapter/runtime protocol |
+| F2A — Smart activation | 增加独立 managed commit point；只有显式 armed 才改变 plan 选段 | 未 armed 完全不读旧 `.mode`；不碰 nonce/attestation/ledger/gated | smart selection、state admission、opt-in policy |
+| F2B — Autonomous activation | 增加 profile-bound attestation、nonce 与 normalized ledger context；这是上下文语义，不是系统自治扩权 | raw progress 不回退；invalid/incomplete state 只拒绝 | state validation、tamper/refusal、ledger rendering |
+| F3A — Lifecycle foundation | 把“先准备并审核、最后单独激活、可单独 disarm”做成 Git-backed repository/runbook 协议 | managed runtime 只读；无 live activation；planning state 不进 ZIP | repository/producer/runbook |
+| F3B — Live Cloud lifecycle | 分 B0～B4 证明 exact smart/autonomous commit 在 true Fresh、UserPrompt、real Resume、disarm/re-arm 中确实成立 | runtime/workspace 双身份 exact；cache 不是 authority；不执行 rollback | Cloud lifecycle、takeover |
+| F3C — Disarm-first rollback | 证明先提交 disarm 再回滚/重装，不会留下 dormant token 在未来升级后“复活” | live PASS 不等于 Release；禁止 runtime-only rollback | installed state、workspace intent、rollback |
 
 F0 是 Phase 4 的正式前置 gate，不是 F1A 内部顺手改版本号。它只建立可变的开发身份；现已独立完成。
 F1A 也已闭合 schema 4、bundle/Release v2、placement、entry mode 与 exact v0.3.5 installed-state transition，且未改变
@@ -177,9 +205,9 @@ F1A/F1B 可以先规划和实施；F2A/F2B 已把 smart/autonomous 的启用与�
 这条顺序防止 initializer 吞掉 attestation failure 后留下“看似已激活、实际状态残缺”的 mode。F2A 与 F2B
 仍分别授权；完成 F1 不会自动授权任何 opt-in behavior。
 
-这里的“授权”必须继续分成三层：system-managed requirements 决定 Cloud 是否信任并执行 Hook；Codex 的 sandbox/
-approval policy 决定 agent 此刻能否执行某个命令；plan-local activation state 才决定 PWF 是否对 exact plan 启用
-smart/autonomous。前两层不得直接充当或隐式写入第三层，第三层也不能绕过前两层。
+这里的“授权”沿用[上面的四开关模型](#phase-4-opt-in-purpose)：本地 sandbox/approval 与 Cloud task/container policy
+是两个执行环境；system-managed requirements 决定 Hook 能否运行；plan-local activation state 才决定 PWF 是否对
+exact plan 启用 smart/autonomous。前三个开关不得直接充当或隐式写入第四个，第四个也不能绕过平台执行/trust 边界。
 
 本地 CLI 可通过交互 approval 或用户在独立终端手工执行显式状态变更；Cloud 是后台任务后查看结果/diff、再 follow-up
 的工作面，不能假定存在相同的任务中确认框。F2A 只冻结跨端共用的 exact plan-local protocol；Cloud 中 prepare、人工

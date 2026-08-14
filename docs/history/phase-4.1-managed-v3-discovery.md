@@ -256,6 +256,46 @@ Discovery 还对 Phase 4.1 做了一个必要的微调：当时“token 放在�
 trusted graph 或 Host event set；它只是用更强的物理零读取边界替换了尚未实施的同文件示例。当前协议与授权状态以
 [`ROADMAP`](../../ROADMAP.md#phase-4-f2-activation-protocol) 和 Phase 4.4 后继 Discovery 为准。
 
+<a name="phase-4-1-post-implementation-opt-in-clarification"></a>
+
+### 后续澄清：Phase 4 的 opt-in 不是 Codex 权限申请
+
+F2/F3 foundation 落地后再回看，本里程碑中的“managed opt-in”容易被新人和平台侧的“approval/permission”混为一谈。
+它们都使用“授权”这个词，但授权对象不同：
+
+| 开关 | 授权对象 | 与 Phase 4 的关系 |
+|---|---|---|
+| 本地 sandbox / approval | 本地 agent 能否越过文件、网络或命令执行边界 | 平台执行权限；不是 PWF profile consent |
+| Cloud task / container policy | 远程 agent 能在隔离 container、checkout 与网络策略内做什么 | 提交 Cloud task 不等于默认启用 smart/autonomous |
+| system-managed Hook trust | Codex Cloud 是否接受并执行 installer 注册的 adapter | 让 Hook 可运行；仍不决定 exact plan 的 profile |
+| plan-local managed activation | exact plan 是否选择 smart/autonomous context behavior | **这才是 Phase 4 实现的产品 opt-in** |
+
+OpenAI 官方文档把本地 sandbox 描述为限制 agent 自主操作范围的技术边界，approval policy 决定越界时是否停下询问；
+Cloud 文档描述的则是 container checkout、setup/maintenance、agent edits/tests 与 diff。官方没有承诺 Cloud agent 永远
+以 root 运行，container 也可能缓存最长约 12 小时。因此“Cloud 后台运行看起来很自由”只是某次任务的环境/执行权限，
+既不能提升为稳定 Host contract，也不能作为 plan-local consent。参考
+[Sandbox](https://learn.chatgpt.com/docs/sandboxing?surface=app)、
+[Agent approvals & security](https://learn.chatgpt.com/docs/agent-approvals-security) 与
+[Cloud environments](https://learn.chatgpt.com/docs/environments/cloud-environment)。
+
+Phase 4 真正要解决的是另一个问题：仓库升级后即使 runtime 已具备新能力、Cloud task 也已经获准执行，旧 workspace 中
+残留的 upstream `.mode` 仍不能让 Managed Hook 擅自改变行为。只有维护者/用户先准备并审核完整 profile state，再提交
+独立、profile-bound 的 activation-only commit，exact plan 才离开 legacy；删除 commit point 即 disarm。invalid、partial、
+tampered 或 future state 只拒绝，不能回退 raw legacy context掩盖问题。managed runtime始终只读，不创建授权、不修复状态、
+不获得额外 root/network/账户/本机文件权限。
+
+所以 Phase 4 的价值不是“让模型更有权力”，而是把新 planning behavior 做成：
+
+1. **默认不变：** 能力先以 inactive foundation 落地，legacy 用户不会因升级误激活；
+2. **显式且按 profile：** smart 与 autonomous 分别授权，旧 smart token 不能被 mode 变化静默扩成 autonomous；
+3. **可审核：** preparation 与 activation-only Git commits分开，用户看到并确认 exact diff；
+4. **可撤销：** 删除单一 commit point 立即 disarm，后继 rollback 先关闭 workspace intent；
+5. **失败关闭：** state 无法证明时不注入 plan-derived content，也不借 sandbox/Cloud 权限“自动修好”。
+
+这里的 `autonomous` 只表示 attestation、nonce、normalized ledger 的上下文组织方式，不表示 Codex 获得系统自治权限，
+也不引入 managed workspace writer。F0/F1 是安全铺路，F2 是只读 consumer 与显式 profile selection，F3 才验证用户如何
+在真实 Cloud lifecycle 中进入、退出、恢复和回滚；任一前置 gate PASS 都不会自动替用户完成下一个 opt-in。
+
 <a name="phase-4-1-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)
