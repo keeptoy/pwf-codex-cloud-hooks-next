@@ -265,3 +265,56 @@ activation 文件合并回 `0.4.0-dev`，也不因本结论自动授权 F3B1、F
 
 它只把未来实验做成可审计协议；不构成 smart/autonomous Cloud PASS，也不授权 F3B2、F3B3、F3B4、F3C、seal、
 publication、promotion 或 baseline rotation。
+
+<a name="phase-4-7-post-implementation-status-f3b2"></a>
+
+## Post-implementation status — F3B2
+
+这里的 “implementation” 只指 **F3B2 本地 foundation、transport refs 与 smart validation DAG 已物化**；真实 Cloud
+Fresh、UserPrompt、Resume、disarm/re-arm 尚未执行，因此本节不是 F3B2 live PASS，也不是完整 gate closeout。
+
+维护者后来单独授权进入 F3B2。当前本地施工与本里程碑冻结的安全模型一致：
+
+- development branch 继续 markerless；smart state 只存在于隔离 validation refs，没有 merge 回 `0.4.0-dev`。
+- `S_PREP → S_ARM → S_DISARM → S_REARM` 保持 direct-parent 线性关系；四条边分别只允许新增 `.mode`、新增
+  activation、删除 activation、重新新增相同 activation。每个节点都通过 exact state 与 changed-path 检查。
+- `RUNTIME_SOURCE_HEAD` 继续与各 stage 的 `WORKSPACE_LIFECYCLE_HEAD` 分开。candidate、production runtime、contracts、
+  bundle、installer、bootstrap 与 Release inventory均未因本地链发生变化。
+- 本地完整回归、候选可复现性与 development markerless guard 已闭合；没有 push、Cloud environment 配置、真实 Host
+  event、cache/maintenance 或 evidence JSON，因此这些证据仍为 `ABSENT / CLOUD PENDING`。
+- F3B3 autonomous、tamper、F3B4 evidence closure 与 F3C rollback 没有被顺带创建或授权。
+
+### F3B2 施工与原规划的细化
+
+主路线没有偏航，但施工把三个原先只在拓扑图中的细节变成了明确生命周期对象：
+
+1. `R` 除了是 markerless commit，还增加了一个冻结的 runtime-source transport ref。它只负责让维护者把 exact commit
+   运到 Cloud，不能替代 commit SHA、candidate SHA 或 setup/maintenance verification，也不是第二份 source authority。
+2. 本地 state chain 实际通过依次切换 dedicated validation branches 物化，而不是另建额外 worktree。每次提交前后仍执行
+   clean-status、state、parent 与 exact-path 检查，最后切回 development branch 并重新证明 markerless legacy；因此这是
+   本地施工载体的变化，不改变“validation state 不进入开发分支”的架构不变量。
+3. validation chain 建成后的 markerless handoff/documentation commits 不替换 `RUNTIME_SOURCE_HEAD`。runtime source 继续冻结
+   在已验证的 `R`；后续 development HEAD 只记录 programme 与交接状态，避免 moving branch 悄悄成为 runtime authority。
+
+当前 exact commit/ref 值仍只写活动 task plan；本历史尾注记录已选结构、偏差与生命周期，不复制一个会随 Cloud evidence
+变化的第二份执行账本。
+
+### F3B2 对象生命周期复核
+
+| 对象 | 当前状态 / owner | 后继动作 | 退休或再次审核条件 |
+|---|---|---|---|
+| markerless runtime-source transport ref | LOCAL FROZEN / REMOTE PENDING / maintainer | push 后冻结；setup/maintenance 仍按 exact commit + candidate SHA 核对 | F3C/Phase 9 retention decision、F3B NO_GO 或 runtime source replacement |
+| smart `S_PREP/S_ARM/S_DISARM/S_REARM` refs | LOCAL MATERIALIZED / CLOUD PENDING / maintainer | 按顺序逐 stage 选择；禁止移动或 merge | F3C/Phase 9 evidence retention decision；任一 relation 漂移则整条链废弃重建 |
+| `.mode` / smart activation state | VALIDATION-REF-ONLY / maintainer-user | prepared/disarmed 保持 inert；armed/rearmed 只在 exact selected ref 表达 opt-in | ref 退休、scope 关闭或 protocol replacement；不得迁入 history/development |
+| development markerless guard | ACTIVE DEVELOPMENT BOUNDARY / repository tests | KEEP；继续拒绝 validation state 泄漏主线 | Phase 9、F3 NO_GO 或 repository state policy replacement |
+| F3 runbook / evidence validator | PROTOCOL READY / LIVE CONSUMER PENDING | F3B2 Cloud stages按现有 schema 消费 | Cloud lifecycle 差异、evidence schema v2 或 F3 route closure |
+| Cloud environments / stage evidence JSON | ABSENT / maintainer | push/config 后逐 stage 采集；无最终 exit code 只能 `INCOMPLETE` | 每个 task结束归档；不能变成 cache/source/consent authority |
+| production/contract/bundle/Release objects | UNCHANGED / existing owners | 无动作 | 只有新 demand触发独立 trust/Release transaction |
+| F3B3 autonomous/tamper objects | ABSENT / NOT AUTHORIZED | 不创建 | F3B2 live PASS + 人工复核 + 新授权 |
+
+当前阶段状态是：
+
+`F3B2_LOCAL_CHAIN_READY / CLOUD_LIVE_PENDING / LIVE_PASS_ABSENT / STOP_BEFORE_F3B3`
+
+只有四个 smart stage 的真实 Cloud evidence 全部闭合后，才可把它更新为规划中的
+`F3B2_SMART_LIVE_PASS / STOP_AND_REVIEW`；本地 commits、refs 或测试不能替代该结论。

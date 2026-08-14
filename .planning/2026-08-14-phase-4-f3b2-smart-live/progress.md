@@ -25,6 +25,11 @@
 - Local work is ready for a markerless handoff commit. F3B2 remains open because no real Cloud Fresh/UserPrompt/Resume evidence exists.
 - Added a frozen local runtime-source transport ref at the already-verified markerless foundation; it creates no new commit or state and
   prevents the Cloud handoff from depending on a moving development branch name.
+- Reconciled Phase 4.7 with the materialized F3B2 local chain. Added an explicitly pre-live `Post-implementation status — F3B2`, recorded
+  the dedicated-branch-vs-extra-worktree implementation detail, froze the transport-ref role, and added lifecycle/review conditions.
+- Corrected active findings so later handoff documentation commits no longer appear eligible to replace the frozen runtime source.
+- Focused F3 lifecycle/protocol/repository verification passed 18/18. Full Windows regression passed 139 with 0 failures and 23 honest
+  Linux/POSIX skips (162 total); Release/package guards confirm the history/planning/test-only change stays outside candidate inventory.
 
 ## Verification log
 
@@ -44,6 +49,7 @@
 | Final focused verification | 18/18 pass |
 | Final full Windows regression | 162 total; 139 pass; 0 fail; 23 honest platform skips |
 | Final candidate check | exact 22-entry / 85,533-byte SHA preserved |
+| Phase 4.7 F3B2 reconciliation | focused 18/18; full 162 total / 139 pass / 0 fail / 23 platform skips |
 
 ## Current status
 

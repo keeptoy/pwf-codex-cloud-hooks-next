@@ -169,13 +169,13 @@ test("Phase 4.6 records F3A implementation drift and object retirement without p
   assert.match(history, /rollback\/disarm-first evidence[^\n]*ABSENT \/ F3C NOT AUTHORIZED/);
 });
 
-test("Phase 4.7 freezes a two-identity staged F3B live protocol without authorizing activation", () => {
+test("Phase 4.7 freezes a two-identity staged F3B protocol and records bounded local F3B2 handoff", () => {
   const history = fs.readFileSync(
     path.join(root, "docs", "history", "phase-4.7-f3b-live-preflight-discovery.md"), "utf8");
   for (const anchor of [
     "phase-4-7-new-evidence", "phase-4-7-frozen-invariants", "phase-4-7-validation-topology",
     "phase-4-7-gate-plan", "phase-4-7-evidence-and-stop-rules", "phase-4-7-lifecycle-ledger",
-    "phase-4-7-decision",
+    "phase-4-7-decision", "phase-4-7-post-implementation-status-f3b2",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(history, /`RUNTIME_SOURCE_HEAD`/);
   assert.match(history, /`WORKSPACE_LIFECYCLE_HEAD`/);
@@ -187,4 +187,9 @@ test("Phase 4.7 freezes a two-identity staged F3B live protocol without authoriz
   assert.match(history, /DEVELOPMENT CANDIDATE NO-LIVE GUARD/);
   assert.match(history, /CONDITIONAL_GO_TO_F3B1_PROTOCOL_MATERIALIZATION/);
   assert.match(history, /不因本结论自动授权 F3B1、F3B2、F3B3、F3B4、F3C 或 Release/);
+  assert.match(history, /## Post-implementation status — F3B2/);
+  assert.match(history, /本地施工载体的变化，不改变“validation state 不进入开发分支”的架构不变量/);
+  assert.match(history, /runtime-source transport ref/);
+  assert.match(history, /F3B2_LOCAL_CHAIN_READY \/ CLOUD_LIVE_PENDING \/ LIVE_PASS_ABSENT \/ STOP_BEFORE_F3B3/);
+  assert.match(history, /F3B3 autonomous\/tamper objects[^\n]*ABSENT \/ NOT AUTHORIZED/);
 });

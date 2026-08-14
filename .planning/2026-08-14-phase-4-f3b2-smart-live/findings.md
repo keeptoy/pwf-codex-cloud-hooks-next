@@ -21,8 +21,10 @@ R  markerless F3B2 foundation
 ```
 
 - The primary worktree remains on markerless `0.4.0-dev`.
-- The state chain is created in a disposable local Git worktree and retained only as named `validation/*` refs.
-- After the chain is verified, a second markerless documentation commit may record exact local refs. That later dev HEAD is the preferred
+- The state chain was materialized by checking out dedicated local `validation/*` branches in the primary worktree. Each node was
+  committed and relation-checked before moving to its child; the worktree then returned to markerless `0.4.0-dev`. No extra worktree was
+  required, and validation state never entered a development-branch commit.
+- Later markerless handoff/documentation commits record exact local refs but do not replace the frozen foundation as
   `RUNTIME_SOURCE_HEAD`; validation commits retain their independent `WORKSPACE_LIFECYCLE_HEAD` values.
 
 ## Live handoff principle
@@ -45,6 +47,12 @@ The markerless foundation also has a frozen local transport ref, `validation/v0.
 need to discover an exact source commit through a moving development branch. All validation refs are intentionally retained for the
 maintainer's push and Cloud selection. They must stay frozen during F3B2 and must
 not be merged into `0.4.0-dev`. Remote existence, Cloud Fresh/Resume and installed runtime identity remain unproven until the live gate.
+
+## Historical reconciliation
+
+Phase 4.7 now records a bounded `Post-implementation status — F3B2`: local chain/transport materialization is complete, while Cloud live
+evidence remains absent. It also records the two implementation refinements above and gives every new ref/state object an owner and
+retirement/review condition without duplicating the active plan's exact mutable evidence ledger.
 
 ## Resources
 
