@@ -14,6 +14,15 @@
 - Importer check, Python compile, installer syntax and diff check passed. Two independent candidate builds were byte-identical:
   22 entries, 85,533 bytes, SHA-256 `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`.
 - Markerless foundation is ready for a local commit; no machine state or Release input changed.
+- Created markerless foundation commit `b37eea4706fed8d4e764f824eb75a3820f31c9be`.
+- Materialized the isolated local smart DAG with four frozen `validation/*` refs. Every node passed exact state bytes, direct-parent and
+  one-path `diff-tree --no-renames` checks. Returned the primary worktree to `0.4.0-dev`; active state validates as `legacy`.
+- No push, PR, tag, Release, Cloud configuration or other remote write occurred.
+- Final focused lifecycle/governance rerun passed 18/18. Final full Windows regression again passed 139 with 0 failures and 23 honest
+  Linux/POSIX skips (162 total).
+- Final candidate build/check preserved 22 entries, 85,533 bytes and exact SHA-256
+  `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`; development branch remained markerless legacy.
+- Local work is ready for a markerless handoff commit. F3B2 remains open because no real Cloud Fresh/UserPrompt/Resume evidence exists.
 
 ## Verification log
 
@@ -27,7 +36,12 @@
 | Focused rerun | 18/18 pass |
 | Full Windows regression | 162 total; 139 pass; 0 fail; 23 honest platform skips |
 | Candidate reproducibility | 22 entries; 85,533 bytes; exact pre-F3B2 SHA preserved |
+| Smart validation DAG | four exact local refs; parent/path/state relations pass |
+| Development branch after DAG | clean markerless `0.4.0-dev`; repository state `legacy` |
+| Final focused verification | 18/18 pass |
+| Final full Windows regression | 162 total; 139 pass; 0 fail; 23 honest platform skips |
+| Final candidate check | exact 22-entry / 85,533-byte SHA preserved |
 
 ## Current status
 
-`F3B2_AUTHORIZED / MARKERLESS_FOUNDATION_VERIFIED / READY_FOR_LOCAL_COMMIT`
+`F3B2_AUTHORIZED / LOCAL_SMART_DAG_VERIFIED / CLOUD_HANDOFF_PENDING / LIVE_PASS_ABSENT`

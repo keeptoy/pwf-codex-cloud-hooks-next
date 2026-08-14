@@ -31,6 +31,19 @@ The maintainer will push exact refs and configure the Cloud environment. Each Cl
 clean worktree, installed runtime source HEAD and candidate SHA. The model must not mutate the repository. F3B2 cannot become PASS until
 all four stage records are obtained from real Host events with final exit codes.
 
+## Materialized local DAG
+
+- `R=b37eea4706fed8d4e764f824eb75a3820f31c9be` remained markerless and validated as repository `legacy`.
+- `S_PREP=a39dc66c755ec19bf29504dc0844de995c6cf67c` adds only `.mode` and validates as `smart_prepared`.
+- `S_ARM=1058e704d5ab3496ab1a91a414c20c2e8fe58177` is a direct child and adds only `.pwf-codex-managed`; it validates as `smart_armed`.
+- `S_DISARM=c9275ba02073adb184cd73550c5b9f54c6f8178c` deletes only the activation file and returns to `smart_prepared`.
+- `S_REARM=6dea2225812939f7a5f9893f2ab90782742a264c` adds only the same activation bytes and returns to `smart_armed`.
+- The candidate remains 22 entries / 85,533 bytes / SHA-256
+  `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`.
+
+The validation refs are intentionally retained for the maintainer's push and Cloud selection. They must stay frozen during F3B2 and must
+not be merged into `0.4.0-dev`. Remote existence, Cloud Fresh/Resume and installed runtime identity remain unproven until the live gate.
+
 ## Resources
 
 - OpenAI Cloud environments: https://learn.chatgpt.com/docs/environments/cloud-environment

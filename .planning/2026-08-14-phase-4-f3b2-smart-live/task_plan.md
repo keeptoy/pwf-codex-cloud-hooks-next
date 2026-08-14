@@ -16,11 +16,12 @@ Cloud Fresh、UserPrompt、Resume、disarm/re-arm 验收。
 
 ## Next Step
 
-提交 markerless F3B2 foundation，然后从该 exact baseline 在隔离 worktree 建立并验证 smart validation chain。
+维护者 push markerless `0.4.0-dev` 与四个冻结的 `validation/*` refs，按 F3 runbook 配置 exact runtime transaction，
+然后依次执行 `S_PREP → S_ARM → S_DISARM → S_REARM` Cloud live stages；每一步回传完整证据后再继续下一步。
 
 ## Current Phase
 
-F3B2-2 isolated smart DAG
+F3B2-4 Cloud handoff
 
 ## Phases
 
@@ -28,9 +29,9 @@ F3B2-2 isolated smart DAG
 |---|---|---|
 | F3B2-0 Evidence recovery | completed | 官方 Cloud lifecycle、F3B1 runbook、当前 refs/stop line 与工作树恢复完成 |
 | F3B2-1 Markerless foundation | completed | programme/acceptance/planning 同步；active scope exact legacy；focused/full regression 与 candidate identity 闭合 |
-| F3B2-2 Isolated smart DAG | in_progress | 四个 local validation refs 满足 direct-parent、exact-path 与 smart state guard |
-| F3B2-3 Local verification | pending | focused/full tests、deterministic candidate hash、markerless dev branch 与 Release exclusion 闭合 |
-| F3B2-4 Cloud handoff | pending | exact runtime/workspace refs、push/config/task 顺序与停止条件交给维护者；停在真实 Cloud evidence 前 |
+| F3B2-2 Isolated smart DAG | completed | 四个 local validation refs 满足 direct-parent、exact-path 与 smart state guard |
+| F3B2-3 Local verification | completed | focused/full tests、deterministic candidate hash、markerless dev branch 与 Release exclusion 闭合 |
+| F3B2-4 Cloud handoff | in_progress | exact runtime/workspace refs、push/config/task 顺序与停止条件交给维护者；停在真实 Cloud evidence 前 |
 | F3B2-5 Live evidence closure | pending | 维护者回传四阶段 Fresh/UserPrompt/real Resume/doctor/inventory/residue/final-exit evidence 后才可判定 PASS |
 
 ## Frozen boundaries
@@ -42,6 +43,20 @@ F3B2-2 isolated smart DAG
 4. Cloud agent 只读验证，不 commit、push、PR、移动 ref 或自动修复。维护者负责远端 refs 与 environment 配置。
 5. 每个长命令必须取得工具返回的最终 exit code；否则只能记为 `INCOMPLETE/UNKNOWN`。
 6. 任一步失败立即停止；不得进入 F3B3 autonomous 或 F3C rollback。
+
+## Frozen local identities
+
+| Role | Local ref / exact commit |
+|---|---|
+| markerless runtime source foundation | `b37eea4706fed8d4e764f824eb75a3820f31c9be` |
+| `S_PREP` | `validation/v0.4.0-dev-f3b2-smart-prep` → `a39dc66c755ec19bf29504dc0844de995c6cf67c` |
+| `S_ARM` | `validation/v0.4.0-dev-f3b2-smart-arm` → `1058e704d5ab3496ab1a91a414c20c2e8fe58177` |
+| `S_DISARM` | `validation/v0.4.0-dev-f3b2-smart-disarm` → `c9275ba02073adb184cd73550c5b9f54c6f8178c` |
+| `S_REARM` | `validation/v0.4.0-dev-f3b2-smart-rearm` → `6dea2225812939f7a5f9893f2ab90782742a264c` |
+| candidate ZIP SHA-256 | `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c` |
+
+这些值只是本地已验证输入；远端存在性和 Cloud 行为尚未证明。`RUNTIME_SOURCE_HEAD` 固定为 markerless foundation，
+每个 stage 使用对应 `WORKSPACE_LIFECYCLE_HEAD`。handoff documentation commit 不替换 runtime source foundation。
 
 ## Stop Conditions
 
@@ -61,4 +76,4 @@ F3B2-2 isolated smart DAG
 
 ## Current status
 
-`F3B2_AUTHORIZED / MARKERLESS_FOUNDATION_VERIFIED / SMART_DAG_NEXT / F3B3_NOT_AUTHORIZED / REMOTE_WRITES_MAINTAINER_ONLY`
+`F3B2_AUTHORIZED / LOCAL_SMART_DAG_VERIFIED / CLOUD_HANDOFF_PENDING / LIVE_PASS_ABSENT / F3B3_NOT_AUTHORIZED`
