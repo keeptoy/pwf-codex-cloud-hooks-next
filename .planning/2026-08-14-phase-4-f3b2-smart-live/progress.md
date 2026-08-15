@@ -51,6 +51,28 @@
   lifecycle/protocol/repository/Release tests passed 21/21 with zero skips. No setup/install body was executed and the draft remains
   uncommitted pending maintainer confirmation.
 
+## 2026-08-16
+
+- Maintainer completed the real Cloud `S_PREP → S_ARM → S_DISARM → S_REARM` chain against frozen runtime source
+  `b37eea4706fed8d4e764f824eb75a3820f31c9be` and candidate SHA-256
+  `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`.
+- All four setup/maintenance transactions and stage-aware workspace preflights returned PASS with explicit final exit code 0. The exact
+  workspace HEADs remained the frozen validation refs and every Cloud worktree stayed clean.
+- Actual profile sequence was prepared `legacy`, armed `smart`, disarmed `legacy`, rearmed `smart`. Host SessionStart startup,
+  UserPromptSubmit and plan context were observed; `S_ARM` additionally completed the required real Resume.
+- Every production probe returned the expected effective profile with `advisory=null`; doctor stayed healthy/managed/not repairable with
+  no errors or blockers, snapshot leftovers stayed zero, and every evidence JSON passed `validateF3EvidenceRecord()`.
+- Cache state remained honestly `unknown`; no cache behavior was inferred from expected text. Extra actual Resume observations in continued
+  conversations were recorded as facts and were not used to replace the mandatory `S_ARM` Resume.
+- F3B2 is closed as a reversible smart opt-in lifecycle PASS. F3B3/F3B4/F3C/Release remain unauthorized; no autonomous state, rollback,
+  production/contract/Release-byte change or local remote write was performed during closure.
+- A proposed README status promotion was detected as a Release-byte change: the trial build produced a new unaccepted candidate. Reverted
+  that ZIP-entry edit, recorded the deferral in ROADMAP/acceptance, and rebuilt the exact accepted 22-entry / 85,533-byte `df6001…`
+  candidate. README can only be promoted in a future candidate transaction with fresh Cloud validation.
+- Final closeout verification passed: focused lifecycle/governance/Release tests 29/29; full Windows suite 162 total / 139 pass / 0 fail /
+  23 honest platform skips; importer, Python compile, installer/bootstrap syntax and diff checks passed. Final build/check again produced the
+  exact accepted 22-entry / 85,533-byte candidate SHA-256 `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`.
+
 ## Verification log
 
 | Check | Result |
@@ -70,7 +92,12 @@
 | Final full Windows regression | 162 total; 139 pass; 0 fail; 23 honest platform skips |
 | Final candidate check | exact 22-entry / 85,533-byte SHA preserved |
 | Phase 4.7 F3B2 reconciliation | focused 18/18; full 162 total / 139 pass / 0 fail / 23 platform skips |
+| F3B2 Cloud runtime/candidate identity | exact frozen source and 22-entry candidate SHA matched in all four stages |
+| F3B2 Cloud profile chain | `legacy → smart → legacy → smart`; S_ARM Fresh + real Resume |
+| F3B2 Cloud health/residue | four doctor passes; zero leftovers; clean worktrees; explicit exit code 0 |
+| F3B2 evidence records | prepared/armed/disarmed/rearmed all `F3_EVIDENCE_RECORD_V1=PASS` |
+| Final local closeout | focused 29/29; full 162 total / 139 pass / 0 fail / 23 platform skips; exact candidate SHA preserved |
 
 ## Current status
 
-`F3B2_AUTHORIZED / LOCAL_SMART_DAG_VERIFIED / CLOUD_HANDOFF_PENDING / LIVE_PASS_ABSENT`
+`F3B2_SMART_LIVE_PASS / REVERSIBLE_OPT_IN_CONFIRMED / STOP_AND_REVIEW / F3B3_NOT_AUTHORIZED`

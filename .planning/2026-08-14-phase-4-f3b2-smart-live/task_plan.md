@@ -16,13 +16,12 @@ Cloud Fresh、UserPrompt、Resume、disarm/re-arm 验收。
 
 ## Next Step
 
-维护者先复核 self-contained F3B2 smart operator guide；确认后由本地智能体提交该文档，再由维护者 push markerless
-`0.4.0-dev`、一个冻结的 runtime-source ref 与四个 workspace stage refs。随后完全按该独立手册配置 exact runtime
-transaction，并依次执行 `S_PREP → S_ARM → S_DISARM → S_REARM` Cloud live stages；每一步回传完整证据后再继续下一步。
+F3B2 已闭合，停止施工并由维护者复核本次文档封账。下一步若要进入 F3B3 autonomous/tamper，必须先单独授权新的
+Discovery/live gate；当前不得创建 autonomous state、移动 validation refs、执行 rollback 或进入 Release。
 
 ## Current Phase
 
-F3B2-4 Cloud handoff
+F3B2 closed / stop and review
 
 ## Phases
 
@@ -32,8 +31,8 @@ F3B2-4 Cloud handoff
 | F3B2-1 Markerless foundation | completed | programme/acceptance/planning 同步；active scope exact legacy；focused/full regression 与 candidate identity 闭合 |
 | F3B2-2 Isolated smart DAG | completed | 四个 local validation refs 满足 direct-parent、exact-path 与 smart state guard |
 | F3B2-3 Local verification | completed | focused/full tests、deterministic candidate hash、markerless dev branch 与 Release exclusion 闭合 |
-| F3B2-4 Cloud handoff | in_progress | exact runtime/workspace refs、push/config/task 顺序与停止条件交给维护者；停在真实 Cloud evidence 前 |
-| F3B2-5 Live evidence closure | pending | 维护者回传四阶段 Fresh/UserPrompt/real Resume/doctor/inventory/residue/final-exit evidence 后才可判定 PASS |
+| F3B2-4 Cloud handoff | completed | exact runtime/workspace refs、push/config/task 顺序与停止条件交给维护者；四阶段按冻结手册执行 |
+| F3B2-5 Live evidence closure | completed | 四阶段 Fresh/UserPrompt、S_ARM real Resume、doctor/inventory/residue/final-exit 与 evidence records 全部闭合 |
 
 ## Frozen boundaries
 
@@ -56,8 +55,8 @@ F3B2-4 Cloud handoff
 | `S_REARM` | `validation/v0.4.0-dev-f3b2-smart-rearm` → `6dea2225812939f7a5f9893f2ab90782742a264c` |
 | candidate ZIP SHA-256 | `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c` |
 
-这些值只是本地已验证输入；远端存在性和 Cloud 行为尚未证明。`RUNTIME_SOURCE_HEAD` 固定为 markerless foundation，
-每个 stage 使用对应 `WORKSPACE_LIFECYCLE_HEAD`。handoff documentation commit 不替换 runtime source foundation。
+这些值已作为四轮真实 Cloud 验收的 exact 输入。`RUNTIME_SOURCE_HEAD` 固定为 markerless foundation，每个 stage 使用对应
+`WORKSPACE_LIFECYCLE_HEAD`；handoff/closure documentation commits 不替换 runtime source foundation，也不移动 validation refs。
 
 ## Stop Conditions
 
@@ -77,4 +76,4 @@ F3B2-4 Cloud handoff
 
 ## Current status
 
-`F3B2_AUTHORIZED / LOCAL_SMART_DAG_VERIFIED / CLOUD_HANDOFF_PENDING / LIVE_PASS_ABSENT / F3B3_NOT_AUTHORIZED`
+`F3B2_SMART_LIVE_PASS / REVERSIBLE_OPT_IN_CONFIRMED / STOP_AND_REVIEW / F3B3_NOT_AUTHORIZED`

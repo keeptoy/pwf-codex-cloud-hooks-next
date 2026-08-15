@@ -59,7 +59,7 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap, /F2B[^\n]*Source\/Candidate Cloud PASS/);
   assert.match(roadmap, /F2A\/F2B\/F3A Source\/Candidate Cloud PASS/);
   assert.match(roadmap, /F3B0 Discovery 与 F3B1 no-live protocol materialization complete/);
-  assert.match(roadmap, /F3B2 smart local validation chain ready、Cloud live pending/);
+  assert.match(roadmap, /F3B2 smart Cloud live PASS、可逆 opt-in lifecycle 已证明/);
   assert.match(roadmap, /F3B3\/F3B4\/F3C 未授权/);
 });
 
@@ -345,9 +345,16 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance,
     /F3B0 live-preflight Discovery[^\n]*`CONDITIONAL_GO_TO_F3B1_PROTOCOL_MATERIALIZATION`/);
   assert.match(acceptance, /F3B1 protocol materialization \/ no-live dry run[^\n]*`PASS`/);
-  assert.match(acceptance, /F3B2 smart live chain[^\n]*`AUTHORIZED \/ LOCAL_CHAIN_READY \/ CLOUD_PENDING`/);
+  assert.match(acceptance, /F3B2 smart live chain[^\n]*`PASS`/);
   assert.match(acceptance, /F3B3\/F3B4 live \/ F3C rollback[^\n]*`NOT_AUTHORIZED`/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3a-acceptance-delta"><\/a>$/m);
+  assert.match(acceptance, /^<a name="v0-4-0-dev-f3b2-smart-live-evidence"><\/a>$/m);
+  const f3b2EvidenceStart = acceptance.indexOf('<a name="v0-4-0-dev-f3b2-smart-live-evidence"></a>');
+  const f3b1DeltaStart = acceptance.indexOf('<a name="v0-4-0-dev-f3b1-acceptance-delta"></a>');
+  const f3b2Evidence = acceptance.slice(f3b2EvidenceStart, f3b1DeltaStart);
+  assert.match(f3b2Evidence, /b37eea4706fed8d4e764f824eb75a3820f31c9be/);
+  assert.match(f3b2Evidence, /legacy → smart → legacy → smart/);
+  assert.match(f3b2Evidence, /F3B2_SMART_LIVE_PASS \/ REVERSIBLE_OPT_IN_LIFECYCLE_CONFIRMED/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3a-source-candidate-evidence"><\/a>$/m);
   const f3aEvidenceStart = acceptance.indexOf('<a name="v0-4-0-dev-f3a-source-candidate-evidence"></a>');
   const f2bDeltaStart = acceptance.indexOf("## F2B 验收增量与模板同步");
@@ -405,7 +412,7 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
   }
   if (candidate !== accepted && /\b[a-f0-9]{64}\b/i.test(acceptance)) {
-    const currentEvidenceHeading = "## F3A Source/Candidate evidence";
+    const currentEvidenceHeading = "## F3B2 smart live evidence";
     const currentEvidenceAt = acceptance.indexOf(currentEvidenceHeading);
     assert.notEqual(currentEvidenceAt, -1,
       "current completed gate lacks an exact evidence heading");

@@ -264,7 +264,8 @@ upstream patch point 的情况下保持 resolver/injector pristine，并通过�
 强制由 owned decision 选择 legacy/smart/autonomous profile；安全读取、权限、预算、超时和清理成本由 owned runtime
 明确承担。F2B production 仍先读取独立 activation commit point：缺失时 `.mode` 与其他 autonomous state 完全 inert；
 exact autonomous token 生效后才捕获 `.mode`、nonce、attestation 和 bounded ledger，并向 private snapshot 写入
-root-shaped `.plan-attestation`。该 reader 不写 workspace，Cloud lifecycle 是否可用仍由 F3 决定。
+root-shaped `.plan-attestation`。该 reader 不写 workspace。F3B2 已证明同一只读边界下 smart profile 的真实 Cloud
+prepare/arm/disarm/re-arm lifecycle；autonomous 与 rollback 是否可用仍由后继 F3 gate 决定。
 
 这里的“第二个 patch point”特指当时为 plan resolver/injector 比较过的多目标 overlay，不表示 private
 snapshot 直接替换了 catch-up overlay。Catch-up 是另一条 invocation domain：Phase 2 的 owned wrapper 已
@@ -378,7 +379,7 @@ contract、文件名或本地构建结果都不能单独建立 Release。各版�
 
 以下能力存在于远期路线或上游，但不属于当前 trusted graph：
 
-- smart/autonomous 的真实 Cloud activation/disarm/Resume/cache/rollback lifecycle；
+- autonomous 的真实 Cloud activation/disarm/Resume/cache/tamper lifecycle，以及 disarm-first rollback；
 - `PreCompact` / `PostCompact`；
 - tool/permission lifecycle；
 - advisory/hard Stop completion semantics；

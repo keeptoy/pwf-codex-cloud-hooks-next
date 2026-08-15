@@ -29,9 +29,9 @@ R  markerless F3B2 foundation
 
 ## Live handoff principle
 
-The maintainer will push exact refs and configure the Cloud environment. Each Cloud task must first prove its expected workspace HEAD,
-clean worktree, installed runtime source HEAD and candidate SHA. The model must not mutate the repository. F3B2 cannot become PASS until
-all four stage records are obtained from real Host events with final exit codes.
+The maintainer pushed exact refs and configured the Cloud environment. Each Cloud task first proved its expected workspace HEAD,
+clean worktree, installed runtime source HEAD and candidate SHA. The model did not mutate the repository. All four stage records were
+obtained from real Host events with final exit codes, so the F3B2 PASS condition is now satisfied.
 
 The Cloud tasks do not create planning files. The frozen foundation already contains the active pointer plus the three reviewed plan
 records; `S_PREP` adds only `.mode`, and the remaining nodes only add/delete/re-add the activation file. Missing plan state is therefore a
@@ -55,16 +55,40 @@ before proving production profile/doctor/residue. This is a fixed order, not a c
 - The candidate remains 22 entries / 85,533 bytes / SHA-256
   `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`.
 
-The markerless foundation also has a frozen local transport ref, `validation/v0.4.0-dev-f3b2-runtime-source`, so Cloud setup does not
+The markerless foundation also has a frozen transport ref, `validation/v0.4.0-dev-f3b2-runtime-source`, so Cloud setup does not
 need to discover an exact source commit through a moving development branch. All validation refs are intentionally retained for the
-maintainer's push and Cloud selection. They must stay frozen during F3B2 and must
-not be merged into `0.4.0-dev`. Remote existence, Cloud Fresh/Resume and installed runtime identity remain unproven until the live gate.
+maintainer's Cloud selection and later evidence review. They stayed frozen throughout F3B2 and must not be merged into `0.4.0-dev`.
+
+## Cloud live closure
+
+- Common runtime source: `b37eea4706fed8d4e764f824eb75a3820f31c9be`.
+- Common candidate: 22 entries / 85,533 bytes / SHA-256
+  `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`.
+- Active plan ID: `2026-08-14-phase-4-f3b2-smart-live`; task SHA-256:
+  `ff952594cba55f5525d9e3ed3d8dc67c924df4da5e8603b0894a38cd3bcde96e`.
+- `S_PREP a39dc66...`: `smart_prepared` repository state, actual `legacy` effective profile.
+- `S_ARM 1058e70...`: `smart_armed`, actual `smart`, including deliberate Fresh + real Resume.
+- `S_DISARM c9275ba...`: `smart_prepared`, actual `legacy`.
+- `S_REARM 6dea222...`: `smart_armed`, actual `smart`.
+- Every stage returned transaction/preflight PASS, actual Host startup/UserPrompt/plan context, healthy managed doctor, clean worktree,
+  zero snapshot residue, final exit code 0 and `F3_EVIDENCE_RECORD_V1=PASS`.
+- `cache_state=unknown` is the honest result because no reliable reset/hit/miss fact was observed. The validator proves record structure;
+  original Host output, probe JSON, Git identity and final process state establish evidence provenance.
+- Continued conversation may truthfully add `resume` to a non-armed stage record. Only `S_ARM` requires a deliberate real Resume for gate
+  PASS; extra observed Resume does not weaken that stage-specific requirement.
+
+The observed profile chain is exactly `legacy → smart → legacy → smart`. This proves reversible smart opt-in without granting new OS,
+Cloud-container or model permissions. It does not prove autonomous, tamper or rollback behavior.
+
+`README.md` is a Release ZIP entry. An attempted stable-summary promotion changed the local candidate from the accepted
+`df6001… / 85,533` bytes to a new unaccepted artifact, so that edit was reverted. Current F3B2 state is authoritative in ROADMAP and the
+version acceptance; README promotion is deferred to the next candidate transaction that rebuilds and revalidates the ZIP.
 
 ## Historical reconciliation
 
-Phase 4.7 now records a bounded `Post-implementation status — F3B2`: local chain/transport materialization is complete, while Cloud live
-evidence remains absent. It also records the two implementation refinements above and gives every new ref/state object an owner and
-retirement/review condition without duplicating the active plan's exact mutable evidence ledger.
+Phase 4.7 preserves its pre-live implementation record and now adds a bounded subsequent-evidence tailnote: the same chain/transport
+objects completed real Cloud validation. The current version acceptance remains the exact evidence authority; the historical file only
+records the lifecycle transition and retirement/review consequences.
 
 ## Resources
 

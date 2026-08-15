@@ -270,8 +270,9 @@ publication、promotion 或 baseline rotation。
 
 ## Post-implementation status — F3B2
 
-这里的 “implementation” 只指 **F3B2 本地 foundation、transport refs 与 smart validation DAG 已物化**；真实 Cloud
-Fresh、UserPrompt、Resume、disarm/re-arm 尚未执行，因此本节不是 F3B2 live PASS，也不是完整 gate closeout。
+这里的 “implementation” 原先只指 **F3B2 本地 foundation、transport refs 与 smart validation DAG 已物化**；以下先保留
+当时尚未执行真实 Cloud 时的实施复核，再追加后续 live evidence 尾注。这样不篡改原始时间语义，也不会让旧 pending
+状态继续冒充当前事实。
 
 维护者后来单独授权进入 F3B2。当前本地施工与本里程碑冻结的安全模型一致：
 
@@ -314,7 +315,32 @@ Fresh、UserPrompt、Resume、disarm/re-arm 尚未执行，因此本节不是 F3
 
 当前阶段状态是：
 
-`F3B2_LOCAL_CHAIN_READY / CLOUD_LIVE_PENDING / LIVE_PASS_ABSENT / STOP_BEFORE_F3B3`
+`F3B2_LOCAL_CHAIN_READY / CLOUD_LIVE_PENDING / LIVE_PASS_ABSENT / STOP_BEFORE_F3B3`（当时状态）
 
-只有四个 smart stage 的真实 Cloud evidence 全部闭合后，才可把它更新为规划中的
+当时规定只有四个 smart stage 的真实 Cloud evidence 全部闭合后，才可提升为
 `F3B2_SMART_LIVE_PASS / STOP_AND_REVIEW`；本地 commits、refs 或测试不能替代该结论。
+
+### Subsequent Cloud evidence — 2026-08-16
+
+维护者随后按冻结 operator guide 依次完成 `S_PREP → S_ARM → S_DISARM → S_REARM`。同一 markerless runtime source、
+candidate SHA、plan/task identity 在四轮中保持一致；workspace refs 未移动，worktree 均 clean。实际 effective profile 链为
+`legacy → smart → legacy → smart`，`S_ARM` 的 Fresh + real Resume、UserPrompt、plan context、production probe、doctor、零
+snapshot residue、明确最终 exit code 与四份 evidence record 全部闭合。exact identities 与逐 stage 结果由当前版本 acceptance
+保存，本历史文件不复制第二份完整执行账本。
+
+因此上面的退出条件已经满足，后续状态提升为：
+
+`F3B2_SMART_LIVE_PASS / REVERSIBLE_OPT_IN_CONFIRMED / STOP_AND_REVIEW / STOP_BEFORE_F3B3`
+
+对象生命周期随之调整：
+
+| 对象 | Cloud closeout 后状态 | 后继治理 |
+|---|---|---|
+| runtime-source transport ref | `FROZEN ACCEPTED EVIDENCE` | 禁止移动、merge 或作为 moving authority；F3C/Phase 9 再决定保留期 |
+| 四个 smart lifecycle refs | `FROZEN ACCEPTED EVIDENCE` | 保留 exact parent/path/state 关系；后继 gate 不得复用或改写它们表达新状态 |
+| 四份 stage evidence JSON | `COMPLETED EPHEMERAL RECORD` | 只作本轮归档证据，不成为 cache/source/consent authority |
+| development markerless guard | `ACTIVE DEVELOPMENT BOUNDARY` | 继续保留，拒绝 validation state 泄漏主线 |
+| F3 runbook / evidence validator | `CONSUMED / RETAIN` | 保留回归；Cloud 差异或 evidence schema v2 时重新审核 |
+| F3B3 autonomous/tamper objects | `ABSENT / NOT AUTHORIZED` | 只有新 Discovery/live 授权后才可创建 |
+
+F3B4/F3C/Release 同样未被本 PASS 自动授权。
