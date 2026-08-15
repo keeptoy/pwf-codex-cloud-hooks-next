@@ -33,6 +33,18 @@ The maintainer will push exact refs and configure the Cloud environment. Each Cl
 clean worktree, installed runtime source HEAD and candidate SHA. The model must not mutate the repository. F3B2 cannot become PASS until
 all four stage records are obtained from real Host events with final exit codes.
 
+The Cloud tasks do not create planning files. The frozen foundation already contains the active pointer plus the three reviewed plan
+records; `S_PREP` adds only `.mode`, and the remaining nodes only add/delete/re-add the activation file. Missing plan state is therefore a
+checkout/Hook/resolver failure, not an invitation to initialize a replacement plan. The injected plan body exposes the task title but does
+not guarantee that the plan-directory ID is visible, so Host prompt evidence must check visible title/content while a read-only workspace
+preflight proves the exact `.active_plan` value. Treating those as separate facts avoids asking the model to infer an invisible plan ID.
+
+The beginner handoff must be operationally self-contained: it carries the six Cloud variables, identical setup/maintenance transaction,
+stage-aware workspace preflight, prompts, production probe, doctor/residue checks and exact evidence shape. The single setup/maintenance
+block now runs the runtime transaction and then validates the actual workspace HEAD against the frozen four-stage map before the model sees
+its first prompt. The first prompt can therefore remain a pure no-tool Host observation, and one final read-only verifier rechecks identity
+before proving production profile/doctor/residue. This is a fixed order, not a choice between two preflight placements.
+
 ## Materialized local DAG
 
 - `R=b37eea4706fed8d4e764f824eb75a3820f31c9be` remained markerless and validated as repository `legacy`.

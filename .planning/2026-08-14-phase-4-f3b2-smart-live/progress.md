@@ -30,6 +30,26 @@
 - Corrected active findings so later handoff documentation commits no longer appear eligible to replace the frozen runtime source.
 - Focused F3 lifecycle/protocol/repository verification passed 18/18. Full Windows regression passed 139 with 0 failures and 23 honest
   Linux/POSIX skips (162 total); Release/package guards confirm the history/planning/test-only change stays outside candidate inventory.
+- Drafted an uncommitted beginner operator guide beside the canonical F3 runbook. It separates Host prompt observation from the installed
+  production probe, fills the frozen runtime/candidate/stage identities, explains all generic placeholders and records that a docs-only
+  handoff commit moves only `0.4.0-dev`, not the frozen runtime source, lifecycle refs or Release-excluded candidate bytes. Maintainer review
+  is required before this draft is committed; no remote write or live Cloud action occurred.
+- Draft validation passed: all four Bash fences parse, the PowerShell preflight parses, `git diff --check` is clean, and focused
+  F3 lifecycle/protocol/repository/Release tests passed 21/21 with zero skips. No script body was executed against Cloud or remote state.
+- Expanded the draft into an operationally self-contained F3B2 manual: embedded the exact setup/maintenance transaction, added explicit
+  Cloud environment configuration, documented that all plan records are pre-committed validation inputs, inserted a stage-aware read-only
+  workspace preflight before the execution sequence, and embedded the evidence schema/validator flow. Corrected the prompt contract so
+  Host observation checks the visible exact task title/content while shell evidence proves the otherwise invisible plan-directory ID.
+- Revalidation passed: the embedded runtime transaction was byte-for-byte equal to the frozen transaction, all six Bash fences and the PowerShell
+  fence parse, and focused F3 lifecycle/protocol/repository/Release tests again passed 21/21 with zero skips. The guide remains uncommitted
+  pending maintainer review; no Cloud action, remote write, lifecycle ref movement or Release-byte change occurred.
+- Simplified the operator order after maintainer review: setup/maintenance now combines the unchanged runtime transaction core with an exact
+  four-HEAD workspace preflight before the model starts; the first prompt is observation-only; the second prompt runs the sole final
+  production/doctor/residue verifier; evidence validation comes last. Removed the alternative two-script ordering and documented that its
+  evidence command is Bash wrapping inline Node JavaScript imported from `tests/f3-lifecycle-helpers.js`.
+- Final static/focused recheck for this revision passed: all five remaining Bash fences and the PowerShell fence parse; focused F3
+  lifecycle/protocol/repository/Release tests passed 21/21 with zero skips. No setup/install body was executed and the draft remains
+  uncommitted pending maintainer confirmation.
 
 ## Verification log
 

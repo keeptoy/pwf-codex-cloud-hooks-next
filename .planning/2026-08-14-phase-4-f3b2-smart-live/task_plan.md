@@ -16,9 +16,9 @@ Cloud Fresh、UserPrompt、Resume、disarm/re-arm 验收。
 
 ## Next Step
 
-维护者 push markerless `0.4.0-dev`、一个冻结的 runtime-source ref 与四个 workspace stage refs，按 F3 runbook配置
-exact runtime transaction，
-然后依次执行 `S_PREP → S_ARM → S_DISARM → S_REARM` Cloud live stages；每一步回传完整证据后再继续下一步。
+维护者先复核 self-contained F3B2 smart operator guide；确认后由本地智能体提交该文档，再由维护者 push markerless
+`0.4.0-dev`、一个冻结的 runtime-source ref 与四个 workspace stage refs。随后完全按该独立手册配置 exact runtime
+transaction，并依次执行 `S_PREP → S_ARM → S_DISARM → S_REARM` Cloud live stages；每一步回传完整证据后再继续下一步。
 
 ## Current Phase
 
