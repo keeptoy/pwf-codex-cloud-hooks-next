@@ -99,6 +99,19 @@ R  markerless foundation
 - `A_REPREP`：在 disarmed 状态修改 task bytes，并原子更新 nonce/attestation；仍无 activation。
 - `A_REARM`：相对 `A_REPREP` 只新增 autonomous activation file。
 
+这里必须保留一个三层状态不变量，避免把 Git 节点、文件结构和 production 决策揉成一个模糊的“当前模式”：
+
+| 层 | 回答的问题 | F3B2 中的 authority |
+|---|---|---|
+| workspace stage | 当前 checkout 是生命周期哪一步之后的提交 | exact `WORKSPACE_LIFECYCLE_HEAD` 与冻结 DAG |
+| repository state | 当前 machine-state 文件组合完整到什么程度 | repository-only state validator |
+| effective profile | production 最终实际采用哪个 renderer | owned production probe 的实际 result |
+
+因此 `S_DISARM / smart_prepared / legacy` 是预期安全结果：该提交刚删除 activation，`.mode` preparation 仍在，所以结构上
+仍是 `smart_prepared`；但 activation-only commit point 已不存在，production 必须选择 `legacy`。同理，stage map 中的
+expected profile 不能自证运行结果；必须由真实 probe result 与 expected 值相等后才能接受。这一分层也是“删除 token
+即可退出、残留 preparation 不得复活 smart”的可验证表达。
+
 不创建故意 attestation mismatch 的远端 commit。tamper 负向实验从 exact `A_ARM` 启动一个一次性 Cloud
 environment，先证明正常 autonomous，再由 versioned runbook 的 bounded 命令只修改当前 worktree 的
 `task_plan.md` 一处；下一次真实 UserPrompt 与 production probe 必须分别 canary-only、返回

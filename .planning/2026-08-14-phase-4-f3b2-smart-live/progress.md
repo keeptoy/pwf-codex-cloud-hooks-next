@@ -72,6 +72,12 @@
 - Final closeout verification passed: focused lifecycle/governance/Release tests 29/29; full Windows suite 162 total / 139 pass / 0 fail /
   23 honest platform skips; importer, Python compile, installer/bootstrap syntax and diff checks passed. Final build/check again produced the
   exact accepted 22-entry / 85,533-byte candidate SHA-256 `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`.
+- Added a post-closeout newcomer explanation for the three independent state layers: workspace lifecycle action, repository machine-state
+  shape and actual production profile. Used `S_DISARM / smart_prepared / legacy` as the canonical example and explicitly separated
+  `EXPECTED_EFFECTIVE_PROFILE` from the authoritative production probe result. No gate status, runtime or Release input changed.
+- Three-layer documentation verification passed: focused F3/governance/Release 18/18; full Windows suite 162 total / 139 pass / 0 fail /
+  23 honest platform skips. Candidate build/check remained 22 entries, 85,533 bytes and exact SHA-256
+  `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`; all changed paths are Release-excluded.
 
 ## Verification log
 

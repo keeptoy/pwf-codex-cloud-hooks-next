@@ -73,6 +73,7 @@ F3B2 closed / stop and review
 |---|---:|---|
 | Windows sandbox blocked Node test-runner child creation with `spawn EPERM` before any test body ran | 1 | Classified as execution-environment limitation; rerun the identical focused command with approved non-sandbox execution, without weakening assertions. |
 | First non-sandbox focused run found one ROADMAP lifecycle assertion drift: the rewritten current boundary no longer contained `F1 foundation ... complete` on one line | 1 | Restored the already-true completed foundation summary in the current programme row; kept the new F3B2 authorization and denial boundaries unchanged. |
+| New three-layer documentation guard accepted only prose `workspace stage`, while the operator guide correctly used machine field `WORKSPACE_STAGE` | 1 | Classified as a test-pattern defect; allowed either space or underscore for all three field names without weakening the required S_DISARM/state/profile relation. |
 
 ## Current status
 

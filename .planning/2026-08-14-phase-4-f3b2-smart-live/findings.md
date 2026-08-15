@@ -80,6 +80,11 @@ maintainer's Cloud selection and later evidence review. They stayed frozen throu
 The observed profile chain is exactly `legacy → smart → legacy → smart`. This proves reversible smart opt-in without granting new OS,
 Cloud-container or model permissions. It does not prove autonomous, tamper or rollback behavior.
 
+The Cloud review exposed a useful teaching distinction: workspace stage, repository state and effective profile are separate authorities.
+For `S_DISARM`, the exact values are `S_DISARM / smart_prepared / legacy`: the Git node records the delete action, the remaining `.mode`
+records inert preparation, and production refuses smart because the activation commit point is absent. Expected profile constants guide
+the check but do not self-certify it; the actual owned probe result is authoritative.
+
 `README.md` is a Release ZIP entry. An attempted stable-summary promotion changed the local candidate from the accepted
 `df6001… / 85,533` bytes to a new unaccepted artifact, so that edit was reverted. Current F3B2 state is authoritative in ROADMAP and the
 version acceptance; README promotion is deferred to the next candidate transaction that rebuilds and revalidates the ZIP.

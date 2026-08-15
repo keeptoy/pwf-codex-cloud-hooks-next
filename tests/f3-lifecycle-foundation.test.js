@@ -172,6 +172,8 @@ test("Phase 4.6 records F3A implementation drift and object retirement without p
 test("Phase 4.7 freezes a two-identity staged F3B protocol and records F3B2 Cloud closure", () => {
   const history = fs.readFileSync(
     path.join(root, "docs", "history", "phase-4.7-f3b-live-preflight-discovery.md"), "utf8");
+  const operatorGuide = fs.readFileSync(
+    path.join(root, "docs", "v0.4.0-dev-f3b2-smart-live-operator-guide.md"), "utf8");
   for (const anchor of [
     "phase-4-7-new-evidence", "phase-4-7-frozen-invariants", "phase-4-7-validation-topology",
     "phase-4-7-gate-plan", "phase-4-7-evidence-and-stop-rules", "phase-4-7-lifecycle-ledger",
@@ -195,4 +197,13 @@ test("Phase 4.7 freezes a two-identity staged F3B protocol and records F3B2 Clou
     /F3B2_SMART_LIVE_PASS \/ REVERSIBLE_OPT_IN_CONFIRMED \/ STOP_AND_REVIEW \/ STOP_BEFORE_F3B3/);
   assert.match(history, /FROZEN ACCEPTED EVIDENCE/);
   assert.match(history, /F3B3 autonomous\/tamper objects[^\n]*ABSENT \/ NOT AUTHORIZED/);
+  for (const text of [history, operatorGuide]) {
+    assert.match(text, /workspace(?:_| )stage/i);
+    assert.match(text, /repository(?:_| )state/i);
+    assert.match(text, /effective(?:_| )profile/i);
+    assert.match(text, /S_DISARM[\s\S]*smart_prepared[\s\S]*legacy/);
+  }
+  assert.match(operatorGuide, /EXPECTED_EFFECTIVE_PROFILE/);
+  assert.match(operatorGuide, /actual 等于 expected/);
+  assert.match(operatorGuide, /production probe JSON/);
 });
