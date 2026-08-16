@@ -178,7 +178,7 @@ test("Phase 4.7 freezes a two-identity staged F3B protocol and records F3B2 Clou
     "phase-4-7-new-evidence", "phase-4-7-frozen-invariants", "phase-4-7-validation-topology",
     "phase-4-7-gate-plan", "phase-4-7-evidence-and-stop-rules", "phase-4-7-lifecycle-ledger",
     "phase-4-7-decision", "phase-4-7-post-implementation-status-f3b2",
-    "phase-4-7-post-discovery-status-f3b3",
+    "phase-4-7-post-discovery-status-f3b3", "phase-4-7-f3b-gates-in-plain-language",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(history, /`RUNTIME_SOURCE_HEAD`/);
   assert.match(history, /`WORKSPACE_LIFECYCLE_HEAD`/);
@@ -207,6 +207,11 @@ test("Phase 4.7 freezes a two-identity staged F3B protocol and records F3B2 Clou
   assert.match(operatorGuide, /EXPECTED_EFFECTIVE_PROFILE/);
   assert.match(operatorGuide, /actual 等于 expected/);
   assert.match(operatorGuide, /production probe JSON/);
+  assert.match(history, /F3B1[\s\S]*无 live 模拟考/);
+  assert.match(history, /F3B2[\s\S]*smart 第一次正式实考/);
+  assert.match(history, /F3B3[\s\S]*autonomous 到底能不能在真实 Cloud 跑通/);
+  assert.match(history, /F3B4[\s\S]*smart \+ autonomous 的全部证据是否完整、互不混淆/);
+  assert.match(history, /F3B_LIVE_LIFECYCLE_PASS[\s\S]*不能代替 F3C rollback PASS/);
 });
 
 test("Phase 4.8 preserves Discovery history and records autonomous local plus Cloud closure", () => {
@@ -240,13 +245,14 @@ test("Phase 4.8 preserves Discovery history and records autonomous local plus Cl
   assert.match(history, /本结论不自动授权 F3B4 evidence closure、F3C disarm-first rollback/);
 });
 
-test("Phase 4.9 reconciles F3B evidence without promoting closure or deleting rollback refs", () => {
+test("Phase 4.9 preserves Discovery history and records authorized closure without deleting rollback refs", () => {
   const history = fs.readFileSync(
     path.join(root, "docs", "history", "phase-4.9-f3b4-evidence-closure-discovery.md"), "utf8");
   for (const anchor of [
     "phase-4-9-positioning", "phase-4-9-evidence-inventory", "phase-4-9-provenance-model",
     "phase-4-9-residue-audit", "phase-4-9-retention-ledger", "phase-4-9-closure-plan",
     "phase-4-9-stop-rules", "phase-4-9-decision", "phase-4-9-verification",
+    "phase-4-9-post-implementation-status-f3b4", "phase-4-9-closure-verification",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   for (const stage of ["prepared", "armed", "tampered", "disarmed", "reprepared", "rearmed"]) {
     assert.match(history, new RegExp(`\`${stage}\``));
@@ -260,5 +266,11 @@ test("Phase 4.9 reconciles F3B evidence without promoting closure or deleting ro
   assert.match(history, /165 tests，142 pass，0 fail，23 个 Linux\/POSIX-only honest skips/);
   assert.match(history,
     /CONDITIONAL_GO_TO_F3B4_EVIDENCE_CLOSURE \/ IMPLEMENTATION_NOT_AUTHORIZED \/ F3C_NOT_AUTHORIZED/);
-  assert.doesNotMatch(history, /`F3B_LIVE_LIFECYCLE_PASS`[^\n]*已(?:经)?(?:完成|通过)/);
+  assert.match(history,
+    /F3B_LIVE_LIFECYCLE_PASS \/ SMART_AND_AUTONOMOUS_EVIDENCE_RECONCILED \/ STOP_BEFORE_F3C/);
+  assert.match(history, /全部保持原 commit/);
+  assert.match(history, /F3C 仍须另行讨论、Discovery/);
+  assert.match(history, /active planning 经 production admission helper 判定为 markerless legacy/);
+  assert.match(history, /共 11 个/);
+  assert.match(history, /Release v2 entries\/external assets 的交集为空/);
 });

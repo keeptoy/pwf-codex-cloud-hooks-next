@@ -185,3 +185,43 @@ residue 边界上完整且互不冲突。没有发现需要新 Cloud、schema v2
 
 本结论只批准维护者下一轮考虑上节列出的最小 docs/planning/tests closure；它不自动产生
 `F3B_LIVE_LIFECYCLE_PASS`，也不授权 ref cleanup、F3C rollback 或 Release。
+
+<a name="phase-4-9-post-implementation-status-f3b4"></a>
+
+## Post-implementation status — F3B4 evidence closure
+
+维护者随后单独授权了上方冻结的最小 closure implementation。本次只汇总已经接受的 F3B2/F3B3 evidence，没有重跑
+Cloud、创建新 record、修改 evidence v1、移动 validation refs，或改变 production/Release bytes。
+
+最终 reconciliation 为：
+
+- smart 四份与 autonomous 六份 stage evidence 继续分别由各自 operator/acceptance 承重，PASS/negative facts没有被一条
+  综合口号覆盖；
+- 十份 evidence 共同使用已冻结的 runtime/workspace/candidate/Host/probe/doctor/final-exit provenance 模型，两个
+  runtime-source checkpoint之间没有 production/Release-input差异；
+- development active scope 再次证明 markerless legacy，没有 live state、tamper ref、snapshot/cache、临时 ZIP/JSON 或第二份
+  inventory authority；
+- 两个 runtime-source refs 与九个正向 lifecycle refs 全部保持原 commit；本次不删除任何对象。它们继续保留到 F3C PASS
+  和当前 0.4.0 Phase 9 instance complete 后，再由维护者人工复核；
+- opaque Cloud task ID 继续是 `NOT_EXPORTED / NOT_REQUIRED_BY_EVIDENCE_V1`，没有被猜写或升级成新 schema 字段。
+
+所以完整 F3B live lifecycle 现在可以汇总为：
+
+`F3B_LIVE_LIFECYCLE_PASS / SMART_AND_AUTONOMOUS_EVIDENCE_RECONCILED / STOP_BEFORE_F3C`
+
+这里的 PASS 只覆盖当前 exact candidate 已完成的 smart/autonomous opt-in、disarm/re-arm、tamper refusal 与 evidence closure。
+它不证明 runtime/installer rollback，不授权 F3C、ref cleanup、seal、publication 或 promotion。F3C 仍须另行讨论、Discovery
+和维护者授权。
+
+<a name="phase-4-9-closure-verification"></a>
+
+### Closure verification
+
+- focused F3/history/repository suite：21 tests，21 pass，0 fail，0 skipped；
+- full Windows suite：165 tests，142 pass，0 fail，23 个 Linux/POSIX-only honest skips；
+- importer、owned Python compile、`install.js`、全部 bootstrap Bash syntax 与 `git diff --check`：PASS；
+- 两次独立 candidate build/check 继续得到 22 entries、85,533 bytes、SHA-256
+  `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`；两份产物字节身份一致；
+- active planning 经 production admission helper 判定为 markerless legacy，planning machine-state residue 为 0；
+- 两个 runtime-source refs 与九个正向 lifecycle refs 的 local/remote-tracking identity 全部匹配冻结值，共 11 个；
+- 本次 changed paths 与 Release v2 entries/external assets 的交集为空，没有用旧 Cloud evidence 给新 candidate 字节背书。

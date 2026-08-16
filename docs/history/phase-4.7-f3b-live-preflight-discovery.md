@@ -375,3 +375,25 @@ smart validation refs 复用成 autonomous 输入。
 `CONDITIONAL_GO_TO_F3B3_AUTONOMOUS_MATERIALIZATION / IMPLEMENTATION_NOT_AUTHORIZED / LIVE_NOT_STARTED`。
 autonomous refs、machine state、tamper environment、operator guide 和六份 live evidence 仍为 `ABSENT`；F3B4、F3C、
 README/Release byte 变化和远端写入也没有被本 Discovery 自动授权。
+
+<a name="phase-4-7-f3b-gates-in-plain-language"></a>
+
+## F3B0～F3B4 到底分别在问什么（大白话）
+
+上面的分步计划已经给出完整技术条件，但新人最容易把几个编号都看成“继续测 Cloud”。更准确的理解是：每个 gate
+回答的是不同问题，前一项通过也不能替后一项作答。
+
+| Gate | 大白话问题 | 类比 |
+|---|---|---|
+| `F3B0` | “真实 Cloud 验收应该怎么设计，才能既测到 opt-in，又不让 moving branch、脏工作树或模型自报结果混进来？” | 先定考试范围、考场规则和判卷标准 |
+| `F3B1` | “先不真的打开 smart/autonomous，setup、状态提交链、tamper 规则、停止条件和 evidence validator 能否在本地完整演练？” | 印好试卷并做无 live 模拟考，证明考试本身可执行 |
+| `F3B2` | “更简单的 smart 能不能在真实 Cloud 明确启用、退出、再启用，并在 Fresh/real Resume 中保持正确？” | smart 第一次正式实考 |
+| `F3B3` | “autonomous 到底能不能在真实 Cloud 跑通，并且在 attestation tamper 时只保留 canary、绝不泄漏部分上下文？” | autonomous 正式实考，加一场故意破坏状态的安全题 |
+| `F3B4` | “smart + autonomous 的全部证据是否完整、互不混淆，并且现在清理哪些对象不会破坏 F3C rollback？” | 汇总阅卷、归档和决定哪些考场材料必须继续保留 |
+
+F3B4 的实际答案不是“现在可以大扫除”，而是：证据已经完整，但 validation refs 正是 F3C 的 rollback 对照输入，因此
+当前一个也不删。完整 inventory、provenance、retention 与最终 aggregate closure 见
+[`Phase 4.9 post-implementation status`](phase-4.9-f3b4-evidence-closure-discovery.md#phase-4-9-post-implementation-status-f3b4)。
+
+`F3C` 不属于上面这轮“profile 能否 live 运行”的考试。它另问：“先 disarm，再回滚或重装旧 runtime 时，workspace intent
+是否仍然安全，旧 token 会不会在未来升级后复活？”所以 `F3B_LIVE_LIFECYCLE_PASS` 仍不能代替 F3C rollback PASS。
