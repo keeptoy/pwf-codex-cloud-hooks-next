@@ -60,7 +60,7 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap, /F2A\/F2B\/F3A Source\/Candidate Cloud PASS/);
   assert.match(roadmap, /F3B0 Discovery 与 F3B1 no-live protocol materialization complete/);
   assert.match(roadmap, /F3B2 smart Cloud live PASS、可逆 opt-in lifecycle 已证明/);
-  assert.match(roadmap, /F3B3 Discovery conditional-go，materialization\/live 未授权/);
+  assert.match(roadmap, /F3B3 本地 autonomous materialization\/repository-only audit complete，Cloud live 未授权/);
   assert.match(roadmap, /F3B4\/F3C 未授权/);
 });
 
@@ -349,7 +349,8 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, /F3B2 smart live chain[^\n]*`PASS`/);
   assert.match(acceptance,
     /F3B3 autonomous live Discovery[^\n]*`CONDITIONAL_GO_TO_F3B3_AUTONOMOUS_MATERIALIZATION`/);
-  assert.match(acceptance, /F3B3 autonomous materialization\/live[^\n]*`NOT_AUTHORIZED`/);
+  assert.match(acceptance, /F3B3 autonomous materialization \/ repository-only audit[^\n]*`PASS`/);
+  assert.match(acceptance, /F3B3 autonomous Cloud live[^\n]*`NOT_AUTHORIZED`/);
   assert.match(acceptance, /F3B4 evidence closure \/ F3C rollback[^\n]*`NOT_AUTHORIZED`/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3a-acceptance-delta"><\/a>$/m);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3b2-smart-live-evidence"><\/a>$/m);

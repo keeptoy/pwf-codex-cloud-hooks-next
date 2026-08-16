@@ -207,3 +207,38 @@ materialization：创建新的 markerless `A_BASE`、独立 autonomous refs、�
 
 本结论不授权创建 refs/machine state、执行 tamper、启动 Cloud task、进入 F3B4/F3C、修改 README/Release bytes，
 也不授权任何 push、PR、tag、Release、publication 或 promotion。
+
+<a name="phase-4-8-post-implementation-status-f3b3"></a>
+
+## Post-implementation status — F3B3 materialization
+
+维护者随后单独授权了本结论中的 bounded materialization；实施没有改变 Discovery 的安全模型，也没有修改
+production、contract、Host ABI、trusted graph、README 或 Release bytes。实际落地结果是：
+
+- markerless `A_BASE` 同时成为本轮 plan base 和 frozen runtime-source transport ref；development branch 在后续文档施工中
+  继续 markerless，不把 validation state 合并回来；
+- `A_PREP → A_ARM → A_DISARM → A_REPREP → A_REARM` 已按 direct-parent 和 exact-path 关系在隔离 worktree 物化；
+- initial/reprepared task digest、nonce 与 attestation 均闭合且发生预期轮转；全链保持零 ledger、无 `.stop_blocks`；
+- activation/disarm/re-arm 仍分别是单一文件的 add/delete/add commit，tamper 仍没有 commit/ref；
+- candidate 继续是同一 22-entry、85,533-byte、SHA-256
+  `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`；
+- [F3B3 autonomous operator guide](../v0.4.0-dev-f3b3-autonomous-live-operator-guide.md#f3b3-operator-positioning)
+  已把六轮 Cloud 顺序、两个 mandatory Resume、tamper-only verifier 和六份 evidence record 冻结为一条自包含路径。
+
+这次施工对生命周期账本的影响如下；Discovery 上方的 `ABSENT` 表保留当时历史语义，不回写成“当时已存在”：
+
+| 对象 | 施工后状态 | owner / 退出条件 |
+|---|---|---|
+| `A_BASE` 与五个 autonomous refs | LOCAL FROZEN VALIDATION EVIDENCE | maintainer；push 只由维护者执行，F3C/Phase 9 再决定远端 retention |
+| development branch active scope | MARKERLESS | planning owner；禁止吸收 validation machine state |
+| operator guide | PRE-RUN FROZEN PROTOCOL | maintainer；Cloud 原始证据闭合后才能追加 post-run status |
+| tamper worktree/ref | ABSENT | 只允许在单个 disposable Cloud task 临时出现，永不形成 ref |
+| six Cloud evidence records | ABSENT | Cloud task owner；不得用本地 expected 值预填 |
+| production/runtime/Release bytes | UNCHANGED | 原有 machine authorities；若变化必须停止并重开 candidate transaction |
+
+因此当前精确状态是：
+
+`F3B3_LOCAL_CHAIN_READY / CLOUD_LIVE_NOT_AUTHORIZED / LIVE_PASS_ABSENT / STOP_BEFORE_F3B4`
+
+本尾注只把原 Discovery 的后续实施结果记账，不把 repository-only audit 提升成 Cloud provenance，也不授权真实 tamper、
+F3B4、F3C、Release 或任何远端写入。

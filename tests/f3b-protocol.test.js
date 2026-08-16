@@ -172,3 +172,39 @@ test("F3B1 evidence record is exact, relational, and rejects self-certified drif
   };
   assert.deepEqual(validateF3EvidenceRecord(tampered), tampered);
 });
+
+test("F3B3 operator guide freezes the autonomous DAG, tamper refusal, and pre-live stop line", () => {
+  const guide = fs.readFileSync(
+    path.join(repositoryRoot, "docs", "v0.4.0-dev-f3b3-autonomous-live-operator-guide.md"), "utf8");
+  for (const anchor of [
+    "f3b3-operator-positioning", "f3b3-state-table", "f3b3-local-preflight", "f3b3-cloud-environment",
+    "f3b3-stage-order", "f3b3-tamper-protocol", "f3b3-read-only-verifiers", "f3b3-evidence-records",
+    "f3b3-stop-and-handoff", "f3b3-pre-run-status",
+  ]) assert.match(guide, new RegExp(`<a name="${anchor}"></a>`));
+  for (const identity of [
+    "a6fa03159a442b917f893fc51a7e3ed45b37371a",
+    "d107c1cc53199415cc704553dafeab757060ae9e",
+    "f43a744cbac7f7056d4efbf9b5cbd676bc1e4091",
+    "98b6f138497af244563541ec655a1111198f0c36",
+    "5b20eb749c77dc1ac825202ca783dc7b8d938b58",
+    "32b13b018176cd3bbaa15480864bf168754e5f67",
+    "415295db8617e87d8d63b94c891a7e1a1494f63024c96bba0993239564e9b552",
+    "2f5cd2dcb0d5ce69fb000a97550096e1421e1cd6ad5569d570777cb744144878",
+    "d7d00d0fcb799f3f", "c748f8700d4bfcd3",
+    "df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c",
+  ]) assert.match(guide, new RegExp(identity));
+  assert.match(guide, /A_BASE → A_PREP → A_ARM → A_DISARM → A_REPREP → A_REARM/);
+  assert.match(guide, /PWF_F3B3_TAMPER_ONLY/);
+  assert.match(guide, /value\['outcome'\] == 'invalid_request'/);
+  assert.match(guide, /value\['effective_profile'\] is None/);
+  assert.match(guide, /value\['advisory'\] == 'state_unsafe'/);
+  assert.match(guide, /PWF_F3B3_RAW_PROGRESS_MUST_NOT_APPEAR/);
+  assert.match(guide, /F3B3_LOCAL_CHAIN_READY \/ CLOUD_LIVE_NOT_AUTHORIZED \/ LIVE_PASS_ABSENT \/ STOP_BEFORE_F3B4/);
+  assert.doesNotMatch(guide, /F3B3_AUTONOMOUS_LIVE_PASS/);
+  const bashBlocks = [...guide.matchAll(/```bash\n([\s\S]*?)```/g)].map(match => match[1]);
+  assert.ok(bashBlocks.length >= 6, "F3B3 guide must retain independently executable shell stages");
+  for (const [index, source] of bashBlocks.entries()) {
+    const syntax = spawnSync("bash", ["-n"], { input: source, encoding: "utf8" });
+    assert.equal(syntax.status, 0, `F3B3 guide bash block ${index + 1}: ${syntax.stderr}`);
+  }
+});

@@ -8,11 +8,12 @@ disarm、re-attest 与 re-arm；本轮停止在真实 Cloud live 之前。
 
 ## Next Step
 
-恢复当前 authority 与 Phase 4.8 decision，冻结 markerless `A_BASE`，然后在隔离 worktree 中创建 autonomous exact-path refs。
+等待维护者 push `0.4.0-dev` 与六个 frozen validation refs；真实 Cloud 六轮执行仍需维护者另行授权，并必须逐项按
+operator guide 收集原始 Host/probe/Git/doctor/final-exit evidence。
 
 ## Current Phase
 
-F3B3-M1 markerless A_BASE
+F3B3 local materialization complete; stopped before Cloud live
 
 ## Autonomous validation checkpoint
 
@@ -29,28 +30,28 @@ F3B3-M1 markerless A_BASE
 
 ### Phase F3B3-M1 — Markerless A_BASE
 
-**Status:** in_progress
+**Status:** completed
 
 - 把本 plan 作为 markerless active scope 提交到 development branch。
 - 冻结 exact runtime-source transport ref；证明当前 scope 没有 machine state。
 
 ### Phase F3B3-M2 — Autonomous validation DAG
 
-**Status:** pending
+**Status:** completed
 
 - 在隔离 worktree 物化 prepare/arm/disarm/reprepare/rearm direct-parent commits。
 - 核对 exact path、state、task digest、nonce 轮转与 activation-only 关系；不创建 tamper ref。
 
 ### Phase F3B3-M3 — Self-contained operator guide
 
-**Status:** pending
+**Status:** completed
 
 - 写入 exact source/candidate/workspace identities、环境变量、六轮 Cloud 顺序、提示词、只读校验和 evidence schema。
 - 补 programme/acceptance/lifecycle 状态与 repository-only tests。
 
 ### Phase F3B3-M4 — Verification and local handoff
 
-**Status:** pending
+**Status:** completed
 
 - 运行 focused/full regression、deterministic candidate、Release exclusion、ref graph 与 Bash syntax checks。
 - 创建单一 docs/tests/planning 本地 commit；停止并交给维护者 push/Cloud。
@@ -85,7 +86,11 @@ F3B3-M1 markerless A_BASE
 
 | Error | Attempt | Resolution |
 |---|---:|---|
+| A_REPREP validation command accidentally included nonexistent `test-path-placeholder` after the real validator | 1 | Validator itself had already returned `autonomous_prepared`; logged the orchestration typo and reran only the intended exact checks |
+| Git for Windows Bash could not create its signal pipe inside the current sandbox while checking guide fences (`Win32 error 5`) | 1 | Classified as an execution-sandbox limitation rather than a script result; finish the bounded edits, then rerun Bash syntax with the required outer permission |
+| Focused test expected at least seven Bash fences, but the self-contained guide intentionally has six executable blocks | 1 | Classified as a test-count defect: push, remote check, transaction, normal verifier, tamper verifier and evidence validator are the six independent blocks; corrected the lower bound to six without weakening any semantic assertion |
+| Initial `git add` could not create `.git/index.lock` because the workspace sandbox exposes `.git` read-only | 1 | No paths were staged or lost; logged the environment restriction and reran the same exact-path add/commit with local Git permission only |
 
 ## Current status
 
-`F3B3_MATERIALIZATION_IN_PROGRESS / A_BASE_COMMITTING / CLOUD_LIVE_NOT_AUTHORIZED`
+`F3B3_LOCAL_MATERIALIZATION_PASS / CLOUD_LIVE_NOT_AUTHORIZED / STOP_BEFORE_F3B4`
