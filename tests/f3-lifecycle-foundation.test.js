@@ -274,3 +274,27 @@ test("Phase 4.9 preserves Discovery history and records authorized closure witho
   assert.match(history, /共 11 个/);
   assert.match(history, /Release v2 entries\/external assets 的交集为空/);
 });
+
+test("Phase 4.10 freezes disarm-first rollback without claiming implementation or live PASS", () => {
+  const history = fs.readFileSync(
+    path.join(root, "docs", "history", "phase-4.10-f3c-rollback-discovery.md"), "utf8");
+  for (const anchor of [
+    "phase-4-10-positioning", "phase-4-10-new-evidence", "phase-4-10-threat-model",
+    "phase-4-10-supported-transition", "phase-4-10-validation-topology", "phase-4-10-evidence-model",
+    "phase-4-10-lifecycle-ledger", "phase-4-10-gate-plan", "phase-4-10-stop-rules",
+    "phase-4-10-decision", "phase-4-10-verification",
+  ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
+  assert.match(history, /current installer uninstall \+ backup/);
+  assert.match(history, /immutable v0\.3\.5 clean install/);
+  assert.match(history, /current candidate exact forward migration/);
+  assert.match(history, /direct old-over-new downgrade/);
+  assert.match(history, /armed\/runtime-only rollback/);
+  assert.match(history, /validateF3RollbackEvidenceRecord\(\)/);
+  assert.match(history, /S_ROLLBACK → S_RECOVER/);
+  assert.match(history, /A_ROLLBACK → A_RECOVER/);
+  assert.match(history, /F3C PASS \+ 当前 0\.4\.0 Phase 9 instance complete/);
+  assert.match(history,
+    /CONDITIONAL_GO_TO_F3C1_ROLLBACK_PROTOCOL_MATERIALIZATION \/ IMPLEMENTATION_NOT_AUTHORIZED \/ REFS_FROZEN/);
+  assert.match(history, /没有执行真实 uninstall\/install\/rollback/);
+  assert.doesNotMatch(history, /F3C_ROLLBACK_PASS \/.*CONFIRMED/);
+});
