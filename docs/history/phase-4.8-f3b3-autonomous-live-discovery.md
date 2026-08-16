@@ -283,3 +283,16 @@ repository-only exact-key validator；所有 setup/verifier/validator 都取得�
 `F3B3_AUTONOMOUS_LIVE_PASS / TAMPER_REFUSAL_AND_REATTEST_CONFIRMED / STOP_AND_REVIEW / STOP_BEFORE_F3B4`
 
 本结论不自动授权 F3B4 evidence closure、F3C disarm-first rollback、README/Release-byte 修改、seal、publication 或任何远端写入。
+
+<a name="phase-4-8-post-discovery-status-f3b4"></a>
+
+## Post-discovery status — F3B4
+
+维护者在 F3B3 closeout 后另行授权了 F3B4 evidence-closure 小型 Discovery。它确认 smart 四份与 autonomous 六份
+accepted records、local/remote-tracking refs、candidate identity 和 markerless development state 可以闭合，且没有 tamper
+ref、runtime residue 或第二份 inventory authority。详细 inventory、provenance 分层、opaque Cloud task ID 边界、保留期与
+最小 closure 方案只见 [`Phase 4.9 decision`](phase-4.9-f3b4-evidence-closure-discovery.md#phase-4-9-decision)。
+
+当前只达到
+`CONDITIONAL_GO_TO_F3B4_EVIDENCE_CLOSURE / IMPLEMENTATION_NOT_AUTHORIZED / F3C_NOT_AUTHORIZED`；本尾注不把
+F3B aggregate PASS、ref cleanup、F3C rollback 或 Release 写成已授权。

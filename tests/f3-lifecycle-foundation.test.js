@@ -239,3 +239,26 @@ test("Phase 4.8 preserves Discovery history and records autonomous local plus Cl
   assert.match(history, /tamper environment[\s\S]*DESTROYED/);
   assert.match(history, /本结论不自动授权 F3B4 evidence closure、F3C disarm-first rollback/);
 });
+
+test("Phase 4.9 reconciles F3B evidence without promoting closure or deleting rollback refs", () => {
+  const history = fs.readFileSync(
+    path.join(root, "docs", "history", "phase-4.9-f3b4-evidence-closure-discovery.md"), "utf8");
+  for (const anchor of [
+    "phase-4-9-positioning", "phase-4-9-evidence-inventory", "phase-4-9-provenance-model",
+    "phase-4-9-residue-audit", "phase-4-9-retention-ledger", "phase-4-9-closure-plan",
+    "phase-4-9-stop-rules", "phase-4-9-decision", "phase-4-9-verification",
+  ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
+  for (const stage of ["prepared", "armed", "tampered", "disarmed", "reprepared", "rearmed"]) {
+    assert.match(history, new RegExp(`\`${stage}\``));
+  }
+  assert.match(history, /F3B3 runtime source 是 F3B2 runtime source 的后继/);
+  assert.match(history, /production、contracts、bundle、manifest、installer、builder/);
+  assert.match(history, /NOT_EXPORTED \/ NOT_REQUIRED_BY_EVIDENCE_V1/);
+  assert.match(history, /不复制进仓库/);
+  assert.match(history, /F3C PASS \+ 当前 0\.4\.0 Phase 9 instance complete/);
+  assert.match(history, /KEEP ABSENT；禁止补建 ref/);
+  assert.match(history, /165 tests，142 pass，0 fail，23 个 Linux\/POSIX-only honest skips/);
+  assert.match(history,
+    /CONDITIONAL_GO_TO_F3B4_EVIDENCE_CLOSURE \/ IMPLEMENTATION_NOT_AUTHORIZED \/ F3C_NOT_AUTHORIZED/);
+  assert.doesNotMatch(history, /`F3B_LIVE_LIFECYCLE_PASS`[^\n]*已(?:经)?(?:完成|通过)/);
+});

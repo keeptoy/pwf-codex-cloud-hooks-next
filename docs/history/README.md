@@ -46,6 +46,7 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 | Phase 4.6 | F3 Cloud lifecycle Discovery 里程碑：选择 Git-backed preparation/activation-only commits，冻结 frozen-plan、active-scope state governance、disarm-first rollback 与 F3A/F3B/F3C 分门；原结论只 conditional-go 到 F3A，后继 F3A 本地实施与生命周期对账只见文件尾注，不表示 live activation 已授权或验收 | [`phase-4.6-f3-cloud-lifecycle-discovery.md`](phase-4.6-f3-cloud-lifecycle-discovery.md) |
 | Phase 4.7 | F3B live-preflight Discovery 里程碑：补齐 runtime source/workspace lifecycle 双身份、true Fresh、隔离验证链、tamper/disarm/re-arm 与 F3B0～F3B4 停止点；只 conditional-go 到 protocol materialization，不表示真实 opt-in 已授权或通过 | [`phase-4.7-f3b-live-preflight-discovery.md`](phase-4.7-f3b-live-preflight-discovery.md) |
 | Phase 4.8 | F3B3 autonomous live 小型 Discovery：在 F3B2 smart PASS 后复核 activation-first runtime、独立 `A_BASE`、零 ledger 摘要、bounded tamper、re-attest/re-arm、operator/evidence 分工与对象生命周期；原结论 conditional-go 到 materialization，后续尾注分别记录本地 DAG/guide 与六轮 autonomous Cloud live 已闭合，仍停止在 F3B4/F3C 前 | [`phase-4.8-f3b3-autonomous-live-discovery.md`](phase-4.8-f3b3-autonomous-live-discovery.md#phase-4-8-post-live-status-f3b3) |
+| Phase 4.9 | F3B4 evidence closure 小型 Discovery：把 F3B2 smart 四份与 F3B3 autonomous 六份 live evidence、exact refs、candidate、Host/probe provenance、markerless residue audit 和对象保留期统一对账；结论只 conditional-go 到 Release-excluded closure implementation，不删除 refs、不重跑 Cloud，也不授权 F3C | [`phase-4.9-f3b4-evidence-closure-discovery.md`](phase-4.9-f3b4-evidence-closure-discovery.md#phase-4-9-decision) |
 
 ## 阅读方式
 

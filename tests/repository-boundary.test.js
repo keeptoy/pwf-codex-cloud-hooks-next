@@ -61,7 +61,7 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap, /F3B0 Discovery 与 F3B1 no-live protocol materialization complete/);
   assert.match(roadmap, /F3B2 smart Cloud live PASS/);
   assert.match(roadmap, /F3B3 autonomous zero-ledger\/tamper\/disarm\/re-attest\/re-arm Cloud live PASS/);
-  assert.match(roadmap, /F3B4\/F3C 未授权/);
+  assert.match(roadmap, /F3B4 Discovery conditional-go，closure implementation\/F3C 未授权/);
 });
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
@@ -351,7 +351,9 @@ test("change history, programme, provenance, and current acceptance keep separat
     /F3B3 autonomous live Discovery[^\n]*`CONDITIONAL_GO_TO_F3B3_AUTONOMOUS_MATERIALIZATION`/);
   assert.match(acceptance, /F3B3 autonomous materialization \/ repository-only audit[^\n]*`PASS`/);
   assert.match(acceptance, /F3B3 autonomous Cloud live[^\n]*`PASS`/);
-  assert.match(acceptance, /F3B4 evidence closure \/ F3C rollback[^\n]*`NOT_AUTHORIZED`/);
+  assert.match(acceptance,
+    /F3B4 evidence-closure Discovery[^\n]*`CONDITIONAL_GO_TO_F3B4_EVIDENCE_CLOSURE`/);
+  assert.match(acceptance, /F3B4 closure implementation \/ F3C rollback[^\n]*`NOT_AUTHORIZED`/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3b3-autonomous-live-evidence"><\/a>$/m);
   assert.match(acceptance,
     /F3B3_AUTONOMOUS_LIVE_PASS \/ TAMPER_REFUSAL_AND_REATTEST_CONFIRMED \/ STOP_AND_REVIEW \/ STOP_BEFORE_F3B4/);
