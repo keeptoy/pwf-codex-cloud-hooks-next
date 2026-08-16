@@ -16,7 +16,7 @@ F3B3-M1 markerless A_BASE
 
 ## Autonomous validation checkpoint
 
-`PWF_F3B3_TASK_REVISION=initial`
+`PWF_F3B3_TASK_REVISION=reprepared`
 
 ## Phases
 
