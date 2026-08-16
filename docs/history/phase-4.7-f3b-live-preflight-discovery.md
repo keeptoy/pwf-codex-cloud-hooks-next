@@ -357,3 +357,21 @@ snapshot residue、明确最终 exit code 与四份 evidence record 全部闭合
 | F3B3 autonomous/tamper objects | `ABSENT / NOT AUTHORIZED` | 只有新 Discovery/live 授权后才可创建 |
 
 F3B4/F3C/Release 同样未被本 PASS 自动授权。
+
+<a name="phase-4-7-post-discovery-status-f3b3"></a>
+
+## Post-discovery status — F3B3
+
+维护者在 F3B2 closeout 后另行授权了 F3B3 小型 Discovery。详细代码复核、autonomous workspace base、
+零 ledger、tamper 隔离、operator protocol 和对象生命周期结论只见
+[`Phase 4.8 decision`](phase-4.8-f3b3-autonomous-live-discovery.md#phase-4-8-decision)；本文件不复制第二份完整方案。
+
+本轮确认 Phase 4.7 的 activation-first、profile-bound state、disarm/re-attest/re-arm 和 canary-only refusal 主路线不变，
+但顺序上需要为 F3B3 单独建立 markerless `A_BASE`，再物化 `A_PREP → A_ARM → A_DISARM → A_REPREP → A_REARM`。
+这是因为 F3B2/F3B3 的 plan ID 和执行窗口不同；共享的是同一 runtime/candidate 安全模型，不应把旧 smart plan 或
+smart validation refs 复用成 autonomous 输入。
+
+当前状态为
+`CONDITIONAL_GO_TO_F3B3_AUTONOMOUS_MATERIALIZATION / IMPLEMENTATION_NOT_AUTHORIZED / LIVE_NOT_STARTED`。
+autonomous refs、machine state、tamper environment、operator guide 和六份 live evidence 仍为 `ABSENT`；F3B4、F3C、
+README/Release byte 变化和远端写入也没有被本 Discovery 自动授权。

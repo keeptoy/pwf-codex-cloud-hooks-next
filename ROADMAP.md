@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.0-dev` zero-hash development candidate；F0/F1A/F1B complete；F2A/F2B/F3A Source/Candidate Cloud PASS；F3B0 Discovery 与 F3B1 no-live protocol materialization complete；F3B2 smart Cloud live PASS、可逆 opt-in lifecycle 已证明；F3B3/F3B4/F3C 未授权 |
+| 当前开发列车 | `v0.4.0-dev` zero-hash development candidate；F0/F1A/F1B complete；F2A/F2B/F3A Source/Candidate Cloud PASS；F3B0 Discovery 与 F3B1 no-live protocol materialization complete；F3B2 smart Cloud live PASS、可逆 opt-in lifecycle 已证明；F3B3 Discovery conditional-go，materialization/live 未授权；F3B4/F3C 未授权 |
 | 当前已接受版本 | `v0.3.5`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.4` immediate fallback |
 | 回退证据链 | immutable `v0.3.3` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4；F1 foundation、F2A/F2B read-only consumer、F3A lifecycle foundation、F3B0/F3B1 complete；F3B2 exact smart Fresh/UserPrompt/real Resume/disarm/re-arm evidence 已闭合并停下复核；F3B3/F3B4/F3C 仍需分别授权 |
+| 当前 programme 边界 | Product Phase 4；F1 foundation、F2A/F2B read-only consumer、F3A lifecycle foundation、F3B0/F3B1 complete；F3B2 exact smart Fresh/UserPrompt/real Resume/disarm/re-arm evidence 已闭合；F3B3 小型 Discovery 已给出 conditional-go 并停在 autonomous materialization 前；F3B4/F3C 仍需分别授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.3.5` 已完成 immutable publication、公开下载/安装验收与 pointer-only promotion；只读 postflight 确认它为
@@ -87,13 +87,15 @@ lifecycle 双身份、true Fresh 与隔离的 smart/autonomous 验证链；F3B1 
 隔离 DAG、bounded tamper 与 exact evidence record 物化并完成 repository-only/no-live dry run。维护者随后已授权并完成
 F3B2 smart live；markerless runtime source 与隔离 smart validation refs 在真实 Cloud 中依次证明 prepared legacy、armed
 smart、disarmed legacy、rearmed smart，Fresh/UserPrompt、S_ARM real Resume、doctor、零 residue 与最终退出状态均闭合。
-F3B3、F3B4 与 F3C 仍未授权。如果
+F3B3 小型 Discovery 随后完成 runtime/upstream 复核，冻结独立 markerless `A_BASE`、零 ledger、bounded tamper、
+re-attest/re-arm 与 operator/evidence 分工，并给出
+`CONDITIONAL_GO_TO_F3B3_AUTONOMOUS_MATERIALIZATION`；F3B3 implementation/live、F3B4 与 F3C 仍未授权。如果
 lifecycle 最终不可行，兜底仍是回退 smart-only
 或 defer，不能发布 unreachable code。
 
 `README.md` 是当前 Release ZIP entry。本次 F3B2 closeout 故意不改写其中仍处于 pre-live 时间窗口的能力摘要，以保持已
-验收 candidate 字节与 SHA 不变；当前 programme 状态以本文件和版本 acceptance 为准。该摘要只能在下一次重新构建并
-重新验收 candidate 的独立 transaction 中提升，不能用旧 F3B2 Cloud 证据给新 ZIP 字节背书。
+验收 candidate 字节与 SHA 不变；当前 programme 状态以本文件和版本 acceptance 为准。该摘要的状态耦合只能在下一次
+重新构建并重新验收 candidate 的独立 transaction 中移除并改成状态无关表述，不能用旧 F3B2 Cloud 证据给新 ZIP 字节背书。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
 bootstrap/acceptance；当前窗口为 v0.4.0-dev candidate + v0.3.5 accepted。v0.3.4
@@ -106,7 +108,7 @@ pre-release；多个低风险 Phase 也只有在独立评审后才能进入同�
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | F1/F2A/F2B/F3A Source/Candidate Cloud PASS；F3B0/F3B1 complete；F3B2 smart Cloud live PASS；F3B3/F3B4/F3C 未授权 |
+| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | F1/F2A/F2B/F3A Source/Candidate Cloud PASS；F3B0/F3B1 complete；F3B2 smart Cloud live PASS；F3B3 Discovery conditional-go、materialization/live 未授权；F3B4/F3C 未授权 |
 | 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest 各自独立 gate；必须有 use case、latency/token budget 与 Cloud 证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7 前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan 时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6 进入 Discovery |
@@ -180,9 +182,10 @@ smart/autonomous Git graph、bounded tamper 与 exact evidence record 已成为�
 完成 no-live dry run，production/contract/Release bytes不变。维护者随后单独授权并完成 F3B2；markerless runtime source 和
 隔离的 `S_PREP → S_ARM → S_DISARM → S_REARM` refs 已在真实 Cloud lifecycle 中分别证明 legacy → smart → legacy →
 smart，且 S_ARM Fresh + real Resume、UserPrompt、doctor、零 residue 与 exact evidence records 全部闭合。F3B2 因此
-`SMART_LIVE_PASS / STOP_AND_REVIEW`。F3B 后继顺序为：B3 再验证
-autonomous zero-ledger、tamper、disarm/re-attest/re-arm；B4 在 markerless development branch 收口证据与残留。
-F3C 仍须等待完整 F3B PASS 与另一轮授权。Phase 4.7 详细设计仍只从 README 文档地图进入历史索引，
+`SMART_LIVE_PASS / STOP_AND_REVIEW`。F3B3 小型 Discovery 随后确认现有 production seam 足够，并把下一步冻结为：
+先物化独立 markerless `A_BASE`、autonomous zero-ledger、tamper、disarm/re-attest/re-arm refs 与自包含 operator guide，
+再另行授权真实 Cloud live；当前尚未创建这些对象。B4 在 markerless development branch 收口已通过证据与残留。
+F3C 仍须等待完整 F3B PASS 与另一轮授权。Phase 4.7/4.8 详细设计仍只从 README 文档地图进入历史索引，
 不在 programme authority 创建第二个 history 入口。
 
 F1A/F1B 是独立审查、测试和停止点，不强制形成两个可发布的半成品。只要 runtime/schema bytes 会影响 bundle、

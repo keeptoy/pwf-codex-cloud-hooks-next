@@ -178,6 +178,7 @@ test("Phase 4.7 freezes a two-identity staged F3B protocol and records F3B2 Clou
     "phase-4-7-new-evidence", "phase-4-7-frozen-invariants", "phase-4-7-validation-topology",
     "phase-4-7-gate-plan", "phase-4-7-evidence-and-stop-rules", "phase-4-7-lifecycle-ledger",
     "phase-4-7-decision", "phase-4-7-post-implementation-status-f3b2",
+    "phase-4-7-post-discovery-status-f3b3",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(history, /`RUNTIME_SOURCE_HEAD`/);
   assert.match(history, /`WORKSPACE_LIFECYCLE_HEAD`/);
@@ -206,4 +207,27 @@ test("Phase 4.7 freezes a two-identity staged F3B protocol and records F3B2 Clou
   assert.match(operatorGuide, /EXPECTED_EFFECTIVE_PROFILE/);
   assert.match(operatorGuide, /actual 等于 expected/);
   assert.match(operatorGuide, /production probe JSON/);
+});
+
+test("Phase 4.8 freezes the bounded autonomous materialization decision without claiming live evidence", () => {
+  const history = fs.readFileSync(
+    path.join(root, "docs", "history", "phase-4.8-f3b3-autonomous-live-discovery.md"), "utf8");
+  for (const anchor of [
+    "phase-4-8-positioning", "phase-4-8-inherited-evidence", "phase-4-8-runtime-code-audit",
+    "phase-4-8-autonomous-state-model", "phase-4-8-validation-topology", "phase-4-8-tamper-boundary",
+    "phase-4-8-evidence-and-stop-rules", "phase-4-8-lifecycle-ledger", "phase-4-8-decision",
+  ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
+  for (const state of ["A_BASE", "A_PREP", "A_ARM", "A_DISARM", "A_REPREP", "A_REARM"]) {
+    assert.match(history, new RegExp(`\\b${state}\\b`));
+  }
+  assert.match(history, /entries: 0/);
+  assert.match(history, /raw `progress\.md`/);
+  assert.match(history, /outcome=invalid_request/);
+  assert.match(history, /effective_profile=null/);
+  assert.match(history, /advisory=state_unsafe/);
+  assert.match(history, /tampered record[^\n]*workspace_lifecycle_head[^\n]*A_ARM/);
+  assert.match(history,
+    /CONDITIONAL_GO_TO_F3B3_AUTONOMOUS_MATERIALIZATION \/ IMPLEMENTATION_NOT_AUTHORIZED \/ LIVE_NOT_STARTED/);
+  assert.match(history, /本结论不授权创建 refs\/machine state、执行 tamper、启动 Cloud task/);
+  assert.doesNotMatch(history, /F3B3_AUTONOMOUS_LIVE_PASS\s*\/\s*REVERSIBLE/);
 });

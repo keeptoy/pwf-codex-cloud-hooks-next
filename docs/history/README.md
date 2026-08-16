@@ -45,6 +45,7 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 | Phase 4.5 | F2B autonomous activation Discovery 里程碑：冻结 profile-bound commit point、owned attestation/nonce/ledger admission、Git-backed 首选与 same-chat 备选 Cloud consent 路线、版本失败切换和现有不可达 seam 兜底；原结论为 conditional-go，后继本地实现、设计差异与对象生命周期对账只见文件尾注，不把 F3/Cloud opt-in 写成已验收 | [`phase-4.5-f2b-autonomous-activation-discovery.md`](phase-4.5-f2b-autonomous-activation-discovery.md) |
 | Phase 4.6 | F3 Cloud lifecycle Discovery 里程碑：选择 Git-backed preparation/activation-only commits，冻结 frozen-plan、active-scope state governance、disarm-first rollback 与 F3A/F3B/F3C 分门；原结论只 conditional-go 到 F3A，后继 F3A 本地实施与生命周期对账只见文件尾注，不表示 live activation 已授权或验收 | [`phase-4.6-f3-cloud-lifecycle-discovery.md`](phase-4.6-f3-cloud-lifecycle-discovery.md) |
 | Phase 4.7 | F3B live-preflight Discovery 里程碑：补齐 runtime source/workspace lifecycle 双身份、true Fresh、隔离验证链、tamper/disarm/re-arm 与 F3B0～F3B4 停止点；只 conditional-go 到 protocol materialization，不表示真实 opt-in 已授权或通过 | [`phase-4.7-f3b-live-preflight-discovery.md`](phase-4.7-f3b-live-preflight-discovery.md) |
+| Phase 4.8 | F3B3 autonomous live 小型 Discovery：在 F3B2 smart PASS 后复核 activation-first runtime、独立 `A_BASE`、零 ledger 摘要、bounded tamper、re-attest/re-arm、operator/evidence 分工与对象生命周期；只 conditional-go 到 autonomous materialization，不表示 refs 或 live evidence 已存在 | [`phase-4.8-f3b3-autonomous-live-discovery.md`](phase-4.8-f3b3-autonomous-live-discovery.md#phase-4-8-decision) |
 
 ## 阅读方式
 
