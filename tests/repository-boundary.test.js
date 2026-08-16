@@ -59,8 +59,8 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap, /F2B[^\n]*Source\/Candidate Cloud PASS/);
   assert.match(roadmap, /F2A\/F2B\/F3A Source\/Candidate Cloud PASS/);
   assert.match(roadmap, /F3B0 Discovery 与 F3B1 no-live protocol materialization complete/);
-  assert.match(roadmap, /F3B2 smart Cloud live PASS、可逆 opt-in lifecycle 已证明/);
-  assert.match(roadmap, /F3B3 本地 autonomous materialization\/repository-only audit complete，Cloud live 未授权/);
+  assert.match(roadmap, /F3B2 smart Cloud live PASS/);
+  assert.match(roadmap, /F3B3 autonomous zero-ledger\/tamper\/disarm\/re-attest\/re-arm Cloud live PASS/);
   assert.match(roadmap, /F3B4\/F3C 未授权/);
 });
 
@@ -350,8 +350,11 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance,
     /F3B3 autonomous live Discovery[^\n]*`CONDITIONAL_GO_TO_F3B3_AUTONOMOUS_MATERIALIZATION`/);
   assert.match(acceptance, /F3B3 autonomous materialization \/ repository-only audit[^\n]*`PASS`/);
-  assert.match(acceptance, /F3B3 autonomous Cloud live[^\n]*`NOT_AUTHORIZED`/);
+  assert.match(acceptance, /F3B3 autonomous Cloud live[^\n]*`PASS`/);
   assert.match(acceptance, /F3B4 evidence closure \/ F3C rollback[^\n]*`NOT_AUTHORIZED`/);
+  assert.match(acceptance, /^<a name="v0-4-0-dev-f3b3-autonomous-live-evidence"><\/a>$/m);
+  assert.match(acceptance,
+    /F3B3_AUTONOMOUS_LIVE_PASS \/ TAMPER_REFUSAL_AND_REATTEST_CONFIRMED \/ STOP_AND_REVIEW \/ STOP_BEFORE_F3B4/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3a-acceptance-delta"><\/a>$/m);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3b2-smart-live-evidence"><\/a>$/m);
   const f3b2EvidenceStart = acceptance.indexOf('<a name="v0-4-0-dev-f3b2-smart-live-evidence"></a>');
@@ -417,7 +420,7 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
   }
   if (candidate !== accepted && /\b[a-f0-9]{64}\b/i.test(acceptance)) {
-    const currentEvidenceHeading = "## F3B2 smart live evidence";
+    const currentEvidenceHeading = "## F3B3 autonomous live evidence";
     const currentEvidenceAt = acceptance.indexOf(currentEvidenceHeading);
     assert.notEqual(currentEvidenceAt, -1,
       "current completed gate lacks an exact evidence heading");

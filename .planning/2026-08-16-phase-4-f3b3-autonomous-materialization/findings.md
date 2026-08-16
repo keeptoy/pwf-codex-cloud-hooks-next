@@ -71,5 +71,24 @@ No tamper ref is allowed.
   `PWF_F3B3_TAMPER_ONLY` sentinel in `task_plan.md`; it is destroyed rather than repaired or committed.
 - Autonomous context acceptance is not inferred from shape: the guide requires exact nonce delimiter, task digest, zero-ledger summary,
   absence of raw progress and, on re-arm, absence of the old nonce/digest. Installed production probe remains profile authority.
-- Programme/history/acceptance now record repository-only materialization PASS separately from Cloud live `NOT_AUTHORIZED`; the original
-  Phase 4.8 Discovery decision remains unchanged as historical evidence.
+- At the materialization checkpoint, programme/history/acceptance recorded repository-only PASS separately from Cloud live
+  `NOT_AUTHORIZED`; the post-live sections now supersede current status while preserving that original decision as historical evidence.
+
+## Accepted Cloud evidence
+
+| Record | Workspace HEAD | Actual profile/advisory | Distinguishing evidence |
+|---|---|---|---|
+| `prepared` | `d107c1cc53199415cc704553dafeab757060ae9e` | `legacy` / `null` | autonomous preparation inert; legacy raw progress visible |
+| `armed` | `f43a744cbac7f7056d4efbf9b5cbd676bc1e4091` | `autonomous` / `null` | initial nonce/SHA, zero ledger, Fresh + mandatory Resume |
+| `tampered` | `f43a744cbac7f7056d4efbf9b5cbd676bc1e4091` | `null` / `state_unsafe` | one dirty task path, canary-only, no partial context; environment destroyed |
+| `disarmed` | `98b6f138497af244563541ec655a1111198f0c36` | `legacy` / `null` | activation removal restores legacy |
+| `reprepared` | `5b20eb749c77dc1ac825202ca783dc7b8d938b58` | `legacy` / `null` | new task/nonce/attestation remain inert |
+| `rearmed` | `32b13b018176cd3bbaa15480864bf168754e5f67` | `autonomous` / `null` | new nonce/SHA, old identities absent, zero ledger, Fresh + mandatory Resume |
+
+- All six records use runtime source `a6fa03159a442b917f893fc51a7e3ed45b37371a` and candidate
+  `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`; all evidence validators and final verifiers exited 0.
+- Every positive worktree was clean, every doctor was healthy, and every snapshot-leftover count was zero. Cache state was honestly
+  `unknown` because no reliable hit/miss/reset observation was available.
+- The tampered task SHA was `4264555784fb42dd0274f824c57a102bccc29a4f70217f83f2497e18b34a851a`; it is negative evidence only,
+  not a commit/ref or source authority.
+- Accepted status is `F3B3_AUTONOMOUS_LIVE_PASS / TAMPER_REFUSAL_AND_REATTEST_CONFIRMED / STOP_AND_REVIEW`; it does not authorize F3B4/F3C.

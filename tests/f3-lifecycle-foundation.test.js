@@ -209,14 +209,14 @@ test("Phase 4.7 freezes a two-identity staged F3B protocol and records F3B2 Clou
   assert.match(operatorGuide, /production probe JSON/);
 });
 
-test("Phase 4.8 freezes autonomous materialization and records local closure without claiming live evidence", () => {
+test("Phase 4.8 preserves Discovery history and records autonomous local plus Cloud closure", () => {
   const history = fs.readFileSync(
     path.join(root, "docs", "history", "phase-4.8-f3b3-autonomous-live-discovery.md"), "utf8");
   for (const anchor of [
     "phase-4-8-positioning", "phase-4-8-inherited-evidence", "phase-4-8-runtime-code-audit",
     "phase-4-8-autonomous-state-model", "phase-4-8-validation-topology", "phase-4-8-tamper-boundary",
     "phase-4-8-evidence-and-stop-rules", "phase-4-8-lifecycle-ledger", "phase-4-8-decision",
-    "phase-4-8-post-implementation-status-f3b3",
+    "phase-4-8-post-implementation-status-f3b3", "phase-4-8-post-live-status-f3b3",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   for (const state of ["A_BASE", "A_PREP", "A_ARM", "A_DISARM", "A_REPREP", "A_REARM"]) {
     assert.match(history, new RegExp(`\\b${state}\\b`));
@@ -234,5 +234,8 @@ test("Phase 4.8 freezes autonomous materialization and records local closure wit
     /F3B3_LOCAL_CHAIN_READY \/ CLOUD_LIVE_NOT_AUTHORIZED \/ LIVE_PASS_ABSENT \/ STOP_BEFORE_F3B4/);
   assert.match(history, /Discovery 上方的 `ABSENT` 表保留当时历史语义/);
   assert.match(history, /v0\.4\.0-dev-f3b3-autonomous-live-operator-guide\.md#f3b3-operator-positioning/);
-  assert.doesNotMatch(history, /F3B3_AUTONOMOUS_LIVE_PASS\s*\/\s*REVERSIBLE/);
+  assert.match(history,
+    /F3B3_AUTONOMOUS_LIVE_PASS \/ TAMPER_REFUSAL_AND_REATTEST_CONFIRMED \/ STOP_AND_REVIEW \/ STOP_BEFORE_F3B4/);
+  assert.match(history, /tamper environment[\s\S]*DESTROYED/);
+  assert.match(history, /本结论不自动授权 F3B4 evidence closure、F3C disarm-first rollback/);
 });

@@ -242,3 +242,44 @@ production、contract、Host ABI、trusted graph、README 或 Release bytes。�
 
 本尾注只把原 Discovery 的后续实施结果记账，不把 repository-only audit 提升成 Cloud provenance，也不授权真实 tamper、
 F3B4、F3C、Release 或任何远端写入。
+
+<a name="phase-4-8-post-live-status-f3b3"></a>
+
+## Post-live status — F3B3 autonomous Cloud closure
+
+维护者后来另行执行并回传了自包含 operator guide 要求的六轮真实 Cloud evidence；这不改写上方 Discovery 和
+materialization 当时的未授权语义。实际 profile 链为：
+
+```text
+prepared legacy
+  → armed autonomous
+  → tampered canary-only / state_unsafe
+  → disarmed legacy
+  → reprepared legacy
+  → rearmed autonomous
+```
+
+`armed` 与 `rearmed` 分别闭合 Fresh、UserPromptSubmit 和 mandatory real Resume。两轮 autonomous 都绑定当时 exact nonce
+与 task digest，只显示结构化零 ledger，不读取 raw progress；rearmed 还拒绝旧 nonce/digest。tamper 从 exact `A_ARM`
+产生唯一 `task_plan.md` dirty path，Host 与 probe 均拒绝任何 plan context，doctor/zero residue 保持健康；收证后整个
+disposable environment 已销毁，没有 re-attest、repair、commit/ref 或正向复用。
+
+六份 `prepared/armed/tampered/disarmed/reprepared/rearmed` JSON 均使用同一 frozen runtime source/candidate，并通过
+repository-only exact-key validator；所有 setup/verifier/validator 都取得明确最终 exit code 0。完整 exact HEAD、SHA、nonce、
+字段关系与操作协议见 [operator guide post-run status](../v0.4.0-dev-f3b3-autonomous-live-operator-guide.md#f3b3-post-run-status)。
+
+生命周期账本因此更新为：
+
+| 对象 | Post-live 状态 | 后续 owner / 退出条件 |
+|---|---|---|
+| F3B3 refs 与 six records | FROZEN ACCEPTED CLOUD EVIDENCE | maintainer；F3B4 只读汇总，F3C/Phase 9 再决定 retention |
+| autonomous user behavior | LIVE LIFECYCLE PROVEN FOR EXACT CANDIDATE | programme；不能外推到 rollback、其他 candidate 或通用 writer |
+| tamper environment | DESTROYED | 无恢复动作；tampered SHA 只留作原始负向证据，不形成 source authority |
+| zero ledger | LIVE PROVEN EMPTY SET | Phase 8 仍须重新 Discovery writer/lock/atomicity/rollback residue |
+| production/runtime/Release bytes | UNCHANGED | 继续由现行 machine contracts 承重；本 closeout 不迁移 candidate SHA |
+
+结论为：
+
+`F3B3_AUTONOMOUS_LIVE_PASS / TAMPER_REFUSAL_AND_REATTEST_CONFIRMED / STOP_AND_REVIEW / STOP_BEFORE_F3B4`
+
+本结论不自动授权 F3B4 evidence closure、F3C disarm-first rollback、README/Release-byte 修改、seal、publication 或任何远端写入。

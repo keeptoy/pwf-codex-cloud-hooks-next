@@ -3,17 +3,16 @@
 ## Goal
 
 物化并审计 `A_BASE → A_PREP → A_ARM → A_DISARM → A_REPREP → A_REARM`，冻结一份完整独立的 Cloud operator
-guide，使维护者能够在不修改 production/Release bytes 的前提下逐轮验证 autonomous zero-ledger、tamper refusal、
-disarm、re-attest 与 re-arm；本轮停止在真实 Cloud live 之前。
+guide，并在不修改 production/Release bytes 的前提下闭合 autonomous zero-ledger、tamper refusal、disarm、re-attest、
+re-arm、Fresh 与 mandatory Resume 的真实 Cloud evidence；本轮停止在 F3B4/F3C 之前。
 
 ## Next Step
 
-等待维护者 push `0.4.0-dev` 与六个 frozen validation refs；真实 Cloud 六轮执行仍需维护者另行授权，并必须逐项按
-operator guide 收集原始 Host/probe/Git/doctor/final-exit evidence。
+等待维护者另行讨论并授权 F3B4 evidence closure；不得因 F3B3 live PASS 自动进入 F3B4、F3C rollback 或 Release。
 
 ## Current Phase
 
-F3B3 local materialization complete; stopped before Cloud live
+F3B3 complete; stopped before F3B4/F3C
 
 ## Autonomous validation checkpoint
 
@@ -56,13 +55,23 @@ F3B3 local materialization complete; stopped before Cloud live
 - 运行 focused/full regression、deterministic candidate、Release exclusion、ref graph 与 Bash syntax checks。
 - 创建单一 docs/tests/planning 本地 commit；停止并交给维护者 push/Cloud。
 
+### Phase F3B3-M5 — Cloud live evidence closeout
+
+**Status:** completed
+
+- 核对 `prepared/armed/tampered/disarmed/reprepared/rearmed` 六份 actual evidence 与两个 mandatory Resume。
+- 记录 tamper disposable environment 已销毁，更新 programme/acceptance/operator/history 与生命周期账本。
+- 运行 focused/full regression并创建本地 closeout commit；停止在 F3B4/F3C 前。
+
 ## Authorization
 
 - 维护者已授权执行 Phase 4.8 冻结的 **F3B3 autonomous materialization**。
 - 已授权：创建 markerless `A_BASE` 本地 commit/ref；在隔离本地 worktree 创建 autonomous validation commits/refs；
   创建自包含 operator guide；更新 Release-excluded planning/history/ROADMAP/acceptance/tests；本地验证和本地 commit。
-- 未授权：push 或移动远端 refs；真实 Cloud task；真实 tamper；F3B3 live PASS；F3B4/F3C；production/runtime/contracts/
-  bundle/manifest/installer/bootstrap/README/Release byte 变化；PR、tag、Release、publication 或 promotion。
+- 初始 materialization 未授权：push 或移动远端 refs；真实 Cloud task/tamper；F3B3 live PASS；F3B4/F3C；production/runtime/
+  contracts/bundle/manifest/installer/bootstrap/README/Release byte 变化；PR、tag、Release、publication 或 promotion。
+- 后续授权：维护者已自行 push 并按 frozen guide 完成真实 F3B3 Cloud tasks/tamper，随后明确授权本地 live closeout。
+  本次授权只允许记录已回传 evidence、运行本地验证和创建本地 commit；仍不授权 F3B4/F3C 或任何远端写入。
 
 ## Frozen boundaries
 
@@ -90,7 +99,8 @@ F3B3 local materialization complete; stopped before Cloud live
 | Git for Windows Bash could not create its signal pipe inside the current sandbox while checking guide fences (`Win32 error 5`) | 1 | Classified as an execution-sandbox limitation rather than a script result; finish the bounded edits, then rerun Bash syntax with the required outer permission |
 | Focused test expected at least seven Bash fences, but the self-contained guide intentionally has six executable blocks | 1 | Classified as a test-count defect: push, remote check, transaction, normal verifier, tamper verifier and evidence validator are the six independent blocks; corrected the lower bound to six without weakening any semantic assertion |
 | Initial `git add` could not create `.git/index.lock` because the workspace sandbox exposes `.git` read-only | 1 | No paths were staged or lost; logged the environment restriction and reran the same exact-path add/commit with local Git permission only |
+| Closeout focused tests retained the old F3B2 current-status prose and treated F3B2 as the permanently newest exact-evidence heading | 1 | Classified as lifecycle test drift: updated the smart assertion to its stable fact and advanced the current completed-gate heading to F3B3; retained the rule that current evidence precedes historical evidence |
 
 ## Current status
 
-`F3B3_LOCAL_MATERIALIZATION_PASS / CLOUD_LIVE_NOT_AUTHORIZED / STOP_BEFORE_F3B4`
+`F3B3_AUTONOMOUS_LIVE_PASS / TAMPER_REFUSAL_AND_REATTEST_CONFIRMED / STOP_BEFORE_F3B4_F3C`

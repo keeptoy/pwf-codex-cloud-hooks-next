@@ -173,13 +173,13 @@ test("F3B1 evidence record is exact, relational, and rejects self-certified drif
   assert.deepEqual(validateF3EvidenceRecord(tampered), tampered);
 });
 
-test("F3B3 operator guide freezes the autonomous DAG, tamper refusal, and pre-live stop line", () => {
+test("F3B3 operator guide freezes the autonomous DAG and records exact Cloud closure", () => {
   const guide = fs.readFileSync(
     path.join(repositoryRoot, "docs", "v0.4.0-dev-f3b3-autonomous-live-operator-guide.md"), "utf8");
   for (const anchor of [
     "f3b3-operator-positioning", "f3b3-state-table", "f3b3-local-preflight", "f3b3-cloud-environment",
     "f3b3-stage-order", "f3b3-tamper-protocol", "f3b3-read-only-verifiers", "f3b3-evidence-records",
-    "f3b3-stop-and-handoff", "f3b3-pre-run-status",
+    "f3b3-stop-and-handoff", "f3b3-pre-run-status", "f3b3-post-run-status",
   ]) assert.match(guide, new RegExp(`<a name="${anchor}"></a>`));
   for (const identity of [
     "a6fa03159a442b917f893fc51a7e3ed45b37371a",
@@ -200,7 +200,11 @@ test("F3B3 operator guide freezes the autonomous DAG, tamper refusal, and pre-li
   assert.match(guide, /value\['advisory'\] == 'state_unsafe'/);
   assert.match(guide, /PWF_F3B3_RAW_PROGRESS_MUST_NOT_APPEAR/);
   assert.match(guide, /F3B3_LOCAL_CHAIN_READY \/ CLOUD_LIVE_NOT_AUTHORIZED \/ LIVE_PASS_ABSENT \/ STOP_BEFORE_F3B4/);
-  assert.doesNotMatch(guide, /F3B3_AUTONOMOUS_LIVE_PASS/);
+  assert.match(guide,
+    /F3B3_AUTONOMOUS_LIVE_PASS \/ TAMPER_REFUSAL_AND_REATTEST_CONFIRMED \/ STOP_AND_REVIEW \/ STOP_BEFORE_F3B4/);
+  assert.match(guide, /4264555784fb42dd0274f824c57a102bccc29a4f70217f83f2497e18b34a851a/);
+  assert.match(guide, /disposable environment 已销毁/);
+  assert.match(guide, /不授权 F3B4、[\s\S]*F3C rollback/);
   const bashBlocks = [...guide.matchAll(/```bash\n([\s\S]*?)```/g)].map(match => match[1]);
   assert.ok(bashBlocks.length >= 6, "F3B3 guide must retain independently executable shell stages");
   for (const [index, source] of bashBlocks.entries()) {

@@ -19,6 +19,18 @@
 - Appended Phase 4.8 post-implementation reconciliation and synchronized the history index, ROADMAP and v0.4.0-dev acceptance. They now
   distinguish local materialization PASS from autonomous Cloud live `NOT_AUTHORIZED` while retaining the original Discovery semantics.
 - Added focused repository guards for guide anchors/identities/tamper refusal/Bash fences and updated programme-status assertions.
+- Maintainer completed the frozen six-stage Cloud protocol and confirmed the disposable tamper environment was destroyed. Entered the
+  authorized local closeout only; no new Cloud task, remote write, F3B4 or F3C action is authorized here.
+- Reconciled all six records: prepared/disarmed/reprepared were actual legacy; armed/rearmed were actual autonomous with separate
+  mandatory Resume; tampered was canary-only with exact `state_unsafe` refusal and no partial context.
+- Confirmed both autonomous contexts used their stage-specific nonce/task digest, rendered zero-ledger summaries, excluded raw progress,
+  and on re-arm excluded the old nonce/digest. All doctors were healthy, residues zero, final exit codes zero and cache facts `unknown`.
+- Appended immutable post-run/post-live sections to the operator guide and Phase 4.8; updated the history index and ARCHITECTURE without
+  changing README or any Release input.
+- Updated ROADMAP and v0.4.0-dev acceptance to mark F3B3 autonomous Cloud live PASS while retaining F3B4/F3C as separately unauthorized.
+- Focused closeout suite passed 28/28 with no skips. Full Windows suite passed 141/164 with 23 honest Linux/POSIX skips and zero failures.
+- Importer, owned Python compile, `install.js`, all bootstrap syntax and `git diff --check` passed. Two independent candidate builds remained
+  byte-identical at 22 entries, 85,533 bytes and the frozen development SHA.
 
 ## Verification log
 
@@ -37,8 +49,11 @@
 | Importer / source syntax | importer healthy; owned Python compile PASS; `install.js` and every bootstrap syntax PASS |
 | Deterministic candidate | two independent 22-entry / 85,533-byte builds identical; exact accepted dev SHA unchanged |
 | Whitespace | `git diff --check` PASS |
-| Remote writes | none |
+| Agent remote writes | none; maintainer independently pushed the frozen branch/refs and executed Cloud tasks |
+| F3B3 closeout focused suite | 28 tests; 28 pass; 0 fail; 0 skipped |
+| F3B3 closeout full Windows suite | 164 tests; 141 pass; 0 fail; 23 honest Linux/POSIX skips |
+| F3B3 closeout deterministic candidate | two independent 22-entry / 85,533-byte builds; exact SHA unchanged |
 
 ## Current status
 
-`F3B3_LOCAL_MATERIALIZATION_PASS / CLOUD_LIVE_NOT_AUTHORIZED / STOP_BEFORE_F3B4`
+`F3B3_AUTONOMOUS_LIVE_PASS / TAMPER_REFUSAL_AND_REATTEST_CONFIRMED / STOP_BEFORE_F3B4_F3C`
