@@ -275,7 +275,7 @@ test("Phase 4.9 preserves Discovery history and records authorized closure witho
   assert.match(history, /Release v2 entries\/external assets 的交集为空/);
 });
 
-test("Phase 4.10 preserves rollback Discovery and records F3C1 local materialization without live PASS", () => {
+test("Phase 4.10 preserves rollback Discovery and records F3C1 no-live acceptance without live rollback PASS", () => {
   const history = fs.readFileSync(
     path.join(root, "docs", "history", "phase-4.10-f3c-rollback-discovery.md"), "utf8");
   for (const anchor of [
@@ -283,7 +283,7 @@ test("Phase 4.10 preserves rollback Discovery and records F3C1 local materializa
     "phase-4-10-supported-transition", "phase-4-10-validation-topology", "phase-4-10-evidence-model",
     "phase-4-10-lifecycle-ledger", "phase-4-10-gate-plan", "phase-4-10-stop-rules",
     "phase-4-10-decision", "phase-4-10-verification", "phase-4-10-preimplementation-head-audit",
-    "phase-4-10-post-implementation-status-f3c1",
+    "phase-4-10-post-implementation-status-f3c1", "phase-4-10-f3c1-linux-no-live-acceptance",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(history, /current installer uninstall \+ backup/);
   assert.match(history, /immutable v0\.3\.5 clean install/);
@@ -306,5 +306,8 @@ test("Phase 4.10 preserves rollback Discovery and records F3C1 local materializa
   assert.match(history, /没有新建 F3C validation ref/);
   assert.match(history,
     /F3C1_LOCAL_MATERIALIZATION_PASS \/ LINUX_NO_LIVE_PENDING \/ CLOUD_ROLLBACK_NOT_RUN \/ STOP_BEFORE_F3C2/);
+  assert.match(history,
+    /F3C1_PROTOCOL_NO_LIVE_PASS \/ REF_AWARE_LINUX_ZERO_SKIP \/ CLOUD_ROLLBACK_NOT_RUN \/ STOP_BEFORE_F3C2/);
+  assert.match(history, /13 tests、13 pass、0 fail、0 skipped、exit code 0/);
   assert.doesNotMatch(history, /F3C_ROLLBACK_PASS \/.*CONFIRMED/);
 });

@@ -278,3 +278,24 @@ Linux/no-live gate真正执行。因此当前只能记录：
 
 这不是 F3C1 完整跨平台 PASS，更不是 rollback live PASS。下一步仅允许维护者先完成 Linux/no-live 验收；成功后仍须停止，
 再另行授权 F3C2 smart live。
+
+<a name="phase-4-10-f3c1-linux-no-live-acceptance"></a>
+
+## Post-no-live status — F3C1
+
+维护者随后从 GitHub 完整 clone，在 exact checkout `cdc4a9eba7e7f1f2545723829ed1a6b4c76cb48b` 执行独立 operator guide
+第 3 节。完整 clone 同时提供了协议要求的 immutable release tags：
+
+- `v0.3.5` -> `5d01b55890c1da2a5088e2b991b152a9fb1c3f87`；
+- `v0.3.4` -> `59a999f705701ec67463649e9424f3d059863c81`。
+
+Linux/no-live 最终为 13 tests、13 pass、0 fail、0 skipped、exit code 0；smart 与 autonomous 两个 runtime-only revival
+negative 均实际执行并通过。早前一个只含旧 commit objects、缺少上述 tags 的目录不满足 ref-aware 前置条件，属于 checkout
+prerequisite failure，不是 product 或 test defect。
+
+因此 F3C1 当前升级为：
+
+`F3C1_PROTOCOL_NO_LIVE_PASS / REF_AWARE_LINUX_ZERO_SKIP / CLOUD_ROLLBACK_NOT_RUN / STOP_BEFORE_F3C2`
+
+本尾注仍不表示真实 uninstall/install/rollback transaction 已执行，也不生成 `F3C_ROLLBACK_PASS`。F3C2 smart live、
+F3C3 autonomous live、F3C4 closure、ref mutation 与 Release仍需分别授权。

@@ -22,7 +22,13 @@
   outside the sandbox without weakening any assertion.
 - Non-sandbox Bash syntax recheck passed for both bootstraps and every F3C guide Bash block. Local materialization is closed;
   Linux/no-live remains the only next gate and F3C2 is still unauthorized.
+- Maintainer completed the ref-aware Linux/no-live gate from a full GitHub clone at exact checkout
+  `cdc4a9eba7e7f1f2545723829ed1a6b4c76cb48b`. Published `v0.3.5` and `v0.3.4` tags resolved to the provenance-frozen commits.
+- Operator guide section 3 passed 13/13 tests with zero failures, zero skips and final exit code 0; both smart and autonomous
+  runtime-only revival cases executed. F3C1 is complete and work stops before separately authorized F3C2 live execution.
+- Post-evidence documentation/static regression passed 28/30 locally with the same two Windows-only revival skips and zero
+  failures; those two cases are already closed by the 13/13 ref-aware Linux run. `git diff --check` passed.
 
 ## Current status
 
-`F3C1_LOCAL_MATERIALIZATION_PASS / LINUX_NO_LIVE_PENDING / CLOUD_ROLLBACK_NOT_RUN / STOP_BEFORE_F3C2`
+`F3C1_PROTOCOL_NO_LIVE_PASS / REF_AWARE_LINUX_ZERO_SKIP / CLOUD_ROLLBACK_NOT_RUN / STOP_BEFORE_F3C2`

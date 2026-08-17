@@ -26,3 +26,12 @@
   helper/tests and builds the frozen candidate; the later guide commit therefore avoids a self-referential HEAD and needs no new ref.
 - Programme/acceptance/history now distinguish local materialization from Linux/no-live and real Cloud rollback. F3C2 remains
   unauthorized until the two Linux revival cases execute with zero skips.
+- The maintainer then ran operator guide section 3 from a full GitHub clone at exact checkout
+  `cdc4a9eba7e7f1f2545723829ed1a6b4c76cb48b`. Both immutable tags resolved to provenance-frozen source commits:
+  `v0.3.5` -> `5d01b55890c1da2a5088e2b991b152a9fb1c3f87` and `v0.3.4` ->
+  `59a999f705701ec67463649e9424f3d059863c81`.
+- The ref-aware Linux/no-live run completed 13/13 tests with zero failures, zero skips and final exit code 0. Both mandatory
+  smart and autonomous runtime-only revival cases actually executed. This closes F3C1 without claiming a live rollback.
+- An earlier run from a directory that contained old commit objects but lacked the two release tags was a prerequisite failure,
+  not a product or test defect. F3C rollback tests intentionally require a ref-aware clone because published tag identity is part
+  of the trust evidence.

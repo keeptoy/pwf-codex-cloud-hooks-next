@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.0-dev` zero-hash development candidate；F0 complete；F1A/F1B complete，F1 foundation complete；F2A/F2B/F3A Source/Candidate Cloud PASS；F3B0 Discovery 与 F3B1 no-live protocol materialization complete；F3B2 smart Cloud live PASS；F3B3 autonomous zero-ledger/tamper/disarm/re-attest/re-arm Cloud live PASS；F3B4 evidence closure PASS；F3C Discovery conditional-go；F3C1 local protocol materialization complete，Linux/no-live pending |
+| 当前开发列车 | `v0.4.0-dev` zero-hash development candidate；F0 complete；F1A/F1B complete，F1 foundation complete；F2A/F2B/F3A Source/Candidate Cloud PASS；F3B0 Discovery 与 F3B1 no-live protocol materialization complete；F3B2 smart Cloud live PASS；F3B3 autonomous zero-ledger/tamper/disarm/re-attest/re-arm Cloud live PASS；F3B4 evidence closure PASS；F3C Discovery conditional-go；F3C1 ref-aware Linux/no-live protocol gate PASS |
 | 当前已接受版本 | `v0.3.5`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.4` immediate fallback |
 | 回退证据链 | immutable `v0.3.3` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4；F1 foundation、F2A/F2B read-only consumer、F3A lifecycle foundation 与完整 F3B live lifecycle 均已闭合；smart/autonomous、tamper refusal、re-attest 和十份 evidence 已由 F3B4 汇总，validation refs 保留；F3C Discovery 已冻结 disarm-first rollback；F3C1 已完成本地 Release-excluded protocol/helper/guide，当前停止在 Linux/no-live gate，F3C2 live 未授权 |
+| 当前 programme 边界 | Product Phase 4；F1 foundation、F2A/F2B read-only consumer、F3A lifecycle foundation 与完整 F3B live lifecycle 均已闭合；smart/autonomous、tamper refusal、re-attest 和十份 evidence 已由 F3B4 汇总，validation refs 保留；F3C Discovery 已冻结 disarm-first rollback；F3C1 Release-excluded protocol/helper/guide 与 ref-aware Linux/no-live gate 已闭合，当前停止在 F3C2 之前，F3C2 live 未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.3.5` 已完成 immutable publication、公开下载/安装验收与 pointer-only promotion；只读 postflight 确认它为
@@ -98,8 +98,8 @@ Host/probe provenance、markerless residue 与 retention 统一对账，给出
 rollback identity 不等于 direct installed downgrade，并冻结 committed disarm → current-owned uninstall → immutable v0.3.5
 clean install → current exact forward recovery；smart/autonomous 必须独立 live，runtime-only revival 只做 no-live negative。
 结论为 `CONDITIONAL_GO_TO_F3C1_ROLLBACK_PROTOCOL_MATERIALIZATION`；维护者随后授权 F3C1，本地已物化
-direct-downgrade refusal、双身份 rollback evidence helper、runtime-only revival negative 与独立 operator guide，
-但 Linux/no-live 尚待 exact checkout 验收，F3C2 smart live仍未授权。如果
+direct-downgrade refusal、双身份 rollback evidence helper、runtime-only revival negative 与独立 operator guide；随后在
+ref-aware Linux exact checkout 完成 13/13、零 fail、零 skip验收，两个 profile 的 revival negative 均实际执行。F3C2 smart live仍未授权。如果
 lifecycle 最终不可行，兜底仍是回退 smart-only
 或 defer，不能发布 unreachable code。
 
@@ -118,7 +118,7 @@ pre-release；多个低风险 Phase 也只有在独立评审后才能进入同�
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | F1/F2A/F2B/F3A Source/Candidate Cloud PASS；F3B0～F3B4 complete；完整 F3B live lifecycle PASS；F3C Discovery conditional-go；F3C1 local materialization complete / Linux no-live pending |
+| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | F1/F2A/F2B/F3A Source/Candidate Cloud PASS；F3B0～F3B4 complete；完整 F3B live lifecycle PASS；F3C Discovery conditional-go；F3C1 ref-aware Linux/no-live PASS；停止在 F3C2 前 |
 | 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest 各自独立 gate；必须有 use case、latency/token budget 与 Cloud 证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7 前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan 时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6 进入 Discovery |
@@ -203,7 +203,7 @@ candidate 未漂移且 validation refs 应保留到 F3C/当前 Phase 9 instance�
 F3C 已完成单独 Discovery：唯一支持路线从既有 committed disarm refs 开始，由 current installer 卸载，再校验并 clean-install
 immutable v0.3.5，最后只走 current 已准入的 exact forward migration；direct old-over-new downgrade 与 armed/runtime-only rollback
 保持禁止。后继拆成 F3C1 Release-excluded protocol/no-live materialization、F3C2 smart live、F3C3 autonomous live、F3C4 aggregate
-closure。F3C1 已获授权并完成本地 Release-excluded materialization；Linux/no-live 执行仍待验收，F3C2/F3C3 live、
+closure。F3C1 已获授权并完成 Release-excluded materialization 与 ref-aware Linux/no-live 零跳过验收；F3C2/F3C3 live、
 F3C4 closure 与 ref mutation仍未授权。
 Phase 4.7～4.10 详细设计仍只从 README 文档地图进入历史索引，不在 programme authority 创建第二个 history 入口。
 

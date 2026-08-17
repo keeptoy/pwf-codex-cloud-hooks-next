@@ -8,13 +8,12 @@ repository/no-live 测试证明旧版不能直接覆盖 current，再建立 acce
 
 ## Next Step
 
-维护者 push本轮两个本地 commit后，在包含 immutable v0.3.5/v0.3.4 source objects与tags的 ref-aware Linux exact checkout
-执行 operator guide第3节；必须让两个 runtime-only revival case实际运行且整体零 fail/零 skip。完成后停止并回传证据，
-不得自动进入 F3C2。
+等待维护者另行明确授权 F3C2 smart live。F3C1 已完成 ref-aware Linux/no-live 验收；在新授权前不得执行
+operator guide 的 live install/uninstall/rollback stages，也不得自动进入 F3C2。
 
 ## Current Phase
 
-F3C1 local materialization complete; Linux/no-live pending
+F3C1 protocol/no-live complete; stop before F3C2
 
 ## Phases
 
@@ -55,6 +54,14 @@ F3C1 local materialization complete; Linux/no-live pending
 - 跑 focused/full regression、importer/syntax/deterministic ZIP 与 Release-boundary 检查。
 - 回补 Phase 4.10 post-implementation status；本地提交后停止，等待 F3C2 单独授权。
 
+### F3C1-I5 — Ref-aware Linux/no-live acceptance
+
+**Status:** completed
+
+- 在 GitHub 完整 clone 的 exact checkout `cdc4a9eba7e7f1f2545723829ed1a6b4c76cb48b` 执行 operator guide 第 3 节。
+- 校验 immutable `v0.3.5` / `v0.3.4` tags 指向 provenance 冻结的 source commits。
+- 两个 smart/autonomous runtime-only revival case 均实际运行；13/13 pass、0 fail、0 skipped、final exit code 0。
+
 ## Authorization
 
 - 已授权：F3C1 Release-excluded protocol/operator/helper、disposable repository/no-live tests、planning/history/static guards、
@@ -80,4 +87,4 @@ F3C1 local materialization complete; Linux/no-live pending
 
 ## Current status
 
-`F3C1_LOCAL_MATERIALIZATION_PASS / LINUX_NO_LIVE_PENDING / CLOUD_ROLLBACK_NOT_RUN / STOP_BEFORE_F3C2`
+`F3C1_PROTOCOL_NO_LIVE_PASS / REF_AWARE_LINUX_ZERO_SKIP / CLOUD_ROLLBACK_NOT_RUN / STOP_BEFORE_F3C2`
