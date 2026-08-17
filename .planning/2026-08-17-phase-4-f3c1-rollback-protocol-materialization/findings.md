@@ -22,3 +22,7 @@
 - Runtime-only revival coverage is deliberately Linux-only: current reads the still-present commit point, immutable v0.3.5
   renders legacy from its private v1 snapshot, then current reads the unchanged token again and reactivates the profile. Windows
   records an honest skip; Linux/no-live must execute both smart and autonomous cases.
+- The operator guide uses intermediate checkpoint `12a3590...` as exact protocol/runtime source. That commit already contains the
+  helper/tests and builds the frozen candidate; the later guide commit therefore avoids a self-referential HEAD and needs no new ref.
+- Programme/acceptance/history now distinguish local materialization from Linux/no-live and real Cloud rollback. F3C2 remains
+  unauthorized until the two Linux revival cases execute with zero skips.

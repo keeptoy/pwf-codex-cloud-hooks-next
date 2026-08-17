@@ -240,3 +240,41 @@ current 的预期 refusal 来自 current-only v2/extra runtime paths 不在 v0.3
 
 本尾注只证明施工前提仍成立并修正拒绝机制的解释；没有执行真实 install/rollback、创建 ref、修改 production/contracts/
 Release bytes或授权 F3C1 implementation。
+
+<a name="phase-4-10-post-implementation-status-f3c1"></a>
+
+## Post-implementation status — F3C1
+
+维护者随后明确授权 F3C1。实施没有改变 Discovery 路线，也没有修改 production、installer、machine contract、manifest、
+bundle、bootstrap、README 或 Release ZIP 输入；所有新增对象都在 planning/docs/tests 的 Release-excluded 区域。
+
+实际落地与原计划一致：
+
+- immutable publication oracle新增 current install → v0.3.5 direct attempt，动态证明旧 installer 因 current-only path
+  拒绝，并且 runtime、requirements、backup inventory在拒绝前后完全一致；
+- `validateF3RollbackEvidenceRecord()` 独立表达 accepted/current source与ZIP身份、workspace disarm HEAD、最终 installed
+  role/version、activation absence、prepared repository state、实际 legacy profile、backup/transition、doctor/residue/exit；
+- Linux-only negative分别固定 smart/autonomous未 disarm 的真实风险：v0.3.5 private v1 snapshot暂时呈现 legacy，workspace
+  token保持不变，current runtime回来后会重新激活；
+- 新建自包含 operator guide，把 `S_ROLLBACK → S_RECOVER` 与 `A_ROLLBACK → A_RECOVER`、setup/maintenance transaction、
+  Fresh/Resume提示词、只读 verifier、evidence JSON和停止条件收在同一入口；
+- 没有新建 F3C validation ref。exact protocol checkpoint commit已足够承载 helper/runtime source，而既有 smart/autonomous
+  disarm refs继续复用且不移动。
+
+对象生命周期调整：
+
+| 对象 | F3C1 后状态 | 最早 retirement review |
+|---|---|---|
+| `tests/f3c-rollback-protocol.test.js` 与 rollback validator | ACTIVE / Release-excluded | F3C4 closure + 当前 Phase 9 instance complete后，且有替代证据 |
+| F3C operator guide | ACTIVE / pre-live | F3C4 closure后决定转为历史 acceptance或保留运维入口 |
+| F3C protocol checkpoint commit | immutable Git evidence；未新增别名 ref | 当前 Phase 9 后按 ref/object retention统一复核 |
+| F3B smart/autonomous disarm与其余 validation refs | KEEP / unchanged | 原条件不变：F3C PASS + Phase 9 + 维护者批准 |
+| temporary package/install/backup/evidence artifacts | execution-scoped | 每个 disposable task结束后销毁；不提交仓库 |
+
+本地 Windows 已通过 evidence/guide/static/publication tests；runtime-only smart/autonomous 两项按平台规则诚实 SKIP，必须在
+Linux/no-live gate真正执行。因此当前只能记录：
+
+`F3C1_LOCAL_MATERIALIZATION_PASS / LINUX_NO_LIVE_PENDING / CLOUD_ROLLBACK_NOT_RUN / STOP_BEFORE_F3C2`
+
+这不是 F3C1 完整跨平台 PASS，更不是 rollback live PASS。下一步仅允许维护者先完成 Linux/no-live 验收；成功后仍须停止，
+再另行授权 F3C2 smart live。

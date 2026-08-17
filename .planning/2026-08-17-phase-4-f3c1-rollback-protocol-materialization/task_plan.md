@@ -8,12 +8,13 @@ repository/no-live 测试证明旧版不能直接覆盖 current，再建立 acce
 
 ## Next Step
 
-以本轮 protocol checkpoint commit 作为 exact source，编写自包含 F3C operator guide、Linux/no-live revival protocol、
-static guards 与对象生命周期账本；不得进入真实 Cloud。
+维护者 push本轮两个本地 commit后，在包含 immutable v0.3.5/v0.3.4 source objects与tags的 ref-aware Linux exact checkout
+执行 operator guide第3节；必须让两个 runtime-only revival case实际运行且整体零 fail/零 skip。完成后停止并回传证据，
+不得自动进入 F3C2。
 
 ## Current Phase
 
-F3C1-I3 operator guide and static guards
+F3C1 local materialization complete; Linux/no-live pending
 
 ## Phases
 
@@ -41,7 +42,7 @@ F3C1-I3 operator guide and static guards
 
 ### F3C1-I3 — Operator guide and static guards
 
-**Status:** in_progress
+**Status:** completed
 
 - 新建自包含 F3C operator guide，冻结 committed disarm → current uninstall → immutable v0.3.5 clean install → current recovery。
 - 明确 runtime-only revival 只允许 disposable no-live negative；禁止 direct downgrade、自动 token 删除与 cache 充当证据。
@@ -49,7 +50,7 @@ F3C1-I3 operator guide and static guards
 
 ### F3C1-I4 — Verification and closeout
 
-**Status:** pending
+**Status:** completed
 
 - 跑 focused/full regression、importer/syntax/deterministic ZIP 与 Release-boundary 检查。
 - 回补 Phase 4.10 post-implementation status；本地提交后停止，等待 F3C2 单独授权。
@@ -75,7 +76,8 @@ F3C1-I3 operator guide and static guards
 | PowerShell 拼接 active plan 时保留换行，导致 planning 文件路径非法 | 1 | 对 `.active_plan` 使用 `.Trim()` 后重新读取；没有仓库内容损坏 |
 | Windows sandbox 运行 Node test runner 时 `spawn EPERM` | 1 | 分类为测试子进程沙箱限制；用同一命令申请非沙箱执行，不改测试断言 |
 | 一次 `Select-String` pattern 末尾转义不完整，PowerShell 报非法 regex | 1 | 改用 `-SimpleMatch` 读取 immutable source；不影响代码或测试 |
+| Git Bash 在沙箱中创建 signal pipe时报 Win32 error 5 | 1 | 其他检查继续通过；仅将 bootstrap/guide Bash syntax改到非沙箱环境重跑 |
 
 ## Current status
 
-`F3C1_IMPLEMENTATION_IN_PROGRESS / RELEASE_EXCLUDED / NO_LIVE / STOP_BEFORE_F3C2`
+`F3C1_LOCAL_MATERIALIZATION_PASS / LINUX_NO_LIVE_PENDING / CLOUD_ROLLBACK_NOT_RUN / STOP_BEFORE_F3C2`

@@ -176,3 +176,39 @@ for (const profile of ["smart", "autonomous"]) {
     }
   });
 }
+
+test("F3C operator guide is self-contained, exact, and stops before live authorization", () => {
+  const guide = fs.readFileSync(
+    path.join(root, "docs", "v0.4.0-dev-f3c-rollback-operator-guide.md"), "utf8");
+  for (const anchor of [
+    "f3c-operator-positioning", "f3c-one-minute-model", "f3c-frozen-identities", "f3c-no-live-gate",
+    "f3c-cloud-environment", "f3c-transaction", "f3c-cloud-order", "f3c-host-prompts",
+    "f3c-read-only-verifier", "f3c-evidence-records", "f3c-stop-and-handoff", "f3c-pre-run-status",
+  ]) assert.match(guide, new RegExp(`<a name="${anchor}"></a>`));
+  for (const identity of [
+    "12a359096ab1e376014476b77a6b0833a7a90b2e",
+    "df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c",
+    "5d01b55890c1da2a5088e2b991b152a9fb1c3f87",
+    "7d351cfe0eaa60e93bc279645ed3f480dc9e83efdff1c6abf13c14d84c286f0b",
+    "c9275ba02073adb184cd73550c5b9f54c6f8178c",
+    "98b6f138497af244563541ec655a1111198f0c36",
+  ]) assert.match(guide, new RegExp(identity));
+  for (const stage of ["S_ROLLBACK", "S_RECOVER", "A_ROLLBACK", "A_RECOVER"]) {
+    assert.match(guide, new RegExp(stage));
+  }
+  assert.match(guide, /current-owned uninstall/);
+  assert.match(guide, /accepted_to_current_exact_predecessor/);
+  assert.match(guide, /validateF3RollbackEvidenceRecord/);
+  assert.match(guide, /F3_ROLLBACK_EVIDENCE_RECORD_V1=PASS/);
+  assert.match(guide, /session id[\s\S]*持续轮询/);
+  assert.match(guide,
+    /F3C1_PROTOCOL_MATERIALIZED \/ REPOSITORY_AND_LINUX_NO_LIVE_REQUIRED \/ CLOUD_ROLLBACK_NOT_RUN \/ STOP_BEFORE_F3C2/);
+  assert.doesNotMatch(guide, /F3C_ROLLBACK_PASS\s*\/\s*(?:CONFIRMED|PASS)/);
+
+  const bashBlocks = [...guide.matchAll(/```bash\n([\s\S]*?)```/g)].map(match => match[1]);
+  assert.ok(bashBlocks.length >= 4, "F3C guide must retain independently executable shell stages");
+  for (const [index, source] of bashBlocks.entries()) {
+    const syntax = spawnSync("bash", ["-n"], { input: source, encoding: "utf8" });
+    assert.equal(syntax.status, 0, `F3C guide bash block ${index + 1}: ${syntax.stderr}`);
+  }
+});

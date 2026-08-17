@@ -12,7 +12,17 @@
   before any runtime/requirements/backup mutation, and current doctor remained healthy.
 - Added a distinct rollback evidence validator and relational tests; the focused F3B/F3C protocol run passed 5/7 with the two
   expected Linux-only runtime revival cases honestly skipped on Windows.
+- Created the self-contained F3C operator guide using exact protocol checkpoint `12a3590...`; focused guide, lifecycle and
+  repository-governance tests passed 20/22 with only the two honest Linux-only skips.
+- Updated DESIGN test routing and synchronized ROADMAP, version acceptance and Phase 4.10 post-implementation lifecycle status as
+  local materialization complete / Linux no-live pending / Cloud rollback not run.
+- Full Windows suite passed 146/171 with 25 honest Linux/POSIX skips and zero failures. Importer, Python/Node syntax, upstream
+  100755 modes, dual 22-entry candidate build and Release-intersection checks passed; candidate SHA remained `df6001...`.
+- The combined syntax command hit a sandbox-only Git Bash signal-pipe error while checking bootstraps; Bash syntax is being rerun
+  outside the sandbox without weakening any assertion.
+- Non-sandbox Bash syntax recheck passed for both bootstraps and every F3C guide Bash block. Local materialization is closed;
+  Linux/no-live remains the only next gate and F3C2 is still unauthorized.
 
 ## Current status
 
-`F3C1_IMPLEMENTATION_IN_PROGRESS / RELEASE_EXCLUDED / NO_LIVE / STOP_BEFORE_F3C2`
+`F3C1_LOCAL_MATERIALIZATION_PASS / LINUX_NO_LIVE_PENDING / CLOUD_ROLLBACK_NOT_RUN / STOP_BEFORE_F3C2`
