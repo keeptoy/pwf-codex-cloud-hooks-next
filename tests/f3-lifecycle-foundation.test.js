@@ -282,7 +282,7 @@ test("Phase 4.10 freezes disarm-first rollback without claiming implementation o
     "phase-4-10-positioning", "phase-4-10-new-evidence", "phase-4-10-threat-model",
     "phase-4-10-supported-transition", "phase-4-10-validation-topology", "phase-4-10-evidence-model",
     "phase-4-10-lifecycle-ledger", "phase-4-10-gate-plan", "phase-4-10-stop-rules",
-    "phase-4-10-decision", "phase-4-10-verification",
+    "phase-4-10-decision", "phase-4-10-verification", "phase-4-10-preimplementation-head-audit",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(history, /current installer uninstall \+ backup/);
   assert.match(history, /immutable v0\.3\.5 clean install/);
@@ -296,5 +296,10 @@ test("Phase 4.10 freezes disarm-first rollback without claiming implementation o
   assert.match(history,
     /CONDITIONAL_GO_TO_F3C1_ROLLBACK_PROTOCOL_MATERIALIZATION \/ IMPLEMENTATION_NOT_AUTHORIZED \/ REFS_FROZEN/);
   assert.match(history, /没有执行真实 uninstall\/install\/rollback/);
+  assert.match(history, /current 与 v0\.3\.5 installed manifest schema 都是 3/);
+  assert.match(history, /current-only v2\/extra runtime paths/);
+  assert.match(history, /拒绝发生在 `backup\(\)`\/任何写入之前/);
+  assert.match(history,
+    /F3C1_PREIMPLEMENTATION_HEAD_AUDIT_PASS \/ PHASE_4_10_ROUTE_UNCHANGED \/ DIRECT_DOWNGRADE_TEST_REQUIRED \/ IMPLEMENTATION_NOT_AUTHORIZED/);
   assert.doesNotMatch(history, /F3C_ROLLBACK_PASS \/.*CONFIRMED/);
 });

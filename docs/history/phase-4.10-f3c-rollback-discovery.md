@@ -45,7 +45,7 @@ README 或 Release bytes。
 | 输入/路线 | 风险 | F3C 决策 |
 |---|---|---|
 | committed disarm + clean worktree | preparation 保留，但 commit point 已删除 | 唯一 positive Cloud 起点 |
-| v0.3.5 直接覆盖 current install | 旧 installer 不认识 current schema/ownership，可能绕开 current backup/cleanup | 必须 fail closed；不是支持路线 |
+| v0.3.5 直接覆盖 current install | 两者 schema/owner 可以相同，但旧 installer 的 exact path allowlist 不接受 current-only v2/extra entries；不能绕开 current backup/cleanup | 必须在 backup/write 前 fail closed；不是支持路线 |
 | armed/runtime-only rollback | 旧 runtime 暂时看不懂 token，但 token 在 current reinstall 后复活 | 禁止作为支持操作；仅 disposable no-live 负向证明 |
 | prepared marker without activation | 容易被误判为“仍已启用” | repository state 可为 prepared，但 production 必须 legacy |
 | tampered/unsafe state | rollback 可能掩盖原本 refusal | 不进入正向路线；继续 fail closed |
@@ -198,3 +198,45 @@ immutable old install 和 exact forward recovery组成受约束 transaction。
 - changed paths 与 Release v2 entries/external assets 交集为 0。本轮没有把旧 Cloud evidence 迁移给新 candidate bytes。
 
 任何测试数字都只描述本次运行，不成为长期合同。
+
+<a name="phase-4-10-preimplementation-head-audit"></a>
+
+## Pre-implementation HEAD audit — 2026-08-17
+
+维护者在 F3C1 施工前要求重新以 current HEAD 审计代码与 contracts，而不是直接沿用 Discovery 文案。审计绑定
+`19508c8f993421d556cf0bad545de5eef4336dd0`，并重新读取 Phase 4.6～4.10、当前 installer/runtime、transition/bundle/Release
+contracts、immutable v0.3.5 source、F3 tests 与全部 11 个 validation refs。
+
+审计确认 Phase 4.10 已经继承后继事实，而不是只复述 Phase 4.6：Phase 4.7 提供双身份与 live/rollback 分工，4.8 提供
+autonomous tamper/re-attest，4.9 提供十份 evidence、ref retention 与 candidate reconciliation；4.10 再用当前 code/contract
+冻结 rollback transaction。
+
+代码复核只纠正一处机制描述：current 与 v0.3.5 installed manifest schema 都是 3，owner也相同；旧 installer direct-over-
+current 的预期 refusal 来自 current-only v2/extra runtime paths 不在 v0.3.5 exact allowed path set，而不是 schema不同。该静态
+结论仍需由 F3C1 disposable test证明：拒绝发生在 `backup()`/任何写入之前，managed state与backup目录均不改变。
+
+其余前提全部保持：
+
+- current transition contract只准入 exact v0.3.5 predecessor，且 current install在 backup前验证全部 predecessor bytes/state；
+- current uninstall只拥有 managed runtime/requirements，不读取或写入 workspace；
+- activation-first runtime在 commit point缺失时完全不读取 mode/nonce/attestation/ledger；
+- smart/autonomous disarm refs仍各自只删除 `.pwf-codex-managed`，local/remote-tracking identities无漂移；
+- evidence v1仍不能表达 accepted/current双 runtime role，F3C1需要独立 test-only rollback record/helper；
+- manifest引用的 bundle/transition/Release raw SHA、v0.3.5 immutable identities和current 22-entry candidate输入无漂移。
+
+审计验证：
+
+- focused contract/installer/publication/runtime/F3/repository suite：92 tests，75 pass，0 fail，17 个 Windows 上的 honest skips；
+- full Windows suite：166 tests，143 pass，0 fail，23 个 Linux/POSIX-only honest skips；
+- importer、owned Python compile、`install.js`、全部 bootstrap Bash syntax 与 `git diff --check`：PASS；
+- 两次 candidate build/check继续得到 22 entries、85,533 bytes、SHA-256
+  `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`，字节身份一致；
+- active audit scope machine-state residue为0，11个local refs与11个remote-tracking refs全部匹配，changed paths与
+  Release entries/external assets交集为0。
+
+结论：
+
+`F3C1_PREIMPLEMENTATION_HEAD_AUDIT_PASS / PHASE_4_10_ROUTE_UNCHANGED / DIRECT_DOWNGRADE_TEST_REQUIRED / IMPLEMENTATION_NOT_AUTHORIZED`
+
+本尾注只证明施工前提仍成立并修正拒绝机制的解释；没有执行真实 install/rollback、创建 ref、修改 production/contracts/
+Release bytes或授权 F3C1 implementation。
