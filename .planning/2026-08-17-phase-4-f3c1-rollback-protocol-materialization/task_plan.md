@@ -1,0 +1,81 @@
+# Task Plan: Phase 4 F3C1 rollback protocol materialization
+
+## Goal
+
+按 Phase 4.10 与 exact-HEAD audit 已冻结的路线，物化 Release-excluded F3C rollback protocol：先用 disposable
+repository/no-live 测试证明旧版不能直接覆盖 current，再建立 accepted/current 双身份 rollback evidence helper、
+自包含 operator guide 与静态守卫。不得修改 production/contracts/Release bytes，也不得进入真实 Cloud rollback。
+
+## Next Step
+
+以本轮 protocol checkpoint commit 作为 exact source，编写自包含 F3C operator guide、Linux/no-live revival protocol、
+static guards 与对象生命周期账本；不得进入真实 Cloud。
+
+## Current Phase
+
+F3C1-I3 operator guide and static guards
+
+## Phases
+
+### F3C1-I0 — Scope recovery and implementation freeze
+
+**Status:** completed
+
+- 恢复 exact HEAD、clean worktree、Phase 4.10 与施工前审计。
+- 冻结 Release-excluded/no-live 边界和 F3C1 停止条件。
+
+### F3C1-I1 — Direct-downgrade refusal proof
+
+**Status:** completed
+
+- 构造 disposable current managed install。
+- 运行 immutable v0.3.5 installer direct-over-current，要求非零且发生在 backup/write 前。
+- 比较 managed runtime、requirements 与 backup inventory，证明无 mutation。
+
+### F3C1-I2 — Rollback evidence protocol
+
+**Status:** completed
+
+- 新增 test-only exact rollback evidence validator，明确 accepted/current 双身份和 installed role。
+- 覆盖 disarmed/rollback/recovered stage 的字段关系与拒绝用例，不重载 F3B evidence v1。
+
+### F3C1-I3 — Operator guide and static guards
+
+**Status:** in_progress
+
+- 新建自包含 F3C operator guide，冻结 committed disarm → current uninstall → immutable v0.3.5 clean install → current recovery。
+- 明确 runtime-only revival 只允许 disposable no-live negative；禁止 direct downgrade、自动 token 删除与 cache 充当证据。
+- 补 repository/static guards 和对象生命周期账本。
+
+### F3C1-I4 — Verification and closeout
+
+**Status:** pending
+
+- 跑 focused/full regression、importer/syntax/deterministic ZIP 与 Release-boundary 检查。
+- 回补 Phase 4.10 post-implementation status；本地提交后停止，等待 F3C2 单独授权。
+
+## Authorization
+
+- 已授权：F3C1 Release-excluded protocol/operator/helper、disposable repository/no-live tests、planning/history/static guards、
+  相称验证和本地 commit。
+- 未授权：真实 Cloud install/uninstall/rollback；生产环境或用户 workspace mutation；validation ref 创建/移动；
+  production runtime/installer/contracts/manifest/bundle/bootstrap/README/Release bytes 修改；F3C2/F3C3；push/PR/tag/Release。
+
+## Stop Conditions
+
+- direct downgrade 发生 backup/write 或 managed-state mutation。
+- 当前 installer 无法完成受支持的 current uninstall 或 exact v0.3.5 forward recovery，因而需要生产改动。
+- evidence protocol 需要改变 Host ABI、trusted graph、machine contract 或 Release inventory。
+- F3B frozen refs、accepted/current immutable identity或工作树出现无法解释的漂移。
+
+## Errors Encountered
+
+| Error | Attempt | Resolution |
+|---|---:|---|
+| PowerShell 拼接 active plan 时保留换行，导致 planning 文件路径非法 | 1 | 对 `.active_plan` 使用 `.Trim()` 后重新读取；没有仓库内容损坏 |
+| Windows sandbox 运行 Node test runner 时 `spawn EPERM` | 1 | 分类为测试子进程沙箱限制；用同一命令申请非沙箱执行，不改测试断言 |
+| 一次 `Select-String` pattern 末尾转义不完整，PowerShell 报非法 regex | 1 | 改用 `-SimpleMatch` 读取 immutable source；不影响代码或测试 |
+
+## Current status
+
+`F3C1_IMPLEMENTATION_IN_PROGRESS / RELEASE_EXCLUDED / NO_LIVE / STOP_BEFORE_F3C2`

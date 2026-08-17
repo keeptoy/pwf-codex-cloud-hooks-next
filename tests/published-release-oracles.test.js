@@ -257,6 +257,26 @@ test(`${acceptedVersion} accepted and ${fallbackVersion} fallback keep managed s
       assert.equal(result.status, 0, result.stderr);
     });
 
+    await t.test("accepted installer refuses direct downgrade over current before backup or mutation", () => {
+      const home = installHome(workspace, "direct-downgrade-home");
+      let result = runPackageInstaller(currentPackage, home, "install");
+      assert.equal(result.status, 0, result.stderr);
+      result = runPackageInstaller(currentPackage, home, "doctor");
+      assert.equal(result.status, 0, result.stderr);
+      const before = managedState(home);
+
+      result = runPackageInstaller(acceptedPackage, home, "install");
+      assert.equal(result.status, 1, "accepted installer unexpectedly overwrote the current installation");
+      assert.match(result.stderr, /BLOCKED_UNKNOWN_RUNTIME:/);
+      assert.match(result.stderr, /contracts\/adapter-plan-context-request-v2\.schema\.json/);
+      assert.match(result.stderr, /contracts\/runtime-result-v1\.schema\.json/);
+      assert.deepEqual(managedState(home), before,
+        "rejected direct downgrade changed current runtime, requirements, or backup inventory");
+
+      result = runPackageInstaller(currentPackage, home, "doctor");
+      assert.equal(result.status, 0, result.stderr);
+    });
+
     await t.test("the exact accepted installation migrates forward and can roll back by clean install", () => {
       const home = installHome(workspace, "accepted-forward-home");
       let result = runPackageInstaller(acceptedPackage, home, "install");

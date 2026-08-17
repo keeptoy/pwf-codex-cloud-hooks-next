@@ -17,6 +17,13 @@ const F3_EVIDENCE_KEYS = [
   "session_start_sources", "snapshot_leftovers", "stage", "user_prompt_observed",
   "workspace_lifecycle_head", "worktree",
 ].sort();
+const F3_ROLLBACK_EVIDENCE_KEYS = [
+  "accepted_source_head", "accepted_version", "accepted_zip_sha256", "activation_absent",
+  "advisory", "backup_verified", "current_candidate_sha256", "current_version", "doctor_healthy",
+  "effective_profile", "final_exit_code", "hook_context", "installed_role", "installed_version",
+  "profile", "repository_state", "runtime_source_head", "schema_version", "session_start_sources",
+  "snapshot_leftovers", "stage", "transition", "user_prompt_observed", "workspace_disarm_head", "worktree",
+].sort();
 
 function exactFile(file, maximum) {
   const info = fs.lstatSync(file);
@@ -171,4 +178,63 @@ function validateF3EvidenceRecord(record) {
   return record;
 }
 
-module.exports = { validateActivePlanState, validateF3EvidenceRecord, validatePlanningScopes };
+function validateF3RollbackEvidenceRecord(record) {
+  assert.ok(record && typeof record === "object" && !Array.isArray(record),
+    "F3 rollback evidence record must be an object");
+  assert.deepEqual(Object.keys(record).sort(), F3_ROLLBACK_EVIDENCE_KEYS,
+    "F3 rollback evidence record must use exact keys");
+  assert.equal(record.schema_version, 1, "schema_version must be 1");
+  assert.ok(record.profile === "smart" || record.profile === "autonomous", "profile is invalid");
+  assert.ok(record.stage === "rollback" || record.stage === "recovered", "rollback stage is invalid");
+  assert.match(record.runtime_source_head, /^[0-9a-f]{40}$/, "runtime_source_head is invalid");
+  assert.match(record.workspace_disarm_head, /^[0-9a-f]{40}$/, "workspace_disarm_head is invalid");
+  assert.match(record.current_candidate_sha256, /^[0-9a-f]{64}$/, "current_candidate_sha256 is invalid");
+  assert.match(record.accepted_source_head, /^[0-9a-f]{40}$/, "accepted_source_head is invalid");
+  assert.match(record.accepted_zip_sha256, /^[0-9a-f]{64}$/, "accepted_zip_sha256 is invalid");
+  assert.match(record.current_version, /^0\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$/,
+    "current_version is invalid");
+  assert.match(record.accepted_version, /^v0\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$/,
+    "accepted_version is invalid");
+  assert.equal(record.activation_absent, true, "rollback evidence requires absent activation");
+  assert.equal(record.worktree, "clean", "rollback evidence requires a clean worktree");
+  assert.equal(record.repository_state,
+    record.profile === "smart" ? "smart_prepared" : "autonomous_prepared",
+    "rollback repository state/profile relation is invalid");
+  assert.equal(Array.isArray(record.session_start_sources), true, "session_start_sources must be an array");
+  assert.ok(record.session_start_sources.length > 0, "session_start_sources must not be empty");
+  const orderedSources = [...new Set(record.session_start_sources)]
+    .filter(value => value === "startup" || value === "resume")
+    .sort((left, right) => ["startup", "resume"].indexOf(left) - ["startup", "resume"].indexOf(right));
+  assert.deepEqual(record.session_start_sources, orderedSources,
+    "session_start_sources must be the unique ordered startup/resume observations");
+  assert.equal(typeof record.user_prompt_observed, "boolean", "user_prompt_observed must be boolean");
+  assert.equal(record.hook_context, "legacy", "rollback evidence requires legacy Hook context");
+  assert.equal(record.effective_profile, "legacy", "rollback evidence requires legacy effective profile");
+  assert.equal(record.advisory, null, "rollback evidence requires null advisory");
+  assert.equal(record.doctor_healthy, true, "doctor_healthy must be true");
+  assert.equal(record.backup_verified, true, "backup_verified must be true");
+  assert.equal(record.snapshot_leftovers, 0, "snapshot_leftovers must be zero");
+  assert.equal(record.final_exit_code, 0, "final_exit_code must be zero");
+
+  if (record.stage === "rollback") {
+    assert.equal(record.installed_role, "accepted", "rollback stage must install the accepted role");
+    assert.equal(record.installed_version, record.accepted_version.slice(1),
+      "rollback installed version must match accepted_version");
+    assert.equal(record.transition, "current_uninstall_then_accepted_clean_install",
+      "rollback transition is invalid");
+  } else {
+    assert.equal(record.installed_role, "current", "recovered stage must install the current role");
+    assert.equal(record.installed_version, record.current_version,
+      "recovered installed version must match current_version");
+    assert.equal(record.transition, "accepted_to_current_exact_predecessor",
+      "recovered transition is invalid");
+  }
+  return record;
+}
+
+module.exports = {
+  validateActivePlanState,
+  validateF3EvidenceRecord,
+  validateF3RollbackEvidenceRecord,
+  validatePlanningScopes,
+};
