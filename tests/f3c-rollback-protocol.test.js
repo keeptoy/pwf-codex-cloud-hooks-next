@@ -181,7 +181,8 @@ test("F3C operator guide is self-contained, exact, and stops before live authori
   const guide = fs.readFileSync(
     path.join(root, "docs", "v0.4.0-dev-f3c-rollback-operator-guide.md"), "utf8");
   for (const anchor of [
-    "f3c-operator-positioning", "f3c-one-minute-model", "f3c-frozen-identities", "f3c-no-live-gate",
+    "f3c-operator-positioning", "f3c-section-map", "f3c-one-minute-model", "f3c2-smart-live-walkthrough",
+    "f3c-frozen-identities", "f3c-no-live-gate", "f3c-ref-aware-checkout",
     "f3c-cloud-environment", "f3c-transaction", "f3c-cloud-order", "f3c-host-prompts",
     "f3c-read-only-verifier", "f3c-evidence-records", "f3c-stop-and-handoff", "f3c-pre-run-status",
     "f3c-post-no-live-status",
@@ -202,6 +203,13 @@ test("F3C operator guide is self-contained, exact, and stops before live authori
   assert.match(guide, /validateF3RollbackEvidenceRecord/);
   assert.match(guide, /F3_ROLLBACK_EVIDENCE_RECORD_V1=PASS/);
   assert.match(guide, /session id[\s\S]*持续轮询/);
+  assert.match(guide, /第 3 节[^\n]*F3C1/);
+  assert.match(guide, /第 4～9 节[^\n]*F3C2\/F3C3/);
+  assert.match(guide, /S_ROLLBACK[^\n]*S_RECOVER/);
+  assert.match(guide, /git clone https:\/\/github\.com\/keeptoy\/pwf-codex-cloud-hooks-next\.git/);
+  assert.match(guide, /rev-parse --verify 'v0\.3\.5\^\{commit\}'/);
+  assert.match(guide, /rev-parse --verify 'v0\.3\.4\^\{commit\}'/);
+  assert.match(guide, /PWF_F3C1_REF_AWARE_PREFLIGHT=PASS/);
   assert.match(guide,
     /F3C1_PROTOCOL_MATERIALIZED \/ REPOSITORY_AND_LINUX_NO_LIVE_REQUIRED \/ CLOUD_ROLLBACK_NOT_RUN \/ STOP_BEFORE_F3C2/);
   assert.match(guide,

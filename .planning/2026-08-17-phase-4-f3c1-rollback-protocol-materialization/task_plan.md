@@ -62,6 +62,14 @@ F3C1 protocol/no-live complete; stop before F3C2
 - 校验 immutable `v0.3.5` / `v0.3.4` tags 指向 provenance 冻结的 source commits。
 - 两个 smart/autonomous runtime-only revival case 均实际运行；13/13 pass、0 fail、0 skipped、final exit code 0。
 
+### F3C1-I6 — Operator guide novice handrail
+
+**Status:** completed
+
+- 明确第 3 节属于 F3C1，第 4～9 节属于需单独授权的 F3C2/F3C3 live，第 10 节只是停止/交接规则。
+- 增加 F3C2 `S_ROLLBACK` / `S_RECOVER` 大白话流程和每轮唯一执行顺序。
+- 解释 current tests 与 historical tags 的职责，并给出 full clone、exact checkout、tag/source identity前置核对。
+
 ## Authorization
 
 - 已授权：F3C1 Release-excluded protocol/operator/helper、disposable repository/no-live tests、planning/history/static guards、
@@ -81,7 +89,7 @@ F3C1 protocol/no-live complete; stop before F3C2
 | Error | Attempt | Resolution |
 |---|---:|---|
 | PowerShell 拼接 active plan 时保留换行，导致 planning 文件路径非法 | 1 | 对 `.active_plan` 使用 `.Trim()` 后重新读取；没有仓库内容损坏 |
-| Windows sandbox 运行 Node test runner 时 `spawn EPERM` | 1 | 分类为测试子进程沙箱限制；用同一命令申请非沙箱执行，不改测试断言 |
+| Windows sandbox 运行 Node test runner 时 `spawn EPERM` | 2 | 两轮均分类为测试子进程沙箱限制；用同一命令申请非沙箱执行，不改测试断言 |
 | 一次 `Select-String` pattern 末尾转义不完整，PowerShell 报非法 regex | 1 | 改用 `-SimpleMatch` 读取 immutable source；不影响代码或测试 |
 | Git Bash 在沙箱中创建 signal pipe时报 Win32 error 5 | 1 | 其他检查继续通过；仅将 bootstrap/guide Bash syntax改到非沙箱环境重跑 |
 

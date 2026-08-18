@@ -35,3 +35,9 @@
 - An earlier run from a directory that contained old commit objects but lacked the two release tags was a prerequisite failure,
   not a product or test defect. F3C rollback tests intentionally require a ref-aware clone because published tag identity is part
   of the trust evidence.
+- The guide originally kept all F3C1/F3C2/F3C3 mechanics in one file but did not state plainly enough that section 3 is the whole
+  F3C1 gate while sections 4-9 are mutating live gates. A novice handrail now separates those scopes and gives F3C2's two-stage
+  order without changing the frozen transaction.
+- Historical `v0.3.5`/`v0.3.4` tags do not contain or supply the current F3C1 test script. Current tests use those refs as immutable
+  source locators for `git rev-parse`, `git archive` and `git show`; therefore a full ref-aware clone is a test prerequisite, not
+  a workaround or an old-version installation.

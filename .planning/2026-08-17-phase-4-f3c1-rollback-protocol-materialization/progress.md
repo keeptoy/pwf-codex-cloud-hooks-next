@@ -29,6 +29,16 @@
 - Post-evidence documentation/static regression passed 28/30 locally with the same two Windows-only revival skips and zero
   failures; those two cases are already closed by the 13/13 ref-aware Linux run. `git diff --check` passed.
 
+## 2026-08-18
+
+- Clarified the self-contained operator guide with an explicit section-to-gate map, a plain-language F3C2 smart two-stage
+  walkthrough, the single per-stage execution order, and a concrete full-clone/tag preflight for section 3.
+- No transaction, frozen identity, production file, contract or Release input changed; F3C2 remains unauthorized.
+- Focused Node run was again blocked before test-file execution by the known Windows sandbox `spawn EPERM`; rerun outside the
+  child-process restriction without changing assertions.
+- Non-sandbox focused regression completed with 20/22 pass, zero failures and the same two honest Linux-only skips; the operator
+  guide test also syntax-checked every Bash block, including the new full-clone/tag preflight. `git diff --check` passed.
+
 ## Current status
 
 `F3C1_PROTOCOL_NO_LIVE_PASS / REF_AWARE_LINUX_ZERO_SKIP / CLOUD_ROLLBACK_NOT_RUN / STOP_BEFORE_F3C2`
