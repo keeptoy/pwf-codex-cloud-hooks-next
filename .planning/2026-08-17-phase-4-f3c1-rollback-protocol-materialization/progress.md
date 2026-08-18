@@ -38,6 +38,20 @@
   child-process restriction without changing assertions.
 - Non-sandbox focused regression completed with 20/22 pass, zero failures and the same two honest Linux-only skips; the operator
   guide test also syntax-checked every Bash block, including the new full-clone/tag preflight. `git diff --check` passed.
+- First external `S_ROLLBACK` transaction attempt stopped safely before managed installation because the Fresh Cloud task lacked
+  the global pristine Skill. No workspace change, installed manifest or `facts.env` was left behind.
+- Maintainer then ran the frozen bootstrap `skill` command and reran the transaction: exit code 0, exact current/accepted hashes,
+  `repository_state=smart_prepared`, final installed role `accepted` version `0.3.5`, backups `0 -> 3`, and clean worktree.
+- Embedded that validated prerequisite into section 5 itself. This only closes the transaction substep; Fresh/Resume, section 8
+  verifier and section 9 rollback evidence remain outstanding, so `S_ROLLBACK` is not yet accepted as a complete stage.
+- Focused Node runner again hit the known Windows sandbox `spawn EPERM` before test-file execution; rerun outside that restriction
+  with the same assertions.
+- Non-sandbox focused regression passed 20/22 with zero failures and the same two honest Linux-only skips. Static guards prove the
+  checksum-verified `skill` bootstrap exists, `all` is not used, and Skill installation precedes the first current installer call.
+- Added an ordering warning: an in-conversation model-run transaction cannot supply post-install Fresh startup evidence. Formal
+  `S_ROLLBACK` acceptance still requires a new task whose setup/maintenance completes before the first no-tool Host prompt.
+- Final focused rerun after the ordering guard passed 20/22 with zero failures and two expected Windows Linux-only skips;
+  `git diff --check` and all guide Bash block syntax checks passed.
 
 ## Current status
 

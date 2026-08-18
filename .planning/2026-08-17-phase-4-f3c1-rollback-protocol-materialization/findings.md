@@ -41,3 +41,12 @@
 - Historical `v0.3.5`/`v0.3.4` tags do not contain or supply the current F3C1 test script. Current tests use those refs as immutable
   source locators for `git rev-parse`, `git archive` and `git show`; therefore a full ref-aware clone is a test prerequisite, not
   a workaround or an old-version installation.
+- A Fresh Cloud `S_ROLLBACK` attempt proved that setting `PWF_F3C_SKILL_ROOT` does not install the Skill. The first current
+  installer correctly failed closed before uninstall/accepted install because `/root/.agents/skills/planning-with-files/SKILL.md`
+  was absent. This is an operator-guide prerequisite defect, not an installer/runtime defect.
+- The frozen protocol checkpoint bootstrap supports a checksum-verified `skill` command. Running that command and then the
+  unchanged transaction succeeded with current candidate SHA unchanged, accepted role/version `0.3.5`, backups `0 -> 3`, and a
+  clean workspace. The guide now embeds the same command before the first installer call; bootstrap `all` remains forbidden there.
+- A transaction run by the model after its first prompt cannot prove Fresh Host behavior: startup has already occurred before the
+  accepted runtime was installed. The guide now makes setup/maintenance-before-first-prompt ordering explicit; such a run remains
+  useful diagnostic evidence but requires a new task for formal stage acceptance.

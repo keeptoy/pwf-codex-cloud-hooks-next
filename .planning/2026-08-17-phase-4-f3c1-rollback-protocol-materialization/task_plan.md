@@ -70,6 +70,14 @@ F3C1 protocol/no-live complete; stop before F3C2
 - 增加 F3C2 `S_ROLLBACK` / `S_RECOVER` 大白话流程和每轮唯一执行顺序。
 - 解释 current tests 与 historical tags 的职责，并给出 full clone、exact checkout、tag/source identity前置核对。
 
+### F3C1-I7 — Fresh Cloud Skill prerequisite repair
+
+**Status:** completed
+
+- 把 pinned pristine Skill bootstrap纳入第 5 节唯一 transaction，放在第一次 current installer调用之前。
+- 明确只允许 bootstrap `skill`，禁止用 `all` 提前改变 Managed Hooks installed state。
+- 记录外部 `S_ROLLBACK` transaction已通过，但 Fresh/Resume/verifier/evidence尚未完成，不能宣称 stage PASS。
+
 ## Authorization
 
 - 已授权：F3C1 Release-excluded protocol/operator/helper、disposable repository/no-live tests、planning/history/static guards、
@@ -89,9 +97,10 @@ F3C1 protocol/no-live complete; stop before F3C2
 | Error | Attempt | Resolution |
 |---|---:|---|
 | PowerShell 拼接 active plan 时保留换行，导致 planning 文件路径非法 | 1 | 对 `.active_plan` 使用 `.Trim()` 后重新读取；没有仓库内容损坏 |
-| Windows sandbox 运行 Node test runner 时 `spawn EPERM` | 2 | 两轮均分类为测试子进程沙箱限制；用同一命令申请非沙箱执行，不改测试断言 |
+| Windows sandbox 运行 Node test runner 时 `spawn EPERM` | 3 | 三轮均分类为测试子进程沙箱限制；用同一命令申请非沙箱执行，不改测试断言 |
 | 一次 `Select-String` pattern 末尾转义不完整，PowerShell 报非法 regex | 1 | 改用 `-SimpleMatch` 读取 immutable source；不影响代码或测试 |
 | Git Bash 在沙箱中创建 signal pipe时报 Win32 error 5 | 1 | 其他检查继续通过；仅将 bootstrap/guide Bash syntax改到非沙箱环境重跑 |
+| F3C 第 5 节在 Fresh Cloud 缺少全局 pristine Skill，current installer fail closed | 1 | 分类为 operator-guide prerequisite defect；将 frozen bootstrap `skill` 子命令纳入 transaction，不修改 installer/runtime |
 
 ## Current status
 

@@ -210,6 +210,15 @@ test("F3C operator guide is self-contained, exact, and stops before live authori
   assert.match(guide, /rev-parse --verify 'v0\.3\.5\^\{commit\}'/);
   assert.match(guide, /rev-parse --verify 'v0\.3\.4\^\{commit\}'/);
   assert.match(guide, /PWF_F3C1_REF_AWARE_PREFLIGHT=PASS/);
+  assert.match(guide, /PWF_F3C_SKILL_BOOTSTRAP=PASS/);
+  assert.match(guide, /bash "\$SKILL_BOOTSTRAP" skill/);
+  assert.doesNotMatch(guide, /bash "\$SKILL_BOOTSTRAP" all/);
+  const skillBootstrap = guide.indexOf('bash "$SKILL_BOOTSTRAP" skill');
+  const firstCurrentInstall = guide.indexOf('node "$CURRENT_PACKAGE/install.js" install');
+  assert.ok(skillBootstrap >= 0 && firstCurrentInstall > skillBootstrap,
+    "F3C transaction must install the pinned pristine Skill before the first current installer call");
+  assert.match(guide, /第一条模型提示词之前完成/);
+  assert.match(guide, /不能冒充安装完成后的 Fresh Host证据/);
   assert.match(guide,
     /F3C1_PROTOCOL_MATERIALIZED \/ REPOSITORY_AND_LINUX_NO_LIVE_REQUIRED \/ CLOUD_ROLLBACK_NOT_RUN \/ STOP_BEFORE_F3C2/);
   assert.match(guide,
