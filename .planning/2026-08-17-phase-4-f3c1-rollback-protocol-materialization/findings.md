@@ -50,3 +50,8 @@
 - A transaction run by the model after its first prompt cannot prove Fresh Host behavior: startup has already occurred before the
   accepted runtime was installed. The guide now makes setup/maintenance-before-first-prompt ordering explicit; such a run remains
   useful diagnostic evidence but requires a new task for formal stage acceptance.
+- The accepted `S_ROLLBACK` Fresh report exposed an operator-prompt defect rather than a runtime defect: section 7 asked the model
+  to repeat expected HEAD/installed role without supplying those values, so it mislabeled the installed role as "markerless legacy".
+  Setup output is not a dependable human interface because setup/maintenance completes before the model starts. Section 7 therefore
+  carries an explicit four-stage expected-facts table and a placeholder-based prompt. Section 5 remains the machine checker; the table
+  is only its operator-facing frozen projection, while section 8 remains the sole source of actual installed/profile facts.

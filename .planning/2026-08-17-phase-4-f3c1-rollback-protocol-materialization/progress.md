@@ -53,6 +53,21 @@
 - Final focused rerun after the ordering guard passed 20/22 with zero failures and two expected Windows Linux-only skips;
   `git diff --check` and all guide Bash block syntax checks passed.
 
+## 2026-08-19
+
+- Maintainer completed the external smart `S_ROLLBACK` chain: exact transaction, Fresh and real Resume Host observations, section 8
+  verifier, and rollback evidence validation all returned PASS/final exit code 0. The accepted v0.3.5 runtime remained legacy on the
+  committed smart disarm HEAD; doctor was healthy and snapshot residue was zero.
+- Corrected the section 7 human interface after the Fresh model guessed an expected installed-role label. Added a four-stage frozen
+  expected-facts table and five explicit prompt placeholders, while preserving section 5 as machine validation and section 8 as the
+  only actual-state verifier. `S_RECOVER` has not yet run.
+- Synchronized ROADMAP and the v0.4.0-dev acceptance authority to `S_ROLLBACK PASS / S_RECOVER pending` without rewriting the
+  historical F3C1 no-live conclusion. The first governance rerun exposed a stale test assumption that F3B3 remained the newest exact
+  evidence heading; the guard was advanced to the F3C2 smart rollback heading while retaining the no-evidence-above-heading rule.
+- Focused F3 lifecycle/rollback/repository regression passed 20/22 with zero failures and the two expected Windows-only Linux revival
+  skips. The initial in-sandbox runner attempt hit the already-classified Windows `spawn EPERM`; the same tests passed outside that
+  child-process restriction.
+
 ## Current status
 
-`F3C1_PROTOCOL_NO_LIVE_PASS / REF_AWARE_LINUX_ZERO_SKIP / CLOUD_ROLLBACK_NOT_RUN / STOP_BEFORE_F3C2`
+`F3C2_SMART_ROLLBACK_PASS / S_RECOVER_PENDING / F3C3_NOT_AUTHORIZED`

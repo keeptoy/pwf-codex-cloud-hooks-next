@@ -177,7 +177,7 @@ for (const profile of ["smart", "autonomous"]) {
   });
 }
 
-test("F3C operator guide is self-contained, exact, and stops before live authorization", () => {
+test("F3C operator guide is self-contained, exact, and preserves live authorization boundaries", () => {
   const guide = fs.readFileSync(
     path.join(root, "docs", "v0.4.0-dev-f3c-rollback-operator-guide.md"), "utf8");
   for (const anchor of [
@@ -219,6 +219,18 @@ test("F3C operator guide is self-contained, exact, and stops before live authori
     "F3C transaction must install the pinned pristine Skill before the first current installer call");
   assert.match(guide, /第一条模型提示词之前完成/);
   assert.match(guide, /不能冒充安装完成后的 Fresh Host证据/);
+  for (const placeholder of [
+    "<EXPECTED_STAGE>",
+    "<EXPECTED_WORKSPACE_HEAD>",
+    "<EXPECTED_INSTALLED_ROLE>",
+    "<EXPECTED_REPOSITORY_STATE>",
+    "<EXPECTED_EFFECTIVE_PROFILE>",
+  ]) assert.match(guide, new RegExp(placeholder));
+  assert.match(guide, /S_ROLLBACK[^\n]*accepted[^\n]*smart_prepared[^\n]*legacy/);
+  assert.match(guide, /S_RECOVER[^\n]*current[^\n]*smart_prepared[^\n]*legacy/);
+  assert.match(guide, /A_ROLLBACK[^\n]*accepted[^\n]*autonomous_prepared[^\n]*legacy/);
+  assert.match(guide, /A_RECOVER[^\n]*current[^\n]*autonomous_prepared[^\n]*legacy/);
+  assert.match(guide, /actual HEAD、actual installed role、actual effective profile 一律写 UNKNOWN/);
   assert.match(guide,
     /F3C1_PROTOCOL_MATERIALIZED \/ REPOSITORY_AND_LINUX_NO_LIVE_REQUIRED \/ CLOUD_ROLLBACK_NOT_RUN \/ STOP_BEFORE_F3C2/);
   assert.match(guide,

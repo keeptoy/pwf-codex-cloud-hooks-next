@@ -63,6 +63,7 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap, /F3B3 autonomous zero-ledger\/tamper\/disarm\/re-attest\/re-arm Cloud live PASS/);
   assert.match(roadmap,
     /F3B4 evidence closure PASS；F3C Discovery conditional-go；F3C1 ref-aware Linux\/no-live protocol gate PASS/);
+  assert.match(roadmap, /F3C2 smart rollback stage PASS、exact-current recovery pending/);
 });
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
@@ -360,12 +361,17 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance,
     /F3C1 rollback protocol \/ Linux no-live[^\n]*`PASS`/);
   assert.match(acceptance,
+    /F3C2 smart live rollback\/recovery[^\n]*`IN_PROGRESS — S_ROLLBACK PASS`/);
+  assert.match(acceptance,
     /phase-4\.10-f3c-rollback-discovery\.md#phase-4-10-decision/);
   assert.match(acceptance,
     /phase-4\.10-f3c-rollback-discovery\.md#phase-4-10-f3c1-linux-no-live-acceptance/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3c1-local-materialization"><\/a>$/m);
   assert.match(acceptance,
     /F3C1_PROTOCOL_NO_LIVE_PASS \/ REF_AWARE_LINUX_ZERO_SKIP \/ CLOUD_ROLLBACK_NOT_RUN \/ STOP_BEFORE_F3C2/);
+  assert.match(acceptance, /^<a name="v0-4-0-dev-f3c2-smart-rollback-evidence"><\/a>$/m);
+  assert.match(acceptance,
+    /F3C2_SMART_ROLLBACK_PASS \/ S_RECOVER_PENDING \/ F3C3_NOT_AUTHORIZED/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3b4-aggregate-closure"><\/a>$/m);
   assert.match(acceptance,
     /F3B_LIVE_LIFECYCLE_PASS \/ SMART_AND_AUTONOMOUS_EVIDENCE_RECONCILED \/ STOP_BEFORE_F3C/);
@@ -437,7 +443,7 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
   }
   if (candidate !== accepted && /\b[a-f0-9]{64}\b/i.test(acceptance)) {
-    const currentEvidenceHeading = "## F3B3 autonomous live evidence";
+    const currentEvidenceHeading = "## F3C2 smart rollback evidence — S_ROLLBACK";
     const currentEvidenceAt = acceptance.indexOf(currentEvidenceHeading);
     assert.notEqual(currentEvidenceAt, -1,
       "current completed gate lacks an exact evidence heading");

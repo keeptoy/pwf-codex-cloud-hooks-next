@@ -8,12 +8,13 @@ repository/no-live 测试证明旧版不能直接覆盖 current，再建立 acce
 
 ## Next Step
 
-等待维护者另行明确授权 F3C2 smart live。F3C1 已完成 ref-aware Linux/no-live 验收；在新授权前不得执行
-operator guide 的 live install/uninstall/rollback stages，也不得自动进入 F3C2。
+由维护者从同一个 exact smart disarm HEAD 新建 Cloud task，按 operator guide 完成 `S_RECOVER`：第 5 节 transaction、
+Fresh、real Resume、第 8 节只读 verifier 和第 9 节 recovered evidence。`S_ROLLBACK` 已完成；不得自动进入 F3C3
+autonomous live、F3C4 aggregate closure 或任何 Release/远端写操作。
 
 ## Current Phase
 
-F3C1 protocol/no-live complete; stop before F3C2
+F3C2 smart live in progress; S_ROLLBACK complete, S_RECOVER pending
 
 ## Phases
 
@@ -78,12 +79,29 @@ F3C1 protocol/no-live complete; stop before F3C2
 - 明确只允许 bootstrap `skill`，禁止用 `all` 提前改变 Managed Hooks installed state。
 - 记录外部 `S_ROLLBACK` transaction已通过，但 Fresh/Resume/verifier/evidence尚未完成，不能宣称 stage PASS。
 
+### F3C2-E1 — Smart accepted rollback
+
+**Status:** completed externally by maintainer
+
+- `S_ROLLBACK` transaction、Fresh、real Resume、只读 verifier 和 rollback evidence 全部取得明确 exit code 0。
+- 最终 installed role/version 为 accepted `0.3.5`，repository state 为 `smart_prepared`，effective profile 为 legacy；
+  doctor healthy、snapshot leftovers 0，activation 未复活。
+
+### F3C2-E2 — Smart exact-current recovery
+
+**Status:** pending maintainer execution
+
+- 从同一个 exact smart disarm HEAD 新建独立 Cloud task，先经过 accepted predecessor，再恢复 exact current candidate。
+- Fresh/Resume、只读 verifier 和 recovered evidence 全部通过后，才允许关闭 F3C2。
+
 ## Authorization
 
 - 已授权：F3C1 Release-excluded protocol/operator/helper、disposable repository/no-live tests、planning/history/static guards、
   相称验证和本地 commit。
-- 未授权：真实 Cloud install/uninstall/rollback；生产环境或用户 workspace mutation；validation ref 创建/移动；
-  production runtime/installer/contracts/manifest/bundle/bootstrap/README/Release bytes 修改；F3C2/F3C3；push/PR/tag/Release。
+- 维护者已另行授权并亲自执行 F3C2 smart live；本地智能体只接收证据并维护 operator/planning/tests，不代替维护者执行
+  Cloud install/uninstall/rollback 或远端写操作。
+- 未授权：F3C3 autonomous live、F3C4 aggregate closure；生产 runtime/installer/contracts/manifest/bundle/bootstrap/
+  README/Release bytes 修改；validation ref 创建/移动；push/PR/tag/Release。
 
 ## Stop Conditions
 
@@ -104,4 +122,4 @@ F3C1 protocol/no-live complete; stop before F3C2
 
 ## Current status
 
-`F3C1_PROTOCOL_NO_LIVE_PASS / REF_AWARE_LINUX_ZERO_SKIP / CLOUD_ROLLBACK_NOT_RUN / STOP_BEFORE_F3C2`
+`F3C2_SMART_ROLLBACK_PASS / S_RECOVER_PENDING / F3C3_NOT_AUTHORIZED`
