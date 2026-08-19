@@ -44,3 +44,22 @@
   reviews candidate/accepted-window objects. A review may conclude KEEP or MIGRATE; it does not require deletion.
 - For current F3C, F3C4 must conduct the first review. The 11 refs can still remain because they preserve exact side-branch commit
   reachability; validators/negative tests can remain as active regression contracts rather than historical residue.
+
+## Implementation authorization
+
+- Maintainer authorized the next step after documentation clarification. Starting HEAD is
+  `d2d9c5fe04a164097e8a3f8cf32641d1b210ff84`; worktree was clean on `0.4.0-dev`.
+- Authorized delta is aggregate evidence plus first retirement review in planning/docs/tests only. Phase 9, Cloud, Release bytes and
+  validation-ref mutation remain outside scope.
+
+## F3C4 implementation result
+
+- Phase 4.11、version acceptance与 ROADMAP现在记录一个 aggregate PASS，同时继续保留 smart/autonomous各自的
+  rollback/recovered、disarm HEAD、installed role与 transition关系；没有把四份证据压成不可审计的单一记录。
+- 第一轮 retirement review已实际执行：disposable JSON/ZIP/snapshot/tamper对象为 ABSENT；11对 validation refs、operator
+  guide、validator与 revival-negative tests按 owner和后继用途 KEEP/MIGRATE；active planning machine state保持 ABSENT。
+- Focused guards 27/27；full Windows 172 tests为 147 pass、0 fail、25 honest skips。Importer/compile/Node/Bash/diff与双 candidate
+  均 PASS；candidate仍是 22 entries、85,533 bytes、SHA-256 `df600104...`，两份字节一致并在检查后删除。
+- Postflight确认 local/origin refs各 11个且 identity mismatch为 0；planning machine state、repository residue、changed Release
+  intersection均为 0。没有新 Cloud、production、Release byte或 ref mutation。
+- Product Phase 4功能基线现已形成，但 candidate尚未发布或接替 accepted；下一授权点是 current `0.4.0` standing Phase 9。

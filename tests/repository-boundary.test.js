@@ -61,13 +61,16 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap, /F3B0 Discovery 与 F3B1 no-live protocol materialization complete/);
   assert.match(roadmap, /F3B2 smart Cloud live PASS/);
   assert.match(roadmap, /F3B3 autonomous zero-ledger\/tamper\/disarm\/re-attest\/re-arm Cloud live PASS/);
+  assert.match(roadmap, /F3B4 evidence closure PASS/);
+  assert.match(roadmap, /F3C1 ref-aware Linux\/no-live/);
+  assert.match(roadmap, /F3C2 smart live/);
+  assert.match(roadmap, /F3C3 autonomous live PASS/);
+  assert.match(roadmap, /F3C4 aggregate closure PASS/);
+  assert.match(roadmap, /Phase 4 functional baseline ready/);
+  assert.match(roadmap, /Product Phase 4[^\n]*F3C4 aggregate closure/);
+  assert.match(roadmap, /第一轮 retirement review完成/);
   assert.match(roadmap,
-    /F3B4 evidence closure PASS；F3C Discovery conditional-go；F3C1 ref-aware Linux\/no-live protocol gate PASS/);
-  assert.match(roadmap, /F3C2 smart rollback \+ exact-current recovery Cloud live PASS/);
-  assert.match(roadmap, /F3C3 autonomous rollback \+ exact-current recovery Cloud live PASS/);
-  assert.match(roadmap, /F3C4 aggregate-closure Discovery conditional-go/);
-  assert.match(roadmap,
-    /F3C2 smart rollback\/recovery 与 F3C3 autonomous rollback\/recovery 均已闭合；F3C4 Discovery 已 conditional-go，但 aggregate closure implementation与 ref cleanup未授权/);
+    /当前列车 Phase 9、publication、accepted promotion和第二轮版本窗口退役未授权/);
   assert.match(roadmap,
     /Phase 4 \/ F3C4完成[\s\S]*形成0\.4\.0功能\/候选基线[\s\S]*切换0\.5\.0-dev并进入Phase 5/);
 });
@@ -372,8 +375,11 @@ test("change history, programme, provenance, and current acceptance keep separat
     /F3C3 autonomous live rollback\/recovery[^\n]*`PASS`/);
   assert.match(acceptance,
     /F3C4 aggregate-closure Discovery[^\n]*`CONDITIONAL_GO_TO_F3C4_AGGREGATE_CLOSURE`/);
+  assert.match(acceptance, /F3C4 aggregate closure[^\n]*`PASS`/);
   assert.match(acceptance,
     /phase-4\.11-f3c4-aggregate-closure-discovery\.md#phase-4-11-decision/);
+  assert.match(acceptance,
+    /phase-4\.11-f3c4-aggregate-closure-discovery\.md#phase-4-11-post-implementation-status-f3c4/);
   assert.match(acceptance,
     /phase-4\.10-f3c-rollback-discovery\.md#phase-4-10-decision/);
   assert.match(acceptance,
@@ -391,6 +397,9 @@ test("change history, programme, provenance, and current acceptance keep separat
     /F3C3_A_ROLLBACK_PASS \/ AUTONOMOUS_ACCEPTED_ROLLBACK_CONFIRMED \/ A_RECOVER_NOT_RUN \/ STOP_FOR_EVIDENCE_REVIEW/);
   assert.match(acceptance,
     /F3C3_AUTONOMOUS_LIVE_PASS \/ AUTONOMOUS_ROLLBACK_AND_EXACT_RECOVERY_CONFIRMED \/ STOP_BEFORE_F3C4/);
+  assert.match(acceptance, /^<a name="v0-4-0-dev-f3c4-aggregate-closure"><\/a>$/m);
+  assert.match(acceptance,
+    /F3C_ROLLBACK_PASS \/ SMART_AND_AUTONOMOUS_ROLLBACK_EVIDENCE_RECONCILED \/ PHASE_4_FUNCTIONAL_BASELINE_READY \/ STOP_BEFORE_PHASE_9/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3b4-aggregate-closure"><\/a>$/m);
   assert.match(acceptance,
     /F3B_LIVE_LIFECYCLE_PASS \/ SMART_AND_AUTONOMOUS_EVIDENCE_RECONCILED \/ STOP_BEFORE_F3C/);
@@ -462,7 +471,7 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
   }
   if (candidate !== accepted && /\b[a-f0-9]{64}\b/i.test(acceptance)) {
-    const currentEvidenceHeading = "## F3C3 autonomous rollback/recovery evidence";
+    const currentEvidenceHeading = "## F3C4 aggregate closure";
     const currentEvidenceAt = acceptance.indexOf(currentEvidenceHeading);
     assert.notEqual(currentEvidenceAt, -1,
       "current completed gate lacks an exact evidence heading");

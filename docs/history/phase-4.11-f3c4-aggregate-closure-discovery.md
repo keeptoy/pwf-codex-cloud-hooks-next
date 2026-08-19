@@ -162,3 +162,51 @@ candidate和 residue也没有显示需要先修改 production或证据 schema的
   entries/external assets交集为 0。
 
 测试数字只描述本次运行，不成为长期合同。
+
+<a name="phase-4-11-post-implementation-status-f3c4"></a>
+
+## Post-implementation status — F3C4
+
+维护者随后授权了 Phase 4.11冻结的最小 closure。实施没有偏离 Discovery：没有新 Cloud、evidence schema、Host ABI、trusted
+graph、production/runtime/installer/contract/manifest/bundle/bootstrap/README或 Release ZIP输入变化，也没有移动或删除 refs。
+
+Aggregate closure保留四份 live record的独立身份和关系，没有把“最终都为 legacy”误写成同一张卷：smart与 autonomous仍各自
+保留 rollback/recovered、exact disarm HEAD、prepared repository state、accepted/current installed role和 transition；F3C1的
+两个 runtime-only revival negative继续证明 disarm-first不是可省略步骤。版本 acceptance只新增汇总结论，逐 gate exact evidence
+仍由原章节承担。
+
+第一轮 retirement inventory的实际结果为：
+
+| 对象 | 结果 | 原因与下一 review |
+|---|---|---|
+| disposable Cloud JSON、temporary candidate ZIP、snapshot/tamper workspace | `RETIRE / ABSENT` | task结束即退出；仓库与当前 planning均无 residue |
+| 11个 F3B2/F3B3 validation refs | `KEEP` | 仍是部分 exact side-branch commits的可达入口；当前列车 Phase 9第二轮再审 |
+| F3C operator guide | `MIGRATE / KEEP` | 从 pre-live执行入口转为 `0.4.0` Phase 9的 Release-excluded rollback审计入口 |
+| rollback validator与 revival negative tests | `KEEP` | 仍保护现行 rollback contract；未来随 accepted/fallback窗口迁移，而非按 Phase编号删除 |
+| Phase 4.10/4.11 history与版本 acceptance | `KEEP` | append-only人类证据；不复制 disposable JSON |
+| active planning machine state | `KEEP ABSENT` | Phase 4功能基线不创建 workspace activation/state |
+
+本轮没有删除 tracked文件，不代表没有执行退役：所有纯临时对象已经 ABSENT；其余对象逐项给出了 owner、KEEP/MIGRATE原因和
+第二轮 review条件。批量 ref deletion仍未授权。
+
+结论升级为：
+
+`F3C_ROLLBACK_PASS / SMART_AND_AUTONOMOUS_ROLLBACK_EVIDENCE_RECONCILED / PHASE_4_FUNCTIONAL_BASELINE_READY / STOP_BEFORE_PHASE_9`
+
+这关闭 F3C4与 Product Phase 4的功能施工，不表示当前 `0.4.0`列车已封板、发布或晋级 accepted。下一步只能另行讨论并授权
+该列车的 standing Phase 9；不得自动切换 `0.5.0-dev`或进入 Phase 5。
+
+<a name="phase-4-11-closure-verification"></a>
+
+### Closure verification
+
+- focused architecture/F3/repository guards：27 tests，27 pass，0 fail，0 skipped；
+- full Windows suite：172 tests，147 pass，0 fail，25个 Linux/POSIX-only honest skips；
+- importer、owned Python compile、`install.js`、全部 bootstrap Bash syntax与 `git diff --check`：PASS；
+- 两次独立 current candidate build/check均为 22 entries、85,533 bytes、SHA-256
+  `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`，字节相同，临时 ZIP随后删除；
+- 11个 local/origin validation ref pairs身份一致；活动 planning machine state、仓库临时 residue与 changed Release
+  intersection均为 0。
+
+本 verification没有重跑 Cloud，也没有把 Windows skip写成 Linux通过；逐 gate Cloud/live与 F3C1 ref-aware Linux证据仍由原
+acceptance章节承担。测试数字只描述本次运行，不成为长期合同。

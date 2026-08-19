@@ -17,7 +17,15 @@
   rule requiring both reviews for every release train without forcing deletion.
 - Documentation-governance focused suite passed 27/27 with zero skips. Full Windows suite remained 172 tests, 147 pass, 0 fail and
   25 Linux/POSIX-only honest skips; no production or Release input changed.
+- Maintainer authorized the frozen F3C4 aggregate closure. Recovered clean starting HEAD `d2d9c5f` and opened implementation gates
+  I0～I3 without widening scope to refs, Cloud, Release bytes or Phase 9.
+- Closed F3C4 aggregate evidence in Phase 4.11, version acceptance and ROADMAP while preserving the four smart/autonomous record
+  identities and the original Discovery time semantics.
+- Completed the first retirement review: disposable objects are absent; 11 validation-ref pairs, guide and regression contracts remain
+  on an explicit KEEP/MIGRATE ledger; no ref was moved or deleted.
+- Focused guards passed 27/27. Full Windows suite passed 172 tests as 147 pass, 0 fail and 25 honest skips; importer/compile/Node/Bash/
+  whitespace, dual deterministic candidate and identity/residue/Release-intersection postflight all passed.
 
 ## Current status
 
-`CONDITIONAL_GO_TO_F3C4_AGGREGATE_CLOSURE / IMPLEMENTATION_NOT_AUTHORIZED / REF_CLEANUP_NOT_AUTHORIZED`
+`F3C_ROLLBACK_PASS / SMART_AND_AUTONOMOUS_ROLLBACK_EVIDENCE_RECONCILED / PHASE_4_FUNCTIONAL_BASELINE_READY / STOP_BEFORE_PHASE_9`

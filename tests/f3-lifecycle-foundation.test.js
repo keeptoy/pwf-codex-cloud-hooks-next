@@ -321,7 +321,7 @@ test("Phase 4.10 preserves rollback Discovery and appends F3C1 through F3C3 outc
   assert.doesNotMatch(history, /F3C_ROLLBACK_PASS \/.*CONFIRMED/);
 });
 
-test("Phase 4.11 conditionally admits minimal F3C4 closure while retaining refs and aggregate PASS absence", () => {
+test("Phase 4.11 preserves Discovery and records the authorized F3C4 closure and first retirement review", () => {
   const history = fs.readFileSync(
     path.join(root, "docs", "history", "phase-4.11-f3c4-aggregate-closure-discovery.md"), "utf8");
   const historyIndex = fs.readFileSync(path.join(root, "docs", "history", "README.md"), "utf8");
@@ -330,6 +330,7 @@ test("Phase 4.11 conditionally admits minimal F3C4 closure while retaining refs 
     "phase-4-11-provenance-reconciliation", "phase-4-11-residue-audit",
     "phase-4-11-lifecycle-ledger", "phase-4-11-closure-plan",
     "phase-4-11-stop-rules", "phase-4-11-decision", "phase-4-11-verification",
+    "phase-4-11-post-implementation-status-f3c4", "phase-4-11-closure-verification",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   for (const stage of ["rollback", "recovered"]) assert.match(history, new RegExp(`\`${stage}\``));
   assert.match(history, /smart_prepared/);
@@ -348,8 +349,15 @@ test("Phase 4.11 conditionally admits minimal F3C4 closure while retaining refs 
   assert.match(history,
     /CONDITIONAL_GO_TO_F3C4_AGGREGATE_CLOSURE \/ IMPLEMENTATION_NOT_AUTHORIZED \/ REF_CLEANUP_NOT_AUTHORIZED/);
   assert.match(history, /这不是 `F3C_ROLLBACK_PASS`/);
-  assert.doesNotMatch(history, /F3C_ROLLBACK_PASS \/.*CONFIRMED/);
+  assert.match(history,
+    /F3C_ROLLBACK_PASS \/ SMART_AND_AUTONOMOUS_ROLLBACK_EVIDENCE_RECONCILED \/ PHASE_4_FUNCTIONAL_BASELINE_READY \/ STOP_BEFORE_PHASE_9/);
+  assert.match(history, /disposable Cloud JSON[\s\S]*RETIRE \/ ABSENT/);
+  assert.match(history, /11[^\n]*F3B2\/F3B3 validation refs[\s\S]*KEEP/);
+  assert.match(history, /F3C operator guide[\s\S]*MIGRATE \/ KEEP/);
+  assert.match(history, /rollback validator[\s\S]*revival negative tests[\s\S]*KEEP/);
+  assert.match(history, /KEEP ABSENT/);
+  assert.match(history, /0\.5\.0-dev[\s\S]*Phase 5/);
   assert.match(historyIndex,
-    /phase-4\.11-f3c4-aggregate-closure-discovery\.md#phase-4-11-decision/);
-  assert.match(historyIndex, /不预先生成 F3C aggregate PASS或批量删除 refs/);
+    /phase-4\.11-f3c4-aggregate-closure-discovery\.md#phase-4-11-post-implementation-status-f3c4/);
+  assert.match(historyIndex, /F3C4 aggregate-closure/);
 });

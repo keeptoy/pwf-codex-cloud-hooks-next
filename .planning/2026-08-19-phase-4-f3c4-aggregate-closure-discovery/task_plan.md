@@ -2,18 +2,18 @@
 
 ## Goal
 
-在 current exact HEAD上对账 F3C1 no-live、F3C2 smart rollback/recovery 与 F3C3 autonomous rollback/recovery，冻结
-F3C4 aggregate closure的最小实现、证据边界、对象生命周期和退出条件。只做 Release-excluded Discovery与历史状态补录，
-不实施 aggregate PASS、不删除 refs、不修改 production/contracts/Release bytes。
+在 current exact HEAD上对账 F3C1 no-live、F3C2 smart rollback/recovery 与 F3C3 autonomous rollback/recovery，冻结并实施
+F3C4 aggregate closure、证据边界、第一轮对象退役审查和退出条件。保持 Release-excluded，不删除 refs，不修改
+production/contracts/Release bytes，也不进入当前列车 Phase 9。
 
 ## Next Step
 
-等待维护者另行决定是否授权 Phase 4.11冻结的最小 F3C4 closure implementation；不得自行写 aggregate PASS、删除 refs或
-进入 Phase 4 closeout/Phase 9。F3C4若获授权，必须包含第一轮 retirement inventory，但不等于批量删除。
+F3C4 aggregate closure与第一轮 retirement review已完成。下一步只讨论并另行授权当前 `0.4.0`列车的 standing Phase 9；
+不得自动删除 refs、进入 Release施工、切换 `0.5.0-dev`或执行远端动作。
 
 ## Current Phase
 
-F3C4 Discovery + lifecycle clarification complete；停在 closure implementation授权前
+F3C4-I3 verification and handoff complete
 
 ## Phases
 
@@ -53,11 +53,39 @@ F3C4 Discovery + lifecycle clarification complete；停在 closure implementatio
 - 在 ROADMAP冻结 Product Phase功能基线、standing Phase 9 accepted baseline与两轮 retirement review的通用关系。
 - 修正生命周期措辞：每轮都是强制审查，不是强制删除；按对象 owner、恢复证据与回归价值决定 RETIRE/MIGRATE/KEEP。
 
+### F3C4-I0 — Implementation authority and input recovery
+
+**Status:** completed
+
+- 绑定 clean starting HEAD、四份 live record、两项 revival negative、11对 refs与 candidate/accepted identity。
+- 再确认 closure只改 planning/docs/tests，不产生新 Cloud、schema、production或 Release byte。
+
+### F3C4-I1 — Aggregate evidence closure
+
+**Status:** completed
+
+- 在 Phase 4.11、版本 acceptance与 ROADMAP记录单一 F3C rollback aggregate PASS。
+- 保留 smart/autonomous各自的 profile、disarm HEAD、installed role与 transition，不压扁证据。
+
+### F3C4-I2 — First retirement review
+
+**Status:** completed
+
+- 为 refs、guide、validator/tests、planning/history与 disposable artifacts记录实际 `RETIRE/MIGRATE/KEEP`结果。
+- 只清理由 DoD明确允许的纯临时对象；本 gate不授权 validation ref删除。
+
+### F3C4-I3 — Verification and handoff
+
+**Status:** completed
+
+- 运行 focused/full、importer/compile/syntax、双 candidate、ref/residue/Release-intersection检查。
+- 本地 commit并停止在当前 `0.4.0`列车 Phase 9之前。
+
 ## Authorization
 
-- 已授权：只读代码/合同/refs/evidence审计；Phase 4.10 post-live尾注；新建 Phase 4.11 Discovery；planning/history/tests更新；
-  相称本地验证与本地 commit。
-- 未授权：F3C4 closure implementation或 aggregate PASS；删除/移动 validation refs；修改 production/runtime/installer/
+- 已授权：前述 Discovery；Release-excluded F3C4 aggregate closure与第一轮 retirement inventory；planning/history/ROADMAP/
+  version acceptance/tests更新；相称本地验证与本地 commit。
+- 未授权：删除/移动 validation refs；修改 production/runtime/installer/
   contracts/manifest/bundle/bootstrap/README/Release bytes；Cloud重跑；push/PR/tag/Release/publication/promotion。
 
 ## Stop Conditions
@@ -79,7 +107,8 @@ F3C4 Discovery + lifecycle clarification complete；停在 closure implementatio
 | `git for-each-ref`以不存在的中间 ref prefix查询，脚本得到 local/remote 0/0 | 1 | 查询 validation根再按 exact `v0.4.0-dev-*`正则过滤；最终得到 11/11同身份 pairs |
 | 首个 residue grep同时匹配 production/tests中的状态文件名常量，不能表示现场 residue | 1 | 改查 `.planning`实际文件 inventory；确认 machine-state文件为 0 |
 | Phase 4.11大白话 blockquote用 Markdown双空格强制换行，触发 `git diff --check` trailing-whitespace | 1 | 改成显式空引用行；不改变语义，随后重跑 whitespace与 focused guards |
+| Windows受限沙箱阻止 Node test runner派生子进程并返回 `spawn EPERM` | 1 | 在允许派生进程的环境原样重跑；focused 27/27、full 172 tests均取得明确 exit code 0 |
 
 ## Current status
 
-`CONDITIONAL_GO_TO_F3C4_AGGREGATE_CLOSURE / IMPLEMENTATION_NOT_AUTHORIZED / REF_CLEANUP_NOT_AUTHORIZED`
+`F3C_ROLLBACK_PASS / SMART_AND_AUTONOMOUS_ROLLBACK_EVIDENCE_RECONCILED / PHASE_4_FUNCTIONAL_BASELINE_READY / STOP_BEFORE_PHASE_9`
