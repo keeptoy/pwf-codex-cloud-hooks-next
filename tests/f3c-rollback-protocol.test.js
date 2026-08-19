@@ -182,6 +182,7 @@ test("F3C operator guide is self-contained, exact, and preserves live authorizat
     path.join(root, "docs", "v0.4.0-dev-f3c-rollback-operator-guide.md"), "utf8");
   for (const anchor of [
     "f3c-operator-positioning", "f3c-section-map", "f3c-one-minute-model", "f3c2-smart-live-walkthrough",
+    "f3c3-autonomous-live-walkthrough",
     "f3c-frozen-identities", "f3c-no-live-gate", "f3c-ref-aware-checkout",
     "f3c-cloud-environment", "f3c-transaction", "f3c-cloud-order", "f3c-host-prompts",
     "f3c-read-only-verifier", "f3c-evidence-records", "f3c-stop-and-handoff", "f3c-pre-run-status",
@@ -230,6 +231,19 @@ test("F3C operator guide is self-contained, exact, and preserves live authorizat
   assert.match(guide, /S_RECOVER[^\n]*current[^\n]*smart_prepared[^\n]*legacy/);
   assert.match(guide, /A_ROLLBACK[^\n]*accepted[^\n]*autonomous_prepared[^\n]*legacy/);
   assert.match(guide, /A_RECOVER[^\n]*current[^\n]*autonomous_prepared[^\n]*legacy/);
+  const autonomousWalkthroughStart = guide.indexOf('<a name="f3c3-autonomous-live-walkthrough"></a>');
+  const autonomousWalkthroughEnd = guide.indexOf("每一轮只有下面这一种操作顺序", autonomousWalkthroughStart);
+  assert.ok(autonomousWalkthroughStart >= 0 && autonomousWalkthroughEnd > autonomousWalkthroughStart);
+  const autonomousWalkthrough = guide.slice(autonomousWalkthroughStart, autonomousWalkthroughEnd);
+  for (const invariant of [
+    "A_ROLLBACK", "A_RECOVER", "98b6f138497af244563541ec655a1111198f0c36",
+    ".mode=autonomous", ".nonce", ".attestation", "zero-ledger state", ".pwf-codex-managed",
+    "installed_role=accepted", "installed_role=current", "repository_state=autonomous_prepared",
+    "effective profile必须是 legacy", "effective profile仍必须是 legacy",
+    "=== ledger summary ===", "=== RUN LEDGER ===", "entries: 0",
+  ]) assert.match(autonomousWalkthrough, new RegExp(invariant.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(guide,
+    /for autonomous_marker in \('=== ledger summary ===', '=== RUN LEDGER ===', 'entries: 0'\):\n    assert autonomous_marker not in context/);
   assert.match(guide, /actual HEAD、actual installed role、actual effective profile 一律写 UNKNOWN/);
   assert.match(guide,
     /F3C1_PROTOCOL_MATERIALIZED \/ REPOSITORY_AND_LINUX_NO_LIVE_REQUIRED \/ CLOUD_ROLLBACK_NOT_RUN \/ STOP_BEFORE_F3C2/);

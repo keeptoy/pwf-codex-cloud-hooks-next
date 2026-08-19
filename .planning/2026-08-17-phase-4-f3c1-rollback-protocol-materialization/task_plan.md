@@ -110,6 +110,14 @@ F3C3 autonomous live read-only preflight complete; wait before A_ROLLBACK
 - 只输出 GO/NO_GO并停止；不执行 Cloud transaction或任何 ref/workspace mutation。
 - 结论：exact state、双身份、candidate和协议均无漂移，`GO_TO_F3C3_AUTONOMOUS_LIVE`；Cloud仍未运行。
 
+### F3C3-P1 — Autonomous live operator walkthrough hardening
+
+**Status:** completed
+
+- 在共用 rollback operator guide中增加与 F3C2 对称的 `A_ROLLBACK` / `A_RECOVER` 大白话操作路线，不复制 transaction。
+- 冻结 autonomous prepared残留对象的 inert语义，并把 nonce、Plan SHA与 ledger renderer全部纳入 Fresh/Resume和只读 verifier负向检查。
+- 保持 `A_ROLLBACK` 未运行和独立授权边界；文档完善不等于 Cloud stage PASS。
+
 ## Authorization
 
 - 已授权：F3C1 Release-excluded protocol/operator/helper、disposable repository/no-live tests、planning/history/static guards、

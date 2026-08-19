@@ -71,3 +71,12 @@
   Linux-only revival skips already closed by F3C1's ref-aware Linux run. No new schema, transaction, Host ABI or trusted-graph gap was
   found. F3C3 therefore needs no new Discovery or production change; it may reuse the frozen operator guide, but `A_ROLLBACK` remains
   a separately authorized Cloud action and must stop for evidence review before `A_RECOVER`.
+- The shared operator guide already had all four machine mappings and one transaction, but only F3C2 had a novice walkthrough.
+  F3C3 does not need a second transaction or evidence schema: its incremental proof is that committed `.mode/.nonce/.attestation`
+  plus zero-ledger prepared state remain inert while activation is absent, under both accepted rollback and exact-current recovery.
+- Autonomous leakage must be checked as content, not inferred from `effective_profile=legacy`. Fresh/Resume prompts and the production
+  verifier now reject nonce delimiter, `Plan-SHA256`, ledger headers and `entries: 0`; this makes “old runtime did not ingest prepared
+  state” and “current did not revive autonomous” independently visible.
+- The guide introduction still carried its original pre-live “sections 4-9 not run” wording even though dated F3C2 evidence now exists.
+  The introduction is now lifecycle-neutral and routes current progress to dated status, ROADMAP and the active plan; historical
+  pre-run/post-run records remain intact as time-scoped evidence.

@@ -87,6 +87,15 @@
   `A_ROLLBACK`.
 - Post-status focused rollback/repository regression passed 11/13 with zero failures and the same two honest Windows-only skips;
   planning lifecycle and programme authority guards accepted the new stop-before-`A_ROLLBACK` state.
+- Added a self-contained F3C3 autonomous live walkthrough to the shared rollback guide. It defines the two isolated Cloud tasks,
+  exact prepared-state residue, accepted/current final roles, legacy-only Host expectations and mandatory stop between rollback and
+  recovery; no Cloud transaction was run.
+- Hardened Fresh/Resume prompts and the section 8 production verifier against autonomous ledger renderer leakage in addition to the
+  existing nonce and Plan-SHA checks. Added static guards for the walkthrough anchor, lifecycle objects and negative markers.
+- Made the guide introduction lifecycle-neutral so its stable procedures no longer contradict the retained dated F3C1/F3C2 status
+  records. Current authorization remains solely in the active plan; `A_ROLLBACK` is still not run.
+- Final focused rollback/repository regression passed 11/13 with zero failures and the two expected Windows Linux-only revival skips;
+  guide Bash blocks, new walkthrough invariants, planning lifecycle guards, Node syntax and `git diff --check` all passed.
 
 ## Current status
 
