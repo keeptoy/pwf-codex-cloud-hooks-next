@@ -1,0 +1,184 @@
+# Findings: Phase 9 instance — v0.4.0 Release Discovery
+
+## Initial facts
+
+- Starting branch is `0.4.0-dev`; starting HEAD is `d5102cae392de87812823451c58710f6dabc209b`; worktree is clean.
+- Phase 4/F3C4 has produced a functional/candidate baseline and completed its first retirement review. It has not sealed, published or
+  promoted `v0.4.0`, and it did not mutate Release inputs or validation refs.
+- Current role window is candidate `v0.4.0-dev`, accepted `v0.3.5`, immediate fallback `v0.3.4`.
+- ROADMAP defines Phase 9 as a standing per-train Release gate, not Product Phase/version `0.9.0`; this instance is version-scoped to
+  `v0.4.0` and future instances require separate evidence.
+- `README.md` is a Release ZIP entry. Its final pre-live sentence is known deferred debt: Phase 9 implementation must replace it with
+  status-neutral authority routing before seal, rebuild the ZIP and rerun Source/Candidate acceptance. Discovery must not edit it.
+- Historical naming will use `phase-9-v0.4.0-release-discovery.md`. Phase 4.11 remains the completed functional closeout and will only
+  receive a successor link after this Discovery closes.
+
+## Questions to resolve
+
+- Which Release inputs must change before `0.4.0` seal, and which are intentionally stable?
+- Which current acceptance results describe behavior independent of bytes, and which must be rerun after any ZIP-input change?
+- What is the exact owner/sequence for candidate validation, seal, publication audit, public download validation, promotion and postflight?
+- What proof is required before rotating accepted/fallback roles and reviewing validation refs?
+
+## Stable-document audit — first pass
+
+- README correctly declares that current programme/Cloud/Release state belongs to ROADMAP and version acceptance, but lines 117～119
+  still say Cloud prepare/Fresh/Resume/opt-out/re-arm “尚需 F3 live gate”. This is the known final README state coupling and is now
+  factually stale after F3B/F3C PASS.
+- The durable replacement must not copy `F3B2/F3C PASS` into README. It should state that activation files and production probes prove
+  state admission only; Cloud lifecycle and Release conclusions remain version-scoped authorities.
+- ARCHITECTURE is also not fully stabilized to the Phase 4 result: section 5.1 still says cross-candidate rollback belongs to a future
+  F3C gate, and section 12 lists autonomous disarm-first/cross-candidate rollback as “尚未实现”. These are system-status claims, not
+  merely historical narrative.
+- Phase 9 pre-seal cleanup must therefore audit every Release-input stable document, not patch README alone. Architecture updates must
+  preserve enduring invariants (disarm-first, activation absence, immutable accepted install, exact-current recovery) without copying
+  transient PASS counters or current-role facts.
+
+## Design and programme audit — first pass
+
+- DESIGN correctly declares itself version/status-neutral, but its reverse test index still describes F3B real activation/rollback and
+  F3C real rollback as future work. Those lines should become capability/boundary descriptions (repository-only helper vs live evidence
+  authority), not current gate status.
+- ROADMAP's top role table and Phase 4/F3C narrative are current, and its standing Phase 9/four-step Release model is already the right
+  reusable authority. The new history file must link to these rules instead of copying them.
+- ROADMAP still contains older lower-section statements such as “F3通过前不得宣称 Cloud opt-in” and “Cloud activation仍不是当前
+  功能事实”. Because ROADMAP is the current programme authority, Phase 9 implementation should reconcile these internal time windows
+  rather than leaving readers to infer that the top section overrides them.
+- The pre-seal audit therefore has two classes: Release-input stable documents must be fixed before candidate SHA freeze; Release-excluded
+  current authorities can be reconciled in the same implementation gate but do not themselves force a ZIP rebuild.
+- `phase-9-v0.4.0-release-discovery.md` should be the one version-scoped warm record. Later retries append post-implementation/status
+  tails; they should not create generic `phase-9.1/9.2` files or duplicate exact asset evidence from acceptance/provenance.
+
+## Release identity and input graph — first pass
+
+- Release v2 currently has 22 entries. Among the macro documents only `README.md` is inside the ZIP; `ARCHITECTURE.md`, `DESIGN.md`,
+  `CHANGELOG.md`, `ROADMAP.md`, history and acceptance are Release-excluded. Their reconciliation is still governance work, but only
+  README changes candidate bytes.
+- Current package identity is `0.4.0-dev`; Release contract repeats that version and names external asset
+  `init-cloud-sandbox-v0.4.0-dev.bash`. The bootstrap defaults to `v0.4.0-dev` and a 64-zero ZIP hash.
+- Stable identity propagation must be atomic: package `0.4.0` → Release contract package version + external bootstrap filename → new raw
+  Release-contract SHA in upstream manifest → renamed `init-cloud-sandbox-v0.4.0.bash` with `HOOKS_VERSION=v0.4.0` → final ZIP SHA only
+  after every ZIP entry is frozen. `install.js` derives its version from package metadata and should not gain a second constant.
+- Runtime bundle and its hash need not rotate merely because package/README/Release-contract bytes change; its installed inventory and
+  runtime hashes are unchanged unless the pre-seal audit finds a real production delta. The installed-state transition should continue
+  naming `0.3.5` as the supported predecessor for the `0.4.0` forward migration.
+- Current `df600104…` identifies the development ZIP before README/stable-identity changes. It can remain historical F2/F3 evidence but
+  cannot be copied into the stable bootstrap or used as the final Source/Candidate/publication identity.
+- Repository tests already derive most candidate/version/bootstrap facts from package + ROADMAP. Remaining literal `v0.4.0-dev` and
+  installed-version assertions must be classified as current-role guards versus obsolete single-version locks during implementation.
+
+## Acceptance, changelog and provenance routing
+
+- The stable Cloud template explicitly requires development acceptance to be renamed when identity converges to stable; dev/stable
+  acceptance files must not coexist. Therefore `docs/v0.4.0-dev-cloud-hard-acceptance.md` should become
+  `docs/v0.4.0-cloud-hard-acceptance.md` in the stable-identity transaction, preserving historical dev gate sections as labelled evidence.
+- `v0.3.5` demonstrates the required four-layer sequence: dev Source/Candidate evidence → sealed stable-source revalidation → immutable
+  Published Release evidence → separate Latest/pointer-only postflight. `v0.4.0` cannot skip sealed-source revalidation merely because
+  its earlier F2/F3 ZIP had extensive Cloud evidence.
+- The current acceptance is a valuable version-scoped ledger and should be migrated, not rewritten as a short new file. New Phase 9
+  sections belong above historical dev-gate evidence; exact final source/ZIP/bootstrap fields remain empty until the corresponding gate
+  has actually passed.
+- CHANGELOG `v0.4.0-dev` currently records implementation only through F3A and contains time-bound “F3 pending” claims. Before stable
+  publication it needs the actual F3B/F3C/Phase-4 closeout delta and a stable `v0.4.0` heading, but it is Release-excluded.
+- BASELINE_PROVENANCE must not pre-create a `v0.4.0` row. Add it only after immutable tag/source/ZIP/bootstrap identities exist. Its
+  current upstream/verification narrative still references runtime-bundle/release-artifact v1 and should be reconciled to the v2 current
+  chain without altering the separate immutable v0.3.2 overlay history.
+- ROADMAP alone rotates candidate/accepted/fallback roles after public validation and promotion. Acceptance proves exact gate results;
+  provenance proves published bytes; neither should independently claim the current recommendation role.
+
+## Release-test migration audit
+
+- `release-package.test.js` is largely identity-dynamic already: it derives candidate/bootstrap from package + Release contract and
+  accepts zero hash only while candidate differs from accepted. Stable implementation should preserve this model rather than add a
+  `v0.4.0` branch.
+- `published-release-oracles.test.js` currently hardcodes `contracts/release-artifact-v1.json` for every published role. After promotion
+  the two-seat oracle window will be mixed (`v0.4.0` v2 accepted, `v0.3.5` v1 fallback); the oracle must route through each archived
+  source's own manifest/contract instead of selecting by current source or version string.
+- The same oracle asserts current installed version as literal `0.4.0-dev`; it should derive the current package version. This is a
+  maintenance defect exposed by stable identity rotation, not a product-contract change.
+- Its current accepted/fallback roundtrip also assumes both installers can overwrite each other directly. That happened to fit the
+  v0.3.5/v0.3.4 v1 window, but it is wrong for the future v0.4.0-v2/v0.3.5-v1 window: F3C proved direct old-over-current downgrade must
+  fail. The durable oracle must exercise the supported route: current-owned uninstall → fallback clean install → exact current forward
+  recovery, while separately retaining the no-mutation direct-downgrade refusal test.
+- `repository-boundary.test.js` already models candidate==accepted for completed publication, but its dedicated Phase 4 foundation case,
+  current acceptance anchor and several exact dev-state phrases are locked to `v0.4.0-dev`. Phase 9 implementation must split enduring
+  Phase 4 capability guards from transient role-window assertions and admit the stable acceptance rename.
+- `installed-state-transition-v1.json` must remain an exact v0.3.5 predecessor contract for the v0.4.0 installer. Promotion changes
+  publication roles, not the already-proved forward migration source. It should only rotate when a future installer chooses a new
+  supported predecessor under a separate contract gate.
+
+## Validation-ref second-review audit
+
+- The repository has 11 local F3 validation refs and 11 matching origin-tracking refs. They are evidence transport/lifecycle refs, not
+  candidate or Release roles.
+- The two runtime-source commits are ancestors of current `0.4.0-dev` HEAD. The other nine positive smart/autonomous lifecycle commits
+  are side-branch commits and are not ancestors of current HEAD.
+- None of the 11 validation commits is reachable from the immutable `v0.3.5` or `v0.3.4` tags. Exact hashes are recorded in histories and
+  operator guides, but a recorded hash alone does not keep an otherwise unreachable Git object durably retrievable.
+- Versioned F3 operator guides still name these refs as executable evidence inputs. Repository tests also validate the guide/protocol
+  structure, so ref retirement is not equivalent to deleting an unused label.
+- Default Phase 9 decision is therefore `KEEP`: do not delete or move any validation ref during pre-seal, publication or automatic
+  post-promotion cleanup. A future retirement gate would first need a separately authorized durable evidence migration (for example,
+  immutable archival refs/tags or another proven object-retention authority), updated guides/tests and a recovery audit.
+- The audit command itself ended non-zero only because its final expected `merge-base --is-ancestor` non-match was not normalized. All
+  requested facts printed successfully; this is an audit-command composition defect, not a repository failure.
+
+## F3 guide and validator lifecycle
+
+- F3B2/F3B3/F3C tests read the exact `v0.4.0-dev-*` operator-guide paths and assert their frozen commits, hashes, stage graphs, safety
+  boundaries and executable Bash blocks. These files are not generic current-state manuals; they are executable records of the dev
+  lifecycle that actually ran.
+- Renaming those executed guides to stable `v0.4.0-*` would rewrite evidence identity and break existing links/tests without adding a
+  safety property. They should remain under their dev filenames through the v0.4.0 Release and be described as historical validation
+  evidence after promotion.
+- The F3 helpers, validators and runtime-revival negative tests continue to protect rollback and lifecycle semantics. They are not
+  transitional implementation scaffolding and remain `KEEP` in this train.
+- F3C's guide status tail correctly stops before aggregate/Phase 9. Phase 4.11 and the new Phase 9 instance history provide the successor
+  chain; the executed guide should not be rewritten to impersonate the later gate.
+
+## v0.3.5 seal precedent — exact local sequence
+
+- The predecessor train used separate commits for: compatible candidate inputs (`cb59ad7`) → Source/Candidate evidence (`8552d17`) →
+  stable identity/acceptance rename and bootstrap rename (`5be9b78`) → stable-seal evidence only (`5d01b55`, tagged `v0.3.5`) →
+  published acceptance, role rotation and old-window cleanup (`e8ee051`).
+- This confirms two useful boundaries for v0.4.0: stable-byte materialization and evidence recording need not be one commit, and
+  publication/promotion governance must remain after the immutable stable tag rather than being guessed into it.
+- v0.4.0 has a wider pre-seal reconciliation set and a v2/v1 mixed publication-oracle window, but it should preserve the same basic
+  ordering instead of collapsing Source/Candidate, seal, publication and promotion into one gate.
+
+## Proposed v0.4.0 Phase 9 gate topology
+
+1. `P9-A pre-seal materialization`: reconcile stable/current docs and dynamic tests; remove README state coupling; converge package,
+   Release contract, manifest raw SHA, acceptance filename and bootstrap filename/version to `0.4.0`; keep bootstrap ZIP hash zero while
+   calculating the frozen candidate ZIP. No public asset exists and any ZIP-input delta restarts this gate.
+2. `P9-B seal and final-source acceptance`: write only the frozen ZIP SHA into the external bootstrap, calculate bootstrap SHA, run the
+   full/ref-aware local matrix and exact sealed-source Source/Candidate Cloud gate. The bootstrap is outside the ZIP, so the ZIP bytes
+   must remain identical to P9-A. Any required source/ZIP fix reopens P9-A and invalidates both hashes.
+3. `P9-C immutable publication`: after maintainer authorization, create the exact stable tag and Pre-release, upload the two sealed
+   assets, and run a ref-aware publication audit. No model or local agent performs the remote write.
+4. `P9-D Published Release Cloud`: from a separate Fresh Cloud task, use the public bootstrap default URL/SHA chain, then real Resume,
+   doctor and manifest-routed deep check. Local candidate bytes or earlier F3 Cloud evidence cannot substitute for this gate.
+5. `P9-E Latest promotion`: maintainer changes only Release metadata after P9-D PASS; read-only postflight verifies Latest plus exact
+   tag/source/ZIP/bootstrap identities, then ROADMAP rotates to accepted v0.4.0 and fallback v0.3.5.
+6. `P9-F second retirement and handoff`: remove only the working-tree candidate/accepted-window files that have durable immutable
+   replacements, update provenance/acceptance/ROADMAP, keep v0.3.5 recoverable via immutable tag/Release, retain F3 refs/guides/tests,
+   and only then open `0.5.0-dev` / Phase 5 under separate authorization.
+
+An RC is optional if P9-A/B uncovers risk; it cannot substitute for final stable-byte acceptance. Each gate has a separate stop and
+maintainer authorization boundary.
+
+## Second-retirement preliminary decisions
+
+| Object | Discovery decision | Earliest action / reason |
+|---|---|---|
+| `README.md` stale F3 status sentence | `REPLACE` | P9-A, before ZIP freeze; replace with status-neutral authority routing |
+| stale current claims in ARCHITECTURE/DESIGN/ROADMAP/CHANGELOG | `RECONCILE` | P9-A; only README affects ZIP, but all stable/current authorities must agree before seal |
+| `v0.4.0-dev` package/contract/bootstrap/acceptance identities | `MIGRATE` | P9-A atomically to stable identity; no duplicate dev/stable acceptance or bootstrap |
+| v2/v1 publication oracle and direct-downgrade roundtrip | `REPLACE` | P9-A with manifest-routed contracts and supported uninstall/clean-install/forward route |
+| `installed-state-transition-v1.json` predecessor `0.3.5` | `KEEP` | It is the sealed v0.4.0 forward-migration contract, not a publication-role label |
+| v0.3.5 working-tree bootstrap and acceptance | `KEEP` then `RETIRE` | Keep through P9-D; after v0.4.0 promotion they leave the candidate+accepted working window, while immutable tag/Release/provenance retain recovery |
+| v0.3.5 tag/source/Release assets | `KEEP IMMUTABLE` | They become immediate fallback and must remain publicly recoverable |
+| 11 F3 validation refs | `KEEP` | Nine retain otherwise side-branch-only commits; no durable replacement exists |
+| F3 dev-named operator guides | `KEEP AS EXECUTED EVIDENCE` | Exact filenames/identities are part of the verified protocol and tests |
+| F3 validators and revival negative tests | `KEEP` | They still protect current lifecycle/rollback semantics |
+| future `0.5.0-dev` identity | `DEFER` | Only after P9-F and separate Phase 5 authorization |

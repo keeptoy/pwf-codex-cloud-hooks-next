@@ -210,3 +210,11 @@ Aggregate closure保留四份 live record的独立身份和关系，没有把“
 
 本 verification没有重跑 Cloud，也没有把 Windows skip写成 Linux通过；逐 gate Cloud/live与 F3C1 ref-aware Linux证据仍由原
 acceptance章节承担。测试数字只描述本次运行，不成为长期合同。
+
+<a name="phase-4-11-phase-9-successor"></a>
+
+## Successor note — v0.4.0 Phase 9
+
+F3C4关闭后，后继不叫 Phase 4.12。standing Phase 9已按版本列车建立独立的
+[`v0.4.0 Release Discovery`](phase-9-v0.4.0-release-discovery.md#phase-9-v0-4-0-positioning)，负责 pre-seal、公开资产、
+accepted/fallback轮转与第二轮 retirement review；该后继记录不改写本文件当时“停止在 Phase 9前”的历史语义。
