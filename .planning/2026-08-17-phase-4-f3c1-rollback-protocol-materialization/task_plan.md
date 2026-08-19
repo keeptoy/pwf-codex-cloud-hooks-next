@@ -8,12 +8,13 @@ repository/no-live 测试证明旧版不能直接覆盖 current，再建立 acce
 
 ## Next Step
 
-等待维护者另行授权 F3C4 aggregate closure。F3C3 `A_ROLLBACK`与独立 `A_RECOVER` exact evidence均已通过；未经新授权
-不得进入 F3C4或清理 validation refs/lifecycle对象。Release与远端写操作仍禁止。
+本实施 scope 已完成并交接给独立 planning `2026-08-19-phase-4-f3c4-aggregate-closure-discovery`。F3C3
+`A_ROLLBACK`与独立 `A_RECOVER` exact evidence均已通过；F3C4 closure implementation、validation ref/lifecycle对象清理、
+Release与远端写操作仍需后继 Discovery结论和维护者另行授权。
 
 ## Current Phase
 
-F3C3 autonomous rollback/recovery complete; wait before F3C4
+complete; handed off to F3C4 aggregate-closure Discovery
 
 ## Phases
 

@@ -65,7 +65,9 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
     /F3B4 evidence closure PASS；F3C Discovery conditional-go；F3C1 ref-aware Linux\/no-live protocol gate PASS/);
   assert.match(roadmap, /F3C2 smart rollback \+ exact-current recovery Cloud live PASS/);
   assert.match(roadmap, /F3C3 autonomous rollback \+ exact-current recovery Cloud live PASS/);
-  assert.match(roadmap, /F3C2 smart rollback\/recovery 与 F3C3 autonomous rollback\/recovery 均已闭合；F3C4 aggregate closure 未授权/);
+  assert.match(roadmap, /F3C4 aggregate-closure Discovery conditional-go/);
+  assert.match(roadmap,
+    /F3C2 smart rollback\/recovery 与 F3C3 autonomous rollback\/recovery 均已闭合；F3C4 Discovery 已 conditional-go，但 aggregate closure implementation与 ref cleanup未授权/);
 });
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
@@ -366,6 +368,10 @@ test("change history, programme, provenance, and current acceptance keep separat
     /F3C2 smart live rollback\/recovery[^\n]*`PASS`/);
   assert.match(acceptance,
     /F3C3 autonomous live rollback\/recovery[^\n]*`PASS`/);
+  assert.match(acceptance,
+    /F3C4 aggregate-closure Discovery[^\n]*`CONDITIONAL_GO_TO_F3C4_AGGREGATE_CLOSURE`/);
+  assert.match(acceptance,
+    /phase-4\.11-f3c4-aggregate-closure-discovery\.md#phase-4-11-decision/);
   assert.match(acceptance,
     /phase-4\.10-f3c-rollback-discovery\.md#phase-4-10-decision/);
   assert.match(acceptance,

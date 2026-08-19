@@ -275,7 +275,7 @@ test("Phase 4.9 preserves Discovery history and records authorized closure witho
   assert.match(history, /Release v2 entries\/external assets 的交集为空/);
 });
 
-test("Phase 4.10 preserves rollback Discovery and records F3C1 no-live acceptance without live rollback PASS", () => {
+test("Phase 4.10 preserves rollback Discovery and appends F3C1 through F3C3 outcomes without aggregate PASS", () => {
   const history = fs.readFileSync(
     path.join(root, "docs", "history", "phase-4.10-f3c-rollback-discovery.md"), "utf8");
   for (const anchor of [
@@ -284,6 +284,7 @@ test("Phase 4.10 preserves rollback Discovery and records F3C1 no-live acceptanc
     "phase-4-10-lifecycle-ledger", "phase-4-10-gate-plan", "phase-4-10-stop-rules",
     "phase-4-10-decision", "phase-4-10-verification", "phase-4-10-preimplementation-head-audit",
     "phase-4-10-post-implementation-status-f3c1", "phase-4-10-f3c1-linux-no-live-acceptance",
+    "phase-4-10-f3c2-smart-live-acceptance", "phase-4-10-f3c3-autonomous-live-acceptance",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(history, /current installer uninstall \+ backup/);
   assert.match(history, /immutable v0\.3\.5 clean install/);
@@ -309,5 +310,37 @@ test("Phase 4.10 preserves rollback Discovery and records F3C1 no-live acceptanc
   assert.match(history,
     /F3C1_PROTOCOL_NO_LIVE_PASS \/ REF_AWARE_LINUX_ZERO_SKIP \/ CLOUD_ROLLBACK_NOT_RUN \/ STOP_BEFORE_F3C2/);
   assert.match(history, /13 tests、13 pass、0 fail、0 skipped、exit code 0/);
+  assert.match(history,
+    /F3C2_SMART_LIVE_PASS \/ SMART_ROLLBACK_AND_EXACT_RECOVERY_CONFIRMED \/ STOP_BEFORE_F3C3/);
+  assert.match(history,
+    /F3C3_AUTONOMOUS_LIVE_PASS \/ AUTONOMOUS_ROLLBACK_AND_EXACT_RECOVERY_CONFIRMED \/ STOP_BEFORE_F3C4/);
   assert.doesNotMatch(history, /F3C_ROLLBACK_PASS \/.*CONFIRMED/);
+});
+
+test("Phase 4.11 conditionally admits minimal F3C4 closure while retaining refs and aggregate PASS absence", () => {
+  const history = fs.readFileSync(
+    path.join(root, "docs", "history", "phase-4.11-f3c4-aggregate-closure-discovery.md"), "utf8");
+  const historyIndex = fs.readFileSync(path.join(root, "docs", "history", "README.md"), "utf8");
+  for (const anchor of [
+    "phase-4-11-positioning", "phase-4-11-evidence-matrix",
+    "phase-4-11-provenance-reconciliation", "phase-4-11-residue-audit",
+    "phase-4-11-lifecycle-ledger", "phase-4-11-closure-plan",
+    "phase-4-11-stop-rules", "phase-4-11-decision", "phase-4-11-verification",
+  ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
+  for (const stage of ["rollback", "recovered"]) assert.match(history, new RegExp(`\`${stage}\``));
+  assert.match(history, /smart_prepared/);
+  assert.match(history, /autonomous_prepared/);
+  assert.match(history, /current_uninstall_then_accepted_clean_install/);
+  assert.match(history, /accepted_to_current_exact_predecessor/);
+  assert.match(history, /两项 no-live negative/);
+  assert.match(history, /11个 F3B2\/F3B3 local validation refs/);
+  assert.match(history, /F3C aggregate PASS \+ 当前 `0\.4\.0` Phase 9 instance complete/);
+  assert.match(history, /KEEP ABSENT/);
+  assert.match(history,
+    /CONDITIONAL_GO_TO_F3C4_AGGREGATE_CLOSURE \/ IMPLEMENTATION_NOT_AUTHORIZED \/ REF_CLEANUP_NOT_AUTHORIZED/);
+  assert.match(history, /这不是 `F3C_ROLLBACK_PASS`/);
+  assert.doesNotMatch(history, /F3C_ROLLBACK_PASS \/.*CONFIRMED/);
+  assert.match(historyIndex,
+    /phase-4\.11-f3c4-aggregate-closure-discovery\.md#phase-4-11-decision/);
+  assert.match(historyIndex, /不预先生成 F3C aggregate PASS，也不删除 refs/);
 });

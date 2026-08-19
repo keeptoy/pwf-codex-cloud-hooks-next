@@ -299,3 +299,40 @@ prerequisite failure，不是 product 或 test defect。
 
 本尾注仍不表示真实 uninstall/install/rollback transaction 已执行，也不生成 `F3C_ROLLBACK_PASS`。F3C2 smart live、
 F3C3 autonomous live、F3C4 closure、ref mutation 与 Release仍需分别授权。
+
+<a name="phase-4-10-f3c2-smart-live-acceptance"></a>
+
+## Post-live status — F3C2 smart rollback/recovery
+
+维护者后来从 exact smart disarm HEAD 分别建立全新 `S_ROLLBACK` 与 `S_RECOVER` Cloud task。两轮都从 activation absent、
+`smart_prepared` 开始：前者经 current-owned uninstall 后 clean-install immutable accepted `v0.3.5`；后者先经过同一 accepted
+predecessor，再由 exact current candidate完成受支持的 forward recovery。Fresh、同任务 real Resume、installed production
+probe、doctor、backup、zero residue和两份 rollback evidence均已闭合；accepted 与 recovered current runtime都只产生 legacy
+context，smart activation没有复活。
+
+完整身份与逐项证据只见
+[`v0.4.0-dev` acceptance](../v0.4.0-dev-cloud-hard-acceptance.md#v0-4-0-dev-f3c2-smart-live-evidence)和
+[`operator guide` post-run](../v0.4.0-dev-f3c-rollback-operator-guide.md#f3c2-smart-post-run-status)。本历史尾注只记录后继
+结果，不改写上方 Discovery/F3C1 当时尚未执行 live rollback的时间语义。
+
+`F3C2_SMART_LIVE_PASS / SMART_ROLLBACK_AND_EXACT_RECOVERY_CONFIRMED / STOP_BEFORE_F3C3`
+
+该结果不授权 F3C3/F3C4、ref mutation或 Release。
+
+<a name="phase-4-10-f3c3-autonomous-live-acceptance"></a>
+
+## Post-live status — F3C3 autonomous rollback/recovery
+
+维护者随后从 exact autonomous disarm HEAD分别建立全新 `A_ROLLBACK` 与 `A_RECOVER` Cloud task。两轮都保留 inert
+`autonomous_prepared` 文件组合，但 activation absent：accepted `v0.3.5` rollback 与 exact current recovery均只产生 legacy
+context；nonce delimiter、`Plan-SHA256` 和 ledger summary没有进入 Fresh/real Resume，autonomous没有复活。两份 evidence、
+production probe、doctor、backup、zero residue与最终 exit code均已验证。
+
+完整身份与逐项证据只见
+[`v0.4.0-dev` acceptance](../v0.4.0-dev-cloud-hard-acceptance.md#v0-4-0-dev-f3c3-autonomous-live-evidence)和
+[`operator guide` post-run](../v0.4.0-dev-f3c-rollback-operator-guide.md#f3c3-autonomous-post-run-status)。本尾注不把四份 disposable
+JSON复制进仓库，也不把 F3C2/F3C3单项 PASS提前汇总成 F3C aggregate PASS。
+
+`F3C3_AUTONOMOUS_LIVE_PASS / AUTONOMOUS_ROLLBACK_AND_EXACT_RECOVERY_CONFIRMED / STOP_BEFORE_F3C4`
+
+该结果不授权 F3C4 closure、ref cleanup、Release或后继 Phase。
