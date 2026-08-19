@@ -64,7 +64,8 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap,
     /F3B4 evidence closure PASS；F3C Discovery conditional-go；F3C1 ref-aware Linux\/no-live protocol gate PASS/);
   assert.match(roadmap, /F3C2 smart rollback \+ exact-current recovery Cloud live PASS/);
-  assert.match(roadmap, /F3C3 current-HEAD只读 preflight已 GO，Cloud `A_ROLLBACK` 尚未授权\/执行/);
+  assert.match(roadmap, /F3C3 autonomous accepted rollback `A_ROLLBACK` Cloud PASS，`A_RECOVER` pending/);
+  assert.match(roadmap, /F3C3 `A_ROLLBACK` accepted rollback evidence 已闭合并停止复核，`A_RECOVER` 尚未授权\/执行/);
 });
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
@@ -364,6 +365,8 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance,
     /F3C2 smart live rollback\/recovery[^\n]*`PASS`/);
   assert.match(acceptance,
+    /F3C3 autonomous live rollback\/recovery[^\n]*`A_ROLLBACK PASS \/ A_RECOVER pending`/);
+  assert.match(acceptance,
     /phase-4\.10-f3c-rollback-discovery\.md#phase-4-10-decision/);
   assert.match(acceptance,
     /phase-4\.10-f3c-rollback-discovery\.md#phase-4-10-f3c1-linux-no-live-acceptance/);
@@ -374,6 +377,9 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3c2-smart-live-evidence"><\/a>$/m);
   assert.match(acceptance,
     /F3C2_SMART_LIVE_PASS \/ SMART_ROLLBACK_AND_EXACT_RECOVERY_CONFIRMED \/ STOP_BEFORE_F3C3/);
+  assert.match(acceptance, /^<a name="v0-4-0-dev-f3c3-autonomous-rollback-evidence"><\/a>$/m);
+  assert.match(acceptance,
+    /F3C3_A_ROLLBACK_PASS \/ AUTONOMOUS_ACCEPTED_ROLLBACK_CONFIRMED \/ A_RECOVER_NOT_RUN \/ STOP_FOR_EVIDENCE_REVIEW/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3b4-aggregate-closure"><\/a>$/m);
   assert.match(acceptance,
     /F3B_LIVE_LIFECYCLE_PASS \/ SMART_AND_AUTONOMOUS_EVIDENCE_RECONCILED \/ STOP_BEFORE_F3C/);
@@ -445,7 +451,7 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
   }
   if (candidate !== accepted && /\b[a-f0-9]{64}\b/i.test(acceptance)) {
-    const currentEvidenceHeading = "## F3C2 smart rollback/recovery evidence";
+    const currentEvidenceHeading = "## F3C3 autonomous accepted-rollback evidence";
     const currentEvidenceAt = acceptance.indexOf(currentEvidenceHeading);
     assert.notEqual(currentEvidenceAt, -1,
       "current completed gate lacks an exact evidence heading");

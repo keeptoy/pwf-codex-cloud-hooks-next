@@ -8,12 +8,12 @@ repository/no-live 测试证明旧版不能直接覆盖 current，再建立 acce
 
 ## Next Step
 
-等待维护者另行授权 F3C3 的第一轮 `A_ROLLBACK` Cloud task。当前 HEAD只读 preflight已 GO；未经新授权不得执行
-`A_ROLLBACK`，且第一轮即使 PASS也必须停下复核，不能自动继续 `A_RECOVER`。F3C4、Release与远端写操作仍禁止。
+等待维护者另行授权 F3C3 的第二轮 `A_RECOVER` Cloud task。`A_ROLLBACK` exact evidence已通过并按停止条件完成复核；
+未经新授权不得执行 `A_RECOVER`。F3C4、Release与远端写操作仍禁止。
 
 ## Current Phase
 
-F3C3 autonomous live read-only preflight complete; wait before A_ROLLBACK
+F3C3 autonomous accepted rollback complete; wait before A_RECOVER
 
 ## Phases
 
@@ -118,13 +118,23 @@ F3C3 autonomous live read-only preflight complete; wait before A_ROLLBACK
 - 冻结 autonomous prepared残留对象的 inert语义，并把 nonce、Plan SHA与 ledger renderer全部纳入 Fresh/Resume和只读 verifier负向检查。
 - 保持 `A_ROLLBACK` 未运行和独立授权边界；文档完善不等于 Cloud stage PASS。
 
+### F3C3-E1 — Autonomous accepted rollback
+
+**Status:** completed externally by maintainer
+
+- exact `A_ROLLBACK` transaction完成 current-owned uninstall与 immutable accepted `v0.3.5` clean install；backup verified。
+- 新 Fresh与同任务 real Resume均保持 legacy，nonce/Plan-SHA/ledger renderer未泄漏；只读 verifier确认
+  `autonomous_prepared`、activation absent、doctor healthy与零 snapshot residue。
+- `profile=autonomous`、`stage=rollback` evidence通过 exact helper与最终 exit code检查；停止在 `A_RECOVER` 前。
+
 ## Authorization
 
 - 已授权：F3C1 Release-excluded protocol/operator/helper、disposable repository/no-live tests、planning/history/static guards、
   相称验证和本地 commit。
 - 维护者已另行授权并亲自执行 F3C2 smart live；本地智能体只接收证据并维护 operator/planning/tests，不代替维护者执行
   Cloud install/uninstall/rollback 或远端写操作。
-- 未授权：F3C3 autonomous live、F3C4 aggregate closure；生产 runtime/installer/contracts/manifest/bundle/bootstrap/
+- 维护者已另行授权并亲自完成 F3C3 `A_ROLLBACK`；本地智能体只接收并同步证据，不代替维护者执行 Cloud transaction。
+- 未授权：F3C3 `A_RECOVER`、F3C4 aggregate closure；生产 runtime/installer/contracts/manifest/bundle/bootstrap/
   README/Release bytes 修改；validation ref 创建/移动；push/PR/tag/Release。
 
 ## Stop Conditions
@@ -147,4 +157,4 @@ F3C3 autonomous live read-only preflight complete; wait before A_ROLLBACK
 
 ## Current status
 
-`F3C3_READ_ONLY_PREFLIGHT_PASS / GO_TO_F3C3_AUTONOMOUS_LIVE / A_ROLLBACK_NOT_RUN`
+`F3C3_A_ROLLBACK_PASS / AUTONOMOUS_ACCEPTED_ROLLBACK_CONFIRMED / A_RECOVER_NOT_RUN / STOP_FOR_EVIDENCE_REVIEW`

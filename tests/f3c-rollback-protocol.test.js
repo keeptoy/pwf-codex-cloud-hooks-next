@@ -186,7 +186,7 @@ test("F3C operator guide is self-contained, exact, and preserves live authorizat
     "f3c-frozen-identities", "f3c-no-live-gate", "f3c-ref-aware-checkout",
     "f3c-cloud-environment", "f3c-transaction", "f3c-cloud-order", "f3c-host-prompts",
     "f3c-read-only-verifier", "f3c-evidence-records", "f3c-stop-and-handoff", "f3c-pre-run-status",
-    "f3c-post-no-live-status", "f3c2-smart-post-run-status",
+    "f3c-post-no-live-status", "f3c2-smart-post-run-status", "f3c3-autonomous-rollback-status",
   ]) assert.match(guide, new RegExp(`<a name="${anchor}"></a>`));
   for (const identity of [
     "12a359096ab1e376014476b77a6b0833a7a90b2e",
@@ -251,6 +251,8 @@ test("F3C operator guide is self-contained, exact, and preserves live authorizat
     /F3C1_PROTOCOL_NO_LIVE_PASS \/ REF_AWARE_LINUX_ZERO_SKIP \/ CLOUD_ROLLBACK_NOT_RUN \/ STOP_BEFORE_F3C2/);
   assert.match(guide,
     /F3C2_SMART_LIVE_PASS \/ SMART_ROLLBACK_AND_EXACT_RECOVERY_CONFIRMED \/ STOP_BEFORE_F3C3/);
+  assert.match(guide,
+    /F3C3_A_ROLLBACK_PASS \/ AUTONOMOUS_ACCEPTED_ROLLBACK_CONFIRMED \/ A_RECOVER_NOT_RUN \/ STOP_FOR_EVIDENCE_REVIEW/);
   assert.match(guide, /S_ROLLBACK[^\n]*immutable accepted `v0\.3\.5`/);
   assert.match(guide, /S_RECOVER[^\n]*exact current `0\.4\.0-dev`/);
   assert.match(guide, /cdc4a9eba7e7f1f2545723829ed1a6b4c76cb48b/);

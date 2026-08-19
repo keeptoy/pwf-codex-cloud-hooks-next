@@ -96,7 +96,14 @@
   records. Current authorization remains solely in the active plan; `A_ROLLBACK` is still not run.
 - Final focused rollback/repository regression passed 11/13 with zero failures and the two expected Windows Linux-only revival skips;
   guide Bash blocks, new walkthrough invariants, planning lifecycle guards, Node syntax and `git diff --check` all passed.
+- Maintainer completed external F3C3 `A_ROLLBACK`: transaction ended at accepted `0.3.5` with backup `3 → 6`; replacement Fresh and
+  same-task real Resume showed legacy context and no nonce/Plan-SHA/ledger renderer; section 8 confirmed exact autonomous disarm HEAD,
+  `autonomous_prepared`, activation absent, healthy doctor, zero residue and exit code 0.
+- The autonomous rollback evidence helper returned `F3_ROLLBACK_EVIDENCE_RECORD_V1=PASS` with validator exit code 0. Synchronized
+  ROADMAP, version acceptance, operator stage status and active planning; stopped before separately authorized `A_RECOVER`.
+- Post-sync F3 lifecycle/rollback/repository regression passed 20/22 with zero failures and the two expected Windows Linux-only
+  revival skips already closed by F3C1 Linux acceptance. Guide Bash blocks, acceptance ordering and partial-stage governance passed.
 
 ## Current status
 
-`F3C3_READ_ONLY_PREFLIGHT_PASS / GO_TO_F3C3_AUTONOMOUS_LIVE / A_ROLLBACK_NOT_RUN`
+`F3C3_A_ROLLBACK_PASS / AUTONOMOUS_ACCEPTED_ROLLBACK_CONFIRMED / A_RECOVER_NOT_RUN / STOP_FOR_EVIDENCE_REVIEW`

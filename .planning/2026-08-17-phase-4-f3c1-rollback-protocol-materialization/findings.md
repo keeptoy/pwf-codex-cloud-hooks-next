@@ -80,3 +80,10 @@
 - The guide introduction still carried its original pre-live “sections 4-9 not run” wording even though dated F3C2 evidence now exists.
   The introduction is now lifecycle-neutral and routes current progress to dated status, ROADMAP and the active plan; historical
   pre-run/post-run records remain intact as time-scoped evidence.
+- Maintainer-run `A_ROLLBACK` closed the accepted half of F3C3 without a production change. Exact autonomous disarm state remained
+  `autonomous_prepared` with activation absent while immutable v0.3.5 emitted only legacy context; nonce delimiter, Plan SHA and all
+  ledger renderer markers were absent in the replacement Fresh task, its real Resume and the production verifier.
+- The accepted v1 result has no `effective_profile` field. The legacy conclusion is therefore the normalized combination of exact
+  accepted role/version, managed-legacy v1 request and legacy delimiter/progress assertions, not a field inferred from the stage name.
+- `A_ROLLBACK` evidence passed with doctor healthy, backup verified, zero snapshot residue and explicit verifier/validator exit code 0.
+  This does not prove current recovery: `A_RECOVER` remains a separate fresh task and authorization gate.
