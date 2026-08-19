@@ -74,13 +74,10 @@ M2 排除的历史 planning、Phase/Round 文档和 snapshot prototype 仍可在
 | archive SHA-256 | `7dab03ae283da38d33b9d551c7ec621d1818b9f0f17cf9ced566d4accbfc6dd1` |
 | license | MIT |
 
-`contracts/runtime-bundle-v1.json` 固定 source/package/installed path、direct dependencies、mode、
-pristine/managed hashes 和 deferred candidates。`tools/import_upstream_runtime.py` 只接受该 allowlist，
-验证 archive、license、pristine source hash、mode 和 destination inventory。
-
-`v0.3.3-dev` 是 `v0.3.3` 的 Source/Candidate 运输身份；R4 已把新的 tag、资产字节、SHA 和 publication
-runbook 独立登记到第 1 节。它不继承 v0.3.2 的 overlay package identity，也不因 publication 自动取得
-accepted/Latest/rollback 角色。
+`upstream-manifest.json` 先以 path 与 raw SHA 路由 `contracts/runtime-bundle-v2.json`；bundle 的
+`upstream_files`、`local_files` 与 `installed_contracts` 是 source/install inventory 的唯一 machine authority，
+并逐项固定 path、mode、依赖与 pristine/owned hash。`tools/import_upstream_runtime.py` 只接受该 allowlist，
+验证 archive、license、bundle 原始字节、pristine source hash、mode 和 destination inventory。
 
 ## 4. Published v0.3.2 owned compatibility overlay（冷证据）
 
@@ -129,12 +126,12 @@ Cloud 平台观测属于带日期的 fixture/acceptance，不在本文件复制�
 
 ```text
 pinned upstream archive + license
-  -> runtime-bundle-v1 pristine allowlist + helper entrypoints
+  -> upstream-manifest raw contract hashes
+  -> runtime-bundle-v2 upstream/local/installed partitions + helper entrypoints
   -> deterministic importer
   -> exact pristine runtime/upstream bytes
-  -> upstream-manifest contract hashes
   -> installer inventory/doctor
-  -> release-artifact-v1 allowlist + deterministic ZIP
+  -> release-artifact-v2 exact entries/modes + deterministic ZIP
   -> external bootstrap checksum
   -> version acceptance
 ```

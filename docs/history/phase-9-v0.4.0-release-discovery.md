@@ -123,5 +123,46 @@ RC 只在 P9-A/P9-B 暴露风险或维护者明确选择时使用；RC/canary �
 
 ## Successor
 
-下一步是维护者决定是否授权 P9-A。只有 P9-A/P9-B/P9-C/P9-D/P9-E/P9-F 依次闭合后，才形成 `v0.4.0` accepted baseline；
-随后才能另开 `0.5.0-dev` 与 Phase 5 Discovery。本文后续只追加本实例的实施/验收尾注，不接管未来版本的 Phase 9。
+Discovery 当时的下一步是维护者决定是否授权 P9-A。后续状态见下面的实施尾注；只有 P9-A/P9-B/P9-C/P9-D/P9-E/P9-F
+依次闭合后，才形成 `v0.4.0` accepted baseline，随后才能另开 `0.5.0-dev` 与 Phase 5 Discovery。本文只追加本实例的
+实施/验收尾注，不接管未来版本的 Phase 9。
+
+<a name="phase-9-v0-4-0-p9-a-post-implementation"></a>
+
+## Post-implementation status — P9-A pre-seal materialization
+
+P9-A 按 Discovery 路线实施，并出现一项同类范围内的补充发现：`BASELINE_PROVENANCE.md` 的 current upstream/verification
+chain 仍把 v1 bundle/release 与 deferred candidates 写成现行 authority。该残留与 README/ARCHITECTURE/DESIGN 的 current
+prose 一并校准为 manifest-routed v2；immutable v0.3.2 overlay 冷证据没有改写。
+
+实施闭合内容：
+
+- package 与 Release v2 identity 从 `0.4.0-dev` 原子收敛为 `0.4.0`，bootstrap 与版本 acceptance 采用 rename-not-duplicate；
+- bootstrap 默认版本已稳定化，但 ZIP SHA 保持 64 位 zero hash，继续 fail closed；exact hash 只属于 P9-B；
+- README 删除最后一处 F3 状态耦合，改为“本地 state/probe 只证明 admission；Cloud/Release 结论由 ROADMAP 与版本 acceptance
+  承担”的永久边界；
+- ARCHITECTURE/DESIGN/provenance 只校准已经发生的 F3C 与 v2 authority，不修改 runtime、Host ABI、trusted graph、
+  installed inventory 或 rollback contract；
+- publication oracle 改为从每个 archived source 自己的 manifest 发现 v1/v2 Release contract，并把两席恢复顺序固定为
+  fallback clean install → accepted forward → accepted-owned uninstall → fallback clean install → accepted forward recovery；
+  direct downgrade refusal/no-mutation 仍由独立 negative 保留；
+- F3 dev-named guides、11 个 validation refs、rollback validator、revival negatives 与 exact v0.3.5 installed transition 全部 KEEP。
+
+对象生命周期核对：
+
+| 对象 | P9-A 状态 | 下次复核 |
+|---|---|---|
+| stable package/Release/manifest/bootstrap/acceptance identity | `MIGRATED` | P9-B 只允许 bootstrap exact ZIP hash与 seal evidence |
+| README/ARCHITECTURE/DESIGN/provenance current prose | `RECONCILED` | 后继 programme事实变化时按各自 authority 更新 |
+| dev bootstrap/acceptance同角色路径 | `RETIRED BY RENAME` | 不恢复 dev/stable 双份 |
+| F3 dev evidence、validation refs与 negative tests | `KEEP` | P9-F 仍默认保留；无 durable replacement不得退役 |
+| v0.3.5 working-tree role files | `KEEP` | 保留到 P9-D，P9-E role rotation后再审 |
+
+P9-A 本地验证完成：完整 Windows suite 为 173 tests、148 pass、0 fail、25 个 honest Linux/POSIX skips；importer、owned
+Python compile、installer Node syntax、两份 bootstrap Bash syntax与 whitespace检查通过。两次独立 build/check均得到
+22 entries、85,519 bytes、SHA-256 `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`，bootstrap仍为
+64 位 zero hash。Release-input交集恰为 README、package、manifest、Release v2和 stable bootstrap五项，runtime/trusted-graph
+delta为空。该 SHA只记录本地 pre-seal candidate，不是 sealed或公开资产身份。未执行 Cloud、tag、Release、promotion或
+ref mutation。结论为：
+
+`P9_A_PRE_SEAL_MATERIALIZATION_PASS / ZERO_HASH_CANDIDATE_FROZEN / STOP_BEFORE_P9_B / PUBLICATION_NOT_AUTHORIZED`

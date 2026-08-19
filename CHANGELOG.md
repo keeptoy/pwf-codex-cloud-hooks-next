@@ -4,7 +4,7 @@
 [`ROADMAP.md`](ROADMAP.md)；当前唯一行动与授权边界见活动 `task_plan.md`；精确 source、资产、大小和
 SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 acceptance。
 
-## v0.4.0-dev
+## v0.4.0
 
 ### Changed
 
@@ -12,9 +12,10 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   64 位 zero-hash、fail-closed 的外部 bootstrap；已发布 `v0.3.5` baseline 文件保持不变。
 - 当前 candidate/accepted 双身份窗口、F0 programme 状态与后续 gate 边界见 [`ROADMAP.md`](ROADMAP.md)；
   本轮只准备身份与治理，不改变 runtime dispatch、Host ABI、trusted graph、installed inventory 或用户行为。
-- Source/Candidate Cloud 尚未执行，版本增量与模板入口见
-  [`docs/v0.4.0-dev-cloud-hard-acceptance.md`](docs/v0.4.0-dev-cloud-hard-acceptance.md)；已发布资产身份仍只由
-  [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 记录。
+- F0～F3 的开发期 Source/Candidate、smart/autonomous live lifecycle、disarm-first rollback 与 aggregate evidence
+  已闭合；P9-A 随后把 package、Release v2、外部 bootstrap 和版本 acceptance 原子收敛为 stable `v0.4.0`
+  zero-hash pre-seal identity。exact-hash seal、stable Source/Candidate、publication、公开资产验收与 promotion 仍须
+  后继 gate，状态和证据入口见 [`docs/v0.4.0-cloud-hard-acceptance.md`](docs/v0.4.0-cloud-hard-acceptance.md)。
 - 完成 F1A contract/source foundation：source manifest 升至 exact schema 4，runtime bundle 与 Release artifact
   升至 v2；adapter 和四项 v1 runtime ABI 统一纳入 bundle 安装投影，ZIP mode 由 Release entry 单点定义。
 - 当前 source 不再双读 v1 contract，也不再保留 `origin`、重复 managed hash、空 overlay list 等 overlay-era
@@ -42,6 +43,10 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   scope继续只允许三份 planning 记录，smart/autonomous preparation、activation-only commit、production read-only probe
   与 disarm-only commit均有 fail-closed检查。production/runtime、managed trusted graph、Release inventory和当前四项
   pristine upstream inventory不变；真实 Cloud activation、Fresh/Resume、cache、re-arm 与 rollback仍须后继独立 gate。
+- F3B/F3C 已分别完成 smart/autonomous 的真实 Fresh/Resume、disarm/re-arm、tamper refusal、zero-ledger 与
+  disarm-first rollback/recovery；legacy 仍是未激活或已 disarm 状态的默认行为，direct old-over-new downgrade仍被拒绝。
+- P9-A 删除 README 最后一处版本状态耦合，校准 architecture/design/provenance current prose，并把 publication oracle
+  改为按 archived manifest 路由 v1/v2 contract、通过 owned uninstall/clean install/forward recovery 维护两席窗口。
 
 ## v0.3.5
 

@@ -114,9 +114,9 @@ legacy-root plan 使用 `.plan-attestation` 代替 `.attestation`。activation �
 renderer。状态缺失、错配、超预算、链接、执行中变化或 `gate` token 一律不注入且不回退 legacy。删除 activation file
 即可 disarm，managed runtime 不创建或修复这些 workspace 文件。
 
-任何 activation 命令、文件或 probe 输出都不要
-放 secret、身份或授权码。Cloud 中 prepare/review/commit、Fresh/Resume/cache 与 opt-out/re-arm 尚需 F3 live gate，
-当前 smart/autonomous read-only consumer 能力不得描述成 Cloud lifecycle PASS。
+任何 activation 命令、文件或 probe 输出都不要放 secret、身份或授权码。activation 文件、consumer 代码或本地
+probe 只能证明状态格式与 production admission，不能单独证明某个版本已完成 Cloud lifecycle 或 Release 验收；
+programme 状态见 [`ROADMAP.md`](ROADMAP.md)，逐版本结论见对应版本专项 acceptance。
 
 ## 安装与运维
 

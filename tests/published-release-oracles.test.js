@@ -139,10 +139,12 @@ function buildPublishedPackage(workspace, release) {
   assert.equal(result.status, 0, result.stderr);
   const sourceRoot = path.join(workspace, `${release.version}-roundtrip-source`);
   extractZip(sourceArchive, sourceRoot);
+  const manifest = JSON.parse(fs.readFileSync(path.join(sourceRoot, "upstream-manifest.json"), "utf8"));
+  const releaseContract = path.join(sourceRoot, manifest.managed_runtime.contracts.release_artifact.path);
   const releaseZip = path.join(workspace, `${release.version}-roundtrip.zip`);
   result = buildFromSource(
     releaseZip,
-    path.join(sourceRoot, "contracts", "release-artifact-v1.json"),
+    releaseContract,
     path.join(sourceRoot, "tools", "build_release.py"),
     sourceRoot,
   );
@@ -200,17 +202,21 @@ for (const release of publicationRoles) {
       assert.equal(result.status, 0, result.stderr);
       const releaseRoot = path.join(workspace, "source");
       extractZip(sourceArchive, releaseRoot);
-      const releaseArtifact = JSON.parse(fs.readFileSync(path.join(releaseRoot, "contracts", "release-artifact-v1.json"), "utf8"));
+      const manifest = JSON.parse(fs.readFileSync(path.join(releaseRoot, "upstream-manifest.json"), "utf8"));
+      const releaseContract = path.join(releaseRoot, manifest.managed_runtime.contracts.release_artifact.path);
+      const releaseArtifact = JSON.parse(fs.readFileSync(releaseContract, "utf8"));
       const releasePackage = JSON.parse(fs.readFileSync(path.join(releaseRoot, "package.json"), "utf8"));
       const bootstrapName = `init-cloud-sandbox-${release.version}.bash`;
       assert.equal(releasePackage.version, release.version.slice(1));
       assert.equal(releaseArtifact.entries.length, release.entryCount);
-      assert.deepEqual(releaseArtifact.external_release_assets.map(entry => entry.path), [bootstrapName]);
+      const externalAssets = releaseArtifact.external_release_assets.map(entry =>
+        typeof entry === "string" ? entry : entry.path);
+      assert.deepEqual(externalAssets, [bootstrapName]);
 
       const releaseZip = path.join(workspace, `pwf-codex-cloud-hooks-${release.version}.zip`);
       result = buildFromSource(
         releaseZip,
-        path.join(releaseRoot, "contracts", "release-artifact-v1.json"),
+        releaseContract,
         path.join(releaseRoot, "tools", "build_release.py"),
         releaseRoot,
       );
@@ -231,6 +237,10 @@ test(`${acceptedVersion} accepted and ${fallbackVersion} fallback keep managed s
     const acceptedPackage = buildPublishedPackage(workspace, accepted);
     const fallbackPackage = buildPublishedPackage(workspace, fallback);
     const currentPackage = buildCurrentPackage(workspace);
+    const currentVersion = JSON.parse(fs.readFileSync(path.join(currentPackage, "package.json"), "utf8")).version;
+    const currentMatchesAccepted = currentVersion === accepted.version.slice(1);
+    const directDowngradePackage = currentMatchesAccepted ? fallbackPackage : acceptedPackage;
+    const forwardPredecessorPackage = currentMatchesAccepted ? fallbackPackage : acceptedPackage;
 
     await t.test("current-source bundle drift cannot modify or back up the accepted installation", () => {
       const home = installHome(workspace, "invalid-upgrade-home");
@@ -257,7 +267,7 @@ test(`${acceptedVersion} accepted and ${fallbackVersion} fallback keep managed s
       assert.equal(result.status, 0, result.stderr);
     });
 
-    await t.test("accepted installer refuses direct downgrade over current before backup or mutation", () => {
+    await t.test("the older published installer refuses direct downgrade over current before backup or mutation", () => {
       const home = installHome(workspace, "direct-downgrade-home");
       let result = runPackageInstaller(currentPackage, home, "install");
       assert.equal(result.status, 0, result.stderr);
@@ -265,8 +275,8 @@ test(`${acceptedVersion} accepted and ${fallbackVersion} fallback keep managed s
       assert.equal(result.status, 0, result.stderr);
       const before = managedState(home);
 
-      result = runPackageInstaller(acceptedPackage, home, "install");
-      assert.equal(result.status, 1, "accepted installer unexpectedly overwrote the current installation");
+      result = runPackageInstaller(directDowngradePackage, home, "install");
+      assert.equal(result.status, 1, "older published installer unexpectedly overwrote the current installation");
       assert.match(result.stderr, /BLOCKED_UNKNOWN_RUNTIME:/);
       assert.match(result.stderr, /contracts\/adapter-plan-context-request-v2\.schema\.json/);
       assert.match(result.stderr, /contracts\/runtime-result-v1\.schema\.json/);
@@ -277,9 +287,9 @@ test(`${acceptedVersion} accepted and ${fallbackVersion} fallback keep managed s
       assert.equal(result.status, 0, result.stderr);
     });
 
-    await t.test("the exact accepted installation migrates forward and can roll back by clean install", () => {
+    await t.test("the exact admitted predecessor migrates forward and can roll back by clean install", () => {
       const home = installHome(workspace, "accepted-forward-home");
-      let result = runPackageInstaller(acceptedPackage, home, "install");
+      let result = runPackageInstaller(forwardPredecessorPackage, home, "install");
       assert.equal(result.status, 0, result.stderr);
 
       result = runPackageInstaller(currentPackage, home, "install");
@@ -287,16 +297,18 @@ test(`${acceptedVersion} accepted and ${fallbackVersion} fallback keep managed s
       result = runPackageInstaller(currentPackage, home, "doctor");
       assert.equal(result.status, 0, result.stderr);
       let manifest = JSON.parse(fs.readFileSync(path.join(home, "hooks", "planning-with-files", "installed-manifest.json"), "utf8"));
-      assert.equal(manifest.installer_version, "0.4.0-dev");
+      assert.equal(manifest.installer_version, JSON.parse(
+        fs.readFileSync(path.join(currentPackage, "package.json"), "utf8")).version);
 
       result = runPackageInstaller(currentPackage, home, "uninstall");
       assert.equal(result.status, 0, result.stderr);
-      result = runPackageInstaller(acceptedPackage, home, "install");
+      result = runPackageInstaller(forwardPredecessorPackage, home, "install");
       assert.equal(result.status, 0, result.stderr);
-      result = runPackageInstaller(acceptedPackage, home, "doctor");
+      result = runPackageInstaller(forwardPredecessorPackage, home, "doctor");
       assert.equal(result.status, 0, result.stderr);
       manifest = JSON.parse(fs.readFileSync(path.join(home, "hooks", "planning-with-files", "installed-manifest.json"), "utf8"));
-      assert.equal(manifest.installer_version, accepted.version.slice(1));
+      assert.equal(manifest.installer_version,
+        JSON.parse(fs.readFileSync(path.join(forwardPredecessorPackage, "package.json"), "utf8")).version);
     });
 
     await t.test("tampered accepted state is rejected before backup or mutation", () => {
@@ -313,7 +325,7 @@ test(`${acceptedVersion} accepted and ${fallbackVersion} fallback keep managed s
       assert.deepEqual(managedState(home), before);
     });
 
-    await t.test("accepted and immediate fallback installers can take ownership back in both directions", () => {
+    await t.test("accepted and immediate fallback remain recoverable through owned uninstall and forward install", () => {
       const home = installHome(workspace, "valid-roundtrip-home");
       let result = runPackageInstaller(fallbackPackage, home, "install");
       assert.equal(result.status, 0, result.stderr);
@@ -324,6 +336,8 @@ test(`${acceptedVersion} accepted and ${fallbackVersion} fallback keep managed s
       let manifest = JSON.parse(fs.readFileSync(path.join(home, "hooks", "planning-with-files", "installed-manifest.json"), "utf8"));
       assert.equal(manifest.installer_version, accepted.version.slice(1));
 
+      result = runPackageInstaller(acceptedPackage, home, "uninstall");
+      assert.equal(result.status, 0, result.stderr);
       result = runPackageInstaller(fallbackPackage, home, "install");
       assert.equal(result.status, 0, result.stderr);
       result = runPackageInstaller(fallbackPackage, home, "doctor");

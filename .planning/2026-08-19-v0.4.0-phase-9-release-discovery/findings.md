@@ -182,3 +182,31 @@ maintainer authorization boundary.
 | F3 dev-named operator guides | `KEEP AS EXECUTED EVIDENCE` | Exact filenames/identities are part of the verified protocol and tests |
 | F3 validators and revival negative tests | `KEEP` | They still protect current lifecycle/rollback semantics |
 | future `0.5.0-dev` identity | `DEFER` | Only after P9-F and separate Phase 5 authorization |
+
+## P9-A authority recovery — implementation pass
+
+- P9-A starts from clean commit `8bfbf60`. The maintainer authorized only pre-seal materialization; exact-hash seal, Cloud and all
+  remote lifecycle actions remain outside scope.
+- README's one stale paragraph is exactly the final paragraph of the opt-in section. It must retain the secret/credential warning and
+  replace only the F3-pending/current-capability sentence with the durable distinction between local admission proof and version-scoped
+  Cloud/Release evidence.
+- ARCHITECTURE has two current-state corrections: section 5.1 must state that F3C proved disarm-first rollback/recovery for both profiles,
+  and section 12 must remove that item from “unimplemented” without turning acceptance facts into a Host/runtime invariant.
+- Neither correction requires production/runtime changes. P9-A remains a stable-document and identity migration gate.
+
+## P9-A ROADMAP pass
+
+- ROADMAP 后半段的 Release 四步、pre-1.0 compatibility、accepted/fallback 轮转与封板顺序仍适用于 `v0.4.0`，不需要因本次稳定身份迁移改写；P9-A 只校准顶部 current-role、Phase 4/Phase 9 gate 状态及 README 解耦待办。
+- Phase 9 是每列车重复进入的 standing gate；本次文档必须把“`v0.3.5` instance complete”与“`v0.4.0` instance 正在 P9-A”分开，不能把 Phase 9 永久标成 complete。
+- `BASELINE_PROVENANCE.md` 的 current upstream/verification-chain sections 仍声称 `runtime-bundle-v1`、`release-artifact-v1` 和 deferred candidates 是当前 authority；这些不是 immutable historical entries，P9-A 必须改为 manifest-routed bundle/release v2。冷证据中的 v0.3.2 overlay 描述保持不动。
+- CHANGELOG 的 `v0.4.0-dev` 段已经承载 Phase 4 实际增量；稳定身份迁移应把该段提升为 `v0.4.0` 并补 Phase 4/F3 closeout 与 pre-seal 边界，不复制第二份 dev/stable 变化清单。
+- Repository-wide identity scan confirms that F3 runbooks/guides and their exact ref/version strings are executed dev evidence and remain unchanged. Stable promotion scope is limited to package/release/bootstrap/current acceptance plus current authority prose and tests; historical guide identities are explicitly excluded.
+- Current hardcodes divide into three classes: stable identity (`package.json`, Release v2, bootstrap, current acceptance, repository/release tests) must migrate; exact F3 evidence strings must remain; `installed-state-transition-v1.json` and F3 rollback helper expectations retain `0.3.5`/`0.4.0-dev` where they describe the already executed predecessor/current-dev protocol rather than the final stable package.
+- Stable machine propagation is exact: package version and Release v2 `package_version` become `0.4.0`; Release v2 external asset becomes `init-cloud-sandbox-v0.4.0.bash`; bootstrap default becomes `v0.4.0` while its SHA remains 64 zeros; the resulting raw Release-contract SHA alone updates manifest `managed_runtime.contracts.release_artifact.sha256`.
+- The current acceptance file is renamed, not duplicated. Its top-level version identity and current/pre-seal route become stable, while embedded `v0.4.0-dev` F2/F3 anchors, candidate hashes and installed-version observations stay as immutable development evidence unless a new P9 gate records replacement evidence.
+- Publication oracle must discover each historical Release contract through that release's own manifest, then normalize v1 object-shaped and v2 string-shaped `external_release_assets`. Hardcoding v1 is invalid once v0.4.0 becomes accepted.
+- The supported rolling-window test is: fallback clean install → accepted forward install → accepted-owned uninstall → fallback clean install → accepted exact forward recovery. Direct accepted-over-current downgrade remains a separate negative/no-mutation test; the oracle must not require old installers to overwrite newer state.
+- P9-A implementation followed the frozen route. The only scope expansion was stale current v1 prose in provenance; it was the same authority-reconciliation class and required no production change.
+- Stable acceptance uses a new top-level stable anchor and keeps all executed dev anchors intact. The dev bootstrap/acceptance paths are retired by rename, while F3 dev guides remain exact evidence.
+- P9-A frozen candidate facts: 22 entries, 85,519 bytes, SHA-256 `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`; two independent builds/checks were byte-identical. This is a local zero-hash candidate fact, not a sealed/public asset identity, and must not be copied into bootstrap before P9-B authorization.
+- Final lifecycle state: dev bootstrap/acceptance paths retired by rename; stable identity/hash edge migrated; current prose reconciled; v0.3.5 working-tree role files, F3 refs/guides/validators/negative tests and installed transition retained. No unowned transition object remains in the P9-A change set.

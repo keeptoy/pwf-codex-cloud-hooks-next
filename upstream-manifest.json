@@ -19,7 +19,7 @@
       },
       "release_artifact": {
         "path": "contracts/release-artifact-v2.json",
-        "sha256": "008555c64cb00cbe7c328528c5ecaf2c8017715d476760393c3b164a9b243a29"
+        "sha256": "56c5ca811e40fa19eb5a1a22c59e1ec4baa9f5cb8f622ff8769db0c3a7927685"
       },
       "installed_state_transition": {
         "path": "contracts/installed-state-transition-v1.json",

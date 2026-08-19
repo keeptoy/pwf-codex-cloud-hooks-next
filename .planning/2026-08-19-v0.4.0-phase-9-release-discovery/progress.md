@@ -40,7 +40,47 @@
   removed. Changed paths intersect neither Release entries nor external assets.
 - Corrected an audit-only ref prefix mistake and then required all 11 local/origin validation ref pairs to match exactly; PASS.
 - Closed P9-D4 with a version-scoped conditional-go. The next authorized action, if the maintainer chooses it, is P9-A only.
+- Maintainer subsequently authorized P9-A only. Reopened the version-scoped plan with P9-A0～P9-A4 implementation gates and preserved
+  explicit stops before exact-hash seal, Cloud, remote refs/publication/promotion and Phase 5.
+- Re-read README and ARCHITECTURE completely. Bound the exact state-neutral README replacement and the two ARCHITECTURE F3C-current
+  corrections; no runtime or trusted-graph delta is required.
+- Re-read the remainder of ROADMAP. Confirmed its generic Release/rollback rules remain current; P9-A only needs this train's current-role,
+  gate-state and pre-seal-input reconciliation.
+- Re-read CHANGELOG and provenance. Added the stale current v1 supply-chain narrative to P9-A reconciliation while preserving immutable
+  historical v1/overlay evidence.
+- Ran the pre-edit identity scan. Classified stable identity targets separately from immutable F3 dev evidence and the v0.3.5 predecessor
+  transition contract; only the first class will migrate in P9-A.
+- Read the exact package/Release/manifest/bootstrap/acceptance inputs and froze the stable propagation graph. Bootstrap exact ZIP hash remains
+  zero in P9-A; executed dev evidence inside the renamed acceptance remains historical.
+- Read repository/release/publication tests. Froze manifest-routed v1/v2 historical package discovery and the supported
+  uninstall/clean-install/forward-recovery rolling-window oracle.
+- Added P9-A guards first. Focused red run produced the expected four repository-boundary failures: old dev package role, missing stable
+  acceptance filename, stale README F3-pending prose and old acceptance anchor. Release/package/publication tests otherwise passed,
+  including the newly manifest-routed historical oracle and supported rolling-window recovery sequence.
+- Migrated the stable package/Release/manifest/bootstrap/acceptance identity, renamed rather than duplicated the two versioned files,
+  reconciled README/ARCHITECTURE/DESIGN/ROADMAP/CHANGELOG/provenance and appended the version-scoped P9-A implementation ledger.
+- First green focused pass exposed one remaining test-only ROADMAP summary lock; narrowed it to the stable Phase 4/P9-A/P9-B boundary
+  instead of restoring per-gate prose. Repository boundary then passed 10/10 with zero skips; the broader focused suite had otherwise
+  passed 38/39 with only that prose mismatch and two honest Windows Linux-only skips.
+- Full Windows suite first rerun reached 173 tests with 147 pass, 1 fail and 25 honest skips. The sole failure was a stale assumption that
+  only `-dev` identities may carry zero hash; changed the guard to derive accepted status from ROADMAP and the actual checksum bytes.
+  Bootstrap focused tests then passed 4/4.
+- First combined static/build postflight stopped at Git Bash `Win32 error 5` while creating its signal pipe after importer and Python/Node
+  syntax had passed. This is the known Windows process-launch limitation, not a script failure; deterministic builds had not started and
+  will be rerun separately with attributable exits.
+- Separate postflight passed importer, owned Python compile, installer Node syntax, both bootstrap Bash syntax checks and `git diff --check`.
+- Two independent stable candidate builds/checks were byte-identical: 22 entries, 85,519 bytes, SHA-256
+  `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`; bootstrap remained 64-zero and fail closed.
+- Final full Windows suite passed: 173 tests, 148 pass, 0 fail and 25 honest Linux/POSIX-only skips. A final promotion-window oracle
+  refinement then passed its focused 9/9 suite: after future promotion, the older package and admitted predecessor dynamically become the
+  fallback rather than comparing accepted/current identical bytes.
+- Final identity closure matched package/Release at `0.4.0`, stable bootstrap path, manifest raw Release-contract SHA
+  `56c5ca811e40fa19eb5a1a22c59e1ec4baa9f5cb8f622ff8769db0c3a7927685` and actual bytes. Changed paths intersect exactly five
+  current Release inputs: README, package, manifest, Release v2 and the renamed stable bootstrap; runtime/trusted-graph delta is empty.
+- Residue scan found the retired dev bootstrap path only inside the frozen F3C operator guide, where it addresses the exact archived
+  protocol source that actually ran. No current authority or current package points to the retired dev bootstrap/acceptance paths.
+- Closed P9-A0 through P9-A4 and stopped before P9-B. No Cloud, seal hash write, ref mutation, remote action, publication or promotion ran.
 
 ## Current status
 
-`CONDITIONAL_GO_TO_V0_4_0_PHASE_9_PRE_SEAL_MATERIALIZATION / IMPLEMENTATION_NOT_AUTHORIZED / RELEASE_INPUTS_UNCHANGED / PUBLICATION_NOT_AUTHORIZED`
+`P9_A_PRE_SEAL_IMPLEMENTATION_IN_PROGRESS / ZERO_HASH_REQUIRED / STOP_BEFORE_P9_B / PUBLICATION_NOT_AUTHORIZED`

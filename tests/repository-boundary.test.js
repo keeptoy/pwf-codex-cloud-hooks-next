@@ -49,37 +49,23 @@ function currentRoleWindow() {
 
 test("Phase 4 foundation keeps the candidate and accepted identity window distinct", () => {
   const { accepted, candidate, roadmap } = currentRoleWindow();
-  assert.equal(candidate, "v0.4.0-dev");
+  assert.equal(candidate, "v0.4.0");
   assert.equal(accepted, "v0.3.5");
   assert.notEqual(candidate, accepted);
-  assert.match(roadmap, /F0[^\n]*complete/);
-  assert.match(roadmap, /F1A[^\n]*complete/);
-  assert.match(roadmap, /F1 foundation[^\n]*complete/);
-  assert.match(roadmap, /F2A[^\n]*Cloud PASS/);
-  assert.match(roadmap, /F2B[^\n]*Source\/Candidate Cloud PASS/);
-  assert.match(roadmap, /F2A\/F2B\/F3A Source\/Candidate Cloud PASS/);
-  assert.match(roadmap, /F3B0 Discovery 与 F3B1 no-live protocol materialization complete/);
-  assert.match(roadmap, /F3B2 smart Cloud live PASS/);
-  assert.match(roadmap, /F3B3 autonomous zero-ledger\/tamper\/disarm\/re-attest\/re-arm Cloud live PASS/);
-  assert.match(roadmap, /F3B4 evidence closure PASS/);
-  assert.match(roadmap, /F3C1 ref-aware Linux\/no-live/);
-  assert.match(roadmap, /F3C2 smart live/);
-  assert.match(roadmap, /F3C3 autonomous live PASS/);
-  assert.match(roadmap, /F3C4 aggregate closure PASS/);
   assert.match(roadmap, /Phase 4 functional baseline ready/);
   assert.match(roadmap, /Product Phase 4功能施工已闭合/);
   assert.match(roadmap, /第一轮 retirement review完成/);
   assert.match(roadmap,
-    /Phase 9 Discovery已冻结[^]*当前仍不得修改 Release输入、发布、晋级或移动 validation refs/);
+    /Phase 9 P9-A pre-seal materialization已闭合[^]*当前仍不得进入 exact-hash seal、Cloud、发布、晋级或移动 validation refs/);
   assert.match(roadmap,
     /Phase 4 \/ F3C4完成[\s\S]*形成0\.4\.0功能\/候选基线[\s\S]*切换0\.5\.0-dev并进入Phase 5/);
 });
 
-test("v0.4.0 Phase 9 Discovery is version-scoped and stops before pre-seal implementation", () => {
+test("v0.4.0 Phase 9 pre-seal status is version-scoped and stops before exact-hash seal", () => {
   const phase9 = read("docs/history/phase-9-v0.4.0-release-discovery.md");
   const phase4Closeout = read("docs/history/phase-4.11-f3c4-aggregate-closure-discovery.md");
   const historyIndex = read("docs/history/README.md");
-  const acceptance = read("docs/v0.4.0-dev-cloud-hard-acceptance.md");
+  const acceptance = read("docs/v0.4.0-cloud-hard-acceptance.md");
   const { roadmap } = currentRoleWindow();
 
   for (const anchor of [
@@ -91,6 +77,9 @@ test("v0.4.0 Phase 9 Discovery is version-scoped and stops before pre-seal imple
 
   assert.match(phase9,
     /CONDITIONAL_GO_TO_V0_4_0_PHASE_9_PRE_SEAL_MATERIALIZATION \/ IMPLEMENTATION_NOT_AUTHORIZED \/ RELEASE_AND_REF_MUTATION_NOT_AUTHORIZED/);
+  assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-a-post-implementation"><\/a>$/m);
+  assert.match(phase9,
+    /P9_A_PRE_SEAL_MATERIALIZATION_PASS \/ ZERO_HASH_CANDIDATE_FROZEN \/ STOP_BEFORE_P9_B/);
   assert.match(phase9, /v2 accepted \+ v1 fallback/);
   assert.match(phase9, /11 个 F3 validation refs[\s\S]*`KEEP`/);
   assert.match(phase9, /P9-A pre-seal materialization[\s\S]*P9-F second retirement and handoff/);
@@ -99,7 +88,7 @@ test("v0.4.0 Phase 9 Discovery is version-scoped and stops before pre-seal imple
   assert.match(historyIndex,
     /phase-9-v0\.4\.0-release-discovery\.md#phase-9-v0-4-0-decision/);
   assert.match(acceptance,
-    /v0\.4\.0 Phase 9 Release Discovery[^\n]*`CONDITIONAL_GO_TO_PRE_SEAL_MATERIALIZATION`/);
+    /v0\.4\.0 Phase 9 P9-A pre-seal materialization[^\n]*`PASS`/);
   assert.match(roadmap, /^<a name="phase-9-v0-4-0-instance"><\/a>$/m);
   assert.match(roadmap, /P9-A pre-seal materialization[\s\S]*P9-F second retirement review/);
 });
@@ -252,6 +241,8 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
     assert.doesNotMatch(read(stableDoc), fixedBootstrapName, `${stableDoc} must use a version-neutral bootstrap command`);
   }
   assert.match(read("README.md"), /for bootstrap in init-cloud-sandbox-v\*\.bash; do/);
+  assert.doesNotMatch(read("README.md"), /尚需 F3 live gate|不得描述成 Cloud lifecycle PASS/);
+  assert.match(read("README.md"), /版本专项 acceptance/);
   for (const retired of [
     "docs/beta3-dev-m3-cloud-equivalence.md",
     "docs/beta3-dev-m4-cutover-plan.md",
@@ -372,7 +363,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotMatch(changelog, /Successor 迁移来源链/);
 
   assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));
-  assert.match(acceptance, /^<a name="v0-4-0-dev-gate-status"><\/a>$/m);
+  assert.match(acceptance, /^<a name="v0-4-0-gate-status"><\/a>$/m);
   assert.match(acceptance, /F0 development identity \/ guardrails[^\n]*`PASS`/);
   assert.match(acceptance, /F1A contract\/source foundation[^\n]*`PASS`/);
   assert.match(acceptance, /F1B inactive runtime foundation[^\n]*`PASS`/);
