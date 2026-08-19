@@ -107,7 +107,15 @@
   `UNKNOWN` and preserve-original-report rules. Main prompts, transaction, verifier, evidence schema and gate status remain unchanged.
 - Focused rollback-guide/repository regression passed 11/13 with zero failures and the two expected Windows Linux-only revival skips;
   follow-up anchor/content guards, all guide Bash blocks, Node syntax and `git diff --check` passed.
+- Maintainer completed independent `A_RECOVER`: exact current `0.4.0-dev` returned through the accepted predecessor; Fresh/real Resume,
+  v2 production probe, doctor, backup, activation absence and zero residue all passed while `autonomous_prepared` remained legacy.
+- Recovered evidence used `profile=autonomous`, `stage=recovered` and `accepted_to_current_exact_predecessor`; helper returned
+  `F3_ROLLBACK_EVIDENCE_RECORD_V1=PASS` with validator exit code 0. Synchronized ROADMAP, acceptance, operator and planning; stopped
+  before F3C4.
+- F3C3 closeout lifecycle/rollback/repository regression passed 20/22 with zero failures and the two expected Windows Linux-only
+  revival skips. Both the partial `A_ROLLBACK` checkpoint and final F3C3 status, exact-evidence ordering, guide Bash blocks and
+  stop-before-F3C4 governance passed; `git diff --check` passed.
 
 ## Current status
 
-`F3C3_A_ROLLBACK_PASS / AUTONOMOUS_ACCEPTED_ROLLBACK_CONFIRMED / A_RECOVER_NOT_RUN / STOP_FOR_EVIDENCE_REVIEW`
+`F3C3_AUTONOMOUS_LIVE_PASS / AUTONOMOUS_ROLLBACK_AND_EXACT_RECOVERY_CONFIRMED / STOP_BEFORE_F3C4`

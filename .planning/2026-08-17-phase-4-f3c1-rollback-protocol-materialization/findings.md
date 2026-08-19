@@ -90,3 +90,9 @@
 - `A_ROLLBACK` also exposed a repeatable operator-compliance gap: the main Fresh/Resume prompts already named all ledger markers, but
   the Cloud model omitted them from its first reports. This is not a runtime or schema defect. The least invasive repair is an optional
   same-task, no-tool follow-up that must report `UNKNOWN` when prior Host text cannot be verified; the original report remains evidence.
+- Independent `A_RECOVER` closed the current half of F3C3: exact current `0.4.0-dev` was restored only through the accepted predecessor,
+  while autonomous prepared state remained disarmed and production stayed legacy. Fresh/Resume and the v2 probe exposed no nonce,
+  Plan-SHA or ledger renderer; doctor, backup, worktree and residue checks all passed.
+- The rollback and recovered records share exact source/candidate/accepted/disarm identities but preserve distinct stage, installed role
+  and transition fields. Together they close F3C3 without aggregating all F3C evidence or authorizing validation-ref retirement; that is
+  the separate F3C4 responsibility.

@@ -8,12 +8,12 @@ repository/no-live 测试证明旧版不能直接覆盖 current，再建立 acce
 
 ## Next Step
 
-等待维护者另行授权 F3C3 的第二轮 `A_RECOVER` Cloud task。`A_ROLLBACK` exact evidence已通过并按停止条件完成复核；
-未经新授权不得执行 `A_RECOVER`。F3C4、Release与远端写操作仍禁止。
+等待维护者另行授权 F3C4 aggregate closure。F3C3 `A_ROLLBACK`与独立 `A_RECOVER` exact evidence均已通过；未经新授权
+不得进入 F3C4或清理 validation refs/lifecycle对象。Release与远端写操作仍禁止。
 
 ## Current Phase
 
-F3C3 autonomous accepted rollback complete; wait before A_RECOVER
+F3C3 autonomous rollback/recovery complete; wait before F3C4
 
 ## Phases
 
@@ -135,6 +135,22 @@ F3C3 autonomous accepted rollback complete; wait before A_RECOVER
 - 补问仅允许在同一个 Cloud task复核上一条实际 Host注入；不能运行工具、覆盖原报告或用 expected profile补猜。
 - 当前 programme状态不变；仍停止在另行授权的 `A_RECOVER` 前。
 
+### F3C3-E2 — Autonomous exact-current recovery
+
+**Status:** completed externally by maintainer
+
+- 从同一 exact autonomous disarm HEAD建立独立 Cloud task，transaction经 accepted predecessor恢复 exact current `0.4.0-dev`。
+- Fresh与同任务 real Resume保持 legacy且无 nonce/Plan-SHA/ledger renderer；只读 verifier确认 current role、
+  `autonomous_prepared`、activation absent、doctor healthy、backup verified与零 residue。
+- `profile=autonomous`、`stage=recovered` evidence通过 exact helper，verifier与 validator final exit code均为 0。
+
+### F3C3-E3 — Autonomous live evidence closeout
+
+**Status:** completed
+
+- 将 rollback + recovery exact evidence写入版本 acceptance，并在 operator guide保留 partial stage记录后追加完整 post-run尾注。
+- 同步 ROADMAP、活动 planning与静态治理守卫；F3C3 PASS并停止在另行授权的 F3C4前。
+
 ## Authorization
 
 - 已授权：F3C1 Release-excluded protocol/operator/helper、disposable repository/no-live tests、planning/history/static guards、
@@ -142,7 +158,8 @@ F3C3 autonomous accepted rollback complete; wait before A_RECOVER
 - 维护者已另行授权并亲自执行 F3C2 smart live；本地智能体只接收证据并维护 operator/planning/tests，不代替维护者执行
   Cloud install/uninstall/rollback 或远端写操作。
 - 维护者已另行授权并亲自完成 F3C3 `A_ROLLBACK`；本地智能体只接收并同步证据，不代替维护者执行 Cloud transaction。
-- 未授权：F3C3 `A_RECOVER`、F3C4 aggregate closure；生产 runtime/installer/contracts/manifest/bundle/bootstrap/
+- 维护者已另行授权并亲自完成 F3C3 `A_RECOVER`；本地智能体只接收并同步证据，不代替维护者执行 Cloud transaction。
+- 未授权：F3C4 aggregate closure；生产 runtime/installer/contracts/manifest/bundle/bootstrap/
   README/Release bytes 修改；validation ref 创建/移动；push/PR/tag/Release。
 
 ## Stop Conditions
@@ -165,4 +182,4 @@ F3C3 autonomous accepted rollback complete; wait before A_RECOVER
 
 ## Current status
 
-`F3C3_A_ROLLBACK_PASS / AUTONOMOUS_ACCEPTED_ROLLBACK_CONFIRMED / A_RECOVER_NOT_RUN / STOP_FOR_EVIDENCE_REVIEW`
+`F3C3_AUTONOMOUS_LIVE_PASS / AUTONOMOUS_ROLLBACK_AND_EXACT_RECOVERY_CONFIRMED / STOP_BEFORE_F3C4`
