@@ -74,6 +74,8 @@
   statuses. Work stops before separately authorized F3C3 autonomous live.
 - F3C2 closeout regression passed 20/22 with zero failures and the same two honest Windows Linux-only revival skips; the asynchronous
   test command was polled to an explicit final exit code 0. `git diff --check` passed.
+- Removed the time-coupled "current next gate" wording from the F3C2 walkthrough while retaining its stable two-task procedure and
+  all pre-run, post-no-live, F3C2 post-run and section 10 authorization history/boundaries.
 
 ## Current status
 
