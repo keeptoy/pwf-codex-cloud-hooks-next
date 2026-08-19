@@ -136,6 +136,35 @@ Phase 9 是 Release 收口，不机械等于 `0.9.0`。例如只完成 Phase 4 �
 Phase 经独立 gate 后被明确合并，则封板当时获批的同一版本列车。`v0.3.5` 的 Phase 9 instance 已完成，
 但 Phase 9 本身是每条未来列车都要重新进入的 standing gate，不能继承上一版本的 PASS。
 
+<a name="version-train-two-retirement-reviews"></a>
+
+### 每条版本列车的两轮退役审查
+
+默认情况下，一个 Product Phase完成一项目标并形成对应版本的功能/候选基线；随后该版本列车进入自己的 standing Phase 9，
+封板、发布、公开验收并轮转 accepted/fallback角色；再切换下一条 development列车进入后继 Phase。例如：
+
+```text
+Phase 4 / F3C4完成
+  → 形成0.4.0功能/候选基线
+  → 第一轮对象退役审查
+  → 当前0.4.0列车的Phase 9
+  → 发布并晋级0.4.0 accepted baseline
+  → 第二轮版本窗口退役审查
+  → 切换0.5.0-dev并进入Phase 5
+```
+
+每条发布列车都必须经过两轮 retirement review；“review”是逐项做 `RETIRE/MIGRATE/KEEP`决定，不是为了清单好看而强制删除：
+
+| Review | 触发点 | 主要对象 | 退出要求 |
+|---|---|---|---|
+| 第一轮：Phase closeout | Product Phase的最终 aggregate/closeout gate | 施工 planning、临时 fixture/脚本、重复摘要、过渡 seam、validation refs与当期 lifecycle账 | 清掉已满足 DoD的脚手架；仍承担恢复、Release或回归职责的对象明确 KEEP/MIGRATE与下一 review条件 |
+| 第二轮：Phase 9 role rotation | 同一列车的 public assets验收并晋级 accepted之后 | candidate/accepted窗口专用 refs、oracles、compatibility transition、canary和版本化运维材料 | 新 accepted与 immediate fallback可恢复；退出角色窗口的对象按 retirement DoD清退或迁移；稳定 contracts/tests/history不得机械删除 |
+
+因此 Product Phase收官已经是正式生命周期边界，不必把所有清理推迟到 Phase 9；但它只形成候选功能基线，不会自动产生
+immutable public assets或轮转 accepted角色。Phase 9的第二轮审查只处理必须等发布身份和版本角色确定后才能判断的对象。
+若维护者明确批准多个低风险 Phase合并到同一版本列车，每个 Phase仍分别做第一轮审查，而该列车只在最终发布时做一次
+第二轮审查。
+
 ### 4.1 Phase 4 已采纳 gate 路线
 
 Phase 4 保持 Phase 4.1 冻结的 hybrid owned-boundary 与两个现有 turn-start events，不改变主架构；内部按

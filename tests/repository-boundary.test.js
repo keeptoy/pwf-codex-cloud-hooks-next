@@ -68,6 +68,8 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap, /F3C4 aggregate-closure Discovery conditional-go/);
   assert.match(roadmap,
     /F3C2 smart rollback\/recovery 与 F3C3 autonomous rollback\/recovery 均已闭合；F3C4 Discovery 已 conditional-go，但 aggregate closure implementation与 ref cleanup未授权/);
+  assert.match(roadmap,
+    /Phase 4 \/ F3C4完成[\s\S]*形成0\.4\.0功能\/候选基线[\s\S]*切换0\.5\.0-dev并进入Phase 5/);
 });
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {

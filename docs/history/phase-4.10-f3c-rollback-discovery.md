@@ -336,3 +336,11 @@ JSON复制进仓库，也不把 F3C2/F3C3单项 PASS提前汇总成 F3C aggregat
 `F3C3_AUTONOMOUS_LIVE_PASS / AUTONOMOUS_ROLLBACK_AND_EXACT_RECOVERY_CONFIRMED / STOP_BEFORE_F3C4`
 
 该结果不授权 F3C4 closure、ref cleanup、Release或后继 Phase。
+
+<a name="phase-4-10-successor-map"></a>
+
+## 后继路线导航
+
+F3C从路线设计、分段实考、汇总对账到封账/两轮退役的新人版总览，只在
+[Phase 4.11“一眼看懂 F3C”](phase-4.11-f3c4-aggregate-closure-discovery.md#phase-4-11-f3c-at-a-glance)维护；本文件不复制
+第二份可漂移的路线说明。

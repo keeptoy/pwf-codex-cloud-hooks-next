@@ -34,3 +34,13 @@
 - F3C4 implementation can be docs/planning/tests-only and needs no new Cloud/schema/production/Release byte, provided it preserves each
   profile's identity and negative proof separately.
 - Decision: `CONDITIONAL_GO_TO_F3C4_AGGREGATE_CLOSURE / IMPLEMENTATION_NOT_AUTHORIZED / REF_CLEANUP_NOT_AUTHORIZED`.
+
+## Post-Discovery lifecycle clarification
+
+- ROADMAP maps Phase 4 to `0.4.0-*`, Phase 5 to `0.5.0-*`; standing Phase 9 is reused by each train and is not version `0.9.0`.
+- Product Phase closure creates the train's functional/candidate baseline. The same train's Phase 9 creates the published accepted
+  baseline and rotates accepted/fallback roles. These are distinct lifecycle checkpoints.
+- Every train therefore requires two retirement reviews: phase closeout reviews construction-scoped objects; Phase 9 post-promotion
+  reviews candidate/accepted-window objects. A review may conclude KEEP or MIGRATE; it does not require deletion.
+- For current F3C, F3C4 must conduct the first review. The 11 refs can still remain because they preserve exact side-branch commit
+  reachability; validators/negative tests can remain as active regression contracts rather than historical residue.

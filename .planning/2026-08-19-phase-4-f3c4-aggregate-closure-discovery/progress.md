@@ -11,6 +11,12 @@
 - Synchronized ROADMAP, the version acceptance gate table, history index and static guards to Discovery conditional-go only.
 - Passed focused 23-test gate (21 pass, 2 honest skips), full Windows 172-test gate (147 pass, 25 honest skips), importer/compile/syntax/
   whitespace checks, deterministic dual candidate build, 11-ref identity postflight, markerless planning and zero Release intersection.
+- Maintainer corrected the baseline model: each Product Phase maps to its candidate train, while standing Phase 9 publishes that same
+  train and rotates accepted/fallback roles. Reopened a documentation-only D4 clarification gate.
+- Added the Phase 4.10 successor link, Phase 4.11 plain-language F3C map, object-specific first/second retirement reviews and a ROADMAP
+  rule requiring both reviews for every release train without forcing deletion.
+- Documentation-governance focused suite passed 27/27 with zero skips. Full Windows suite remained 172 tests, 147 pass, 0 fail and
+  25 Linux/POSIX-only honest skips; no production or Release input changed.
 
 ## Current status
 

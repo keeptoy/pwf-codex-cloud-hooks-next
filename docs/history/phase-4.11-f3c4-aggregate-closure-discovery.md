@@ -12,6 +12,26 @@ runtime/asset/ref身份和残留审计能否组成同一份不混淆的 F3C结�
 没有修改 production、contracts、manifest、bundle、installer、bootstrap、README或 Release ZIP输入，也没有执行 closure、
 aggregate PASS或 ref cleanup。
 
+<a name="phase-4-11-f3c-at-a-glance"></a>
+
+## 一眼看懂 F3C
+
+> Phase 4.10：设计回滚路线。
+>
+> F3C1～F3C3：分别把路线在 Linux no-live、smart Cloud和 autonomous Cloud跑通。
+>
+> Phase 4.11：把四张 live成绩单和两项负向测试放在一起对账，确认没有串卷、漏项或提前清理证据。
+>
+> F3C4：根据对账结论正式封账，形成 `0.4.0`功能/候选基线，并执行第一轮对象退役审查。
+>
+> 当前列车 Phase 9：封板、发布并接替 accepted baseline，再执行第二轮版本窗口退役审查。
+>
+> 然后切换 `0.5.0-dev`，进入 Phase 5。
+
+这里的“退役审查”不等于“必须删除”。第一轮判断施工脚手架能否 RETIRE、是否应迁移为稳定证据、或仍须 KEEP；第二轮在
+accepted/fallback角色真正轮转后，再处理只服务旧 candidate窗口的对象。仍是唯一恢复入口或长期回归守卫的对象，审查结果
+可以继续 KEEP。
+
 <a name="phase-4-11-evidence-matrix"></a>
 
 ## 四份 live record 对账
@@ -73,19 +93,19 @@ disarm，workspace token会保留，current runtime回来后会复活。这两�
 
 ## 对象生命周期总账
 
-| 对象 | 本轮状态 | F3C4 closure建议动作 | 最早 retirement review |
+| 对象 | 本轮状态 | F3C4 第一轮 review | 当前列车 Phase 9 第二轮 review |
 |---|---|---|---|
-| 11个 F3B2/F3B3 validation refs | exact local/origin pairs | KEEP，不移动、不删除 | F3C aggregate PASS + 当前 `0.4.0` Phase 9 instance complete + immutable recovery可用 + 维护者批准 |
-| F3C operator guide | ACTIVE / Release-excluded | KEEP，closure后仍是逐 profile证据入口 | 当前 Phase 9完成或被等价 immutable运维证据替代后 |
-| rollback validator与 tests | ACTIVE / Release-excluded | KEEP，继续防止四份 record关系和 revival negative退化 | F3C4 + Phase 9后，且有相同强度替代证据 |
-| 四份 live JSON | Cloud task `/tmp` disposable | 不复制进仓库；只保留 acceptance摘要与 validator关系 | task销毁即退出；不得伪造重建 |
-| accepted `v0.3.5` tag/source/ZIP | immutable external authority | 永不改写；closure只引用 | 不适用 |
-| current development planning machine state | ABSENT | KEEP ABSENT；closure不得创建 activation/state | 若未来另一个明确 lifecycle gate授权 |
-| Phase 4.10/4.11 history | append-only narrative evidence | KEEP；原时间语义不改写 | repository history policy |
-| F3C protocol checkpoint commit | immutable Git object，无新增别名 ref | KEEP可恢复；不为 closure补建 ref | 当前 Phase 9后的统一 retention review |
+| 11个 F3B2/F3B3 validation refs | exact local/origin pairs；部分 side-branch commit的可达入口 | 必须逐项 review；无 immutable replacement前 KEEP | accepted/fallback轮转后，确认 commits仍可恢复且维护者批准，才可 RETIRE |
+| F3C operator guide | ACTIVE / Release-excluded | 冻结为历史/Release运维入口或 KEEP；删除重复的临时说明 | 发布后决定保留为长期运维入口还是由 immutable acceptance替代 |
+| rollback validator与 tests | ACTIVE / Release-excluded | 仍保护 current contract时 KEEP，不按“Phase结束”删除 | 随新 accepted/fallback窗口 MIGRATE；只有同强度替代证据存在时 RETIRE |
+| 四份 live JSON | Cloud task `/tmp` disposable | 已随 task退出；不复制进仓库，只保留 acceptance摘要与 validator关系 | 无动作；不得伪造重建 |
+| accepted `v0.3.5` tag/source/ZIP | immutable external authority | 永不改写；closure只引用 | 按新 accepted/fallback角色继续保留，不做原位删除重建 |
+| current development planning machine state | ABSENT | KEEP ABSENT；closure不得创建 activation/state | 无额外状态可清理；后继 Phase另开 planning |
+| Phase 4.10/4.11 history | append-only narrative evidence | KEEP；原时间语义不改写 | KEEP；只允许事实纠错或后继尾注 |
+| F3C protocol checkpoint commit | immutable Git object，无新增别名 ref | 核对可恢复性；不为 closure补建多余 ref | 与 validation refs一起做 retention review |
 
-当初保留 refs、guide和 validators不是“忘记清理”，而是 rollback与 Release窗口尚未结束。退出条件缺一项，就仍属于有 owner、
-有用途、有复核点的活跃证据，不能按历史残留删除。
+因此 F3C4不是“什么都不清理”，而是正式执行第一次 retirement inventory；本轮 Discovery判断 11个 refs、validator与 negative
+tests仍有明确用途，第一轮结果大概率为 KEEP/MIGRATE，而不是删除。Phase 9再做第二次审查，专门处理版本角色轮转后的对象。
 
 <a name="phase-4-11-closure-plan"></a>
 
@@ -95,10 +115,11 @@ disarm，workspace token会保留，current runtime回来后会复活。这两�
 
 1. 在版本 acceptance和 ROADMAP中把四份已接受 live record与两项 no-live negative汇总为单一 F3C rollback结论；
 2. 保留 smart/autonomous各自的 disarm HEAD、repository state和 installed-role关系，不把 profile证据压扁成“都为 legacy”；
-3. 保留全部 11个 refs、operator guide、validator和 negative tests，不执行 retirement；
+3. 执行第一轮 retirement inventory：删除已满足 DoD的纯临时对象；对 11个 refs、operator guide、validator和 negative tests
+   分别记录 KEEP/MIGRATE/RETIRE，未建立 immutable replacement前不得批量删除 refs；
 4. 不新增 evidence schema、Cloud task、Host ABI、trusted graph、production/runtime/installer或 Release输入；
 5. 运行 focused/full regression、importer/compile/syntax、双 candidate、ref identity、residue和 Release-intersection postflight；
-6. 只有全部检查闭合后才允许记录 aggregate F3C PASS，并停在 Phase 4 closeout/当前列车 Phase 9之前。
+6. 只有全部检查闭合后才允许记录 aggregate F3C PASS与 `0.4.0`功能/候选基线，并停在当前列车 Phase 9之前。
 
 这一步是“把已经通过的四张成绩单装订、核对编号并登记保留期”，不是第五轮 rollback，也不是立即扔掉考卷。
 
@@ -110,7 +131,8 @@ disarm，workspace token会保留，current runtime回来后会复活。这两�
 - smart/autonomous prepared state、activation absence或两项 revival negative无法同时保留，停止 closure。
 - local/origin ref不一致、ref不可恢复或出现未解释的 machine/snapshot/JSON/ZIP residue，停止 closure。
 - closure若需要新 Cloud、schema、production、installer、contract、Release byte或 ref mutation，返回独立 Discovery。
-- 不得把 F3C4 aggregate closure与 current `0.4.0` Phase 9、publication、promotion或 ref retirement合并授权。
+- 不得把 F3C4第一轮 retirement review扩大成无 DoD的批量 ref删除，也不得与 current `0.4.0` Phase 9的第二轮版本窗口
+  retirement、publication或 promotion合并授权。
 
 <a name="phase-4-11-decision"></a>
 

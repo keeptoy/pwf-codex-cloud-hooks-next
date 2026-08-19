@@ -233,10 +233,16 @@ test("DESIGN maps every test module back to the capability and boundary it prote
 test("ROADMAP keeps stable Discovery and Release governance anchors", () => {
   const roadmap = readText("ROADMAP.md");
   const readme = readText("README.md");
+  assert.match(roadmap, /^<a name="version-train-two-retirement-reviews"><\/a>$/m);
   assert.match(roadmap, /^<a name="phase-4-opt-in-purpose"><\/a>$/m);
   assert.match(roadmap, /^<a name="discovery-gate-governance"><\/a>$/m);
   assert.match(roadmap, /^<a name="release-four-step-flow"><\/a>$/m);
   assert.match(roadmap, /^<a name="pre-1-compatibility-admission"><\/a>$/m);
+  assert.match(roadmap, /每条发布列车都必须经过两轮 retirement review/);
+  assert.match(roadmap, /第一轮：Phase closeout/);
+  assert.match(roadmap, /第二轮：Phase 9 role rotation/);
+  assert.match(roadmap, /review.*不是为了清单好看而强制删除/);
+  assert.match(roadmap, /多个低风险 Phase合并到同一版本列车[\s\S]*每个 Phase仍分别做第一轮审查[\s\S]*只在最终发布时做一次[\s\S]*第二轮审查/);
   assert.match(readme, /ROADMAP\.md#pre-1-compatibility-admission/);
 });
 
