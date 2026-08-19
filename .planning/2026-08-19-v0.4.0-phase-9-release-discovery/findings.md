@@ -250,3 +250,8 @@ maintainer authorization boundary.
 - The only content recovered from temporary `4.6` is durable rather than historical: F1A/F1B remain independently reviewable but the
   affected candidate must close atomically; every migration gate must maintain an owned `KEEP/REPLACE/RETIRE/DEFER` ledger with
   propagation, evidence and review conditions. Detailed F0–F3 implementation sequence stays routed to acceptance/history.
+- The maintainer approved the P9-B3b disposition: remove both redundant current-status paragraphs and shorten the 4.1 heading. Neither
+  paragraph needs migration because current P9 state is already owned by sections 2/4.1 and the changed-ZIP-evidence rule is already
+  owned by 4.1/Release governance; F3B2 rationale remains historical evidence.
+- The remaining opening paragraph in chapter 4 is correctly placed. It defines the current candidate/accepted/fallback role window and
+  exact-vs-lifecycle repository zones, so it is current-train governance rather than Product Phase implementation chronology.

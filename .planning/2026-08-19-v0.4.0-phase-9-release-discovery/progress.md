@@ -113,6 +113,11 @@
   disposition discussion.
 - Saved the verified P9-B3a structure as local commit `dfbc128` (`docs: reorganize roadmap phase governance`). The initial sandboxed
   commit attempt could not create `.git/index.lock`; the identical scoped commit succeeded with Git metadata permission. No remote write ran.
+- Maintainer approved P9-B3b. Removed the two redundant chapter-4 paragraphs without migration, shortened the 4.1 heading, retained the
+  current role-window/zone-governance paragraph in place, and added a structural guard against reintroducing F3B2 contingency chronology.
+- P9-B3b focused governance passed 18/18. Two independent ZIP builds/checks remained byte-identical at 22 entries, 85,519 bytes and
+  SHA-256 `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`; `git diff --check` passed. The retained chapter-4 opener
+  remains current-train governance, while the removed chronology stays owned by Phase history/acceptance.
 
 ## Current status
 

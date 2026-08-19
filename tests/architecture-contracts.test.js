@@ -251,6 +251,10 @@ test("ROADMAP keeps stable Discovery and Release governance anchors", () => {
   assert.match(roadmap, /第二轮：Phase 9 role rotation/);
   assert.match(roadmap, /review.*不是为了清单好看而强制删除/);
   assert.match(roadmap, /多个低风险 Phase合并到同一版本列车[\s\S]*每个 Phase仍分别做第一轮审查[\s\S]*只在最终发布时做一次[\s\S]*第二轮审查/);
+  assert.match(currentTrain, /^### 4\.1 当前 `v0\.4\.0` Phase 9 instance$/m);
+  assert.match(currentTrain, /candidate \+ accepted role window/);
+  assert.match(currentTrain, /trusted\/Release zones 继续 exact[\s\S]*docs\/planning zones 按 lifecycle policy/);
+  assert.doesNotMatch(currentTrain, /F3B2 closeout|回退 smart-only|unreachable code/);
   assert.doesNotMatch(currentTrain,
     /Phase 4 已采纳 gate 路线|F2 activation\/disarm 前置协议|F2B Discovery 交接|流水账文件/);
   for (const anchor of ["phase-4-opt-in-purpose", "phase-4-f2-activation-protocol", "phase-4-f2b-discovery-handoff"]) {

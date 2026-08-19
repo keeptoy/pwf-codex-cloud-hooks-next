@@ -8,13 +8,13 @@
 
 ## Next Step
 
-ROADMAP第 4/5章结构治理已闭合并验证；下一步只讨论维护者点名的 P9/F3B2段落应删除、压缩还是迁移，未获维护者决定前
-不改这两段。该讨论关闭并形成最后一个 Release-excluded commit后，新 commit才是 exact sealed-source HEAD；维护者 push并
-完成 Cloud PASS前停止，不进入 P9-C。
+ROADMAP治理已闭合并验证；创建最后一个 Release-excluded本地 commit，该 commit就是新的 exact sealed-source HEAD。
+维护者 push后从该 HEAD执行通用 Source/Candidate setup与 deep check，并回传明确最终 exit code、Linux零 skip、deterministic
+ZIP、install/doctor与 manifest-routed inventory证据；Cloud PASS前停止，不进入 P9-C。
 
 ## Current Phase
 
-P9-B3b ROADMAP current-status paragraph disposition
+P9-B3 sealed-source Cloud handoff
 
 ## Phases
 
@@ -136,7 +136,7 @@ P9-B3b ROADMAP current-status paragraph disposition
 
 ### P9-B3b — ROADMAP current-status paragraph disposition
 
-**Status:** in_progress
+**Status:** completed
 
 - 在新的第 4/5章边界下复核两段是否仍有独立 programme价值，区分 current state、稳定 Release规则与历史原因。
 - 优先删除已由第2节、4.1、Release章节和历史证据承载的重复信息；如有唯一稳定规则，只保留最小一句并放入唯一 authority。
@@ -146,7 +146,7 @@ P9-B3b ROADMAP current-status paragraph disposition
 
 - 已授权：P9-B本地封印；重新构建并核验 P9-A candidate；只把 exact ZIP SHA写入 ZIP 外 stable bootstrap；计算 bootstrap SHA；
   修改 Release-excluded tests/planning/history与当前 acceptance/ROADMAP的 gate状态；维护者当前进一步授权 ROADMAP第4/5章
-  信息架构治理、相称静态守卫与本地 commit。
+  信息架构治理、删除已确认重复的两段 current-status/F3B2说明、收缩4.1标题、相称静态守卫与本地 commit。
 - 未授权：修改任何 ZIP entry、package/contract/manifest/README或 production/runtime字节；由本地智能体执行 Cloud；创建/移动/
   删除 refs；push/PR/tag/Release/publication/promotion；上传资产、修改 Latest或仓库设置；P9-C；切换 `0.5.0-dev`/Phase 5。
 

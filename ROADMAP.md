@@ -63,21 +63,9 @@ immediate fallback 与 v0.3.3 deeper fallback 均由 immutable commit、tag、Re
 publication oracle 恢复；更早历史只留在精选 provenance。
 trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。
 
-
-当前列车 Phase 9 Discovery、P9-A与 P9-B本地封印已完成；P9-B sealed-source Cloud
-仍待维护者从 exact sealed commit执行，后继 publication/promotion仍未授权。如果
-lifecycle 最终不可行，兜底仍是回退 smart-only
-或 defer，不能发布 unreachable code。
-
-`README.md` 是当前 Release ZIP entry。F3B2 closeout 当时为保持已验收 candidate 字节故意延后状态解耦；P9-A 已在新
-stable candidate transaction 中把该段改为永久成立的 authority 路由。旧 F3B2 Cloud 证据仍只证明旧 dev candidate，
-不能给本次改变后的 ZIP 字节背书；后继 P9-B 必须重新完成 exact sealed-source 验收。
-
-
-
 <a name="phase-9-v0-4-0-instance"></a>
 
-### 4.1 当前版本 `v0.4.0` Phase 9 instance   退役路线与退役状态维护
+### 4.1 当前 `v0.4.0` Phase 9 instance
 
 本实例的 Discovery、P9-A与 P9-B本地封印已关闭：stable identity、ZIP输入、exact ZIP SHA与外部 bootstrap SHA已经收敛；
 P9-B sealed-source Cloud仍待维护者从 exact commit执行，P9-C及后继 gate均未被自动授权。顺序必须保持：
