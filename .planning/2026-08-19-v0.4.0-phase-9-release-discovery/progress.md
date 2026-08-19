@@ -98,6 +98,19 @@
   `v0.3.4=59a999f705701ec67463649e9424f3d059863c81`, plus all 11 local/origin validation-ref pairs at identical commits.
 - Changed-path audit against the P9-A parent intersects zero ZIP entries and exactly one external Release asset:
   `init-cloud-sandbox-v0.4.0.bash`. The first audit command had a PowerShell `${tag}:` interpolation defect; the corrected full audit passed.
+- After local seal commit, the maintainer reopened ROADMAP governance before Cloud. Preserved the sole dirty user edit, recorded that
+  `390d666` is a superseded Cloud-HEAD checkpoint rather than the final sealed-source identity, and began restructuring only ROADMAP
+  sections 4/5; the separate P9/F3B2 paragraph decision is intentionally deferred until that structure closes.
+- Closed ROADMAP governance items 1–2 in place: established one top-level Product Phase chapter, moved durable Phase 4/5–8 routing
+  beneath it, removed the duplicate chapter and temporary `4.6` chronology, retained compact atomic-candidate and object-lifecycle
+  governance, and corrected the renumbered Discovery cross-references. The separately identified P9/F3B2 paragraphs remain byte-for-byte
+  untouched pending discussion.
+- Focused architecture/repository governance passed 18/18 after the first Windows sandbox attempt was correctly classified as
+  `spawn EPERM`. Two independent candidate builds/checks remained byte-identical at 22 entries, 85,519 bytes and SHA-256
+  `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`, proving the ROADMAP/test/planning changes are Release-excluded.
+- Full Windows regression passed unchanged at 173 tests: 148 pass, 0 fail and 25 honest Linux/POSIX-only skips; `git diff --check`
+  also passed. P9-B3a is closed, while the two current-status paragraphs remain deliberately untouched for the separate P9-B3b
+  disposition discussion.
 
 ## Current status
 

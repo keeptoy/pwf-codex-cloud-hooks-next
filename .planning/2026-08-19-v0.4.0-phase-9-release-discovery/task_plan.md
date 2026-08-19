@@ -3,18 +3,18 @@
 ## Goal
 
 完成 `v0.4.0` standing Phase 9的版本化 gate。P9-A 已把 Phase 4功能基线迁移为稳定的 pre-seal source candidate；
-当前只实施 P9-B 的本地封印部分：重新证明冻结 ZIP 身份，把 exact ZIP SHA 写入 ZIP 外 bootstrap，冻结 bootstrap SHA，
-完成本地/ref-aware回归并形成 sealed-source Cloud handoff。Cloud证据未返回前，P9-B不得记为完整 PASS。
+当前 P9-B本地字节封印已完成；sealed-source Cloud前先闭合维护者授权的 Release-excluded ROADMAP信息架构治理，重新生成
+最终 sealed-source HEAD，再执行 exact-HEAD Cloud handoff。Cloud证据未返回前，P9-B不得记为完整 PASS。
 
 ## Next Step
 
-P9-B本地封印与回归已完成；承载本计划、bootstrap和 evidence尾注的本地 commit就是 exact sealed-source HEAD。维护者 push后
-从该 HEAD执行通用 Source/Candidate setup与 deep check，并回传明确最终 exit code、Linux零 skip、deterministic ZIP、
-install/doctor与 manifest-routed inventory证据；Cloud PASS前停止，不进入 P9-C。
+ROADMAP第 4/5章结构治理已闭合并验证；下一步只讨论维护者点名的 P9/F3B2段落应删除、压缩还是迁移，未获维护者决定前
+不改这两段。该讨论关闭并形成最后一个 Release-excluded commit后，新 commit才是 exact sealed-source HEAD；维护者 push并
+完成 Cloud PASS前停止，不进入 P9-C。
 
 ## Current Phase
 
-P9-B3 sealed-source Cloud handoff
+P9-B3b ROADMAP current-status paragraph disposition
 
 ## Phases
 
@@ -125,10 +125,28 @@ P9-B3 sealed-source Cloud handoff
 - 回补 local seal事实并创建单一职责本地 commit；回传 exact sealed-source HEAD和两份资产 SHA。
 - 维护者 push后，从 exact HEAD运行 Source/Candidate Cloud gate；只有其 PASS才能关闭 P9-B并请求 P9-C。
 
+### P9-B3a — ROADMAP information architecture governance
+
+**Status:** completed
+
+- 保留维护者已建立的独立 Product Phase顶层章节，不回滚用户改动。
+- 把 Phase 4 gate/opt-in/lifecycle长期路线迁入 Product Phase章；当前列车章只承载 current role/Phase 9 lifecycle。
+- 临时4.6逐 gate流水账退出 ROADMAP并由 history/acceptance继续承载；仅保留候选原子闭合与迁移生命周期账规则。
+- 暂不决定维护者点名的 P9/F3B2两段去留；先完成结构、focused governance验证与本地 commit，再进入该讨论。
+
+### P9-B3b — ROADMAP current-status paragraph disposition
+
+**Status:** in_progress
+
+- 在新的第 4/5章边界下复核两段是否仍有独立 programme价值，区分 current state、稳定 Release规则与历史原因。
+- 优先删除已由第2节、4.1、Release章节和历史证据承载的重复信息；如有唯一稳定规则，只保留最小一句并放入唯一 authority。
+- 未经维护者决定不改这两段；任何结论仍不得改动 ZIP input或重开 P9-C。
+
 ## Authorization
 
 - 已授权：P9-B本地封印；重新构建并核验 P9-A candidate；只把 exact ZIP SHA写入 ZIP 外 stable bootstrap；计算 bootstrap SHA；
-  修改 Release-excluded tests/planning/history与当前 acceptance/ROADMAP的 gate状态；相称本地/ref-aware验证与本地 commit。
+  修改 Release-excluded tests/planning/history与当前 acceptance/ROADMAP的 gate状态；维护者当前进一步授权 ROADMAP第4/5章
+  信息架构治理、相称静态守卫与本地 commit。
 - 未授权：修改任何 ZIP entry、package/contract/manifest/README或 production/runtime字节；由本地智能体执行 Cloud；创建/移动/
   删除 refs；push/PR/tag/Release/publication/promotion；上传资产、修改 Latest或仓库设置；P9-C；切换 `0.5.0-dev`/Phase 5。
 
@@ -140,6 +158,7 @@ P9-B3 sealed-source Cloud handoff
 - bootstrap不再是 ZIP外资产、checksum不是 frozen candidate SHA，或无法冻结其自身 SHA。
 - 本地/ref-aware回归失败，或 Cloud要求 source修复；前者停止分类，后者明确退回 P9-A而不是继续 seal。
 - 任何步骤需要远端 ref/Release/publication/promotion、P9-C或下一版本动作。
+- ROADMAP治理需要改动 README或任何 ZIP input，删除维护者点名后置讨论的 P9/F3B2段落，或把历史流水账重新复制到另一宏观章节。
 
 ## Errors Encountered
 
@@ -151,6 +170,7 @@ P9-B3 sealed-source Cloud handoff
 | First ref-pair postflight used an overly narrow `for-each-ref` prefix and reported zero pairs | 1 | Rerun from `refs/heads/validation` with an explicit `validation/v0.4.0-dev-*` filter and require exactly 11 matching local/origin pairs. |
 | Full P9-A suite treated a stable package name as proof that bootstrap must already have an exact hash | 1 | Stable identity begins in P9-A while seal belongs to P9-B. Derive accepted status from ROADMAP and checksum state from actual bytes; allow zero hash only for a non-accepted candidate and keep it fail closed. |
 | First P9-B PowerShell audit interpolated `$tag:` as an invalid drive-qualified variable | 1 | Delimit the variable as `${tag}:`; rerun the complete audit rather than treating the parser error as repository evidence. |
+| ROADMAP focused Node runner again hit Windows sandbox `spawn EPERM` | 1 | Reran the exact two-file command with process permission; all 18 tests passed, so this remained a platform launch limitation. |
 
 ## Current status
 

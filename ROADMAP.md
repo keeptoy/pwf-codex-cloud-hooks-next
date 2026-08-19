@@ -55,59 +55,16 @@ baseline promotion；当前 lifecycle 角色只见第 2 节。实际版本 delta
 精确 source/资产身份与 predecessor 迁移链见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，完整
 阶段与晋级证据见 [`docs/v0.3.5-cloud-hard-acceptance.md`](docs/v0.3.5-cloud-hard-acceptance.md)。
 
-## 4. 当前开发列车与 Product Phase 路线
+## 4. 当前开发列车
 
-`v0.3.5` 的 zero-hash Source/Candidate Cloud 已 PASS，Published Release Cloud hard acceptance 已 PASS，
-publication 与 Latest postflight 也已闭合。C2 已把 bundle tombstone、通用 exact schema、字段生命周期、Release
-entry mode、兼容/rollback 与 placement 收敛为 `CONDITIONAL_GO` 输入；本地 `0.4.0-dev` 上的 Phase 4 Discovery
-已联合复核 attestation、nonce、opt-in v3 modes、source admission 与 contract foundation shape，并冻结为
-F1 conditional go。后续路线校准与 Phase 4.3 实施规划已把完整施工顺序冻结为
-F0、F1A、F1B、F2A、F2B 与 F3；这是 programme 顺序，不是
-implementation authorization。
+仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
+bootstrap/acceptance；当前窗口为 v0.4.0 exact-hash sealed-source candidate + v0.3.5 accepted。v0.3.4
+immediate fallback 与 v0.3.3 deeper fallback 均由 immutable commit、tag、Release、exact acceptance 与
+publication oracle 恢复；更早历史只留在精选 provenance。
+trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。
 
-Phase 4 Discovery 已完成并冻结为 `CONDITIONAL_GO_TO_F1_INACTIVE_FOUNDATION`；Phase 4.3 又闭合了 F0、F1A、F1B
-文件/authority、hash、测试、平台与 installed-state migration 施工图。F0 已建立未封板的 `v0.4.0-dev`
-package/machine identity 和 zero-hash bootstrap；F1A 已完成 contract/source foundation；F1B 已闭合 implementation、完整回归、deterministic ZIP 与 Linux/no-live Cloud acceptance。F1 foundation 已完成；行为激活、seal 与 publication 仍未授权。精确 Next Step
-和停止条件只见活动 task plan；已完成 v0.3.5 基线与 rollback 证据仍见第 3 节及 provenance/acceptance。
 
-F2A 专项 Discovery 随后冻结为 `CONDITIONAL_GO_TO_F2A_IMPLEMENTATION`：managed activation commit point 与
-upstream `.mode` profile 分离，未 armed 时 production 不读取旧 `.mode`；F2A 复用 request/result v2 和 pristine
-smart renderer，不扩大 Host event、upstream inventory 或 workspace-write 边界。该结论只完成施工设计，F2A
-implementation 已获维护者授权并按该设计施工；本地闭合与 Source/Candidate/no-live Cloud acceptance 均已通过，
-但仍不等于真实 smart opt-in lifecycle acceptance，也不授权 F2B/F3。
-
-F2B 专项 Discovery 已冻结为 `CONDITIONAL_GO_TO_F2B_READ_ONLY_IMPLEMENTATION`：旧 smart token 不得静默扩大为
-autonomous 授权；候选 autonomous commit point 必须与 profile 绑定、最后写入。owned runtime 可在既有只读 private-
-snapshot boundary 内完成 exact attestation、nonce 与 bounded ledger admission；该 read-only implementation 已获授权，并已
-闭合本地与 Source/Candidate/no-live Cloud gate。F3 Discovery 已选择 Git-backed preparation + activation-only commits，
-并将后继拆为 F3A repository/producer/runbook foundation、F3B live lifecycle 与 F3C disarm-first rollback。维护者已授权
-F3A；active-scope 准入、fail-closed prepare/verify、exact two-commit relation、专用 runbook 与本地负向测试已经落地，
-其 Linux/Source-Candidate no-live 验收也已闭合。F3B0 live-preflight Discovery 随后冻结 runtime source/workspace
-lifecycle 双身份、true Fresh 与隔离的 smart/autonomous 验证链；F3B1 随后已把 exact setup/maintenance transaction、
-隔离 DAG、bounded tamper 与 exact evidence record 物化并完成 repository-only/no-live dry run。维护者随后已授权并完成
-F3B2 smart live；markerless runtime source 与隔离 smart validation refs 在真实 Cloud 中依次证明 prepared legacy、armed
-smart、disarmed legacy、rearmed smart，Fresh/UserPrompt、S_ARM real Resume、doctor、零 residue 与最终退出状态均闭合。
-F3B3 小型 Discovery 随后完成 runtime/upstream 复核，冻结独立 markerless `A_BASE`、零 ledger、bounded tamper、
-re-attest/re-arm 与 operator/evidence 分工，并给出
-`CONDITIONAL_GO_TO_F3B3_AUTONOMOUS_MATERIALIZATION`；维护者随后完成本地 materialization 和另行执行的真实 Cloud live：
-独立 DAG、exact refs、candidate audit、自包含 guide、六份 evidence、两个 mandatory Resume、tamper refusal 与 environment
-销毁均已闭合，development 仍 markerless。F3B4 小型 Discovery 随后把十份 stage evidence、exact refs、candidate、
-Host/probe provenance、markerless residue 与 retention 统一对账，给出
-`CONDITIONAL_GO_TO_F3B4_EVIDENCE_CLOSURE`；维护者随后授权并完成 Release-excluded closure，最终得到
-`F3B_LIVE_LIFECYCLE_PASS / STOP_BEFORE_F3C`。全部 validation refs 保留。F3C 小型 Discovery 随后确认 publication
-rollback identity 不等于 direct installed downgrade，并冻结 committed disarm → current-owned uninstall → immutable v0.3.5
-clean install → current exact forward recovery；smart/autonomous 必须独立 live，runtime-only revival 只做 no-live negative。
-结论为 `CONDITIONAL_GO_TO_F3C1_ROLLBACK_PROTOCOL_MATERIALIZATION`；维护者随后授权 F3C1，本地已物化
-direct-downgrade refusal、双身份 rollback evidence helper、runtime-only revival negative 与独立 operator guide；随后在
-ref-aware Linux exact checkout 完成 13/13、零 fail、零 skip验收，两个 profile 的 revival negative 均实际执行。维护者随后
-授权并完成 F3C2 smart `S_ROLLBACK` 与独立 `S_RECOVER`：accepted v0.3.5 rollback、exact current 0.4.0-dev recovery、
-Fresh/real Resume、legacy profile、doctor、backup、零 residue 与两份 evidence 均已闭合，F3C2 因此 PASS并停止在 F3C3 前。
-维护者随后分别完成 F3C3 `A_ROLLBACK` 与独立 `A_RECOVER`：accepted v0.3.5 和恢复后的 exact current 0.4.0-dev
-在 autonomous prepared残留状态上都只产生 legacy context，nonce/Plan-SHA/ledger renderer均未泄漏，activation未复活；
-rollback/recovered evidence均已通过并停止在 F3C4 前。后继 F3C4小型 Discovery把四份 live record、两项 revival negative、
-exact identities、refs/residue与生命周期统一对账；维护者随后授权并完成 Release-excluded aggregate closure与第一轮
-retirement inventory。F3C与 Product Phase 4功能施工因此 PASS，形成 `0.4.0`功能/候选基线；11个 validation refs、operator
-guide与回归守卫按账 KEEP/MIGRATE。当前列车 Phase 9 Discovery、P9-A与 P9-B本地封印已完成；P9-B sealed-source Cloud
+当前列车 Phase 9 Discovery、P9-A与 P9-B本地封印已完成；P9-B sealed-source Cloud
 仍待维护者从 exact sealed commit执行，后继 publication/promotion仍未授权。如果
 lifecycle 最终不可行，兜底仍是回退 smart-only
 或 defer，不能发布 unreachable code。
@@ -116,31 +73,11 @@ lifecycle 最终不可行，兜底仍是回退 smart-only
 stable candidate transaction 中把该段改为永久成立的 authority 路由。旧 F3B2 Cloud 证据仍只证明旧 dev candidate，
 不能给本次改变后的 ZIP 字节背书；后继 P9-B 必须重新完成 exact sealed-source 验收。
 
-仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
-bootstrap/acceptance；当前窗口为 v0.4.0 exact-hash sealed-source candidate + v0.3.5 accepted。v0.3.4
-immediate fallback 与 v0.3.3 deeper fallback 均由 immutable commit、tag、Release、exact acceptance 与
-publication oracle 恢复；更早历史只留在精选 provenance。
-trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。
 
-下表是未来 Discovery 的候选，不是发布承诺，也不自动授权下一 Phase。一个 Phase 可以有多个
-pre-release；多个低风险 Phase 也只有在独立评审后才能进入同一版本列车。
-
-| Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
-|---|---|---|---|---|
-| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | complete；F3C4 aggregate closure与第一轮 retirement review PASS；当前列车 P9-B local seal PASS / Cloud pending |
-| 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
-| 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest 各自独立 gate；必须有 use case、latency/token budget 与 Cloud 证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7 前置 |
-| 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan 时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6 进入 Discovery |
-| 8 | `0.8.0-*` | optional hard gating，复用 Phase 7 evaluator | 重新 Discovery writer/counter/atomicity/lock/cache/Resume/rollback；再增加 block cap、escape hatch 与 stall state | pending；implementation 前必须重新 Discovery |
-| 9 | 当前列车的 `rc.N` → stable | standing Release 收口：完整矩阵、最终字节、canary retirement、正式发布 | RC 与最终资产分别验收；重新下载双资产；可逆 | standing gate；`v0.3.5` instance complete；当前 `v0.4.0` instance P9-B local seal complete / sealed-source Cloud pending |
-
-Phase 9 是 Release 收口，不机械等于 `0.9.0`。例如只完成 Phase 4 时，它可以封板 `0.4.0`；如果多个
-Phase 经独立 gate 后被明确合并，则封板当时获批的同一版本列车。`v0.3.5` 的 Phase 9 instance 已完成，
-但 Phase 9 本身是每条未来列车都要重新进入的 standing gate，不能继承上一版本的 PASS。
 
 <a name="phase-9-v0-4-0-instance"></a>
 
-### 当前 `v0.4.0` Phase 9 instance
+### 4.1 当前版本 `v0.4.0` Phase 9 instance   退役路线与退役状态维护
 
 本实例的 Discovery、P9-A与 P9-B本地封印已关闭：stable identity、ZIP输入、exact ZIP SHA与外部 bootstrap SHA已经收敛；
 P9-B sealed-source Cloud仍待维护者从 exact commit执行，P9-C及后继 gate均未被自动授权。顺序必须保持：
@@ -162,7 +99,7 @@ F3 candidate SHA或本地资产冒充公开下载；P9-E前不得轮转 accepted
 
 <a name="version-train-two-retirement-reviews"></a>
 
-### 每条版本列车的两轮退役审查
+### 4.2 每条版本列车的两轮退役审查
 
 默认情况下，一个 Product Phase完成一项目标并形成对应版本的功能/候选基线；随后该版本列车进入自己的 standing Phase 9，
 封板、发布、公开验收并轮转 accepted/fallback角色；再切换下一条 development列车进入后继 Phase。例如：
@@ -189,7 +126,25 @@ immutable public assets或轮转 accepted角色。Phase 9的第二轮审查只�
 若维护者明确批准多个低风险 Phase合并到同一版本列车，每个 Phase仍分别做第一轮审查，而该列车只在最终发布时做一次
 第二轮审查。
 
-### 4.1 Phase 4 已采纳 gate 路线
+## 5. Product Phase 路线
+
+下表是未来 Discovery 的候选，不是发布承诺，也不自动授权下一 Phase。一个 Phase 可以有多个
+pre-release；多个低风险 Phase也只有在独立评审后才能进入同一版本列车。
+
+| Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
+|---|---|---|---|---|
+| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | complete；F3C4 aggregate closure与第一轮 retirement review PASS；当前列车 P9-B local seal PASS / Cloud pending |
+| 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
+| 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立 gate；必须有 use case、latency/token budget与 Cloud证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7前置 |
+| 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6进入 Discovery |
+| 8 | `0.8.0-*` | optional hard gating，复用 Phase 7 evaluator | 重新 Discovery writer/counter/atomicity/lock/cache/Resume/rollback；再增加 block cap、escape hatch与 stall state | pending；implementation前必须重新 Discovery |
+| 9 | 当前列车的 `rc.N` → stable | standing Release收口：完整矩阵、最终字节、canary retirement、正式发布 | RC与最终资产分别验收；重新下载双资产；可逆 | standing gate；`v0.3.5` instance complete；当前 `v0.4.0` instance P9-B local seal complete / sealed-source Cloud pending |
+
+Phase 9是 Release收口，不机械等于 `0.9.0`。例如只完成 Phase 4时，它可以封板 `0.4.0`；如果多个
+Phase经独立 gate后被明确合并，则封板当时获批的同一版本列车。`v0.3.5`的 Phase 9 instance已完成，
+但 Phase 9本身是每条未来列车都要重新进入的 standing gate，不能继承上一版本的 PASS。
+
+### 5.1 Phase 4 已采纳 gate 路线
 
 Phase 4 保持 Phase 4.1 冻结的 hybrid owned-boundary 与两个现有 turn-start events，不改变主架构；内部按
 风险和故障域拆成八个 gate。完整 programme 顺序为
@@ -234,59 +189,10 @@ Phase 4 的施工顺序因此不是“逐步给模型加权限”，而是先铺
 | F3B — Live Cloud lifecycle | 分 B0～B4 证明 exact smart/autonomous commit 在 true Fresh、UserPrompt、real Resume、disarm/re-arm 中确实成立 | runtime/workspace 双身份 exact；cache 不是 authority；不执行 rollback | Cloud lifecycle、takeover |
 | F3C — Disarm-first rollback | 证明先提交 disarm 再回滚/重装，不会留下 dormant token 在未来升级后“复活” | live PASS 不等于 Release；禁止 runtime-only rollback | installed state、workspace intent、rollback |
 
-F0 是 Phase 4 的正式前置 gate，不是 F1A 内部顺手改版本号。它只建立可变的开发身份；现已独立完成。
-F1A 也已闭合 schema 4、bundle/Release v2、placement、entry mode 与 exact v0.3.5 installed-state transition，且未改变
-legacy runtime behavior。当时的 `v0.4.0-dev` zero-hash source candidate 已完成 Source/Candidate/no-live Cloud foundation；
-当前由 P9-A 生成的 `v0.4.0` stable zero-hash candidate 接替其版本角色，但仍未封板或发布。F1B 结束后的停止点已经履行；维护者随后只授权并完成 F2A
-Discovery 与 implementation。首次 Linux/Source-Candidate no-live 执行暴露 Cloud 模型自动修复并创建 PR 的验收
-写权限缺口，只保留为诊断/功能证据；协议修正后的 Fresh run 已从同一 exact HEAD 闭合 Linux 零 skip、deterministic
-ZIP、B～E blackbox 与 manifest-routed v2 deep check。F2A Source/Candidate/no-live Cloud 因此 PASS。维护者随后只授权
-F2B Discovery；该探路已 conditional-go，维护者随后授权并完成本地 read-only implementation 与
-Source/Candidate/no-live Cloud 验收。F3 Discovery 随后已关闭并给出 `CONDITIONAL_GO_TO_F3A_IMPLEMENTATION`；维护者随后
-授权 F3A。当前 active-scope repository admission、prepare/verify、exact activation/disarm commit relation、专用 F3
-runbook 和 disposable-fixture 负向测试已经完成本地实施；exact source随后闭合 Linux 零 skip、deterministic ZIP、B～E
-markerless legacy 与 post-Resume deep check，F3A Source/Candidate/no-live Cloud 因此 PASS。当前停止线是 F3B live Cloud
-lifecycle 之前；F3B0 live-preflight Discovery 已完成并给出
-`CONDITIONAL_GO_TO_F3B1_PROTOCOL_MATERIALIZATION`。维护者随后只授权 F3B1；exact setup/maintenance transaction、
-smart/autonomous Git graph、bounded tamper 与 exact evidence record 已成为版本化 runbook，并在 disposable Git repo
-完成 no-live dry run，production/contract/Release bytes不变。维护者随后单独授权并完成 F3B2；markerless runtime source 和
-隔离的 `S_PREP → S_ARM → S_DISARM → S_REARM` refs 已在真实 Cloud lifecycle 中分别证明 legacy → smart → legacy →
-smart，且 S_ARM Fresh + real Resume、UserPrompt、doctor、零 residue 与 exact evidence records 全部闭合。F3B2 因此
-`SMART_LIVE_PASS / STOP_AND_REVIEW`。F3B3 小型 Discovery 随后确认现有 production seam 足够，并把下一步冻结为：
-先物化独立 markerless `A_BASE`、autonomous zero-ledger、tamper、disarm/re-attest/re-arm refs 与自包含 operator guide，
-再另行执行真实 Cloud live。两步均已完成：实际 profile 链闭合为 legacy → autonomous → canary-only refusal → legacy →
-legacy → autonomous，armed/rearmed 分别通过 mandatory Resume，tamper environment 已销毁。F3B3 因此
-`AUTONOMOUS_LIVE_PASS / STOP_AND_REVIEW`。F3B4 小型 Discovery 已确认十份 evidence 不冲突、development markerless、
-candidate 未漂移且 validation refs 应保留到 F3C/当前 Phase 9 instance，结论为
-`CONDITIONAL_GO_TO_F3B4_EVIDENCE_CLOSURE`；后续 closure 已按 Phase 4.9 最小方案完成，十份 evidence 汇总为
-`F3B_LIVE_LIFECYCLE_PASS / STOP_BEFORE_F3C`，全部 validation refs 保留。
-F3C 已完成单独 Discovery：唯一支持路线从既有 committed disarm refs 开始，由 current installer 卸载，再校验并 clean-install
-immutable v0.3.5，最后只走 current 已准入的 exact forward migration；direct old-over-new downgrade 与 armed/runtime-only rollback
-保持禁止。后继拆成 F3C1 Release-excluded protocol/no-live materialization、F3C2 smart live、F3C3 autonomous live、F3C4 aggregate
-closure。F3C1 已获授权并完成 Release-excluded materialization 与 ref-aware Linux/no-live 零跳过验收；F3C2 smart live
-已完成 `S_ROLLBACK` 与独立 `S_RECOVER`，smart rollback + exact-current recovery 因此 PASS；F3C3 已完成独立
-`A_ROLLBACK` 与 `A_RECOVER`，autonomous rollback + exact-current recovery因此 PASS。F3C4 Discovery进一步确认四份 live record与两项
-revival negative可在不新增 Cloud/schema/production bytes的前提下做 Release-excluded aggregate closure；后继 implementation
-已经完成 aggregate evidence与第一轮 retirement inventory，结论为
-`F3C_ROLLBACK_PASS / SMART_AND_AUTONOMOUS_ROLLBACK_EVIDENCE_RECONCILED / PHASE_4_FUNCTIONAL_BASELINE_READY / STOP_BEFORE_PHASE_9`。
-Validation refs没有批量删除；后继 Phase 9 Discovery与 P9-A已经完成，ref第二轮 review仍保持 KEEP；P9-B及其后继 gate
-仍需另行授权。
-Phase 4.7～4.11 详细设计仍只从 README 文档地图进入历史索引，不在 programme authority 创建第二个 history 入口。
-
-F1A/F1B 是独立审查、测试和停止点，不强制形成两个可发布的半成品。只要 runtime/schema bytes 会影响 bundle、
-manifest 或 ZIP hash，最终 candidate 就必须在同一完整 transaction 内使 contract、代码、inventory、mode 与 hash
-全部自洽；不得发布只完成一半或无法 deterministic build/check 的中间状态。
-
-每个迁移 gate 都必须在活动 planning 中维护一张迁移生命周期总账，至少覆盖文件/路径、schema 字段、代码常量与
-分支、producer/consumer、hash/inventory、测试和 current 文档。每一项同时记录 owner、`KEEP/REPLACE/RETIRE/DEFER`
-动作、落地 gate、依赖传播、验证证据、迁移后状态与再次 review/retirement 条件。开工前做全仓 inventory，施工中按
-leaf → contract → manifest → installer/builder → Release 顺序闭合，退出前同时做旧符号/旧路径残留扫描与新 authority
-正向对账；允许留在 immutable history 的命中必须显式分类，不能和 current residue 混为一谈。未关闭或无 owner 的行
-会阻断 gate PASS；不得另建第二份 machine authority 来保存这张治理账。
 
 <a name="phase-4-f2-activation-protocol"></a>
 
-### 4.2 F2 activation/disarm 前置协议
+### 5.2 F2 activation/disarm 前置协议
 
 F1A/F1B 可以先规划和实施；F2A/F2B 已把 smart/autonomous 的启用与退出冻结为以下协议：
 
@@ -318,28 +224,35 @@ commit、plan 与容器内 state 的 consent callback。只有未来出现 authe
 
 <a name="phase-4-f2b-discovery-handoff"></a>
 
-### 4.3 F2B Discovery 交接
+### 5.3 Phase 4 activation/lifecycle 决策
 
-F2B 没有改变 Phase 4.1 的 hybrid owned-boundary，也没有新增 Host event、managed writer 或 schema generation。
-实现保持旧 `codex-managed-v1\n` 为 smart-only，并以 exact `codex-managed-v1 autonomous\n` 绑定 autonomous；
-`.mode=autonomous\n`、nonce、attestation 与 bounded ledger 先准备，activation 最后原子写入。owned runtime 每次
-验证 captured task digest 和全部 state，只把 ledger `tick/event` 写进 private snapshot；零 ledger 合法，raw
-`progress.md` 不读取。invalid/incomplete/mutated/over-budget state 只拒绝。
+Phase 4没有改变 hybrid owned-boundary、Host event集合或 managed runtime只读 workspace的原则。smart保持
+`codex-managed-v1\n`，autonomous使用 profile-bound `codex-managed-v1 autonomous\n`；mode、nonce、attestation与
+bounded ledger先准备，activation最后原子写入。runtime每次重新验证 task digest和全部 state，只投影 ledger的
+`tick/event`；零 ledger合法，raw `progress.md`不读取，invalid/incomplete/mutated/over-budget状态只拒绝。
 
-Cloud activation 仍不是当前功能事实。F3 Discovery 已确认 Git-backed 双阶段路线为首选：preparation 与最后 activation
-必须是两个经用户检查的 exact commit，Fresh task 从 activated commit 启动；同一 Cloud chat 的未提交 follow-up state
-因没有 durable authorization ABI 而降为 `DEFERRED/EXPERIMENTAL`，不进入首轮稳定验收。后继必须按 F3A → F3B → F3C
-逐门授权：先补 active-scope repository admission、fail-closed prepare/verify 与 runbook；再验 Fresh/Resume、disarm/re-arm；
-最后才做 disarm-first rollback。autonomous armed 时 task bytes冻结，修改计划必须 disarm、重新 attestation、再以新的
-activation-only commit re-arm；只回滚 runtime 而保留 token 会产生未来升级复活风险，属于禁止路线。任何 gate 失败都可
-`NO_GO/defer`，不得为了保留“以后可能有用”而发布 unreachable reader/writer。完整取舍与生命周期只从 README 文档地图
-进入 Phase 历史索引查看。
+真实 lifecycle采用 Git-backed preparation commit加独立 activation-only commit。Fresh task从 activated commit启动；
+autonomous armed后若 task bytes变化，必须先 disarm、重新 attestation，再用新的 activation-only commit re-arm。
+跨版本恢复必须从 committed disarm开始，走 current-owned uninstall、immutable accepted clean install与 exact-current
+forward recovery；只回滚 runtime却保留 activation属于禁止路线。F3B/F3C的具体 Cloud轮次、refs、hash与 PASS证据只在
+版本 acceptance和 Phase历史中保存，不在 ROADMAP重建第二份流水账。
 
-首选失败后切换备选仍属于未发布 `v0.4.0-dev` programme：使用新的 alpha/beta candidate，撤销失败 bytes 并重新闭合
-hash、ZIP、Cloud 与 rollback gates，不自动改成 `v0.4.1`。如果先发布 smart-only stable `v0.4.0`，以后新增 autonomous
-会改变授权与用户行为，应重新安排下一 minor programme；`0.x.y (y>0)` 继续只承担同一 minor 内兼容修复。
+<a name="phase-4-migration-lifecycle-governance"></a>
 
-### 4.4 Phase 5～8 已采纳边界
+### 5.4 迁移 transaction 与对象生命周期治理
+
+F1A/F1B可以作为独立审查、测试和停止点，但不形成两个可发布半成品。只要 runtime/schema bytes影响 bundle、manifest或
+ZIP hash，最终候选必须在同一 transaction内让 contract、代码、inventory、mode与 hash原子闭合；不得发布只完成一半或
+无法 deterministic build/check的中间状态。
+
+每个迁移 gate都必须在活动 planning维护对象生命周期账，覆盖文件/路径、schema字段、代码常量与分支、producer/consumer、
+hash/inventory、测试和 current文档；逐项记录 owner、`KEEP/REPLACE/RETIRE/DEFER`、落地 gate、依赖传播、验证证据、
+迁移后状态与再次 review条件。开工前做全仓 inventory，施工按 leaf → contract → manifest → installer/builder → Release
+闭合，退出前同时扫描旧符号/旧路径并正向核对新 authority。允许留在 immutable history的命中必须显式分类；无 owner或
+未关闭的对象阻断 gate PASS，也不得另建第二份 machine authority保存这张账。
+
+
+### 5.5 Phase 5～8 已采纳边界
 
 - **Phase 5：** 先重新核对实际 Cloud payload，比较现有 `SessionStart source=clear|compact` 与
   PreCompact/PostCompact 的时序和恢复能力。现有事件足够时不扩大 managed event set；只有真实 context 丢失或
@@ -351,7 +264,7 @@ hash、ZIP、Cloud 与 rollback gates，不自动改成 `v0.4.1`。如果先发�
   Discovery ledger/counter owner、atomicity/lock、cache/Resume inheritance 与 rollback residue；不得直接把上游
   best-effort shell lock 提升为 managed authority。
 
-## 5. 版本号与晋级语义
+## 6. 版本号与晋级语义
 
 项目在 `0.x` 阶段仍主动维持 legacy 默认兼容；SemVer 允许的变化范围不能替代显式 Host ABI、
 trusted graph、rollback 和 Cloud 评审。
@@ -370,12 +283,12 @@ trusted graph、rollback 和 Cloud 评审。
 
 <a name="discovery-gate-governance"></a>
 
-## 6. Discovery 与 gate 晋级模型
+## 7. Discovery 与 gate 晋级模型
 
 本项目采用“先探路、再实施”的动态轮次治理。Discovery 不是固定的 Phase 编号，而是在继续实现可能
 导致“实现正确，但架构方向错了”时主动暂停并恢复证据的设计 gate。
 
-### 6.1 Discovery 触发条件
+### 7.1 Discovery 触发条件
 
 以下情况必须先进入 Discovery：
 
@@ -401,7 +314,7 @@ trusted graph、rollback 和 Cloud 评审。
 Step。结论冻结前，production dispatch、发布哈希和外部部署保持不变；允许的活动仅限获批的只读恢复、
 探针、测试/fixture 和设计文档，不得用生产改动代替架构决策。
 
-### 6.2 正式加 Round 与 Round 内子门槛
+### 7.2 正式加 Round 与 Round 内子门槛
 
 按变化影响选择治理粒度，而不是为了维持旧轮次数字硬塞风险：
 
@@ -413,7 +326,7 @@ Step。结论冻结前，production dispatch、发布哈希和外部部署保持
 
 关键 gate 不因“仍在同一 Phase”而豁免设计检查；反过来，局部实现拆分也不应虚增 programme Round。
 
-### 6.3 Discovery 最低产物与结论
+### 7.3 Discovery 最低产物与结论
 
 每次 Discovery 至少冻结：
 
@@ -429,7 +342,7 @@ Step。结论冻结前，production dispatch、发布哈希和外部部署保持
 任何结论都不自动授权后续激活、Release、部署或 rollback。若路线选择会改变上述边界，智能体应先提供
 证据、选项与代价，再请求维护者授权。
 
-### 6.4 标准晋级链
+### 7.4 标准晋级链
 
 标准晋级链为：
 
@@ -446,10 +359,10 @@ Discovery
   -> rollback-baseline promotion
 ```
 
-每个箭头都是独立 gate；前一 gate PASS 不自动授权后一 gate。任一步出现 6.1 的触发条件，都回到
-Discovery，按 6.2 决定增加正式 Round 或 Round 内子门槛，再按 6.3 重新冻结结论。
+每个箭头都是独立 gate；前一 gate PASS 不自动授权后一 gate。任一步出现 7.1 的触发条件，都回到
+Discovery，按 7.2 决定增加正式 Round 或 Round 内子门槛，再按 7.3 重新冻结结论。
 
-## 7. Release 授权与封板顺序
+## 8. Release 授权与封板顺序
 
 只有 ROADMAP 把目标版本标为获批 Release candidate，且活动 task plan 明确授权具体 Release gate，
 才允许封板。稳定构建/验证命令由 [`README.md`](README.md) 管理，精确版本步骤和资产证据由相应版本
@@ -460,7 +373,7 @@ acceptance 管理；[`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) 只提供�
 
 <a name="release-four-step-flow"></a>
 
-### 7.1 大白话 Release 四步
+### 8.1 大白话 Release 四步
 
 以后每个版本按四个大步骤走；前一步通过只允许进入下一步，不自动把后面的角色一起改掉：
 
@@ -478,7 +391,7 @@ candidate+accepted 窗口的本地版本文件与旧 oracle。
 
 <a name="pre-1-compatibility-admission"></a>
 
-### 7.2 Pre-1.0 compatibility 与历史债准入
+### 8.2 Pre-1.0 compatibility 与历史债准入
 
 本仓库目前仍是 `1.0.0` 前的内部验证线，但“pre-1.0”本身不能代替明确的支持合同。默认支持面只包括
 clean install，以及当前 installer、machine contracts 和行为测试明确覆盖的 managed install/doctor/repair/
@@ -541,13 +454,13 @@ RC/canary 通过不能替代最终字节验收。ZIP 或 bootstrap 任一字节�
 新的 downloaded-asset/Fresh Cloud 证据。bootstrap 永远是 ZIP 外部资产，禁止 moving branch、
 `latest` 或无 checksum URL。
 
-## 8. 回滚与基线提升
+## 9. 回滚与基线提升
 
 当前角色只在第 2 节维护。未来版本只有在 immutable publication、重新下载、Fresh/Resume/doctor 和
 rollback 验证全部通过后，才能更新该表并成为新的基线。旧资产、tag、SHA、acceptance 和迁移 evidence
 refs 不得重写；pointer-only promotion 也不能反向修改 sealed ZIP 输入。
 
-## 9. 长期泛化边界
+## 10. 长期泛化边界
 
 当前唯一正式集成仍是 PWF v3.8.2。第二个只读插件尚未证明 Host/runner/Driver 抽象，因此不得把项目
 描述为通用 Skill 转换器，也不预先为泛化能力分配版本号。只有独立 Discovery 和第二实现证据完成后，

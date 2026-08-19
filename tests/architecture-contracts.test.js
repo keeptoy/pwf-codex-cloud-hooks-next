@@ -233,6 +233,14 @@ test("DESIGN maps every test module back to the capability and boundary it prote
 test("ROADMAP keeps stable Discovery and Release governance anchors", () => {
   const roadmap = readText("ROADMAP.md");
   const readme = readText("README.md");
+  const currentTrainStart = roadmap.indexOf("## 4. 当前开发列车");
+  const productPhaseStart = roadmap.indexOf("## 5. Product Phase 路线");
+  const versioningStart = roadmap.indexOf("## 6. 版本号与晋级语义");
+  assert.notEqual(currentTrainStart, -1);
+  assert.notEqual(productPhaseStart, -1);
+  assert.notEqual(versioningStart, -1);
+  const currentTrain = roadmap.slice(currentTrainStart, productPhaseStart);
+  const productPhases = roadmap.slice(productPhaseStart, versioningStart);
   assert.match(roadmap, /^<a name="version-train-two-retirement-reviews"><\/a>$/m);
   assert.match(roadmap, /^<a name="phase-4-opt-in-purpose"><\/a>$/m);
   assert.match(roadmap, /^<a name="discovery-gate-governance"><\/a>$/m);
@@ -243,6 +251,14 @@ test("ROADMAP keeps stable Discovery and Release governance anchors", () => {
   assert.match(roadmap, /第二轮：Phase 9 role rotation/);
   assert.match(roadmap, /review.*不是为了清单好看而强制删除/);
   assert.match(roadmap, /多个低风险 Phase合并到同一版本列车[\s\S]*每个 Phase仍分别做第一轮审查[\s\S]*只在最终发布时做一次[\s\S]*第二轮审查/);
+  assert.doesNotMatch(currentTrain,
+    /Phase 4 已采纳 gate 路线|F2 activation\/disarm 前置协议|F2B Discovery 交接|流水账文件/);
+  for (const anchor of ["phase-4-opt-in-purpose", "phase-4-f2-activation-protocol", "phase-4-f2b-discovery-handoff"]) {
+    assert.match(productPhases, new RegExp(`<a name="${anchor}"></a>`));
+  }
+  assert.match(productPhases, /F1A\/F1B[\s\S]*独立审查[\s\S]*候选[\s\S]*原子闭合/);
+  assert.match(productPhases, /对象生命周期账[\s\S]*KEEP\/REPLACE\/RETIRE\/DEFER/);
+  assert.doesNotMatch(roadmap, /### 4\.6 流水账/);
   assert.match(readme, /ROADMAP\.md#pre-1-compatibility-admission/);
 });
 

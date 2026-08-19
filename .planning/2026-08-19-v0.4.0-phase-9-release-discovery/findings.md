@@ -221,3 +221,32 @@ maintainer authorization boundary.
   exact source commit; the second additionally requires the maintainer-pushed exact HEAD to pass Source/Candidate Cloud acceptance.
 - Any required change to README, package, manifest, Release contract or another ZIP entry invalidates the frozen candidate and routes
   back to P9-A. P9-B is not a place to repair candidate inputs under a previously calculated hash.
+
+## Post-seal ROADMAP governance reopening
+
+- The maintainer intentionally reorganized `ROADMAP.md` after local seal commit `390d666`. Therefore that commit remains a valid local
+  byte-seal checkpoint, but it is no longer the future sealed-source Cloud HEAD; the final exact HEAD must be derived only after the
+  authorized ROADMAP governance commit closes.
+- README remains state-neutral and ARCHITECTURE remains system-level. The only dirty path is the maintainer-owned ROADMAP edit, so it
+  must be preserved and refined in place rather than replaced with the previous layout.
+- Making Product Phase routing its own top-level section is directionally correct. The temporary `4.6` block is not a durable section:
+  it reintroduces chronological F0/F1/F2/F3 implementation narration already owned by Phase history and version acceptance.
+- The immediate task is limited to ROADMAP information architecture: retain stable programme decisions and current lifecycle roles,
+  compress or route historical gate narration, and defer the maintainer-identified P9/F3B2 paragraph decision until the first two
+  structural issues are closed.
+- Full ROADMAP review shows the new top-level Product Phase chapter should own the Phase table, Phase 4 adopted gate model,
+  opt-in purpose/protocol and Phase 5–8 adopted boundaries. Leaving Phase 4.3–4.5 under “current development train” would keep the
+  same conceptual coupling even though the table moved.
+- Temporary section 4.6 contains three different classes: (a) pure chronology already preserved by Phase 4 history/acceptance,
+  which should leave ROADMAP; (b) durable programme decisions already expressed by the Phase 4 gate table/protocol, which should be
+  deduplicated; and (c) two durable governance rules—F1A/F1B may be separate review gates but candidate bytes close atomically, and
+  every migration gate maintains an object-lifecycle ledger—which should survive as compact Product Phase governance.
+- The clean target shape is therefore: current-role/current-release-instance material in chapter 4; Product Phase table and durable
+  Phase 4/5–8 route decisions in chapter 5; generic Discovery/Release governance in later chapters; detailed F0–F3 chronology only in
+  version acceptance and `docs/history`.
+- The first two governance issues now close cleanly without changing the maintainer-deferred P9/F3B2 paragraphs. ROADMAP has one
+  `Product Phase` chapter: it owns the Phase table, durable Phase 4 route/protocol/decision, migration transaction/lifecycle policy and
+  Phase 5–8 boundaries. The duplicate chapter and temporary `4.6` chronology are gone.
+- The only content recovered from temporary `4.6` is durable rather than historical: F1A/F1B remain independently reviewable but the
+  affected candidate must close atomically; every migration gate must maintain an owned `KEEP/REPLACE/RETIRE/DEFER` ledger with
+  propagation, evidence and review conditions. Detailed F0–F3 implementation sequence stays routed to acceptance/history.
