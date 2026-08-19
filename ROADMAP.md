@@ -26,7 +26,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 当前已接受版本 | `v0.3.5`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.4` immediate fallback |
 | 回退证据链 | immutable `v0.3.3` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4；F1 foundation、F2A/F2B read-only consumer、F3A lifecycle foundation 与完整 F3B live lifecycle 均已闭合；smart/autonomous、tamper refusal、re-attest 和十份 evidence 已由 F3B4 汇总，validation refs 保留；F3C Discovery 已冻结 disarm-first rollback；F3C1 Release-excluded protocol/helper/guide 与 ref-aware Linux/no-live gate 已闭合；F3C2 smart rollback 与 exact-current recovery 已闭合，停止在 F3C3 前；F3C3/F3C4 未授权 |
+| 当前 programme 边界 | Product Phase 4；F1 foundation、F2A/F2B read-only consumer、F3A lifecycle foundation 与完整 F3B live lifecycle 均已闭合；smart/autonomous、tamper refusal、re-attest 和十份 evidence 已由 F3B4 汇总，validation refs 保留；F3C Discovery 已冻结 disarm-first rollback；F3C1 Release-excluded protocol/helper/guide 与 ref-aware Linux/no-live gate 已闭合；F3C2 smart rollback 与 exact-current recovery 已闭合；F3C3 current-HEAD只读 preflight已 GO，Cloud `A_ROLLBACK` 尚未授权/执行；F3C4 未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.3.5` 已完成 immutable publication、公开下载/安装验收与 pointer-only promotion；只读 postflight 确认它为
@@ -120,7 +120,7 @@ pre-release；多个低风险 Phase 也只有在独立评审后才能进入同�
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | F1/F2A/F2B/F3A Source/Candidate Cloud PASS；F3B0～F3B4 complete；完整 F3B live lifecycle PASS；F3C Discovery conditional-go；F3C1 ref-aware Linux/no-live PASS；F3C2 smart live PASS；停止在 F3C3 前 |
+| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | F1/F2A/F2B/F3A Source/Candidate Cloud PASS；F3B0～F3B4 complete；完整 F3B live lifecycle PASS；F3C Discovery conditional-go；F3C1 ref-aware Linux/no-live PASS；F3C2 smart live PASS；F3C3 read-only preflight GO，Cloud未运行 |
 | 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest 各自独立 gate；必须有 use case、latency/token budget 与 Cloud 证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7 前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan 时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6 进入 Discovery |

@@ -8,12 +8,12 @@ repository/no-live 测试证明旧版不能直接覆盖 current，再建立 acce
 
 ## Next Step
 
-停止并等待维护者讨论、复核和另行授权 F3C3 autonomous live。F3C2 smart rollback/recovery 已完整通过；不得自动执行
-`A_ROLLBACK` / `A_RECOVER`、进入 F3C4 aggregate closure，或进行任何 Release/远端写操作。
+等待维护者另行授权 F3C3 的第一轮 `A_ROLLBACK` Cloud task。当前 HEAD只读 preflight已 GO；未经新授权不得执行
+`A_ROLLBACK`，且第一轮即使 PASS也必须停下复核，不能自动继续 `A_RECOVER`。F3C4、Release与远端写操作仍禁止。
 
 ## Current Phase
 
-F3C2 smart live complete; stop before F3C3
+F3C3 autonomous live read-only preflight complete; wait before A_ROLLBACK
 
 ## Phases
 
@@ -101,6 +101,15 @@ F3C2 smart live complete; stop before F3C3
 - 将 rollback + recovery exact evidence写入版本 acceptance，并在 operator guide增加不改写旧时间语义的 post-run尾注。
 - 同步 ROADMAP、活动 planning与静态治理守卫；停止在 F3C3 前。
 
+### F3C3-P0 — Autonomous live current-HEAD preflight
+
+**Status:** completed
+
+- 只读核对 exact autonomous disarm ref、prepared state、activation absence、attestation/nonce/zero-ledger。
+- 核对 protocol/current/accepted identities、deterministic candidate、operator A rows与 evidence helper关系。
+- 只输出 GO/NO_GO并停止；不执行 Cloud transaction或任何 ref/workspace mutation。
+- 结论：exact state、双身份、candidate和协议均无漂移，`GO_TO_F3C3_AUTONOMOUS_LIVE`；Cloud仍未运行。
+
 ## Authorization
 
 - 已授权：F3C1 Release-excluded protocol/operator/helper、disposable repository/no-live tests、planning/history/static guards、
@@ -126,7 +135,8 @@ F3C2 smart live complete; stop before F3C3
 | 一次 `Select-String` pattern 末尾转义不完整，PowerShell 报非法 regex | 1 | 改用 `-SimpleMatch` 读取 immutable source；不影响代码或测试 |
 | Git Bash 在沙箱中创建 signal pipe时报 Win32 error 5 | 1 | 其他检查继续通过；仅将 bootstrap/guide Bash syntax改到非沙箱环境重跑 |
 | F3C 第 5 节在 Fresh Cloud 缺少全局 pristine Skill，current installer fail closed | 1 | 分类为 operator-guide prerequisite defect；将 frozen bootstrap `skill` 子命令纳入 transaction，不修改 installer/runtime |
+| Windows sandbox阻止只读 Node审计创建 `git` 子进程，返回 `spawnSync git EPERM` | 1 | 用相同只读命令在沙箱外重跑并通过；未修改 ref或 workspace |
 
 ## Current status
 
-`F3C2_SMART_LIVE_PASS / SMART_ROLLBACK_AND_EXACT_RECOVERY_CONFIRMED / STOP_BEFORE_F3C3`
+`F3C3_READ_ONLY_PREFLIGHT_PASS / GO_TO_F3C3_AUTONOMOUS_LIVE / A_ROLLBACK_NOT_RUN`

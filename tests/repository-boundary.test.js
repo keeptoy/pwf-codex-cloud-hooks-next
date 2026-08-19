@@ -64,6 +64,7 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap,
     /F3B4 evidence closure PASS；F3C Discovery conditional-go；F3C1 ref-aware Linux\/no-live protocol gate PASS/);
   assert.match(roadmap, /F3C2 smart rollback \+ exact-current recovery Cloud live PASS/);
+  assert.match(roadmap, /F3C3 current-HEAD只读 preflight已 GO，Cloud `A_ROLLBACK` 尚未授权\/执行/);
 });
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {

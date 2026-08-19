@@ -59,3 +59,15 @@
   predecessor, while the committed smart disarm state remained `smart_prepared`, activation remained absent, and both Host context
   and the v2 production probe remained legacy. Fresh, real Resume, doctor, backup, zero residue, verifier and recovered evidence all
   ended with explicit exit code 0. Smart rollback/recovery is therefore complete without granting F3C3 autonomous live.
+- F3C3 preflight resolved both local and origin-tracking autonomous disarm refs to
+  `98b6f138497af244563541ec655a1111198f0c36`. Its active plan is the expected autonomous materialization scope; exact tree audit
+  proved `.mode=autonomous`, a valid 16-hex nonce, attestation equal to the task bytes, absent activation and zero ledger files.
+  This is the intended `autonomous_prepared` state, not an armed or damaged residue.
+- Current source still resolves the frozen protocol checkpoint and accepted `v0.3.5` source exactly. Importer check passed; two
+  independent current builds remained 22 entries / 85,533 bytes with SHA-256 `df600104...`, matching the operator guide. The
+  accepted ZIP SHA `7d351cfe...` and source `5d01b558...` still agree across provenance and the guide. A-stage mappings and the
+  evidence helper both require autonomous-prepared + legacy, with accepted/current roles separated by rollback/recovered stage.
+- Focused protocol/publication/autonomous/governance regression passed 24/26 with zero failures and only the two expected Windows
+  Linux-only revival skips already closed by F3C1's ref-aware Linux run. No new schema, transaction, Host ABI or trusted-graph gap was
+  found. F3C3 therefore needs no new Discovery or production change; it may reuse the frozen operator guide, but `A_ROLLBACK` remains
+  a separately authorized Cloud action and must stop for evidence review before `A_RECOVER`.

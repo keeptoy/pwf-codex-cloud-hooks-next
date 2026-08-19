@@ -76,7 +76,18 @@
   test command was polled to an explicit final exit code 0. `git diff --check` passed.
 - Removed the time-coupled "current next gate" wording from the F3C2 walkthrough while retaining its stable two-task procedure and
   all pre-run, post-no-live, F3C2 post-run and section 10 authorization history/boundaries.
+- Began the maintainer-authorized F3C3 read-only preflight. Exact local/origin disarm refs, active plan, autonomous mode, nonce,
+  task attestation, activation absence and zero-ledger state all passed. The first Node/Git probe hit the known sandbox child-process
+  `EPERM`; the identical read-only probe passed outside that restriction.
+- F3C3 supply-chain preflight passed: protocol/accepted source refs resolved exactly, importer was healthy, dual current candidate
+  builds/checks were deterministic at the frozen SHA, and guide/provenance/helper A-stage identities remained aligned. Temporary ZIPs
+  were removed after their resolved paths were verified inside the OS temp directory.
+- F3C3 focused preflight regression passed 24/26 with zero failures and two honest Windows Linux-only skips. Marked the read-only
+  preflight complete with `GO_TO_F3C3_AUTONOMOUS_LIVE`; no Cloud transaction ran and work stops before separately authorized
+  `A_ROLLBACK`.
+- Post-status focused rollback/repository regression passed 11/13 with zero failures and the same two honest Windows-only skips;
+  planning lifecycle and programme authority guards accepted the new stop-before-`A_ROLLBACK` state.
 
 ## Current status
 
-`F3C2_SMART_LIVE_PASS / SMART_ROLLBACK_AND_EXACT_RECOVERY_CONFIRMED / STOP_BEFORE_F3C3`
+`F3C3_READ_ONLY_PREFLIGHT_PASS / GO_TO_F3C3_AUTONOMOUS_LIVE / A_ROLLBACK_NOT_RUN`
