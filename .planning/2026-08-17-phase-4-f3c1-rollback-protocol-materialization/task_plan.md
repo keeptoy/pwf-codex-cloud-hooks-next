@@ -8,13 +8,12 @@ repository/no-live 测试证明旧版不能直接覆盖 current，再建立 acce
 
 ## Next Step
 
-由维护者从同一个 exact smart disarm HEAD 新建 Cloud task，按 operator guide 完成 `S_RECOVER`：第 5 节 transaction、
-Fresh、real Resume、第 8 节只读 verifier 和第 9 节 recovered evidence。`S_ROLLBACK` 已完成；不得自动进入 F3C3
-autonomous live、F3C4 aggregate closure 或任何 Release/远端写操作。
+停止并等待维护者讨论、复核和另行授权 F3C3 autonomous live。F3C2 smart rollback/recovery 已完整通过；不得自动执行
+`A_ROLLBACK` / `A_RECOVER`、进入 F3C4 aggregate closure，或进行任何 Release/远端写操作。
 
 ## Current Phase
 
-F3C2 smart live in progress; S_ROLLBACK complete, S_RECOVER pending
+F3C2 smart live complete; stop before F3C3
 
 ## Phases
 
@@ -89,10 +88,18 @@ F3C2 smart live in progress; S_ROLLBACK complete, S_RECOVER pending
 
 ### F3C2-E2 — Smart exact-current recovery
 
-**Status:** pending maintainer execution
+**Status:** completed externally by maintainer
 
 - 从同一个 exact smart disarm HEAD 新建独立 Cloud task，先经过 accepted predecessor，再恢复 exact current candidate。
-- Fresh/Resume、只读 verifier 和 recovered evidence 全部通过后，才允许关闭 F3C2。
+- Fresh/Resume、只读 verifier 和 recovered evidence 全部通过；最终 current `0.4.0-dev` 仍使用 legacy，activation未复活，
+  doctor healthy、backup verified、snapshot leftovers 0，所有最终 exit code为 0。
+
+### F3C2-E3 — Smart live evidence closeout
+
+**Status:** completed
+
+- 将 rollback + recovery exact evidence写入版本 acceptance，并在 operator guide增加不改写旧时间语义的 post-run尾注。
+- 同步 ROADMAP、活动 planning与静态治理守卫；停止在 F3C3 前。
 
 ## Authorization
 
@@ -122,4 +129,4 @@ F3C2 smart live in progress; S_ROLLBACK complete, S_RECOVER pending
 
 ## Current status
 
-`F3C2_SMART_ROLLBACK_PASS / S_RECOVER_PENDING / F3C3_NOT_AUTHORIZED`
+`F3C2_SMART_LIVE_PASS / SMART_ROLLBACK_AND_EXACT_RECOVERY_CONFIRMED / STOP_BEFORE_F3C3`

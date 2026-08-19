@@ -67,7 +67,14 @@
 - Focused F3 lifecycle/rollback/repository regression passed 20/22 with zero failures and the two expected Windows-only Linux revival
   skips. The initial in-sandbox runner attempt hit the already-classified Windows `spawn EPERM`; the same tests passed outside that
   child-process restriction.
+- Maintainer completed independent `S_RECOVER`: Fresh and real Resume Host observations, current v2 production probe, doctor/role/
+  residue verifier, and recovered evidence all passed with explicit final exit code 0. Installed role/version returned to current
+  `0.4.0-dev`; `smart_prepared` stayed disarmed and effective profile stayed legacy.
+- Closed F3C2 in the operator guide, version acceptance, ROADMAP and active planning while preserving the earlier F3C1 historical
+  statuses. Work stops before separately authorized F3C3 autonomous live.
+- F3C2 closeout regression passed 20/22 with zero failures and the same two honest Windows Linux-only revival skips; the asynchronous
+  test command was polled to an explicit final exit code 0. `git diff --check` passed.
 
 ## Current status
 
-`F3C2_SMART_ROLLBACK_PASS / S_RECOVER_PENDING / F3C3_NOT_AUTHORIZED`
+`F3C2_SMART_LIVE_PASS / SMART_ROLLBACK_AND_EXACT_RECOVERY_CONFIRMED / STOP_BEFORE_F3C3`

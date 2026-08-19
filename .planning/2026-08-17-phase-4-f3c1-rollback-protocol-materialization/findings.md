@@ -55,3 +55,7 @@
   Setup output is not a dependable human interface because setup/maintenance completes before the model starts. Section 7 therefore
   carries an explicit four-stage expected-facts table and a placeholder-based prompt. Section 5 remains the machine checker; the table
   is only its operator-facing frozen projection, while section 8 remains the sole source of actual installed/profile facts.
+- The independent `S_RECOVER` task closed the other half of F3C2: current `0.4.0-dev` was restored only after the exact accepted
+  predecessor, while the committed smart disarm state remained `smart_prepared`, activation remained absent, and both Host context
+  and the v2 production probe remained legacy. Fresh, real Resume, doctor, backup, zero residue, verifier and recovered evidence all
+  ended with explicit exit code 0. Smart rollback/recovery is therefore complete without granting F3C3 autonomous live.
