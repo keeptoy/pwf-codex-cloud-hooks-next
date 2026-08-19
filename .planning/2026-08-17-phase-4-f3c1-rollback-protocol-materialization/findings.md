@@ -87,3 +87,6 @@
   accepted role/version, managed-legacy v1 request and legacy delimiter/progress assertions, not a field inferred from the stage name.
 - `A_ROLLBACK` evidence passed with doctor healthy, backup verified, zero snapshot residue and explicit verifier/validator exit code 0.
   This does not prove current recovery: `A_RECOVER` remains a separate fresh task and authorization gate.
+- `A_ROLLBACK` also exposed a repeatable operator-compliance gap: the main Fresh/Resume prompts already named all ledger markers, but
+  the Cloud model omitted them from its first reports. This is not a runtime or schema defect. The least invasive repair is an optional
+  same-task, no-tool follow-up that must report `UNKNOWN` when prior Host text cannot be verified; the original report remains evidence.

@@ -185,7 +185,7 @@ test("F3C operator guide is self-contained, exact, and preserves live authorizat
     "f3c3-autonomous-live-walkthrough",
     "f3c-frozen-identities", "f3c-no-live-gate", "f3c-ref-aware-checkout",
     "f3c-cloud-environment", "f3c-transaction", "f3c-cloud-order", "f3c-host-prompts",
-    "f3c-read-only-verifier", "f3c-evidence-records", "f3c-stop-and-handoff", "f3c-pre-run-status",
+    "f3c-host-observation-followups", "f3c-read-only-verifier", "f3c-evidence-records", "f3c-stop-and-handoff", "f3c-pre-run-status",
     "f3c-post-no-live-status", "f3c2-smart-post-run-status", "f3c3-autonomous-rollback-status",
   ]) assert.match(guide, new RegExp(`<a name="${anchor}"></a>`));
   for (const identity of [
@@ -245,6 +245,18 @@ test("F3C operator guide is self-contained, exact, and preserves live authorizat
   assert.match(guide,
     /for autonomous_marker in \('=== ledger summary ===', '=== RUN LEDGER ===', 'entries: 0'\):\n    assert autonomous_marker not in context/);
   assert.match(guide, /actual HEAD、actual installed role、actual effective profile 一律写 UNKNOWN/);
+  const followupStart = guide.indexOf('<a name="f3c-host-observation-followups"></a>');
+  const verifierStart = guide.indexOf('<a name="f3c-read-only-verifier"></a>');
+  assert.ok(followupStart >= 0 && verifierStart > followupStart);
+  const followups = guide.slice(followupStart, verifierStart);
+  for (const invariant of [
+    "上一条 Fresh startup 原始 Host 注入", "上一条 real Resume 的实际 Host 注入",
+    "=== ledger summary ===", "=== RUN LEDGER ===", "entries: 0", "UNKNOWN",
+    "不得根据 expected profile 推断",
+  ]) assert.match(followups, new RegExp(invariant.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(followups, /不是每轮固定步骤/);
+  assert.match(followups, /同一个 Cloud task/);
+  assert.match(followups, /不能覆盖原报告/);
   assert.match(guide,
     /F3C1_PROTOCOL_MATERIALIZED \/ REPOSITORY_AND_LINUX_NO_LIVE_REQUIRED \/ CLOUD_ROLLBACK_NOT_RUN \/ STOP_BEFORE_F3C2/);
   assert.match(guide,

@@ -103,6 +103,10 @@
   ROADMAP, version acceptance, operator stage status and active planning; stopped before separately authorized `A_RECOVER`.
 - Post-sync F3 lifecycle/rollback/repository regression passed 20/22 with zero failures and the two expected Windows Linux-only
   revival skips already closed by F3C1 Linux acceptance. Guide Bash blocks, acceptance ordering and partial-stage governance passed.
+- Added optional same-task Fresh/Resume follow-up prompts for omitted ledger observations, with explicit no-tool, no-inference,
+  `UNKNOWN` and preserve-original-report rules. Main prompts, transaction, verifier, evidence schema and gate status remain unchanged.
+- Focused rollback-guide/repository regression passed 11/13 with zero failures and the two expected Windows Linux-only revival skips;
+  follow-up anchor/content guards, all guide Bash blocks, Node syntax and `git diff --check` passed.
 
 ## Current status
 

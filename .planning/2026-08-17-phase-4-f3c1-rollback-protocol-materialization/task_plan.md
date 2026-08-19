@@ -127,6 +127,14 @@ F3C3 autonomous accepted rollback complete; wait before A_RECOVER
   `autonomous_prepared`、activation absent、doctor healthy与零 snapshot residue。
 - `profile=autonomous`、`stage=rollback` evidence通过 exact helper与最终 exit code检查；停止在 `A_RECOVER` 前。
 
+### F3C3-P2 — Host observation omission handrail
+
+**Status:** completed
+
+- 在第 7 节增加 Fresh与 real Resume分别可复制的 ledger漏答补问模板；主观察提示词与 evidence schema不变。
+- 补问仅允许在同一个 Cloud task复核上一条实际 Host注入；不能运行工具、覆盖原报告或用 expected profile补猜。
+- 当前 programme状态不变；仍停止在另行授权的 `A_RECOVER` 前。
+
 ## Authorization
 
 - 已授权：F3C1 Release-excluded protocol/operator/helper、disposable repository/no-live tests、planning/history/static guards、
