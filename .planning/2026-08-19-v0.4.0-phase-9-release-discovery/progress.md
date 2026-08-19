@@ -118,6 +118,24 @@
 - P9-B3b focused governance passed 18/18. Two independent ZIP builds/checks remained byte-identical at 22 entries, 85,519 bytes and
   SHA-256 `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`; `git diff --check` passed. The retained chapter-4 opener
   remains current-train governance, while the removed chronology stays owned by Phase history/acceptance.
+- Opened P9-B3c to turn the sealed-source Cloud handoff into an executable maintainer entry without creating a second acceptance or
+  copying the generic template's Bash. Added a repository guard first; its intentional red run produced one missing-anchor failure with
+  9/10 tests passing, confirming the new documentation contract was not yet materialized.
+- Added the P9-B operator entry to the existing v0.4.0 acceptance. It dynamically derives/push-verifies the final HEAD, explains the
+  `PWF_ACCEPTANCE_NODE_MAJOR` precondition, routes 4.1 → 5.1 → 6 → 7 → 8.1 → 8.2 → 9.1 to stable template anchors, supplies copyable
+  non-Bash prompts, freezes returned facts and stop conditions, and keeps P9-C unauthorized.
+- The first focused green run was platform-blocked by the known Windows `spawn EPERM`; the escalated rerun executed 18 tests and found
+  one documentation defect: the 9.1 return list named `PWF_SC_POST_RESUME` without requiring its exact `=PASS` value. Kept the test
+  strict and corrected the operator PASS criteria rather than weakening the guard.
+- The next focused run exposed an ordering conflict with the existing exact-evidence lifecycle guard: the pending operator entry had
+  placed the frozen ZIP SHA above the completed local-seal heading. Reordered the acceptance to present completed seal evidence first,
+  then the pending Cloud procedure, and updated the new structural guard to require that hierarchy.
+- Final P9-B3c focused governance passed 18/18. Full Windows regression passed 173 tests: 148 pass, 0 fail and 25 honest Linux/POSIX-only
+  skips. Importer, owned Python compile, installer Node syntax, `git diff --check` and both bootstrap Bash syntax probes passed; the first
+  sandboxed Bash attempt hit the known Win32 signal-pipe restriction and the permissioned rerun passed both files.
+- Two independent candidate builds/checks stayed byte-identical at 22 entries, 85,519 bytes and SHA-256
+  `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`. The operator entry, guard and planning are Release-excluded;
+  P9-B3c is complete, while sealed-source Cloud evidence and P9-B closure remain pending before P9-C.
 
 ## Current status
 

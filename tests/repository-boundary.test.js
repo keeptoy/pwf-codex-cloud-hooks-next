@@ -411,6 +411,29 @@ test("change history, programme, provenance, and current acceptance keep separat
     /phase-4\.10-f3c-rollback-discovery\.md#phase-4-10-decision/);
   assert.match(acceptance,
     /phase-4\.10-f3c-rollback-discovery\.md#phase-4-10-f3c1-linux-no-live-acceptance/);
+  assert.match(acceptance, /^<a name="v0-4-0-p9-b-sealed-source-cloud-operator"><\/a>$/m);
+  const p9bOperatorStart = acceptance.indexOf('<a name="v0-4-0-p9-b-sealed-source-cloud-operator"></a>');
+  const p9bLocalSealStart = acceptance.indexOf('<a name="v0-4-0-p9-b-local-seal-evidence"></a>');
+  const f3c4ClosureStart = acceptance.indexOf('<a name="v0-4-0-dev-f3c4-aggregate-closure"></a>');
+  assert.ok(p9bLocalSealStart > 0 && p9bOperatorStart > p9bLocalSealStart
+    && f3c4ClosureStart > p9bOperatorStart);
+  const p9bOperator = acceptance.slice(p9bOperatorStart, f3c4ClosureStart);
+  for (const anchor of [
+    "source-candidate-setup",
+    "blackbox-post-install-resume",
+    "blackbox-canonical-baseline",
+    "blackbox-canonical-context",
+    "blackbox-real-resume",
+    "source-candidate-deep-check",
+  ]) assert.match(p9bOperator, new RegExp(`cloud-hard-acceptance-template\\.md#${anchor}`));
+  for (const signal of [
+    "git rev-parse HEAD", "git push origin 0.4.0", "git ls-remote origin refs/heads/0.4.0",
+    "PWF_ACCEPTANCE_NODE_MAJOR", "PWF_SC_RUNBOOK_HEAD", "PWF_DEEP_CHECK_HEAD",
+    "PWF_SOURCE_CANDIDATE_SETUP=PASS", "PWF_SC_POST_RESUME=PASS",
+  ]) assert.match(p9bOperator, new RegExp(signal.replaceAll(".", "\\.")));
+  assert.match(p9bOperator, /4\.1[\s\S]*5\.1[\s\S]*第 6 节[\s\S]*第 7 节[\s\S]*8\.1[\s\S]*8\.2[\s\S]*9\.1/);
+  assert.doesNotMatch(p9bOperator, /~~~bash|```bash|set -Eeuo pipefail/,
+    "version acceptance must route to the template rather than copy its Bash authorities");
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3c1-local-materialization"><\/a>$/m);
   assert.match(acceptance,
     /F3C1_PROTOCOL_NO_LIVE_PASS \/ REF_AWARE_LINUX_ZERO_SKIP \/ CLOUD_ROLLBACK_NOT_RUN \/ STOP_BEFORE_F3C2/);

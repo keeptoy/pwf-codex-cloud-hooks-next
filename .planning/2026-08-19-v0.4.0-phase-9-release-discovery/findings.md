@@ -255,3 +255,12 @@ maintainer authorization boundary.
   owned by 4.1/Release governance; F3B2 rationale remains historical evidence.
 - The remaining opening paragraph in chapter 4 is correctly placed. It defines the current candidate/accepted/fallback role window and
   exact-vs-lifecycle repository zones, so it is current-train governance rather than Product Phase implementation chronology.
+- P9-B needs an operator-facing entry, but not a second acceptance file. The existing version acceptance should route the maintainer to
+  the generic template's exact Source/Candidate setup and deep-check anchors, derive the final source identity after the documentation
+  commit, and record only returned facts. Copying either long Bash block would create a second script authority and future drift.
+- The generic template already freezes the complete Source/Candidate order: 4.1 source setup in the selected checkout; a new task for
+  5.1 post-install Resume; 6/7/8.1 in that task; real reopen for 8.2; then 9.1 deep check. The version operator entry should explain this
+  choreography, the environment variable/preflight, and the two places where scripts must be extracted from the final checkout.
+- The operator entry must not freeze the current local HEAD because writing that entry creates a newer commit. It should give the
+  maintainer a PowerShell push/`ls-remote` equality check and require the Cloud-reported setup/deep-check HEADs to equal that resulting
+  commit. This makes the post-documentation commit—not a prose constant—the identity authority.

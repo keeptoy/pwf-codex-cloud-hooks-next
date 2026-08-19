@@ -8,9 +8,10 @@
 
 ## Next Step
 
-ROADMAP治理已闭合并验证；创建最后一个 Release-excluded本地 commit，该 commit就是新的 exact sealed-source HEAD。
-维护者 push后从该 HEAD执行通用 Source/Candidate setup与 deep check，并回传明确最终 exit code、Linux零 skip、deterministic
-ZIP、install/doctor与 manifest-routed inventory证据；Cloud PASS前停止，不进入 P9-C。
+维护者 push本轮最后一个 Release-excluded本地 commit后，按
+`docs/v0.4.0-cloud-hard-acceptance.md#v0-4-0-p9-b-sealed-source-cloud-operator` 从该 exact HEAD执行 4.1 → 5.1 → 6 → 7 →
+8.1 → 8.2 → 9.1，并回传明确最终 exit code、Linux零 skip、deterministic ZIP、Host、install/doctor与 manifest-routed
+inventory原始证据。Cloud PASS前 P9-B保持未关闭，不进入 P9-C。
 
 ## Current Phase
 
@@ -142,11 +143,20 @@ P9-B3 sealed-source Cloud handoff
 - 优先删除已由第2节、4.1、Release章节和历史证据承载的重复信息；如有唯一稳定规则，只保留最小一句并放入唯一 authority。
 - 未经维护者决定不改这两段；任何结论仍不得改动 ZIP input或重开 P9-C。
 
+### P9-B3c — Sealed-source Cloud operator entry
+
+**Status:** completed
+
+- 继续使用现有版本 acceptance，不创建第二份 Phase 9 acceptance authority。
+- 只记录操作顺序、动态 HEAD绑定、模板锚点、回传字段和停止条件；通用 Bash脚本仍由 Cloud hard acceptance template唯一维护。
+- 文档/守卫/活动 planning保持 Release-excluded；验证后本地 commit并把其 exact HEAD交给维护者 push。
+
 ## Authorization
 
 - 已授权：P9-B本地封印；重新构建并核验 P9-A candidate；只把 exact ZIP SHA写入 ZIP 外 stable bootstrap；计算 bootstrap SHA；
   修改 Release-excluded tests/planning/history与当前 acceptance/ROADMAP的 gate状态；维护者当前进一步授权 ROADMAP第4/5章
-  信息架构治理、删除已确认重复的两段 current-status/F3B2说明、收缩4.1标题、相称静态守卫与本地 commit。
+  信息架构治理、删除已确认重复的两段 current-status/F3B2说明、收缩4.1标题、在现有 v0.4.0 acceptance补充 P9-B Cloud
+  operator入口、相称静态守卫与本地 commit。
 - 未授权：修改任何 ZIP entry、package/contract/manifest/README或 production/runtime字节；由本地智能体执行 Cloud；创建/移动/
   删除 refs；push/PR/tag/Release/publication/promotion；上传资产、修改 Latest或仓库设置；P9-C；切换 `0.5.0-dev`/Phase 5。
 
@@ -172,6 +182,12 @@ P9-B3 sealed-source Cloud handoff
 | First P9-B PowerShell audit interpolated `$tag:` as an invalid drive-qualified variable | 1 | Delimit the variable as `${tag}:`; rerun the complete audit rather than treating the parser error as repository evidence. |
 | ROADMAP focused Node runner again hit Windows sandbox `spawn EPERM` | 1 | Reran the exact two-file command with process permission; all 18 tests passed, so this remained a platform launch limitation. |
 | First ROADMAP governance commit attempt could not create `.git/index.lock` in the workspace sandbox | 1 | Repeated the same scoped add/commit with Git metadata permission; local commit `dfbc128` was created without changing the staged file set. |
+| Resume read used the three-argument `Join-Path` form unsupported by this PowerShell | 1 | No file was written; switched to the active plan's explicit paths and completed the required recovery reads. |
+| First acceptance/template inspection command had an unterminated nested PowerShell quote | 1 | No file was written; split the inspection into simple newline-separated commands and completed it successfully. |
+| First focused P9-B3c green run found the deep-check field list lacked the exact `PWF_SC_POST_RESUME=PASS` acceptance value | 1 | Kept the guard strict and added the exact terminal marker to the operator PASS criteria; no product or Release input changed. |
+| Second focused P9-B3c run found exact sealed ZIP evidence above the completed local-seal heading | 1 | Preserved the existing lifecycle guard and reordered the version acceptance to show completed local-seal evidence before the pending Cloud operator entry. |
+| P9-B3c focused Node runner hit the known Windows sandbox `spawn EPERM` | 1 | Reran the identical focused command with child-process permission; assertions executed and the later final run passed 18/18. |
+| P9-B3c sandboxed Git Bash syntax probe could not create its signal pipe (`Win32 error 5`) | 1 | Reran the same read-only `bash -n` loop with process permission; both versioned bootstraps passed. |
 
 ## Current status
 
