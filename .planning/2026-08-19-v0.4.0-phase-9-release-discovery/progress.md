@@ -80,7 +80,25 @@
 - Residue scan found the retired dev bootstrap path only inside the frozen F3C operator guide, where it addresses the exact archived
   protocol source that actually ran. No current authority or current package points to the retired dev bootstrap/acceptance paths.
 - Closed P9-A0 through P9-A4 and stopped before P9-B. No Cloud, seal hash write, ref mutation, remote action, publication or promotion ran.
+- Maintainer authorized P9-B. Reopened the plan for local byte reproof, exact external-bootstrap sealing, local/ref-aware regression and
+  sealed-source Cloud handoff only; P9-B remains incomplete until exact-HEAD Cloud evidence returns, and P9-C remains unauthorized.
+- Before editing bootstrap, two independent current builds/checks reproduced the P9-A identity exactly: 22 entries, 85,519 bytes,
+  SHA-256 `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`, byte-for-byte deterministic.
+- Replaced only the stable bootstrap default zero checksum with that frozen ZIP SHA. Sealed bootstrap SHA-256 is
+  `4ae21c1fc99f52b1382543fac437096d4db1d3415cb40df578f29ed82cc4c64f`.
+- Rebuilt/check-copied two candidates after sealing; ZIP identity stayed exactly 22 / 85,519 /
+  `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`, proving the external asset did not enter the archive.
+- Added the P9-B state guard first. Its escalated Windows red run produced exactly the expected stale ROADMAP/history/acceptance failures;
+  after synchronizing the three authorities, the focused bootstrap/release/publication/repository matrix passed 26/26 with zero skips.
+- Full Windows suite passed: 173 tests, 148 pass, 0 fail and 25 honest Linux/POSIX-only skips. Importer, owned Python compile,
+  installer Node syntax, both versioned bootstrap Bash syntax checks and `git diff --check` also passed.
+- P9-B local seal evidence now explicitly distinguishes local frozen bytes from sealed-source Cloud acceptance. No Cloud, ref mutation,
+  tag, Release, publication, promotion or P9-C action has run.
+- Final ref-aware audit confirmed immutable tags `v0.3.5=5d01b55890c1da2a5088e2b991b152a9fb1c3f87` and
+  `v0.3.4=59a999f705701ec67463649e9424f3d059863c81`, plus all 11 local/origin validation-ref pairs at identical commits.
+- Changed-path audit against the P9-A parent intersects zero ZIP entries and exactly one external Release asset:
+  `init-cloud-sandbox-v0.4.0.bash`. The first audit command had a PowerShell `${tag}:` interpolation defect; the corrected full audit passed.
 
 ## Current status
 
-`P9_A_PRE_SEAL_IMPLEMENTATION_IN_PROGRESS / ZERO_HASH_REQUIRED / STOP_BEFORE_P9_B / PUBLICATION_NOT_AUTHORIZED`
+`P9_B_LOCAL_SEAL_PASS / SEALED_SOURCE_CLOUD_PENDING / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`

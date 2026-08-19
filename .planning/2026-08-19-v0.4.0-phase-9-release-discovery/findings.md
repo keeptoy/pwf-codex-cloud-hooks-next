@@ -210,3 +210,14 @@ maintainer authorization boundary.
 - Stable acceptance uses a new top-level stable anchor and keeps all executed dev anchors intact. The dev bootstrap/acceptance paths are retired by rename, while F3 dev guides remain exact evidence.
 - P9-A frozen candidate facts: 22 entries, 85,519 bytes, SHA-256 `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`; two independent builds/checks were byte-identical. This is a local zero-hash candidate fact, not a sealed/public asset identity, and must not be copied into bootstrap before P9-B authorization.
 - Final lifecycle state: dev bootstrap/acceptance paths retired by rename; stable identity/hash edge migrated; current prose reconciled; v0.3.5 working-tree role files, F3 refs/guides/validators/negative tests and installed transition retained. No unowned transition object remains in the P9-A change set.
+
+## P9-B authorization and local-seal boundary
+
+- P9-B starts from clean P9-A commit `cb5da4b61899cd05f237bc3adcd3e09c8cd24bee`. The candidate identity must be proved again
+  from fresh builds before it is copied into bootstrap; the P9-A history line is not sufficient evidence by itself.
+- The stable bootstrap is an external Release asset and is excluded from the 22-entry ZIP. Therefore its checksum can be sealed without
+  changing candidate bytes, but this independence must be re-proved after the edit.
+- “Local seal complete” and “P9-B PASS” are deliberately different states. The first freezes candidate/bootstrap bytes and creates the
+  exact source commit; the second additionally requires the maintainer-pushed exact HEAD to pass Source/Candidate Cloud acceptance.
+- Any required change to README, package, manifest, Release contract or another ZIP entry invalidates the frozen candidate and routes
+  back to P9-A. P9-B is not a place to repair candidate inputs under a previously calculated hash.

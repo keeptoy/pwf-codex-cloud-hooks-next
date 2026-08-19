@@ -56,12 +56,12 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap, /Product Phase 4功能施工已闭合/);
   assert.match(roadmap, /第一轮 retirement review完成/);
   assert.match(roadmap,
-    /Phase 9 P9-A pre-seal materialization已闭合[^]*当前仍不得进入 exact-hash seal、Cloud、发布、晋级或移动 validation refs/);
+    /Phase 9 P9-B本地封印已闭合[^]*sealed-source Cloud仍待维护者执行[^]*当前仍不得发布、晋级或移动 validation refs/);
   assert.match(roadmap,
     /Phase 4 \/ F3C4完成[\s\S]*形成0\.4\.0功能\/候选基线[\s\S]*切换0\.5\.0-dev并进入Phase 5/);
 });
 
-test("v0.4.0 Phase 9 pre-seal status is version-scoped and stops before exact-hash seal", () => {
+test("v0.4.0 Phase 9 local seal is version-scoped and stops before sealed-source Cloud", () => {
   const phase9 = read("docs/history/phase-9-v0.4.0-release-discovery.md");
   const phase4Closeout = read("docs/history/phase-4.11-f3c4-aggregate-closure-discovery.md");
   const historyIndex = read("docs/history/README.md");
@@ -80,6 +80,11 @@ test("v0.4.0 Phase 9 pre-seal status is version-scoped and stops before exact-ha
   assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-a-post-implementation"><\/a>$/m);
   assert.match(phase9,
     /P9_A_PRE_SEAL_MATERIALIZATION_PASS \/ ZERO_HASH_CANDIDATE_FROZEN \/ STOP_BEFORE_P9_B/);
+  assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-b-local-seal"><\/a>$/m);
+  assert.match(phase9,
+    /P9_B_LOCAL_SEAL_PASS \/ SEALED_SOURCE_CLOUD_PENDING \/ STOP_BEFORE_P9_C/);
+  assert.match(phase9, /24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3/);
+  assert.match(phase9, /4ae21c1fc99f52b1382543fac437096d4db1d3415cb40df578f29ed82cc4c64f/);
   assert.match(phase9, /v2 accepted \+ v1 fallback/);
   assert.match(phase9, /11 个 F3 validation refs[\s\S]*`KEEP`/);
   assert.match(phase9, /P9-A pre-seal materialization[\s\S]*P9-F second retirement and handoff/);
@@ -89,6 +94,8 @@ test("v0.4.0 Phase 9 pre-seal status is version-scoped and stops before exact-ha
     /phase-9-v0\.4\.0-release-discovery\.md#phase-9-v0-4-0-decision/);
   assert.match(acceptance,
     /v0\.4\.0 Phase 9 P9-A pre-seal materialization[^\n]*`PASS`/);
+  assert.match(acceptance,
+    /v0\.4\.0 Phase 9 P9-B local seal[^\n]*`LOCAL_SEAL_PASS \/ SEALED_SOURCE_CLOUD_PENDING`/);
   assert.match(roadmap, /^<a name="phase-9-v0-4-0-instance"><\/a>$/m);
   assert.match(roadmap, /P9-A pre-seal materialization[\s\S]*P9-F second retirement review/);
 });
@@ -491,7 +498,7 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /严格绑定.*zero-hash candidate/s);
   }
   if (candidate !== accepted && /\b[a-f0-9]{64}\b/i.test(acceptance)) {
-    const currentEvidenceHeading = "## F3C4 aggregate closure";
+    const currentEvidenceHeading = "## P9-B local seal evidence";
     const currentEvidenceAt = acceptance.indexOf(currentEvidenceHeading);
     assert.notEqual(currentEvidenceAt, -1,
       "current completed gate lacks an exact evidence heading");
@@ -506,7 +513,7 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance.slice(historicalEvidenceAt),
       /SOURCE_CANDIDATE_CLOUD_PASS \/ F1_FOUNDATION_COMPLETE/);
   }
-  assert.match(acceptance, /64 位 zero hash.*fail closed/s);
+  assert.match(acceptance, /P9-A.*64 位 zero hash.*fail closed[\s\S]*P9-B.*exact ZIP SHA/s);
   assert.match(acceptance, /Cloud hard acceptance template/);
   assert.match(acceptance, /不授予 F2A\/F2B activation/);
   assert.match(acceptance, /exact current id\/source inventory guard/);

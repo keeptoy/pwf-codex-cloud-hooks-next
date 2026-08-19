@@ -2,18 +2,19 @@
 
 ## Goal
 
-完成 `v0.4.0` standing Phase 9的版本化 gate。当前只实施 P9-A：把已关闭的 Phase 4功能基线迁移为稳定但尚未 sealed的
-pre-seal source candidate，原子闭合文档、版本身份、Release contract/hash、bootstrap/acceptance命名和 mixed v2/v1
-publication oracle；保持 bootstrap zero hash并停止在 P9-B之前。
+完成 `v0.4.0` standing Phase 9的版本化 gate。P9-A 已把 Phase 4功能基线迁移为稳定的 pre-seal source candidate；
+当前只实施 P9-B 的本地封印部分：重新证明冻结 ZIP 身份，把 exact ZIP SHA 写入 ZIP 外 bootstrap，冻结 bootstrap SHA，
+完成本地/ref-aware回归并形成 sealed-source Cloud handoff。Cloud证据未返回前，P9-B不得记为完整 PASS。
 
 ## Next Step
 
-P9-A 已闭合并停止。下一步只能是维护者审阅本地 commit 后决定是否另行授权 P9-B；若授权，P9-B 只允许把本次冻结的
-stable candidate ZIP exact SHA 写入 ZIP 外 bootstrap、完成 final-source/Cloud seal evidence，并在任何 ZIP input变化时退回 P9-A。
+P9-B本地封印与回归已完成；承载本计划、bootstrap和 evidence尾注的本地 commit就是 exact sealed-source HEAD。维护者 push后
+从该 HEAD执行通用 Source/Candidate setup与 deep check，并回传明确最终 exit code、Linux零 skip、deterministic ZIP、
+install/doctor与 manifest-routed inventory证据；Cloud PASS前停止，不进入 P9-C。
 
 ## Current Phase
 
-P9-A4 regression, candidate freeze and handoff
+P9-B3 sealed-source Cloud handoff
 
 ## Phases
 
@@ -96,21 +97,49 @@ P9-A4 regression, candidate freeze and handoff
 - 证明 development旧 SHA仅留在历史 evidence；生成新的 pre-seal stable candidate SHA，但不写入 bootstrap。
 - 审计旧路径/旧符号、Release changed-path交集和对象生命周期；回补 history/acceptance/planning并本地 commit，停止在 P9-B。
 
+### P9-B0 — Authority and byte-identity preflight
+
+**Status:** completed
+
+- 绑定 clean P9-A source commit和冻结 candidate事实，不从文档口号推断字节身份。
+- 在写 bootstrap前独立重建两份 ZIP，并要求 22 entries、85,519 bytes与 frozen SHA完全一致。
+
+### P9-B1 — Exact external-bootstrap seal
+
+**Status:** completed
+
+- 只把 frozen candidate SHA写入 `init-cloud-sandbox-v0.4.0.bash` 的默认 checksum。
+- 计算并记录 bootstrap SHA；再次证明 bootstrap在 ZIP外且 candidate字节未变化。
+
+### P9-B2 — Local and ref-aware regression
+
+**Status:** completed
+
+- 跑完整 Windows、本地静态、deterministic build和 ref-aware publication/rollback矩阵。
+- 对账 changed paths：任何 ZIP entry变化都使 P9-B失败并退回 P9-A。
+
+### P9-B3 — Sealed-source Cloud handoff
+
+**Status:** in_progress
+
+- 回补 local seal事实并创建单一职责本地 commit；回传 exact sealed-source HEAD和两份资产 SHA。
+- 维护者 push后，从 exact HEAD运行 Source/Candidate Cloud gate；只有其 PASS才能关闭 P9-B并请求 P9-C。
+
 ## Authorization
 
-- 已授权：P9-A pre-seal implementation；修改 README/ARCHITECTURE/DESIGN/CHANGELOG/ROADMAP/provenance current narrative、
-  package/Release contract/manifest raw hash、bootstrap/acceptance命名与内容、Release-excluded tests/planning/history；构建本地
-  zero-hash pre-seal candidate；相称本地验证与本地 commit。
-- 未授权：P9-B exact ZIP SHA写入或 seal；Cloud执行；创建/移动/删除 refs；push/PR/tag/Release/publication/promotion；上传资产、
-  修改 Latest或仓库设置；切换 `0.5.0-dev`/Phase 5；改变 Host ABI、trusted graph、runtime/installer行为或 installed transition。
+- 已授权：P9-B本地封印；重新构建并核验 P9-A candidate；只把 exact ZIP SHA写入 ZIP 外 stable bootstrap；计算 bootstrap SHA；
+  修改 Release-excluded tests/planning/history与当前 acceptance/ROADMAP的 gate状态；相称本地/ref-aware验证与本地 commit。
+- 未授权：修改任何 ZIP entry、package/contract/manifest/README或 production/runtime字节；由本地智能体执行 Cloud；创建/移动/
+  删除 refs；push/PR/tag/Release/publication/promotion；上传资产、修改 Latest或仓库设置；P9-C；切换 `0.5.0-dev`/Phase 5。
 
 ## Stop Conditions
 
-- 任一改动需要改变 Host ABI、trusted graph、runtime/installer行为、installed transition或 rollback contract。
-- stable identity无法按 package → contract/raw SHA → manifest → acceptance/bootstrap原子闭合，或出现 dev/stable双 authority。
-- 新 candidate不 deterministic、旧 `df600104…`被误提升为 stable evidence，或 bootstrap不再保持64位 zero hash。
-- published oracle无法同时支持当前 v1/v1窗口与未来 v2/v1窗口，或为绿色结果削弱 direct downgrade refusal。
-- 任何步骤需要 Cloud、seal、远端 ref/Release/promotion或下一版本动作。
+- 写 bootstrap前或写入后，candidate不是 22 entries、85,519 bytes、SHA-256
+  `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`，或双构建不一致。
+- 除 stable bootstrap checksum、Release-excluded gate记录/守卫外还需要修改任何 ZIP input、production/runtime、contract或 manifest。
+- bootstrap不再是 ZIP外资产、checksum不是 frozen candidate SHA，或无法冻结其自身 SHA。
+- 本地/ref-aware回归失败，或 Cloud要求 source修复；前者停止分类，后者明确退回 P9-A而不是继续 seal。
+- 任何步骤需要远端 ref/Release/publication/promotion、P9-C或下一版本动作。
 
 ## Errors Encountered
 
@@ -121,7 +150,8 @@ P9-A4 regression, candidate freeze and handoff
 | Parallel Windows postflight made Git Bash fail to create its signal pipe (`Win32 error 5`) | 1 | This is process/sandbox contention, not Bash syntax evidence. Rerun checks sequentially and give only the Bash syntax probe the process permission it requires. |
 | First ref-pair postflight used an overly narrow `for-each-ref` prefix and reported zero pairs | 1 | Rerun from `refs/heads/validation` with an explicit `validation/v0.4.0-dev-*` filter and require exactly 11 matching local/origin pairs. |
 | Full P9-A suite treated a stable package name as proof that bootstrap must already have an exact hash | 1 | Stable identity begins in P9-A while seal belongs to P9-B. Derive accepted status from ROADMAP and checksum state from actual bytes; allow zero hash only for a non-accepted candidate and keep it fail closed. |
+| First P9-B PowerShell audit interpolated `$tag:` as an invalid drive-qualified variable | 1 | Delimit the variable as `${tag}:`; rerun the complete audit rather than treating the parser error as repository evidence. |
 
 ## Current status
 
-`P9_A_PRE_SEAL_MATERIALIZATION_PASS / ZERO_HASH_CANDIDATE_FROZEN / STOP_BEFORE_P9_B / PUBLICATION_NOT_AUTHORIZED`
+`P9_B_LOCAL_SEAL_PASS / SEALED_SOURCE_CLOUD_PENDING / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`

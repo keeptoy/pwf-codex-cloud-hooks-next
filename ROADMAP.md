@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.0` zero-hash stable pre-seal candidate；Phase 4 functional baseline ready；Phase 9 Discovery 与 P9-A pre-seal materialization complete；P9-B exact-hash seal、sealed-source Cloud、publication、Published Release、promotion均未授权 |
+| 当前开发列车 | `v0.4.0` exact-hash sealed-source candidate；Phase 4 functional baseline ready；Phase 9 Discovery、P9-A 与 P9-B本地封印 complete；sealed-source Cloud待维护者从 exact commit执行，publication、Published Release、promotion均未授权 |
 | 当前已接受版本 | `v0.3.5`；production rollback 与 GitHub `Latest` |
 | 当前直接回退版本 | immutable `v0.3.4` immediate fallback |
 | 回退证据链 | immutable `v0.3.3` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4功能施工已闭合；第一轮 retirement review完成；Phase 9 P9-A pre-seal materialization已闭合，已原子收敛 stable identity、README/当前文档与动态 oracle，并冻结 zero-hash candidate；当前仍不得进入 exact-hash seal、Cloud、发布、晋级或移动 validation refs |
+| 当前 programme 边界 | Product Phase 4功能施工已闭合；第一轮 retirement review完成；Phase 9 P9-B本地封印已闭合，ZIP与外部 bootstrap exact hash已冻结；sealed-source Cloud仍待维护者执行，当前仍不得发布、晋级或移动 validation refs |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.3.5` 已完成 immutable publication、公开下载/安装验收与 pointer-only promotion；只读 postflight 确认它为
@@ -107,8 +107,8 @@ Fresh/real Resume、legacy profile、doctor、backup、零 residue 与两份 evi
 rollback/recovered evidence均已通过并停止在 F3C4 前。后继 F3C4小型 Discovery把四份 live record、两项 revival negative、
 exact identities、refs/residue与生命周期统一对账；维护者随后授权并完成 Release-excluded aggregate closure与第一轮
 retirement inventory。F3C与 Product Phase 4功能施工因此 PASS，形成 `0.4.0`功能/候选基线；11个 validation refs、operator
-guide与回归守卫按账 KEEP/MIGRATE。当前列车 Phase 9 Discovery与 P9-A pre-seal materialization已完成；P9-B及后继
-seal/Cloud/publication/promotion仍未授权。如果
+guide与回归守卫按账 KEEP/MIGRATE。当前列车 Phase 9 Discovery、P9-A与 P9-B本地封印已完成；P9-B sealed-source Cloud
+仍待维护者从 exact sealed commit执行，后继 publication/promotion仍未授权。如果
 lifecycle 最终不可行，兜底仍是回退 smart-only
 或 defer，不能发布 unreachable code。
 
@@ -117,7 +117,7 @@ stable candidate transaction 中把该段改为永久成立的 authority 路由�
 不能给本次改变后的 ZIP 字节背书；后继 P9-B 必须重新完成 exact sealed-source 验收。
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
-bootstrap/acceptance；当前窗口为 v0.4.0 zero-hash pre-seal candidate + v0.3.5 accepted。v0.3.4
+bootstrap/acceptance；当前窗口为 v0.4.0 exact-hash sealed-source candidate + v0.3.5 accepted。v0.3.4
 immediate fallback 与 v0.3.3 deeper fallback 均由 immutable commit、tag、Release、exact acceptance 与
 publication oracle 恢复；更早历史只留在精选 provenance。
 trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。
@@ -127,12 +127,12 @@ pre-release；多个低风险 Phase 也只有在独立评审后才能进入同�
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | complete；F3C4 aggregate closure与第一轮 retirement review PASS；当前列车 Phase 9 P9-A pre-seal materialization PASS |
+| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | complete；F3C4 aggregate closure与第一轮 retirement review PASS；当前列车 P9-B local seal PASS / Cloud pending |
 | 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest 各自独立 gate；必须有 use case、latency/token budget 与 Cloud 证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7 前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan 时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6 进入 Discovery |
 | 8 | `0.8.0-*` | optional hard gating，复用 Phase 7 evaluator | 重新 Discovery writer/counter/atomicity/lock/cache/Resume/rollback；再增加 block cap、escape hatch 与 stall state | pending；implementation 前必须重新 Discovery |
-| 9 | 当前列车的 `rc.N` → stable | standing Release 收口：完整矩阵、最终字节、canary retirement、正式发布 | RC 与最终资产分别验收；重新下载双资产；可逆 | standing gate；`v0.3.5` instance complete；当前 `v0.4.0` instance P9-A complete，P9-B pending / 未授权 |
+| 9 | 当前列车的 `rc.N` → stable | standing Release 收口：完整矩阵、最终字节、canary retirement、正式发布 | RC 与最终资产分别验收；重新下载双资产；可逆 | standing gate；`v0.3.5` instance complete；当前 `v0.4.0` instance P9-B local seal complete / sealed-source Cloud pending |
 
 Phase 9 是 Release 收口，不机械等于 `0.9.0`。例如只完成 Phase 4 时，它可以封板 `0.4.0`；如果多个
 Phase 经独立 gate 后被明确合并，则封板当时获批的同一版本列车。`v0.3.5` 的 Phase 9 instance 已完成，
@@ -142,8 +142,8 @@ Phase 经独立 gate 后被明确合并，则封板当时获批的同一版本�
 
 ### 当前 `v0.4.0` Phase 9 instance
 
-本实例的 Discovery 与 P9-A 已关闭：stable identity和 pre-seal ZIP输入已经收敛，bootstrap仍为 zero hash；后继 gate
-均未被自动授权。顺序必须保持：
+本实例的 Discovery、P9-A与 P9-B本地封印已关闭：stable identity、ZIP输入、exact ZIP SHA与外部 bootstrap SHA已经收敛；
+P9-B sealed-source Cloud仍待维护者从 exact commit执行，P9-C及后继 gate均未被自动授权。顺序必须保持：
 
 ```text
 P9-A pre-seal materialization
@@ -155,7 +155,8 @@ P9-A pre-seal materialization
 ```
 
 P9-A已清理 README状态耦合、收敛 stable/current文档、原子传播 `0.4.0` identity，并修正未来 v2 accepted + v1 fallback
-publication oracle；P9-B才可把 frozen ZIP SHA写入 ZIP外 bootstrap。任一 ZIP input变化都会使 seal重新开始。P9-D前不得用旧
+publication oracle；P9-B本地封印已把 frozen ZIP SHA写入 ZIP外 bootstrap，但 exact sealed-source Cloud仍是同一 gate的剩余条件。
+任一 ZIP input变化都会使 seal重新开始。P9-D前不得用旧
 F3 candidate SHA或本地资产冒充公开下载；P9-E前不得轮转 accepted；P9-F前不得清理 v0.3.5 working-tree role文件。
 11个 validation refs中九个仍保留主线与稳定 tag均不可达的 side-branch commits，因此当前第二轮预决策仍是 KEEP。
 

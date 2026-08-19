@@ -166,3 +166,26 @@ delta为空。该 SHA只记录本地 pre-seal candidate，不是 sealed或公开
 ref mutation。结论为：
 
 `P9_A_PRE_SEAL_MATERIALIZATION_PASS / ZERO_HASH_CANDIDATE_FROZEN / STOP_BEFORE_P9_B / PUBLICATION_NOT_AUTHORIZED`
+
+<a name="phase-9-v0-4-0-p9-b-local-seal"></a>
+
+## Post-implementation status — P9-B local seal
+
+维护者在 P9-A commit `cb5da4b61899cd05f237bc3adcd3e09c8cd24bee`后单独授权 P9-B。本地实施严格保持 Discovery的
+原子边界：先从该 clean commit重建两份 candidate，确认 22 entries、85,519 bytes与 frozen SHA一致；随后只把该 SHA写入
+ZIP外 `init-cloud-sandbox-v0.4.0.bash`，没有修改 README、package、manifest、Release contract、runtime或其他 ZIP input。
+
+写入前后 candidate均保持 SHA-256
+`24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`；sealed bootstrap SHA-256为
+`4ae21c1fc99f52b1382543fac437096d4db1d3415cb40df578f29ed82cc4c64f`。这证明 bootstrap作为 external asset的封印没有
+污染 22-entry ZIP。P9-A的 zero-hash状态仍作为历史阶段事实保留，不被事后改写成“当时已经 sealed”。
+
+对象生命周期没有发生新的迁移：stable bootstrap从 `PLACEHOLDER`转为 `SEALED_LOCAL_BYTES`；candidate ZIP从
+`FROZEN_PRE_SEAL`转为`SEALED_LOCAL_BYTES`；v0.3.5 role files、F3 guides/refs/validators/negative tests与 installed transition
+继续 KEEP。没有对象满足 P9-E/P9-F的角色退役条件。
+
+“本地 seal完成”不等于“P9-B完整 PASS”。生成本尾注的本地 commit才是 sealed-source HEAD；维护者 push后还必须从该 exact
+HEAD执行 Source/Candidate Cloud setup/deep check并回传最终 exit code、Linux零 skip、deterministic ZIP、install/doctor与
+manifest-routed inventory证据。该证据返回前停止在 P9-C之前。结论为：
+
+`P9_B_LOCAL_SEAL_PASS / SEALED_SOURCE_CLOUD_PENDING / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`
