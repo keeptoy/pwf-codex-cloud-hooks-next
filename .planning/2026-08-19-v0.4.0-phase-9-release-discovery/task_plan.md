@@ -171,6 +171,7 @@ P9-B3b ROADMAP current-status paragraph disposition
 | Full P9-A suite treated a stable package name as proof that bootstrap must already have an exact hash | 1 | Stable identity begins in P9-A while seal belongs to P9-B. Derive accepted status from ROADMAP and checksum state from actual bytes; allow zero hash only for a non-accepted candidate and keep it fail closed. |
 | First P9-B PowerShell audit interpolated `$tag:` as an invalid drive-qualified variable | 1 | Delimit the variable as `${tag}:`; rerun the complete audit rather than treating the parser error as repository evidence. |
 | ROADMAP focused Node runner again hit Windows sandbox `spawn EPERM` | 1 | Reran the exact two-file command with process permission; all 18 tests passed, so this remained a platform launch limitation. |
+| First ROADMAP governance commit attempt could not create `.git/index.lock` in the workspace sandbox | 1 | Repeated the same scoped add/commit with Git metadata permission; local commit `dfbc128` was created without changing the staged file set. |
 
 ## Current status
 

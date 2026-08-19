@@ -111,6 +111,8 @@
 - Full Windows regression passed unchanged at 173 tests: 148 pass, 0 fail and 25 honest Linux/POSIX-only skips; `git diff --check`
   also passed. P9-B3a is closed, while the two current-status paragraphs remain deliberately untouched for the separate P9-B3b
   disposition discussion.
+- Saved the verified P9-B3a structure as local commit `dfbc128` (`docs: reorganize roadmap phase governance`). The initial sandboxed
+  commit attempt could not create `.git/index.lock`; the identical scoped commit succeeded with Git metadata permission. No remote write ran.
 
 ## Current status
 
