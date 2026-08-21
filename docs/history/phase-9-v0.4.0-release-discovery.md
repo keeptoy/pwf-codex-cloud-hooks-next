@@ -189,3 +189,23 @@ HEAD执行 Source/Candidate Cloud setup/deep check并回传最终 exit code、Li
 manifest-routed inventory证据。该证据返回前停止在 P9-C之前。结论为：
 
 `P9_B_LOCAL_SEAL_PASS / SEALED_SOURCE_CLOUD_PENDING / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`
+
+<a name="phase-9-v0-4-0-p9-b-sealed-source-cloud"></a>
+
+## Post-acceptance status — P9-B sealed-source Cloud
+
+维护者把最终 Release-excluded operator commit `fe8cd7f284ea2849f634aa68813dbb0f2cca83f9` push后，从该 exact checkout完成
+`4.1 → 5.1 → 6 → 7 → 8.1 → 8.2 → 9.1`。setup与deep-check均取得明确最终 exit code 0，两端回传 HEAD都等于该
+commit；Linux portable suite为164 tests、164 pass、0 fail、0 skipped。两次Cloud candidate构建逐字一致，继续得到
+22 entries、85,519 bytes与sealed ZIP SHA-256
+`24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`。
+
+安装与post-Resume证据闭合到manifest schema 4、Release/bundle v2、installer `0.4.0`、12项installed runtime、4项pristine
+upstream、authoritative bundle inventory、adapter-only policy、healthy doctor与零snapshot residue；工作树变化被限制为第6节
+canonical planning fixture。维护者确认B～E Host链全部按模板完成，9.1输出`PWF_SC_POST_RESUME=PASS`。
+
+本轮没有改变任何Release input、candidate/bootstrap字节、production行为、validation ref或远端Release状态。candidate ZIP与
+stable bootstrap继续保持`SEALED_LOCAL_BYTES`；P9-B从`SEALED_SOURCE_CLOUD_PENDING`转为`PASS`。P9-C immutable tag /
+Pre-release publication仍需维护者单独授权，不能由本尾注自动开始。结论为：
+
+`P9_B_SEALED_SOURCE_CLOUD_PASS / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`

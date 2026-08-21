@@ -264,3 +264,9 @@ maintainer authorization boundary.
 - The operator entry must not freeze the current local HEAD because writing that entry creates a newer commit. It should give the
   maintainer a PowerShell push/`ls-remote` equality check and require the Cloud-reported setup/deep-check HEADs to equal that resulting
   commit. This makes the post-documentation commit—not a prose constant—the identity authority.
+- The completed Cloud run satisfies that identity model exactly: `PWF_SC_RUNBOOK_HEAD` and `PWF_DEEP_CHECK_HEAD` both equal pushed
+  operator commit `fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`; the 22-entry / 85,519-byte ZIP reproduces sealed SHA
+  `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3` with 164/164 portable Linux tests and zero skips.
+- Deep check proves manifest schema 4 routes Release/bundle v2, installer `0.4.0`, 12 installed files and 4 pristine upstream files;
+  inventory is authoritative, policy is adapter-only, doctor is healthy and residue is zero. The only worktree delta is the permitted
+  canonical planning fixture. This closes P9-B but creates no tag, public asset or promotion authority; P9-C remains a separate gate.

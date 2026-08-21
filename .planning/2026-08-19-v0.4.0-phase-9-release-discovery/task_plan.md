@@ -3,19 +3,17 @@
 ## Goal
 
 完成 `v0.4.0` standing Phase 9的版本化 gate。P9-A 已把 Phase 4功能基线迁移为稳定的 pre-seal source candidate；
-当前 P9-B本地字节封印已完成；sealed-source Cloud前先闭合维护者授权的 Release-excluded ROADMAP信息架构治理，重新生成
-最终 sealed-source HEAD，再执行 exact-HEAD Cloud handoff。Cloud证据未返回前，P9-B不得记为完整 PASS。
+当前 P9-B本地字节封印与exact-HEAD sealed-source Cloud均已完成；setup/deep-check HEAD、Cloud deterministic ZIP与本地seal
+identity完全一致。P9-C及后继publication、Published Release、promotion与ref mutation仍未授权。
 
 ## Next Step
 
-维护者 push本轮最后一个 Release-excluded本地 commit后，按
-`docs/v0.4.0-cloud-hard-acceptance.md#v0-4-0-p9-b-sealed-source-cloud-operator` 从该 exact HEAD执行 4.1 → 5.1 → 6 → 7 →
-8.1 → 8.2 → 9.1，并回传明确最终 exit code、Linux零 skip、deterministic ZIP、Host、install/doctor与 manifest-routed
-inventory原始证据。Cloud PASS前 P9-B保持未关闭，不进入 P9-C。
+P9-B证据已收口并验证；创建单一职责的Release-excluded本地commit后停止。下一动作只能是维护者决定是否单独授权P9-C
+immutable tag / Pre-release publication；未授权前不创建tag/Release、不上传资产、不运行publication gate。
 
 ## Current Phase
 
-P9-B3 sealed-source Cloud handoff
+P9-B complete / stop before P9-C
 
 ## Phases
 
@@ -121,7 +119,7 @@ P9-B3 sealed-source Cloud handoff
 
 ### P9-B3 — Sealed-source Cloud handoff
 
-**Status:** in_progress
+**Status:** completed
 
 - 回补 local seal事实并创建单一职责本地 commit；回传 exact sealed-source HEAD和两份资产 SHA。
 - 维护者 push后，从 exact HEAD运行 Source/Candidate Cloud gate；只有其 PASS才能关闭 P9-B并请求 P9-C。
@@ -151,12 +149,21 @@ P9-B3 sealed-source Cloud handoff
 - 只记录操作顺序、动态 HEAD绑定、模板锚点、回传字段和停止条件；通用 Bash脚本仍由 Cloud hard acceptance template唯一维护。
 - 文档/守卫/活动 planning保持 Release-excluded；验证后本地 commit并把其 exact HEAD交给维护者 push。
 
+### P9-B4 — Sealed-source Cloud evidence closure
+
+**Status:** completed
+
+- 记录 4.1 setup、B～E Host链与9.1 deep-check实际结果，不复制通用执行脚本。
+- 要求 setup/deep-check HEAD等于 `fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`，ZIP identity等于本地 seal。
+- 更新 acceptance/history/ROADMAP/planning与静态守卫；验证并本地 commit后停止在 P9-C前。
+
 ## Authorization
 
 - 已授权：P9-B本地封印；重新构建并核验 P9-A candidate；只把 exact ZIP SHA写入 ZIP 外 stable bootstrap；计算 bootstrap SHA；
   修改 Release-excluded tests/planning/history与当前 acceptance/ROADMAP的 gate状态；维护者当前进一步授权 ROADMAP第4/5章
   信息架构治理、删除已确认重复的两段 current-status/F3B2说明、收缩4.1标题、在现有 v0.4.0 acceptance补充 P9-B Cloud
   operator入口、相称静态守卫与本地 commit。
+- 已授权：回补维护者返回的 P9-B sealed-source Cloud证据并关闭 P9-B；相称静态守卫、Release-excluded状态同步与本地 commit。
 - 未授权：修改任何 ZIP entry、package/contract/manifest/README或 production/runtime字节；由本地智能体执行 Cloud；创建/移动/
   删除 refs；push/PR/tag/Release/publication/promotion；上传资产、修改 Latest或仓库设置；P9-C；切换 `0.5.0-dev`/Phase 5。
 
@@ -188,7 +195,9 @@ P9-B3 sealed-source Cloud handoff
 | Second focused P9-B3c run found exact sealed ZIP evidence above the completed local-seal heading | 1 | Preserved the existing lifecycle guard and reordered the version acceptance to show completed local-seal evidence before the pending Cloud operator entry. |
 | P9-B3c focused Node runner hit the known Windows sandbox `spawn EPERM` | 1 | Reran the identical focused command with child-process permission; assertions executed and the later final run passed 18/18. |
 | P9-B3c sandboxed Git Bash syntax probe could not create its signal pipe (`Win32 error 5`) | 1 | Reran the same read-only `bash -n` loop with process permission; both versioned bootstraps passed. |
+| A Windows `rg` audit passed `tests\\*.test.js` as a literal path and reported an invalid filename | 1 | The relevant direct test file had already been read; use repository paths or `rg -g '*.test.js'` for future Windows glob filtering. |
+| First P9-B closure green run left two ROADMAP guards on the pre-Cloud wording | 1 | Restored the stable Phase 4 closeout phrases and migrated the version-scoped P9-B guard from local-seal/pending to sealed-source Cloud PASS/P9-C stop. |
 
 ## Current status
 
-`P9_B_LOCAL_SEAL_PASS / SEALED_SOURCE_CLOUD_PENDING / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`
+`P9_B_SEALED_SOURCE_CLOUD_PASS / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`

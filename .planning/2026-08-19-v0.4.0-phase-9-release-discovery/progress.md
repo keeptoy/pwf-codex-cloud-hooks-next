@@ -136,6 +136,22 @@
 - Two independent candidate builds/checks stayed byte-identical at 22 entries, 85,519 bytes and SHA-256
   `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`. The operator entry, guard and planning are Release-excluded;
   P9-B3c is complete, while sealed-source Cloud evidence and P9-B closure remain pending before P9-C.
+- Maintainer completed the exact-source Cloud route from pushed commit `fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`. Setup exited 0,
+  ran 164 tests with 164 pass / 0 fail / 0 skip, reproduced the sealed 22-entry / 85,519-byte ZIP and passed install, doctor and both
+  adapter probes. The B～E chain was confirmed complete in template order, including same-task real Resume.
+- Deep check exited 0 with the same exact HEAD, planning-only worktree delta, manifest schema 4, Release/bundle v2, installer `0.4.0`,
+  12 installed runtime files, 4 pristine upstream files, authoritative inventory, adapter-only policy, healthy doctor, zero residue and
+  `PWF_SC_POST_RESUME=PASS`. Added the evidence to version acceptance/history and advanced ROADMAP/planning to P9-B PASS only.
+- Added the closure guard first; its expected red run had 9/10 tests passing and failed only because the new P9-B Cloud PASS row/evidence
+  did not yet exist. No source, ZIP input, asset, tag, Release, promotion or validation ref was changed.
+- First closure green run executed all 18 focused assertions and exposed two stale ROADMAP test/prose couplings: the stable Phase 4
+  closeout wording had been unnecessarily merged, and one guard still expected local-seal/Cloud-pending. Restored the stable wording and
+  migrated only the lifecycle guard; final focused architecture/repository governance passed 18/18.
+- Full Windows regression passed 173 tests: 148 pass, 0 fail and 25 honest Linux/POSIX-only skips. Importer, owned Python compile,
+  installer Node syntax, both versioned bootstrap Bash syntax probes and `git diff --check` passed.
+- Two independent candidate builds/checks remained byte-identical at 22 entries, 85,519 bytes and SHA-256
+  `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`, proving the acceptance/history/ROADMAP/test/planning closure
+  changed no Release ZIP input. P9-B is closed; P9-C remains unstarted and unauthorized.
 
 ## Current status
 

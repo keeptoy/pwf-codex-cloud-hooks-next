@@ -56,12 +56,12 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap, /Product Phase 4功能施工已闭合/);
   assert.match(roadmap, /第一轮 retirement review完成/);
   assert.match(roadmap,
-    /Phase 9 P9-B本地封印已闭合[^]*sealed-source Cloud仍待维护者执行[^]*当前仍不得发布、晋级或移动 validation refs/);
+    /Phase 9 P9-B sealed-source Cloud PASS[^]*P9-C及后继gate未授权[^]*当前仍不得发布、晋级或移动 validation refs/);
   assert.match(roadmap,
     /Phase 4 \/ F3C4完成[\s\S]*形成0\.4\.0功能\/候选基线[\s\S]*切换0\.5\.0-dev并进入Phase 5/);
 });
 
-test("v0.4.0 Phase 9 local seal is version-scoped and stops before sealed-source Cloud", () => {
+test("v0.4.0 Phase 9 sealed-source Cloud is version-scoped and stops before P9-C", () => {
   const phase9 = read("docs/history/phase-9-v0.4.0-release-discovery.md");
   const phase4Closeout = read("docs/history/phase-4.11-f3c4-aggregate-closure-discovery.md");
   const historyIndex = read("docs/history/README.md");
@@ -83,6 +83,9 @@ test("v0.4.0 Phase 9 local seal is version-scoped and stops before sealed-source
   assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-b-local-seal"><\/a>$/m);
   assert.match(phase9,
     /P9_B_LOCAL_SEAL_PASS \/ SEALED_SOURCE_CLOUD_PENDING \/ STOP_BEFORE_P9_C/);
+  assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-b-sealed-source-cloud"><\/a>$/m);
+  assert.match(phase9,
+    /P9_B_SEALED_SOURCE_CLOUD_PASS \/ STOP_BEFORE_P9_C \/ PUBLICATION_NOT_AUTHORIZED/);
   assert.match(phase9, /24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3/);
   assert.match(phase9, /4ae21c1fc99f52b1382543fac437096d4db1d3415cb40df578f29ed82cc4c64f/);
   assert.match(phase9, /v2 accepted \+ v1 fallback/);
@@ -95,7 +98,7 @@ test("v0.4.0 Phase 9 local seal is version-scoped and stops before sealed-source
   assert.match(acceptance,
     /v0\.4\.0 Phase 9 P9-A pre-seal materialization[^\n]*`PASS`/);
   assert.match(acceptance,
-    /v0\.4\.0 Phase 9 P9-B local seal[^\n]*`LOCAL_SEAL_PASS \/ SEALED_SOURCE_CLOUD_PENDING`/);
+    /v0\.4\.0 Phase 9 P9-B sealed-source Cloud[^\n]*`PASS`/);
   assert.match(roadmap, /^<a name="phase-9-v0-4-0-instance"><\/a>$/m);
   assert.match(roadmap, /P9-A pre-seal materialization[\s\S]*P9-F second retirement review/);
 });
@@ -313,6 +316,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   const architecture = read("ARCHITECTURE.md");
   const design = read("DESIGN.md");
   const agents = read("AGENTS.md");
+  const phase9History = read("docs/history/phase-9-v0.4.0-release-discovery.md");
   const artifact = JSON.parse(read(currentArtifactPath));
   const runtimeBundle = JSON.parse(read(currentBundlePath));
   const { accepted, candidate, immediateFallback, roadmap } = currentRoleWindow();
@@ -403,6 +407,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance,
     /F3C4 aggregate-closure Discovery[^\n]*`CONDITIONAL_GO_TO_F3C4_AGGREGATE_CLOSURE`/);
   assert.match(acceptance, /F3C4 aggregate closure[^\n]*`PASS`/);
+  assert.match(acceptance, /v0\.4\.0 Phase 9 P9-B sealed-source Cloud[^\n]*`PASS`/);
   assert.match(acceptance,
     /phase-4\.11-f3c4-aggregate-closure-discovery\.md#phase-4-11-decision/);
   assert.match(acceptance,
@@ -414,10 +419,11 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(acceptance, /^<a name="v0-4-0-p9-b-sealed-source-cloud-operator"><\/a>$/m);
   const p9bOperatorStart = acceptance.indexOf('<a name="v0-4-0-p9-b-sealed-source-cloud-operator"></a>');
   const p9bLocalSealStart = acceptance.indexOf('<a name="v0-4-0-p9-b-local-seal-evidence"></a>');
+  const p9bCloudEvidenceStart = acceptance.indexOf('<a name="v0-4-0-p9-b-sealed-source-cloud-evidence"></a>');
   const f3c4ClosureStart = acceptance.indexOf('<a name="v0-4-0-dev-f3c4-aggregate-closure"></a>');
   assert.ok(p9bLocalSealStart > 0 && p9bOperatorStart > p9bLocalSealStart
-    && f3c4ClosureStart > p9bOperatorStart);
-  const p9bOperator = acceptance.slice(p9bOperatorStart, f3c4ClosureStart);
+    && p9bCloudEvidenceStart > p9bOperatorStart && f3c4ClosureStart > p9bCloudEvidenceStart);
+  const p9bOperator = acceptance.slice(p9bOperatorStart, p9bCloudEvidenceStart);
   for (const anchor of [
     "source-candidate-setup",
     "blackbox-post-install-resume",
@@ -434,6 +440,21 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(p9bOperator, /4\.1[\s\S]*5\.1[\s\S]*第 6 节[\s\S]*第 7 节[\s\S]*8\.1[\s\S]*8\.2[\s\S]*9\.1/);
   assert.doesNotMatch(p9bOperator, /~~~bash|```bash|set -Eeuo pipefail/,
     "version acceptance must route to the template rather than copy its Bash authorities");
+  const p9bCloudEvidence = acceptance.slice(p9bCloudEvidenceStart, f3c4ClosureStart);
+  for (const fact of [
+    "fe8cd7f284ea2849f634aa68813dbb0f2cca83f9",
+    "164 tests，164 pass，0 fail，0 skipped",
+    "24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3",
+    "INSTALLER_VERSION=0.4.0", "RELEASE_ARTIFACT_ENTRIES=22",
+    "INSTALLED_RUNTIME_FILES=12", "UPSTREAM_PRISTINE_FILES=4",
+    "BUNDLE_INSTALLED_INVENTORY=AUTHORITATIVE", "MANAGED_POLICY=ADAPTER_ONLY",
+    "PWF_SC_POST_RESUME=PASS",
+    "P9_B_SEALED_SOURCE_CLOUD_PASS / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED",
+  ]) assert.match(p9bCloudEvidence, new RegExp(fact.replaceAll(".", "\\.")));
+  assert.match(phase9History, /^<a name="phase-9-v0-4-0-p9-b-sealed-source-cloud"><\/a>$/m);
+  assert.match(phase9History,
+    /P9_B_SEALED_SOURCE_CLOUD_PASS \/ STOP_BEFORE_P9_C \/ PUBLICATION_NOT_AUTHORIZED/);
+  assert.match(roadmap, /P9-B sealed-source Cloud PASS[\s\S]*P9-C[^\n]*未授权/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3c1-local-materialization"><\/a>$/m);
   assert.match(acceptance,
     /F3C1_PROTOCOL_NO_LIVE_PASS \/ REF_AWARE_LINUX_ZERO_SKIP \/ CLOUD_ROLLBACK_NOT_RUN \/ STOP_BEFORE_F3C2/);
