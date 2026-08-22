@@ -253,3 +253,20 @@
 ## Current status
 
 `P9_D_PUBLISHED_RELEASE_CLOUD_PASS / PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED / STOP_BEFORE_P9_E`
+
+## 2026-08-22 — P9-E operator materialization
+
+- 维护者授权继续下一步；恢复既有P9-E设计并做GitHub只读preflight。v0.4.0 tag/source、Pre-release和双资产仍与P9-D完全一致，
+  远端`0.4.0` branch已包含P9-D closeout。
+- 发现当前Latest实际为`v0.3.5-dev`而非programme accepted `v0.3.5`；记录为control-plane drift，并选择直接把最终指针晋级到
+  v0.4.0，不执行临时回拨。
+- 先增加P9-E repository guard；permissioned intentional red run为13 tests、12 pass、1 fail，唯一失败是operator anchor尚未存在。
+- 在现有v0.4.0 acceptance增加preflight、唯一maintainer-only mutation和postflight；同步history、ROADMAP、planning与对象账。
+- 当前只准备本地控制面，未修改tag、Release、Latest、assets、refs、roles、production或任何Release input；P9-F继续未授权。
+- focused repository guard为13/13；完整Windows suite为176 tests、151 pass、0 fail、25个Linux/POSIX-only诚实skip。
+- 三个P9-E PowerShell块parser PASS；importer、owned Python compile、Node syntax、两份bootstrap Bash syntax与`git diff --check`
+  PASS。双构建继续为22 entries、85,519 bytes、SHA`24a412…3bb3`，7个changed paths与Release inputs交集为0。
+
+## Current status
+
+`P9_E_OPERATOR_READY / PRE_PROMOTION_LATEST_DRIFT_RECORDED / MAINTAINER_POINTER_PROMOTION_PENDING / STOP_BEFORE_P9_F`

@@ -6,16 +6,18 @@
 当前 P9-B本地字节封印与exact-HEAD sealed-source Cloud均已完成；setup/deep-check HEAD、Cloud deterministic ZIP与本地seal
 identity完全一致。P9-C immutable publication与独立publication audit均已完成：`v0.4.0` lightweight tag固定指向P9-B实际
 验收的`fe8cd7f…`，公开Pre-release恰好包含两项冻结资产，下载ZIP与tag-source重建字节一致。P9-D公开默认下载链、Fresh、
-canonical context、real Resume与9.2 manifest-routed deep check均已PASS；P9-E promotion与P9-F cleanup仍未授权。
+canonical context、real Resume与9.2 manifest-routed deep check均已PASS。P9-E operator与静态守卫正在本地物化；维护者实际
+pointer-only promotion/postflight仍待执行，P9-F cleanup未授权。
 
 ## Next Step
 
-P9-D证据已回写并完成本地验证/commit；停止在P9-E前，等待维护者单独授权pointer-only Latest promotion与角色轮转。
-不得因P9-D PASS自动取消Pre-release、设置Latest、迁移accepted/fallback、清理validation refs或进入P9-F。
+完成P9-E Release-excluded operator、静态守卫和当前事实回写后创建本地commit；维护者push该exact operator commit，再按
+版本acceptance执行唯一pointer mutation与只读postflight。postflight PASS前不得迁移accepted/fallback；不得清理validation refs
+或进入P9-F。
 
 ## Current Phase
 
-P9-D Published Release Cloud PASS / stop before P9-E
+P9-E pointer-only promotion operator ready / maintainer execution pending
 
 ## Phases
 
@@ -231,6 +233,38 @@ P9-D Published Release Cloud PASS / stop before P9-E
 - 记录exact operator HEAD、planning-only fixture、公开ZIP identity、doctor/inventory/policy/residue与双通道最终结论。
 - 更新provenance、acceptance、history、ROADMAP、planning与静态守卫；本地commit后停止在P9-E前。
 
+### P9-E0 — Promotion authority and control-plane recovery
+
+**Status:** completed
+
+- 复核P9-D PASS、v0.3.5 pointer-only先例、P9-E/P9-F边界与当前GitHub Release/tag/asset事实。
+- 发现Latest当前指向`v0.3.5-dev`而programme accepted仍为`v0.3.5`；将其归类为control-plane drift，不改写历史证据。
+- 冻结直接晋级`v0.4.0`的路线；不先制造临时v0.3.5 Latest中间态，未知前态必须fail closed。
+
+### P9-E1 — Versioned operator and static guards
+
+**Status:** completed
+
+- 在现有v0.4.0 acceptance物化read-only preflight、唯一maintainer mutation和read-only postflight。
+- pre/postflight绑定exact v0.4.0 tag/source/双资产和v0.3.5 fallback身份；operator只允许Release metadata变更。
+- 同步Release-excluded history/ROADMAP/planning与repository guard；本地验证并commit后交接维护者。
+
+### P9-E2 — Maintainer pointer promotion
+
+**Status:** pending
+
+- 维护者push exact operator commit，执行preflight并保存previous Latest。
+- 只运行一次`gh release edit v0.4.0 --prerelease=false --latest`；不得修改notes、tag、target或assets。
+- 若命令最终状态未知，先进入只读postflight，不得猜测重试。
+
+### P9-E3 — Postflight, role rotation and gate closeout
+
+**Status:** pending
+
+- 只读确认v0.4.0为非draft、非prerelease的Latest，tag/source与公开双资产字节不变。
+- 确认v0.3.5 immutable tag/Release/双资产未变并成为immediate fallback恢复入口。
+- 证据返回后才轮转ROADMAP角色并关闭P9-E；随后停止在P9-F前。
+
 ## Authorization
 
 - 已授权：P9-B本地封印；重新构建并核验 P9-A candidate；只把 exact ZIP SHA写入 ZIP 外 stable bootstrap；计算 bootstrap SHA；
@@ -244,9 +278,12 @@ P9-D Published Release Cloud PASS / stop before P9-E
   维护者push operator commit后，在独立Fresh Cloud按operator执行Published Release通道并回传证据。
 - 已授权：交叉核对维护者返回的P9-D Cloud证据，回写provenance/acceptance/history/ROADMAP/planning与静态守卫，相称验证并
   创建本地closeout commit。
+- 已授权：P9-E本地identity/control-plane恢复、版本化operator、静态守卫、Release-excluded history/ROADMAP/planning同步、
+  相称验证和本地commit；维护者push后按operator执行唯一pointer-only promotion并回传只读postflight。
 - 未授权：修改任何 ZIP entry、package/contract/manifest/README或 production/runtime字节；由本地智能体执行 Cloud；创建/移动/
-  删除远端refs；由本地智能体push/PR/tag/Release/publication或上传资产；修改 Latest、accepted/fallback角色或仓库设置；P9-E/
-  P9-F；validation ref cleanup；切换 `0.5.0-dev`/Phase 5。
+  删除远端refs；由本地智能体push/PR/tag/Release/publication/promotion或上传资产；除维护者按P9-E operator修改现有Release的
+  Pre-release/Latest metadata外的任何远端写；postflight前轮转accepted/fallback；P9-F；validation ref cleanup；切换
+  `0.5.0-dev`/Phase 5。
 
 ## Stop Conditions
 
@@ -257,12 +294,13 @@ P9-D Published Release Cloud PASS / stop before P9-E
 - 同名tag/Release已存在但身份不明，或远端查询/异步命令没有明确最终状态；不得猜测absence/PASS。
 - tag push后任何步骤要求删除、force-update或重建tag，或资产上传后试图删除/重传同名资产来修补字节漂移。
 - P9-C要求修改任何ZIP input、production/runtime、contract、manifest或README；此时回到P9-A/P9-B而不是继续publication。
-- 任何步骤越过当前P9-D operator边界，由本地智能体执行Cloud，或进入Latest promotion、role rotation、ref cleanup或下一版本动作。
+- 任何P9-E步骤要求重新执行Cloud、修改Release字节、tag/ref、notes/title/target或仓库设置，而不是单次pointer metadata mutation。
 - P9-D setup使用本地/branch bootstrap、`file://`、checksum override、旧candidate URL或非immutable HTTPS URL，而非公开bootstrap默认链。
 - P9-D复用Source/Candidate/P9-C容器或安装，setup发生在agent startup之后，或Fresh/real Resume不属于同一规定lifecycle。
 - 公开bootstrap/ZIP URL、SHA、tag source、Release metadata与P9-C冻结事实不一致，或9.2回退到workspace同名工具。
 - 任一异步命令没有明确最终exit code，doctor/inventory/policy/residue不闭合，或Cloud产生planning fixture以外的仓库修改。
-- 任何步骤取消Pre-release、设置Latest、轮转accepted/fallback、移动refs或进入P9-E/P9-F。
+- P9-E preflight看到未知previous Latest、tag/source/asset漂移、dirty或未push的operator HEAD，或远端/API最终状态不明。
+- postflight未确认v0.4.0 stable Latest与v0.3.5 immutable fallback就轮转accepted/fallback，或任何步骤进入P9-F/ref cleanup。
 
 ## Errors Encountered
 

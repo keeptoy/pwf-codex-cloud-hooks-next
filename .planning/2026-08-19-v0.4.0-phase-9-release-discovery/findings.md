@@ -327,3 +327,18 @@ maintainer authorization boundary.
   因原文仍有占位符而给出的保留意见属于标签误解；实际HEAD只读检查才是identity authority。
 - E2和9.2与P9-D矩阵逐项一致，公开Release API仍报告lightweight tag source `fe8cd7f…`、非draft Pre-release及两项exact
   asset digest/size。P9-D可关闭，但P9-E promotion/role rotation仍是独立授权gate。
+
+## P9-E operator recovery — 2026-08-22
+
+- Phase 9 Discovery与v0.3.5先例已经给出足够路线：P9-E只改变现有Release的`prerelease/latest` metadata，再只读核对
+  immutable tag/双资产和角色；没有理由新建第二份Discovery或重新跑Cloud。
+- GitHub只读API确认v0.4.0仍为非draft Pre-release，lightweight tag source与P9-D一致，双资产size/digest未变；远端`0.4.0`
+  branch也已经推进到P9-D closeout commit。
+- `/releases/latest`当前返回`v0.3.5-dev`，不是programme accepted `v0.3.5`。这是可变control-plane pointer drift；它不推翻
+  v0.3.5历史postflight，也不改变v0.3.5 immutable rollback身份。P9-E应直接把最终指针设为v0.4.0，不先做无价值的中间回拨。
+- `gh release edit --help`确认同一命令支持`--prerelease=false`和`--latest`；operator因此冻结一个唯一远端mutation，并禁止
+  notes/title/tag/target/asset/ref操作。若mutation返回状态未知，先只读postflight，不能盲目重试。
+- postflight同时验证v0.4.0最终stable Latest、重新下载双资产字节，以及v0.3.5 tag/source/Release/双资产未变。只有全部PASS后
+  ROADMAP才从candidate/accepted/fallback轮转到v0.4.0/v0.3.5/v0.3.4。
+- v0.3.5 working-tree role files、11个validation refs、F3 evidence与rollback contracts在P9-E仍KEEP；它们只进入P9-F review，
+  operator materialization或pointer mutation都不是删除授权。

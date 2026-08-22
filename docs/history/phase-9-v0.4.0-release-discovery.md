@@ -328,3 +328,40 @@ v0.3.5 working-tree role files已到达P9-E review条件，但在P9-E授权和ro
 guides/validators/negative tests也继续保留。当前结论为：
 
 `P9_D_PUBLISHED_RELEASE_CLOUD_PASS / PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED / STOP_BEFORE_P9_E`
+
+<a name="phase-9-v0-4-0-p9-e-pre-promotion"></a>
+
+## Pre-promotion decision — P9-E Latest promotion
+
+维护者在P9-D closeout后授权进入P9-E准备。复核当前HEAD、Phase 9 Discovery、v0.3.5先例和GitHub control plane后，原路线
+无需重开架构Discovery：P9-E仍只允许对已经通过P9-D的同一个`v0.4.0` Release执行一次pointer metadata mutation，再做
+只读postflight；不重新打包、不上传资产、不移动tag、不执行Cloud，也不清理任何working-tree/ref对象。
+
+只读preflight出现一项当前事实偏差：GitHub`/releases/latest`实际返回`v0.3.5-dev`，不是ROADMAP programme role中的
+`v0.3.5`。两者必须分开理解：`v0.3.5`的历史postflight在当时成立，且它的tag/source/ZIP/bootstrap都没有漂移；后来Latest
+control-plane pointer被改到dev Release，是外部metadata drift，不会自动改变accepted/rollback role。最佳修复不是先临时
+回拨`v0.3.5`再晋级，而是让P9-E直接把最终Latest指向已验收的`v0.4.0`，并在preflight中只接受`v0.3.5`或已观察到的
+`v0.3.5-dev`作为前态；任何其他前态都fail closed。
+
+版本acceptance现已物化三个明确步骤：
+
+1. read-only preflight：动态核对clean local/remote operator HEAD、v0.4.0 lightweight tag source、非draft Pre-release、双资产
+   size/digest与previous Latest；
+2. maintainer-only mutation：唯一命令同时设置`--prerelease=false --latest`；未知最终状态先postflight，不得猜测重试；
+3. read-only postflight：要求`v0.4.0`为stable Latest，重新下载双资产核对字节，并证明`v0.3.5` immutable fallback身份未变。
+
+实施与Discovery的差异只在于把此前未预见的Latest pointer drift纳入显式输入，没有扩大trusted graph、Release字节、角色或
+清理范围。对象生命周期保持：v0.4.0=`IMMUTABLE_PUBLIC_CANDIDATE_PENDING_POINTER`；v0.3.5 working-tree role files=`KEEP`
+到P9-E postflight；v0.3.5 public identity=`KEEP IMMUTABLE`；11个validation refs、F3 guides/validators/negative tests与
+installed transition继续`KEEP`。P9-F仍是独立授权gate。
+
+本地operator/guard只是Release-excluded控制面。维护者push后执行promotion并回传postflight前，ROADMAP仍保留
+`v0.4.0 candidate / v0.3.5 accepted / v0.3.4 immediate fallback`，不得把operator ready写成promotion PASS。当前结论为：
+
+本地验证闭合：focused repository guard为13/13；完整Windows suite为176 tests、151 pass、0 fail、25个Linux/POSIX-only
+诚实skip；三个P9-E PowerShell块均通过parser。importer、owned Python compile、Node syntax、两份bootstrap Bash syntax与
+`git diff --check`通过。两次candidate build/check逐字一致，继续为22 entries、85,519 bytes、SHA
+`24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`；7个changed paths与Release entries/external assets
+交集为0。
+
+`P9_E_OPERATOR_READY / PRE_PROMOTION_LATEST_DRIFT_RECORDED / MAINTAINER_POINTER_PROMOTION_PENDING / STOP_BEFORE_P9_F`

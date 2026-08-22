@@ -22,15 +22,16 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.0` published prerelease candidate；Phase 4 functional baseline ready；P9-A～P9-D PASS；Published Release Cloud hard acceptance 已 PASS；P9-E promotion未授权 |
-| 当前已接受版本 | `v0.3.5`；production rollback 与 GitHub `Latest` |
+| 当前开发列车 | `v0.4.0` published prerelease candidate；Phase 4 functional baseline ready；P9-A～P9-D PASS；Published Release Cloud hard acceptance 已 PASS；P9-E operator已准备，pointer-only promotion仍待维护者执行 |
+| 当前已接受版本 | `v0.3.5`；programme accepted与production rollback。只读preflight发现GitHub `Latest` control-plane漂移到`v0.3.5-dev`，P9-E将直接晋级`v0.4.0`，不制造临时回拨 |
 | 当前直接回退版本 | immutable `v0.3.4` immediate fallback |
 | 回退证据链 | immutable `v0.3.3` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4功能施工已闭合；第一轮 retirement review完成；Phase 9 P9-D公开默认下载链Fresh/Resume验收PASS；P9-E及后继gate未授权，当前仍不得设置Latest、轮转角色或移动 validation refs |
+| 当前 programme 边界 | Product Phase 4功能施工已闭合；第一轮 retirement review完成；Phase 9 P9-D公开默认下载链Fresh/Resume验收PASS；P9-E本地operator已闭合，只有维护者可执行exact pointer mutation；postflight前不得轮转角色，P9-F与validation ref cleanup仍未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
-`v0.3.5` 已完成 immutable publication、公开下载/安装验收与 pointer-only promotion；只读 postflight 确认它为
-非 prerelease 的 Latest，v0.3.5/v0.3.4 tag、source、ZIP/bootstrap、URL、size 与 digest 均未改写。版本 delta 见
+`v0.3.5` 已完成 immutable publication、公开下载/安装验收与当时的 pointer-only promotion；对应历史postflight确认它当时为
+非 prerelease 的 Latest。当前control-plane指针后来发生漂移，但v0.3.5/v0.3.4 tag、source、ZIP/bootstrap、URL、size与digest
+均未改写，programme accepted/rollback角色也不由该漂移自动改变。版本 delta 见
 [`CHANGELOG.md`](CHANGELOG.md)，精确 source/资产/SHA 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，
 最终 Cloud 与晋级证据见 [`docs/v0.3.5-cloud-hard-acceptance.md`](docs/v0.3.5-cloud-hard-acceptance.md)。
 
@@ -68,7 +69,10 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 ### 4.1 当前 `v0.4.0` Phase 9 instance
 
 本实例的 Discovery与P9-A～P9-D已关闭：stable identity、ZIP输入、exact ZIP/bootstrap SHA、exact-source
-Source/Candidate、immutable publication audit与公开默认下载链Fresh/Resume Cloud均已收敛；P9-E及后继gate仍未授权。顺序必须保持：
+Source/Candidate、immutable publication audit与公开默认下载链Fresh/Resume Cloud均已收敛；P9-E operator已准备，维护者
+pointer-only promotion与postflight仍待执行，P9-F未授权。顺序必须保持：
+
+`P9-D Published Release Cloud PASS`仍是当前已关闭的公开下载链证据；P9-E只在它之上改变Release metadata，不继承或重跑Cloud。
 
 ```text
 P9-A pre-seal materialization
@@ -85,7 +89,8 @@ install/doctor、Fresh/Resume与manifest-routed deep check。P9-C tag source固�
 `fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`，即P9-B实际Cloud验收的source；后继Release-excluded evidence/operator
 commit不替换tag目标。
 任一 ZIP input变化都会使 seal重新开始。P9-D已证明公开默认下载链没有被旧
-F3 candidate SHA或本地资产替代；P9-E前不得轮转 accepted；P9-F前不得清理 v0.3.5 working-tree role文件。
+F3 candidate SHA或本地资产替代；P9-E preflight还发现当前Latest指向`v0.3.5-dev`，operator会在一个最终写动作中直接晋级
+`v0.4.0`，而不是制造`v0.3.5`临时中间态。P9-E postflight前不得轮转 accepted；P9-F前不得清理v0.3.5 working-tree role文件。
 11个 validation refs中九个仍保留主线与稳定 tag均不可达的 side-branch commits，因此当前第二轮预决策仍是 KEEP。
 
 <a name="version-train-two-retirement-reviews"></a>
@@ -124,12 +129,12 @@ pre-release；多个低风险 Phase也只有在独立评审后才能进入同一
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | complete；F3C4 aggregate closure与第一轮 retirement review PASS；当前列车 P9-D Published Release Cloud PASS，停在P9-E前 |
+| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | complete；F3C4 aggregate closure与第一轮 retirement review PASS；当前列车P9-E operator ready / maintainer promotion pending |
 | 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立 gate；必须有 use case、latency/token budget与 Cloud证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6进入 Discovery |
 | 8 | `0.8.0-*` | optional hard gating，复用 Phase 7 evaluator | 重新 Discovery writer/counter/atomicity/lock/cache/Resume/rollback；再增加 block cap、escape hatch与 stall state | pending；implementation前必须重新 Discovery |
-| 9 | 当前列车的 `rc.N` → stable | standing Release收口：完整矩阵、最终字节、canary retirement、正式发布 | RC与最终资产分别验收；重新下载双资产；可逆 | standing gate；`v0.3.5` instance complete；当前 `v0.4.0` instance P9-D Published Release Cloud PASS / stop before P9-E |
+| 9 | 当前列车的 `rc.N` → stable | standing Release收口：完整矩阵、最终字节、canary retirement、正式发布 | RC与最终资产分别验收；重新下载双资产；可逆 | standing gate；`v0.3.5` instance complete；当前`v0.4.0` instance P9-E operator ready / maintainer pointer promotion pending |
 
 Phase 9是 Release收口，不机械等于 `0.9.0`。例如只完成 Phase 4时，它可以封板 `0.4.0`；如果多个
 Phase经独立 gate后被明确合并，则封板当时获批的同一版本列车。`v0.3.5`的 Phase 9 instance已完成，

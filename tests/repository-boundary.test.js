@@ -56,7 +56,7 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap, /Product Phase 4功能施工已闭合/);
   assert.match(roadmap, /第一轮 retirement review完成/);
   assert.match(roadmap,
-    /Phase 9 P9-D公开默认下载链Fresh\/Resume验收PASS[^]*P9-E及后继gate未授权[^]*当前仍不得设置Latest、轮转角色或移动 validation refs/);
+    /Phase 9 P9-D公开默认下载链Fresh\/Resume验收PASS[^]*P9-E本地operator已闭合[^]*postflight前不得轮转角色[^]*P9-F与validation ref cleanup仍未授权/);
   assert.match(roadmap,
     /Phase 4 \/ F3C4完成[\s\S]*形成0\.4\.0功能\/候选基线[\s\S]*切换0\.5\.0-dev并进入Phase 5/);
 });
@@ -230,6 +230,46 @@ test("P9-D operator binds public assets to the shared Published Release protocol
   assert.match(evidence, /\.planning\/\.active_plan[\s\S]*canonical fixture目录/);
   assert.match(phase9,
     /P9_D_PUBLISHED_RELEASE_CLOUD_PASS \/ PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED \/ STOP_BEFORE_P9_E/);
+});
+
+test("P9-E operator permits only pointer metadata promotion and stops before retirement", () => {
+  const acceptance = read("docs/v0.4.0-cloud-hard-acceptance.md");
+  const phase9 = read("docs/history/phase-9-v0.4.0-release-discovery.md");
+  const taskPlan = read(".planning/2026-08-19-v0.4.0-phase-9-release-discovery/task_plan.md");
+  const { accepted, candidate, immediateFallback, roadmap } = currentRoleWindow();
+  const anchor = '<a name="v0-4-0-p9-e-latest-promotion-operator"></a>';
+  const start = acceptance.indexOf(anchor);
+  const end = acceptance.indexOf('<a name="v0-4-0-dev-f3c4-aggregate-closure"></a>');
+
+  assert.ok(start > 0 && end > start, "P9-E operator must precede frozen F3 evidence");
+  const operator = acceptance.slice(start, end);
+  for (const fact of [
+    "fe8cd7f284ea2849f634aa68813dbb0f2cca83f9",
+    "24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3",
+    "4ae21c1fc99f52b1382543fac437096d4db1d3415cb40df578f29ed82cc4c64f",
+    "5d01b55890c1da2a5088e2b991b152a9fb1c3f87",
+    "7d351cfe0eaa60e93bc279645ed3f480dc9e83efdff1c6abf13c14d84c286f0b",
+    "33d7fcaca56c617ef70e33c9708af804a8737d587cc58571382b945e5bff58a5",
+    "gh release edit v0.4.0 --repo keeptoy/pwf-codex-cloud-hooks-next --prerelease=false --latest",
+    "PWF_P9E_PREVIOUS_LATEST",
+    "PWF_P9E_POINTER_PROMOTION=PASS",
+    "PWF_P9E_POSTFLIGHT=PASS",
+  ]) assert.match(operator, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+
+  assert.match(operator, /v0\.3\.5-dev[\s\S]*control-plane drift/);
+  assert.match(operator, /v0\.3\.5[\s\S]*immediate fallback/);
+  assert.match(operator, /停止在P9-F前/);
+  assert.doesNotMatch(operator,
+    /gh release (?:create|delete|upload)|git (?:tag|push)|remove-item|rm\s/,
+    "promotion operator must not recreate assets, mutate refs or perform cleanup");
+  assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-e-pre-promotion"><\/a>$/m);
+  assert.match(phase9,
+    /P9_E_OPERATOR_READY \/ PRE_PROMOTION_LATEST_DRIFT_RECORDED \/ MAINTAINER_POINTER_PROMOTION_PENDING \/ STOP_BEFORE_P9_F/);
+  assert.match(roadmap, /P9-E operator已准备[\s\S]*pointer-only promotion仍待维护者执行/);
+  assert.match(taskPlan, /P9-E pointer-only promotion operator ready \/ maintainer execution pending/);
+  assert.equal(candidate, "v0.4.0");
+  assert.equal(accepted, "v0.3.5");
+  assert.equal(immediateFallback, "v0.3.4");
 });
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
@@ -583,7 +623,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(phase9History, /^<a name="phase-9-v0-4-0-p9-b-sealed-source-cloud"><\/a>$/m);
   assert.match(phase9History,
     /P9_B_SEALED_SOURCE_CLOUD_PASS \/ STOP_BEFORE_P9_C \/ PUBLICATION_NOT_AUTHORIZED/);
-  assert.match(roadmap, /P9-D公开默认下载链Fresh\/Resume验收PASS[\s\S]*P9-E及后继gate未授权/);
+  assert.match(roadmap, /P9-D公开默认下载链Fresh\/Resume验收PASS[\s\S]*P9-E operator已准备[\s\S]*pointer-only promotion/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3c1-local-materialization"><\/a>$/m);
   assert.match(acceptance,
     /F3C1_PROTOCOL_NO_LIVE_PASS \/ REF_AWARE_LINUX_ZERO_SKIP \/ CLOUD_ROLLBACK_NOT_RUN \/ STOP_BEFORE_F3C2/);
