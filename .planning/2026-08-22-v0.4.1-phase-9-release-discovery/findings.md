@@ -166,3 +166,12 @@
 - P9-D必须保持两层身份：public product bytes固定为tag `v0.4.1`及公开双资产URL/SHA；后继operator HEAD只承载模板与canonical fixture，不能替代产品身份。
 - setup必须在首个agent startup前从公开bootstrap URL按exact SHA执行，且不得设置ZIP override；post-Resume 9.2必须重新下载公开ZIP并只用ZIP内builder/importer/installer。
 - P9-D PASS也只允许写回公开Cloud证据；取消Pre-release、Latest、accepted/fallback轮转和ref清理仍属于P9-E/P9-F独立gate。
+
+## P9-D post-acceptance reconciliation — 2026-08-23
+
+- 维护者明确确认P9-D整条`4.2 → 5.2 → 6 → 7 → 8.1 → 真实8.2 → 9.2`通过；按AGENTS交互纪律直接写回，不重新分类或要求重跑。
+- control-plane checkout固定为`b11464b85df8ff4ed90c34492286a0b1b64f32ca`；产品身份仍独立固定为tag source`99885b854bd9621c3340e99f031bf83ceb58414d`与P9-C公开双资产，治理HEAD没有替代tag source。
+- 9.2最终exit code 0；doctor为healthy/managed、不可repair、两个managed events、空errors/blockers，且`POST_RESUME_DOCTOR=PASS`。
+- 公开ZIP内builder确认22 entries、85,910 bytes与SHA-256`94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291`；ZIP内importer确认四个upstream runtime仍为exact pristine hashes。
+- manifest schema 4、Release/bundle schema 2、12-file installed inventory、4-file pristine upstream、authoritative bundle inventory、adapter-only policy、公开ZIP重新下载SHA与零snapshot residue全部闭合。
+- P9-D结束只证明公开默认下载链已经验收；`v0.4.1`仍是Pre-release candidate，P9-E pointer-only Latest、accepted/fallback轮转和P9-F retirement均需独立授权。

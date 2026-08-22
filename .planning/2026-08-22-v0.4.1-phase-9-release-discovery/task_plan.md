@@ -8,12 +8,12 @@
 
 ## Next Step
 
-等待维护者push当前P9-D operator commit，并从exact control-plane checkout在独立Fresh Cloud按版本acceptance执行
-4.2→5.2→6→7→8.1→真实8.2→9.2；回传前不写P9-D PASS，不进入P9-E。
+等待维护者另行明确授权P9-E pointer-only Latest promotion设计/操作入口；授权前不修改Release metadata，不轮转
+accepted/fallback角色，也不提前进入P9-F retirement。
 
 ## Current Phase
 
-Phase 5 in progress / P9-D operator ready; maintainer Fresh Cloud execution pending
+Phase 5 complete / P9-D Published Release Cloud PASS; stop before Phase 6
 
 ## Phases
 
@@ -47,9 +47,9 @@ Phase 5 in progress / P9-D operator ready; maintainer Fresh Cloud execution pend
 
 ### Phase 5: P9-D Published Release Cloud
 
-- [ ] 从公开 bootstrap 默认下载链在全新 Cloud 完成 Fresh/Resume/doctor/deep-check。
-- [ ] 写回 exact public-asset evidence；失败不得重传同名资产修补。
-- **Status:** in progress / operator materialized; maintainer Fresh Cloud pending
+- [x] 从公开 bootstrap 默认下载链在全新 Cloud 完成 Fresh/Resume/doctor/deep-check。
+- [x] 写回 exact public-asset evidence；失败不得重传同名资产修补。
+- **Status:** complete / public default-download chain、real Resume、doctor/inventory/residue PASS；stop before P9-E
 
 ### Phase 6: P9-E Latest promotion and role rotation
 
@@ -77,7 +77,7 @@ Phase 5 in progress / P9-D operator ready; maintainer Fresh Cloud execution pend
 - 已完成授权：P9-A stable identity/pre-seal materialization、本地验证、planning/acceptance/ROADMAP 更新与本地 commit。
 - 已完成授权：P9-B exact-hash local seal、sealed-source Cloud教程与验收、planning/acceptance/ROADMAP evidence写回和本地commit。
 - 已完成授权：P9-C tag source/双资产身份冻结、Pre-release publication与download audit、provenance/acceptance/ROADMAP evidence写回和本地commit。
-- 当前已授权：P9-D Published Release Cloud operator/materialization、本地守卫、planning/acceptance/ROADMAP更新与本地commit；维护者负责push和Cloud UI执行。
+- 已完成授权：P9-D Published Release Cloud operator、维护者Cloud执行、exact evidence写回、planning/acceptance/ROADMAP更新与本地commit。
 - P9-E Latest、角色轮换及其他后继gate均未授权。
 - 每一关键 gate 必须在专项设计和维护者明确授权后进入。
 
@@ -104,7 +104,9 @@ Phase 5 in progress / P9-D operator ready; maintainer Fresh Cloud execution pend
 | P9-D operator物化后旧ROADMAP断言仍把开发期与P9-B Cloud证据冻结成单句 | 1 | 拆成两个独立稳定事实断言，保留exact source和sealed-source lifecycle语义 |
 | P9-D首次断言修正后另一旧断言遗漏当前`sealed-source Cloud`限定 | 1 | 对齐当前角色表的P9-B/P9-C精确表述；未改变Published Release pending或P9-E边界 |
 | post-commit使用`v0.4.1^{commit}`复核tag时被PowerShell特殊字符解析干扰 | 1 | 改用`git show-ref --tags v0.4.1`与`git rev-list -n 1 v0.4.1`完成等价只读核验，tag仍为exact sealed source |
+| P9-D evidence intentional-red在受限`--test-isolation=none`模式下有3项`repositoryPaths()` Git spawn返回null | 1 | 预期状态红灯已单独识别；不把sandbox limitation当产品失败，最终聚焦与完整suite改在正常子进程执行面运行 |
+| P9-D evidence写回后旧ROADMAP断言仍冻结P9-B/P9-C二阶段PASS短语 | 1 | 扩展为当前P9-B/P9-C/P9-D三阶段角色窗口；未弱化Cloud evidence或提前授权P9-E |
 
 ## Current Status
 
-`P9_D_OPERATOR_READY / MAINTAINER_FRESH_CLOUD_PENDING / STOP_BEFORE_P9_E`
+`P9_D_PUBLISHED_RELEASE_CLOUD_PASS / PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED / STOP_BEFORE_P9_E`

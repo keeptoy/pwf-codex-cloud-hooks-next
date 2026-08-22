@@ -214,3 +214,21 @@
 ## Current Status
 
 `P9_D_OPERATOR_READY / MAINTAINER_FRESH_CLOUD_PENDING / STOP_BEFORE_P9_E`
+
+## 2026-08-23 — P9-D Published Release Cloud evidence writeback
+
+- 维护者明确判定P9-D通过并提供9.2原始摘要；本轮直接写回，不扩展Cloud验收范围或要求重跑。
+- 维护者确认公开默认下载链的4.2 setup、5.2 Fresh、第6/7节canonical、第8.1节long-tail、真实8.2 Resume与9.2 deep check整条PASS；control-plane HEAD为`b11464b85df8ff4ed90c34492286a0b1b64f32ca`。
+- 9.2最终exit code 0；doctor原样为healthy/managed、repairable=false、SessionStart/UserPromptSubmit、空errors/blockers。
+- 公开ZIP内builder报告22 entries、85,910 bytes、SHA-256`94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291`；ZIP内importer报告四个exact pristine upstream hashes并healthy=true。
+- `PUBLIC_PACKAGE_IDENTITY=0.4.1`、manifest schema 4、Release/bundle schema 2、12-file installed inventory、4-file pristine upstream、authoritative bundle inventory、adapter-only policy、公开ZIP重新下载SHA、importer boundary与零snapshot residue全部PASS。
+- acceptance新增独立P9-D evidence，ROADMAP与活动plan关闭Phase 5并停止在未授权P9-E之前；没有改变Release metadata或accepted/fallback角色。
+- intentional-red在受限`--test-isolation=none`执行面得到10 pass / 4 fail：1项为预期的P9-D pending状态红灯；3项是该模式下`repositoryPaths()`无法spawn Git而返回null，归类为sandbox limitation，最终复验改在正常执行面运行。
+- evidence写回后的首次正常聚焦复验为16 pass / 1 fail；唯一失败是旧断言仍冻结P9-B/P9-C二阶段PASS短语，已扩展为当前P9-B/P9-C/P9-D三阶段角色窗口，不改变任何Release或Cloud结论。
+- repository/Release聚焦复验最终为17 pass / 0 fail / 0 skipped；P9-D evidence anchor、exact Cloud字段、公开资产identity、P9-E未授权与三席角色窗口均闭合。
+- 完整Windows runner PASS：184 tests / 158 pass / 0 fail / 26 skipped；SKIP仍是既有Linux/POSIX-only case，P9-D真实Cloud PASS由维护者本轮证据承担。
+- 6个changed paths仅属于活动planning、ROADMAP、版本acceptance与治理测试；与Release v2 entries及ZIP外bootstrap交集为0，`git diff --check` PASS，公开资产和production字节均未改变。
+
+## Current Status
+
+`P9_D_PUBLISHED_RELEASE_CLOUD_PASS / PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED / STOP_BEFORE_P9_E`

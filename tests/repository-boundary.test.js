@@ -56,9 +56,10 @@ test("v0.4.1 sealed-source patch train preserves the accepted and fallback ident
   assert.match(roadmap, /compatibility\/security patch train/);
   assert.match(roadmap, /本地[\s\S]*path-safety gate 与开发候选 exact source/);
   assert.match(roadmap, /P9-B Linux零skip、deterministic ZIP、Fresh\/UserPrompt\/real Resume/);
-  assert.match(roadmap, /P9-B sealed-source Cloud与P9-C immutable publication均PASS/);
+  assert.match(roadmap,
+    /P9-B sealed-source Cloud、P9-C immutable publication与P9-D Published Release Cloud均PASS/);
   assert.match(roadmap, /`v0\.4\.1` published prerelease candidate/);
-  assert.match(roadmap, /P9-D operator ready、maintainer Fresh Cloud pending/);
+  assert.match(roadmap, /P9-D Published Release Cloud PASS/);
   assert.match(roadmap, /P9-E Latest与角色轮换仍未授权/);
   assert.match(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.0`/);
@@ -617,7 +618,7 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /P9-B local seal[^\n]*`PASS`/);
     assert.match(acceptance, /P9-B sealed-source Cloud[^\n]*`PASS`/);
     assert.match(acceptance, /P9-C immutable publication[^\n]*`PASS`/);
-    assert.match(acceptance, /P9-D Published Release Cloud[^\n]*`MAINTAINER_CLOUD_PENDING`/);
+    assert.match(acceptance, /P9-D Published Release Cloud[^\n]*`PASS`/);
     assert.match(acceptance, /P9-E \/ Latest[^\n]*`NOT_AUTHORIZED`/);
     assert.match(acceptance,
       /V0_4_1_SOURCE_CANDIDATE_CLOUD_PASS \/ STOP_BEFORE_SEAL \/ RELEASE_NOT_AUTHORIZED/);
@@ -679,8 +680,10 @@ test("change history, programme, provenance, and current acceptance keep separat
     ]) assert.match(p9cEvidence, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
     assert.match(acceptance, /^<a name="v0-4-1-p9-d-published-release-cloud-operator"><\/a>$/m);
     const p9dAt = acceptance.indexOf('<a name="v0-4-1-p9-d-published-release-cloud-operator"></a>');
-    assert.ok(p9dAt > p9cEvidenceAt && historicalDevAt > p9dAt);
-    const p9dOperator = acceptance.slice(p9dAt, historicalDevAt);
+    assert.match(acceptance, /^<a name="v0-4-1-p9-d-published-release-cloud-evidence"><\/a>$/m);
+    const p9dEvidenceAt = acceptance.indexOf('<a name="v0-4-1-p9-d-published-release-cloud-evidence"></a>');
+    assert.ok(p9dAt > p9cEvidenceAt && p9dEvidenceAt > p9dAt && historicalDevAt > p9dEvidenceAt);
+    const p9dOperator = acceptance.slice(p9dAt, p9dEvidenceAt);
     for (const anchor of [
       "published-release-setup", "blackbox-fresh-startup", "blackbox-canonical-baseline",
       "blackbox-canonical-context", "blackbox-real-resume", "published-release-deep-check",
@@ -702,6 +705,22 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(p9dOperator, /必须停止在P9-E前/);
     assert.doesNotMatch(p9dOperator, /set -Eeuo pipefail|readonly BOOTSTRAP_URL=|readonly ZIP_URL=/,
       "version operator must not copy the shared Published Release Bash authority");
+    const p9dEvidence = acceptance.slice(p9dEvidenceAt, historicalDevAt);
+    for (const fact of [
+      "b11464b85df8ff4ed90c34492286a0b1b64f32ca",
+      "99885b854bd9621c3340e99f031bf83ceb58414d",
+      "PWF_PUBLIC_RELEASE_SETUP=PASS", "PUBLIC_PACKAGE_IDENTITY=0.4.1",
+      '"healthy":true', '"repairable":false', '"managed":true',
+      '"events":["SessionStart","UserPromptSubmit"]', '"errors":[]', '"blockers":[]',
+      '"entries": 22', '"sha256": "94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291"',
+      '"size": 85910', "POST_RESUME_DOCTOR=PASS", "PWF_DEEP_CHECK_MANIFEST_SCHEMA=4",
+      "PWF_DEEP_CHECK_RELEASE_SCHEMA=2", "PWF_DEEP_CHECK_BUNDLE_SCHEMA=2",
+      "RELEASE_ARTIFACT_ENTRIES=22", "INSTALLED_RUNTIME_FILES=12", "UPSTREAM_PRISTINE_FILES=4",
+      "BUNDLE_INSTALLED_INVENTORY=AUTHORITATIVE", "MANAGED_POLICY=ADAPTER_ONLY",
+      "PWF_PUBLIC_ZIP_REDOWNLOAD_SHA256=94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291",
+      "PWF_PUBLIC_ZIP_BOUNDARY_IMPORTER=PASS", "SNAPSHOT_LEFTOVERS=0", "PWF_PUBLIC_POST_RESUME=PASS",
+      "P9_D_PUBLISHED_RELEASE_CLOUD_PASS / PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED / STOP_BEFORE_P9_E",
+    ]) assert.match(p9dEvidence, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
     const v041Provenance = provenance.split(/\r?\n/)
       .find(line => line.startsWith("| `v0.4.1` |")) || "";
     for (const fact of [
