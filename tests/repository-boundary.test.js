@@ -54,7 +54,8 @@ test("v0.4.1-dev patch train preserves the accepted and fallback identity window
   assert.equal(immediateFallback, "v0.3.5");
   assert.notEqual(candidate, accepted);
   assert.match(roadmap, /compatibility\/security patch train/);
-  assert.match(roadmap, /只授权本地实现与验证，不授权Cloud、seal、publication或角色轮换/);
+  assert.match(roadmap, /本地 path-safety 与 Source\/Candidate Linux\/Cloud PASS/);
+  assert.match(roadmap, /Source\/Candidate 已验收；seal、publication与角色轮换仍未授权/);
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.0`/);
   assert.match(roadmap,
     /Phase 4 \/ F3C4完成[\s\S]*形成0\.4\.0功能\/候选基线[\s\S]*后继版本列车与Product Phase另行决策/);
@@ -602,18 +603,26 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /^<a name="v0-4-1-dev-gate-status"><\/a>$/m);
     assert.match(acceptance, /Windows path-topology local implementation[^\n]*`PASS`/);
     assert.match(acceptance,
-      /Source\/Candidate Linux\/POSIX \+ Cloud[^\n]*`CURRENT \/ CLOUD_ACCEPTANCE_PENDING`/);
+      /Source\/Candidate Linux\/POSIX \+ Cloud[^\n]*`PASS`/);
     assert.match(acceptance, /Seal \/ publication \/ Latest[^\n]*`NOT_AUTHORIZED`/);
     assert.match(acceptance,
-      /LOCAL_PATH_SAFETY_PASS \/ SOURCE_CANDIDATE_CLOUD_PENDING \/ RELEASE_NOT_AUTHORIZED/);
+      /V0_4_1_SOURCE_CANDIDATE_CLOUD_PASS \/ STOP_BEFORE_SEAL \/ RELEASE_NOT_AUTHORIZED/);
     assert.match(acceptance, /默认情况下，智能体不代替维护者 push/);
     assert.match(acceptance, /维护者回传时请保留/);
     assert.match(acceptance, /明确结束 B 的单次无工具\/不读文件观察限制/);
     assert.match(acceptance, /cloud-hard-acceptance-template\.md#cloud-task-acceptance-permission-prefix/);
     assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-setup/);
     assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-deep-check/);
+    assert.match(acceptance, /^<a name="v0-4-1-dev-source-candidate-evidence"><\/a>$/m);
+    assert.match(acceptance, /6c1dd52a3878f59c7140a793b9a2c2a34580b188/);
+    assert.match(acceptance, /175 tests \/ 175 pass \/ 0 fail \/ 0 skipped/);
+    assert.match(acceptance, /543a72a57fdd7ca04854d5d1dfde6f838bf40e3afa5eb2c52c2d559b3843854a/);
+    assert.match(acceptance, /PWF_SOURCE_CANDIDATE_SETUP=PASS/);
+    assert.match(acceptance, /PWF_SC_POST_RESUME=PASS/);
+    assert.match(acceptance, /首次拒绝作为诊断时间线保留/);
+    assert.match(acceptance, /0d470920f42651983062945a129e38838c46f4d7/);
     assert.doesNotMatch(acceptance,
-      /\b[a-f0-9]{64}\b|R5-SC=PASS|R5-PR=PASS|CLOUD-HARD-ACCEPTANCE-PASS|https:\/\/github\.com\/[^\s]+\/releases\/download\//i);
+      /R5-PR=PASS|CLOUD-HARD-ACCEPTANCE-PASS|https:\/\/github\.com\/[^\s]+\/releases\/download\//i);
     return;
   }
   assert.match(acceptance, /^<a name="v0-4-0-gate-status"><\/a>$/m);

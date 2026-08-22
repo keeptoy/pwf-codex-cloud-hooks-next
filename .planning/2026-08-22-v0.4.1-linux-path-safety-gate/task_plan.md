@@ -6,11 +6,11 @@
 
 ## Next Step
 
-修复 C 对 B 无工具/不读文件限制的显式交接，增加文档边界测试并完成本地 commit；维护者 push 新 exact HEAD 后，从新的 disposable Cloud environment 重新运行完整 Source/Candidate A～F。
+Source/Candidate 已通过并完成 evidence writeback；停在 seal 之前，由维护者另行决定和授权后续 seal/Release gate。
 
 ## Current Phase
 
-Phase 5 in progress / Acceptance protocol correction
+Phase 5 complete / Source/Candidate Cloud PASS
 
 ## Phases
 
@@ -47,12 +47,12 @@ Phase 5 in progress / Acceptance protocol correction
 
 - [x] 核对 4.1 exact source、Linux 0 skip、双 ZIP identity、安装/doctor/probe 和 clean worktree 摘要。
 - [x] 核对 9.1 exit code 0、exact HEAD、doctor、inventory/policy authority 与零 residue。
-- [x] 分类 C 的 B→C 权限冲突为 acceptance protocol defect，拒绝用 9.1 倒推 C PASS。
+- [x] 保留 C 首次因继承 B 限制而 fail closed 的诊断；维护者随后给出 bounded planning read/apply_patch 授权，同一 task 的 C～E 完整通过。
 - [x] 修复稳定 C 提示、版本运行单和防回归断言，完成本地 commit。
-- [ ] 维护者 push 新 exact HEAD 后，在新 Fresh environment 重跑完整 A～F 并回传原始输出。
-- [ ] 只把真实结果写入版本 acceptance；未执行轮次保持 PENDING。
-- [ ] 通过后封闭本 gate，并单独决定后续 seal/Release 授权。
-- **Status:** in progress / protocol correction required
+- [x] 根据维护者对完整黑盒链最终成功的确认，将 exact source `6c1dd52a3878f59c7140a793b9a2c2a34580b188` 写为 Source/Candidate PASS；不再要求重跑。
+- [x] 将 exact evidence 写入版本 acceptance，并同步 ROADMAP 与 repository-boundary 断言。
+- [x] 封闭本 gate；后续 seal/Release 需单独授权。
+- **Status:** complete
 
 ## Frozen Invariants
 
@@ -81,7 +81,8 @@ Phase 5 in progress / Acceptance protocol correction
 |---|---:|---|
 | 先前把“转 Source/Candidate Cloud”误解为智能体默认代启 Cloud | 1 | 维护者澄清标准分工；重写 plan 与 AGENTS，Cloud 启动默认交回维护者 |
 | `wsl.exe` 存在但无发行版，Docker/Podman/nerdctl 不存在 | 1 | 固化为本机执行记忆；默认流程不再重复搜索 |
+| C 首次继承 B 的无工具/不读文件限制并 fail closed | 1 | 维护者在同一 task 明确授予 canonical planning 所需的 bounded read/apply_patch；C～E 随后完整通过，首次拒绝保留为诊断历史 |
 
 ## Current Status
 
-`LOCAL_ACCEPTANCE_PASS / PRIOR_CLOUD_RUN_INVALID_AT_C / PROTOCOL_FIX_VALIDATED_AND_COMMITTING`
+`V0_4_1_SOURCE_CANDIDATE_CLOUD_PASS / STOP_BEFORE_SEAL / RELEASE_NOT_AUTHORIZED`

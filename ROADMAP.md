@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.1-dev` compatibility/security patch train；本地 path-safety implementation PASS；Linux/Cloud/Release 未授权 |
+| 当前开发列车 | `v0.4.1-dev` compatibility/security patch train；本地 path-safety 与 Source/Candidate Linux/Cloud PASS；seal/Release 未授权 |
 | 当前已接受版本 | `v0.4.0`；stable GitHub `Latest`与programme accepted |
 | 当前直接回退版本 | immutable `v0.3.5` immediate fallback |
 | 回退证据链 | immutable `v0.3.4` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4与`v0.4.0` Phase 9保持闭合；`v0.4.1-dev`仅修复 installer-owned `hooks`/runtime link、junction与special-path准入，不改变Host ABI、runtime trusted graph或unknown regular cleanup合同。当前只授权本地实现与验证，不授权Cloud、seal、publication或角色轮换 |
+| 当前 programme 边界 | Product Phase 4与`v0.4.0` Phase 9保持闭合；`v0.4.1-dev`仅修复 installer-owned `hooks`/runtime link、junction与special-path准入，不改变Host ABI、runtime trusted graph或unknown regular cleanup合同。Source/Candidate 已验收；seal、publication与角色轮换仍未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight确认它为
@@ -70,9 +70,11 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 symlink、junction、非目录component与nested special entry，同时显式uninstall继续允许unknown普通文件/目录被完整备份后清理。
 
 开发身份为`v0.4.1-dev`，bootstrap保持64位zero hash并fail closed；accepted仍为immutable `v0.4.0`，immediate
-fallback仍为immutable `v0.3.5`。本地 path-safety gate 已通过；Source/Candidate Linux/Cloud 已进入维护者
-push 与手动验收的待执行状态。seal、tag、Release、Latest 和角色轮换仍未授权，精确行动边界见活动 plan，
-候选验收教程与状态见[`docs/v0.4.1-dev-cloud-hard-acceptance.md`](docs/v0.4.1-dev-cloud-hard-acceptance.md)。
+fallback仍为immutable `v0.3.5`。本地 path-safety gate 与 exact source
+`6c1dd52a3878f59c7140a793b9a2c2a34580b188` 的 Source/Candidate Linux/Cloud 已通过；随后
+`0d470920f42651983062945a129e38838c46f4d7` 只固化 B→C bounded planning 权限交接，不改变候选 ZIP。
+seal、tag、Release、Latest 和角色轮换仍未授权，精确行动边界见活动 plan，候选验收教程与证据见
+[`docs/v0.4.1-dev-cloud-hard-acceptance.md`](docs/v0.4.1-dev-cloud-hard-acceptance.md#v0-4-1-dev-source-candidate-evidence)。
 
 <a name="phase-9-v0-4-0-instance"></a>
 

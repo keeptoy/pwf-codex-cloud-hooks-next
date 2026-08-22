@@ -30,7 +30,7 @@
 - `docs/v0.4.1-dev-cloud-hard-acceptance.md` 已补齐维护者 push、Cloud 环境、A～F 顺序、FIFO/path-safety 增量、
   原始证据回传和失败分流。
 - 稳定 template 只增加 `cloud-task-acceptance-permission-prefix` 显式锚点，执行协议未改变。
-- `ROADMAP.md` 已同步为本地 gate PASS、Source/Candidate 等待维护者 push/手动 Cloud、Release 仍未授权。
+- `ROADMAP.md` 在教程 handoff 阶段同步为本地 gate PASS、Source/Candidate 等待维护者 push/手动 Cloud、Release 仍未授权；Phase 5 回传后再同步为 Source/Candidate PASS。
 
 ### Phase 4: Documentation verification and local commit
 
@@ -41,20 +41,20 @@
 
 ### Phase 5: Source/Candidate Cloud evidence intake
 
-- **Status:** in progress / 4.1 evidence incomplete
+- **Status:** complete
 - 维护者已 push exact HEAD `6c1dd52a3878f59c7140a793b9a2c2a34580b188` 并手动完成 4.1 setup task。
 - Cloud 回传：Linux 175/175、0 fail、0 skipped；ZIP 22 entries、85,915 bytes、SHA-256 `543a72a…3854a`；
   setup marker、override install、doctor、managed policy、两个 adapter probes 和 clean worktree 均通过。
-- 4.1 回传未明确包含最终 `exit_code=0`，按模板保持 `INCOMPLETE`；在原 task 只读补齐前不进入 5.1。
-- 本轮只更新活动 planning，不更新版本 acceptance、不创建 commit，避免 Source/Candidate 中途改变本地/远端 HEAD。
+- 4.1 首次回传摘要未单列最终 exit code；维护者随后确认整条黑盒测试最终成功跑通，因此 A 最终归类为 PASS。
 - 维护者随后回传 9.1：exit code 0；`PWF_WORKTREE_CHANGES=PLANNING_ONLY`、`POST_RESUME_DOCTOR=PASS`、
   `PWF_SC_POST_RESUME=PASS`；HEAD、doctor、contracts、inventory、adapter-only policy 和 snapshot residue 全部通过。
-- C 原始回复因继承 B 的“不读取文件/调用工具”限制而拒绝创建 canonical baseline。该 fail-closed 行为正确，但意味着
-  当前通道不能 PASS；9.1 不能补造 C acknowledgment 或 D/E canonical relation。
-- 已开始修复稳定模板的 B→C 权限交接，并增加 repository-boundary 防回归断言；修复后需要新 exact HEAD 的完整 Fresh A～F。
+- C 首次回复因继承 B 的“不读取文件/调用工具”限制而拒绝创建 canonical baseline；该 fail-closed 行为作为诊断历史保留。
+- 维护者随后在同一 task 临时授予 canonical planning 所需的 bounded read/apply_patch；C 成功创建 baseline，D/E 使用同一
+  fixture 完整通过。维护者确认整条 A～F 黑盒链成功，因此本轮不再要求重跑。
 - 稳定模板、v0.4.1 运行单和 repository-boundary 断言已修复；repository-boundary 14/14、完整 suite 158 pass / 0 fail 通过。
 - 协议修复不进入 Release ZIP；本地 build/check 仍为 22 entries、85,915 bytes、SHA-256 `543a72a…3854a`。
-- `git diff --check` 通过；准备创建单一范围本地 commit，随后由维护者 push 新 HEAD 并全量重跑。
+- `0d47092` 只固化未来 B→C 权限交接，不改变 Release ZIP 或已验收 production source；本轮 exact evidence 已写入版本
+  acceptance，状态收敛为 Source/Candidate PASS，并停在 seal 之前。
 
 ## Test Results
 
@@ -72,13 +72,16 @@
 | Cloud 4.1 exact source | `6c1dd52a…b188` | PASS |
 | Cloud 4.1 Linux suite | 175 pass / 0 fail / 0 skip | PASS |
 | Cloud 4.1 deterministic ZIP | 22 entries / 85,915 bytes / `543a72a…3854a` | PASS |
-| Cloud 4.1 final invocation exit code | not explicitly returned | INCOMPLETE |
+| Cloud 4.1 complete invocation | maintainer confirmed full script completed successfully | PASS |
 | Cloud 9.1 deep check | exit 0 / exact HEAD / doctor+inventory+policy PASS / residue 0 | PASS |
-| Cloud C canonical baseline | no files changed due inherited no-read restriction | PROTOCOL DEFECT |
+| Cloud C first attempt | fail closed under inherited no-read restriction; no files changed | DIAGNOSTIC / SUPERSEDED |
+| Cloud C canonical baseline after bounded authorization | same task; baseline created; D/E continued on same fixture | PASS |
 | repository-boundary after B→C fix | 14 pass / 0 fail / 0 skip | PASS |
 | full suite after B→C fix | 158 pass / 0 fail / 26 Windows skips | PASS |
 | candidate ZIP after protocol-only fix | 22 entries / 85,915 bytes / `543a72a…3854a` | UNCHANGED / PASS |
 | `git diff --check` after protocol fix | exit 0 | PASS |
+| repository-boundary after Cloud evidence writeback | 14 pass / 0 fail / 0 skip | PASS |
+| full suite after Cloud evidence writeback | 158 pass / 0 fail / 26 Windows skips | PASS |
 
 ## Errors
 
@@ -89,9 +92,9 @@
 | Cloud task list omitted environment ID | 1 | 标记为非默认流程信息；维护者手动 Cloud 不依赖本地 CLI environment ID |
 | standalone Git Bash could not resolve workspace bootstrap paths | 3 | 不继续搜索兼容层；Cloud Linux 执行真实 Bash gate |
 | ROADMAP 首次 patch 重复保留旧状态行 | 1 | 立即复核并合并为单一 current-state 段落 |
-| 4.1 Cloud summary omitted explicit final exit code | 1 | 在原 setup task 只读补问实际 exit code；不得从 PASS marker 推断 |
-| B no-tool/no-read restriction conflicted with C apply_patch and existence checks | 1 | C 显式终止 B 的单次观察限制，仅开放 bounded planning read/write；新 HEAD 全量重跑 |
+| 4.1 Cloud summary omitted explicit final exit code | 1 | 维护者随后确认整条黑盒脚本最终成功跑通；据此与完整 runner/setup 证据合并判定 PASS，同时保留首次摘要不完整的事实 |
+| B no-tool/no-read restriction conflicted with C apply_patch and existence checks | 1 | 维护者在同一 task 临时给出 bounded planning 授权后 C～E 全部通过；`0d47092` 将该交接固化供未来运行使用，无需重跑本轮 |
 
 ## Current Status
 
-`C_PROTOCOL_FIX_VALIDATED / CANDIDATE_ZIP_UNCHANGED / LOCAL_COMMIT_PENDING`
+`V0_4_1_SOURCE_CANDIDATE_CLOUD_PASS / STOP_BEFORE_SEAL / RELEASE_NOT_AUTHORIZED`
