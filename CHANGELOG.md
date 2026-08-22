@@ -4,6 +4,19 @@
 [`ROADMAP.md`](ROADMAP.md)；当前唯一行动与授权边界见活动 `task_plan.md`；精确 source、资产、大小和
 SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 acceptance。
 
+## v0.4.1-dev
+
+### Changed
+
+- install、repair与uninstall新增installer-owned path topology准入：在备份、共享requirements写入和runtime
+  mutation前拒绝symlink、Windows junction、非目录component与nested special entry，避免沿`hooks`父路径越界写入或删除。
+- 保留显式uninstall的recovery合同：unknown普通文件和目录仍会先完整备份再清理；exact current/predecessor
+  inventory admission、Host ABI、managed events与runtime trusted graph均未改变。
+- 开发身份轮换为`v0.4.1-dev`，只接受exact `v0.4.0` installed predecessor；candidate bootstrap保持64位
+  zero hash并fail closed。programme与未完成gate见[`ROADMAP.md`](ROADMAP.md)，候选证据边界见
+  [`docs/v0.4.1-dev-cloud-hard-acceptance.md`](docs/v0.4.1-dev-cloud-hard-acceptance.md)，已发布身份仍只见
+  [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)。
+
 ## v0.4.0
 
 ### Changed

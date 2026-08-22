@@ -166,6 +166,10 @@ sudo node install.js uninstall --json --codex-home /opt/codex
 `repair` 只修复 installer 明确拥有的 adapter 和 managed definition drift。未知 runtime、manifest、
 requirements 或第三方管理员变更会 fail closed，不会被静默吸收。
 
+install、repair 与 uninstall 都会在备份或写删前检查 installer-owned `hooks/planning-with-files` 路径拓扑；
+若 `hooks`、runtime root 或其内部 entry 是 symlink、Windows junction、非预期文件类型或其他 special path，
+操作会以 `BLOCKED_UNSAFE_RUNTIME_PATH` 拒绝。显式 uninstall 仍允许 unknown 普通文件/目录先完整备份再清理。
+
 ### Pre-1.0 支持与升级边界
 
 本项目在 `1.0.0` 前只支持 clean install 和当前 contracts/tests 明确覆盖的 managed 状态；不保证从早期

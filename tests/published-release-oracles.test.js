@@ -278,8 +278,12 @@ test(`${acceptedVersion} accepted and ${fallbackVersion} fallback keep managed s
       result = runPackageInstaller(directDowngradePackage, home, "install");
       assert.equal(result.status, 1, "older published installer unexpectedly overwrote the current installation");
       assert.match(result.stderr, /BLOCKED_UNKNOWN_RUNTIME:/);
-      assert.match(result.stderr, /contracts\/adapter-plan-context-request-v2\.schema\.json/);
-      assert.match(result.stderr, /contracts\/runtime-result-v1\.schema\.json/);
+      if (currentMatchesAccepted) {
+        assert.match(result.stderr, /contracts\/adapter-plan-context-request-v2\.schema\.json/);
+        assert.match(result.stderr, /contracts\/runtime-result-v1\.schema\.json/);
+      } else {
+        assert.match(result.stderr, /installed manifest identity mismatch/);
+      }
       assert.deepEqual(managedState(home), before,
         "rejected direct downgrade changed current runtime, requirements, or backup inventory");
 

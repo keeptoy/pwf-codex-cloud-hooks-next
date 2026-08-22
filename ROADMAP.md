@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.0` stable train complete；Phase 4 functional baseline accepted；P9-A～P9-F PASS |
+| 当前开发列车 | `v0.4.1-dev` compatibility/security patch train；本地 path-safety implementation PASS；Linux/Cloud/Release 未授权 |
 | 当前已接受版本 | `v0.4.0`；stable GitHub `Latest`与programme accepted |
 | 当前直接回退版本 | immutable `v0.3.5` immediate fallback |
 | 回退证据链 | immutable `v0.3.4` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4功能施工已闭合；第一轮 retirement review完成；Phase 9 P9-E pointer-only promotion与postflight PASS；P9-F第二轮retirement review完成。后继版本列车与Product Phase待独立决策，当前未授权 |
+| 当前 programme 边界 | Product Phase 4与`v0.4.0` Phase 9保持闭合；`v0.4.1-dev`仅修复 installer-owned `hooks`/runtime link、junction与special-path准入，不改变Host ABI、runtime trusted graph或unknown regular cleanup合同。当前只授权本地实现与验证，不授权Cloud、seal、publication或角色轮换 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight确认它为
@@ -55,14 +55,27 @@ pristine upstream与owned runtime信任边界，并在legacy默认不变的前�
 ## 4. 当前开发列车
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
-bootstrap/acceptance；当前窗口为 v0.4.0 accepted + v0.3.5 immediate fallback。v0.3.4
+bootstrap/acceptance；当前窗口为 v0.4.1-dev candidate + v0.4.0 accepted + v0.3.5 immediate fallback。v0.3.4
 deeper fallback与更早版本均由immutable commit、tag、Release、exact acceptance与
 publication oracle 恢复；更早历史只留在精选 provenance。
 trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。
 
+<a name="v0-4-1-dev-path-safety-train"></a>
+
+### 4.1 当前 `v0.4.1-dev` path-safety patch train
+
+本列车是`v0.4.0`之上的兼容性安全修复，不进入新的Product Phase。已确认旧uninstall在`<codex-home>/hooks`
+为Windows junction时可能穿透父路径删除外部runtime；clean install也会在runtime尚不存在时漏检linked parent并向外写入。
+当前本地实现把path topology与exact inventory admission分层：install/repair/uninstall在backup和mutation前拒绝
+symlink、junction、非目录component与nested special entry，同时显式uninstall继续允许unknown普通文件/目录被完整备份后清理。
+
+开发身份为`v0.4.1-dev`，bootstrap保持64位zero hash并fail closed；accepted仍为immutable `v0.4.0`，immediate
+fallback仍为immutable `v0.3.5`。当前未授权Linux/Cloud gate、seal、tag、Release、Latest或角色轮换，精确行动边界见活动plan，
+候选验收状态见[`docs/v0.4.1-dev-cloud-hard-acceptance.md`](docs/v0.4.1-dev-cloud-hard-acceptance.md)。
+
 <a name="phase-9-v0-4-0-instance"></a>
 
-### 4.1 当前 `v0.4.0` Phase 9 instance
+### 4.2 已关闭的 `v0.4.0` Phase 9 instance
 
 本实例的P9-A～P9-F已关闭：stable identity、ZIP输入、exact ZIP/bootstrap SHA、exact-source Source/Candidate、immutable
 publication audit、公开默认下载链Fresh/Resume Cloud、pointer-only promotion与第二轮对象退役均已收敛。实际顺序为：
@@ -90,7 +103,7 @@ immutable v0.3.5继续承担immediate fallback。11个validation refs中九个�
 
 <a name="version-train-two-retirement-reviews"></a>
 
-### 4.2 每条版本列车的两轮退役审查
+### 4.3 每条版本列车的两轮退役审查
 
 默认情况下，一个 Product Phase完成一项目标并形成对应版本的功能/候选基线；随后该版本列车进入自己的 standing Phase 9，
 封板、发布、公开验收并轮转 accepted/fallback角色；再切换下一条 development列车进入后继 Phase。例如：
@@ -129,7 +142,7 @@ pre-release；多个低风险 Phase也只有在独立评审后才能进入同一
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立 gate；必须有 use case、latency/token budget与 Cloud证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6进入 Discovery |
 | 8 | `0.8.0-*` | optional hard gating，复用 Phase 7 evaluator | 重新 Discovery writer/counter/atomicity/lock/cache/Resume/rollback；再增加 block cap、escape hatch与 stall state | pending；implementation前必须重新 Discovery |
-| 9 | 当前列车的 `rc.N` → stable | standing Release收口：完整矩阵、最终字节、canary retirement、正式发布 | RC与最终资产分别验收；重新下载双资产；可逆 | standing gate；`v0.3.5`与`v0.4.0` instances complete；后继instance待版本列车确定 |
+| 9 | 当前列车的 `rc.N` → stable | standing Release收口：完整矩阵、最终字节、canary retirement、正式发布 | RC与最终资产分别验收；重新下载双资产；可逆 | standing gate；`v0.3.5`与`v0.4.0` instances complete；`v0.4.1-dev`尚未获准进入Phase 9 |
 
 Phase 9是 Release收口，不机械等于 `0.9.0`。例如只完成 Phase 4时，它可以封板 `0.4.0`；如果多个
 Phase经独立 gate后被明确合并，则封板当时获批的同一版本列车。`v0.3.5`的 Phase 9 instance已完成，

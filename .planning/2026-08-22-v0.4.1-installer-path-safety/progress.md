@@ -33,7 +33,23 @@
 
 ### Phase 4: Patch-train identity and documentation
 
+- **Status:** complete
+- package/Release identity传播为`0.4.1-dev`，新增zero-hash bootstrap与最小candidate acceptance；sealed `v0.4.0` bootstrap、acceptance、provenance均未修改。
+- transition predecessor从immutable `v0.4.0` tag精确轮换为12项installed inventory。
+- ROADMAP/CHANGELOG/README/ARCHITECTURE/DESIGN同步各自唯一权威；repository governance断言将当前candidate与历史v0.4.0详细证据分离。
+
+### Phase 5: Verification
+
+- **Status:** complete on Windows; Linux/POSIX and Cloud gates pending authorization
+- published release oracle 9/9通过，证明accepted/fallback immutable身份与exact forward transition/rollback。
+- development ZIP双构建均为22 entries、85,915 bytes且SHA一致；两次`check`通过，bootstrap仍保留zero hash。
+- importer check、Node/Python syntax、两个bootstrap的`bash -n`、四个upstream mode 100755与`git diff --check`通过。
+- 最终完整suite：183 tests，158 pass，0 fail，25 Windows上的Linux/POSIX-only skip。
+
+### Phase 6: Commit and handoff
+
 - **Status:** in_progress
+- path-safety实现阶段已提交`89c98b5`；准备提交identity/governance阶段并封账。
 
 ## Test Results
 
@@ -44,12 +60,21 @@
 | focused path-safety before production | 1 pass / 3 expected fail | RED EVIDENCE |
 | focused path-safety after production | 4 pass / 0 fail | PASS |
 | complete installer tests after production | 42 pass / 0 fail / 1 skip | PASS |
+| contracts + repository boundary | 19 pass / 0 fail | PASS |
+| published release oracles | 9 pass / 0 fail | PASS |
+| deterministic ZIP double build/check | 22 entries / 85,915 bytes / identical SHA | PASS |
+| importer, Node/Python/Bash syntax, modes, diff check | exit 0 | PASS |
+| final complete suite | 158 pass / 0 fail / 25 skip | PASS |
 
 ## Errors
 
 | Error | Attempt | Resolution |
 |---|---:|---|
+| read-only derivation initially spawned local git inside sandbox and hit `EPERM` | 1 | reran with narrow read-only authorization |
+| repository regex omitted escaped slash | 1 | fixed syntax and reran boundary suite |
+| full suite first run found a hard-coded historical ROADMAP heading | 1 | derived candidate dynamically; retained historical evidence tests separately |
+| Git Bash signal-pipe creation failed inside sandbox | 1 | reran only `bash -n` with narrow authorization |
 
 ## Current Status
 
-`IDENTITY_PROPAGATION_IN_PROGRESS / PATH_SAFETY_IMPLEMENTED / BRANCH_0_4_1_ACTIVE`
+`LOCAL_IMPLEMENTATION_AND_WINDOWS_VERIFICATION_PASS / IDENTITY_COMMIT_PENDING / REMOTE_ACTIONS_DENIED`

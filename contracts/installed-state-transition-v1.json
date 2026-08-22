@@ -2,23 +2,25 @@
   "schema_version": 1,
   "contract_id": "PWF_INSTALLED_STATE_TRANSITION_V1",
   "predecessor": {
-    "package_version": "0.3.5",
+    "package_version": "0.4.0",
     "installed_manifest_schema": 3,
     "owner": "pwf-codex-cloud-hooks",
     "manifest_keys": ["adapter_sha256", "events", "installer_version", "owner", "requirements_file", "requirements_sha256", "runtime_files", "schema_version", "skill_root", "unowned_requirements_sha256", "upstream"],
-    "upstream_canonical_sha256": "5069f4b17ce15719c2388d49c5bbcf70d0d87148739a213f6d02c9290a46864e",
-    "adapter_sha256": "7c6e7a07459d22d8bf63619e8f24f0178e80ce6bc8936d93b6762221bd33f6ba",
+    "upstream_canonical_sha256": "0ef1c8c366781e248c61e4e67eeae8af713c0bdeb0d95bfa57f9758e2bc6118a",
+    "adapter_sha256": "173a82cf5d39c789f09ff0f860badecf3bbb6b8c6537d7f168781e0e884a8966",
     "events": ["SessionStart", "UserPromptSubmit"],
     "runtime_files": [
-      { "id": "adapter", "path": "hook_adapter.py", "sha256": "7c6e7a07459d22d8bf63619e8f24f0178e80ce6bc8936d93b6762221bd33f6ba", "mode": "0755" },
+      { "id": "adapter", "path": "hook_adapter.py", "sha256": "173a82cf5d39c789f09ff0f860badecf3bbb6b8c6537d7f168781e0e884a8966", "mode": "0755" },
       { "id": "owned_catchup", "path": "owned-catchup.py", "sha256": "8b5501eb4257654922a9e247bd3873e1ede75a7a1ae4b777eb7d8b3b47e41b72", "mode": "0755" },
-      { "id": "owned_plan", "path": "owned-plan.py", "sha256": "1d8098d12ae6fdc9389b1047fc3691d1f792c813d21575ace7db0daa85c32595", "mode": "0755" },
+      { "id": "owned_plan", "path": "owned-plan.py", "sha256": "9ed4396845b3d2fdac284ab4f7d7933d8df968260cb63e47963e53f802c0b135", "mode": "0755" },
       { "id": "session_catchup", "path": "upstream/session-catchup.py", "sha256": "6476fd9024d0cbb9bfb850119fd0beff7fb7cfab9c6683ce10e4cc8d830ce6de", "mode": "0755" },
       { "id": "resolve_plan_dir", "path": "upstream/resolve-plan-dir.sh", "sha256": "38a1c5effb35f9506e2e371ccabb6be6e4f4170acc18f1811f08d634f5f0e9bd", "mode": "0755" },
       { "id": "inject_plan", "path": "upstream/inject-plan.sh", "sha256": "72c7904ec9a03f994d349ac1b9b3cfe484b417e738b25c0545d9ae11a2cc0364", "mode": "0755" },
       { "id": "ledger_summary", "path": "upstream/ledger-summary.sh", "sha256": "d4fe626a6bed95ce00a05bc4ffb2dbf70990f9a16e116607c0a21ad0679cf3b9", "mode": "0755" },
-      { "id": "adapter_plan_context_request", "path": "contracts/adapter-plan-context-request-v1.schema.json", "sha256": "c0c904451cf5042d621c8702d475af65b757ca5e45d74da50d9541a55b469262", "mode": "0644" },
-      { "id": "plan_context_result", "path": "contracts/plan-context-result-v1.schema.json", "sha256": "5d739740d82e01abf06c4b18b3a1eeb533a1f8e7513a24827b4bdcb36d484172", "mode": "0644" },
+      { "id": "adapter_runtime_request", "path": "contracts/adapter-runtime-request-v1.schema.json", "sha256": "a86588e3c7d55cbbeddc74110403ba815ad8715735c149d77dd0c47996ee72d5", "mode": "0644" },
+      { "id": "runtime_result", "path": "contracts/runtime-result-v1.schema.json", "sha256": "1cb545d9487c8d0ef9f4ccd270a786d0dc998629813e81a2cc05463b23b62ed7", "mode": "0644" },
+      { "id": "adapter_plan_context_request", "path": "contracts/adapter-plan-context-request-v2.schema.json", "sha256": "9de89f130977abcf56ec3def0281113bef1ccca6135ae79b20faf5c83d3b70ff", "mode": "0644" },
+      { "id": "plan_context_result", "path": "contracts/plan-context-result-v2.schema.json", "sha256": "2d0623215dcb95002a21ecf59e9f20714b85ab42684e00e7e8ea1f8c39d2e372", "mode": "0644" },
       { "id": "third_party_notices", "path": "THIRD_PARTY_NOTICES.md", "sha256": "10415e608418192d20d0e7095cfb4d77339850576043f65e796e695699424703", "mode": "0644" }
     ]
   }

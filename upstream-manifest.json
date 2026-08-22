@@ -19,11 +19,11 @@
       },
       "release_artifact": {
         "path": "contracts/release-artifact-v2.json",
-        "sha256": "56c5ca811e40fa19eb5a1a22c59e1ec4baa9f5cb8f622ff8769db0c3a7927685"
+        "sha256": "4f89e5bfc6c1cbe68afa82e612381bf99c66ae223c3c12295e3dd112a03ab6e0"
       },
       "installed_state_transition": {
         "path": "contracts/installed-state-transition-v1.json",
-        "sha256": "0339d34c5f842a2ab4f598b2f75330ad5575bd6cf21f229135f2fe7daa028379"
+        "sha256": "ed8ab80c2bf0f24a4cdf7bf947dd7d1923ac787bb61ee5bca5dc56f0629d6162"
       }
     },
     "importer": {

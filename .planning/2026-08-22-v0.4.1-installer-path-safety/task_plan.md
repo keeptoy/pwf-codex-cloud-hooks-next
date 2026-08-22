@@ -6,11 +6,11 @@
 
 ## Next Step
 
-将开发身份原子传播为 `0.4.1-dev`：轮换 exact predecessor、candidate bootstrap/contract、ROADMAP/CHANGELOG 与最小 acceptance，同时保持 sealed `v0.4.0` 字节不变。
+创建身份/治理阶段的本地 commit，随后封账并交接仍待Linux/Cloud/Release授权的外部gate。
 
 ## Current Phase
 
-Phase 4 in progress / Patch-train identity and documentation
+Phase 6 in progress / Commit and handoff
 
 ## Phases
 
@@ -39,24 +39,24 @@ Phase 4 in progress / Patch-train identity and documentation
 
 ### Phase 4: Patch-train identity and documentation
 
-- [ ] 将本地开发身份原子传播为 `0.4.1-dev`，development bootstrap 保持 zero hash/fail closed。
-- [ ] 更新 CHANGELOG、ROADMAP 与稳定运维说明的唯一权威，不改写 `v0.4.0` 历史 acceptance/provenance。
-- [ ] 核对 Release allowlist 与 deterministic ZIP 输入闭合。
-- **Status:** in_progress
+- [x] 将本地开发身份原子传播为 `0.4.1-dev`，development bootstrap 保持 zero hash/fail closed。
+- [x] 更新 CHANGELOG、ROADMAP 与稳定运维说明的唯一权威，不改写 `v0.4.0` 历史 acceptance/provenance。
+- [x] 核对 Release allowlist 与 deterministic ZIP 输入闭合。
+- **Status:** complete
 
 ### Phase 5: Verification
 
-- [ ] 运行 installer focused tests、repository/contracts/release seams 与完整 suite。
-- [ ] 运行 importer、Python/Node/Bash syntax、Git mode 与 `git diff --check`。
-- [ ] 双构建/check development ZIP；Windows 的 Linux/POSIX case 诚实 SKIP，并明确待 Linux gate。
-- **Status:** pending
+- [x] 运行 installer focused tests、repository/contracts/release seams 与完整 suite。
+- [x] 运行 importer、Python/Node/Bash syntax、Git mode 与 `git diff --check`。
+- [x] 双构建/check development ZIP；Windows 的 Linux/POSIX case 诚实 SKIP，并明确待 Linux gate。
+- **Status:** complete on Windows; Linux/POSIX and Cloud gates remain unauthorized
 
 ### Phase 6: Commit and handoff
 
 - [ ] 按可恢复阶段创建范围单一的本地 commits。
 - [ ] 汇总本地 commit、测试、剩余 Linux/Cloud gate 与维护者后续动作。
 - [ ] 不执行 push、tag、Release、资产上传、Latest 切换或部署。
-- **Status:** pending
+- **Status:** in_progress
 
 ## Frozen invariants
 
@@ -88,12 +88,19 @@ Phase 4 in progress / Patch-train identity and documentation
 | topology admission 独立于 inventory admission | install/repair 仍要求 exact current/predecessor；uninstall 只拒绝 link/special topology，继续接受 unknown regular 内容 |
 | 校验 `hooks` 与 runtime 两个 installer-owned component | 修复已证实的 parent junction 穿透与 direct runtime link；不擅自扩大到显式 `codexHome` 或其全部祖先 |
 | backup 前校验，backup 后 mutation 前复核 | 缩小可利用的并发替换窗口；完全 race-free 的 fd-relative traversal 留待独立设计，不伪装成本 patch 已解决 |
+| 0.4.1-dev 只接受 exact v0.4.0 predecessor | 当前 accepted 安装是唯一兼容前驱；published round-trip oracle 已证明前向接管、clean rollback 与直接降级拒绝 |
+| 当前不写入 development ZIP 的 exact SHA | 双构建 SHA 只是本地可复现证据；bootstrap 按未授权 seal 规则继续使用64位zero hash |
 
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
 |---|---:|---|
+| 查询了不存在的 `tools/build_release_zip.py` | 1 | 读取实际权威 `tools/build_release.py`，未产生文件变更 |
+| 沙箱内Node子进程执行`git show`返回`EPERM` | 1 | 以只读授权从本地immutable `v0.4.0` tag提取exact predecessor |
+| repository test新正则未转义`/` | 1 | 修正语法并复跑14/14通过 |
+| 完整suite首跑仍冻结`### 4.1 v0.4.0` | 1 | 改为动态解析ROADMAP当前candidate；最终suite通过 |
+| 沙箱内Git Bash无法创建signal pipe | 1 | 仅对两个bootstrap以授权的`bash -n`复跑通过 |
 
 ## Current Status
 
-`V0_4_1_IDENTITY_PROPAGATION_IN_PROGRESS / PATH_SAFETY_GREEN_ON_WINDOWS / REMOTE_ACTIONS_DENIED`
+`V0_4_1_LOCAL_IMPLEMENTATION_PASS / COMMIT_AND_HANDOFF_IN_PROGRESS / LINUX_CLOUD_RELEASE_NOT_AUTHORIZED`

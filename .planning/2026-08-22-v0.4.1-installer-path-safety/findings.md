@@ -54,6 +54,19 @@
 - 新建 `init-cloud-sandbox-v0.4.1-dev.bash`，ZIP SHA 保持 64 位 zero hash 并 fail closed；sealed `v0.4.0` bootstrap 不修改。
 - 新候选 acceptance 只记录当前真实本地证据和未完成 gate；历史 `v0.4.0` acceptance/provenance 保持不可变。
 
+## Verified identity materialization
+
+- `package.json`与Release artifact一致为`0.4.1-dev`；external asset精确为`init-cloud-sandbox-v0.4.1-dev.bash`。
+- 新bootstrap与sealed `v0.4.0`版本只差candidate version和checksum两行；candidate checksum为64位zero hash。
+- transition predecessor从immutable `v0.4.0` tag提取：manifest schema 3、12项runtime inventory、exact adapter/runtime/contract hashes与canonical source-manifest identity。
+- published oracle真实构建`v0.4.0` accepted与`v0.3.5` fallback包，并证明当前candidate只接管exact `v0.4.0`、拒绝篡改与direct old-over-current downgrade、owned uninstall后两级published版本仍可恢复。
+- 双构建得到相同22-entry development ZIP；该hash仅是本地验证证据，未写入zero-hash bootstrap，也不构成seal/publication。
+
+## Residual boundary
+
+- 当前`lstat` admission与backup后复核能关闭已证实的静态junction/link拓扑漏洞并缩小并发窗口，但Node路径API不能提供完整fd-relative no-follow transaction；最后一次检查到实际mutation之间仍存在理论TOCTOU窗口。
+- Windows junction证据不能替代Linux/POSIX symlink、FIFO/device等special-file真实平台gate；这些测试在当前Windows suite中按合同SKIP，未伪报通过。
+
 ## Candidate safety invariant
 
 对 installer 即将读取、复制、写入或递归删除的 managed runtime 路径，必须先证明 codex home 下的 `hooks` parent 与 runtime root 是预期位置的真实目录/缺失叶子，而不是 symlink、junction、special entry 或越界解析；拒绝必须发生在 backup 和任何 managed/shared mutation 之前。

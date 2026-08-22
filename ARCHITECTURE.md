@@ -359,10 +359,12 @@ Installer 负责：
 - lock 与原子写入；
 - source/runtime/contract hash 和 mode；
 - Managed requirements 的 ownership marker 与 merge；
+- installer-owned `hooks`/runtime topology 的 no-follow admission；
 - backup、install、doctor、bounded repair、uninstall；
 - installed inventory 和 drift 分类。
 
-Installer 不负责修改 workspace planning，不接管第三方 policy，也不把未知现状自动变成 owned state。
+Installer 不负责修改 workspace planning，不接管第三方 policy，也不把未知现状自动变成 owned state。路径拓扑准入与
+内容ownership分层：link/junction/special path在backup或mutation前拒绝；unknown普通内容仍可由显式uninstall备份后清理。
 
 ## 11. Release 边界
 

@@ -47,17 +47,15 @@ function currentRoleWindow() {
   return { accepted, candidate, immediateFallback, roadmap };
 }
 
-test("Phase 4 release closeout rotates the accepted and fallback identity window", () => {
+test("v0.4.1-dev patch train preserves the accepted and fallback identity window", () => {
   const { accepted, candidate, immediateFallback, roadmap } = currentRoleWindow();
-  assert.equal(candidate, "v0.4.0");
+  assert.equal(candidate, "v0.4.1-dev");
   assert.equal(accepted, "v0.4.0");
   assert.equal(immediateFallback, "v0.3.5");
-  assert.equal(candidate, accepted);
-  assert.match(roadmap, /Phase 4 functional baseline accepted/);
-  assert.match(roadmap, /Product Phase 4功能施工已闭合/);
-  assert.match(roadmap, /第一轮 retirement review完成/);
-  assert.match(roadmap,
-    /Phase 9 P9-E pointer-only promotion与postflight PASS[^]*P9-F第二轮retirement review完成/);
+  assert.notEqual(candidate, accepted);
+  assert.match(roadmap, /compatibility\/security patch train/);
+  assert.match(roadmap, /只授权本地实现与验证，不授权Cloud、seal、publication或角色轮换/);
+  assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.0`/);
   assert.match(roadmap,
     /Phase 4 \/ F3C4完成[\s\S]*形成0\.4\.0功能\/候选基线[\s\S]*后继版本列车与Product Phase另行决策/);
 });
@@ -154,8 +152,8 @@ test("P9-C operator freezes the Cloud-tested tag source and audits immutable pub
   assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-c-post-publication"><\/a>$/m);
   assert.match(phase9,
     /P9_C_IMMUTABLE_PUBLICATION_PASS \/ PUBLIC_ASSETS_REBUILT_AND_MATCHED \/ STOP_BEFORE_P9_D/);
-  assert.match(roadmap, /P9-A～P9-F PASS/);
-  assert.match(roadmap, /P9-F第二轮retirement review完成/);
+  assert.match(roadmap, /P9-A～P9-F已关闭/);
+  assert.match(roadmap, /P9-F second retirement review/);
   assert.match(roadmap, /tag source[^]*fe8cd7f284ea2849f634aa68813dbb0f2cca83f9/);
   assert.match(provenance,
     /`v0\.4\.0`[^\n]*fe8cd7f284ea2849f634aa68813dbb0f2cca83f9[^\n]*v0-4-0-p9-f-second-retirement-closeout/);
@@ -267,10 +265,10 @@ test("P9-E evidence closes pointer promotion before P9-F retirement", () => {
   assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-e-post-promotion"><\/a>$/m);
   assert.match(phase9,
     /P9_E_POINTER_PROMOTION_PASS \/ V0_4_0_ACCEPTED_LATEST \/ V0_3_5_IMMEDIATE_FALLBACK/);
-  assert.match(roadmap, /P9-E pointer-only promotion与postflight PASS/);
+  assert.match(roadmap, /pointer-only promotion与第二轮对象退役均已收敛/);
   assert.match(taskPlan,
     /P9_F_SECOND_RETIREMENT_PASS \/ V0_4_0_TRAIN_CLOSED \/ NEXT_TRAIN_UNDECIDED/);
-  assert.equal(candidate, "v0.4.0");
+  assert.equal(candidate, "v0.4.1-dev");
   assert.equal(accepted, "v0.4.0");
   assert.equal(immediateFallback, "v0.3.5");
 });
@@ -533,22 +531,29 @@ test("change history, programme, provenance, and current acceptance keep separat
   const nextDeltaStart = changelog.indexOf("\n## ", currentDeltaStart + 1);
   const currentDelta = changelog.slice(currentDeltaStart,
     nextDeltaStart === -1 ? changelog.length : nextDeltaStart);
-  for (const durableReleaseFact of [
-    /manifest schema 4/,
-    /runtime bundle[^\n]*Release artifact[^\n]*v2/,
-    /smart activation/,
-    /autonomous/,
-    /attestation/,
-    /nonce/,
-    /ledger/,
-    /Fresh\/Resume/,
-    /tamper refusal/,
-    /disarm-first rollback\/recovery/,
-    /deterministic ZIP|确定性 ZIP/,
-    /Published Release Cloud/,
-  ]) assert.match(currentDelta, durableReleaseFact);
-  assert.doesNotMatch(currentDelta, /P9-[A-F]|仍须后继 gate|真实 Cloud[^\n]*仍须|zero-hash pre-seal/,
-    "released version delta must not retain pre-release gate state or Phase 9 execution chronology");
+  if (candidate === accepted) {
+    for (const durableReleaseFact of [
+      /manifest schema 4/,
+      /runtime bundle[^\n]*Release artifact[^\n]*v2/,
+      /smart activation/,
+      /autonomous/,
+      /attestation/,
+      /nonce/,
+      /ledger/,
+      /Fresh\/Resume/,
+      /tamper refusal/,
+      /disarm-first rollback\/recovery/,
+      /deterministic ZIP|确定性 ZIP/,
+      /Published Release Cloud/,
+    ]) assert.match(currentDelta, durableReleaseFact);
+    assert.doesNotMatch(currentDelta, /P9-[A-F]|仍须后继 gate|真实 Cloud[^\n]*仍须|zero-hash pre-seal/,
+      "released version delta must not retain pre-release gate state or Phase 9 execution chronology");
+  } else {
+    assert.match(currentDelta, /path topology/);
+    assert.match(currentDelta, /unknown普通文件和目录仍会先完整备份再清理/);
+    assert.match(currentDelta, /64位[\s\S]*zero hash[\s\S]*fail closed/);
+    assert.doesNotMatch(currentDelta, /\b[a-f0-9]{64}\b|P9-[A-F]|Published Release Cloud/);
+  }
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 
   assert.match(roadmap, new RegExp("## 3\\. 已接受基线 `" + accepted.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "`"));
@@ -589,6 +594,19 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotMatch(changelog, /Successor 迁移来源链/);
 
   assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));
+  if (candidate !== accepted) {
+    assert.match(acceptance, /^<a name="v0-4-1-dev-gate-status"><\/a>$/m);
+    assert.match(acceptance, /Windows path-topology local implementation[^\n]*`PASS`/);
+    assert.match(acceptance, /Linux\/POSIX symlink与special-file gate[^\n]*`PENDING`/);
+    assert.match(acceptance, /Source\/Candidate Cloud[^\n]*`NOT_AUTHORIZED`/);
+    assert.match(acceptance, /Seal \/ publication \/ Latest[^\n]*`NOT_AUTHORIZED`/);
+    assert.match(acceptance, /LOCAL_PATH_SAFETY_PASS \/ LINUX_AND_CLOUD_PENDING \/ RELEASE_NOT_AUTHORIZED/);
+    assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-setup/);
+    assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-deep-check/);
+    assert.doesNotMatch(acceptance,
+      /\b[a-f0-9]{64}\b|R5-SC=PASS|R5-PR=PASS|CLOUD-HARD-ACCEPTANCE-PASS|https:\/\/github\.com\/[^\s]+\/releases\/download\//i);
+    return;
+  }
   assert.match(acceptance, /^<a name="v0-4-0-gate-status"><\/a>$/m);
   assert.match(acceptance, /F0 development identity \/ guardrails[^\n]*`PASS`/);
   assert.match(acceptance, /F1A contract\/source foundation[^\n]*`PASS`/);

@@ -1,6 +1,6 @@
 {
   "name": "pwf-codex-cloud-hooks",
-  "version": "0.4.0",
+  "version": "0.4.1-dev",
   "private": true,
   "description": "Personal Codex Cloud global Hook installer for planning-with-files",
   "license": "MIT",
