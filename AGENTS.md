@@ -83,7 +83,7 @@
 - 出现 Cloud/本地冲突、架构分歧或 timeout/权限/进程/数据安全模型变化时，暂停并增加探路 gate。
 - 只实施活动 task plan 明确授权的最小 gate；前一 gate 未通过不得顺手进入下一 gate。
 
-### 默认本地 / Cloud 验收职责分工
+## 默认本地 / Cloud 验收职责分工
 
 - 本仓库已经采用稳定的本地 → Cloud 验收流程。除非维护者针对当前 gate 另行明确授权，智能体默认负责源码分析、
   本地实现、本地测试、Cloud 验收教程、planning/acceptance 更新和本地 commit；维护者默认负责 push，并在 Codex Cloud
@@ -91,7 +91,7 @@
 - 维护者把 Cloud 原始结果带回后，智能体负责核对 exact source、测试/资产身份、Fresh/UserPrompt/real Resume、doctor
   和停止条件，再把真实证据写入版本 acceptance 并创建下一本地 commit。未实际运行的 Cloud 轮次保持 PENDING，
   本地 PASS 不得提升为 Cloud PASS。
-- 对 `C:\Users\Lenovo\Desktop\pwf-codex-cloud-hooks-next` 所在 Windows 维护机，2026-08-22 已确认：`wsl.exe`
+- 对本地所在 Windows 维护机，2026-08-22 已确认：`wsl.exe`
   存在但没有已安装发行版，Docker、Podman 与 nerdctl 均不存在。除非维护者说明主机环境已经改变，默认流程不要
   重复搜索这些执行面，也不要用 Git Bash 冒充 Linux/POSIX 证据；需要 Linux 零 skip、FIFO/device 或真实 filesystem
   证据时，直接在版本 Cloud 验收教程中为维护者编排 Source/Candidate gate。
