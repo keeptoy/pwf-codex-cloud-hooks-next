@@ -197,3 +197,27 @@
 ## Current status
 
 `P9_C_IMMUTABLE_PUBLICATION_PASS / PUBLIC_ASSETS_REBUILT_AND_MATCHED / STOP_BEFORE_P9_D`
+
+## 2026-08-22 — P9-D operator materialization started
+
+- 维护者授权继续下一步；恢复Phase 9 Discovery、v0.4.0 acceptance、v0.3.5先例与通用模板Published Release通道。
+- 结论：不新增Discovery文件；在现有v0.4.0 acceptance内物化P9-D版本operator，复用模板4.2/5.2/6/7/8.1/8.2/9.2。
+- 当前只修改Release-excluded operator/planning/history/ROADMAP/tests；不触碰tag、Release资产、ZIP/bootstrap或production。
+- 发现Published Release 4.2/5.2/9.2缺少稳定英文anchor；纳入P9-D-PR1最小治理修正，脚本/提示词内容保持不变。
+
+## 2026-08-22 — P9-D operator materialization completed
+
+- 在版本acceptance物化唯一P9-D operator，冻结公开bootstrap/ZIP URL与SHA、control-plane HEAD动态核对、Fresh/Resume顺序、
+  9.2 deep-check回传字段和P9-E前停止条件；没有复制通用setup/deep-check长脚本。
+- 给通用模板4.2、5.2、9.2补稳定英文anchor；更新Phase 9 history、ROADMAP、活动planning与repository guards。
+- 首次实际focused run为10/12：一个新顺序regex把“real 8.2”误当成连续字面量，另一个旧guard把Cloud未PASS错误等同于文档不能
+  出现公开URL。修正为保护真实编号顺序，并允许pending operator固定immutable URL、继续禁止最终PASS/Latest提前出现；最终12/12。
+- 完整Windows suite为175 tests、150 pass、0 fail、25个Linux/POSIX-only诚实skip。importer、owned Python compile、Node syntax、
+  两个bootstrap Bash syntax、operator PowerShell parse与`git diff --check`均通过。
+- 双构建/check仍为22 entries、85,519 bytes、SHA
+  `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`；8个changed paths与Release inputs交集为0。
+- P9-D-PR1完成；等待维护者push exact operator commit并执行独立Fresh Cloud。P9-E/P9-F仍未授权。
+
+## Current status
+
+`P9_D_OPERATOR_READY / MAINTAINER_FRESH_CLOUD_PENDING / STOP_BEFORE_P9_E`

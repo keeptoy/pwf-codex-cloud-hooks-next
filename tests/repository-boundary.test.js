@@ -56,12 +56,12 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap, /Product Phase 4功能施工已闭合/);
   assert.match(roadmap, /第一轮 retirement review完成/);
   assert.match(roadmap,
-    /Phase 9 P9-C immutable tag、Pre-release、公开双资产下载及tag-source重建审计PASS[^]*P9-D及后继gate未授权[^]*当前仍不得设置Latest、轮转角色或移动 validation refs/);
+    /Phase 9 P9-C publication audit PASS[^]*P9-D只授权独立Fresh Cloud验证公开默认下载链[^]*P9-E及后继gate未授权[^]*当前仍不得设置Latest、轮转角色或移动 validation refs/);
   assert.match(roadmap,
     /Phase 4 \/ F3C4完成[\s\S]*形成0\.4\.0功能\/候选基线[\s\S]*切换0\.5\.0-dev并进入Phase 5/);
 });
 
-test("v0.4.0 Phase 9 keeps sealed-source evidence distinct through P9-C publication", () => {
+test("v0.4.0 Phase 9 keeps completed evidence distinct from pending P9-D Cloud", () => {
   const phase9 = read("docs/history/phase-9-v0.4.0-release-discovery.md");
   const phase4Closeout = read("docs/history/phase-4.11-f3c4-aggregate-closure-discovery.md");
   const historyIndex = read("docs/history/README.md");
@@ -104,6 +104,14 @@ test("v0.4.0 Phase 9 keeps sealed-source evidence distinct through P9-C publicat
     /v0\.4\.0 Phase 9 P9-B sealed-source Cloud[^\n]*`PASS`/);
   assert.match(acceptance,
     /v0\.4\.0 Phase 9 P9-C immutable publication[^\n]*`PASS`/);
+  assert.match(acceptance,
+    /v0\.4\.0 Phase 9 P9-D Published Release Cloud[^\n]*`MAINTAINER_CLOUD_PENDING`/);
+  assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-d-pre-acceptance"><\/a>$/m);
+  assert.match(phase9,
+    /P9_D_OPERATOR_READY \/ MAINTAINER_FRESH_CLOUD_PENDING \/ STOP_BEFORE_P9_E/);
+  assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-d-operator-materialization"><\/a>$/m);
+  assert.match(phase9,
+    /P9_D_OPERATOR_MATERIALIZED \/ LOCAL_GUARDS_PASS \/ MAINTAINER_FRESH_CLOUD_PENDING \/ STOP_BEFORE_P9_E/);
   assert.match(roadmap, /^<a name="phase-9-v0-4-0-instance"><\/a>$/m);
   assert.match(roadmap, /P9-A pre-seal materialization[\s\S]*P9-F second retirement review/);
 });
@@ -142,13 +150,63 @@ test("P9-C operator freezes the Cloud-tested tag source and audits immutable pub
   assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-c-post-publication"><\/a>$/m);
   assert.match(phase9,
     /P9_C_IMMUTABLE_PUBLICATION_PASS \/ PUBLIC_ASSETS_REBUILT_AND_MATCHED \/ STOP_BEFORE_P9_D/);
-  assert.match(roadmap, /P9-C publication audit PASS \/ stop before P9-D/);
+  assert.match(roadmap, /P9-C publication audit PASS/);
+  assert.match(roadmap, /P9-D operator ready \/ Fresh Cloud pending/);
   assert.match(roadmap, /tag source[^]*fe8cd7f284ea2849f634aa68813dbb0f2cca83f9/);
   assert.match(provenance,
     /`v0\.4\.0`[^\n]*fe8cd7f284ea2849f634aa68813dbb0f2cca83f9[^\n]*v0-4-0-p9-c-immutable-publication-evidence/);
   for (const fact of [zipSha, bootstrapSha, "85,519 bytes", "21,565 bytes"]) {
     assert.match(provenance, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
+});
+
+test("P9-D operator binds public assets to the shared Published Release protocol", () => {
+  const acceptance = read("docs/v0.4.0-cloud-hard-acceptance.md");
+  const template = read("docs/cloud-hard-acceptance-template.md");
+  const phase9 = read("docs/history/phase-9-v0.4.0-release-discovery.md");
+  const { roadmap } = currentRoleWindow();
+  const operatorAnchor = '<a name="v0-4-0-p9-d-published-release-cloud-operator"></a>';
+  const operatorStart = acceptance.indexOf(operatorAnchor);
+  const operatorEnd = acceptance.indexOf('<a name="v0-4-0-dev-f3c4-aggregate-closure"></a>');
+
+  assert.ok(operatorStart > 0 && operatorEnd > operatorStart);
+  const operator = acceptance.slice(operatorStart, operatorEnd);
+  for (const anchor of [
+    "published-release-setup",
+    "blackbox-fresh-startup",
+    "blackbox-canonical-baseline",
+    "blackbox-canonical-context",
+    "blackbox-real-resume",
+    "published-release-deep-check",
+  ]) {
+    assert.match(template, new RegExp(`<a name="${anchor}"></a>`));
+    assert.match(operator, new RegExp(`cloud-hard-acceptance-template\\.md#${anchor}`));
+  }
+
+  for (const fact of [
+    "__PWF_P9D_OPERATOR_HEAD__",
+    "fe8cd7f284ea2849f634aa68813dbb0f2cca83f9",
+    "https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/v0.4.0/init-cloud-sandbox-v0.4.0.bash",
+    "4ae21c1fc99f52b1382543fac437096d4db1d3415cb40df578f29ed82cc4c64f",
+    "https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/v0.4.0/pwf-codex-cloud-hooks-v0.4.0.zip",
+    "24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3",
+    "PWF_PUBLIC_RELEASE_SETUP=PASS",
+    "PUBLIC_PACKAGE_IDENTITY=0.4.0",
+    "POST_RESUME_DOCTOR=PASS",
+    "BUNDLE_INSTALLED_INVENTORY=AUTHORITATIVE",
+    "MANAGED_POLICY=ADAPTER_ONLY",
+    "PWF_PUBLIC_ZIP_BOUNDARY_IMPORTER=PASS",
+    "PWF_PUBLIC_POST_RESUME=PASS",
+  ]) assert.match(operator, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+
+  assert.match(operator, /4\.2[\s\S]*5\.2[\s\S]*第6节[\s\S]*第7节[\s\S]*8\.1[\s\S]*8\.2[\s\S]*9\.2/);
+  assert.match(operator, /不得设置`HOOKS_URL`、`HOOKS_SHA256`或任何ZIP override/);
+  assert.match(operator, /必须停止在P9-E前/);
+  assert.doesNotMatch(operator, /set -Eeuo pipefail|readonly BOOTSTRAP_URL=|readonly ZIP_URL=/,
+    "version operator must not copy the shared setup or deep-check Bash authority");
+  assert.match(phase9,
+    /P9_D_OPERATOR_READY \/ MAINTAINER_FRESH_CLOUD_PENDING \/ STOP_BEFORE_P9_E/);
+  assert.match(roadmap, /P9-D Published Release operator ready \/ Fresh Cloud pending/);
 });
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
@@ -502,7 +560,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(phase9History, /^<a name="phase-9-v0-4-0-p9-b-sealed-source-cloud"><\/a>$/m);
   assert.match(phase9History,
     /P9_B_SEALED_SOURCE_CLOUD_PASS \/ STOP_BEFORE_P9_C \/ PUBLICATION_NOT_AUTHORIZED/);
-  assert.match(roadmap, /P9-C immutable tag、Pre-release、公开双资产下载及tag-source重建审计PASS[\s\S]*P9-D及后继gate未授权/);
+  assert.match(roadmap, /P9-C publication audit PASS[\s\S]*P9-D只授权独立Fresh Cloud验证公开默认下载链[\s\S]*P9-E及后继gate未授权/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3c1-local-materialization"><\/a>$/m);
   assert.match(acceptance,
     /F3C1_PROTOCOL_NO_LIVE_PASS \/ REF_AWARE_LINUX_ZERO_SKIP \/ CLOUD_ROLLBACK_NOT_RUN \/ STOP_BEFORE_F3C2/);
@@ -579,6 +637,8 @@ test("change history, programme, provenance, and current acceptance keep separat
     .find(line => line.startsWith("| 当前开发列车 |")) || "";
   const publishedReleaseComplete = candidate === accepted
     || currentTrainLine.includes("Published Release Cloud hard acceptance 已 PASS");
+  const publishedReleaseOperatorReady =
+    /v0\.4\.0 Phase 9 P9-D Published Release Cloud[^\n]*`MAINTAINER_CLOUD_PENDING`/.test(acceptance);
   const sourceCandidateEvidenceComplete = /SOURCE_CANDIDATE_CLOUD_PASS/.test(acceptance);
   if (candidate === accepted) {
     assert.equal(sourceCandidateEvidenceComplete, true,
@@ -651,7 +711,13 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /不自动授权 GitHub `Latest`、rollback[\s\S]*Product Phase 4/);
   } else {
     assert.doesNotMatch(acceptance, /R5-SC=PASS|R5-PR=PASS|CLOUD-HARD-ACCEPTANCE-PASS/);
-    assert.doesNotMatch(acceptance, /https:\/\/github\.com\/[^\s]+\/releases\/download\//i);
+    if (publishedReleaseOperatorReady) {
+      assert.match(acceptance, /^<a name="v0-4-0-p9-d-published-release-cloud-operator"><\/a>$/m);
+      assert.match(acceptance,
+        /https:\/\/github\.com\/keeptoy\/pwf-codex-cloud-hooks-next\/releases\/download\/v0\.4\.0\//);
+    } else {
+      assert.doesNotMatch(acceptance, /https:\/\/github\.com\/[^\s]+\/releases\/download\//i);
+    }
   }
 
   if (candidate === accepted) {

@@ -313,6 +313,8 @@ printf 'PWF_SOURCE_CANDIDATE_SETUP=PASS\n'
 安装发生在原始 startup 之后。脚本成功后创建新 task，从第 5.1 节开始验证 post-install Resume；不得在
 安装 task 中手工调用 adapter 冒充 lifecycle evidence。
 
+<a name="published-release-setup"></a>
+
 ### 4.2 Published Release：public bootstrap environment setup
 
 将本节放进独立 Fresh Cloud 的 environment setup，使 Managed Hook 在 agent startup 前安装。实际执行时只
@@ -379,6 +381,8 @@ Planning context（辅助观察）: OBSERVED 或 NOT_OBSERVED
 
 SessionStart 与 UserPromptSubmit 必须被观察到，SessionStart source 必须是真实 Resume source而不是 startup；
 planning 三项只作辅助观察。没有产生新 SessionStart 时，本步不成立。
+
+<a name="blackbox-fresh-startup"></a>
 
 ### 5.2 B-PR：Fresh startup
 
@@ -688,6 +692,8 @@ test "$LEFTOVERS" -eq 0
 printf 'SNAPSHOT_LEFTOVERS=0\n'
 printf 'PWF_SC_POST_RESUME=PASS\n'
 ~~~
+
+<a name="published-release-deep-check"></a>
 
 ### 9.2 Published Release
 

@@ -303,3 +303,21 @@ maintainer authorization boundary.
   完全一致；最终明确exit code 0并输出`P9_C_PUBLICATION_AUDIT=PASS`。
 - 这只关闭P9-C immutable Pre-release publication，不证明P9-D Published Release Cloud，也不授权取消Pre-release、设置Latest或
   轮转accepted/fallback。
+
+## P9-D operator recovery — 2026-08-22
+
+- Phase 9 Discovery已明确P9-D职责：在独立Fresh Cloud中从public bootstrap默认链安装，再完成Fresh/UserPrompt/real Resume、
+  doctor与manifest-routed deep check；不需要新增架构Discovery。
+- 通用模板已经提供完整authority：4.2只接收immutable bootstrap URL/SHA并禁止ZIP override；5.2承担startup；6/7/8.1/8.2
+  承担canonical与real Resume黑盒；9.2重新下载immutable ZIP并只使用ZIP内builder/importer/installer。
+- P9-D版本operator只需冻结两项公开URL/SHA、执行顺序、expected outputs与停止条件。复制4.2/9.2 Bash会形成第二份脚本authority，
+  因此不采用。
+- Cloud workspace checkout只承担读取Release-excluded operator/template与创建canonical planning fixture；installed bytes身份来自
+  public URL/SHA，不能用workspace HEAD、同名bootstrap或本地ZIP替代。
+- P9-D PASS仍不改变Release metadata或角色窗口；v0.3.5继续accepted/Latest，v0.3.4继续immediate fallback，直到P9-E另行授权。
+- 实施前发现通用模板4.2、5.2、9.2虽已有完整内容，却没有显式英文anchor；P9-D若链接自动中文heading slug会违反仓库
+  稳定深链接规则。修复范围只是在模板三个既有authority入口前增加稳定anchor，不改变脚本或黑盒提示词字节语义。
+- P9-D operator实施后没有产生第二份Published Release协议：版本文档只有公开identity、占位符替换、执行顺序和PASS矩阵；共享
+  setup/deep-check Bash继续只在通用模板维护。control-plane HEAD必须在本轮commit/push后动态取得，不能由旧历史commit冒充。
+- 生命周期保持不变。P9-D local materialization不改变public bytes、Release metadata、accepted/fallback角色或validation refs；只有
+  维护者独立Fresh/Resume Cloud证据返回后才允许把gate写成PASS，且仍必须停在P9-E前。

@@ -5,17 +5,18 @@
 完成 `v0.4.0` standing Phase 9的版本化 gate。P9-A 已把 Phase 4功能基线迁移为稳定的 pre-seal source candidate；
 当前 P9-B本地字节封印与exact-HEAD sealed-source Cloud均已完成；setup/deep-check HEAD、Cloud deterministic ZIP与本地seal
 identity完全一致。P9-C immutable publication与独立publication audit均已完成：`v0.4.0` lightweight tag固定指向P9-B实际
-验收的`fe8cd7f…`，公开Pre-release恰好包含两项冻结资产，下载ZIP与tag-source重建字节一致。P9-D及后继Published Release
-Cloud、promotion与ref cleanup仍未授权。
+验收的`fe8cd7f…`，公开Pre-release恰好包含两项冻结资产，下载ZIP与tag-source重建字节一致。维护者现已授权进入P9-D：
+本地只物化公开资产Cloud operator/守卫并提交，由维护者在独立Fresh Cloud执行；P9-E promotion与P9-F cleanup仍未授权。
 
 ## Next Step
 
-P9-C远端publication audit证据与Release-excluded回归已闭合。停止在P9-D Published Release Cloud之前，等待维护者单独
-授权下一gate；不得因P9-C PASS自动执行public bootstrap Cloud、取消Pre-release、设置Latest或轮转角色。
+P9-D版本化operator、稳定模板anchor与静态守卫已闭合。维护者push本轮exact operator commit后，在独立Fresh Cloud的
+environment setup执行4.2，再按`5.2 → 6 → 7 → 8.1 → real 8.2 → 9.2`完成公开默认下载链验收；证据返回前停止，
+不取消Pre-release、不设置Latest或轮转角色。
 
 ## Current Phase
 
-P9-C immutable publication PASS / stop before P9-D
+P9-D Published Release maintainer Fresh Cloud
 
 ## Phases
 
@@ -199,6 +200,30 @@ P9-C immutable publication PASS / stop before P9-D
 - 更新provenance、版本acceptance、ROADMAP、planning与静态守卫，不修改任何Release ZIP input。
 - 相称验证并创建本地closeout commit；停止在P9-D Published Release Cloud之前。
 
+### P9-D-PR0 — Published identity and channel recovery
+
+**Status:** completed
+
+- 复核P9-C exact tag/source、Pre-release metadata、两项public URL/size/SHA与P9-D Discovery退出条件。
+- 确认P9-D使用独立Fresh Cloud和public bootstrap默认ZIP链，不复用Source/Candidate/P9-C安装或本地资产。
+- 确认通用模板4.2/5.2/6/7/8.1/8.2/9.2已覆盖所需脚本、提示词与manifest-routed deep check。
+
+### P9-D-PR1 — Versioned operator and static guards
+
+**Status:** completed
+
+- 在现有v0.4.0 acceptance增加唯一P9-D operator，不复制通用长脚本。
+- 冻结immutable bootstrap/ZIP URL与SHA、Cloud执行顺序、回传字段、失败重跑与P9-E前停止条件。
+- 更新Release-excluded planning/history/ROADMAP守卫；不得修改tag、Release资产、ZIP inputs或production字节。
+
+### P9-D-PR2 — Maintainer Fresh/Resume Cloud execution
+
+**Status:** pending — maintainer action
+
+- 在独立Fresh Cloud的environment setup中执行4.2，使Managed Hook在首个agent startup前由public bootstrap安装。
+- 按5.2→6→7→8.1→同task real 8.2→9.2闭合Host、doctor、inventory、policy与residue证据。
+- 回传明确最终exit code和PWF public PASS markers；证据返回后才能回写P9-D PASS。
+
 ## Authorization
 
 - 已授权：P9-B本地封印；重新构建并核验 P9-A candidate；只把 exact ZIP SHA写入 ZIP 外 stable bootstrap；计算 bootstrap SHA；
@@ -208,8 +233,10 @@ P9-C immutable publication PASS / stop before P9-D
 - 已授权：回补维护者返回的 P9-B sealed-source Cloud证据并关闭 P9-B；相称静态守卫、Release-excluded状态同步与本地 commit。
 - 已授权：P9-C本地identity preflight、operator/静态守卫/Release-excluded history与programme同步、本地验证和commit；维护者按
   operator创建exact lightweight tag、Pre-release、上传两项sealed assets并执行只读publication audit。
+- 已授权：P9-D本地identity恢复、版本化operator/静态守卫/Release-excluded planning/history/ROADMAP同步、本地验证和commit；
+  维护者push operator commit后，在独立Fresh Cloud按operator执行Published Release通道并回传证据。
 - 未授权：修改任何 ZIP entry、package/contract/manifest/README或 production/runtime字节；由本地智能体执行 Cloud；创建/移动/
-  删除远端refs；由本地智能体push/PR/tag/Release/publication或上传资产；修改 Latest、accepted/fallback角色或仓库设置；P9-D/P9-E/
+  删除远端refs；由本地智能体push/PR/tag/Release/publication或上传资产；修改 Latest、accepted/fallback角色或仓库设置；P9-E/
   P9-F；validation ref cleanup；切换 `0.5.0-dev`/Phase 5。
 
 ## Stop Conditions
@@ -221,7 +248,12 @@ P9-C immutable publication PASS / stop before P9-D
 - 同名tag/Release已存在但身份不明，或远端查询/异步命令没有明确最终状态；不得猜测absence/PASS。
 - tag push后任何步骤要求删除、force-update或重建tag，或资产上传后试图删除/重传同名资产来修补字节漂移。
 - P9-C要求修改任何ZIP input、production/runtime、contract、manifest或README；此时回到P9-A/P9-B而不是继续publication。
-- 任何步骤进入P9-D Cloud、Latest promotion、role rotation、ref cleanup或下一版本动作。
+- 任何步骤越过当前P9-D operator边界，由本地智能体执行Cloud，或进入Latest promotion、role rotation、ref cleanup或下一版本动作。
+- P9-D setup使用本地/branch bootstrap、`file://`、checksum override、旧candidate URL或非immutable HTTPS URL，而非公开bootstrap默认链。
+- P9-D复用Source/Candidate/P9-C容器或安装，setup发生在agent startup之后，或Fresh/real Resume不属于同一规定lifecycle。
+- 公开bootstrap/ZIP URL、SHA、tag source、Release metadata与P9-C冻结事实不一致，或9.2回退到workspace同名工具。
+- 任一异步命令没有明确最终exit code，doctor/inventory/policy/residue不闭合，或Cloud产生planning fixture以外的仓库修改。
+- 任何步骤取消Pre-release、设置Latest、轮转accepted/fallback、移动refs或进入P9-E/P9-F。
 
 ## Errors Encountered
 
@@ -252,4 +284,4 @@ P9-C immutable publication PASS / stop before P9-D
 
 ## Current status
 
-`P9_C_IMMUTABLE_PUBLICATION_PASS / PUBLIC_ASSETS_REBUILT_AND_MATCHED / STOP_BEFORE_P9_D`
+`P9_D_OPERATOR_READY / MAINTAINER_FRESH_CLOUD_PENDING / STOP_BEFORE_P9_E`

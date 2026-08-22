@@ -262,3 +262,47 @@ P9-C没有运行public bootstrap默认下载链的Fresh/Resume Cloud，也没有
 P9-D及后继gate仍需维护者单独授权。结论为：
 
 `P9_C_IMMUTABLE_PUBLICATION_PASS / PUBLIC_ASSETS_REBUILT_AND_MATCHED / STOP_BEFORE_P9_D`
+
+<a name="phase-9-v0-4-0-p9-d-pre-acceptance"></a>
+
+## Pre-acceptance decision — P9-D Published Release Cloud
+
+维护者在P9-C evidence writeback后授权进入P9-D。复核没有发现新的架构分歧：Phase 9 Discovery早已把P9-D冻结为独立
+Published Release通道，通用模板也已有4.2 public bootstrap setup、5.2 Fresh startup和9.2 public ZIP deep check。因此本轮不
+新建Discovery文件、不复制长脚本，只在版本acceptance中绑定v0.4.0的immutable public URL/SHA、Cloud顺序和停止条件。
+
+实施时补了一项稳定链接治理：模板4.2、5.2、9.2原先没有显式英文anchor；现在只给这三个既有authority入口补anchor，脚本与
+提示词内容不变。P9-D使用两层身份：public product bytes始终由v0.4.0 tag/Release URL/SHA决定；后继operator checkout只承载
+模板与canonical fixture，不得替代资产身份。
+
+维护者必须先push exact operator commit，再在独立Fresh Cloud的environment setup中执行4.2；已校验bootstrap不得接受
+`HOOKS_URL`/`HOOKS_SHA256` override，而应使用自己的默认ZIP链。Host顺序固定为5.2 Fresh→6→7→8.1→同task real 8.2，最后
+9.2重新下载ZIP并只使用ZIP内builder/importer/installer闭合doctor、inventory、policy与residue。
+
+对象生命周期暂不迁移：v0.4.0仍是published prerelease candidate；v0.3.5仍是accepted/Latest，v0.3.4仍是immediate
+fallback；11个validation refs、F3 guides/validators/negative tests、installed transition与v0.3.5 working-tree role files继续
+KEEP。P9-D PASS只允许写回Published Release证据；P9-E promotion/role rotation与P9-F cleanup仍未授权。当前结论为：
+
+`P9_D_OPERATOR_READY / MAINTAINER_FRESH_CLOUD_PENDING / STOP_BEFORE_P9_E`
+
+<a name="phase-9-v0-4-0-p9-d-operator-materialization"></a>
+
+## Post-implementation status — P9-D operator materialization
+
+实施与Discovery没有架构偏差：版本acceptance只保存v0.4.0的公开tag/source、双资产URL/SHA、执行顺序与停止条件；4.2 setup、
+5.2 Fresh提示词、6/7/8 lifecycle提示词和9.2 deep-check长脚本仍由通用模板单点承重。唯一新增治理是为4.2、5.2、9.2补稳定
+英文anchor，脚本与提示词内容未改写。
+
+静态守卫明确区分“Published Release operator已准备”和“Published Release Cloud已PASS”：前者允许版本文档出现immutable公开URL，
+但仍禁止`R5-PR=PASS`、`CLOUD-HARD-ACCEPTANCE-PASS`或Latest结论提前出现。operator要求维护者push后动态打印control-plane HEAD，
+避免把文档提交前的旧HEAD硬编码成执行身份；public product bytes继续只由v0.4.0 tag和公开资产SHA决定。
+
+对象生命周期没有提前迁移：tag、Pre-release资产、ZIP/bootstrap、production/runtime、contract、manifest与README均未变化；
+11个validation refs、F3 guides/validators/negative tests、v0.3.5 accepted与v0.3.4 immediate fallback继续`KEEP`。本轮8个changed
+paths与Release entries/external assets交集为0，双构建仍为22 entries、85,519 bytes、SHA
+`24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`。
+
+本地完整回归为175 tests、150 pass、0 fail、25个Windows上诚实的Linux/POSIX-only skip；focused守卫12/12通过，importer、owned
+Python compile、installer Node syntax、两个bootstrap Bash syntax、operator PowerShell parse和`git diff --check`均通过。当前结论为：
+
+`P9_D_OPERATOR_MATERIALIZED / LOCAL_GUARDS_PASS / MAINTAINER_FRESH_CLOUD_PENDING / STOP_BEFORE_P9_E`
