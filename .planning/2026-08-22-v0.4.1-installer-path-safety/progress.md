@@ -48,8 +48,10 @@
 
 ### Phase 6: Commit and handoff
 
-- **Status:** in_progress
-- path-safety实现阶段已提交`89c98b5`；准备提交identity/governance阶段并封账。
+- **Status:** complete
+- path-safety实现阶段提交`89c98b5`。
+- identity/contract/governance阶段提交`58a3452`。
+- 未执行push、tag、Release、资产上传、Latest切换、Cloud部署或真实`/opt/codex`安装变更。
 
 ## Test Results
 
@@ -77,4 +79,4 @@
 
 ## Current Status
 
-`LOCAL_IMPLEMENTATION_AND_WINDOWS_VERIFICATION_PASS / IDENTITY_COMMIT_PENDING / REMOTE_ACTIONS_DENIED`
+`LOCAL_V0_4_1_TRAIN_COMPLETE / PLAN_CLOSED / LINUX_CLOUD_RELEASE_NOT_AUTHORIZED`

@@ -6,11 +6,11 @@
 
 ## Next Step
 
-创建身份/治理阶段的本地 commit，随后封账并交接仍待Linux/Cloud/Release授权的外部gate。
+本地修复列车已封账。下一步仅在维护者另行授权时创建新planning，执行Linux/POSIX gate或后续Cloud/Release流程。
 
 ## Current Phase
 
-Phase 6 in progress / Commit and handoff
+Phase 6 complete / Local handoff
 
 ## Phases
 
@@ -53,10 +53,10 @@ Phase 6 in progress / Commit and handoff
 
 ### Phase 6: Commit and handoff
 
-- [ ] 按可恢复阶段创建范围单一的本地 commits。
-- [ ] 汇总本地 commit、测试、剩余 Linux/Cloud gate 与维护者后续动作。
-- [ ] 不执行 push、tag、Release、资产上传、Latest 切换或部署。
-- **Status:** in_progress
+- [x] 按可恢复阶段创建范围单一的本地 commits。
+- [x] 汇总本地 commit、测试、剩余 Linux/Cloud gate 与维护者后续动作。
+- [x] 不执行 push、tag、Release、资产上传、Latest 切换或部署。
+- **Status:** complete
 
 ## Frozen invariants
 
@@ -103,4 +103,4 @@ Phase 6 in progress / Commit and handoff
 
 ## Current Status
 
-`V0_4_1_LOCAL_IMPLEMENTATION_PASS / COMMIT_AND_HANDOFF_IN_PROGRESS / LINUX_CLOUD_RELEASE_NOT_AUTHORIZED`
+`V0_4_1_LOCAL_TRAIN_COMPLETE / WINDOWS_PATH_SAFETY_PASS / LINUX_CLOUD_RELEASE_NOT_AUTHORIZED / PLAN_CLOSED`
