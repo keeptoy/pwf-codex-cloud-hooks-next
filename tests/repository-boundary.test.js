@@ -47,15 +47,17 @@ function currentRoleWindow() {
   return { accepted, candidate, immediateFallback, roadmap };
 }
 
-test("v0.4.1-dev patch train preserves the accepted and fallback identity window", () => {
+test("v0.4.1 pre-seal patch train preserves the accepted and fallback identity window", () => {
   const { accepted, candidate, immediateFallback, roadmap } = currentRoleWindow();
-  assert.equal(candidate, "v0.4.1-dev");
+  assert.equal(candidate, "v0.4.1");
   assert.equal(accepted, "v0.4.0");
   assert.equal(immediateFallback, "v0.3.5");
   assert.notEqual(candidate, accepted);
   assert.match(roadmap, /compatibility\/security patch train/);
   assert.match(roadmap, /本地 path-safety 与 Source\/Candidate Linux\/Cloud PASS/);
-  assert.match(roadmap, /Source\/Candidate 已验收；seal、publication与角色轮换仍未授权/);
+  assert.match(roadmap, /P9-A pre-seal materialization complete/);
+  assert.match(roadmap, /P9-B exact-hash seal、sealed-source Cloud、publication与角色轮换仍未授权/);
+  assert.match(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.0`/);
   assert.match(roadmap,
     /Phase 4 \/ F3C4完成[\s\S]*形成0\.4\.0功能\/候选基线[\s\S]*后继版本列车与Product Phase另行决策/);
@@ -269,7 +271,7 @@ test("P9-E evidence closes pointer promotion before P9-F retirement", () => {
   assert.match(roadmap, /pointer-only promotion与第二轮对象退役均已收敛/);
   assert.match(taskPlan,
     /P9_F_SECOND_RETIREMENT_PASS \/ V0_4_0_TRAIN_CLOSED \/ NEXT_TRAIN_UNDECIDED/);
-  assert.equal(candidate, "v0.4.1-dev");
+  assert.equal(candidate, "v0.4.1");
   assert.equal(accepted, "v0.4.0");
   assert.equal(immediateFallback, "v0.3.5");
 });
@@ -600,13 +602,15 @@ test("change history, programme, provenance, and current acceptance keep separat
 
   assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));
   if (candidate !== accepted) {
-    assert.match(acceptance, /^<a name="v0-4-1-dev-gate-status"><\/a>$/m);
+    assert.match(acceptance, /^<a name="v0-4-1-gate-status"><\/a>$/m);
     assert.match(acceptance, /Windows path-topology local implementation[^\n]*`PASS`/);
     assert.match(acceptance,
       /Source\/Candidate Linux\/POSIX \+ Cloud[^\n]*`PASS`/);
-    assert.match(acceptance, /Seal \/ publication \/ Latest[^\n]*`NOT_AUTHORIZED`/);
+    assert.match(acceptance, /P9-B seal \/ publication \/ Latest[^\n]*`NOT_AUTHORIZED`/);
     assert.match(acceptance,
       /V0_4_1_SOURCE_CANDIDATE_CLOUD_PASS \/ STOP_BEFORE_SEAL \/ RELEASE_NOT_AUTHORIZED/);
+    assert.match(acceptance,
+      /V0_4_1_P9_A_PRE_SEAL_MATERIALIZATION_PASS \/ ZERO_HASH_CANDIDATE_FROZEN \/ STOP_BEFORE_P9_B \/ RELEASE_NOT_AUTHORIZED/);
     assert.match(acceptance, /默认情况下，智能体不代替维护者 push/);
     assert.match(acceptance, /维护者回传时请保留/);
     assert.match(acceptance, /明确结束 B 的单次无工具\/不读文件观察限制/);

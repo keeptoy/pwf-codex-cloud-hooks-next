@@ -32,7 +32,7 @@ readonly POWERSHELL_PACKAGE="${POWERSHELL_PACKAGE:-powershell_${POWERSHELL_VERSI
 readonly POWERSHELL_URL="${POWERSHELL_URL:-https://github.com/PowerShell/PowerShell/releases/download/v${POWERSHELL_VERSION}/${POWERSHELL_PACKAGE}}"
 readonly POWERSHELL_SHA256="${POWERSHELL_SHA256:-1d551a739ac5db6957ca9d71bd2e332a7b688e85ea5fb43c73fd42395042ef94}"
 
-readonly HOOKS_VERSION="${HOOKS_VERSION:-v0.4.1-dev}"
+readonly HOOKS_VERSION="${HOOKS_VERSION:-v0.4.1}"
 readonly HOOKS_PACKAGE="${HOOKS_PACKAGE:-pwf-codex-cloud-hooks-${HOOKS_VERSION}.zip}"
 readonly HOOKS_ARCHIVE_ROOT="${HOOKS_ARCHIVE_ROOT:-pwf-codex-cloud-hooks}"
 readonly HOOKS_URL="${HOOKS_URL:-https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/${HOOKS_VERSION}/${HOOKS_PACKAGE}}"

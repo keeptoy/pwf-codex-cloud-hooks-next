@@ -2,7 +2,7 @@
   "schema_version": 2,
   "contract_id": "PWF_RELEASE_ARTIFACT_V2",
   "package_name": "pwf-codex-cloud-hooks",
-  "package_version": "0.4.1-dev",
+  "package_version": "0.4.1",
   "archive_root": "pwf-codex-cloud-hooks/",
   "ordering": "lexicographic_by_utf8_path",
   "timestamp": "1980-01-01T00:00:00Z",
@@ -31,6 +31,6 @@
     { "path": "runtime/upstream/inject-plan.sh", "mode": "0755" },
     { "path": "runtime/upstream/ledger-summary.sh", "mode": "0755" }
   ],
-  "external_release_assets": ["init-cloud-sandbox-v0.4.1-dev.bash"],
+  "external_release_assets": ["init-cloud-sandbox-v0.4.1.bash"],
   "excluded_prefixes": [".git/", ".planning/", "docs/", "tests/", "planning-with-files-3.8.2/"]
 }

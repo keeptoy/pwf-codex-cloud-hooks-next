@@ -8,12 +8,11 @@
 
 ## Next Step
 
-等待维护者审阅 Discovery 结论并决定是否单独授权 P9-A。若授权，P9-A 只实施 stable identity/pre-seal
-materialization 与本地 zero-hash candidate 验证；停止在 exact-hash seal、Cloud、tag、Release 和远端动作之前。
+等待维护者单独授权 P9-B；在此之前不写 exact ZIP hash，不执行 sealed-source Cloud、tag、Release、Latest 或任何远端写。
 
 ## Current Phase
 
-Phase 1 complete / waiting for P9-A authorization
+Phase 2 complete / stopped before P9-B
 
 ## Phases
 
@@ -27,9 +26,11 @@ Phase 1 complete / waiting for P9-A authorization
 
 ### Phase 2: P9-A pre-seal materialization
 
-- [ ] 在独立授权后冻结 stable identity、ZIP 输入、版本文档和 candidate role。
-- [ ] 完成相称本地验证与单一范围 commit。
-- **Status:** pending / not authorized
+- [x] 原子传播 `0.4.1` stable identity，rename bootstrap/acceptance，保持历史 evidence 语义与 zero hash。
+- [x] 同步 Release contract SHA edge、CHANGELOG、ROADMAP 和当前角色/Release 边界测试。
+- [x] 运行完整本地矩阵、双构建与 Release-input 审计，冻结 pre-seal candidate facts。
+- [x] 完成相称本地验证与单一范围 commit。
+- **Status:** complete / stop before P9-B
 
 ### Phase 3: P9-B seal and exact final-source Source/Candidate
 
@@ -72,9 +73,8 @@ Phase 1 complete / waiting for P9-A authorization
 
 ## Authorization
 
-- 当前已授权：创建并切换本 Release Discovery plan、只读分析、持久化发现与提出路线建议。
-- 尚未授权：P9-A materialization、版本/seal/bootstrap 字节改写、正式 Cloud gate、tag、Release、Latest、远端 ref
-  或资产变更。
+- 已完成授权：P9-A stable identity/pre-seal materialization、本地验证、planning/acceptance/ROADMAP 更新与本地 commit。
+- 当前没有新的实施 gate 授权；P9-B exact-hash seal与正式Cloud、tag、Release、Latest、远端 ref或资产变更均未授权。
 - 每一关键 gate 必须在专项设计和维护者明确授权后进入。
 
 ## Stop Conditions
@@ -92,4 +92,4 @@ Phase 1 complete / waiting for P9-A authorization
 
 ## Current Status
 
-`CONDITIONAL_GO_TO_V0_4_1_P9_A_PRE_SEAL_MATERIALIZATION / P9_A_NOT_AUTHORIZED / RELEASE_NOT_AUTHORIZED`
+`P9_A_PRE_SEAL_MATERIALIZATION_PASS / ZERO_HASH_CANDIDATE_FROZEN / STOP_BEFORE_P9_B / RELEASE_NOT_AUTHORIZED`
