@@ -176,3 +176,24 @@
 ## Current status
 
 `P9_C_OPERATOR_READY / TAG_SOURCE_FROZEN / MAINTAINER_PUBLICATION_PENDING / STOP_BEFORE_P9_D`
+
+## 2026-08-22 — P9-C independent publication audit
+
+- 从GitHub API确认`v0.4.0`为直接指向`fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`的lightweight tag。
+- 确认Release为非draft Pre-release，恰好包含冻结的ZIP与外部bootstrap。
+- 从GitHub重新下载两项资产；核对size/SHA并通过bootstrap Bash syntax。
+- 全新clone公开tag，importer check通过；tag-source重建ZIP为22 entries、85,519 bytes、SHA
+  `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`，与下载ZIP逐字一致。
+- 首次受限Windows进程中的`bash -n`因Git Bash signal pipe `Win32 error 5`中止；按既有platform limitation在允许的进程环境
+  重跑完整审计，最终exit code 0，`P9_C_PUBLICATION_AUDIT=PASS`。
+- P9-C evidence writeback focused repository guards为11/11 pass；完整Windows suite为174 tests、149 pass、0 fail、25个
+  POSIX/Linux-only诚实skip。
+- importer、owned Python compile、Node syntax、两个bootstrap Bash syntax、deterministic双构建/check与`git diff --check`
+  均通过；本轮changed paths与Release entries/external assets交集为0。
+- P9-C4 evidence writeback完成；当前停止在P9-D Published Release Cloud之前。
+- commit后只读postflight再次确认Release仍为非draft Pre-release且资产digest/size未变；首次`gh api --jq`因PowerShell参数拆分
+  报错，改用`ConvertFrom-Json`后确认remote tag type=`commit`、source=`fe8cd7f…`并PASS。
+
+## Current status
+
+`P9_C_IMMUTABLE_PUBLICATION_PASS / PUBLIC_ASSETS_REBUILT_AND_MATCHED / STOP_BEFORE_P9_D`

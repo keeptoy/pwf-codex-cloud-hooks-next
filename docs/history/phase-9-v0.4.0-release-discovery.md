@@ -243,3 +243,22 @@ P9-E/P9-F退出条件。
 Latest promotion/role rotation、P9-F retirement/ref cleanup均未授权。当前结论为：
 
 `P9_C_OPERATOR_READY / TAG_SOURCE_FROZEN / MAINTAINER_PUBLICATION_PENDING / STOP_BEFORE_P9_D`
+
+<a name="phase-9-v0-4-0-p9-c-post-publication"></a>
+
+## Post-publication status — P9-C immutable publication
+
+维护者按冻结operator创建并发布`v0.4.0`。后继独立只读审计确认：tag为直接指向
+`fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`的lightweight tag；Release为非draft Pre-release；资产inventory恰好是
+22-entry、85,519-byte、SHA-256 `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`的ZIP和
+21,565-byte、SHA-256 `4ae21c1fc99f52b1382543fac437096d4db1d3415cb40df578f29ed82cc4c64f`的ZIP外bootstrap。
+
+公开资产被重新下载；全新clone checkout公开tag后，importer check healthy，tag source重建ZIP与下载ZIP逐字一致。审计取得
+明确exit code 0与`P9_C_PUBLICATION_AUDIT=PASS`。因此对象生命周期更新为：tag=`IMMUTABLE_PUBLISHED`，两项资产=
+`IMMUTABLE_PUBLIC_PRE_RELEASE_ASSETS`，P9-C operator/evidence=`KEEP_RELEASE_EXCLUDED`。v0.3.5仍是accepted/Latest，
+v0.3.4仍是immediate fallback；11个validation refs、F3 guides/validators/negative tests和installed transition继续KEEP。
+
+P9-C没有运行public bootstrap默认下载链的Fresh/Resume Cloud，也没有取消Pre-release、设置Latest、轮转角色或移动refs。
+P9-D及后继gate仍需维护者单独授权。结论为：
+
+`P9_C_IMMUTABLE_PUBLICATION_PASS / PUBLIC_ASSETS_REBUILT_AND_MATCHED / STOP_BEFORE_P9_D`

@@ -289,3 +289,17 @@ maintainer authorization boundary.
   download/tag-source rebuild audit. It stops before Published Release Cloud and Latest promotion.
 - Once an exact tag is pushed it is immutable. A later Release/upload failure may resume against that tag, but must not delete or move the
   tag. Any public byte mismatch is a supply-chain incident/new-identity problem, not permission to replace an asset under `v0.4.0`.
+
+## P9-C independent publication audit — 2026-08-22
+
+- GitHub ref API报告`refs/tags/v0.4.0`的object type为`commit`，因此它是lightweight tag；exact source为
+  `fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`。
+- Release `v0.4.0`为`isDraft=false`、`isPrerelease=true`，公开URL为
+  `https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/tag/v0.4.0`，资产inventory恰好两项。
+- 重新下载的ZIP为85,519 bytes，SHA-256
+  `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`；bootstrap为21,565 bytes，SHA-256
+  `4ae21c1fc99f52b1382543fac437096d4db1d3415cb40df578f29ed82cc4c64f`。
+- 全新clone checkout公开tag后，importer check healthy；builder重建22-entry、85,519-byte ZIP，SHA与下载ZIP相同，且逐字比较
+  完全一致；最终明确exit code 0并输出`P9_C_PUBLICATION_AUDIT=PASS`。
+- 这只关闭P9-C immutable Pre-release publication，不证明P9-D Published Release Cloud，也不授权取消Pre-release、设置Latest或
+  轮转accepted/fallback。

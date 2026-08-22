@@ -4,19 +4,18 @@
 
 完成 `v0.4.0` standing Phase 9的版本化 gate。P9-A 已把 Phase 4功能基线迁移为稳定的 pre-seal source candidate；
 当前 P9-B本地字节封印与exact-HEAD sealed-source Cloud均已完成；setup/deep-check HEAD、Cloud deterministic ZIP与本地seal
-identity完全一致。当前进入P9-C immutable publication：tag source固定为P9-B实际验收的`fe8cd7f…`，本地智能体只准备
-operator/守卫/维护者handoff；tag、Pre-release与资产上传由维护者执行。P9-D及后继Cloud、promotion与ref cleanup仍未授权。
+identity完全一致。P9-C immutable publication与独立publication audit均已完成：`v0.4.0` lightweight tag固定指向P9-B实际
+验收的`fe8cd7f…`，公开Pre-release恰好包含两项冻结资产，下载ZIP与tag-source重建字节一致。P9-D及后继Published Release
+Cloud、promotion与ref cleanup仍未授权。
 
 ## Next Step
 
-P9-C operator、双HEAD身份说明、静态守卫与本地验证已完成。创建单一职责的Release-excluded commit后，由维护者push该
-operator commit；随后严格按版本acceptance从exact tag source重建资产、创建lightweight `v0.4.0` tag与Pre-release、上传两项
-资产并运行ref-aware publication audit；回传最终exit code、tag source、Release URL、两项size/SHA与
-`P9_C_PUBLICATION_AUDIT=PASS`。
+P9-C远端publication audit证据与Release-excluded回归已闭合。停止在P9-D Published Release Cloud之前，等待维护者单独
+授权下一gate；不得因P9-C PASS自动执行public bootstrap Cloud、取消Pre-release、设置Latest或轮转角色。
 
 ## Current Phase
 
-P9-C operator ready / maintainer publication pending
+P9-C immutable publication PASS / stop before P9-D
 
 ## Phases
 
@@ -179,18 +178,26 @@ P9-C operator ready / maintainer publication pending
 
 ### P9-C2 — Immutable tag and Pre-release publication
 
-**Status:** pending — maintainer action
+**Status:** completed
 
 - 维护者从冻结source创建并push`v0.4.0` lightweight tag；不得移动、删除或重建。
 - 维护者创建Pre-release并上传且仅上传exact ZIP与ZIP外bootstrap；不得设置Latest。
 
 ### P9-C3 — Ref-aware publication audit and evidence closure
 
-**Status:** pending
+**Status:** completed
 
 - 在全新目录重新下载两项公开资产，核对Release metadata、tag source、filename、size、SHA与bootstrap syntax。
 - 从公开tag重新构建ZIP并要求与下载资产字节一致；回传明确最终exit code与`P9_C_PUBLICATION_AUDIT=PASS`。
 - 证据返回后才登记provenance/acceptance并关闭P9-C；随后仍停止在P9-D前。
+
+### P9-C4 — Publication evidence writeback
+
+**Status:** completed
+
+- 记录公开tag/Release metadata、两项下载资产size/SHA、tag-source rebuild与明确exit code 0。
+- 更新provenance、版本acceptance、ROADMAP、planning与静态守卫，不修改任何Release ZIP input。
+- 相称验证并创建本地closeout commit；停止在P9-D Published Release Cloud之前。
 
 ## Authorization
 
@@ -238,7 +245,11 @@ P9-C operator ready / maintainer publication pending
 | First P9-B closure green run left two ROADMAP guards on the pre-Cloud wording | 1 | Restored the stable Phase 4 closeout phrases and migrated the version-scoped P9-B guard from local-seal/pending to sealed-source Cloud PASS/P9-C stop. |
 | Direct execution of P9-C preflight during documentation authoring stopped on a dirty worktree | 1 | This is the intended fail-closed boundary, not a publication failure. Parse all five blocks now and rerun the exact absence preflight only after the scoped local commit restores a clean tree. |
 | Initial P9-C absence draft treated any failed `gh release view` as “not found” | 1 | Replaced it with GitHub API probes that require explicit HTTP 404 for both tag and Release; authentication, transport and other HTTP failures now remain UNKNOWN and stop. |
+| First independent P9-C audit hit Git Bash signal-pipe `Win32 error 5` during public bootstrap syntax | 1 | Classified as the known Windows restricted-process limitation; reran the complete audit in the permitted process environment and obtained explicit exit code 0. |
+| Sandboxed focused Node runner failed with `spawn EPERM` | 1 | Reran the identical repository-boundary suite with child-process permission; the runner executed normally. |
+| First executed P9-C lifecycle guards still expected unpublished/pending state | 1 | Updated only Release-excluded ROADMAP/provenance/acceptance assertions to the observed published prerelease state; rerun passed 11/11. |
+| Combined PowerShell postflight passed a spaced `--jq` expression to `gh api` as two arguments | 1 | Replaced CLI quoting with `ConvertFrom-Json`; exact remote tag type/source postflight then passed. |
 
 ## Current status
 
-`P9_C_OPERATOR_READY / TAG_SOURCE_FROZEN / MAINTAINER_PUBLICATION_PENDING / STOP_BEFORE_P9_D`
+`P9_C_IMMUTABLE_PUBLICATION_PASS / PUBLIC_ASSETS_REBUILT_AND_MATCHED / STOP_BEFORE_P9_D`
