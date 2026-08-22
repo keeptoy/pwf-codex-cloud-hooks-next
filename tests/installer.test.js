@@ -436,6 +436,29 @@ test("uninstall rejects a nested runtime link before backup or mutation", () => 
   }
 });
 
+test("uninstall rejects a nested FIFO before backup or mutation", { skip: process.platform === "win32" }, () => {
+  const home = fixture();
+  const runtime = path.join(home, "hooks", "planning-with-files"), fifo = path.join(runtime, "unknown-fifo");
+  const requirements = path.join(home, "etc", "codex", "requirements.toml");
+  try {
+    let result = run(home, "install");
+    assert.equal(result.status, 0, result.stderr);
+    const created = spawnSync("mkfifo", [fifo], { encoding: "utf8" });
+    assert.equal(created.status, 0, created.stderr);
+    assert.equal(fs.lstatSync(fifo).isFIFO(), true);
+    const beforeRequirements = fs.readFileSync(requirements);
+    const beforeBackups = backupEntries(home);
+    result = run(home, "uninstall");
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /BLOCKED_UNSAFE_RUNTIME_PATH/);
+    assert.deepEqual(fs.readFileSync(requirements), beforeRequirements);
+    assert.equal(fs.lstatSync(fifo).isFIFO(), true);
+    assert.deepEqual(backupEntries(home), beforeBackups);
+  } finally {
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
 test("uninstall backs up and removes unknown regular runtime content", () => {
   const home = fixture(), runtime = path.join(home, "hooks", "planning-with-files");
   try {

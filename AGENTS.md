@@ -83,6 +83,16 @@
 - 出现 Cloud/本地冲突、架构分歧或 timeout/权限/进程/数据安全模型变化时，暂停并增加探路 gate。
 - 只实施活动 task plan 明确授权的最小 gate；前一 gate 未通过不得顺手进入下一 gate。
 
+### 当前 Windows 维护机的 Linux gate 路由
+
+- 对 `C:\Users\Lenovo\Desktop\pwf-codex-cloud-hooks-next` 所在维护机，2026-08-22 已确认：`wsl.exe`
+  存在但没有已安装发行版，Docker、Podman 与 nerdctl 均不存在。除非维护者明确说明主机环境已经改变，
+  不要重复搜索这些本机执行面，也不要用 Git Bash 冒充 Linux/POSIX 证据。
+- 需要 Linux 零 skip、FIFO/device、真实 filesystem 或 Source/Candidate 黑盒证据时，默认走活动 task plan
+  授权的 Source/Candidate Cloud gate；如果维护者以后提供真实 WSL/Linux/容器，再重新 Discovery。
+- 这只是上述维护机的已知事实和默认路由，不适用于其他开发机或 Cloud host，也不授权安装 WSL/容器、
+  push、创建 Cloud task 或执行 Release；具体外部动作仍由维护者指令和活动 task plan 控制。
+
 ## 代码与验证
 
 - 修改 production 前先补最近边界测试，再跑风险相称的完整回归。
