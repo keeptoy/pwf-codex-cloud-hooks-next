@@ -54,10 +54,12 @@ test("v0.4.1 sealed-source patch train preserves the accepted and fallback ident
   assert.equal(immediateFallback, "v0.3.5");
   assert.notEqual(candidate, accepted);
   assert.match(roadmap, /compatibility\/security patch train/);
-  assert.match(roadmap, /本地 path-safety、开发期与P9-B sealed-source Source\/Candidate Linux\/Cloud均PASS/);
-  assert.match(roadmap, /P9-B与P9-C immutable publication均PASS/);
+  assert.match(roadmap, /本地[\s\S]*path-safety gate 与开发候选 exact source/);
+  assert.match(roadmap, /P9-B Linux零skip、deterministic ZIP、Fresh\/UserPrompt\/real Resume/);
+  assert.match(roadmap, /P9-B sealed-source Cloud与P9-C immutable publication均PASS/);
   assert.match(roadmap, /`v0\.4\.1` published prerelease candidate/);
-  assert.match(roadmap, /P9-D Published Release Cloud与角色轮换仍未授权/);
+  assert.match(roadmap, /P9-D operator ready、maintainer Fresh Cloud pending/);
+  assert.match(roadmap, /P9-E Latest与角色轮换仍未授权/);
   assert.match(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.0`/);
   assert.match(roadmap,
@@ -615,7 +617,8 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /P9-B local seal[^\n]*`PASS`/);
     assert.match(acceptance, /P9-B sealed-source Cloud[^\n]*`PASS`/);
     assert.match(acceptance, /P9-C immutable publication[^\n]*`PASS`/);
-    assert.match(acceptance, /P9-D \/ Latest[^\n]*`NOT_AUTHORIZED`/);
+    assert.match(acceptance, /P9-D Published Release Cloud[^\n]*`MAINTAINER_CLOUD_PENDING`/);
+    assert.match(acceptance, /P9-E \/ Latest[^\n]*`NOT_AUTHORIZED`/);
     assert.match(acceptance,
       /V0_4_1_SOURCE_CANDIDATE_CLOUD_PASS \/ STOP_BEFORE_SEAL \/ RELEASE_NOT_AUTHORIZED/);
     assert.match(acceptance,
@@ -674,6 +677,31 @@ test("change history, programme, provenance, and current acceptance keep separat
       "isDraft=false", "isPrerelease=true", "P9_C_PUBLICATION_AUDIT=PASS",
       "P9_C_IMMUTABLE_PUBLICATION_PASS / PUBLIC_ASSETS_REBUILT_AND_MATCHED / STOP_BEFORE_P9_D",
     ]) assert.match(p9cEvidence, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(acceptance, /^<a name="v0-4-1-p9-d-published-release-cloud-operator"><\/a>$/m);
+    const p9dAt = acceptance.indexOf('<a name="v0-4-1-p9-d-published-release-cloud-operator"></a>');
+    assert.ok(p9dAt > p9cEvidenceAt && historicalDevAt > p9dAt);
+    const p9dOperator = acceptance.slice(p9dAt, historicalDevAt);
+    for (const anchor of [
+      "published-release-setup", "blackbox-fresh-startup", "blackbox-canonical-baseline",
+      "blackbox-canonical-context", "blackbox-real-resume", "published-release-deep-check",
+    ]) assert.match(p9dOperator, new RegExp(`cloud-hard-acceptance-template\\.md#${anchor}`));
+    for (const fact of [
+      "__PWF_P9D_OPERATOR_HEAD__", "99885b854bd9621c3340e99f031bf83ceb58414d",
+      "https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/v0.4.1/init-cloud-sandbox-v0.4.1.bash",
+      "1832db08c16b4f7fde88df2699384f1fff8e324909b0e024cb6ef216aea30a43",
+      "https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/v0.4.1/pwf-codex-cloud-hooks-v0.4.1.zip",
+      "94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291",
+      "PWF_P9D_PUBLIC_IDENTITY_PREFLIGHT=PASS", "PWF_PUBLIC_RELEASE_SETUP=PASS",
+      "PUBLIC_PACKAGE_IDENTITY=0.4.1", "POST_RESUME_DOCTOR=PASS",
+      "BUNDLE_INSTALLED_INVENTORY=AUTHORITATIVE", "MANAGED_POLICY=ADAPTER_ONLY",
+      "PWF_PUBLIC_ZIP_BOUNDARY_IMPORTER=PASS", "PWF_PUBLIC_POST_RESUME=PASS",
+      "P9_D_OPERATOR_READY / MAINTAINER_FRESH_CLOUD_PENDING / STOP_BEFORE_P9_E",
+    ]) assert.match(p9dOperator, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(p9dOperator, /4\.2[\s\S]*5\.2[\s\S]*第6节[\s\S]*第7节[\s\S]*8\.1[\s\S]*8\.2[\s\S]*9\.2/);
+    assert.match(p9dOperator, /不得设置`HOOKS_URL`、`HOOKS_SHA256`或任何ZIP override/);
+    assert.match(p9dOperator, /必须停止在P9-E前/);
+    assert.doesNotMatch(p9dOperator, /set -Eeuo pipefail|readonly BOOTSTRAP_URL=|readonly ZIP_URL=/,
+      "version operator must not copy the shared Published Release Bash authority");
     const v041Provenance = provenance.split(/\r?\n/)
       .find(line => line.startsWith("| `v0.4.1` |")) || "";
     for (const fact of [

@@ -158,3 +158,11 @@
 - GitHub Release为非draft Pre-release，公开资产恰好是85,910-byte/22-entry ZIP与21,565-byte bootstrap；GitHub asset digest分别等于冻结SHA `94f12f…6291`与`1832db…a43`。
 - P9-C operator的重新下载、tag-source重建与`P9_C_PUBLICATION_AUDIT=PASS`闭合后，`BASELINE_PROVENANCE.md`现在可以新增role-neutral v0.4.1 immutable identity。
 - `v0.4.1`当前只是published prerelease candidate；P9-D公开默认下载链Fresh/Resume/doctor、Latest promotion和角色轮换仍独立未授权。
+
+## P9-D entry reconciliation — 2026-08-22
+
+- 维护者“继续下一步”授权P9-D operator/materialization；默认分工仍是智能体准备本地教程/守卫/commit，维护者push并运行Cloud。
+- v0.4.0先例与当前stable template已经闭合4.2 Published Release setup、5.2 Fresh、canonical/real Resume和9.2 public ZIP deep-check；本轮无需新Discovery或改模板脚本。
+- P9-D必须保持两层身份：public product bytes固定为tag `v0.4.1`及公开双资产URL/SHA；后继operator HEAD只承载模板与canonical fixture，不能替代产品身份。
+- setup必须在首个agent startup前从公开bootstrap URL按exact SHA执行，且不得设置ZIP override；post-Resume 9.2必须重新下载公开ZIP并只用ZIP内builder/importer/installer。
+- P9-D PASS也只允许写回公开Cloud证据；取消Pre-release、Latest、accepted/fallback轮转和ref清理仍属于P9-E/P9-F独立gate。

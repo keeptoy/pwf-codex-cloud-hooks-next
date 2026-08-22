@@ -188,3 +188,29 @@
 ## Current Status
 
 `P9_C_IMMUTABLE_PUBLICATION_PASS / PUBLIC_ASSETS_REBUILT_AND_MATCHED / STOP_BEFORE_P9_D`
+
+## 2026-08-22 — P9-D authorization and operator materialization
+
+- 维护者“继续下一步”授权进入P9-D；范围仅为Published Release Cloud操作单、治理断言、本地验证、planning/acceptance/ROADMAP与本地commit。
+- entry HEAD为`849286f742244a206629255dc9cdb1aefa076fb4`，工作树clean，本地与`origin/0.4.1`同步；P9-C evidence commit已由维护者push。
+- 恢复v0.4.0 P9-D operator/history/test precedent，确认当前模板4.2、5.2与9.2已有稳定英文anchor和单点脚本authority，无需修改通用模板。
+- 最近边界intentional-red为17项中15 pass / 2 expected fail，准确命中ROADMAP仍停在P9-D未授权、acceptance尚无当前版本P9-D operator。
+- v0.4.1 operator现绑定public tag/source、公开bootstrap/ZIP URL与SHA、dynamic control-plane HEAD、4.2→5.2→6→7→8.1→真实8.2→9.2顺序及stop-before-P9-E矩阵；未复制通用Bash。
+- operator物化后首次聚焦复验为16 pass / 1 fail；旧断言仍把开发期与P9-B sealed-source Cloud证据冻结成单句，已拆为各自可验证的事实。
+- 第二次聚焦复验仍为16 pass / 1 fail；剩余旧断言遗漏`sealed-source Cloud`限定，已与当前ROADMAP角色表精确对齐，未改变任何gate结论。
+- 最终repository/Release聚焦复验：17 pass / 0 fail / 0 skipped；P9-D anchor、公开资产identity、共享模板路由、dynamic control HEAD、禁止override和stop-before-P9-E均闭合。
+- acceptance内8个PowerShell block全部通过`ScriptBlock::Create`静态语法解析；`git diff --check` PASS。
+- 完整Windows runner PASS：184 tests / 158 pass / 0 fail / 26 skipped；SKIP仍全部为既有Linux/POSIX-only case，P9-D真实Linux证据保持由维护者Cloud执行。
+- 6个changed paths仅属于planning、ROADMAP、版本acceptance与治理测试；与Release v2 entries及ZIP外bootstrap交集为0，sealed public bytes未改变。
+
+### P9-D operator validation errors
+
+| Error | Attempt | Resolution |
+|---|---:|---|
+| operator物化后旧ROADMAP断言仍要求开发期与P9-B Cloud证据位于同一句 | 1 | 拆成开发候选exact source与P9-B lifecycle各自的稳定事实断言，不弱化证据 |
+| 首次修正后另一旧断言遗漏当前`sealed-source Cloud`限定 | 1 | 对齐当前角色表的精确P9-B/P9-C表述，保持Published Release pending与P9-E未授权 |
+| post-commit只读tag核验中的`v0.4.1^{commit}`被PowerShell特殊字符解析干扰 | 1 | 改用无特殊字符的`git show-ref --tags v0.4.1`与`git rev-list -n 1 v0.4.1`，两者均确认tag仍指向`99885b854bd9621c3340e99f031bf83ceb58414d` |
+
+## Current Status
+
+`P9_D_OPERATOR_READY / MAINTAINER_FRESH_CLOUD_PENDING / STOP_BEFORE_P9_E`
