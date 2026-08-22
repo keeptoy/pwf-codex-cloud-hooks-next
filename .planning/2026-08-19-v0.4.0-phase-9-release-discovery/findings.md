@@ -321,3 +321,9 @@ maintainer authorization boundary.
   setup/deep-check Bash继续只在通用模板维护。control-plane HEAD必须在本轮commit/push后动态取得，不能由旧历史commit冒充。
 - 生命周期保持不变。P9-D local materialization不改变public bytes、Release metadata、accepted/fallback角色或validation refs；只有
   维护者独立Fresh/Resume Cloud证据返回后才允许把gate写成PASS，且仍必须停在P9-E前。
+- P9-D Cloud补证闭合了此前的formal gaps：setup达到exact public bootstrap SHA与最终PASS；9.2明确exit code 0；real Resume后
+  checkout等于operator commit `9d4a914…`，且工作树仅含`.planning/.active_plan`和canonical fixture目录。
+- operator文档里的`__PWF_P9D_OPERATOR_HEAD__`是维护者组合environment setup时替换的占位符，不是仓库machine state。Cloud模型
+  因原文仍有占位符而给出的保留意见属于标签误解；实际HEAD只读检查才是identity authority。
+- E2和9.2与P9-D矩阵逐项一致，公开Release API仍报告lightweight tag source `fe8cd7f…`、非draft Pre-release及两项exact
+  asset digest/size。P9-D可关闭，但P9-E promotion/role rotation仍是独立授权gate。

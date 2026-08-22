@@ -221,3 +221,35 @@
 ## Current status
 
 `P9_D_OPERATOR_READY / MAINTAINER_FRESH_CLOUD_PENDING / STOP_BEFORE_P9_E`
+
+## 2026-08-22 — P9-D Published Release Cloud evidence received
+
+- setup从公开bootstrap运行到`Test complete`，输出exact bootstrap SHA
+  `4ae21c1f…c64f`与`PWF_PUBLIC_RELEASE_SETUP=PASS`；维护者确认5.2 Fresh及其他前置黑盒均PASS。
+- canonical fixture为`2026-08-22-pwf-cloud-acceptance-v1-a3f09c7e`。E2观察真实resume canary、runtime codex、5条
+  unsynced messages、截断/tail marker、正确catch-up顺序与全部canonical/markerless legacy上下文。
+- 9.2最终exit code 0；公开ZIP为22 entries、85,519 bytes、SHA `24a412…3bb3`，ZIP内importer healthy；doctor、schema4、
+  Release/bundle v2、12 installed、4 pristine、authoritative inventory、adapter-only与零residue全部PASS。
+- post-Resume HEAD为`9d4a914b8b241fa92345702bff74846024eba5b6`；工作树只含`.planning/.active_plan`和canonical fixture目录。
+- GitHub只读交叉检查保持tag source、Pre-release metadata、两项asset size/digest不变；`git ls-remote`再次遭遇已知Windows
+  signal-pipe限制，改用GitHub ref API确认远端`0.4.0` HEAD与本地operator HEAD相等。
+
+## Current status
+
+`P9_D_EVIDENCE_RECONCILIATION_IN_PROGRESS / STOP_BEFORE_P9_E`
+
+## 2026-08-22 — P9-D evidence closeout validated
+
+- acceptance新增双通道完成证据与`R5-SC=PASS / R5-PR=PASS / CLOUD-HARD-ACCEPTANCE-PASS`，同时明确不授权Latest、
+  role rotation、ref cleanup或P9-F；provenance链接提升到P9-D exact evidence。
+- 首次focused run暴露通用Published Release守卫手工重复加入`hook_adapter.py`，导致把v2 authoritative inventory误算为13项；
+  删除该v1-era projection后恢复exact 12项。第二次只剩Markdown换行regex过窄，收缩为语义守卫；最终focused 12/12通过。
+- 完整Windows suite为175 tests、150 pass、0 fail、25个Linux/POSIX-only诚实skip。importer、owned Python compile、Node syntax、
+  两个bootstrap Bash syntax与`git diff --check`均通过。
+- 双构建/check保持22 entries、85,519 bytes、SHA
+  `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`；8个changed paths与Release inputs交集为0。
+- P9-D正式关闭。对象只推进到P9-E review门口，没有提前取消Pre-release、轮转角色或清理validation refs。
+
+## Current status
+
+`P9_D_PUBLISHED_RELEASE_CLOUD_PASS / PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED / STOP_BEFORE_P9_E`

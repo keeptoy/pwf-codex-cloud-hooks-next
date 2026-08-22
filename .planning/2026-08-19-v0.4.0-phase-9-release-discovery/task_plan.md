@@ -5,18 +5,17 @@
 完成 `v0.4.0` standing Phase 9的版本化 gate。P9-A 已把 Phase 4功能基线迁移为稳定的 pre-seal source candidate；
 当前 P9-B本地字节封印与exact-HEAD sealed-source Cloud均已完成；setup/deep-check HEAD、Cloud deterministic ZIP与本地seal
 identity完全一致。P9-C immutable publication与独立publication audit均已完成：`v0.4.0` lightweight tag固定指向P9-B实际
-验收的`fe8cd7f…`，公开Pre-release恰好包含两项冻结资产，下载ZIP与tag-source重建字节一致。维护者现已授权进入P9-D：
-本地只物化公开资产Cloud operator/守卫并提交，由维护者在独立Fresh Cloud执行；P9-E promotion与P9-F cleanup仍未授权。
+验收的`fe8cd7f…`，公开Pre-release恰好包含两项冻结资产，下载ZIP与tag-source重建字节一致。P9-D公开默认下载链、Fresh、
+canonical context、real Resume与9.2 manifest-routed deep check均已PASS；P9-E promotion与P9-F cleanup仍未授权。
 
 ## Next Step
 
-P9-D版本化operator、稳定模板anchor与静态守卫已闭合。维护者push本轮exact operator commit后，在独立Fresh Cloud的
-environment setup执行4.2，再按`5.2 → 6 → 7 → 8.1 → real 8.2 → 9.2`完成公开默认下载链验收；证据返回前停止，
-不取消Pre-release、不设置Latest或轮转角色。
+P9-D证据已回写并完成本地验证/commit；停止在P9-E前，等待维护者单独授权pointer-only Latest promotion与角色轮转。
+不得因P9-D PASS自动取消Pre-release、设置Latest、迁移accepted/fallback、清理validation refs或进入P9-F。
 
 ## Current Phase
 
-P9-D Published Release maintainer Fresh Cloud
+P9-D Published Release Cloud PASS / stop before P9-E
 
 ## Phases
 
@@ -218,11 +217,19 @@ P9-D Published Release maintainer Fresh Cloud
 
 ### P9-D-PR2 — Maintainer Fresh/Resume Cloud execution
 
-**Status:** pending — maintainer action
+**Status:** completed
 
 - 在独立Fresh Cloud的environment setup中执行4.2，使Managed Hook在首个agent startup前由public bootstrap安装。
 - 按5.2→6→7→8.1→同task real 8.2→9.2闭合Host、doctor、inventory、policy与residue证据。
 - 回传明确最终exit code和PWF public PASS markers；证据返回后才能回写P9-D PASS。
+
+### P9-D-PR3 — Evidence reconciliation and closeout
+
+**Status:** completed
+
+- 交叉核对setup最终bootstrap SHA/PASS、5.2 Fresh、canonical/long-tail/real Resume与9.2 exit code 0。
+- 记录exact operator HEAD、planning-only fixture、公开ZIP identity、doctor/inventory/policy/residue与双通道最终结论。
+- 更新provenance、acceptance、history、ROADMAP、planning与静态守卫；本地commit后停止在P9-E前。
 
 ## Authorization
 
@@ -235,6 +242,8 @@ P9-D Published Release maintainer Fresh Cloud
   operator创建exact lightweight tag、Pre-release、上传两项sealed assets并执行只读publication audit。
 - 已授权：P9-D本地identity恢复、版本化operator/静态守卫/Release-excluded planning/history/ROADMAP同步、本地验证和commit；
   维护者push operator commit后，在独立Fresh Cloud按operator执行Published Release通道并回传证据。
+- 已授权：交叉核对维护者返回的P9-D Cloud证据，回写provenance/acceptance/history/ROADMAP/planning与静态守卫，相称验证并
+  创建本地closeout commit。
 - 未授权：修改任何 ZIP entry、package/contract/manifest/README或 production/runtime字节；由本地智能体执行 Cloud；创建/移动/
   删除远端refs；由本地智能体push/PR/tag/Release/publication或上传资产；修改 Latest、accepted/fallback角色或仓库设置；P9-E/
   P9-F；validation ref cleanup；切换 `0.5.0-dev`/Phase 5。
@@ -281,7 +290,10 @@ P9-D Published Release maintainer Fresh Cloud
 | Sandboxed focused Node runner failed with `spawn EPERM` | 1 | Reran the identical repository-boundary suite with child-process permission; the runner executed normally. |
 | First executed P9-C lifecycle guards still expected unpublished/pending state | 1 | Updated only Release-excluded ROADMAP/provenance/acceptance assertions to the observed published prerelease state; rerun passed 11/11. |
 | Combined PowerShell postflight passed a spaced `--jq` expression to `gh api` as two arguments | 1 | Replaced CLI quoting with `ConvertFrom-Json`; exact remote tag type/source postflight then passed. |
+| P9-D read-only `git ls-remote` cross-check hit Git-Bash signal-pipe `Win32 error 5` and returned no branch HEAD | 1 | Kept the failed transport result as UNKNOWN; used the GitHub ref API instead and confirmed remote `0.4.0` equals local operator HEAD `9d4a914…`. |
+| First P9-D closeout guard expected 13 installed files by manually adding `hook_adapter.py` beside bundle `local_files` | 1 | Classified as a stale v1-era test projection; removed the manual duplicate and kept runtime-bundle v2 as the only installed inventory authority. Cloud/manifest remain exact at 12 files. |
+| Second focused run's promotion-boundary regex required `accepted/fallback` on the same line as `Latest` | 1 | Allowed Markdown whitespace while preserving the semantic assertion that Published Release PASS does not authorize Latest/role rotation/P9-E. |
 
 ## Current status
 
-`P9_D_OPERATOR_READY / MAINTAINER_FRESH_CLOUD_PENDING / STOP_BEFORE_P9_E`
+`P9_D_PUBLISHED_RELEASE_CLOUD_PASS / PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED / STOP_BEFORE_P9_E`

@@ -306,3 +306,25 @@ paths与Release entries/external assets交集为0，双构建仍为22 entries、
 Python compile、installer Node syntax、两个bootstrap Bash syntax、operator PowerShell parse和`git diff --check`均通过。当前结论为：
 
 `P9_D_OPERATOR_MATERIALIZED / LOCAL_GUARDS_PASS / MAINTAINER_FRESH_CLOUD_PENDING / STOP_BEFORE_P9_E`
+
+<a name="phase-9-v0-4-0-p9-d-post-acceptance"></a>
+
+## Post-acceptance status — P9-D Published Release Cloud
+
+维护者完成独立Fresh Cloud的公开默认下载链。setup从immutable bootstrap运行到`Test complete`并输出exact bootstrap SHA与
+`PWF_PUBLIC_RELEASE_SETUP=PASS`；5.2 Fresh、canonical baseline/context、E1 long tail与同task real E2 Resume全部通过。
+E2观察到真实`SessionStart source=resume`、catch-up顺序、long-tail截断/tail marker和两个markerless legacy sentinel。
+
+9.2重新下载85,519-byte、22-entry公开ZIP，SHA仍为`24a412…3bb3`，只使用ZIP内builder/importer/installer；最终exit code 0。
+doctor healthy/managed，manifest schema 4、Release/bundle v2、12项installed inventory、4项pristine upstream、adapter-only policy与
+零snapshot residue全部闭合。post-Resume checkout仍是operator HEAD `9d4a914b8b241fa92345702bff74846024eba5b6`，工作树只有
+`.planning/.active_plan`与canonical fixture目录。
+
+实施和规划没有偏差。Cloud模型关于`__PWF_P9D_OPERATOR_HEAD__`仍是占位符的提示不构成失败：该值本来就在执行setup时替换，
+不是要提交进文档；实际HEAD只读结果已经提供更直接的identity证据。公开tag/source和两项资产在独立只读postflight中仍与P9-C一致。
+
+生命周期只推进到P9-D：v0.4.0仍为published prerelease candidate，v0.3.5仍为accepted/Latest，v0.3.4仍为immediate fallback。
+v0.3.5 working-tree role files已到达P9-E review条件，但在P9-E授权和role rotation完成前继续`KEEP`；11个validation refs与F3
+guides/validators/negative tests也继续保留。当前结论为：
+
+`P9_D_PUBLISHED_RELEASE_CLOUD_PASS / PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED / STOP_BEFORE_P9_E`
