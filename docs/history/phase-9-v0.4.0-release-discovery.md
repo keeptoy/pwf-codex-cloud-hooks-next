@@ -8,7 +8,7 @@
 `Phase 9 PASS`。Phase 4.11 已经关闭功能施工并形成 `0.4.0` 功能/候选基线；本轮只回答怎样把该基线安全地变成
 immutable public Release、怎样轮转 accepted/fallback，以及第二轮对象退役应在什么证据之后发生。
 
-未来 `v0.5.0`、`v0.6.0` 若进入发布收口，应各自建立 `phase-9-vX.Y.Z-...` 实例，不追加为本文件的“下一轮 Phase 9”。
+未来版本若进入发布收口，应各自建立 `phase-9-vX.Y.Z-...` 实例，不追加为本文件的“下一轮 Phase 9”。
 通用 Release 顺序仍以 ROADMAP 和 Cloud hard acceptance template 为准；本文只记录 `v0.4.0` 的差异、风险和 gate 决策。
 
 <a name="phase-9-v0-4-0-starting-facts"></a>
@@ -54,7 +54,7 @@ P9-A 必须先关闭四类债务，才能冻结 stable candidate：
 | P9-C immutable publication | 维护者创建 exact stable tag 与 Pre-release，上传两项 sealed assets，并做 publication audit | 公开资产存在不等于用户下载路径已验收 |
 | P9-D Published Release Cloud | 独立 Fresh Cloud 从 public bootstrap 默认链安装，再做 real Resume、doctor 与 manifest-routed deep check | 不自动改变 Latest 或 accepted role |
 | P9-E Latest promotion | 维护者只改 Release metadata；只读 postflight核对 Latest和两项 immutable资产，ROADMAP轮转为 accepted v0.4.0 / fallback v0.3.5 | 不自动授权任意文件/ref清理 |
-| P9-F second retirement and handoff | 按角色窗口逐项 RETIRE/MIGRATE/KEEP，保存 fallback恢复链；关闭本列车后才讨论 `0.5.0-dev` | 不自动进入 Phase 5 implementation |
+| P9-F second retirement and handoff | 按角色窗口逐项 RETIRE/MIGRATE/KEEP，保存fallback恢复链；关闭本列车后再独立决定后继版本/Phase | 不自动创建或进入后继development train |
 
 RC 只在 P9-A/P9-B 暴露风险或维护者明确选择时使用；RC/canary 永远不能替代 final stable bytes 的验收。每个 gate 都有独立
 停止点，前一项 PASS 不自动授权下一项或任何远端写入。
@@ -83,7 +83,7 @@ RC 只在 P9-A/P9-B 暴露风险或维护者明确选择时使用；RC/canary �
 | 11 个 F3 validation refs | `KEEP` | 其中九个仍保留主线/tag均不可达的 side-branch commits；先有同强度 durable archive并另获 ref-mutation授权才可再审 |
 | F3 dev-named guides | `KEEP AS EXECUTED EVIDENCE` | exact路径、refs和脚本已被 Cloud/测试采用，不为 stable外观改名 |
 | rollback validator、revival negatives、installed transition | `KEEP` | 仍保护 v0.4.0 rollback/forward-migration合同 |
-| `0.5.0-dev` identity | `DEFER` | P9-F 完成并另获 Phase 5 授权 |
+| future development-train identity | `DEFER` | P9-F只关闭当前列车；后继可能是patch train或新的Product Phase，必须另行决策 |
 
 这里的“第二轮退役”仍是做决定，不是强制删除。尤其不能因为文档已经记下 commit hash 就删除唯一保持对象可达的 ref。
 
@@ -124,7 +124,7 @@ RC 只在 P9-A/P9-B 暴露风险或维护者明确选择时使用；RC/canary �
 ## Successor
 
 Discovery 当时的下一步是维护者决定是否授权 P9-A。后续状态见下面的实施尾注；只有 P9-A/P9-B/P9-C/P9-D/P9-E/P9-F
-依次闭合后，才形成 `v0.4.0` accepted baseline，随后才能另开 `0.5.0-dev` 与 Phase 5 Discovery。本文只追加本实例的
+依次闭合后，才形成 `v0.4.0` accepted baseline。后继版本列车与Product Phase必须另行决策；本文只追加本实例的
 实施/验收尾注，不接管未来版本的 Phase 9。
 
 <a name="phase-9-v0-4-0-p9-a-post-implementation"></a>
@@ -365,3 +365,44 @@ installed transition继续`KEEP`。P9-F仍是独立授权gate。
 交集为0。
 
 `P9_E_OPERATOR_READY / PRE_PROMOTION_LATEST_DRIFT_RECORDED / MAINTAINER_POINTER_PROMOTION_PENDING / STOP_BEFORE_P9_F`
+
+<a name="phase-9-v0-4-0-p9-e-post-promotion"></a>
+
+## Post-promotion status — P9-E Latest promotion
+
+维护者已执行唯一pointer mutation；只读postflight取得明确exit code 0并确认：`v0.4.0`为非draft、非prerelease的Latest，
+lightweight tag仍直接指向`fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`，ZIP/bootstrap仍为85,519/21,565 bytes及冻结SHA。
+v0.3.5仍是stable Release，tag source`5d01b55890c1da2a5088e2b991b152a9fb1c3f87`与77,800/21,565-byte双资产未变。
+
+因此角色原子轮转为`v0.4.0 accepted/Latest → v0.3.5 immediate fallback → v0.3.4 deeper fallback`。P9-E没有重打包、
+重传资产、移动tag、重跑Cloud或清理refs/files；其唯一额外输入是先前记录的Latest control-plane drift。结论为：
+
+`P9_E_POINTER_PROMOTION_PASS / V0_4_0_ACCEPTED_LATEST / V0_3_5_IMMEDIATE_FALLBACK`
+
+<a name="phase-9-v0-4-0-p9-f-post-implementation"></a>
+
+## Post-implementation status — P9-F second retirement and handoff
+
+P9-F按当前HEAD重新审计working-tree版本窗口、provenance/acceptance链接、publication oracle、11个validation refs、F3 guides、
+validators/negative tests与installed transition。实施与Discovery的核心路线一致，但纠正了一个过早假设：P9-F只关闭v0.4.0
+列车，不预设下一步必然进入Phase 5；后继也可能是patch train，必须另行Discovery/授权。
+
+对象账最终为：
+
+| 对象 | P9-F决定 | 依据 / 后继条件 |
+|---|---|---|
+| v0.3.5 working-tree bootstrap/acceptance | `RETIRED` | 已退出candidate+accepted工作窗口；exact source/tag/Release/assets/provenance可完整恢复 |
+| v0.3.5 provenance/CHANGELOG验收链接 | `MIGRATED` | 改为`5d01b…` exact immutable blob，不依赖当前树副本 |
+| v0.3.5 public tag/source/ZIP/bootstrap | `KEEP IMMUTABLE` | 当前immediate fallback，不得改写、删除或重发 |
+| 11个validation refs | `KEEP` | 九个仍是side-branch-only commits唯一durable reachability；本轮也无远端ref mutation授权 |
+| F3 guides/evidence helper/rollback validator/revival negatives | `KEEP` | 继续承载exact执行证据和现行回归合同 |
+| `installed-state-transition-v1.json`与exact 0.3.5断言 | `KEEP` | 它是sealed v0.4.0 installer predecessor合同，不是会随Latest轮转的role字段 |
+| active Phase 9 planning | `KEEP FOR HANDOFF` | 后继列车未决定，不能为了清空状态恢复`.active_plan`自动删除逻辑 |
+| future development train identity | `DEFER` | patch/minor与Product Phase均由下一轮独立决策 |
+
+清退只触及Release-excluded旧角色文件与治理链接；current ZIP entries、stable bootstrap、runtime、contract、manifest、README、
+public assets和validation refs均未变化。focused repository guards 14/14；完整Windows suite 177 tests、152 pass、0 fail、25个
+Linux/POSIX-only诚实skip；importer/compile/Node/Bash syntax与whitespace均PASS。双构建继续为22 entries、85,519 bytes、
+SHA-256`24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`，changed paths与Release inputs交集为0。结论为：
+
+`P9_F_SECOND_RETIREMENT_PASS / V0_4_0_TRAIN_CLOSED / NEXT_TRAIN_UNDECIDED`

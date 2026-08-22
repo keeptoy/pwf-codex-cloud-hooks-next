@@ -162,7 +162,7 @@
    tag/source/ZIP/bootstrap identities, then ROADMAP rotates to accepted v0.4.0 and fallback v0.3.5.
 6. `P9-F second retirement and handoff`: remove only the working-tree candidate/accepted-window files that have durable immutable
    replacements, update provenance/acceptance/ROADMAP, keep v0.3.5 recoverable via immutable tag/Release, retain F3 refs/guides/tests,
-   and only then open `0.5.0-dev` / Phase 5 under separate authorization.
+   and leave the next development train/Product Phase unnamed until a separate decision and authorization.
 
 An RC is optional if P9-A/B uncovers risk; it cannot substitute for final stable-byte acceptance. Each gate has a separate stop and
 maintainer authorization boundary.
@@ -181,7 +181,7 @@ maintainer authorization boundary.
 | 11 F3 validation refs | `KEEP` | Nine retain otherwise side-branch-only commits; no durable replacement exists |
 | F3 dev-named operator guides | `KEEP AS EXECUTED EVIDENCE` | Exact filenames/identities are part of the verified protocol and tests |
 | F3 validators and revival negative tests | `KEEP` | They still protect current lifecycle/rollback semantics |
-| future `0.5.0-dev` identity | `DEFER` | Only after P9-F and separate Phase 5 authorization |
+| future development-train identity | `DEFER` | Only after P9-F and a separate version/Product Phase decision; it may be a patch train rather than Phase 5 |
 
 ## P9-A authority recovery — implementation pass
 
@@ -342,3 +342,18 @@ maintainer authorization boundary.
   ROADMAP才从candidate/accepted/fallback轮转到v0.4.0/v0.3.5/v0.3.4。
 - v0.3.5 working-tree role files、11个validation refs、F3 evidence与rollback contracts在P9-E仍KEEP；它们只进入P9-F review，
   operator materialization或pointer mutation都不是删除授权。
+
+## P9-F lifecycle audit — 2026-08-22
+
+- P9-E只读复核闭合：v0.4.0为stable Latest，tag/source/85,519-byte ZIP/21,565-byte bootstrap均未变；v0.3.5同样保持
+  stable immutable source与77,800/21,565-byte双资产。因此角色可安全轮转为v0.4.0 accepted、v0.3.5 immediate fallback、
+  v0.3.4 deeper fallback。
+- 只有`init-cloud-sandbox-v0.3.5.bash`和`docs/v0.3.5-cloud-hard-acceptance.md`满足working-tree退役DoD；它们不再属于
+  candidate+accepted窗口，且exact source blob、tag、Release、asset SHA与provenance足以恢复。
+- `installed-state-transition-v1.json`中的0.3.5必须KEEP：这是sealed v0.4.0 installer接管exact predecessor的合同常量，不是
+  随Latest变化的role metadata。对应contracts test也继续KEEP。
+- 11个validation refs全部KEEP；其中九个不被main/stable tag包含，是F3 smart/autonomous side-branch evidence的唯一durable
+  reachability。F3 guides、helper、rollback/revival negatives仍有真实consumer和回归职责。
+- publication oracle已经从ROADMAP动态取accepted+immediate fallback，并从各自archived manifest路由，无须复制版本列表或
+  保留v0.3.5 current-tree bootstrap/acceptance。
+- P9-F只关闭本列车，不决定后继版本。Phase 5表仍是未来候选路线，不代表下一列车必然是minor；patch train同样需要独立决策。

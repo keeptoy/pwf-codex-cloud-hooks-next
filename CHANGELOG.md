@@ -63,7 +63,7 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - Phase 3.8 历史摘要保留“当时只关闭 Discovery”的语义，并以独立尾注说明 bundle-authority migration 后由
   v0.3.4 落地。本列车不修改 runtime dispatch、Host ABI、trusted graph、installed inventory 或 Product Phase 4。
 - 当前 gate 与后续 Cloud 状态见
-  [`docs/v0.3.5-cloud-hard-acceptance.md`](docs/v0.3.5-cloud-hard-acceptance.md)。
+  [immutable v0.3.5 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/5d01b55890c1da2a5088e2b991b152a9fb1c3f87/docs/v0.3.5-cloud-hard-acceptance.md)。
 
 ## v0.3.4
 

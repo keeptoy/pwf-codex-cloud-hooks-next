@@ -270,3 +270,21 @@
 ## Current status
 
 `P9_E_OPERATOR_READY / PRE_PROMOTION_LATEST_DRIFT_RECORDED / MAINTAINER_POINTER_PROMOTION_PENDING / STOP_BEFORE_P9_F`
+
+## 2026-08-22 — P9-E promotion verified and P9-F closed
+
+- 维护者完成P9-E；只读交叉核对确认v0.4.0为stable Latest，tag source与85,519-byte ZIP/21,565-byte bootstrap不变；
+  v0.3.5 tag/source与77,800/21,565-byte双资产同样未变。
+- 先增加P9-F role/absence/lifecycle guards；permissioned intentional red run为14 tests、11 pass、3 fail，失败恰为旧角色窗口、
+  缺少P9-E/P9-F证据和两份旧working-tree文件仍存在。实现后focused 14/14 PASS。
+- ROADMAP轮转为v0.4.0 accepted/Latest、v0.3.5 immediate fallback、v0.3.4 deeper fallback；后继列车保持未命名、未授权。
+- 删除current-tree `init-cloud-sandbox-v0.3.5.bash`和`docs/v0.3.5-cloud-hard-acceptance.md`，把provenance/CHANGELOG验收链接
+  迁移到`5d01b…` exact blob；immutable公开身份未改写。
+- 11个validation refs、F3 guides/evidence helper、rollback/revival negatives和installed predecessor transition全部KEEP。
+- 完整Windows suite为177 tests、152 pass、0 fail、25个Linux/POSIX-only诚实skip；focused repository suite为14/14。
+- importer、owned Python compile、Node syntax、唯一v0.4.0 bootstrap Bash syntax与`git diff --check`PASS。双构建仍为22 entries、
+  85,519 bytes、SHA`24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`；10个changed paths与Release inputs交集为0。
+
+## Current status
+
+`P9_F_SECOND_RETIREMENT_PASS / V0_4_0_TRAIN_CLOSED / NEXT_TRAIN_UNDECIDED`

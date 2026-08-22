@@ -47,21 +47,22 @@ function currentRoleWindow() {
   return { accepted, candidate, immediateFallback, roadmap };
 }
 
-test("Phase 4 foundation keeps the candidate and accepted identity window distinct", () => {
-  const { accepted, candidate, roadmap } = currentRoleWindow();
+test("Phase 4 release closeout rotates the accepted and fallback identity window", () => {
+  const { accepted, candidate, immediateFallback, roadmap } = currentRoleWindow();
   assert.equal(candidate, "v0.4.0");
-  assert.equal(accepted, "v0.3.5");
-  assert.notEqual(candidate, accepted);
-  assert.match(roadmap, /Phase 4 functional baseline ready/);
+  assert.equal(accepted, "v0.4.0");
+  assert.equal(immediateFallback, "v0.3.5");
+  assert.equal(candidate, accepted);
+  assert.match(roadmap, /Phase 4 functional baseline accepted/);
   assert.match(roadmap, /Product Phase 4功能施工已闭合/);
   assert.match(roadmap, /第一轮 retirement review完成/);
   assert.match(roadmap,
-    /Phase 9 P9-D公开默认下载链Fresh\/Resume验收PASS[^]*P9-E本地operator已闭合[^]*postflight前不得轮转角色[^]*P9-F与validation ref cleanup仍未授权/);
+    /Phase 9 P9-E pointer-only promotion与postflight PASS[^]*P9-F第二轮retirement review完成/);
   assert.match(roadmap,
-    /Phase 4 \/ F3C4完成[\s\S]*形成0\.4\.0功能\/候选基线[\s\S]*切换0\.5\.0-dev并进入Phase 5/);
+    /Phase 4 \/ F3C4完成[\s\S]*形成0\.4\.0功能\/候选基线[\s\S]*后继版本列车与Product Phase另行决策/);
 });
 
-test("v0.4.0 Phase 9 keeps P9-D evidence distinct from pending promotion", () => {
+test("v0.4.0 Phase 9 keeps P9-D evidence distinct from later promotion", () => {
   const phase9 = read("docs/history/phase-9-v0.4.0-release-discovery.md");
   const phase4Closeout = read("docs/history/phase-4.11-f3c4-aggregate-closure-discovery.md");
   const historyIndex = read("docs/history/README.md");
@@ -153,11 +154,11 @@ test("P9-C operator freezes the Cloud-tested tag source and audits immutable pub
   assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-c-post-publication"><\/a>$/m);
   assert.match(phase9,
     /P9_C_IMMUTABLE_PUBLICATION_PASS \/ PUBLIC_ASSETS_REBUILT_AND_MATCHED \/ STOP_BEFORE_P9_D/);
-  assert.match(roadmap, /P9-A～P9-D PASS/);
-  assert.match(roadmap, /P9-D公开默认下载链Fresh\/Resume验收PASS/);
+  assert.match(roadmap, /P9-A～P9-F PASS/);
+  assert.match(roadmap, /P9-F第二轮retirement review完成/);
   assert.match(roadmap, /tag source[^]*fe8cd7f284ea2849f634aa68813dbb0f2cca83f9/);
   assert.match(provenance,
-    /`v0\.4\.0`[^\n]*fe8cd7f284ea2849f634aa68813dbb0f2cca83f9[^\n]*v0-4-0-p9-d-published-release-cloud-evidence/);
+    /`v0\.4\.0`[^\n]*fe8cd7f284ea2849f634aa68813dbb0f2cca83f9[^\n]*v0-4-0-p9-f-second-retirement-closeout/);
   for (const fact of [zipSha, bootstrapSha, "85,519 bytes", "21,565 bytes"]) {
     assert.match(provenance, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
@@ -232,7 +233,7 @@ test("P9-D operator binds public assets to the shared Published Release protocol
     /P9_D_PUBLISHED_RELEASE_CLOUD_PASS \/ PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED \/ STOP_BEFORE_P9_E/);
 });
 
-test("P9-E operator permits only pointer metadata promotion and stops before retirement", () => {
+test("P9-E evidence closes pointer promotion before P9-F retirement", () => {
   const acceptance = read("docs/v0.4.0-cloud-hard-acceptance.md");
   const phase9 = read("docs/history/phase-9-v0.4.0-release-discovery.md");
   const taskPlan = read(".planning/2026-08-19-v0.4.0-phase-9-release-discovery/task_plan.md");
@@ -263,13 +264,37 @@ test("P9-E operator permits only pointer metadata promotion and stops before ret
     /gh release (?:create|delete|upload)|git (?:tag|push)|remove-item|rm\s/,
     "promotion operator must not recreate assets, mutate refs or perform cleanup");
   assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-e-pre-promotion"><\/a>$/m);
+  assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-e-post-promotion"><\/a>$/m);
   assert.match(phase9,
-    /P9_E_OPERATOR_READY \/ PRE_PROMOTION_LATEST_DRIFT_RECORDED \/ MAINTAINER_POINTER_PROMOTION_PENDING \/ STOP_BEFORE_P9_F/);
-  assert.match(roadmap, /P9-E operator已准备[\s\S]*pointer-only promotion仍待维护者执行/);
-  assert.match(taskPlan, /P9-E pointer-only promotion operator ready \/ maintainer execution pending/);
+    /P9_E_POINTER_PROMOTION_PASS \/ V0_4_0_ACCEPTED_LATEST \/ V0_3_5_IMMEDIATE_FALLBACK/);
+  assert.match(roadmap, /P9-E pointer-only promotion与postflight PASS/);
+  assert.match(taskPlan, /P9-F complete \/ maintainer push pending \/ next train undecided/);
   assert.equal(candidate, "v0.4.0");
-  assert.equal(accepted, "v0.3.5");
-  assert.equal(immediateFallback, "v0.3.4");
+  assert.equal(accepted, "v0.4.0");
+  assert.equal(immediateFallback, "v0.3.5");
+});
+
+test("P9-F retires only obsolete working-tree role files and keeps durable rollback evidence", () => {
+  const acceptance = read("docs/v0.4.0-cloud-hard-acceptance.md");
+  const phase9 = read("docs/history/phase-9-v0.4.0-release-discovery.md");
+  const provenance = read("BASELINE_PROVENANCE.md");
+
+  assert.equal(fs.existsSync(path.join(root, "init-cloud-sandbox-v0.3.5.bash")), false);
+  assert.equal(fs.existsSync(path.join(root, "docs/v0.3.5-cloud-hard-acceptance.md")), false);
+  assert.match(provenance,
+    /blob\/5d01b55890c1da2a5088e2b991b152a9fb1c3f87\/docs\/v0\.3\.5-cloud-hard-acceptance\.md/);
+  assert.match(acceptance, /^<a name="v0-4-0-p9-f-second-retirement-closeout"><\/a>$/m);
+  assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-f-post-implementation"><\/a>$/m);
+  assert.match(phase9,
+    /P9_F_SECOND_RETIREMENT_PASS \/ V0_4_0_TRAIN_CLOSED \/ NEXT_TRAIN_UNDECIDED/);
+  for (const retained of [
+    "contracts/installed-state-transition-v1.json",
+    "docs/v0.4.0-dev-f3b2-smart-live-operator-guide.md",
+    "docs/v0.4.0-dev-f3b3-autonomous-live-operator-guide.md",
+    "docs/v0.4.0-dev-f3c-rollback-operator-guide.md",
+    "tests/f3-lifecycle-helpers.js",
+    "tests/owned-plan-runtime.test.js",
+  ]) assert.equal(fs.existsSync(path.join(root, retained)), true, retained);
 });
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
@@ -505,7 +530,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|Next Step|GitHub `Latest`|production rollback|\d+ registered/);
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 
-  assert.match(roadmap, new RegExp("## 3\\. 已完成的基线 `" + accepted.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "`"));
+  assert.match(roadmap, new RegExp("## 3\\. 已接受基线 `" + accepted.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "`"));
   assert.doesNotMatch(roadmap, /## 3\. 已完成的仓库迁移|M1 exact mirror|M2 slim transformation/);
   assert.equal((roadmap.match(/GitHub `Latest`/g) || []).length, 1);
 
@@ -623,7 +648,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(phase9History, /^<a name="phase-9-v0-4-0-p9-b-sealed-source-cloud"><\/a>$/m);
   assert.match(phase9History,
     /P9_B_SEALED_SOURCE_CLOUD_PASS \/ STOP_BEFORE_P9_C \/ PUBLICATION_NOT_AUTHORIZED/);
-  assert.match(roadmap, /P9-D公开默认下载链Fresh\/Resume验收PASS[\s\S]*P9-E operator已准备[\s\S]*pointer-only promotion/);
+  assert.match(roadmap, /P9-E pointer-only promotion与postflight PASS[\s\S]*P9-F第二轮retirement review完成/);
   assert.match(acceptance, /^<a name="v0-4-0-dev-f3c1-local-materialization"><\/a>$/m);
   assert.match(acceptance,
     /F3C1_PROTOCOL_NO_LIVE_PASS \/ REF_AWARE_LINUX_ZERO_SKIP \/ CLOUD_ROLLBACK_NOT_RUN \/ STOP_BEFORE_F3C2/);
@@ -789,7 +814,7 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /POINTER_ONLY_PROMOTION_POSTFLIGHT=PASS/);
     assert.match(acceptance, new RegExp(`${escapedCandidate} 成为 accepted/Latest`));
     assert.match(acceptance, new RegExp(`${immediateFallback.replaceAll(".", "\\.")} 成为 immediate[\\s\\S]*fallback`));
-    assert.match(acceptance, /Product Phase 4 仍未授权/);
+    assert.match(acceptance, /POINTER_ONLY_PROMOTION_POSTFLIGHT=PASS/);
   }
 });
 

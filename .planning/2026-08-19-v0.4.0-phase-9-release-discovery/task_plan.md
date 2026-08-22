@@ -6,18 +6,17 @@
 当前 P9-B本地字节封印与exact-HEAD sealed-source Cloud均已完成；setup/deep-check HEAD、Cloud deterministic ZIP与本地seal
 identity完全一致。P9-C immutable publication与独立publication audit均已完成：`v0.4.0` lightweight tag固定指向P9-B实际
 验收的`fe8cd7f…`，公开Pre-release恰好包含两项冻结资产，下载ZIP与tag-source重建字节一致。P9-D公开默认下载链、Fresh、
-canonical context、real Resume与9.2 manifest-routed deep check均已PASS。P9-E operator与静态守卫正在本地物化；维护者实际
-pointer-only promotion/postflight仍待执行，P9-F cleanup未授权。
+canonical context、real Resume与9.2 manifest-routed deep check均已PASS。P9-E pointer-only promotion/postflight也已由维护者
+执行并完成只读交叉核对：`v0.4.0`现为stable Latest，immutable tag与双资产未变；本轮进入P9-F第二轮对象退役与列车交接。
 
 ## Next Step
 
-完成P9-E Release-excluded operator、静态守卫和当前事实回写后创建本地commit；维护者push该exact operator commit，再按
-版本acceptance执行唯一pointer mutation与只读postflight。postflight PASS前不得迁移accepted/fallback；不得清理validation refs
-或进入P9-F。
+维护者push本地P9-F closeout commit。该commit只关闭v0.4.0列车并保存accepted/fallback与对象生命周期账；在维护者另行决定
+patch/minor版本、Product Phase和新活动计划前，不创建或切换任何后继development列车，也不清理validation refs。
 
 ## Current Phase
 
-P9-E pointer-only promotion operator ready / maintainer execution pending
+P9-F complete / maintainer push pending / next train undecided
 
 ## Phases
 
@@ -251,7 +250,7 @@ P9-E pointer-only promotion operator ready / maintainer execution pending
 
 ### P9-E2 — Maintainer pointer promotion
 
-**Status:** pending
+**Status:** completed
 
 - 维护者push exact operator commit，执行preflight并保存previous Latest。
 - 只运行一次`gh release edit v0.4.0 --prerelease=false --latest`；不得修改notes、tag、target或assets。
@@ -259,11 +258,43 @@ P9-E pointer-only promotion operator ready / maintainer execution pending
 
 ### P9-E3 — Postflight, role rotation and gate closeout
 
-**Status:** pending
+**Status:** completed
 
 - 只读确认v0.4.0为非draft、非prerelease的Latest，tag/source与公开双资产字节不变。
 - 确认v0.3.5 immutable tag/Release/双资产未变并成为immediate fallback恢复入口。
 - 证据返回后才轮转ROADMAP角色并关闭P9-E；随后停止在P9-F前。
+
+### P9-F0 — Promotion evidence and lifecycle recovery
+
+**Status:** completed
+
+- 只读确认`v0.4.0`为stable Latest，tag/source/双资产未变；v0.3.5 immutable身份同样未变。
+- 复核working-tree版本文件、11个validation refs、F3 guides、rollback contracts/tests与publication oracle消费者。
+- 冻结最小`RETIRE/MIGRATE/KEEP`账；P9-F不创建、不命名也不授权后继开发列车。
+
+### P9-F1 — Role rotation guards and immutable routing
+
+**Status:** completed
+
+- 先让repository/publication guards表达post-promotion角色窗口与P9-F退出条件。
+- 把v0.3.5 acceptance链接迁移为exact immutable source URL，确保工作树文件退出后仍可恢复证据。
+- 保留动态publication oracle、exact predecessor transition和validation ref reachability断言。
+
+### P9-F2 — Working-tree role-file retirement
+
+**Status:** completed
+
+- 删除`init-cloud-sandbox-v0.3.5.bash`与`docs/v0.3.5-cloud-hard-acceptance.md`的当前树副本。
+- 不删除或修改v0.3.5 tag、Release、公开双资产、source commit、provenance身份或历史语义。
+- 不删除validation refs、F3 guides、validators、negative tests、installed transition或active planning。
+
+### P9-F3 — Regression, closeout and version-neutral handoff
+
+**Status:** completed
+
+- 跑focused/full regression、importer/compile/Node/Bash syntax、deterministic ZIP与Release-input交集审计。
+- 回写acceptance/history/ROADMAP/planning对象账并创建本地commit。
+- 关闭v0.4.0列车；后继可能是patch或新的Product Phase，必须另行Discovery/授权，本轮不预设版本号。
 
 ## Authorization
 
@@ -280,10 +311,11 @@ P9-E pointer-only promotion operator ready / maintainer execution pending
   创建本地closeout commit。
 - 已授权：P9-E本地identity/control-plane恢复、版本化operator、静态守卫、Release-excluded history/ROADMAP/planning同步、
   相称验证和本地commit；维护者push后按operator执行唯一pointer-only promotion并回传只读postflight。
+- 已授权：核对P9-E postflight并进入P9-F；轮转当前角色、迁移旧验收链接、退役v0.3.5 working-tree bootstrap/acceptance、
+  保留仍有consumer或唯一reachability的refs/contracts/tests/guides，相称验证并创建本地commit。
 - 未授权：修改任何 ZIP entry、package/contract/manifest/README或 production/runtime字节；由本地智能体执行 Cloud；创建/移动/
-  删除远端refs；由本地智能体push/PR/tag/Release/publication/promotion或上传资产；除维护者按P9-E operator修改现有Release的
-  Pre-release/Latest metadata外的任何远端写；postflight前轮转accepted/fallback；P9-F；validation ref cleanup；切换
-  `0.5.0-dev`/Phase 5。
+  删除远端refs；由本地智能体push/PR/tag/Release/publication/promotion或上传资产；validation ref cleanup；创建、命名或切换
+  任何后继development列车；进入后继Product Phase。
 
 ## Stop Conditions
 
@@ -301,6 +333,8 @@ P9-E pointer-only promotion operator ready / maintainer execution pending
 - 任一异步命令没有明确最终exit code，doctor/inventory/policy/residue不闭合，或Cloud产生planning fixture以外的仓库修改。
 - P9-E preflight看到未知previous Latest、tag/source/asset漂移、dirty或未push的operator HEAD，或远端/API最终状态不明。
 - postflight未确认v0.4.0 stable Latest与v0.3.5 immutable fallback就轮转accepted/fallback，或任何步骤进入P9-F/ref cleanup。
+- P9-F试图删除validation refs、F3 guides/validators/negative tests或exact predecessor contract，或旧验收没有immutable恢复入口。
+- P9-F改变任何Release input/public asset、恢复已退役working-tree role文件，或在独立决策前命名/创建后继开发列车。
 
 ## Errors Encountered
 
@@ -331,7 +365,10 @@ P9-E pointer-only promotion operator ready / maintainer execution pending
 | P9-D read-only `git ls-remote` cross-check hit Git-Bash signal-pipe `Win32 error 5` and returned no branch HEAD | 1 | Kept the failed transport result as UNKNOWN; used the GitHub ref API instead and confirmed remote `0.4.0` equals local operator HEAD `9d4a914…`. |
 | First P9-D closeout guard expected 13 installed files by manually adding `hook_adapter.py` beside bundle `local_files` | 1 | Classified as a stale v1-era test projection; removed the manual duplicate and kept runtime-bundle v2 as the only installed inventory authority. Cloud/manifest remain exact at 12 files. |
 | Second focused run's promotion-boundary regex required `accepted/fallback` on the same line as `Latest` | 1 | Allowed Markdown whitespace while preserving the semantic assertion that Published Release PASS does not authorize Latest/role rotation/P9-E. |
+| First P9-F focused runner attempt hit Windows `spawn EPERM` | 1 | Reran the exact repository-boundary suite with child-process permission; the intentional red run then exposed only the expected stale role/absence/evidence assertions. |
+| Combined local check used the WindowsApps `python3.exe` alias, which exited 1 without output | 1 | Switched the Windows verification invocation to the real `python.exe`; importer, compile and deterministic build checks then passed. |
+| Sandboxed P9-F Bash syntax probe hit the known Git Bash signal-pipe `Win32 error 5` | 1 | Reran the sole remaining bootstrap with process permission; `bash -n init-cloud-sandbox-v0.4.0.bash` passed. |
 
 ## Current status
 
-`P9_D_PUBLISHED_RELEASE_CLOUD_PASS / PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED / STOP_BEFORE_P9_E`
+`P9_F_SECOND_RETIREMENT_PASS / V0_4_0_TRAIN_CLOSED / NEXT_TRAIN_UNDECIDED`
