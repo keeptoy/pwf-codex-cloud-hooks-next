@@ -6,43 +6,43 @@
 
 ## Next Step
 
-创建本地 `0.4.1` 分支，完成 installer path topology、版本身份与最近边界测试的 Discovery，冻结最小修复方案。
+将开发身份原子传播为 `0.4.1-dev`：轮换 exact predecessor、candidate bootstrap/contract、ROADMAP/CHANGELOG 与最小 acceptance，同时保持 sealed `v0.4.0` 字节不变。
 
 ## Current Phase
 
-Phase 1 in progress / Discovery and development identity
+Phase 4 in progress / Patch-train identity and documentation
 
 ## Phases
 
 ### Phase 1: Discovery and development identity
 
-- [ ] 从已接受 `v0.4.0` 后继 HEAD 创建本地 `0.4.1` 分支。
-- [ ] 全量审计 install/repair/backup/uninstall 的路径创建、检查、复制、写入与删除顺序。
-- [ ] 冻结 threat model、支持/拒绝矩阵、非目标、回滚与停止条件。
-- [ ] 核对 patch-train package/bootstrap/ROADMAP/CHANGELOG 身份传播范围。
-- **Status:** in_progress
+- [x] 从已接受 `v0.4.0` 后继 HEAD 创建本地 `0.4.1` 分支。
+- [x] 全量审计 install/repair/backup/uninstall 的路径创建、检查、复制、写入与删除顺序。
+- [x] 冻结 threat model、支持/拒绝矩阵、非目标、回滚与停止条件。
+- [x] 核对 patch-train package/bootstrap/ROADMAP/CHANGELOG 身份传播范围。
+- **Status:** complete
 
 ### Phase 2: Nearest boundary tests
 
-- [ ] 先补 linked `hooks` parent 的 clean-install 写前拒绝。
-- [ ] 补 linked `hooks` parent 与 direct runtime link 的 uninstall 写前拒绝。
-- [ ] 保留 unknown regular file/directory 可备份后卸载的正向合同。
+- [x] 先补 linked `hooks` parent 的 clean-install 写前拒绝。
+- [x] 补 linked `hooks` parent 与 direct runtime link 的 uninstall 写前拒绝。
+- [x] 保留 unknown regular file/directory 可备份后卸载的正向合同。
 - [ ] Windows junction 与 Linux/POSIX symlink 分别提供真实平台证据。
-- **Status:** pending
+- **Status:** complete on Windows; Linux/POSIX evidence pending Phase 5
 
 ### Phase 3: Minimal implementation
 
-- [ ] 增加 install/uninstall 共用或职责清晰的 no-follow path-topology admission。
-- [ ] admission 必须发生在 backup、requirements write、runtime write/delete 之前。
-- [ ] 不改变 exact current/predecessor inventory admission、unknown cleanup、Host ABI 或 runtime trusted graph。
-- **Status:** pending
+- [x] 增加 install/uninstall 共用或职责清晰的 no-follow path-topology admission。
+- [x] admission 必须发生在 backup、requirements write、runtime write/delete 之前。
+- [x] 不改变 exact current/predecessor inventory admission、unknown cleanup、Host ABI 或 runtime trusted graph。
+- **Status:** complete
 
 ### Phase 4: Patch-train identity and documentation
 
 - [ ] 将本地开发身份原子传播为 `0.4.1-dev`，development bootstrap 保持 zero hash/fail closed。
 - [ ] 更新 CHANGELOG、ROADMAP 与稳定运维说明的唯一权威，不改写 `v0.4.0` 历史 acceptance/provenance。
 - [ ] 核对 Release allowlist 与 deterministic ZIP 输入闭合。
-- **Status:** pending
+- **Status:** in_progress
 
 ### Phase 5: Verification
 
@@ -85,6 +85,9 @@ Phase 1 in progress / Discovery and development identity
 | 使用 patch train `0.4.1` | 同一 `0.4` 行为合同内的安全兼容修复，不新增用户行为面 |
 | 先 Discovery 与边界测试，再改 production | 路径安全属于关键 gate，必须先冻结拒绝矩阵与写前边界 |
 | 不直接复用 exact install inventory admission 作为 uninstall guard | 必须保留 unknown-drift 的显式备份/清理出口 |
+| topology admission 独立于 inventory admission | install/repair 仍要求 exact current/predecessor；uninstall 只拒绝 link/special topology，继续接受 unknown regular 内容 |
+| 校验 `hooks` 与 runtime 两个 installer-owned component | 修复已证实的 parent junction 穿透与 direct runtime link；不擅自扩大到显式 `codexHome` 或其全部祖先 |
+| backup 前校验，backup 后 mutation 前复核 | 缩小可利用的并发替换窗口；完全 race-free 的 fd-relative traversal 留待独立设计，不伪装成本 patch 已解决 |
 
 ## Errors Encountered
 
@@ -93,4 +96,4 @@ Phase 1 in progress / Discovery and development identity
 
 ## Current Status
 
-`V0_4_1_PATH_SAFETY_DISCOVERY_IN_PROGRESS / PRODUCTION_UNCHANGED / REMOTE_ACTIONS_DENIED`
+`V0_4_1_IDENTITY_PROPAGATION_IN_PROGRESS / PATH_SAFETY_GREEN_ON_WINDOWS / REMOTE_ACTIONS_DENIED`

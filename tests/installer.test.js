@@ -97,6 +97,20 @@ function runtimeFiles(home) {
   walk(runtime);
   return result.sort();
 }
+function linkDirectory(target, link) {
+  fs.symlinkSync(target, link, process.platform === "win32" ? "junction" : "dir");
+}
+function backupEntries(home) {
+  const backups = path.join(home, "backups", "planning-with-files-hooks");
+  return fs.existsSync(backups) ? fs.readdirSync(backups).sort() : [];
+}
+function removeDirectoryLink(link) {
+  try {
+    if (fs.lstatSync(link).isSymbolicLink()) fs.unlinkSync(link);
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+}
 
 async function withMutatedRuntimeBundle(scenario, action) {
   const currentManifest = JSON.parse(fs.readFileSync(path.join(cliWorkspace, "upstream-manifest.json"), "utf8"));
@@ -305,6 +319,140 @@ test("managed install is merge-preserving, idempotent, diagnosable and uninstall
   requirements = fs.readFileSync(requirementsPath, "utf8");
   assert.match(requirements, /command = "\/usr\/bin\/keep"/); assert.doesNotMatch(requirements, /hook_adapter\.py/);
   assert.equal(fs.existsSync(path.join(home, "hooks", "planning-with-files")), false);
+});
+
+test("clean install rejects a linked hooks parent before backup or mutation", () => {
+  const home = fixture(), external = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-external-hooks-"));
+  const hooks = path.join(home, "hooks"), sentinel = path.join(external, "sentinel.txt");
+  const requirements = path.join(home, "etc", "codex", "requirements.toml");
+  try {
+    fs.writeFileSync(sentinel, "outside\n");
+    linkDirectory(external, hooks);
+    const before = fs.readFileSync(requirements);
+    const result = run(home, "install");
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /BLOCKED_UNSAFE_RUNTIME_PATH/);
+    assert.deepEqual(fs.readFileSync(requirements), before);
+    assert.deepEqual(fs.readFileSync(sentinel, "utf8"), "outside\n");
+    assert.equal(fs.existsSync(path.join(external, "planning-with-files")), false);
+    assert.deepEqual(backupEntries(home), []);
+  } finally {
+    removeDirectoryLink(hooks);
+    fs.rmSync(home, { recursive: true, force: true });
+    fs.rmSync(external, { recursive: true, force: true });
+  }
+});
+
+test("clean install rejects a non-directory hooks component before backup or mutation", () => {
+  const home = fixture(), hooks = path.join(home, "hooks");
+  const requirements = path.join(home, "etc", "codex", "requirements.toml");
+  try {
+    fs.writeFileSync(hooks, "not a directory\n");
+    const before = fs.readFileSync(requirements);
+    const result = run(home, "install");
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /BLOCKED_UNSAFE_RUNTIME_PATH/);
+    assert.deepEqual(fs.readFileSync(requirements), before);
+    assert.deepEqual(backupEntries(home), []);
+  } finally {
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+test("uninstall rejects a linked hooks parent before backup or mutation", () => {
+  const home = fixture(), externalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-external-parent-"));
+  const hooks = path.join(home, "hooks"), externalHooks = path.join(externalRoot, "hooks");
+  const requirements = path.join(home, "etc", "codex", "requirements.toml");
+  try {
+    let result = run(home, "install");
+    assert.equal(result.status, 0, result.stderr);
+    fs.renameSync(hooks, externalHooks);
+    linkDirectory(externalHooks, hooks);
+    const sentinel = path.join(externalHooks, "outside.txt");
+    fs.writeFileSync(sentinel, "outside\n");
+    const beforeRequirements = fs.readFileSync(requirements);
+    const beforeBackups = backupEntries(home);
+    result = run(home, "uninstall");
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /BLOCKED_UNSAFE_RUNTIME_PATH/);
+    assert.deepEqual(fs.readFileSync(requirements), beforeRequirements);
+    assert.deepEqual(fs.readFileSync(sentinel, "utf8"), "outside\n");
+    assert.equal(fs.existsSync(path.join(externalHooks, "planning-with-files")), true);
+    assert.deepEqual(backupEntries(home), beforeBackups);
+  } finally {
+    removeDirectoryLink(hooks);
+    fs.rmSync(home, { recursive: true, force: true });
+    fs.rmSync(externalRoot, { recursive: true, force: true });
+  }
+});
+
+test("uninstall rejects a linked runtime root before backup or mutation", () => {
+  const home = fixture(), externalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-external-runtime-"));
+  const runtime = path.join(home, "hooks", "planning-with-files"), externalRuntime = path.join(externalRoot, "planning-with-files");
+  const requirements = path.join(home, "etc", "codex", "requirements.toml");
+  try {
+    let result = run(home, "install");
+    assert.equal(result.status, 0, result.stderr);
+    fs.renameSync(runtime, externalRuntime);
+    linkDirectory(externalRuntime, runtime);
+    const sentinel = path.join(externalRuntime, "outside.txt");
+    fs.writeFileSync(sentinel, "outside\n");
+    const beforeRequirements = fs.readFileSync(requirements);
+    const beforeBackups = backupEntries(home);
+    result = run(home, "uninstall");
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /BLOCKED_UNSAFE_RUNTIME_PATH/);
+    assert.deepEqual(fs.readFileSync(requirements), beforeRequirements);
+    assert.deepEqual(fs.readFileSync(sentinel, "utf8"), "outside\n");
+    assert.deepEqual(backupEntries(home), beforeBackups);
+  } finally {
+    removeDirectoryLink(runtime);
+    fs.rmSync(home, { recursive: true, force: true });
+    fs.rmSync(externalRoot, { recursive: true, force: true });
+  }
+});
+
+test("uninstall rejects a nested runtime link before backup or mutation", () => {
+  const home = fixture(), external = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-external-nested-"));
+  const runtime = path.join(home, "hooks", "planning-with-files"), nestedLink = path.join(runtime, "unknown-link");
+  const requirements = path.join(home, "etc", "codex", "requirements.toml");
+  try {
+    let result = run(home, "install");
+    assert.equal(result.status, 0, result.stderr);
+    fs.writeFileSync(path.join(external, "sentinel.txt"), "outside\n");
+    linkDirectory(external, nestedLink);
+    const beforeRequirements = fs.readFileSync(requirements);
+    const beforeBackups = backupEntries(home);
+    result = run(home, "uninstall");
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /BLOCKED_UNSAFE_RUNTIME_PATH/);
+    assert.deepEqual(fs.readFileSync(requirements), beforeRequirements);
+    assert.equal(fs.readFileSync(path.join(external, "sentinel.txt"), "utf8"), "outside\n");
+    assert.deepEqual(backupEntries(home), beforeBackups);
+  } finally {
+    removeDirectoryLink(nestedLink);
+    fs.rmSync(home, { recursive: true, force: true });
+    fs.rmSync(external, { recursive: true, force: true });
+  }
+});
+
+test("uninstall backs up and removes unknown regular runtime content", () => {
+  const home = fixture(), runtime = path.join(home, "hooks", "planning-with-files");
+  try {
+    let result = run(home, "install");
+    assert.equal(result.status, 0, result.stderr);
+    fs.writeFileSync(path.join(runtime, "unknown.txt"), "recover me\n");
+    fs.mkdirSync(path.join(runtime, "unknown-directory"));
+    fs.writeFileSync(path.join(runtime, "unknown-directory", "nested.txt"), "nested\n");
+    result = run(home, "uninstall");
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(fs.existsSync(runtime), false);
+    const backedUpRuntime = path.join(result.json.backup, "hooks", "planning-with-files");
+    assert.equal(fs.readFileSync(path.join(backedUpRuntime, "unknown.txt"), "utf8"), "recover me\n");
+    assert.equal(fs.readFileSync(path.join(backedUpRuntime, "unknown-directory", "nested.txt"), "utf8"), "nested\n");
+  } finally {
+    fs.rmSync(home, { recursive: true, force: true });
+  }
 });
 
 test("managed TOML ownership preserves unrelated array tables and rejects ambiguous marked state", () => {

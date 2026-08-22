@@ -680,23 +680,37 @@ function inspectInstallation(paths, skill) {
   }
   return { errors, blockers, manifest, requirements, healthy: errors.length === 0, repairable: errors.length > 0 && blockers.length === 0 };
 }
-function assertSafeRuntimeForInstall(paths) {
-  if (!fs.existsSync(paths.runtime)) return [];
+function assertSafeRuntimeTopology(paths) {
   for (const component of [path.join(paths.home, "hooks"), paths.runtime]) {
-    if (fs.lstatSync(component).isSymbolicLink()) throw new Error(`BLOCKED_UNKNOWN_RUNTIME: symlinked path ${component}`);
+    let info;
+    try { info = fs.lstatSync(component); }
+    catch (error) {
+      if (error.code === "ENOENT") continue;
+      throw error;
+    }
+    if (info.isSymbolicLink() || !info.isDirectory()) {
+      throw new Error(`BLOCKED_UNSAFE_RUNTIME_PATH: expected a real directory or absent path: ${component}`);
+    }
   }
   const entries = [];
   function walk(directory, prefix = "") {
+    if (!fs.existsSync(directory)) return;
     for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
       const relative = prefix ? `${prefix}/${entry.name}` : entry.name;
       const target = path.join(directory, entry.name);
       const info = fs.lstatSync(target);
-      if (info.isSymbolicLink() || (!info.isDirectory() && !info.isFile())) throw new Error(`BLOCKED_UNKNOWN_RUNTIME: unsafe entry ${relative}`);
+      if (info.isSymbolicLink() || (!info.isDirectory() && !info.isFile())) {
+        throw new Error(`BLOCKED_UNSAFE_RUNTIME_PATH: unsafe runtime entry ${relative}`);
+      }
       entries.push({ relative, directory: info.isDirectory() });
       if (info.isDirectory()) walk(target, relative);
     }
   }
   walk(paths.runtime);
+  return entries;
+}
+function assertSafeRuntimeForInstall(paths) {
+  const entries = assertSafeRuntimeTopology(paths);
   if (!entries.length) return [];
   const { manifest, error } = readManifest(paths);
   if (error) throw new Error(`BLOCKED_UNKNOWN_RUNTIME: ${error}`);
@@ -751,12 +765,14 @@ function install(options) {
     return { action: "dry-run", codex_home: paths.home, skill_root: skill, requirements_file: paths.requirements, events: EVENTS, changed: proposedRequirements !== currentRequirements };
   }
   const release = acquire(paths, "install"); try {
+    assertSafeRuntimeTopology(paths);
     const captures = captureSharedState(paths);
     const currentRequirements = capturedText(captures, paths.requirements);
     const proposedRequirements = managedRequirements(currentRequirements, paths);
     const retiredFiles = assertSafeRuntimeForInstall(paths);
     const backupDir = backup(paths, captures);
     assertSharedState(captures);
+    assertSafeRuntimeTopology(paths);
     retireVerifiedPredecessorFiles(paths, retiredFiles);
     writeRuntimeFiles(paths);
     atomicWrite(paths.requirements, proposedRequirements, 0o644, captures.get(paths.requirements));
@@ -777,6 +793,7 @@ function repair(options) {
     return { action: "repair-dry-run", healthy: false, changed: true, repairable: true, codex_home: paths.home, skill_root: skill, requirements_file: paths.requirements, events: EVENTS, errors: before.errors };
   }
   const release = acquire(paths, "repair"); try {
+    assertSafeRuntimeTopology(paths);
     const captures = captureSharedState(paths);
     const before = inspectInstallation(paths, skill);
     assertSharedState(captures);
@@ -787,6 +804,7 @@ function repair(options) {
     if (sha256(repairedRequirements) !== before.manifest.requirements_sha256) throw new Error("REPAIR_BLOCKED_UNKNOWN_DRIFT: reconstructed requirements do not match manifest");
     const backupDir = backup(paths, captures);
     assertSharedState(captures);
+    assertSafeRuntimeTopology(paths);
     writeRuntimeFiles(paths);
     atomicWrite(paths.requirements, repairedRequirements, 0o644, captures.get(paths.requirements));
     const inspected = inspectInstallation(paths, skill);
@@ -812,9 +830,11 @@ function doctor(options) {
 }
 function uninstall(options) {
   const paths = pathsFor(options.codexHome, options.managedRequirements), release = acquire(paths, "uninstall"); try {
+    assertSafeRuntimeTopology(paths);
     const captures = captureSharedState(paths);
     const backupDir = backup(paths, captures);
     assertSharedState(captures);
+    assertSafeRuntimeTopology(paths);
     if (captures.get(paths.requirements).exists) {
       const cleaned = removeOwnedRequirements(capturedText(captures, paths.requirements));
       atomicWrite(paths.requirements, `${cleaned.trimEnd()}\n`, 0o644, captures.get(paths.requirements));
