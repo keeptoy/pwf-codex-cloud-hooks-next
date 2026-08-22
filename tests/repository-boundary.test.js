@@ -387,6 +387,10 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(acceptanceTemplate, /### 9\.2 Published Release[\s\S]*__IMMUTABLE_ZIP_URL__[\s\S]*__IMMUTABLE_ZIP_SHA256__/);
   assert.match(acceptanceTemplate, /PWF_CLOUD_ACCEPTANCE_CANONICAL_V1[\s\S]*PWF_CLOUD_ACCEPTANCE_REAL_RESUME_TAIL/);
   assert.match(acceptanceTemplate,
+    /上一步 B 中“不要调用工具、运行 Shell、读取文件”的限制只适用于 B 的那一次黑盒观察回复，现在已经结束/);
+  assert.match(acceptanceTemplate,
+    /只允许使用只读文件工具检查 `[.]planning\/[.]active_plan`[\s\S]*只允许使用 apply_patch/);
+  assert.match(acceptanceTemplate,
     /PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_COMPLETED_V1[\s\S]*PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_ACTIVE_V1/);
   for (const sentinel of [
     "PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_COMPLETED_V1",
@@ -604,6 +608,7 @@ test("change history, programme, provenance, and current acceptance keep separat
       /LOCAL_PATH_SAFETY_PASS \/ SOURCE_CANDIDATE_CLOUD_PENDING \/ RELEASE_NOT_AUTHORIZED/);
     assert.match(acceptance, /默认情况下，智能体不代替维护者 push/);
     assert.match(acceptance, /维护者回传时请保留/);
+    assert.match(acceptance, /明确结束 B 的单次无工具\/不读文件观察限制/);
     assert.match(acceptance, /cloud-hard-acceptance-template\.md#cloud-task-acceptance-permission-prefix/);
     assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-setup/);
     assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-deep-check/);

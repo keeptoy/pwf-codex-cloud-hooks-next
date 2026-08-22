@@ -76,6 +76,24 @@
 - `ROADMAP.md` 当前仍写“未授权 Linux/Cloud gate”；按文档权威规则应同步为本地 gate 已通过、Source/Candidate 由维护者 push/手动启动且证据 pending，seal/tag/Release/Latest 仍未授权。
 - README 已经清楚区分 Windows SKIP 与 Linux/Cloud gate，不需要为本轮复制教程；AGENTS 的交互与提交纪律已有“维护者负责远端写”基础，只需把新增小节改成默认本地/Cloud 职责流水线。
 
+## Source/Candidate 4.1 Cloud evidence
+
+- Cloud checkout HEAD 为 `6c1dd52a3878f59c7140a793b9a2c2a34580b188`，与维护者已 push 的本地 HEAD 一致；本地 branch 当前跟踪 `origin/0.4.1` 且无 ahead/behind。
+- Linux portable suite 报告 `175 tests / 175 pass / 0 fail / 0 skipped`；这关闭 Windows 无法提供的真实 Linux 零 skip 执行面。
+- 两次 candidate ZIP identity 为 22 entries、85,915 bytes、SHA-256 `543a72a57fdd7ca04854d5d1dfde6f838bf40e3afa5eb2c52c2d559b3843854a`，与本地双构建完全一致。
+- `PWF_SOURCE_CANDIDATE_SETUP=PASS` 已出现；local override 安装、doctor healthy、managed TOML、SessionStart/UserPromptSubmit adapter probes 与 clean worktree 均由 Cloud 报告通过，且没有 commit/PR。
+- 当前回传没有明确写出长脚本 invocation 的最终 `exit_code=0`。按模板异步/退出码硬规则，4.1 产品断言看起来全绿，但 evidence 状态仍是 `INCOMPLETE`；不得仅从最后 PASS marker 推断退出码。
+- 回传摘要没有逐字附上 FIFO/symlink/unknown-regular 的 TAP 行；exact source + 全 runner 0 skip 支持它们已被执行，但最终 evidence writeback 仍应保存原始 TAP 或相应测试行。
+
+## Source/Candidate C protocol defect and 9.1 evidence
+
+- 维护者报告 B、D、E 与 9.1 其余观察均通过；9.1 明确 exit code 0，HEAD 为 `6c1dd52a3878f59c7140a793b9a2c2a34580b188`，并输出 `PWF_WORKTREE_CHANGES=PLANNING_ONLY`、`POST_RESUME_DOCTOR=PASS` 与 `PWF_SC_POST_RESUME=PASS`。
+- 9.1 machine facts：doctor healthy/managed/non-repairable、events exact、errors/blockers empty、installer `0.4.1-dev`、manifest schema 4、Release/bundle v2、22 artifact entries、12 installed runtime files、4 pristine upstream files、bundle inventory authoritative、managed policy adapter-only、snapshot leftovers 0。
+- C 的原始回复却是：因仍受前一条“不读取文件”限制，无法安全确认/更新 `.planning/.active_plan`，因此未创建或修改文件。这与 9.1 的 `PLANNING_ONLY` 摘要不能互相替代；没有 exact C acknowledgment 与后续 D/E 的同一 canonical fixture 关系，就不能封整条通道 PASS。
+- 根因是同一 task 中 B 的用户提示明确禁止工具和文件读取，而紧接的 C 虽要求 `apply_patch`、存在性检查和 pointer 更新，却没有明确结束/取代 B 限制。Cloud 模型选择 fail closed 是正确行为。
+- 修复只改稳定验收提示：C 开头显式终止 B 的一次性观察限制，并仅开放目标 planning 路径的 bounded read 与规定的 apply_patch；production、Host ABI、ZIP inventory 和 runtime 不变。
+- 模板变化会产生新的 source HEAD。为维持单一 exact Source/Candidate identity，不能拼接 `6c1dd52` 的 A/F 与新 HEAD 的 C/D/E；修复 push 后必须从新 Fresh environment 重跑完整 A～F。
+
 ## Resources
 
 - `install.js`

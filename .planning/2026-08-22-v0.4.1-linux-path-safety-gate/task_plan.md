@@ -6,11 +6,11 @@
 
 ## Next Step
 
-维护者审核并 push `0.4.1` 的最新本地 commit，然后严格按 `docs/v0.4.1-dev-cloud-hard-acceptance.md` 手动完成 Source/Candidate Cloud A～F；将原始输出带回后进入 Phase 5 evidence intake。
+修复 C 对 B 无工具/不读文件限制的显式交接，增加文档边界测试并完成本地 commit；维护者 push 新 exact HEAD 后，从新的 disposable Cloud environment 重新运行完整 Source/Candidate A～F。
 
 ## Current Phase
 
-Phase 4 complete / Waiting for maintainer Cloud run
+Phase 5 in progress / Acceptance protocol correction
 
 ## Phases
 
@@ -45,10 +45,14 @@ Phase 4 complete / Waiting for maintainer Cloud run
 
 ### Phase 5: Cloud evidence intake
 
-- [ ] 维护者提供各轮 Cloud 原始输出后，核对 exact source、0 skip、Fresh/Resume 与路径安全证据。
+- [x] 核对 4.1 exact source、Linux 0 skip、双 ZIP identity、安装/doctor/probe 和 clean worktree 摘要。
+- [x] 核对 9.1 exit code 0、exact HEAD、doctor、inventory/policy authority 与零 residue。
+- [x] 分类 C 的 B→C 权限冲突为 acceptance protocol defect，拒绝用 9.1 倒推 C PASS。
+- [x] 修复稳定 C 提示、版本运行单和防回归断言，完成本地 commit。
+- [ ] 维护者 push 新 exact HEAD 后，在新 Fresh environment 重跑完整 A～F 并回传原始输出。
 - [ ] 只把真实结果写入版本 acceptance；未执行轮次保持 PENDING。
 - [ ] 通过后封闭本 gate，并单独决定后续 seal/Release 授权。
-- **Status:** pending / external maintainer action
+- **Status:** in progress / protocol correction required
 
 ## Frozen Invariants
 
@@ -80,4 +84,4 @@ Phase 4 complete / Waiting for maintainer Cloud run
 
 ## Current Status
 
-`LOCAL_ACCEPTANCE_PASS / CLOUD_TUTORIAL_READY / WAITING_FOR_MAINTAINER_PUSH_AND_CLOUD_OUTPUT`
+`LOCAL_ACCEPTANCE_PASS / PRIOR_CLOUD_RUN_INVALID_AT_C / PROTOCOL_FIX_VALIDATED_AND_COMMITTING`

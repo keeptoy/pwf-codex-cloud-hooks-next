@@ -39,6 +39,23 @@
 - repository-boundary 与完整 suite 均通过，跨文档显式 anchors、当前角色和 acceptance 状态一致。
 - `git diff --check` 通过；准备创建范围单一的本地文档 commit，不执行 push 或 Cloud task。
 
+### Phase 5: Source/Candidate Cloud evidence intake
+
+- **Status:** in progress / 4.1 evidence incomplete
+- 维护者已 push exact HEAD `6c1dd52a3878f59c7140a793b9a2c2a34580b188` 并手动完成 4.1 setup task。
+- Cloud 回传：Linux 175/175、0 fail、0 skipped；ZIP 22 entries、85,915 bytes、SHA-256 `543a72a…3854a`；
+  setup marker、override install、doctor、managed policy、两个 adapter probes 和 clean worktree 均通过。
+- 4.1 回传未明确包含最终 `exit_code=0`，按模板保持 `INCOMPLETE`；在原 task 只读补齐前不进入 5.1。
+- 本轮只更新活动 planning，不更新版本 acceptance、不创建 commit，避免 Source/Candidate 中途改变本地/远端 HEAD。
+- 维护者随后回传 9.1：exit code 0；`PWF_WORKTREE_CHANGES=PLANNING_ONLY`、`POST_RESUME_DOCTOR=PASS`、
+  `PWF_SC_POST_RESUME=PASS`；HEAD、doctor、contracts、inventory、adapter-only policy 和 snapshot residue 全部通过。
+- C 原始回复因继承 B 的“不读取文件/调用工具”限制而拒绝创建 canonical baseline。该 fail-closed 行为正确，但意味着
+  当前通道不能 PASS；9.1 不能补造 C acknowledgment 或 D/E canonical relation。
+- 已开始修复稳定模板的 B→C 权限交接，并增加 repository-boundary 防回归断言；修复后需要新 exact HEAD 的完整 Fresh A～F。
+- 稳定模板、v0.4.1 运行单和 repository-boundary 断言已修复；repository-boundary 14/14、完整 suite 158 pass / 0 fail 通过。
+- 协议修复不进入 Release ZIP；本地 build/check 仍为 22 entries、85,915 bytes、SHA-256 `543a72a…3854a`。
+- `git diff --check` 通过；准备创建单一范围本地 commit，随后由维护者 push 新 HEAD 并全量重跑。
+
 ## Test Results
 
 | Test | Result | Status |
@@ -52,6 +69,16 @@
 | full suite after tutorial | 158 pass / 0 fail / 26 Windows skips | PASS |
 | cross-document anchors / current role assertions | included in full suite | PASS |
 | final `git diff --check` | exit 0 | PASS |
+| Cloud 4.1 exact source | `6c1dd52a…b188` | PASS |
+| Cloud 4.1 Linux suite | 175 pass / 0 fail / 0 skip | PASS |
+| Cloud 4.1 deterministic ZIP | 22 entries / 85,915 bytes / `543a72a…3854a` | PASS |
+| Cloud 4.1 final invocation exit code | not explicitly returned | INCOMPLETE |
+| Cloud 9.1 deep check | exit 0 / exact HEAD / doctor+inventory+policy PASS / residue 0 | PASS |
+| Cloud C canonical baseline | no files changed due inherited no-read restriction | PROTOCOL DEFECT |
+| repository-boundary after B→C fix | 14 pass / 0 fail / 0 skip | PASS |
+| full suite after B→C fix | 158 pass / 0 fail / 26 Windows skips | PASS |
+| candidate ZIP after protocol-only fix | 22 entries / 85,915 bytes / `543a72a…3854a` | UNCHANGED / PASS |
+| `git diff --check` after protocol fix | exit 0 | PASS |
 
 ## Errors
 
@@ -62,7 +89,9 @@
 | Cloud task list omitted environment ID | 1 | 标记为非默认流程信息；维护者手动 Cloud 不依赖本地 CLI environment ID |
 | standalone Git Bash could not resolve workspace bootstrap paths | 3 | 不继续搜索兼容层；Cloud Linux 执行真实 Bash gate |
 | ROADMAP 首次 patch 重复保留旧状态行 | 1 | 立即复核并合并为单一 current-state 段落 |
+| 4.1 Cloud summary omitted explicit final exit code | 1 | 在原 setup task 只读补问实际 exit code；不得从 PASS marker 推断 |
+| B no-tool/no-read restriction conflicted with C apply_patch and existence checks | 1 | C 显式终止 B 的单次观察限制，仅开放 bounded planning read/write；新 HEAD 全量重跑 |
 
 ## Current Status
 
-`LOCAL_ACCEPTANCE_PASS / TUTORIAL_READY / LOCAL_COMMIT_PENDING`
+`C_PROTOCOL_FIX_VALIDATED / CANDIDATE_ZIP_UNCHANGED / LOCAL_COMMIT_PENDING`
