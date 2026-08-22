@@ -357,3 +357,22 @@ maintainer authorization boundary.
 - publication oracle已经从ROADMAP动态取accepted+immediate fallback，并从各自archived manifest路由，无须复制版本列表或
   保留v0.3.5 current-tree bootstrap/acceptance。
 - P9-F只关闭本列车，不决定后继版本。Phase 5表仍是未来候选路线，不代表下一列车必然是minor；patch train同样需要独立决策。
+
+## Post-release documentation reconciliation — 2026-08-22
+
+- 本轮不是`0.4.1-dev`或其他新列车：公开产品身份仍为`v0.4.0`，只对当前分支上的Release-excluded文档authority做事后对账。
+- CHANGELOG应回答“v0.4.0相对上一版本实际交付了什么”，不应退化成P9-A～P9-F执行日志；gate时序与当前角色继续由history、acceptance、
+  provenance和ROADMAP分别承重。
+- README已经状态无关且属于ZIP entry，本轮默认不改；只有发现稳定用户行为错误才允许触碰，并且那会重新打开Release字节问题。
+- ARCHITECTURE/DESIGN只修正与当前实现冲突的稳定事实，不补Cloud流水账、当前HEAD、测试计数或版本角色。
+- 文档补写不能改写immutable tag/Release；若changed paths与Release entries或external bootstrap相交，本轮必须停止并重新分类，而不是把它当作普通治理。
+- 扫描确认README已状态无关；ARCHITECTURE的“尚未实现”只列Phase 5～8/通用Driver等真实远期能力，DESIGN的模块与contract路由、
+  ROADMAP的accepted/fallback窗口、provenance的immutable身份及v0.4.0 acceptance均与当前代码/发布事实一致，无须跟随CHANGELOG重复改写。
+- `docs/history/README.md`的Phase 9行仍只写最初conditional-go，虽然链接文件已有完整实施尾注；它需要最小补充后继P9-A～P9-F闭合，
+  但继续保留“原Discovery当时未授权seal”的时间语义。
+- CHANGELOG v0.4.0原段混合了实施中间态与版本结果：F1/F2/F3条目仍含“未实现/仍待后继gate”，且最后只到P9-A。
+  最佳修复是整段收敛为durable shipped delta，不逐项追加P9-B～P9-F流水账。
+- repository guard现按语义anchor证明v0.4.0 delta覆盖contract v2、smart/autonomous、integrity state、Cloud lifecycle、rollback与公开Release，
+  并拒绝P9执行编号和pre-release pending措辞；不锁定中文段落顺序。
+- 最终changed paths只有CHANGELOG、history index、repository guard与活动planning，和Release v2 entries/external bootstrap交集为零；
+  因此本轮不需要新版本、重新seal或Cloud验收。若以后改变产品/代码或需要新公开资产，再独立决定`0.4.1-dev`或其他列车。

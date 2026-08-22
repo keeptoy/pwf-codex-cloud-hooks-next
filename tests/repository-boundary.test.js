@@ -268,7 +268,8 @@ test("P9-E evidence closes pointer promotion before P9-F retirement", () => {
   assert.match(phase9,
     /P9_E_POINTER_PROMOTION_PASS \/ V0_4_0_ACCEPTED_LATEST \/ V0_3_5_IMMEDIATE_FALLBACK/);
   assert.match(roadmap, /P9-E pointer-only promotion与postflight PASS/);
-  assert.match(taskPlan, /P9-F complete \/ maintainer push pending \/ next train undecided/);
+  assert.match(taskPlan,
+    /P9_F_SECOND_RETIREMENT_PASS \/ V0_4_0_TRAIN_CLOSED \/ NEXT_TRAIN_UNDECIDED/);
   assert.equal(candidate, "v0.4.0");
   assert.equal(accepted, "v0.4.0");
   assert.equal(immediateFallback, "v0.3.5");
@@ -528,6 +529,26 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(changelog, new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
   assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|Next Step|GitHub `Latest`|production rollback|\d+ registered/);
+  const currentDeltaStart = changelog.indexOf(`## ${candidate}`);
+  const nextDeltaStart = changelog.indexOf("\n## ", currentDeltaStart + 1);
+  const currentDelta = changelog.slice(currentDeltaStart,
+    nextDeltaStart === -1 ? changelog.length : nextDeltaStart);
+  for (const durableReleaseFact of [
+    /manifest schema 4/,
+    /runtime bundle[^\n]*Release artifact[^\n]*v2/,
+    /smart activation/,
+    /autonomous/,
+    /attestation/,
+    /nonce/,
+    /ledger/,
+    /Fresh\/Resume/,
+    /tamper refusal/,
+    /disarm-first rollback\/recovery/,
+    /deterministic ZIP|确定性 ZIP/,
+    /Published Release Cloud/,
+  ]) assert.match(currentDelta, durableReleaseFact);
+  assert.doesNotMatch(currentDelta, /P9-[A-F]|仍须后继 gate|真实 Cloud[^\n]*仍须|zero-hash pre-seal/,
+    "released version delta must not retain pre-release gate state or Phase 9 execution chronology");
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 
   assert.match(roadmap, new RegExp("## 3\\. 已接受基线 `" + accepted.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "`"));

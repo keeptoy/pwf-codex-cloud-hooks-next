@@ -7,18 +7,47 @@
 identity完全一致。P9-C immutable publication与独立publication audit均已完成：`v0.4.0` lightweight tag固定指向P9-B实际
 验收的`fe8cd7f…`，公开Pre-release恰好包含两项冻结资产，下载ZIP与tag-source重建字节一致。P9-D公开默认下载链、Fresh、
 canonical context、real Resume与9.2 manifest-routed deep check均已PASS。P9-E pointer-only promotion/postflight也已由维护者
-执行并完成只读交叉核对：`v0.4.0`现为stable Latest，immutable tag与双资产未变；本轮进入P9-F第二轮对象退役与列车交接。
+执行并完成只读交叉核对：`v0.4.0`现为stable Latest，immutable tag与双资产未变；P9-F第二轮对象退役与列车交接亦已完成。
+当前只做发布后的文档authority对账，不改变已发布字节、版本身份或后继列车决策。
 
 ## Next Step
 
-维护者push本地P9-F closeout commit。该commit只关闭v0.4.0列车并保存accepted/fallback与对象生命周期账；在维护者另行决定
-patch/minor版本、Product Phase和新活动计划前，不创建或切换任何后继development列车，也不清理validation refs。
+维护者push本地post-release documentation reconciliation commit。在维护者另行决定patch/minor版本、Product Phase和新活动计划前，
+不创建或切换后继development列车，也不清理validation refs；v0.4.0 immutable tag、ZIP/bootstrap与公开Release继续保持不变。
 
 ## Current Phase
 
-P9-F complete / maintainer push pending / next train undecided
+DOC-R3 complete / maintainer push pending / next train undecided
 
 ## Phases
+
+### DOC-R0 — Post-release authority and scope audit
+
+**Status:** completed
+
+- 以当前HEAD复核CHANGELOG、宏观文档、provenance、acceptance、历史索引和活动planning的职责边界。
+- 冻结本轮版本仍为`0.4.0`；不得修改package、manifest、contracts、runtime、bootstrap或公开Release资产。
+
+### DOC-R1 — v0.4.0 release delta reconciliation
+
+**Status:** completed
+
+- 让CHANGELOG完整描述v0.4.0实际交付的contract/runtime/opt-in/Cloud/rollback与Release结果。
+- 不把P9 gate流水账、动态programme角色、精确hash或临时测试数字写入CHANGELOG。
+
+### DOC-R2 — Current documentation reconciliation
+
+**Status:** completed
+
+- 只修正会误导当前使用者的过时陈述；README继续保持状态无关，历史文件不批量改写当时语义。
+- 稳定架构写ARCHITECTURE，实现路由写DESIGN，programme角色写ROADMAP，不复制第二份authority。
+
+### DOC-R3 — Verification and closeout
+
+**Status:** completed
+
+- 运行文档/仓库边界守卫、链接与格式检查，并证明changed paths与Release inputs交集为零。
+- 回补planning后创建本地commit；远端push继续由维护者负责，后继列车仍未决定。
 
 ### P9-D0 — Authority, identity and readiness recovery
 

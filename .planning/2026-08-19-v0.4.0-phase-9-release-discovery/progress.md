@@ -288,3 +288,20 @@
 ## Current status
 
 `P9_F_SECOND_RETIREMENT_PASS / V0_4_0_TRAIN_CLOSED / NEXT_TRAIN_UNDECIDED`
+
+## 2026-08-22 — Post-release documentation reconciliation started
+
+- 维护者授权继续文档治理，并指出CHANGELOG尚未完整覆盖P9-A之后已经交付的v0.4.0内容。
+- 冻结版本仍为`0.4.0`；本轮不创建后继development列车，不修改package/Release inputs或公开资产。
+- 已把工作拆为authority扫描、CHANGELOG release delta补全、宏观文档对账和验证收口四步；当前进入DOC-R0。
+- focused guard先在旧CHANGELOG上按预期失败：新增release-delta断言无法找到完整stable事实；Windows沙箱首次以`spawn EPERM`
+  阻止Node runner，转到获准的正常进程环境后取得真实13/14 red结果。
+- 重写CHANGELOG v0.4.0段，补齐contract/source、smart/autonomous、Cloud lifecycle、rollback/recovery与stable Release；删除pending中间态和P9流水账。
+- history index只补Phase 9后继尾注闭合事实；README、ARCHITECTURE、DESIGN、ROADMAP、provenance、acceptance复核后保持不动。
+- 新守卫首次green前暴露测试anchor只接受英文`deterministic ZIP`，而CHANGELOG使用中文“确定性 ZIP”；修正为双语语义anchor后focused 14/14 PASS。
+- 完整Windows suite为177 tests、152 pass、0 fail、25个Linux/POSIX-only诚实skip；`git diff --check`PASS。
+- 最终6个changed paths与Release artifact entries/external bootstrap交集为0；DOC-R0～DOC-R3完成，等待维护者push本地文档治理commit。
+
+## Current status
+
+`POST_RELEASE_DOCUMENTATION_RECONCILED / V0_4_0_IDENTITY_UNCHANGED / NEXT_TRAIN_UNDECIDED`

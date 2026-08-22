@@ -8,45 +8,28 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 
 ### Changed
 
-- 建立 Phase 4 的独立 F0 development identity：package 与 Release candidate 同步轮转为 `v0.4.0-dev`，新增
-  64 位 zero-hash、fail-closed 的外部 bootstrap；已发布 `v0.3.5` baseline 文件保持不变。
-- 当前 candidate/accepted 双身份窗口、F0 programme 状态与后续 gate 边界见 [`ROADMAP.md`](ROADMAP.md)；
-  本轮只准备身份与治理，不改变 runtime dispatch、Host ABI、trusted graph、installed inventory 或用户行为。
-- F0～F3 的开发期 Source/Candidate、smart/autonomous live lifecycle、disarm-first rollback 与 aggregate evidence
-  已闭合；P9-A 随后把 package、Release v2、外部 bootstrap 和版本 acceptance 原子收敛为 stable `v0.4.0`
-  zero-hash pre-seal identity。exact-hash seal、stable Source/Candidate、publication、公开资产验收与 promotion 仍须
-  后继 gate，状态和证据入口见 [`docs/v0.4.0-cloud-hard-acceptance.md`](docs/v0.4.0-cloud-hard-acceptance.md)。
-- 完成 F1A contract/source foundation：source manifest 升至 exact schema 4，runtime bundle 与 Release artifact
-  升至 v2；adapter 和四项 v1 runtime ABI 统一纳入 bundle 安装投影，ZIP mode 由 Release entry 单点定义。
-- 当前 source 不再双读 v1 contract，也不再保留 `origin`、重复 managed hash、空 overlay list 等 overlay-era
-  tombstone；来源改由 `upstream_files`、`local_files`、`installed_contracts` 结构表达并由 exact-key validation
-  拒绝旧字段复活。
-- installer 只准入当前完整安装或 transition contract 精确列出的 v0.3.5 predecessor；已证明前向迁移、篡改状态
-  写前拒绝和 candidate uninstall 后的 v0.3.5 clean rollback。plan request/result、Host 输出与 legacy runtime 行为未变。
-- F1B 将内部 plan request/result 原子轮转为 exact v2：adapter 与 owned runtime 的 production capability 都固定为
-  `[legacy]`，result 只增加 bounded effective-profile/advisory decision；现有 Host context 与 legacy 行为保持不变。
-- 新增 `.mode` 的 descriptor-safe、bounded、exact normalize unit seam，但 production 没有调用边；nonce、attestation、
-  ledger、smart/autonomous 行为与 workspace writer 仍未实现，必须等待各自 F2 gate。
-- F2A 以独立 plan-local `.pwf-codex-managed` exact file 建立 smart activation commit point；未 armed 时 production
-  完全不读取旧 `.mode`，armed 后只接受 exact `inject-smart`，任何 unsafe/incomplete/future/raced state 都拒绝且
-  不降级 legacy。
-- adapter/runtime capability 原子扩为 `[legacy, smart]`；owned-plan 只把验证后的 smart decision 通过 private child
-  environment 交给 pristine renderer，并在输出前重新核对 activation/mode identity 与 bytes。request/result 继续
-  使用 v2，Host event、workspace-write、upstream inventory、canary/catch-up 顺序保持不变；autonomous/nonce/
-  attestation/ledger 仍属 F2B。
-- F2B 将 capability 原子扩为 `[legacy, smart, autonomous]`，并以独立 exact
-  `codex-managed-v1 autonomous` commit point 接入 read-only autonomous consumer。owned-plan 每次核对 task attestation
-  和 nonce，严格限制 ledger 文件数、单项/总字节与 JSONL record，再只向 private snapshot 投影 `tick/event`；零 ledger
-  合法，raw progress 不读取，invalid/incomplete/raced state 不注入且不回退。`gate`、workspace writer、Host event 和
-  Release inventory 保持不变；真实 Cloud activation/disarm/Resume/cache 仍待 F3。
-- F3A 增加 repository-only active-scope machine-state admission 与版本化 Git-backed lifecycle runbook：inactive/history
-  scope继续只允许三份 planning 记录，smart/autonomous preparation、activation-only commit、production read-only probe
-  与 disarm-only commit均有 fail-closed检查。production/runtime、managed trusted graph、Release inventory和当前四项
-  pristine upstream inventory不变；真实 Cloud activation、Fresh/Resume、cache、re-arm 与 rollback仍须后继独立 gate。
-- F3B/F3C 已分别完成 smart/autonomous 的真实 Fresh/Resume、disarm/re-arm、tamper refusal、zero-ledger 与
-  disarm-first rollback/recovery；legacy 仍是未激活或已 disarm 状态的默认行为，direct old-over-new downgrade仍被拒绝。
-- P9-A 删除 README 最后一处版本状态耦合，校准 architecture/design/provenance current prose，并把 publication oracle
-  改为按 archived manifest 路由 v1/v2 contract、通过 owned uninstall/clean install/forward recovery 维护两席窗口。
+- 发布 stable `v0.4.0`：确定性 ZIP 与 ZIP 外 bootstrap 完成 immutable publication、公开资产重下载、
+  Source/Candidate 与 Published Release Cloud 的 Fresh/Resume 验收及 pointer-only promotion。精确资产身份和验收证据见
+  [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与
+  [`docs/v0.4.0-cloud-hard-acceptance.md`](docs/v0.4.0-cloud-hard-acceptance.md)，programme 角色只见
+  [`ROADMAP.md`](ROADMAP.md)。
+- 完成 contract/source foundation：source manifest schema 4 以 exact-key validation 路由 runtime bundle 与 Release artifact v2；
+  `upstream_files`、`local_files`、`installed_contracts` 结构化表达来源，adapter 与 runtime ABI 纳入唯一安装投影，ZIP mode
+  只由 Release entry 定义。旧 `origin`、重复 managed hash、空 overlay list 与 v1 contract 双读均已退休。
+- installer 只准入完整 current 状态或 transition contract 精确列出的 predecessor；前向接管、篡改写前拒绝、owned uninstall、
+  clean install 与 exact forward recovery 均由同一受控版本窗口验证，direct old-over-new downgrade继续 fail closed。
+- plan request/result 原子升级为 exact v2，adapter 与 owned runtime 通过 bounded `effective_profile` / `advisory` decision 协作；
+  Host ABI、两个既有 turn-start events、canary/catch-up顺序和未 opt-in 时的 legacy默认行为保持不变。
+- 增加显式 smart activation：独立 plan-local commit-point file最后写入、删除即可 disarm；未 armed时完全不读取旧`.mode`，
+  armed后只接受exact `inject-smart`，unsafe、incomplete、future或raced state一律拒绝且不静默回退legacy。
+- 增加read-only autonomous profile：每次核对task attestation与nonce，bounded读取并normalize ledger，只向private snapshot投影
+  允许的`tick/event`；零ledger合法，raw progress不进入autonomous context，invalid/incomplete/raced state拒绝注入。
+- 完成smart/autonomous真实Cloud lifecycle：Fresh/Resume、prepare/arm、disarm/re-arm、nonce轮转、zero-ledger、tamper refusal与
+  markerless residue均已闭合；未激活或已disarm状态继续输出legacy context。
+- 完成smart与autonomous的disarm-first rollback/recovery：先由current-owned uninstall释放安装状态，再clean-install immutable
+  predecessor；exact current恢复后activation仍不复活。runtime-only revival negative同时证明绕过disarm会留下可复活状态。
+- 将README收敛为状态无关的稳定入口，保留F3 validation refs、operator guides、evidence helper及rollback/revival negatives作为
+  durable regression evidence；退出当前版本窗口的旧bootstrap/acceptance只通过immutable source、Release与provenance恢复。
 
 ## v0.3.5
 
