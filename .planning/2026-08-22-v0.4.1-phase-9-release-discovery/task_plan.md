@@ -8,12 +8,12 @@
 
 ## Next Step
 
-等待维护者push本地P9-B seal commit，并按stable acceptance从该exact HEAD执行Source/Candidate Cloud；回传前
-不写Cloud PASS，不进入P9-C tag/Release/publication。
+停止在P9-C之前，等待维护者单独决定是否授权immutable tag/Pre-release publication；P9-B PASS不自动授权
+tag、Release、资产上传、Latest或角色轮换。
 
 ## Current Phase
 
-Phase 3 in progress / P9-B local seal complete; maintainer sealed-source Cloud pending
+Phase 3 complete / P9-B exact sealed-source Cloud PASS; stop before unauthorized P9-C
 
 ## Phases
 
@@ -36,8 +36,8 @@ Phase 3 in progress / P9-B local seal complete; maintainer sealed-source Cloud p
 ### Phase 3: P9-B seal and exact final-source Source/Candidate
 
 - [x] 双构建最终 ZIP，冻结 ZIP SHA，写入 ZIP 外 bootstrap，再冻结 bootstrap SHA。
-- [ ] 从 exact final source 重跑 Source/Candidate Cloud，不继承 pre-seal Cloud PASS。
-- **Status:** in progress / local seal PASS; Cloud operator ready; maintainer execution pending
+- [x] 从 exact final source 重跑 Source/Candidate Cloud，不继承 pre-seal Cloud PASS。
+- **Status:** complete / exact seal source、Linux零skip、lifecycle与deep-check PASS；stop before P9-C
 
 ### Phase 4: P9-C immutable Pre-release publication
 
@@ -75,7 +75,7 @@ Phase 3 in progress / P9-B local seal complete; maintainer sealed-source Cloud p
 ## Authorization
 
 - 已完成授权：P9-A stable identity/pre-seal materialization、本地验证、planning/acceptance/ROADMAP 更新与本地 commit。
-- 当前已授权：P9-B exact-hash local seal、sealed-source Cloud教程、相称本地验证、planning/acceptance/ROADMAP更新与本地commit。
+- 已完成授权：P9-B exact-hash local seal、sealed-source Cloud教程与验收、planning/acceptance/ROADMAP evidence写回和本地commit。
 - 维护者仍负责push与Cloud UI执行；tag、Release、Latest、远端ref或资产变更，以及P9-C及后继gate均未授权。
 - 每一关键 gate 必须在专项设计和维护者明确授权后进入。
 
@@ -93,7 +93,8 @@ Phase 3 in progress / P9-B local seal complete; maintainer sealed-source Cloud p
 | PowerShell/.NET 不支持静态 `SHA256.HashData` 与 `Convert.ToHexString` | 1 | 改用 `Get-FileHash -Algorithm SHA256`，得到 contract SHA 与 manifest edge 完全一致；未重复原失败方法 |
 | P9-B size evidence测试未允许Markdown反引号 | 1 | 保留可读的`` `85,910` bytes ``证据格式，修正测试对千分位和反引号的规范化匹配 |
 | 首次反引号修正破坏JavaScript template literal语法 | 1 | `node --check`在测试运行前拦截；改为普通字符串拼接构造正则，未重复失败转义 |
+| sandbox内Node test runner创建隔离子进程时报`spawn EPERM` | 1 | 改用`--test-isolation=none`确认新证据断言对旧pending文档产生预期红灯；最终完整复验改在正常执行面运行 |
 
 ## Current Status
 
-`P9_B_LOCAL_SEAL_PASS / SEALED_SOURCE_CLOUD_PENDING / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`
+`P9_B_SEALED_SOURCE_CLOUD_PASS / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`

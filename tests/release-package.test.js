@@ -93,7 +93,7 @@ test("current candidate ZIP is deterministic, self-contained, and bound to its e
     } else {
       assert.equal(hooksSha[1], firstResult.sha256);
     }
-    if (/P9_B_LOCAL_SEAL_PASS \/ SEALED_SOURCE_CLOUD_PENDING/.test(acceptance)) {
+    if (/P9-B local seal[^\n]*`PASS`/.test(acceptance)) {
       assert.notEqual(hooksSha[1], "0".repeat(64), "P9-B local seal cannot retain a placeholder checksum");
       assert.match(acceptance, new RegExp(firstResult.sha256));
       assert.match(acceptance, new RegExp(sha256(path.join(root, expectedBootstrap))));

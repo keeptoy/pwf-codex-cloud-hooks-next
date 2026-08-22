@@ -134,3 +134,11 @@
 - 当前bootstrap test已经会在non-zero默认hash时要求`assert_hooks_checksum_configured`成功；还需为v0.4.1 current candidate补最近边界，直接证明bootstrap默认SHA等于从当前Release输入构建的ZIP SHA，并冻结P9-B local evidence/operator状态。
 - `tests/release-package.test.js`实际上已具备seal核心关系断言：一旦bootstrap默认SHA非零，就必须等于现场双构建ZIP SHA；P9-B只需增加“local seal marker出现时默认SHA不得为零、acceptance中的ZIP/bootstrap SHA必须匹配现场字节”的状态绑定。
 - 当前v0.4.1 acceptance的0～6节属于已执行dev Source/Candidate历史并保留dev anchors；P9-B应像v0.4.0 precedent一样在它们之前新增stable local-seal evidence与sealed-source operator，避免把历史run sheet改写成新的Cloud结果。
+
+## P9-B sealed-source Cloud reconciliation — 2026-08-22
+
+- 维护者确认整条`4.1 → 5.1 → 6 → 7 → 8.1 → 8.2 → 9.1`全部通过；按AGENTS交互纪律直接写回，不重判、不要求重跑。
+- pushed、setup与deep-check exact HEAD均为`99885b854bd9621c3340e99f031bf83ceb58414d`；未来P9-C tag source必须固定为该Cloud实际验收的seal commit，而不是本次Release-excluded evidence commit。
+- Linux portable suite为175/175、零fail/skip；Cloud ZIP仍为22 entries、85,910 bytes、SHA-256 `94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291`，与本地seal完全一致。
+- real Resume后的doctor、schema/contract、12-file installed inventory、4-file pristine upstream、bundle authority、adapter-only policy与零snapshot residue全部闭合。
+- P9-B结束只证明sealed source可以发布；immutable tag、Pre-release、公开双资产、Published Release Cloud、Latest和角色轮换仍是独立后继gate。

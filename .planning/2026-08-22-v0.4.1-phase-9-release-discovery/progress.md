@@ -125,3 +125,25 @@
 ## Current Status
 
 `V0_4_1_P9_B_LOCAL_SEAL_ACTIVE / SEALED_SOURCE_CLOUD_NOT_YET_RUN / P9_C_NOT_AUTHORIZED / RELEASE_NOT_AUTHORIZED`
+
+## 2026-08-22 — P9-B sealed-source Cloud evidence writeback
+
+- 维护者明确确认整条Cloud验收全部通过；本轮按最终结论直接写回，不增加验收范围或要求重跑。
+- 4.1最终exit code 0：HEAD `99885b854bd9621c3340e99f031bf83ceb58414d`；Linux 175 tests / 175 pass / 0 fail / 0 skipped；ZIP 22 entries、85,910 bytes、SHA-256 `94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291`；`PWF_SOURCE_CANDIDATE_SETUP=PASS`。
+- 5.1/B、C、D、E1与同一task真实reopen后的E2均PASS；canonical `.planning` fixture是唯一workspace变化。
+- 9.1最终exit code 0：`PWF_WORKTREE_CHANGES=PLANNING_ONLY`、doctor healthy、manifest schema 4、Release/bundle schema 2、installer 0.4.1、22 Release entries、12 installed runtime files、4 pristine upstream、authoritative bundle inventory、adapter-only policy、零snapshot residue、exact HEAD与`PWF_SC_POST_RESUME=PASS`。
+- acceptance与ROADMAP已更新为P9-B sealed-source Cloud PASS；Phase 3完成，停止在P9-C之前。
+- evidence写回后的完整Windows runner PASS：184 tests / 158 pass / 0 fail / 26 skipped；SKIP仍全部为既有Linux/POSIX-only case，Cloud零skip证据由本轮exact sealed-source结果承担。
+- changed-path审计仅包含活动planning、ROADMAP、版本acceptance与两处治理测试；与Release v2 entries及ZIP外bootstrap的交集为0，sealed ZIP/bootstrap字节未被本次evidence commit改动。
+- `node --check`两处变更测试与`git diff --check`均PASS。
+- 最终repository/Release聚焦复验：17 pass / 0 fail / 0 skipped；exact evidence、角色窗口、active planning与Release字节绑定全部通过。
+
+### Evidence-writeback validation errors
+
+| Error | Attempt | Resolution |
+|---|---:|---|
+| sandbox内Node test runner创建隔离子进程时报`spawn EPERM` | 1 | 改用`--test-isolation=none`取得预期文档状态红灯；其余spawn-based断言仍留待正常非受限复验，不把sandbox限制误判为产品失败 |
+
+## Current Status
+
+`P9_B_SEALED_SOURCE_CLOUD_PASS / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`

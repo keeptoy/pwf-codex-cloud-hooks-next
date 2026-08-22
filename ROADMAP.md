@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.1` compatibility/security patch train；本地 path-safety 与开发期 Source/Candidate Linux/Cloud PASS；P9-B local seal PASS；sealed-source Cloud maintainer pending；P9-C publication与角色轮换仍未授权 |
+| 当前开发列车 | `v0.4.1` compatibility/security patch train；本地 path-safety、开发期与P9-B sealed-source Source/Candidate Linux/Cloud均PASS；P9-C publication与角色轮换仍未授权 |
 | 当前已接受版本 | `v0.4.0`；stable GitHub `Latest`与programme accepted |
 | 当前直接回退版本 | immutable `v0.3.5` immediate fallback |
 | 回退证据链 | immutable `v0.3.4` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4与`v0.4.0` Phase 9保持闭合；`v0.4.1`仅修复 installer-owned `hooks`/runtime link、junction与special-path准入，不改变Host ABI、runtime trusted graph或unknown regular cleanup合同。P9-B已完成本地exact-hash seal；sealed-source Cloud尚待维护者执行，P9-C及后继gate仍未授权 |
+| 当前 programme 边界 | Product Phase 4与`v0.4.0` Phase 9保持闭合；`v0.4.1`仅修复 installer-owned `hooks`/runtime link、junction与special-path准入，不改变Host ABI、runtime trusted graph或unknown regular cleanup合同。P9-B本地exact-hash seal与sealed-source Cloud均已PASS；P9-C及后继gate仍未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight确认它为
@@ -55,7 +55,7 @@ pristine upstream与owned runtime信任边界，并在legacy默认不变的前�
 ## 4. 当前开发列车
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
-bootstrap/acceptance；当前窗口为 v0.4.1 sealed-local candidate + v0.4.0 accepted + v0.3.5 immediate fallback。v0.3.4
+bootstrap/acceptance；当前窗口为 v0.4.1 sealed-source candidate + v0.4.0 accepted + v0.3.5 immediate fallback。v0.3.4
 deeper fallback与更早版本均由immutable commit、tag、Release、exact acceptance与
 publication oracle 恢复；更早历史只留在精选 provenance。
 trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。
@@ -74,9 +74,11 @@ P9-A已把package、Release contract、外部bootstrap和版本acceptance原子�
 path-safety gate 与开发候选 exact source
 `6c1dd52a3878f59c7140a793b9a2c2a34580b188` 的 Source/Candidate Linux/Cloud 已通过；随后
 `0d470920f42651983062945a129e38838c46f4d7` 只固化 B→C bounded planning 权限交接，不改变候选 ZIP。
-上述dev evidence不能替代stable sealed-source验收；P9-B Cloud现由维护者按exact seal commit执行，P9-C tag/Release、Latest和
-角色轮换仍未授权。精确行动边界见活动plan，候选验收教程与历史证据见
-[`docs/v0.4.1-cloud-hard-acceptance.md`](docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-dev-source-candidate-evidence)。
+上述dev evidence没有被提升为stable结论；维护者已从exact seal source
+`99885b854bd9621c3340e99f031bf83ceb58414d`完成P9-B Linux零skip、deterministic ZIP、Fresh/UserPrompt/real Resume、
+doctor与deep-check，P9-C未来tag source必须仍固定为这个实际Cloud验收的sealed source。P9-C tag/Release、Latest和角色轮换
+继续未授权。精确行动边界见活动plan，[P9-B exact evidence](docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-p9-b-sealed-source-cloud-evidence)
+与开发期历史证据均由版本acceptance保存。
 
 <a name="phase-9-v0-4-0-instance"></a>
 
@@ -147,7 +149,7 @@ pre-release；多个低风险 Phase也只有在独立评审后才能进入同一
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立 gate；必须有 use case、latency/token budget与 Cloud证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6进入 Discovery |
 | 8 | `0.8.0-*` | optional hard gating，复用 Phase 7 evaluator | 重新 Discovery writer/counter/atomicity/lock/cache/Resume/rollback；再增加 block cap、escape hatch与 stall state | pending；implementation前必须重新 Discovery |
-| 9 | 当前列车的 `rc.N` → stable | standing Release收口：完整矩阵、最终字节、canary retirement、正式发布 | RC与最终资产分别验收；重新下载双资产；可逆 | standing gate；`v0.3.5`与`v0.4.0` instances complete；`v0.4.1` P9-B local seal PASS，sealed-source Cloud pending |
+| 9 | 当前列车的 `rc.N` → stable | standing Release收口：完整矩阵、最终字节、canary retirement、正式发布 | RC与最终资产分别验收；重新下载双资产；可逆 | standing gate；`v0.3.5`与`v0.4.0` instances complete；`v0.4.1` P9-B sealed-source Cloud PASS，停止在未授权P9-C之前 |
 
 Phase 9是 Release收口，不机械等于 `0.9.0`。例如只完成 Phase 4时，它可以封板 `0.4.0`；如果多个
 Phase经独立 gate后被明确合并，则封板当时获批的同一版本列车。`v0.3.5`的 Phase 9 instance已完成，
