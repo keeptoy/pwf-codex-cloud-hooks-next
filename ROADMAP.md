@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.1` compatibility/security patch train；本地 path-safety、开发期与P9-B sealed-source Source/Candidate Linux/Cloud均PASS；P9-C immutable publication maintainer pending；P9-D Published Release Cloud与角色轮换仍未授权 |
+| 当前开发列车 | `v0.4.1` published prerelease candidate；compatibility/security patch train；本地 path-safety、开发期与P9-B sealed-source Source/Candidate Linux/Cloud均PASS；P9-C immutable publication PASS；P9-D Published Release Cloud与角色轮换仍未授权 |
 | 当前已接受版本 | `v0.4.0`；stable GitHub `Latest`与programme accepted |
 | 当前直接回退版本 | immutable `v0.3.5` immediate fallback |
 | 回退证据链 | immutable `v0.3.4` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4与`v0.4.0` Phase 9保持闭合；`v0.4.1`仅修复 installer-owned `hooks`/runtime link、junction与special-path准入，不改变Host ABI、runtime trusted graph或unknown regular cleanup合同。P9-B已PASS；P9-C operator已冻结tag source与双资产，维护者远端publication pending；P9-D及后继gate未授权 |
+| 当前 programme 边界 | Product Phase 4与`v0.4.0` Phase 9保持闭合；`v0.4.1`仅修复 installer-owned `hooks`/runtime link、junction与special-path准入，不改变Host ABI、runtime trusted graph或unknown regular cleanup合同。P9-B与P9-C immutable publication均PASS；P9-D及后继gate未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight确认它为
@@ -76,10 +76,10 @@ path-safety gate 与开发候选 exact source
 `0d470920f42651983062945a129e38838c46f4d7` 只固化 B→C bounded planning 权限交接，不改变候选 ZIP。
 上述dev evidence没有被提升为stable结论；维护者已从exact seal source
 `99885b854bd9621c3340e99f031bf83ceb58414d`完成P9-B Linux零skip、deterministic ZIP、Fresh/UserPrompt/real Resume、
-doctor与deep-check。P9-C operator已把tag source固定为这个实际Cloud验收的sealed source，并冻结22-entry ZIP与ZIP外
-bootstrap；2026-08-22只读preflight确认同名远端tag/Release均不存在，现等待维护者发布和重新下载审计。P9-D、Latest和
-角色轮换继续未授权。精确行动边界见活动plan，[P9-B exact evidence](docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-p9-b-sealed-source-cloud-evidence)
-与[P9-C operator](docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-p9-c-immutable-publication-operator)均由版本acceptance保存。
+doctor与deep-check。P9-C随后把lightweight tag固定到同一source，创建非draft Pre-release、上传且仅上传22-entry ZIP与
+ZIP外bootstrap，并完成公开重新下载和tag-source重建审计；`v0.4.1`现为published prerelease candidate，但尚不是accepted
+或Latest。P9-D、Latest和角色轮换继续未授权。精确行动边界见活动plan，[P9-B exact evidence](docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-p9-b-sealed-source-cloud-evidence)
+与[P9-C publication evidence](docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-p9-c-immutable-publication-evidence)均由版本acceptance保存。
 
 <a name="phase-9-v0-4-0-instance"></a>
 
@@ -150,7 +150,7 @@ pre-release；多个低风险 Phase也只有在独立评审后才能进入同一
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立 gate；必须有 use case、latency/token budget与 Cloud证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6进入 Discovery |
 | 8 | `0.8.0-*` | optional hard gating，复用 Phase 7 evaluator | 重新 Discovery writer/counter/atomicity/lock/cache/Resume/rollback；再增加 block cap、escape hatch与 stall state | pending；implementation前必须重新 Discovery |
-| 9 | 当前列车的 `rc.N` → stable | standing Release收口：完整矩阵、最终字节、canary retirement、正式发布 | RC与最终资产分别验收；重新下载双资产；可逆 | standing gate；`v0.3.5`与`v0.4.0` instances complete；`v0.4.1` P9-C operator ready、tag source frozen、maintainer publication pending |
+| 9 | 当前列车的 `rc.N` → stable | standing Release收口：完整矩阵、最终字节、canary retirement、正式发布 | RC与最终资产分别验收；重新下载双资产；可逆 | standing gate；`v0.3.5`与`v0.4.0` instances complete；`v0.4.1` P9-C immutable publication PASS，停止在未授权P9-D之前 |
 
 Phase 9是 Release收口，不机械等于 `0.9.0`。例如只完成 Phase 4时，它可以封板 `0.4.0`；如果多个
 Phase经独立 gate后被明确合并，则封板当时获批的同一版本列车。`v0.3.5`的 Phase 9 instance已完成，

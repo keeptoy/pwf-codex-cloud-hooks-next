@@ -172,3 +172,19 @@
 ## Current Status
 
 `P9_C_OPERATOR_READY / TAG_SOURCE_FROZEN / MAINTAINER_PUBLICATION_PENDING / STOP_BEFORE_P9_D`
+
+## 2026-08-22 — P9-C immutable publication evidence writeback
+
+- 维护者明确确认P9-C通过；本轮直接写回`P9_C_PUBLICATION_AUDIT=PASS`，不扩展或重跑已完成的publication gate。
+- read-only postflight确认local/remote `v0.4.1` tag均指向Cloud-tested source `99885b854bd9621c3340e99f031bf83ceb58414d`。
+- GitHub Release URL为`https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/tag/v0.4.1`；`isDraft=false`、`isPrerelease=true`。
+- GitHub只列出两项uploaded资产：ZIP 85,910 bytes、SHA-256 `94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291`；bootstrap 21,565 bytes、SHA-256 `1832db08c16b4f7fde88df2699384f1fff8e324909b0e024cb6ef216aea30a43`。
+- acceptance新增exact publication evidence，provenance新增role-neutral immutable v0.4.1 row，ROADMAP与task plan关闭Phase 4并停止在P9-D前。
+- 首次写回后聚焦复验为16 pass / 1 fail；唯一失败是ROADMAP切到published prerelease角色时遗漏稳定的`compatibility/security patch train`分类，已补回该分类，不改变任何Release字节或P9-C结论。
+- 分类修正后repository/Release聚焦复验：17 pass / 0 fail / 0 skipped；P9-C evidence、provenance row、published-prerelease角色与P9-D停止条件全部闭合。
+- 完整Windows runner PASS：184 tests / 158 pass / 0 fail / 26 skipped；publication oracle继续保持accepted=`v0.4.0`、immediate fallback=`v0.3.5`，没有提前角色轮转。
+- 7个changed paths仅属于planning、provenance、ROADMAP、acceptance与治理测试；与Release v2 entries和ZIP外bootstrap交集为0，`git diff --check` PASS。
+
+## Current Status
+
+`P9_C_IMMUTABLE_PUBLICATION_PASS / PUBLIC_ASSETS_REBUILT_AND_MATCHED / STOP_BEFORE_P9_D`

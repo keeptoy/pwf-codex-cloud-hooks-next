@@ -150,3 +150,11 @@
 - 待发布资产固定为22-entry、85,910-byte ZIP（SHA-256 `94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291`）与21,565-byte ZIP外bootstrap（SHA-256 `1832db08c16b4f7fde88df2699384f1fff8e324909b0e024cb6ef216aea30a43`）。
 - P9-C必须按absence preflight→全新clone从tag source双构建→lightweight tag→Pre-release双资产→独立重新下载/ref-aware audit顺序执行；tag push后即使Release步骤失败也不得删除或移动tag。
 - provenance只有在tag、Release、公开资产和publication audit真实闭合后才新增v0.4.1 row；operator materialization阶段不得预填。
+
+## P9-C post-publication reconciliation — 2026-08-22
+
+- 维护者明确确认P9-C通过；按AGENTS交互纪律直接写回，不重新分类或要求重复publication audit。
+- lightweight `v0.4.1` tag在local、origin与GitHub Release上均解析到`99885b854bd9621c3340e99f031bf83ceb58414d`；tag没有被后继governance commit替换。
+- GitHub Release为非draft Pre-release，公开资产恰好是85,910-byte/22-entry ZIP与21,565-byte bootstrap；GitHub asset digest分别等于冻结SHA `94f12f…6291`与`1832db…a43`。
+- P9-C operator的重新下载、tag-source重建与`P9_C_PUBLICATION_AUDIT=PASS`闭合后，`BASELINE_PROVENANCE.md`现在可以新增role-neutral v0.4.1 immutable identity。
+- `v0.4.1`当前只是published prerelease candidate；P9-D公开默认下载链Fresh/Resume/doctor、Latest promotion和角色轮换仍独立未授权。

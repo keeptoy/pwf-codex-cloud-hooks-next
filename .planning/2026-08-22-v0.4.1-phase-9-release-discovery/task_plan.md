@@ -8,12 +8,12 @@
 
 ## Next Step
 
-等待维护者push当前P9-C operator commit，并按版本acceptance从exact tag source创建lightweight tag/Pre-release、上传双资产、
-重新下载并完成publication audit；回传`P9_C_PUBLICATION_AUDIT=PASS`前不写P9-C PASS，不进入P9-D。
+停止在P9-D之前，等待维护者单独决定是否授权Published Release Cloud operator/materialization；P9-C PASS不自动授权
+Fresh Cloud、Latest、角色轮换或其他远端修改。
 
 ## Current Phase
 
-Phase 4 in progress / P9-C operator ready; maintainer publication and audit pending
+Phase 4 complete / P9-C immutable publication and download audit PASS; stop before unauthorized P9-D
 
 ## Phases
 
@@ -41,9 +41,9 @@ Phase 4 in progress / P9-C operator ready; maintainer publication and audit pend
 
 ### Phase 4: P9-C immutable Pre-release publication
 
-- [ ] 由维护者创建 immutable tag/Pre-release 并上传双资产。
-- [ ] 重新下载资产，核对 tag/source/filename/size/SHA 与 publication oracle。
-- **Status:** in progress / operator ready; tag source frozen; maintainer publication/audit pending
+- [x] 由维护者创建 immutable tag/Pre-release 并上传双资产。
+- [x] 重新下载资产，核对 tag/source/filename/size/SHA 与 publication oracle。
+- **Status:** complete / immutable tag、Pre-release、双资产与publication audit PASS；stop before P9-D
 
 ### Phase 5: P9-D Published Release Cloud
 
@@ -76,8 +76,8 @@ Phase 4 in progress / P9-C operator ready; maintainer publication and audit pend
 
 - 已完成授权：P9-A stable identity/pre-seal materialization、本地验证、planning/acceptance/ROADMAP 更新与本地 commit。
 - 已完成授权：P9-B exact-hash local seal、sealed-source Cloud教程与验收、planning/acceptance/ROADMAP evidence写回和本地commit。
-- 当前已授权：P9-C tag source/双资产身份冻结、Pre-release publication与download audit操作单、相称本地验证、planning/acceptance/ROADMAP更新和本地commit。
-- 维护者仍负责push与P9-C远端执行；智能体不得创建tag/Release或上传资产。P9-D、Latest、角色轮换及其他后继gate均未授权。
+- 已完成授权：P9-C tag source/双资产身份冻结、Pre-release publication与download audit、provenance/acceptance/ROADMAP evidence写回和本地commit。
+- P9-D、Latest、角色轮换及其他后继gate均未授权；任何后继远端执行仍由维护者负责。
 - 每一关键 gate 必须在专项设计和维护者明确授权后进入。
 
 ## Stop Conditions
@@ -99,7 +99,8 @@ Phase 4 in progress / P9-C operator ready; maintainer publication and audit pend
 | P9-C operator实现后聚焦测试仅因ROADMAP的`本地path-safety`缺少既定空格而1项失败 | 1 | 归类为fixture wording drift；恢复`本地 path-safety`规范表述，不改变任何Release或gate语义 |
 | 首次wording修正后旧断言仍要求P9-B pending阶段的长句 | 1 | 更新断言绑定当前P9-C宏观边界`P9-B已PASS；P9-C operator已冻结tag source与双资产`，不把历史措辞当永久合同 |
 | 第二次复验暴露同一测试中的冗余旧短语`sealed-source Cloud PASS` | 1 | 删除被更精确P9-B Source/Candidate PASS断言完全覆盖的重复断言，保留P9-C/P9-D状态断言 |
+| P9-C evidence写回后聚焦测试遗漏当前列车的`compatibility/security patch train`分类 | 1 | ROADMAP在published prerelease角色旁继续保留patch train性质；不改Release、资产或gate状态 |
 
 ## Current Status
 
-`P9_C_OPERATOR_READY / TAG_SOURCE_FROZEN / MAINTAINER_PUBLICATION_PENDING / STOP_BEFORE_P9_D`
+`P9_C_IMMUTABLE_PUBLICATION_PASS / PUBLIC_ASSETS_REBUILT_AND_MATCHED / STOP_BEFORE_P9_D`
