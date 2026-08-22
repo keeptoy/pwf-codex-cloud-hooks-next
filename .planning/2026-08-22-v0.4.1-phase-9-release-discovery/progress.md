@@ -147,3 +147,28 @@
 ## Current Status
 
 `P9_B_SEALED_SOURCE_CLOUD_PASS / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`
+
+## 2026-08-22 — P9-C authorization
+
+- 维护者回复“继续，下一步”，承接P9-B停止点并授权P9-C operator materialization。
+- 当前HEAD `5560175aac3a3a3505f56de1df22e9b81112c4b9`工作树clean，本地比`origin/0.4.1` ahead 1；远端仍在已Cloud验收的seal source `99885b854bd9621c3340e99f031bf83ceb58414d`。
+- 本轮只冻结tag source、双资产identity和维护者publication/download audit操作单，完成本地测试与commit；智能体不执行push、tag、Release或资产上传。
+- P9-D Published Release Cloud、Latest、角色轮换及后继gate继续未授权。
+- 已恢复v0.4.0 P9-C operator/history/test precedent与当前provenance写入时机；v0.4.1沿用同一六步fail-closed publication顺序，但替换为本轮exact source/asset identity。
+- Web工具直接打开GitHub API tag/Release端点被unsafe URL策略拒绝；未据此推断absence，后续改走`gh api --include`明确HTTP状态的只读preflight。
+- `gh api --include`正式只读preflight确认v0.4.1 tag与Release端点均明确HTTP 404，输出`PWF_P9C_REMOTE_ABSENCE_PREFLIGHT=PASS`。
+- P9-C最近边界intentional-red为17项中15 PASS / 2 expected FAIL，准确命中尚未物化的ROADMAP pending状态与acceptance operator。
+- operator物化后首次聚焦复验为16 PASS / 1 FAIL；唯一失败是ROADMAP写成`本地path-safety`而断言保持既定`本地 path-safety`，已修正wording，无产品或Release字节变化。
+- wording修正后复验仍为16 PASS / 1 FAIL；剩余旧断言冻结了P9-B pending阶段的长句，已改为当前P9-C宏观边界，未弱化tag source/asset/pending断言。
+- 第二次复验仍为16 PASS / 1 FAIL；失败来自同一测试中被精确P9-B PASS断言覆盖的冗余旧短语，已删除重复而保留全部身份与gate边界。
+- P9-C聚焦边界最终转绿：17 pass / 0 fail / 0 skipped；current roles、tag/evidence source分离、资产identity、remote absence、Pre-release-only与stop-before-P9-D均闭合。
+- 完整Windows runner PASS：184 tests / 158 pass / 0 fail / 26 skipped；SKIP仍是既有Linux/POSIX-only case，不影响已完成的sealed-source Cloud零skip证据。
+- 从全新本地clone detach到exact tag source `99885b854bd9621c3340e99f031bf83ceb58414d`双构建/check再次得到22 entries、85,910 bytes、ZIP SHA `94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291`；bootstrap为21,565 bytes、SHA `1832db08c16b4f7fde88df2699384f1fff8e324909b0e024cb6ef216aea30a43`，`bash -n` PASS，临时目录已清理。
+- BASELINE_PROVENANCE保持不变；只有维护者真实发布并取得`P9_C_PUBLICATION_AUDIT=PASS`后才登记v0.4.1 immutable row。
+- 6个changed paths全部属于planning/ROADMAP/acceptance/test治理，与Release v2 entries和ZIP外bootstrap的交集为0；operator没有改变sealed bytes。
+- operator内5个PowerShell block均通过`ScriptBlock::Create`静态语法解析；`git diff --check` PASS。
+- 提交前最终repository/Release聚焦复验：17 pass / 0 fail / 0 skipped。
+
+## Current Status
+
+`P9_C_OPERATOR_READY / TAG_SOURCE_FROZEN / MAINTAINER_PUBLICATION_PENDING / STOP_BEFORE_P9_D`

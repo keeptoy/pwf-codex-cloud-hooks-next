@@ -55,9 +55,9 @@ test("v0.4.1 sealed-source patch train preserves the accepted and fallback ident
   assert.notEqual(candidate, accepted);
   assert.match(roadmap, /compatibility\/security patch train/);
   assert.match(roadmap, /本地 path-safety、开发期与P9-B sealed-source Source\/Candidate Linux\/Cloud均PASS/);
-  assert.match(roadmap, /P9-B本地exact-hash seal与sealed-source Cloud均已PASS/);
-  assert.match(roadmap, /sealed-source Cloud PASS/);
-  assert.match(roadmap, /P9-C publication与角色轮换仍未授权/);
+  assert.match(roadmap, /P9-B已PASS；P9-C operator已冻结tag source与双资产/);
+  assert.match(roadmap, /P9-C immutable publication maintainer pending/);
+  assert.match(roadmap, /P9-D Published Release Cloud与角色轮换仍未授权/);
   assert.match(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.0`/);
   assert.match(roadmap,
@@ -614,7 +614,8 @@ test("change history, programme, provenance, and current acceptance keep separat
       /Source\/Candidate Linux\/POSIX \+ Cloud[^\n]*`PASS`/);
     assert.match(acceptance, /P9-B local seal[^\n]*`PASS`/);
     assert.match(acceptance, /P9-B sealed-source Cloud[^\n]*`PASS`/);
-    assert.match(acceptance, /P9-C publication \/ Latest[^\n]*`NOT_AUTHORIZED`/);
+    assert.match(acceptance, /P9-C immutable publication[^\n]*`MAINTAINER_PUBLICATION_PENDING`/);
+    assert.match(acceptance, /P9-D \/ Latest[^\n]*`NOT_AUTHORIZED`/);
     assert.match(acceptance,
       /V0_4_1_SOURCE_CANDIDATE_CLOUD_PASS \/ STOP_BEFORE_SEAL \/ RELEASE_NOT_AUTHORIZED/);
     assert.match(acceptance,
@@ -638,6 +639,27 @@ test("change history, programme, provenance, and current acceptance keep separat
       "UPSTREAM_PRISTINE_FILES=4", "BUNDLE_INSTALLED_INVENTORY=AUTHORITATIVE",
       "MANAGED_POLICY=ADAPTER_ONLY", "SNAPSHOT_LEFTOVERS=0", "PWF_SC_POST_RESUME=PASS",
     ]) assert.match(p9bEvidence, new RegExp(fact.replaceAll(".", "\\.")));
+    assert.match(acceptance, /^<a name="v0-4-1-p9-c-immutable-publication-operator"><\/a>$/m);
+    const p9cAt = acceptance.indexOf('<a name="v0-4-1-p9-c-immutable-publication-operator"></a>');
+    assert.ok(p9cAt > p9bEvidenceAt && historicalDevAt > p9cAt);
+    const p9cOperator = acceptance.slice(p9cAt, historicalDevAt);
+    for (const fact of [
+      "99885b854bd9621c3340e99f031bf83ceb58414d",
+      "5560175aac3a3a3505f56de1df22e9b81112c4b9",
+      "pwf-codex-cloud-hooks-v0.4.1.zip", "init-cloud-sandbox-v0.4.1.bash",
+      "22 entries", "85,910 bytes", "21,565 bytes",
+      "94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291",
+      "1832db08c16b4f7fde88df2699384f1fff8e324909b0e024cb6ef216aea30a43",
+      "PWF_P9C_REMOTE_ABSENCE_PREFLIGHT=PASS", "git tag v0.4.1",
+      "git push origin refs/tags/v0.4.1", "gh release create v0.4.1",
+      "--verify-tag", "--prerelease", "gh release download $tag",
+      "P9_C_PUBLICATION_AUDIT=PASS",
+      "P9_C_OPERATOR_READY / TAG_SOURCE_FROZEN / MAINTAINER_PUBLICATION_PENDING / STOP_BEFORE_P9_D",
+    ]) assert.match(p9cOperator, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(p9cOperator,
+      /tag source[^\n]*99885b854bd9621c3340e99f031bf83ceb58414d[\s\S]*5560175aac3a3a3505f56de1df22e9b81112c4b9[^\n]*Release-excluded/);
+    assert.match(p9cOperator, /Pre-release[\s\S]*不得[^\n]*(?:Latest|轮转)/);
+    assert.match(p9cOperator, /若tag push已成功[\s\S]*不得删除、移动或重建tag/);
     assert.match(acceptance, /__PWF_P9B_EXPECTED_HEAD__/);
     assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-setup/);
     assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-deep-check/);

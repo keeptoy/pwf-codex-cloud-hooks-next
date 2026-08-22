@@ -8,12 +8,12 @@
 
 ## Next Step
 
-停止在P9-C之前，等待维护者单独决定是否授权immutable tag/Pre-release publication；P9-B PASS不自动授权
-tag、Release、资产上传、Latest或角色轮换。
+等待维护者push当前P9-C operator commit，并按版本acceptance从exact tag source创建lightweight tag/Pre-release、上传双资产、
+重新下载并完成publication audit；回传`P9_C_PUBLICATION_AUDIT=PASS`前不写P9-C PASS，不进入P9-D。
 
 ## Current Phase
 
-Phase 3 complete / P9-B exact sealed-source Cloud PASS; stop before unauthorized P9-C
+Phase 4 in progress / P9-C operator ready; maintainer publication and audit pending
 
 ## Phases
 
@@ -43,7 +43,7 @@ Phase 3 complete / P9-B exact sealed-source Cloud PASS; stop before unauthorized
 
 - [ ] 由维护者创建 immutable tag/Pre-release 并上传双资产。
 - [ ] 重新下载资产，核对 tag/source/filename/size/SHA 与 publication oracle。
-- **Status:** pending / not authorized
+- **Status:** in progress / operator ready; tag source frozen; maintainer publication/audit pending
 
 ### Phase 5: P9-D Published Release Cloud
 
@@ -76,7 +76,8 @@ Phase 3 complete / P9-B exact sealed-source Cloud PASS; stop before unauthorized
 
 - 已完成授权：P9-A stable identity/pre-seal materialization、本地验证、planning/acceptance/ROADMAP 更新与本地 commit。
 - 已完成授权：P9-B exact-hash local seal、sealed-source Cloud教程与验收、planning/acceptance/ROADMAP evidence写回和本地commit。
-- 维护者仍负责push与Cloud UI执行；tag、Release、Latest、远端ref或资产变更，以及P9-C及后继gate均未授权。
+- 当前已授权：P9-C tag source/双资产身份冻结、Pre-release publication与download audit操作单、相称本地验证、planning/acceptance/ROADMAP更新和本地commit。
+- 维护者仍负责push与P9-C远端执行；智能体不得创建tag/Release或上传资产。P9-D、Latest、角色轮换及其他后继gate均未授权。
 - 每一关键 gate 必须在专项设计和维护者明确授权后进入。
 
 ## Stop Conditions
@@ -94,7 +95,11 @@ Phase 3 complete / P9-B exact sealed-source Cloud PASS; stop before unauthorized
 | P9-B size evidence测试未允许Markdown反引号 | 1 | 保留可读的`` `85,910` bytes ``证据格式，修正测试对千分位和反引号的规范化匹配 |
 | 首次反引号修正破坏JavaScript template literal语法 | 1 | `node --check`在测试运行前拦截；改为普通字符串拼接构造正则，未重复失败转义 |
 | sandbox内Node test runner创建隔离子进程时报`spawn EPERM` | 1 | 改用`--test-isolation=none`确认新证据断言对旧pending文档产生预期红灯；最终完整复验改在正常执行面运行 |
+| Web工具拒绝直接打开GitHub API tag/Release端点并报告unsafe URL | 1 | 不把工具错误当作remote absence；改用仓库既定`gh api --include`只读preflight并要求明确HTTP 404 |
+| P9-C operator实现后聚焦测试仅因ROADMAP的`本地path-safety`缺少既定空格而1项失败 | 1 | 归类为fixture wording drift；恢复`本地 path-safety`规范表述，不改变任何Release或gate语义 |
+| 首次wording修正后旧断言仍要求P9-B pending阶段的长句 | 1 | 更新断言绑定当前P9-C宏观边界`P9-B已PASS；P9-C operator已冻结tag source与双资产`，不把历史措辞当永久合同 |
+| 第二次复验暴露同一测试中的冗余旧短语`sealed-source Cloud PASS` | 1 | 删除被更精确P9-B Source/Candidate PASS断言完全覆盖的重复断言，保留P9-C/P9-D状态断言 |
 
 ## Current Status
 
-`P9_B_SEALED_SOURCE_CLOUD_PASS / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`
+`P9_C_OPERATOR_READY / TAG_SOURCE_FROZEN / MAINTAINER_PUBLICATION_PENDING / STOP_BEFORE_P9_D`
