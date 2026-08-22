@@ -70,8 +70,9 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 symlink、junction、非目录component与nested special entry，同时显式uninstall继续允许unknown普通文件/目录被完整备份后清理。
 
 开发身份为`v0.4.1-dev`，bootstrap保持64位zero hash并fail closed；accepted仍为immutable `v0.4.0`，immediate
-fallback仍为immutable `v0.3.5`。当前未授权Linux/Cloud gate、seal、tag、Release、Latest或角色轮换，精确行动边界见活动plan，
-候选验收状态见[`docs/v0.4.1-dev-cloud-hard-acceptance.md`](docs/v0.4.1-dev-cloud-hard-acceptance.md)。
+fallback仍为immutable `v0.3.5`。本地 path-safety gate 已通过；Source/Candidate Linux/Cloud 已进入维护者
+push 与手动验收的待执行状态。seal、tag、Release、Latest 和角色轮换仍未授权，精确行动边界见活动 plan，
+候选验收教程与状态见[`docs/v0.4.1-dev-cloud-hard-acceptance.md`](docs/v0.4.1-dev-cloud-hard-acceptance.md)。
 
 <a name="phase-9-v0-4-0-instance"></a>
 

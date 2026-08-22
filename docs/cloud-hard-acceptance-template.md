@@ -70,6 +70,8 @@ contract/test/oracle，不必把它提升为通用黑盒协议。
 模板里的 `__...__` 是 fail-closed 占位符。实际执行副本或命令开始运行前不得残留任何占位符；占位符和
 替换后的动态值只属于当次 Release task plan/执行环境，不写回稳定模板。
 
+<a name="cloud-task-acceptance-permission-prefix"></a>
+
 ### 0.4 Cloud task 验收权限前缀
 
 每个新 Cloud task 的第一条用户消息必须先带上下面这段权限前缀，再附该 task 对应的脚本或 B～E 提示词。它只

@@ -38,6 +38,44 @@
 - POSIX special-file 选择 FIFO：可由标准 `mkfifo` 在一次性 fixture 内创建，不需要 root，也不会接触真实 device。
 - 新用例在 Windows 明确 SKIP；在 Linux 上必须证明 uninstall 在 backup、requirements write 与 runtime mutation 前返回 `BLOCKED_UNSAFE_RUNTIME_PATH`，并保留 FIFO 原状。
 
+## Responsibility correction
+
+- 仓库已经形成标准迭代流水线；本轮不需要重新设计“如何自动发起 Cloud”。
+- 默认职责是：智能体完成本地实现、测试、Cloud 验收教程和本地 commit；维护者完成 push，并在 Codex Cloud UI 手动创建、继续或 Resume task。
+- 维护者把 Cloud 原始输出带回后，智能体负责按版本 acceptance 核对并持久化证据；未提供的轮次保持 PENDING。
+- 除非维护者针对当前 gate 明确指定，智能体不默认调用 Cloud CLI；早先的 Cloud CLI/environment ID 探索不是标准前置条件。
+- `AGENTS.md` 应同时保存两类信息：稳定职责分工，以及当前 Windows 维护机没有 WSL/Docker 等执行面的事实。后者用于避免无意义重复搜索，前者决定正常路线。
+
+## v0.4.1 acceptance tutorial gap
+
+- 当前 `docs/v0.4.1-dev-cloud-hard-acceptance.md` 只有 gate 状态与 path-safety delta，没有维护者可直接执行的职责说明、push 后 preflight、逐 task 顺序、结果回传清单或失败分流。
+- 稳定 template 明确禁止版本 acceptance 再复制 setup 脚本、B～E 提示词或完整通用步骤；因此“补全教程”应采用一页式版本 run sheet：解释谁做什么、填哪些版本参数、依次点击/粘贴模板哪一节、每轮保存什么，以及何时停止。
+- v0.4.0 F3C operator guide 的可借鉴部分是“一分钟理解”“冻结身份”“固定轮次”“提示词索引”“停止条件与交接”的人类操作结构；其版本专用长脚本和历史状态不能复制到 v0.4.1。
+- v0.4.0 F3 lifecycle runbook 再次确认远端 refs、commit、push、PR 和 task 选择由维护者控制；验收 agent 不应自行改写 source 或把自动修复后的 task 记为 PASS。
+- v0.4.1 当前状态应从容易误读的 `NOT_AUTHORIZED` 拆开表达：教程可以 `READY`，实际 Cloud evidence 仍 `PENDING`，seal/publication 仍 `NOT_AUTHORIZED`。
+
+## Stable Source/Candidate execution facts
+
+- 每个新 Cloud task 的第一条消息都要带模板 0.4 的只读验收权限前缀；发现问题必须停止并回传，不能让 Cloud agent 修复后继续记 PASS。
+- Source/Candidate 固定顺序是：Fresh environment 中执行 4.1 setup → 新 task 执行 5.1 B-SC → 同 task 依次执行 6 C、7 D、8.1 E1 → 重新打开同一 task 执行 8.2 E2 → 执行 9.1 deep check → 丢弃环境。
+- 4.1 setup 在 agent startup 后安装，因此 Source/Candidate 的 B 不是 Fresh startup，而是新 task 的 post-install Resume；不得误用 Published Release 的 5.2 B-PR。
+- 4.1 会自己校验 clean checkout、Node major、portable suite 0 fail/0 skip、双 ZIP 一致、entry/size/SHA、本地 override 安装和 setup PASS；版本教程只需告诉维护者在哪里设置 `PWF_ACCEPTANCE_NODE_MAJOR`、如何粘贴本节并保存原始输出。
+- C 段是唯一允许的 workspace 改动；D/E 只能观察自动注入。E1 后必须离开 task，E2 必须重新打开完全相同 task，9.1 只能从当前 exact checkout/template 取得。
+- 版本写回应保存 exact commit/branch transport、runner 摘要、ZIP 证据、B～E 原始问答和 9.1 输出；未完成时不能预填 exact evidence 或宣称 PASS。
+
+## Operator-guide lessons retained
+
+- v0.4.0 F3C 的高价值写法是先用“一分钟理解”给出每轮目的，再给固定顺序、实际/预期事实分离、唯一 verifier、停止条件和交接；这比把一大段脚本直接称作“教程”更适合维护者操作。
+- 历史 F3 runbook 冻结了长期职责：validation refs 由维护者创建/选择，验收 agent 不 commit、push、PR 或移动 ref；Cloud 模型的 Host 文本不能替代机器 verifier。
+- v0.4.1 是兼容性 patch，不需要复制 F3 的 activation DAG、rollback transaction 或 evidence JSON；应复用稳定 Source/Candidate 4.1/5.1/6/7/8/9.1 协议，并只增加 FIFO/path-topology 的版本完成判据。
+- 教程应把“环境 setup 后 startup 时序”和“4.1 task 内安装后必须另开 task”讲清楚，避免维护者把 Source/Candidate 误当 Published Release Fresh startup。
+
+## Repository synchronization impact
+
+- `tests/repository-boundary.test.js` 当前把 v0.4.1 Source/Candidate 状态硬断言为 `NOT_AUTHORIZED`；教程进入可执行 handoff 后应改为 `CURRENT / CLOUD_ACCEPTANCE_PENDING`，同时继续禁止预填 64 位 SHA、PASS marker 或公开 Release URL。
+- `ROADMAP.md` 当前仍写“未授权 Linux/Cloud gate”；按文档权威规则应同步为本地 gate 已通过、Source/Candidate 由维护者 push/手动启动且证据 pending，seal/tag/Release/Latest 仍未授权。
+- README 已经清楚区分 Windows SKIP 与 Linux/Cloud gate，不需要为本轮复制教程；AGENTS 的交互与提交纪律已有“维护者负责远端写”基础，只需把新增小节改成默认本地/Cloud 职责流水线。
+
 ## Resources
 
 - `install.js`

@@ -597,10 +597,14 @@ test("change history, programme, provenance, and current acceptance keep separat
   if (candidate !== accepted) {
     assert.match(acceptance, /^<a name="v0-4-1-dev-gate-status"><\/a>$/m);
     assert.match(acceptance, /Windows path-topology local implementation[^\n]*`PASS`/);
-    assert.match(acceptance, /Linux\/POSIX symlink与special-file gate[^\n]*`PENDING`/);
-    assert.match(acceptance, /Source\/Candidate Cloud[^\n]*`NOT_AUTHORIZED`/);
+    assert.match(acceptance,
+      /Source\/Candidate Linux\/POSIX \+ Cloud[^\n]*`CURRENT \/ CLOUD_ACCEPTANCE_PENDING`/);
     assert.match(acceptance, /Seal \/ publication \/ Latest[^\n]*`NOT_AUTHORIZED`/);
-    assert.match(acceptance, /LOCAL_PATH_SAFETY_PASS \/ LINUX_AND_CLOUD_PENDING \/ RELEASE_NOT_AUTHORIZED/);
+    assert.match(acceptance,
+      /LOCAL_PATH_SAFETY_PASS \/ SOURCE_CANDIDATE_CLOUD_PENDING \/ RELEASE_NOT_AUTHORIZED/);
+    assert.match(acceptance, /默认情况下，智能体不代替维护者 push/);
+    assert.match(acceptance, /维护者回传时请保留/);
+    assert.match(acceptance, /cloud-hard-acceptance-template\.md#cloud-task-acceptance-permission-prefix/);
     assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-setup/);
     assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-deep-check/);
     assert.doesNotMatch(acceptance,
