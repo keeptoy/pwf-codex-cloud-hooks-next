@@ -270,3 +270,22 @@ maintainer authorization boundary.
 - Deep check proves manifest schema 4 routes Release/bundle v2, installer `0.4.0`, 12 installed files and 4 pristine upstream files;
   inventory is authoritative, policy is adapter-only, doctor is healthy and residue is zero. The only worktree delta is the permitted
   canonical planning fixture. This closes P9-B but creates no tag, public asset or promotion authority; P9-C remains a separate gate.
+
+## P9-C tag-source and immutable-publication decision
+
+- The stable tag must point to the source that actually passed P9-B sealed-source Cloud:
+  `fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`. Choosing the branch tip would replace a proved source identity with an unproved one even
+  when later commits are Release-excluded and reproduce the same ZIP.
+- `01fecef569b00e389a3b80ccdceeabd445ff993c` is the P9-B evidence writeback. Its diff from the Cloud-tested source is limited to planning,
+  ROADMAP, history, version acceptance and a repository guard; its Release-entry/external-asset intersection is zero. This proves byte
+  continuity but does not turn it into the P9-B test subject.
+- The v0.3.5 precedent uses a lightweight tag (`git cat-file -t v0.3.5` returns `commit`) at its stable-seal source; publication, Published
+  Release Cloud and Latest evidence were written back later. P9-C preserves the same source/evidence separation.
+- Local `v0.4.0` tag lookup was absent. Read-only GitHub API returned HTTP 404 for `refs/tags/v0.4.0`, and `gh release view v0.4.0`
+  returned `release not found`. A separate `git ls-remote` attempt hit the known Windows Git-Bash signal-pipe restriction, so it was not
+  used as absence evidence. The maintainer operator must repeat both remote checks and treat transport uncertainty as `UNKNOWN`.
+- P9-C uses the existing version acceptance as the only operator authority. It requires a fresh clone at the exact tag source, two
+  deterministic builds, exact ZIP/bootstrap size and SHA, a lightweight tag, a Pre-release with exactly two assets, then a second fresh
+  download/tag-source rebuild audit. It stops before Published Release Cloud and Latest promotion.
+- Once an exact tag is pushed it is immutable. A later Release/upload failure may resume against that tag, but must not delete or move the
+  tag. Any public byte mismatch is a supply-chain incident/new-identity problem, not permission to replace an asset under `v0.4.0`.

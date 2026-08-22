@@ -56,12 +56,12 @@ test("Phase 4 foundation keeps the candidate and accepted identity window distin
   assert.match(roadmap, /Product Phase 4功能施工已闭合/);
   assert.match(roadmap, /第一轮 retirement review完成/);
   assert.match(roadmap,
-    /Phase 9 P9-B sealed-source Cloud PASS[^]*P9-C及后继gate未授权[^]*当前仍不得发布、晋级或移动 validation refs/);
+    /Phase 9 P9-B sealed-source Cloud PASS[^]*P9-C维护者publication待执行[^]*P9-D及后继gate未授权[^]*当前仍不得晋级或移动 validation refs/);
   assert.match(roadmap,
     /Phase 4 \/ F3C4完成[\s\S]*形成0\.4\.0功能\/候选基线[\s\S]*切换0\.5\.0-dev并进入Phase 5/);
 });
 
-test("v0.4.0 Phase 9 sealed-source Cloud is version-scoped and stops before P9-C", () => {
+test("v0.4.0 Phase 9 keeps sealed-source evidence distinct from P9-C publication", () => {
   const phase9 = read("docs/history/phase-9-v0.4.0-release-discovery.md");
   const phase4Closeout = read("docs/history/phase-4.11-f3c4-aggregate-closure-discovery.md");
   const historyIndex = read("docs/history/README.md");
@@ -86,6 +86,9 @@ test("v0.4.0 Phase 9 sealed-source Cloud is version-scoped and stops before P9-C
   assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-b-sealed-source-cloud"><\/a>$/m);
   assert.match(phase9,
     /P9_B_SEALED_SOURCE_CLOUD_PASS \/ STOP_BEFORE_P9_C \/ PUBLICATION_NOT_AUTHORIZED/);
+  assert.match(phase9, /^<a name="phase-9-v0-4-0-p9-c-pre-publication"><\/a>$/m);
+  assert.match(phase9,
+    /P9_C_OPERATOR_READY \/ TAG_SOURCE_FROZEN \/ MAINTAINER_PUBLICATION_PENDING \/ STOP_BEFORE_P9_D/);
   assert.match(phase9, /24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3/);
   assert.match(phase9, /4ae21c1fc99f52b1382543fac437096d4db1d3415cb40df578f29ed82cc4c64f/);
   assert.match(phase9, /v2 accepted \+ v1 fallback/);
@@ -99,8 +102,43 @@ test("v0.4.0 Phase 9 sealed-source Cloud is version-scoped and stops before P9-C
     /v0\.4\.0 Phase 9 P9-A pre-seal materialization[^\n]*`PASS`/);
   assert.match(acceptance,
     /v0\.4\.0 Phase 9 P9-B sealed-source Cloud[^\n]*`PASS`/);
+  assert.match(acceptance,
+    /v0\.4\.0 Phase 9 P9-C immutable publication[^\n]*`MAINTAINER_ACTION_PENDING`/);
   assert.match(roadmap, /^<a name="phase-9-v0-4-0-instance"><\/a>$/m);
   assert.match(roadmap, /P9-A pre-seal materialization[\s\S]*P9-F second retirement review/);
+});
+
+test("P9-C operator freezes the Cloud-tested tag source and audits immutable public bytes", () => {
+  const acceptance = read("docs/v0.4.0-cloud-hard-acceptance.md");
+  const phase9 = read("docs/history/phase-9-v0.4.0-release-discovery.md");
+  const { roadmap } = currentRoleWindow();
+  const tagSource = "fe8cd7f284ea2849f634aa68813dbb0f2cca83f9";
+  const evidenceHead = "01fecef569b00e389a3b80ccdceeabd445ff993c";
+  const zipSha = "24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3";
+  const bootstrapSha = "4ae21c1fc99f52b1382543fac437096d4db1d3415cb40df578f29ed82cc4c64f";
+
+  assert.match(acceptance, /^<a name="v0-4-0-p9-c-immutable-publication-operator"><\/a>$/m);
+  const start = acceptance.indexOf('<a name="v0-4-0-p9-c-immutable-publication-operator"></a>');
+  const end = acceptance.indexOf('<a name="v0-4-0-dev-f3c4-aggregate-closure"></a>');
+  assert.ok(start > 0 && end > start);
+  const operator = acceptance.slice(start, end);
+
+  for (const fact of [
+    tagSource, evidenceHead, zipSha, bootstrapSha,
+    "pwf-codex-cloud-hooks-v0.4.0.zip", "init-cloud-sandbox-v0.4.0.bash",
+    "22 entries", "85,519 bytes", "21,565 bytes",
+    "git tag v0.4.0", "git push origin refs/tags/v0.4.0",
+    "gh release create v0.4.0", "--verify-tag", "--prerelease",
+    "gh release download $tag", "P9_C_PUBLICATION_AUDIT=PASS",
+  ]) assert.match(operator, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(operator,
+    /tag source[^\n]*fe8cd7f284ea2849f634aa68813dbb0f2cca83f9[\s\S]*01fecef569b00e389a3b80ccdceeabd445ff993c[^\n]*Release-excluded/);
+  assert.match(operator, /Pre-release[\s\S]*不得[^\n]*(?:Latest|promotion)/);
+  assert.match(operator, /若 tag push 已成功[\s\S]*不得删除、移动或重建 tag/);
+  assert.match(phase9,
+    /tag source[^]*P9-B实际通过 Cloud[^]*`fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`/);
+  assert.match(roadmap,
+    /P9-C维护者publication待执行[\s\S]*tag source[^]*fe8cd7f284ea2849f634aa68813dbb0f2cca83f9/);
 });
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {

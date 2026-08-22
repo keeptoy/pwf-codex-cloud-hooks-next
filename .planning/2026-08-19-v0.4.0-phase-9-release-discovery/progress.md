@@ -152,7 +152,27 @@
 - Two independent candidate builds/checks remained byte-identical at 22 entries, 85,519 bytes and SHA-256
   `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`, proving the acceptance/history/ROADMAP/test/planning closure
   changed no Release ZIP input. P9-B is closed; P9-C remains unstarted and unauthorized.
+- Maintainer authorized the next P9-C preparation round. Compared the P9-B Cloud-tested source with the evidence writeback and froze
+  `fe8cd7f284ea2849f634aa68813dbb0f2cca83f9` as the only valid `v0.4.0` tag target; the later `01fecef…` remains branch governance only.
+- Confirmed the working tree was initially clean and synchronized with `origin/0.4.0`; local tag lookup was absent, GitHub ref API returned
+  404 and `gh release view` reported no `v0.4.0` Release. The Git `ls-remote` probe hit a Windows signal-pipe limitation and was correctly
+  excluded from the absence conclusion.
+- Added a repository guard first. Its permissioned red run executed 11 tests: 8 passed and the three P9-C lifecycle/operator assertions
+  failed exactly because ROADMAP/history/acceptance had not yet materialized the authorized gate.
+- Added the P9-C operator to the existing v0.4.0 acceptance, including exact-source asset reproduction, maintainer-only lightweight tag and
+  Pre-release commands, public redownload/source-rebuild audit, immutable failure handling and a hard stop before P9-D.
+- Updated Phase 9 history, ROADMAP and the active plan to distinguish the Cloud-tested tag source from Release-excluded evidence/operator
+  commits. No Release input, runtime, contract, manifest, README, tag, Release, asset or remote ref was changed by the local agent.
+- Focused repository governance passed 11/11 after the initial intentional red run. The guard briefly exposed two wording-level coupling
+  assumptions and was relaxed to protect exact anchors/identities/actions rather than Chinese line layout; no safety assertion was removed.
+- PowerShell parser accepted all five independently executable P9-C blocks. A trial of the first block while authoring correctly stopped
+  on the dirty worktree; the exact block will be rerun after the local commit when the tree is clean.
+- Full Windows suite passed 174 tests: 149 pass, 0 fail and 25 honest Linux/POSIX-only skips. Importer, owned Python compile, installer Node
+  syntax, both bootstrap Bash syntax probes, `git diff --check` and the Release-input intersection audit passed.
+- Two independent candidate builds/checks stayed byte-identical at 22 entries, 85,519 bytes and SHA-256
+  `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`; bootstrap stayed 21,565 bytes and SHA-256
+  `4ae21c1fc99f52b1382543fac437096d4db1d3415cb40df578f29ed82cc4c64f`. P9-C1 is ready for maintainer handoff.
 
 ## Current status
 
-`P9_B_LOCAL_SEAL_PASS / SEALED_SOURCE_CLOUD_PENDING / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`
+`P9_C_OPERATOR_READY / TAG_SOURCE_FROZEN / MAINTAINER_PUBLICATION_PENDING / STOP_BEFORE_P9_D`

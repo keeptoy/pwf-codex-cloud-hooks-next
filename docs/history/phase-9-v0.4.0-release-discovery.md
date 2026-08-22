@@ -209,3 +209,37 @@ stable bootstrap继续保持`SEALED_LOCAL_BYTES`；P9-B从`SEALED_SOURCE_CLOUD_P
 Pre-release publication仍需维护者单独授权，不能由本尾注自动开始。结论为：
 
 `P9_B_SEALED_SOURCE_CLOUD_PASS / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`
+
+<a name="phase-9-v0-4-0-p9-c-pre-publication"></a>
+
+## Pre-publication decision — P9-C immutable publication
+
+维护者在 P9-B evidence writeback commit `01fecef569b00e389a3b80ccdceeabd445ff993c` push后授权进入 P9-C。实施前复核
+确认：远端尚无 `v0.4.0` tag或 Release；两份资产仍为22-entry、85,519-byte、SHA-256
+`24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`的 ZIP，以及21,565-byte、SHA-256
+`4ae21c1fc99f52b1382543fac437096d4db1d3415cb40df578f29ed82cc4c64f`的ZIP外bootstrap。
+
+本轮最重要的决策是 tag source不采用“分支最新 HEAD”，而必须指向 P9-B实际通过 Cloud的
+`fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`。`01fecef…`及后续 operator commit只回写 Release-excluded成绩单/操作说明；
+它们不改变 candidate/bootstrap字节，但也没有作为新的exact source参加 P9-B Cloud。因此二者的关系是“被验收的 source”与
+“验收后的治理记录”，不能合并成同一个身份。
+
+该选择与 v0.3.5先例一致：stable lightweight tag指向完成 seal与待发布记录的exact source，Published Release、Cloud和Latest
+证据再写入后继治理提交。P9-C在当前版本acceptance内增加唯一operator入口，固定以下顺序：
+
+1. 再次只读确认同名 tag/Release不存在；
+2. 从 `fe8cd7f…`全新clone重建两份ZIP并复制同commit的bootstrap；
+3. 由维护者创建指向该commit的lightweight `v0.4.0` tag并push；
+4. 创建Pre-release并上传且仅上传两项sealed assets；
+5. 在另一全新目录重新下载资产、核对ref/Release metadata/size/SHA，并从公开tag重建ZIP；
+6. 回传`P9_C_PUBLICATION_AUDIT=PASS`后停止在P9-D前，再由仓库回写provenance与acceptance。
+
+对象生命周期只发生“待物化”状态变化：tag为`FROZEN_TARGET / NOT_YET_CREATED`，两项资产仍为
+`SEALED_LOCAL_BYTES / PUBLICATION_PENDING`，P9-B evidence writeback与P9-C operator为`KEEP_RELEASE_EXCLUDED`。v0.3.5
+working-tree role文件、11个validation refs、F3 guides/validators/negative tests与installed transition继续KEEP；它们没有达到
+P9-E/P9-F退出条件。
+
+本地智能体只准备operator、静态守卫与维护者handoff，不创建tag/Release、不上传资产。P9-D Published Release Cloud、P9-E
+Latest promotion/role rotation、P9-F retirement/ref cleanup均未授权。当前结论为：
+
+`P9_C_OPERATOR_READY / TAG_SOURCE_FROZEN / MAINTAINER_PUBLICATION_PENDING / STOP_BEFORE_P9_D`

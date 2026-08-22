@@ -4,16 +4,19 @@
 
 完成 `v0.4.0` standing Phase 9的版本化 gate。P9-A 已把 Phase 4功能基线迁移为稳定的 pre-seal source candidate；
 当前 P9-B本地字节封印与exact-HEAD sealed-source Cloud均已完成；setup/deep-check HEAD、Cloud deterministic ZIP与本地seal
-identity完全一致。P9-C及后继publication、Published Release、promotion与ref mutation仍未授权。
+identity完全一致。当前进入P9-C immutable publication：tag source固定为P9-B实际验收的`fe8cd7f…`，本地智能体只准备
+operator/守卫/维护者handoff；tag、Pre-release与资产上传由维护者执行。P9-D及后继Cloud、promotion与ref cleanup仍未授权。
 
 ## Next Step
 
-P9-B证据已收口并验证；创建单一职责的Release-excluded本地commit后停止。下一动作只能是维护者决定是否单独授权P9-C
-immutable tag / Pre-release publication；未授权前不创建tag/Release、不上传资产、不运行publication gate。
+P9-C operator、双HEAD身份说明、静态守卫与本地验证已完成。创建单一职责的Release-excluded commit后，由维护者push该
+operator commit；随后严格按版本acceptance从exact tag source重建资产、创建lightweight `v0.4.0` tag与Pre-release、上传两项
+资产并运行ref-aware publication audit；回传最终exit code、tag source、Release URL、两项size/SHA与
+`P9_C_PUBLICATION_AUDIT=PASS`。
 
 ## Current Phase
 
-P9-B complete / stop before P9-C
+P9-C operator ready / maintainer publication pending
 
 ## Phases
 
@@ -157,6 +160,38 @@ P9-B complete / stop before P9-C
 - 要求 setup/deep-check HEAD等于 `fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`，ZIP identity等于本地 seal。
 - 更新 acceptance/history/ROADMAP/planning与静态守卫；验证并本地 commit后停止在 P9-C前。
 
+### P9-C0 — Tag-source and asset identity decision
+
+**Status:** completed
+
+- 复核v0.3.5先例与P9-B证据，冻结`v0.4.0` lightweight tag source为Cloud实际验收的
+  `fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`。
+- 明确`01fecef…`及后继operator commit只承载Release-excluded治理记录，不得替换tag source。
+- 只读确认本地/远端尚无`v0.4.0` tag，GitHub尚无同名Release；冻结两项sealed asset identity。
+
+### P9-C1 — Maintainer publication operator and guards
+
+**Status:** completed
+
+- 在现有版本acceptance内增加唯一P9-C operator，不创建第二份版本验收authority。
+- 固定absence preflight、exact-source双构建、lightweight tag、Pre-release上传、重新下载与tag-source rebuild audit顺序。
+- 同步history/ROADMAP/planning与静态守卫；运行相称回归并创建Release-excluded本地commit。
+
+### P9-C2 — Immutable tag and Pre-release publication
+
+**Status:** pending — maintainer action
+
+- 维护者从冻结source创建并push`v0.4.0` lightweight tag；不得移动、删除或重建。
+- 维护者创建Pre-release并上传且仅上传exact ZIP与ZIP外bootstrap；不得设置Latest。
+
+### P9-C3 — Ref-aware publication audit and evidence closure
+
+**Status:** pending
+
+- 在全新目录重新下载两项公开资产，核对Release metadata、tag source、filename、size、SHA与bootstrap syntax。
+- 从公开tag重新构建ZIP并要求与下载资产字节一致；回传明确最终exit code与`P9_C_PUBLICATION_AUDIT=PASS`。
+- 证据返回后才登记provenance/acceptance并关闭P9-C；随后仍停止在P9-D前。
+
 ## Authorization
 
 - 已授权：P9-B本地封印；重新构建并核验 P9-A candidate；只把 exact ZIP SHA写入 ZIP 外 stable bootstrap；计算 bootstrap SHA；
@@ -164,18 +199,22 @@ P9-B complete / stop before P9-C
   信息架构治理、删除已确认重复的两段 current-status/F3B2说明、收缩4.1标题、在现有 v0.4.0 acceptance补充 P9-B Cloud
   operator入口、相称静态守卫与本地 commit。
 - 已授权：回补维护者返回的 P9-B sealed-source Cloud证据并关闭 P9-B；相称静态守卫、Release-excluded状态同步与本地 commit。
+- 已授权：P9-C本地identity preflight、operator/静态守卫/Release-excluded history与programme同步、本地验证和commit；维护者按
+  operator创建exact lightweight tag、Pre-release、上传两项sealed assets并执行只读publication audit。
 - 未授权：修改任何 ZIP entry、package/contract/manifest/README或 production/runtime字节；由本地智能体执行 Cloud；创建/移动/
-  删除 refs；push/PR/tag/Release/publication/promotion；上传资产、修改 Latest或仓库设置；P9-C；切换 `0.5.0-dev`/Phase 5。
+  删除远端refs；由本地智能体push/PR/tag/Release/publication或上传资产；修改 Latest、accepted/fallback角色或仓库设置；P9-D/P9-E/
+  P9-F；validation ref cleanup；切换 `0.5.0-dev`/Phase 5。
 
 ## Stop Conditions
 
-- 写 bootstrap前或写入后，candidate不是 22 entries、85,519 bytes、SHA-256
+- P9-C从`fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`之外的commit创建tag，或把分支最新HEAD当成动态tag source。
+- 待上传或重新下载的candidate不是 22 entries、85,519 bytes、SHA-256
   `24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`，或双构建不一致。
-- 除 stable bootstrap checksum、Release-excluded gate记录/守卫外还需要修改任何 ZIP input、production/runtime、contract或 manifest。
-- bootstrap不再是 ZIP外资产、checksum不是 frozen candidate SHA，或无法冻结其自身 SHA。
-- 本地/ref-aware回归失败，或 Cloud要求 source修复；前者停止分类，后者明确退回 P9-A而不是继续 seal。
-- 任何步骤需要远端 ref/Release/publication/promotion、P9-C或下一版本动作。
-- ROADMAP治理需要改动 README或任何 ZIP input，删除维护者点名后置讨论的 P9/F3B2段落，或把历史流水账重新复制到另一宏观章节。
+- bootstrap不再是ZIP外21,565-byte资产、SHA不是`4ae21c1f…c64f`，或其内嵌ZIP SHA不等于frozen candidate。
+- 同名tag/Release已存在但身份不明，或远端查询/异步命令没有明确最终状态；不得猜测absence/PASS。
+- tag push后任何步骤要求删除、force-update或重建tag，或资产上传后试图删除/重传同名资产来修补字节漂移。
+- P9-C要求修改任何ZIP input、production/runtime、contract、manifest或README；此时回到P9-A/P9-B而不是继续publication。
+- 任何步骤进入P9-D Cloud、Latest promotion、role rotation、ref cleanup或下一版本动作。
 
 ## Errors Encountered
 
@@ -197,7 +236,9 @@ P9-B complete / stop before P9-C
 | P9-B3c sandboxed Git Bash syntax probe could not create its signal pipe (`Win32 error 5`) | 1 | Reran the same read-only `bash -n` loop with process permission; both versioned bootstraps passed. |
 | A Windows `rg` audit passed `tests\\*.test.js` as a literal path and reported an invalid filename | 1 | The relevant direct test file had already been read; use repository paths or `rg -g '*.test.js'` for future Windows glob filtering. |
 | First P9-B closure green run left two ROADMAP guards on the pre-Cloud wording | 1 | Restored the stable Phase 4 closeout phrases and migrated the version-scoped P9-B guard from local-seal/pending to sealed-source Cloud PASS/P9-C stop. |
+| Direct execution of P9-C preflight during documentation authoring stopped on a dirty worktree | 1 | This is the intended fail-closed boundary, not a publication failure. Parse all five blocks now and rerun the exact absence preflight only after the scoped local commit restores a clean tree. |
+| Initial P9-C absence draft treated any failed `gh release view` as “not found” | 1 | Replaced it with GitHub API probes that require explicit HTTP 404 for both tag and Release; authentication, transport and other HTTP failures now remain UNKNOWN and stop. |
 
 ## Current status
 
-`P9_B_SEALED_SOURCE_CLOUD_PASS / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`
+`P9_C_OPERATOR_READY / TAG_SOURCE_FROZEN / MAINTAINER_PUBLICATION_PENDING / STOP_BEFORE_P9_D`
