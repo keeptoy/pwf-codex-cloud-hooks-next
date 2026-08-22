@@ -92,3 +92,36 @@
 ## Current Status
 
 `P9_A_PRE_SEAL_MATERIALIZATION_PASS / ZERO_HASH_CANDIDATE_FROZEN / STOP_BEFORE_P9_B / RELEASE_NOT_AUTHORIZED`
+
+## 2026-08-22 — P9-B authorization
+
+- 维护者回复“继续”，承接P9-A停止点并授权P9-B；范围仅为本地exact-hash seal、sealed-source Cloud教程/交接、验证、planning/acceptance/ROADMAP和本地commit。
+- entry HEAD为`8ef5ec6f396c7ae022231ace14717fd6630a7be0`，工作树clean，本地`0.4.1`比`origin/0.4.1` ahead 2。
+- README与ARCHITECTURE已按恢复顺序复读；两者的seal顺序和production/trusted graph均为稳定authority，P9-B不需要改写。
+- 维护者继续负责push和Cloud UI；P9-C tag/Pre-release、Release、Latest、远端ref/资产及后继gate未授权。
+- DESIGN复读确认P9-B只触及package-plane外部bootstrap、版本acceptance/ROADMAP与对应Release/repository测试；production runtime与machine inventory无需修改。
+- ROADMAP当前仍是P9-A complete / P9-B未授权的宏观状态；本地seal完成后需改为P9-B local seal PASS、sealed-source Cloud pending，不能提前写Cloud PASS或publication状态。
+- ROADMAP完整复读确认固定字节顺序为冻结ZIP输入→双构建/check→计算ZIP SHA→写bootstrap→计算bootstrap SHA；P9-B本地seal必须在写hash后再重建ZIP确认ZIP字节未变，并止步于maintainer push/Cloud handoff。
+- 活动plan已切到Phase 3 in progress；现有dev Source/Candidate PASS只保留为pre-seal历史，stable sealed-source Cloud必须从P9-B exact final source重跑。
+- P9-B最近边界已先补：release-package把local-seal marker与non-zero/exact ZIP/bootstrap SHA绑定；repository-boundary冻结local seal PASS、Cloud pending、operator anchors与P9-C未授权。
+- intentional-red聚焦结果：17 tests中16 PASS、1项按预期因acceptance尚无P9-B local seal表项/证据/operator而失败；Release builder与现有zero-hash行为本身无额外回归。
+- 写bootstrap前的P9-B独立双构建/check PASS：22 entries、85,910 bytes、SHA-256 `94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291`；与P9-A pre-seal事实完全一致。
+- bootstrap默认`HOOKS_SHA256`已从64位zero hash替换为exact ZIP SHA `94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291`；这是P9-B唯一Release external-asset字节改动。
+- 写hash后再次独立双构建/check仍为22 entries、85,910 bytes与同一ZIP SHA，证明external bootstrap没有污染ZIP；sealed bootstrap为21,565 bytes、SHA-256 `1832db08c16b4f7fde88df2699384f1fff8e324909b0e024cb6ef216aea30a43`。
+- 首次seal后聚焦测试为20 PASS / 1 FAIL；唯一失败是新size evidence断言去掉千分位后未允许Markdown反引号，实际字节/hash与其他封板断言均已通过。已把测试修正为匹配`` `85910` bytes ``格式，不改变产品或evidence内容。
+- 首次修正把反引号直接嵌入JavaScript template literal，`node --check`立即发现语法错误；未运行测试或修改产品。改用普通字符串拼接构造正则，避免重复该转义方式。
+- P9-B聚焦复验转绿：21 PASS / 0 FAIL / 0 SKIP；现场ZIP、bootstrap默认hash、acceptance exact ZIP/bootstrap SHA、local-seal状态、Cloud pending/operator与P9-C未授权全部闭合。
+- 完整Windows runner封板后PASS：184 tests / 158 PASS / 0 FAIL / 26 SKIP；SKIP均为既有Linux/POSIX-only case，继续等待sealed-source Cloud零skip证据。
+- importer check、Python compile、`node --check`、manifest→Release contract raw SHA、Git mode、bootstrap exact SHA与`git diff --check`均PASS；Release contract SHA保持`f1c8af…a429e`。
+- `bash -n`复验`init-cloud-sandbox-v0.4.0.bash`与sealed `init-cloud-sandbox-v0.4.1.bash`均PASS。
+- 最终changed-path审计仅命中一个current Release path：ZIP外`init-cloud-sandbox-v0.4.1.bash`；production/runtime intersection为空，package/contract/manifest/ZIP inputs均未改变。
+- stable acceptance已冻结local-seal字节、maintainer push/exact-HEAD preflight、4.1→B～E→9.1操作顺序、原始回传字段与停止条件；Cloud结论保持`MAINTAINER_CLOUD_PENDING`。
+- 活动plan切换到local-seal PASS / Cloud pending后，提交前repository+Release聚焦复验17 PASS / 0 FAIL / 0 SKIP，`git diff --check` PASS。
+
+## Current Status
+
+`P9_B_LOCAL_SEAL_PASS / SEALED_SOURCE_CLOUD_PENDING / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`
+
+## Current Status
+
+`V0_4_1_P9_B_LOCAL_SEAL_ACTIVE / SEALED_SOURCE_CLOUD_NOT_YET_RUN / P9_C_NOT_AUTHORIZED / RELEASE_NOT_AUTHORIZED`

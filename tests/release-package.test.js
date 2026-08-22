@@ -78,6 +78,9 @@ test("current candidate ZIP is deterministic, self-contained, and bound to its e
     assert.deepEqual(artifact.external_release_assets, [expectedBootstrap]);
     assert.ok(artifact.entries.every(entry => ["0644", "0755"].includes(entry.mode)));
     const bootstrap = fs.readFileSync(path.join(root, expectedBootstrap), "utf8");
+    const acceptance = fs.readFileSync(
+      path.join(root, "docs", `${candidate}-cloud-hard-acceptance.md`), "utf8",
+    );
     assert.equal(bootstrap.includes(`HOOKS_VERSION="\${HOOKS_VERSION:-${candidate}}"`), true);
     assert.match(bootstrap, /keeptoy\/pwf-codex-cloud-hooks-next\/releases\/download/);
     const hooksSha = bootstrap.match(/HOOKS_SHA256="\$\{HOOKS_SHA256:-([a-f0-9]{64})\}"/);
@@ -89,6 +92,13 @@ test("current candidate ZIP is deterministic, self-contained, and bound to its e
       assert.notEqual(candidate, acceptedMatch[1], "accepted baseline bootstrap must pin the exact ZIP SHA-256");
     } else {
       assert.equal(hooksSha[1], firstResult.sha256);
+    }
+    if (/P9_B_LOCAL_SEAL_PASS \/ SEALED_SOURCE_CLOUD_PENDING/.test(acceptance)) {
+      assert.notEqual(hooksSha[1], "0".repeat(64), "P9-B local seal cannot retain a placeholder checksum");
+      assert.match(acceptance, new RegExp(firstResult.sha256));
+      assert.match(acceptance, new RegExp(sha256(path.join(root, expectedBootstrap))));
+      assert.match(acceptance, new RegExp(`${firstResult.entries} entries`));
+      assert.match(acceptance.replaceAll(",", ""), new RegExp("`" + firstResult.size + "` bytes"));
     }
     const extracted = path.join(workspace, "extracted");
     extractZip(first, extracted);

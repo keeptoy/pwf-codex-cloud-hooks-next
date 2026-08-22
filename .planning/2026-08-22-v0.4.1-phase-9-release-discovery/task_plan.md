@@ -8,11 +8,12 @@
 
 ## Next Step
 
-等待维护者单独授权 P9-B；在此之前不写 exact ZIP hash，不执行 sealed-source Cloud、tag、Release、Latest 或任何远端写。
+等待维护者push本地P9-B seal commit，并按stable acceptance从该exact HEAD执行Source/Candidate Cloud；回传前
+不写Cloud PASS，不进入P9-C tag/Release/publication。
 
 ## Current Phase
 
-Phase 2 complete / stopped before P9-B
+Phase 3 in progress / P9-B local seal complete; maintainer sealed-source Cloud pending
 
 ## Phases
 
@@ -34,9 +35,9 @@ Phase 2 complete / stopped before P9-B
 
 ### Phase 3: P9-B seal and exact final-source Source/Candidate
 
-- [ ] 双构建最终 ZIP，冻结 ZIP SHA，写入 ZIP 外 bootstrap，再冻结 bootstrap SHA。
+- [x] 双构建最终 ZIP，冻结 ZIP SHA，写入 ZIP 外 bootstrap，再冻结 bootstrap SHA。
 - [ ] 从 exact final source 重跑 Source/Candidate Cloud，不继承 pre-seal Cloud PASS。
-- **Status:** pending / not authorized
+- **Status:** in progress / local seal PASS; Cloud operator ready; maintainer execution pending
 
 ### Phase 4: P9-C immutable Pre-release publication
 
@@ -74,7 +75,8 @@ Phase 2 complete / stopped before P9-B
 ## Authorization
 
 - 已完成授权：P9-A stable identity/pre-seal materialization、本地验证、planning/acceptance/ROADMAP 更新与本地 commit。
-- 当前没有新的实施 gate 授权；P9-B exact-hash seal与正式Cloud、tag、Release、Latest、远端 ref或资产变更均未授权。
+- 当前已授权：P9-B exact-hash local seal、sealed-source Cloud教程、相称本地验证、planning/acceptance/ROADMAP更新与本地commit。
+- 维护者仍负责push与Cloud UI执行；tag、Release、Latest、远端ref或资产变更，以及P9-C及后继gate均未授权。
 - 每一关键 gate 必须在专项设计和维护者明确授权后进入。
 
 ## Stop Conditions
@@ -89,7 +91,9 @@ Phase 2 complete / stopped before P9-B
 | Error | Attempt | Resolution |
 |---|---:|---|
 | PowerShell/.NET 不支持静态 `SHA256.HashData` 与 `Convert.ToHexString` | 1 | 改用 `Get-FileHash -Algorithm SHA256`，得到 contract SHA 与 manifest edge 完全一致；未重复原失败方法 |
+| P9-B size evidence测试未允许Markdown反引号 | 1 | 保留可读的`` `85,910` bytes ``证据格式，修正测试对千分位和反引号的规范化匹配 |
+| 首次反引号修正破坏JavaScript template literal语法 | 1 | `node --check`在测试运行前拦截；改为普通字符串拼接构造正则，未重复失败转义 |
 
 ## Current Status
 
-`P9_A_PRE_SEAL_MATERIALIZATION_PASS / ZERO_HASH_CANDIDATE_FROZEN / STOP_BEFORE_P9_B / RELEASE_NOT_AUTHORIZED`
+`P9_B_LOCAL_SEAL_PASS / SEALED_SOURCE_CLOUD_PENDING / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`

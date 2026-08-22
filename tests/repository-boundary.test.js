@@ -54,9 +54,10 @@ test("v0.4.1 pre-seal patch train preserves the accepted and fallback identity w
   assert.equal(immediateFallback, "v0.3.5");
   assert.notEqual(candidate, accepted);
   assert.match(roadmap, /compatibility\/security patch train/);
-  assert.match(roadmap, /本地 path-safety 与 Source\/Candidate Linux\/Cloud PASS/);
-  assert.match(roadmap, /P9-A pre-seal materialization complete/);
-  assert.match(roadmap, /P9-B exact-hash seal、sealed-source Cloud、publication与角色轮换仍未授权/);
+  assert.match(roadmap, /本地 path-safety 与开发期 Source\/Candidate Linux\/Cloud PASS/);
+  assert.match(roadmap, /P9-B local seal PASS/);
+  assert.match(roadmap, /sealed-source Cloud maintainer pending/);
+  assert.match(roadmap, /P9-C publication与角色轮换仍未授权/);
   assert.match(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.0`/);
   assert.match(roadmap,
@@ -558,7 +559,12 @@ test("change history, programme, provenance, and current acceptance keep separat
   } else {
     assert.match(currentDelta, /path topology/);
     assert.match(currentDelta, /unknown普通文件和目录仍会先完整备份再清理/);
-    assert.match(currentDelta, /64位[\s\S]*zero hash[\s\S]*fail closed/);
+    if (/P9_B_LOCAL_SEAL_PASS \/ SEALED_SOURCE_CLOUD_PENDING/.test(acceptance)) {
+      assert.match(currentDelta, /exact SHA并fail closed/);
+      assert.doesNotMatch(currentDelta, /zero hash/);
+    } else {
+      assert.match(currentDelta, /64位[\s\S]*zero hash[\s\S]*fail closed/);
+    }
     assert.doesNotMatch(currentDelta, /\b[a-f0-9]{64}\b|P9-[A-F]|Published Release Cloud/);
   }
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
@@ -606,11 +612,20 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /Windows path-topology local implementation[^\n]*`PASS`/);
     assert.match(acceptance,
       /Source\/Candidate Linux\/POSIX \+ Cloud[^\n]*`PASS`/);
-    assert.match(acceptance, /P9-B seal \/ publication \/ Latest[^\n]*`NOT_AUTHORIZED`/);
+    assert.match(acceptance, /P9-B local seal[^\n]*`PASS`/);
+    assert.match(acceptance, /P9-B sealed-source Cloud[^\n]*`MAINTAINER_CLOUD_PENDING`/);
+    assert.match(acceptance, /P9-C publication \/ Latest[^\n]*`NOT_AUTHORIZED`/);
     assert.match(acceptance,
       /V0_4_1_SOURCE_CANDIDATE_CLOUD_PASS \/ STOP_BEFORE_SEAL \/ RELEASE_NOT_AUTHORIZED/);
     assert.match(acceptance,
       /V0_4_1_P9_A_PRE_SEAL_MATERIALIZATION_PASS \/ ZERO_HASH_CANDIDATE_FROZEN \/ STOP_BEFORE_P9_B \/ RELEASE_NOT_AUTHORIZED/);
+    assert.match(acceptance,
+      /P9_B_LOCAL_SEAL_PASS \/ SEALED_SOURCE_CLOUD_PENDING \/ STOP_BEFORE_P9_C \/ PUBLICATION_NOT_AUTHORIZED/);
+    assert.match(acceptance, /^<a name="v0-4-1-p9-b-local-seal-evidence"><\/a>$/m);
+    assert.match(acceptance, /^<a name="v0-4-1-p9-b-sealed-source-cloud-operator"><\/a>$/m);
+    assert.match(acceptance, /__PWF_P9B_EXPECTED_HEAD__/);
+    assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-setup/);
+    assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-deep-check/);
     assert.match(acceptance, /默认情况下，智能体不代替维护者 push/);
     assert.match(acceptance, /维护者回传时请保留/);
     assert.match(acceptance, /明确结束 B 的单次无工具\/不读文件观察限制/);

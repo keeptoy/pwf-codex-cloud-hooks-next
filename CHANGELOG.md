@@ -12,8 +12,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   mutation前拒绝symlink、Windows junction、非目录component与nested special entry，避免沿`hooks`父路径越界写入或删除。
 - 保留显式uninstall的recovery合同：unknown普通文件和目录仍会先完整备份再清理；exact current/predecessor
   inventory admission、Host ABI、managed events与runtime trusted graph均未改变。
-- stable身份已物化为`v0.4.1` zero-hash pre-seal candidate，只接受exact `v0.4.0` installed predecessor；candidate
-  bootstrap保持64位zero hash并fail closed。programme与未完成gate见[`ROADMAP.md`](ROADMAP.md)，候选证据边界见
+- stable身份已物化为`v0.4.1`，只接受exact `v0.4.0` installed predecessor；外部bootstrap已固定当前确定性ZIP的
+  exact SHA并fail closed。programme与未完成gate见[`ROADMAP.md`](ROADMAP.md)，候选证据边界见
   [`docs/v0.4.1-cloud-hard-acceptance.md`](docs/v0.4.1-cloud-hard-acceptance.md)，已发布身份仍只见
   [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)。
 

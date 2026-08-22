@@ -122,3 +122,15 @@
 - `contracts/release-artifact-v2.json`
 - `upstream-manifest.json`
 - `init-cloud-sandbox-v0.4.1-dev.bash`
+
+## P9-B entry reconciliation — 2026-08-22
+
+- P9-A已在commit `8ef5ec6f396c7ae022231ace14717fd6630a7be0`完成stable identity物化；当前package/Release contract/bootstrap/acceptance均为`v0.4.1`，工作树clean。
+- P9-A预封板ZIP为22 entries、85,910 bytes、SHA-256 `94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291`；P9-B必须从clean P9-A HEAD重新双构建确认，不能直接抄写该观察值。
+- P9-B唯一允许改变的Release外部字节是`init-cloud-sandbox-v0.4.1.bash`中的默认`HOOKS_SHA256`；bootstrap不在ZIP allowlist，因此写hash后ZIP必须保持完全相同。
+- local seal完成状态与sealed-source Cloud PASS必须分开：本地可冻结ZIP/bootstrap SHA与Cloud operator；Cloud结果回传前ROADMAP/acceptance只能写`SEALED_SOURCE_CLOUD_PENDING`，P9-C继续未授权。
+- P9-B不修改package、Release contract、manifest、runtime bundle、installed transition、production runtime、README、ARCHITECTURE或DESIGN；若双构建出现不同ZIP身份或需要改变这些输入，立即停止并重新seal/Discovery。
+- v0.4.0 precedent将P9-B本地seal evidence与sealed-source Cloud operator放在同一stable acceptance：本地段冻结P9-A起点、ZIP entries/size/SHA、bootstrap SHA与pending marker；operator只链接稳定template并要求expected HEAD三点一致。
+- 当前bootstrap test已经会在non-zero默认hash时要求`assert_hooks_checksum_configured`成功；还需为v0.4.1 current candidate补最近边界，直接证明bootstrap默认SHA等于从当前Release输入构建的ZIP SHA，并冻结P9-B local evidence/operator状态。
+- `tests/release-package.test.js`实际上已具备seal核心关系断言：一旦bootstrap默认SHA非零，就必须等于现场双构建ZIP SHA；P9-B只需增加“local seal marker出现时默认SHA不得为零、acceptance中的ZIP/bootstrap SHA必须匹配现场字节”的状态绑定。
+- 当前v0.4.1 acceptance的0～6节属于已执行dev Source/Candidate历史并保留dev anchors；P9-B应像v0.4.0 precedent一样在它们之前新增stable local-seal evidence与sealed-source operator，避免把历史run sheet改写成新的Cloud结果。
