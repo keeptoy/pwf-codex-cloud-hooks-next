@@ -119,21 +119,25 @@ Codex Hook stdin JSON
 - Phase 8：复用Phase 7 evaluator增加hard gating；实施前必须重新Discovery writer/counter/lock/cache/Resume/rollback。
 - Phase 9：每条版本列车重复进入的Release standing gate，不是固定的产品版本0.9.0。
 
-## Follow-up questions requiring dedicated Discovery
+## Follow-up Discovery reassessment
 
 ### Closed plan versus active pointer
 
-- planning-with-files自动Hook只解析`PLAN_ID`、`.active_plan`、newest plan和legacy root；不会根据对话主题创建或切换计划。
-- skill的`init-session.sh`仅在显式slug-mode初始化时写`.planning/.active_plan`。
-- runtime不解析计划是否closed，因此“目录仍被指向”和“计划已关闭”可以同时成立；是否需要inactive/closed pointer协议属于后继治理决策。
+- planning-with-files 的 scoped `init-session.sh` 会先创建新计划目录和三份 planning 文件，然后自动把 `.planning/.active_plan` 改写为新 `PLAN_ID`；已有计划也可由 `set-active-plan.sh` / `set-active-plan.ps1` 显式切换。
+- Hook/runtime 的职责不同：它只按 `PLAN_ID` → `.active_plan` → newest scoped plan → legacy root 解析已有状态，不从自然语言对话推断计划身份，也不解析 `closed`。
+- 因此“技能在新任务初始化时自动切换”与“resolver 不理解 closed”可以同时成立。按正常技能工作流，新复杂任务一旦初始化，旧 Phase 9 指针自然退场；下一计划尚未建立时保留最后一份可恢复记录，是当前 last-active/recovery 模型的自然结果。
+- **重新分类：这不是当前产品缺陷，也不需要单独 Discovery。** 只有未来明确要求表达机器可判定的 `no active plan`、或必须消除新计划创建前的一次旧上下文注入时，才需要设计 inactive sentinel/clear-pointer 语义。
 
 ### Uninstall ownership admission
 
-- install和repair会调用严格current/predecessor admission，阻止symlink、unknown manifest、unknown runtime entry和content drift。
-- `uninstall()`当前在backup和requirements owned-block removal后直接递归删除固定runtime目录，没有复用`assertSafeRuntimeForInstall()`。
-- 这可能表示“显式uninstall拥有整个固定runtime目录”的有意合同，也可能在symlinked/unknown runtime场景形成fail-closed缺口。
-- 当前installer tests覆盖健康安装的可卸载性和unknown drift对doctor/install/repair的阻断，但未冻结unknown/symlinked runtime的uninstall负向语义。
-- 结论：记录为高价值专项Discovery候选，不在本次分析中宣称已确认product defect。
+- README 的 Pre-1.0 支持边界明确要求遇到 unknown drift 时先保存 doctor/backup 证据，再走“明确卸载/清理流程重新安装”；历史合同也把 current uninstall 描述为拥有 managed runtime 与 requirements marker。因此，显式 uninstall 允许删除固定 runtime 目录中的 unknown 普通文件，是有意的 recovery/cleanup 语义，不应直接复用会拒绝 unknown inventory 的 `assertSafeRuntimeForInstall()`。
+- Windows disposable fixture 证明：只有一个陌生 `operator-note.txt`、且没有有效 installed manifest 时，uninstall 返回成功，删除 runtime，并在 backup 中逐字保留陌生文件。这与上述合同一致。
+- 同一 fixture 中，runtime 自身是 junction 时，Windows 在 backup 重建 junction 处以 `EPERM` 失败并保留 target；这是平台偶然保护，不是 installer 主动拒绝，也不能作为稳定合同。
+- **已确认的独立缺口：** 当 `<codex-home>/hooks` 父目录是指向 fixture 外部目录的 junction 时，uninstall 返回成功；backup 保存了外部 runtime 字节，但随后 `fs.rmSync(paths.runtime, {recursive:true})` 穿透父 junction，删除了外部 `planning-with-files` 目录和 sentinel，父 junction 本身仍存在。
+- 根因是 uninstall 在 `backup()` 和递归删除前没有像 install admission 那样 `lstat` 检查 `<codex-home>/hooks` 与 runtime root；`captureSharedState()` 只冻结 requirements 和 manifest，不能建立 runtime path containment。
+- 这应被分类为 **uninstall path-safety defect**，而不是 unknown ownership policy 缺陷。至少 Windows junction 已有真实证据；POSIX 父 symlink 是否同样可复现仍需 Linux gate，不能用 Windows 结果代替。
+- 合理修复方向是增加 uninstall 专用的窄路径准入：拒绝 symlink/junction/special path 与越界父路径，同时继续允许 unknown regular files/directories 被备份后清理。不能原样复用 install 的 exact manifest/inventory/hash admission，否则会破坏 README 承诺的 unknown-drift recovery escape hatch。
+- 应新增三类回归：unknown regular entry 仍可备份并卸载；direct runtime link 与 linked parent 在任何写入/backup 前拒绝；Linux 对 POSIX symlink 路线零 skip。runtime 并发替换窗口可在同一 patch Discovery 中继续审计，但本轮尚未用 race fixture 证明。
 
 ## Verification evidence
 

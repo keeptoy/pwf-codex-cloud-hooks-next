@@ -6,11 +6,11 @@
 
 ## Next Step
 
-等待维护者决定是否为 active-pointer 关闭语义、uninstall ownership admission 或后继 Product Phase 另开专项 Discovery；当前不实施任何修复或新功能。
+等待维护者决定是否为已确认的 uninstall parent-link path-safety 缺口另开兼容性 patch Discovery/implementation；当前不实施 production 修复。
 
 ## Current Phase
 
-Phase 5 complete / analysis persisted / follow-up undecided
+Phase 6 complete / follow-up Discovery persisted
 
 ## Phases
 
@@ -49,6 +49,14 @@ Phase 5 complete / analysis persisted / follow-up undecided
 - [x] 将 `.planning/.active_plan` 显式切换到本分析记录。
 - **Status:** complete
 
+### Phase 6: Follow-up Discovery
+
+- [x] 区分“初始化计划时自动切换指针”与“根据对话自动识别计划”。
+- [x] 重新分类 closed plan / active pointer 是否构成产品问题。
+- [x] 用 disposable fixture 核对 uninstall 的 unknown-state 与 symlink/junction 边界。
+- [x] 持久化结论并执行相称验证。
+- **Status:** complete
+
 ## Key Questions
 
 1. 当前产品和 Release 状态是什么？
@@ -64,8 +72,10 @@ Phase 5 complete / analysis persisted / follow-up undecided
 |---|---|
 | 将本次工作保持为只读分析与 planning 持久化 | 用户没有授权 production、contract、Release 或远端变更 |
 | 新建独立 scoped plan，不回写已关闭 Phase 9 计划 | 保留 Phase 9 的时间语义，避免把新分析伪装成 Release gate 延续 |
-| 显式切换 `.active_plan` | planning-with-files Hook 只读取既有指针，不会从对话主题自动切换 |
+| 本次显式切换 `.active_plan` | 本次 planning 文件由仓库编辑流程创建；标准 scoped `init-session.sh` 会在初始化时自动完成同一切换 |
 | 把 uninstall 边界记为待 Discovery 问题而非已确认缺陷 | 静态代码显示其未复用 install admission，但是否把固定 runtime 目录整体视为 owned 仍需专门冻结合同和负向测试 |
+| closed plan / active pointer 不再作为缺陷候选 | scoped 计划初始化会自动改写指针；保留 last-active 记录符合当前恢复模型 |
+| 将 uninstall 问题收窄为 parent-link path safety | unknown regular entries 的清理由 README 明确支持；Windows junction fixture 已证明可越界删除外部 runtime |
 
 ## Authorization
 
@@ -86,7 +96,9 @@ Phase 5 complete / analysis persisted / follow-up undecided
 | Windows `rg tests\\*.test.js` 把 glob 当作非法字面路径 | 1 | 改用 `rg -g '*.test.js'` |
 | 沙箱内 Node test runner 对 19 个 test file 均报 `spawn EPERM` | 1 | 在获准的正常进程环境重跑，取得 177 tests / 0 fail 的真实结果 |
 | 沙箱内 Git Bash 无法创建 signal pipe，报 Win32 error 5 | 1 | 在获准的正常进程环境重跑 `bash -n` 并通过 |
+| 沙箱内 discovery driver 的 child `spawnSync` 无输出，后续 `.trim()` 触发 `TypeError` | 1 | 在获准的正常进程环境重跑并取得完整 fixture 证据 |
+| 组合搜索包含不存在的 `tests/upstream.test.js` | 1 | 后续只使用实际存在的测试路径 |
 
 ## Current Status
 
-`SOURCE_LOGIC_ROUTE_ANALYSIS_PERSISTED / NO_PRODUCTION_CHANGE / FOLLOW_UP_DISCOVERY_UNDECIDED`
+`FOLLOW_UP_DISCOVERY_COMPLETE / ACTIVE_POINTER_NOT_A_DEFECT / UNINSTALL_PARENT_LINK_PATH_SAFETY_DEFECT_CONFIRMED / NO_PRODUCTION_CHANGE`

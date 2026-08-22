@@ -85,4 +85,28 @@
 
 ## Current Status
 
-`PERSISTENCE_COMPLETE / ACTIVE_POINTER_SWITCHED / LOCAL_COMMIT_READY`
+`FOLLOW_UP_DISCOVERY_COMPLETE / UNINSTALL_PATH_SAFETY_DEFECT_CONFIRMED / NO_PRODUCTION_CHANGE`
+
+### Phase 6: Follow-up Discovery
+
+- **Status:** complete
+- 复读 planning-with-files v3.8.2 的 `SKILL.md`、`init-session.sh`、`set-active-plan.sh`、`resolve-plan-dir.sh`，确认 scoped 初始化会自动切换 `.active_plan`，resolver 本身只解析已有文件状态。
+- 将 closed plan / active pointer 从“专项 Discovery 问题”降级为 last-active/recovery 模型说明；当前没有建立 `no active plan` 机器状态的需求。
+- 阅读 `install.js` 的 `backup()`、`assertSafeRuntimeForInstall()`、`uninstall()`，以及 README Pre-1.0 cleanup 合同和现有 installer tests。
+- 在系统临时目录运行 disposable Windows fixture；所有 fixture 均在校验其绝对路径属于系统临时目录后清理。
+
+| Probe | Result | Interpretation |
+|---|---|---|
+| unknown regular runtime file，无有效 manifest | uninstall 成功；runtime 删除；backup 逐字保留 sentinel | 有意的 explicit cleanup 语义 |
+| runtime root junction | backup 创建 junction 时 `EPERM`；target 保留 | 平台偶然失败，不是稳定拒绝合同 |
+| `<codex-home>/hooks` parent junction | uninstall 成功；backup 保留 sentinel；外部 runtime 被递归删除 | 已确认 path-containment 缺口 |
+
+- 删除 disposable discovery driver；工作区未保留临时测试代码或 fixture。
+- 现有 `tests/installer.test.js`：37 tests，36 pass，0 fail，1 个 Linux-only honest skip。
+
+### Phase 6 Errors
+
+| Error | Attempt | Resolution |
+|---|---:|---|
+| 沙箱内 discovery driver 的 child `spawnSync` 无输出，后续 `.trim()` 触发 `TypeError` | 1 | 判断为既有 `spawn EPERM` 限制；获准后在正常进程环境重跑并取得完整证据 |
+| 一次组合 `rg` 包含不存在的 `tests/upstream.test.js`，命令以 code 1 结束 | 1 | 有效输出已取得；后续只使用实际存在的测试路径 |
