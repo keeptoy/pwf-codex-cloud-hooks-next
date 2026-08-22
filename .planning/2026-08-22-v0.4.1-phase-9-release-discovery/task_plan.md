@@ -8,12 +8,12 @@
 
 ## Next Step
 
-等待维护者另行明确授权P9-E pointer-only Latest promotion设计/操作入口；授权前不修改Release metadata，不轮转
-accepted/fallback角色，也不提前进入P9-F retirement。
+等待维护者push当前P9-E operator commit，按版本acceptance依次运行只读preflight、唯一pointer mutation与只读postflight；
+回传最终exit code和`PWF_P9E_*`证据前不写P9-E PASS，不进入P9-F retirement。
 
 ## Current Phase
 
-Phase 5 complete / P9-D Published Release Cloud PASS; stop before Phase 6
+Phase 6 in progress / P9-E operator ready; maintainer pointer promotion pending
 
 ## Phases
 
@@ -55,7 +55,7 @@ Phase 5 complete / P9-D Published Release Cloud PASS; stop before Phase 6
 
 - [ ] Published Release PASS 后，由维护者执行 pointer-only Latest promotion。
 - [ ] 核对新 accepted、immediate fallback 和 immutable bytes 均未改写。
-- **Status:** pending / not authorized
+- **Status:** in progress / operator materialized；maintainer promotion and postflight pending
 
 ### Phase 7: P9-F retirement and next-train handoff
 
@@ -78,7 +78,8 @@ Phase 5 complete / P9-D Published Release Cloud PASS; stop before Phase 6
 - 已完成授权：P9-B exact-hash local seal、sealed-source Cloud教程与验收、planning/acceptance/ROADMAP evidence写回和本地commit。
 - 已完成授权：P9-C tag source/双资产身份冻结、Pre-release publication与download audit、provenance/acceptance/ROADMAP evidence写回和本地commit。
 - 已完成授权：P9-D Published Release Cloud operator、维护者Cloud执行、exact evidence写回、planning/acceptance/ROADMAP更新与本地commit。
-- P9-E Latest、角色轮换及其他后继gate均未授权。
+- 当前已授权：P9-E pointer-only Latest promotion操作入口、本地守卫、planning/acceptance/ROADMAP更新与本地commit；维护者负责push、唯一Release metadata mutation和只读postflight。
+- P9-F retirement及其他后继gate均未授权。
 - 每一关键 gate 必须在专项设计和维护者明确授权后进入。
 
 ## Stop Conditions
@@ -109,4 +110,4 @@ Phase 5 complete / P9-D Published Release Cloud PASS; stop before Phase 6
 
 ## Current Status
 
-`P9_D_PUBLISHED_RELEASE_CLOUD_PASS / PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED / STOP_BEFORE_P9_E`
+`P9_E_OPERATOR_READY / MAINTAINER_POINTER_PROMOTION_PENDING / STOP_BEFORE_P9_F`

@@ -60,7 +60,8 @@ test("v0.4.1 sealed-source patch train preserves the accepted and fallback ident
     /P9-B sealed-source Cloud、P9-C immutable publication与P9-D Published Release Cloud均PASS/);
   assert.match(roadmap, /`v0\.4\.1` published prerelease candidate/);
   assert.match(roadmap, /P9-D Published Release Cloud PASS/);
-  assert.match(roadmap, /P9-E Latest与角色轮换仍未授权/);
+  assert.match(roadmap, /P9-E operator ready、maintainer pointer promotion pending/);
+  assert.match(roadmap, /P9-F retirement仍未授权/);
   assert.match(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.0`/);
   assert.match(roadmap,
@@ -619,7 +620,8 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /P9-B sealed-source Cloud[^\n]*`PASS`/);
     assert.match(acceptance, /P9-C immutable publication[^\n]*`PASS`/);
     assert.match(acceptance, /P9-D Published Release Cloud[^\n]*`PASS`/);
-    assert.match(acceptance, /P9-E \/ Latest[^\n]*`NOT_AUTHORIZED`/);
+    assert.match(acceptance, /P9-E \/ Latest[^\n]*`MAINTAINER_PROMOTION_PENDING`/);
+    assert.match(acceptance, /P9-F retirement[^\n]*`NOT_AUTHORIZED`/);
     assert.match(acceptance,
       /V0_4_1_SOURCE_CANDIDATE_CLOUD_PASS \/ STOP_BEFORE_SEAL \/ RELEASE_NOT_AUTHORIZED/);
     assert.match(acceptance,
@@ -705,7 +707,10 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(p9dOperator, /必须停止在P9-E前/);
     assert.doesNotMatch(p9dOperator, /set -Eeuo pipefail|readonly BOOTSTRAP_URL=|readonly ZIP_URL=/,
       "version operator must not copy the shared Published Release Bash authority");
-    const p9dEvidence = acceptance.slice(p9dEvidenceAt, historicalDevAt);
+    assert.match(acceptance, /^<a name="v0-4-1-p9-e-latest-promotion-operator"><\/a>$/m);
+    const p9eAt = acceptance.indexOf('<a name="v0-4-1-p9-e-latest-promotion-operator"></a>');
+    assert.ok(p9eAt > p9dEvidenceAt && historicalDevAt > p9eAt);
+    const p9dEvidence = acceptance.slice(p9dEvidenceAt, p9eAt);
     for (const fact of [
       "b11464b85df8ff4ed90c34492286a0b1b64f32ca",
       "99885b854bd9621c3340e99f031bf83ceb58414d",
@@ -721,6 +726,28 @@ test("change history, programme, provenance, and current acceptance keep separat
       "PWF_PUBLIC_ZIP_BOUNDARY_IMPORTER=PASS", "SNAPSHOT_LEFTOVERS=0", "PWF_PUBLIC_POST_RESUME=PASS",
       "P9_D_PUBLISHED_RELEASE_CLOUD_PASS / PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED / STOP_BEFORE_P9_E",
     ]) assert.match(p9dEvidence, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    const p9eOperator = acceptance.slice(p9eAt, historicalDevAt);
+    for (const fact of [
+      "99885b854bd9621c3340e99f031bf83ceb58414d",
+      "94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291",
+      "1832db08c16b4f7fde88df2699384f1fff8e324909b0e024cb6ef216aea30a43",
+      "fe8cd7f284ea2849f634aa68813dbb0f2cca83f9",
+      "24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3",
+      "4ae21c1fc99f52b1382543fac437096d4db1d3415cb40df578f29ed82cc4c64f",
+      "git push origin 0.4.1",
+      "gh release edit v0.4.1 --repo keeptoy/pwf-codex-cloud-hooks-next --prerelease=false --latest",
+      "PWF_P9E_OPERATOR_HEAD", "PWF_P9E_PREVIOUS_LATEST=v0.4.0", "PWF_P9E_PREFLIGHT=PASS",
+      "PWF_P9E_POINTER_PROMOTION=PASS", "PWF_P9E_LATEST=v0.4.1", "PWF_P9E_ACCEPTED=v0.4.1",
+      "PWF_P9E_IMMEDIATE_FALLBACK=v0.4.0", "PWF_P9E_DEEPER_FALLBACK=v0.3.5",
+      "PWF_P9E_POSTFLIGHT=PASS",
+      "P9_E_OPERATOR_READY / MAINTAINER_POINTER_PROMOTION_PENDING / STOP_BEFORE_P9_F",
+    ]) assert.match(p9eOperator, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(p9eOperator, /current Latest[^\n]*`v0\.4\.0`/);
+    assert.match(p9eOperator, /停止在P9-F前/);
+    assert.equal((p9eOperator.match(/^gh release edit v0\.4\.1 .*--prerelease=false --latest$/gm) || []).length, 1);
+    assert.doesNotMatch(p9eOperator,
+      /gh release (?:create|delete|upload)|git tag|refs\/tags\/v0\.4\.1|--notes|--title|--target/,
+      "P9-E operator must not recreate assets, mutate refs, or widen the pointer-only write");
     const v041Provenance = provenance.split(/\r?\n/)
       .find(line => line.startsWith("| `v0.4.1` |")) || "";
     for (const fact of [

@@ -175,3 +175,13 @@
 - 公开ZIP内builder确认22 entries、85,910 bytes与SHA-256`94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291`；ZIP内importer确认四个upstream runtime仍为exact pristine hashes。
 - manifest schema 4、Release/bundle schema 2、12-file installed inventory、4-file pristine upstream、authoritative bundle inventory、adapter-only policy、公开ZIP重新下载SHA与零snapshot residue全部闭合。
 - P9-D结束只证明公开默认下载链已经验收；`v0.4.1`仍是Pre-release candidate，P9-E pointer-only Latest、accepted/fallback轮转和P9-F retirement均需独立授权。
+
+## P9-E entry reconciliation — 2026-08-23
+
+- 维护者“继续下一步”授权P9-E operator/materialization；智能体只准备本地操作单、守卫与commit，维护者仍负责push和GitHub Release metadata写入。
+- 只读GitHub preflight确认`origin/0.4.1`为`4a31450ea00f741c85e770b106454efac6eb8dc3`，当前Latest精确为`v0.4.0`；不存在v0.4.0当年观察到的旧Latest control-plane drift，operator应只接受`v0.4.0`作为previous Latest。
+- `v0.4.1`仍是非draft Pre-release，lightweight tag source为`99885b854bd9621c3340e99f031bf83ceb58414d`，两项公开资产的name/size/digest与P9-C/P9-D完全一致。
+- `v0.4.0`仍是非draft、非prerelease的stable Latest，tag source`fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`与85,519/21,565-byte双资产保持不变；它是promotion后的immediate fallback。
+- P9-E唯一允许的远端写是`gh release edit v0.4.1 --prerelease=false --latest`；不得改title/notes/tag/target/assets、创建或删除Release、移动ref、push其他ref或执行cleanup。
+- mutation状态未知时先跑只读postflight，不能重复猜测写入；postflight必须核对v0.4.1 accepted/Latest、v0.4.0 immediate fallback、两版tag与双资产未改写，并重新下载v0.4.1双资产校验字节。
+- P9-E PASS回传前ROADMAP角色仍保持candidate=`v0.4.1`、accepted=`v0.4.0`、immediate fallback=`v0.3.5`；P9-F retirement继续未授权。

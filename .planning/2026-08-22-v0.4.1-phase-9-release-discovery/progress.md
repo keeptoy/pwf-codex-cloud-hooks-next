@@ -232,3 +232,23 @@
 ## Current Status
 
 `P9_D_PUBLISHED_RELEASE_CLOUD_PASS / PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED / STOP_BEFORE_P9_E`
+
+## 2026-08-23 — P9-E authorization and preflight
+
+- 维护者“继续下一步”授权P9-E operator/materialization；范围不包含智能体远端写或P9-F retirement。
+- entry HEAD `4a31450ea00f741c85e770b106454efac6eb8dc3`工作树clean，本地与`origin/0.4.1`同步；P9-D evidence commit已由维护者push。
+- GitHub只读审计确认current Latest=`v0.4.0`；v0.4.1仍为非draft Pre-release、tag source`99885b…14d`、双资产exact；v0.4.0仍为stable Latest、tag source`fe8cd7f…3f9`、双资产exact。
+- 当前路线收窄为：operator push/exact HEAD→只读preflight→唯一`gh release edit v0.4.1 --prerelease=false --latest`→只读postflight/公开双资产重新下载→回传；未知写入状态先postflight，不重复mutation。
+- P9-E evidence回传前不更新accepted/fallback角色，不写PASS；P9-F与任何cleanup继续未授权。
+- P9-E最近边界intentional-red为17项中15 pass / 2 expected fail，准确命中ROADMAP尚未切换operator-ready状态与acceptance尚无P9-E operator。
+- operator已冻结当前Latest=`v0.4.0`，校验v0.4.1 candidate与v0.4.0 future immediate fallback的tag/Release/双资产；唯一产品状态mutation精确为`gh release edit v0.4.1 --prerelease=false --latest`。
+- postflight会重新验证v0.4.1 stable Latest、v0.4.0 immediate fallback、两版immutable资产，并重新下载v0.4.1双资产核对size/SHA；UNKNOWN mutation必须先postflight，禁止重复猜测写入。
+- acceptance/ROADMAP/task plan现保持P9-E operator ready、maintainer promotion pending、stop-before-P9-F；accepted/fallback角色尚未提前轮转。
+- acceptance内11个PowerShell block全部通过`ScriptBlock::Create`静态语法解析；本机`gh release edit --help`确认当前CLI支持`--prerelease`布尔值与`--latest`指针参数。
+- repository/Release聚焦复验：17 pass / 0 fail / 0 skipped；previous Latest、双版本tag/assets、唯一mutation、UNKNOWN→postflight与stop-before-P9-F守卫全部闭合。
+- 完整Windows runner PASS：184 tests / 158 pass / 0 fail / 26 skipped；没有新增Linux/POSIX结论，也没有重跑已关闭Cloud gate。
+- 6个changed paths仅属于活动planning、ROADMAP、版本acceptance与治理测试；与Release v2 entries及ZIP外bootstrap交集为0，`git diff --check` PASS，sealed/public/production字节均未改变。
+
+## Current Status
+
+`P9_E_OPERATOR_READY / MAINTAINER_POINTER_PROMOTION_PENDING / STOP_BEFORE_P9_F`
