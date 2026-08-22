@@ -47,23 +47,23 @@ function currentRoleWindow() {
   return { accepted, candidate, immediateFallback, roadmap };
 }
 
-test("v0.4.1 sealed-source patch train preserves the accepted and fallback identity window", () => {
+test("v0.4.1 accepted patch train preserves the fallback identity window", () => {
   const { accepted, candidate, immediateFallback, roadmap } = currentRoleWindow();
   assert.equal(candidate, "v0.4.1");
-  assert.equal(accepted, "v0.4.0");
-  assert.equal(immediateFallback, "v0.3.5");
-  assert.notEqual(candidate, accepted);
+  assert.equal(accepted, "v0.4.1");
+  assert.equal(immediateFallback, "v0.4.0");
+  assert.equal(candidate, accepted);
   assert.match(roadmap, /compatibility\/security patch train/);
   assert.match(roadmap, /本地[\s\S]*path-safety gate 与开发候选 exact source/);
   assert.match(roadmap, /P9-B Linux零skip、deterministic ZIP、Fresh\/UserPrompt\/real Resume/);
   assert.match(roadmap,
-    /P9-B sealed-source Cloud、P9-C immutable publication与P9-D Published Release Cloud均PASS/);
-  assert.match(roadmap, /`v0\.4\.1` published prerelease candidate/);
+    /P9-B sealed-source Cloud、P9-C immutable publication、P9-D Published Release Cloud与P9-E Latest promotion均PASS/);
+  assert.match(roadmap, /`v0\.4\.1` accepted\/Latest/);
   assert.match(roadmap, /P9-D Published Release Cloud PASS/);
-  assert.match(roadmap, /P9-E operator ready、maintainer pointer promotion pending/);
+  assert.match(roadmap, /P9-E pointer-only Latest promotion与只读postflight已PASS/);
   assert.match(roadmap, /P9-F retirement仍未授权/);
   assert.match(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
-  assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.0`/);
+  assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.1`/);
   assert.match(roadmap,
     /Phase 4 \/ F3C4完成[\s\S]*形成0\.4\.0功能\/候选基线[\s\S]*后继版本列车与Product Phase另行决策/);
 });
@@ -243,7 +243,7 @@ test("P9-E evidence closes pointer promotion before P9-F retirement", () => {
   const acceptance = read("docs/v0.4.0-cloud-hard-acceptance.md");
   const phase9 = read("docs/history/phase-9-v0.4.0-release-discovery.md");
   const taskPlan = read(".planning/2026-08-19-v0.4.0-phase-9-release-discovery/task_plan.md");
-  const { accepted, candidate, immediateFallback, roadmap } = currentRoleWindow();
+  const { roadmap } = currentRoleWindow();
   const anchor = '<a name="v0-4-0-p9-e-latest-promotion-operator"></a>';
   const start = acceptance.indexOf(anchor);
   const end = acceptance.indexOf('<a name="v0-4-0-dev-f3c4-aggregate-closure"></a>');
@@ -276,9 +276,6 @@ test("P9-E evidence closes pointer promotion before P9-F retirement", () => {
   assert.match(roadmap, /pointer-only promotion与第二轮对象退役均已收敛/);
   assert.match(taskPlan,
     /P9_F_SECOND_RETIREMENT_PASS \/ V0_4_0_TRAIN_CLOSED \/ NEXT_TRAIN_UNDECIDED/);
-  assert.equal(candidate, "v0.4.1");
-  assert.equal(accepted, "v0.4.0");
-  assert.equal(immediateFallback, "v0.3.5");
 });
 
 test("P9-F retires only obsolete working-tree role files and keeps durable rollback evidence", () => {
@@ -358,8 +355,10 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   const artifact = JSON.parse(read(currentArtifactPath));
   const releasePaths = artifact.entries.map(item => item.path);
   const docs = actual.filter(item => item.startsWith("docs/"));
-  const { accepted, candidate } = currentRoleWindow();
-  const roleVersions = [...new Set([accepted, candidate])].sort();
+  const { accepted, candidate, immediateFallback } = currentRoleWindow();
+  const roleVersions = [...new Set([
+    accepted, candidate, ...(candidate === accepted ? [immediateFallback] : []),
+  ])].sort();
   const rootBootstraps = actual.filter(item => /^init-cloud-sandbox-v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\.bash$/.test(item));
   const acceptanceDocs = docs.filter(item => /^docs\/v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?-cloud-hard-acceptance\.md$/.test(item));
 
@@ -543,7 +542,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   const nextDeltaStart = changelog.indexOf("\n## ", currentDeltaStart + 1);
   const currentDelta = changelog.slice(currentDeltaStart,
     nextDeltaStart === -1 ? changelog.length : nextDeltaStart);
-  if (candidate === accepted) {
+  if (candidate === "v0.4.0") {
     for (const durableReleaseFact of [
       /manifest schema 4/,
       /runtime bundle[^\n]*Release artifact[^\n]*v2/,
@@ -560,16 +559,12 @@ test("change history, programme, provenance, and current acceptance keep separat
     ]) assert.match(currentDelta, durableReleaseFact);
     assert.doesNotMatch(currentDelta, /P9-[A-F]|仍须后继 gate|真实 Cloud[^\n]*仍须|zero-hash pre-seal/,
       "released version delta must not retain pre-release gate state or Phase 9 execution chronology");
-  } else {
+  } else if (candidate === "v0.4.1") {
     assert.match(currentDelta, /path topology/);
     assert.match(currentDelta, /unknown普通文件和目录仍会先完整备份再清理/);
-    if (/P9-B local seal[^\n]*`PASS`/.test(acceptance)) {
-      assert.match(currentDelta, /exact SHA并fail closed/);
-      assert.doesNotMatch(currentDelta, /zero hash/);
-    } else {
-      assert.match(currentDelta, /64位[\s\S]*zero hash[\s\S]*fail closed/);
-    }
-    assert.doesNotMatch(currentDelta, /\b[a-f0-9]{64}\b|P9-[A-F]|Published Release Cloud/);
+    assert.match(currentDelta, /exact SHA并fail closed/);
+    assert.match(currentDelta, /immutable publication[\s\S]*Published Release Cloud[\s\S]*pointer-only promotion/);
+    assert.doesNotMatch(currentDelta, /\b[a-f0-9]{64}\b|P9-[A-F]|仍须后继 gate|未完成gate|zero hash/);
   }
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 
@@ -611,7 +606,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotMatch(changelog, /Successor 迁移来源链/);
 
   assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));
-  if (candidate !== accepted) {
+  if (candidate === "v0.4.1") {
     assert.match(acceptance, /^<a name="v0-4-1-gate-status"><\/a>$/m);
     assert.match(acceptance, /Windows path-topology local implementation[^\n]*`PASS`/);
     assert.match(acceptance,
@@ -620,7 +615,7 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(acceptance, /P9-B sealed-source Cloud[^\n]*`PASS`/);
     assert.match(acceptance, /P9-C immutable publication[^\n]*`PASS`/);
     assert.match(acceptance, /P9-D Published Release Cloud[^\n]*`PASS`/);
-    assert.match(acceptance, /P9-E \/ Latest[^\n]*`MAINTAINER_PROMOTION_PENDING`/);
+    assert.match(acceptance, /P9-E \/ Latest[^\n]*`PASS`/);
     assert.match(acceptance, /P9-F retirement[^\n]*`NOT_AUTHORIZED`/);
     assert.match(acceptance,
       /V0_4_1_SOURCE_CANDIDATE_CLOUD_PASS \/ STOP_BEFORE_SEAL \/ RELEASE_NOT_AUTHORIZED/);
@@ -708,8 +703,10 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.doesNotMatch(p9dOperator, /set -Eeuo pipefail|readonly BOOTSTRAP_URL=|readonly ZIP_URL=/,
       "version operator must not copy the shared Published Release Bash authority");
     assert.match(acceptance, /^<a name="v0-4-1-p9-e-latest-promotion-operator"><\/a>$/m);
+    assert.match(acceptance, /^<a name="v0-4-1-p9-e-latest-promotion-evidence"><\/a>$/m);
     const p9eAt = acceptance.indexOf('<a name="v0-4-1-p9-e-latest-promotion-operator"></a>');
-    assert.ok(p9eAt > p9dEvidenceAt && historicalDevAt > p9eAt);
+    const p9eEvidenceAt = acceptance.indexOf('<a name="v0-4-1-p9-e-latest-promotion-evidence"></a>');
+    assert.ok(p9eAt > p9dEvidenceAt && p9eEvidenceAt > p9eAt && historicalDevAt > p9eEvidenceAt);
     const p9dEvidence = acceptance.slice(p9dEvidenceAt, p9eAt);
     for (const fact of [
       "b11464b85df8ff4ed90c34492286a0b1b64f32ca",
@@ -726,7 +723,7 @@ test("change history, programme, provenance, and current acceptance keep separat
       "PWF_PUBLIC_ZIP_BOUNDARY_IMPORTER=PASS", "SNAPSHOT_LEFTOVERS=0", "PWF_PUBLIC_POST_RESUME=PASS",
       "P9_D_PUBLISHED_RELEASE_CLOUD_PASS / PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED / STOP_BEFORE_P9_E",
     ]) assert.match(p9dEvidence, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-    const p9eOperator = acceptance.slice(p9eAt, historicalDevAt);
+    const p9eOperator = acceptance.slice(p9eAt, p9eEvidenceAt);
     for (const fact of [
       "99885b854bd9621c3340e99f031bf83ceb58414d",
       "94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291",
@@ -748,6 +745,13 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.doesNotMatch(p9eOperator,
       /gh release (?:create|delete|upload)|git tag|refs\/tags\/v0\.4\.1|--notes|--title|--target/,
       "P9-E operator must not recreate assets, mutate refs, or widen the pointer-only write");
+    const p9eEvidence = acceptance.slice(p9eEvidenceAt, historicalDevAt);
+    for (const fact of [
+      "PWF_P9E_POINTER_PROMOTION=PASS", "PWF_P9E_LATEST=v0.4.1", "PWF_P9E_ACCEPTED=v0.4.1",
+      "PWF_P9E_IMMEDIATE_FALLBACK=v0.4.0", "PWF_P9E_DEEPER_FALLBACK=v0.3.5",
+      "PWF_P9E_POSTFLIGHT=PASS", "isLatest=true", "isPrerelease=false", "isDraft=false",
+      "P9_E_POINTER_PROMOTION_PASS / V0_4_1_ACCEPTED_LATEST / V0_4_0_IMMEDIATE_FALLBACK / STOP_BEFORE_P9_F",
+    ]) assert.match(p9eEvidence, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
     const v041Provenance = provenance.split(/\r?\n/)
       .find(line => line.startsWith("| `v0.4.1` |")) || "";
     for (const fact of [
@@ -1018,12 +1022,12 @@ test("change history, programme, provenance, and current acceptance keep separat
   }
 
   if (candidate === accepted) {
-    assert.match(acceptance, /## 5\. Latest promotion 与 postflight/);
+    assert.match(acceptance, /Latest promotion[^\n]*postflight/);
     assert.match(acceptance, /isLatest=true[\s\S]*isPrerelease=false[\s\S]*isDraft=false/);
-    assert.match(acceptance, /POINTER_ONLY_PROMOTION_POSTFLIGHT=PASS/);
+    assert.match(acceptance, /PWF_P9E_POSTFLIGHT=PASS/);
     assert.match(acceptance, new RegExp(`${escapedCandidate} 成为 accepted/Latest`));
     assert.match(acceptance, new RegExp(`${immediateFallback.replaceAll(".", "\\.")} 成为 immediate[\\s\\S]*fallback`));
-    assert.match(acceptance, /POINTER_ONLY_PROMOTION_POSTFLIGHT=PASS/);
+    assert.match(acceptance, /P9_E_POINTER_PROMOTION_PASS/);
   }
 });
 

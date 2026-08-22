@@ -185,3 +185,14 @@
 - P9-E唯一允许的远端写是`gh release edit v0.4.1 --prerelease=false --latest`；不得改title/notes/tag/target/assets、创建或删除Release、移动ref、push其他ref或执行cleanup。
 - mutation状态未知时先跑只读postflight，不能重复猜测写入；postflight必须核对v0.4.1 accepted/Latest、v0.4.0 immediate fallback、两版tag与双资产未改写，并重新下载v0.4.1双资产校验字节。
 - P9-E PASS回传前ROADMAP角色仍保持candidate=`v0.4.1`、accepted=`v0.4.0`、immediate fallback=`v0.3.5`；P9-F retirement继续未授权。
+
+## P9-E post-promotion reconciliation — 2026-08-23
+
+- 维护者明确确认P9-E通过；按AGENTS交互纪律直接写回PASS，不重新执行pointer mutation、不要求重跑。
+- 独立只读GitHub postflight确认Latest现为`v0.4.1`，其Release为非draft、非prerelease；tag source仍为`99885b854bd9621c3340e99f031bf83ceb58414d`，双资产name/size保持85,910-byte ZIP与21,565-byte bootstrap。
+- `v0.4.0`仍为非draft、非prerelease的stable Release；tag source仍为`fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`，85,519/21,565-byte双资产未改写。
+- lifecycle角色因此轮转为accepted/Latest=`v0.4.1`、immediate fallback=`v0.4.0`、deeper fallback=`v0.3.5`；immutable identity继续由provenance保存，当前角色只写ROADMAP。
+- 只读审计时远端`0.4.1` branch仍为P9-D evidence commit `4a31450ea00f741c85e770b106454efac6eb8dc3`，本地P9-E operator commit `c06d89ba19a12f75caeec98b15b749e9e0965319`尚待维护者随本次evidence commit一并push；这不改变已确认的Release product state，但交接必须明确branch需要fast-forward。
+- P9-F retirement、working-tree role文件清理、refs清理与下一列车仍未授权。
+- P9-E到P9-F之间是一个合法的过渡窗口：working tree暂时同时保留新accepted `v0.4.1`与新immediate fallback `v0.4.0`的bootstrap/acceptance；只有P9-F才能决定旧role文件的RETIRE/MIGRATE/KEEP。
+- publication oracle轮转后，旧`v0.4.0` installer直接覆盖`v0.4.1`会在更早的installed-manifest identity检查处fail closed，而不再必然列出v0.3.5时代的contract文件差异；稳定安全断言应绑定`BLOCKED_UNKNOWN_RUNTIME`与零backup/mutation，不把某代诊断细节冻结为跨版本合同。

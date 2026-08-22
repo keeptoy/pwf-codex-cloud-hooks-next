@@ -8,12 +8,12 @@
 
 ## Next Step
 
-等待维护者push当前P9-E operator commit，按版本acceptance依次运行只读preflight、唯一pointer mutation与只读postflight；
-回传最终exit code和`PWF_P9E_*`证据前不写P9-E PASS，不进入P9-F retirement。
+等待维护者push本地累计的P9-E operator/evidence commits；随后停在P9-F前，只有维护者明确授权P9-F retirement后才进入
+第二轮对象分类，不提前清理working-tree role文件、refs、公开资产或历史证据。
 
 ## Current Phase
 
-Phase 6 in progress / P9-E operator ready; maintainer pointer promotion pending
+Phase 6 complete / P9-E Latest promotion and role rotation PASS; stop before P9-F
 
 ## Phases
 
@@ -53,9 +53,9 @@ Phase 6 in progress / P9-E operator ready; maintainer pointer promotion pending
 
 ### Phase 6: P9-E Latest promotion and role rotation
 
-- [ ] Published Release PASS 后，由维护者执行 pointer-only Latest promotion。
-- [ ] 核对新 accepted、immediate fallback 和 immutable bytes 均未改写。
-- **Status:** in progress / operator materialized；maintainer promotion and postflight pending
+- [x] Published Release PASS 后，由维护者执行 pointer-only Latest promotion。
+- [x] 核对新 accepted、immediate fallback 和 immutable bytes 均未改写。
+- **Status:** complete / v0.4.1 accepted/Latest、v0.4.0 immediate fallback、v0.3.5 deeper fallback；stop before P9-F
 
 ### Phase 7: P9-F retirement and next-train handoff
 
@@ -78,7 +78,7 @@ Phase 6 in progress / P9-E operator ready; maintainer pointer promotion pending
 - 已完成授权：P9-B exact-hash local seal、sealed-source Cloud教程与验收、planning/acceptance/ROADMAP evidence写回和本地commit。
 - 已完成授权：P9-C tag source/双资产身份冻结、Pre-release publication与download audit、provenance/acceptance/ROADMAP evidence写回和本地commit。
 - 已完成授权：P9-D Published Release Cloud operator、维护者Cloud执行、exact evidence写回、planning/acceptance/ROADMAP更新与本地commit。
-- 当前已授权：P9-E pointer-only Latest promotion操作入口、本地守卫、planning/acceptance/ROADMAP更新与本地commit；维护者负责push、唯一Release metadata mutation和只读postflight。
+- 已完成授权：P9-E pointer-only Latest promotion操作入口、维护者唯一Release metadata mutation与只读postflight、角色轮转evidence写回、本地守卫和本地commit。
 - P9-F retirement及其他后继gate均未授权。
 - 每一关键 gate 必须在专项设计和维护者明确授权后进入。
 
@@ -107,7 +107,10 @@ Phase 6 in progress / P9-E operator ready; maintainer pointer promotion pending
 | post-commit使用`v0.4.1^{commit}`复核tag时被PowerShell特殊字符解析干扰 | 1 | 改用`git show-ref --tags v0.4.1`与`git rev-list -n 1 v0.4.1`完成等价只读核验，tag仍为exact sealed source |
 | P9-D evidence intentional-red在受限`--test-isolation=none`模式下有3项`repositoryPaths()` Git spawn返回null | 1 | 预期状态红灯已单独识别；不把sandbox limitation当产品失败，最终聚焦与完整suite改在正常子进程执行面运行 |
 | P9-D evidence写回后旧ROADMAP断言仍冻结P9-B/P9-C二阶段PASS短语 | 1 | 扩展为当前P9-B/P9-C/P9-D三阶段角色窗口；未弱化Cloud evidence或提前授权P9-E |
+| P9-E evidence聚焦复验暴露fallback诊断与working-tree角色窗口断言仍绑定旧版本形态 | 1 | 将安全oracle绑定到稳定fail-closed/零mutation合同，并显式表达P9-E→P9-F过渡窗口，不删除任何role文件 |
+| P9-E evidence首次完整runner的历史v0.4.0测试仍冻结旧current角色 | 1 | 分离immutable历史证据与ROADMAP当前角色；由v0.4.1当前测试守护新accepted/fallback窗口 |
+| 本地commit首次因沙箱无法创建`.git/index.lock` | 1 | 未修改Git索引；改在获准的Git写入执行面提交同一已验证范围 |
 
 ## Current Status
 
-`P9_E_OPERATOR_READY / MAINTAINER_POINTER_PROMOTION_PENDING / STOP_BEFORE_P9_F`
+`P9_E_POINTER_PROMOTION_PASS / V0_4_1_ACCEPTED_LATEST / V0_4_0_IMMEDIATE_FALLBACK / STOP_BEFORE_P9_F`

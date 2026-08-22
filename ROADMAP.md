@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.1` published prerelease candidate；compatibility/security patch train；P9-B sealed-source Cloud、P9-C immutable publication与P9-D Published Release Cloud均PASS；P9-E operator ready、maintainer pointer promotion pending；P9-F retirement仍未授权 |
-| 当前已接受版本 | `v0.4.0`；stable GitHub `Latest`与programme accepted |
-| 当前直接回退版本 | immutable `v0.3.5` immediate fallback |
-| 回退证据链 | immutable `v0.3.4` deeper fallback；更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4与`v0.4.0` Phase 9保持闭合；`v0.4.1`仅修复 installer-owned `hooks`/runtime link、junction与special-path准入，不改变Host ABI、runtime trusted graph或unknown regular cleanup合同。公开bootstrap默认下载链已PASS；P9-E只允许同一Release的pointer-only Latest mutation与只读postflight，尚未执行，P9-F未授权 |
+| 当前开发列车 | `v0.4.1` accepted/Latest；compatibility/security patch train；P9-B sealed-source Cloud、P9-C immutable publication、P9-D Published Release Cloud与P9-E Latest promotion均PASS；P9-F retirement仍未授权 |
+| 当前已接受版本 | `v0.4.1`；stable GitHub `Latest`与programme accepted |
+| 当前直接回退版本 | immutable `v0.4.0` immediate fallback |
+| 回退证据链 | immutable `v0.3.5` deeper fallback；`v0.3.4`与更早发布里程碑见 provenance museum |
+| 当前 programme 边界 | Product Phase 4保持闭合；`v0.4.1`仅修复 installer-owned `hooks`/runtime link、junction与special-path准入，不改变Host ABI、runtime trusted graph或unknown regular cleanup合同。公开bootstrap默认下载链与pointer-only promotion均已PASS；P9-F retirement和下一列车仍未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight确认它为
@@ -34,10 +34,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 [`CHANGELOG.md`](CHANGELOG.md)，精确source/资产/SHA见[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，完整Cloud、
 晋级与第二轮退役证据见[`docs/v0.4.0-cloud-hard-acceptance.md`](docs/v0.4.0-cloud-hard-acceptance.md)。
 
-## 3. 已接受基线 `v0.4.0`
+## 3. 已接受基线 `v0.4.1`
 
-`v0.4.0` 是完成Product Phase 4后当前已接受的功能与Release基线。它保持两个既有turn-start events、adapter-only policy、
-pristine upstream与owned runtime信任边界，并在legacy默认不变的前提下完成以下收口：
+`v0.4.1` 是当前已接受的兼容性安全补丁基线。它完整继承`v0.4.0`已经闭合的Product Phase 4功能与Release合同，
+并在不改变Host ABI、adapter-only policy、pristine upstream、owned runtime信任边界和legacy默认行为的前提下，
+补齐installer-owned路径拓扑准入；精确delta见CHANGELOG，底层功能收口仍由下表概括：
 
 | 问题域 | 已完成结果 |
 |---|---|
@@ -55,8 +56,8 @@ pristine upstream与owned runtime信任边界，并在legacy默认不变的前�
 ## 4. 当前开发列车
 
 仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
-bootstrap/acceptance；当前窗口为 v0.4.1 sealed-source candidate + v0.4.0 accepted + v0.3.5 immediate fallback。v0.3.4
-deeper fallback与更早版本均由immutable commit、tag、Release、exact acceptance与
+bootstrap/acceptance；P9-E轮转后的当前窗口为 v0.4.1 accepted/Latest + v0.4.0 immediate fallback + v0.3.5 deeper fallback。
+v0.3.4与更早版本均由immutable commit、tag、Release、exact acceptance与
 publication oracle 恢复；更早历史只留在精选 provenance。
 trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。
 
@@ -70,21 +71,21 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 symlink、junction、非目录component与nested special entry，同时显式uninstall继续允许unknown普通文件/目录被完整备份后清理。
 
 P9-A已把package、Release contract、外部bootstrap和版本acceptance原子收敛为stable `v0.4.1` identity；P9-B随后把
-确定性ZIP的exact SHA写入外部bootstrap并完成本地seal，accepted仍为immutable `v0.4.0`，immediate fallback仍为immutable `v0.3.5`。本地
+确定性ZIP的exact SHA写入外部bootstrap并完成本地seal。本地
 path-safety gate 与开发候选 exact source
 `6c1dd52a3878f59c7140a793b9a2c2a34580b188` 的 Source/Candidate Linux/Cloud 已通过；随后
 `0d470920f42651983062945a129e38838c46f4d7` 只固化 B→C bounded planning 权限交接，不改变候选 ZIP。
 上述dev evidence没有被提升为stable结论；维护者已从exact seal source
 `99885b854bd9621c3340e99f031bf83ceb58414d`完成P9-B Linux零skip、deterministic ZIP、Fresh/UserPrompt/real Resume、
 doctor与deep-check。P9-C随后把lightweight tag固定到同一source，创建非draft Pre-release、上传且仅上传22-entry ZIP与
-ZIP外bootstrap，并完成公开重新下载和tag-source重建审计；`v0.4.1`现为published prerelease candidate，但尚不是accepted
-或Latest。P9-D已从公开bootstrap默认下载链在独立Fresh environment完成4.2→5.2→6→7→8.1→真实8.2→9.2，
-公开ZIP的identity、doctor、inventory、pristine upstream、adapter-only policy与零residue全部闭合。P9-E operator现已
-冻结previous Latest=`v0.4.0`、v0.4.1/v0.4.0双版本immutable identity、唯一pointer mutation与只读postflight；等待维护者
-push和执行，P9-F retirement继续未授权。精确行动边界见活动plan，
+ZIP外bootstrap，并完成公开重新下载和tag-source重建审计。P9-D已从公开bootstrap默认下载链在独立Fresh environment完成
+4.2→5.2→6→7→8.1→真实8.2→9.2，公开ZIP的identity、doctor、inventory、pristine upstream、adapter-only policy与零residue
+全部闭合。P9-E pointer-only Latest promotion与只读postflight已PASS；`v0.4.1` accepted/Latest、`v0.4.0` immediate fallback、
+`v0.3.5` deeper fallback，两版tag/source/assets均未改写。P9-F retirement继续未授权。精确行动边界见活动plan，
 [P9-C publication evidence](docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-p9-c-immutable-publication-evidence)与
 [P9-D Published Release evidence](docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-p9-d-published-release-cloud-evidence)、
-[P9-E operator](docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-p9-e-latest-promotion-operator)均由版本acceptance保存。
+[P9-E operator](docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-p9-e-latest-promotion-operator)与
+[P9-E evidence](docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-p9-e-latest-promotion-evidence)均由版本acceptance保存。
 
 <a name="phase-9-v0-4-0-instance"></a>
 
@@ -93,7 +94,7 @@ push和执行，P9-F retirement继续未授权。精确行动边界见活动plan
 本实例的P9-A～P9-F已关闭：stable identity、ZIP输入、exact ZIP/bootstrap SHA、exact-source Source/Candidate、immutable
 publication audit、公开默认下载链Fresh/Resume Cloud、pointer-only promotion与第二轮对象退役均已收敛。实际顺序为：
 
-`P9-D Published Release Cloud PASS`仍是当前已关闭的公开下载链证据；P9-E只在它之上改变Release metadata，不继承或重跑Cloud。
+`P9-D Published Release Cloud PASS`仍是已关闭的公开下载链证据；P9-E只在它之上改变Release metadata，没有继承或重跑Cloud。
 
 ```text
 P9-A pre-seal materialization
@@ -155,7 +156,7 @@ pre-release；多个低风险 Phase也只有在独立评审后才能进入同一
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立 gate；必须有 use case、latency/token budget与 Cloud证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6进入 Discovery |
 | 8 | `0.8.0-*` | optional hard gating，复用 Phase 7 evaluator | 重新 Discovery writer/counter/atomicity/lock/cache/Resume/rollback；再增加 block cap、escape hatch与 stall state | pending；implementation前必须重新 Discovery |
-| 9 | 当前列车的 `rc.N` → stable | standing Release收口：完整矩阵、最终字节、canary retirement、正式发布 | RC与最终资产分别验收；重新下载双资产；可逆 | standing gate；`v0.3.5`与`v0.4.0` instances complete；`v0.4.1` P9-E operator ready、maintainer pointer promotion pending，P9-F未授权 |
+| 9 | 当前列车的 `rc.N` → stable | standing Release收口：完整矩阵、最终字节、canary retirement、正式发布 | RC与最终资产分别验收；重新下载双资产；可逆 | standing gate；`v0.3.5`与`v0.4.0` instances complete；`v0.4.1` P9-E pointer-only Latest promotion与只读postflight已PASS，P9-F未授权 |
 
 Phase 9是 Release收口，不机械等于 `0.9.0`。例如只完成 Phase 4时，它可以封板 `0.4.0`；如果多个
 Phase经独立 gate后被明确合并，则封板当时获批的同一版本列车。`v0.3.5`的 Phase 9 instance已完成，

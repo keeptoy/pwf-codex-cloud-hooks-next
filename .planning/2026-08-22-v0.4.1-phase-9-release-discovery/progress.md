@@ -252,3 +252,30 @@
 ## Current Status
 
 `P9_E_OPERATOR_READY / MAINTAINER_POINTER_PROMOTION_PENDING / STOP_BEFORE_P9_F`
+
+## 2026-08-23 — P9-E Latest promotion evidence writeback
+
+- 维护者明确确认P9-E通过；本轮直接写回最终结论，不重跑Release mutation，不扩大到P9-F。
+- 只读GitHub postflight确认Latest=`v0.4.1`；v0.4.1与v0.4.0均为非draft、非prerelease，tag source分别保持`99885b854bd9621c3340e99f031bf83ceb58414d`与`fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`。
+- GitHub API列出的v0.4.1资产仍为85,910-byte ZIP与21,565-byte bootstrap；v0.4.0资产仍为85,519-byte ZIP与21,565-byte bootstrap，未发生tag或资产改写。
+- 当前角色应写回accepted/Latest=`v0.4.1`、immediate fallback=`v0.4.0`、deeper fallback=`v0.3.5`，并停止在未授权P9-F之前。
+- 只读审计发现远端branch仍在`4a31450ea00f741c85e770b106454efac6eb8dc3`，本地已包含P9-E operator commit `c06d89ba19a12f75caeec98b15b749e9e0965319`；最终交接需提示维护者fast-forward push本地累计commit。
+- acceptance新增独立P9-E evidence anchor与PASS marker；ROADMAP轮转accepted/Latest=`v0.4.1`、immediate fallback=`v0.4.0`、deeper fallback=`v0.3.5`，CHANGELOG去除已过期的“未完成gate”措辞，活动plan关闭Phase 6并停在P9-F前。
+- 聚焦发布oracle复验：12 pass / 0 fail / 0 skipped；v0.4.1与v0.4.0均可从immutable source重建exact ZIP，direct downgrade继续在backup/mutation前fail closed，clean predecessor→current与owned uninstall/reinstall恢复均PASS。
+- 完整Windows runner最终PASS：184 tests / 158 pass / 0 fail / 26 skipped；SKIP仍全部为既有Linux/POSIX-only case，没有新增平台结论。
+- acceptance内11个PowerShell block全部通过parser；importer check healthy；两处测试与installer `node --check`、`git diff --check`均PASS。
+- 8个changed paths全部属于planning、CHANGELOG、ROADMAP、版本acceptance与治理/oracle测试；与Release v2 ZIP entries及ZIP外bootstrap交集为0，sealed/public bytes未改变。
+- 最终repository/publication oracle复验：23 pass / 0 fail / 0 skipped；active planning、当前/历史角色分离、两版immutable重建和恢复路径全部闭合。
+
+### P9-E evidence validation errors
+
+| Error | Attempt | Resolution |
+|---|---:|---|
+| sandbox内Node test runner再次因`spawn EPERM`无法创建隔离子进程 | 1 | 按既有平台分类改在获准的正常子进程执行面运行；不把sandbox限制当产品失败 |
+| 首次聚焦发布oracle为9 pass / 3 fail | 1 | 一项是测试遗漏解构`immediateFallback`；另一项是v0.4.0→v0.4.1 direct downgrade更早以manifest identity mismatch拒绝，改为冻结稳定fail-closed与零mutation合同，不要求某代文件差异文本 |
+| 首次完整runner为157 pass / 1 fail / 26 skipped | 1 | 历史v0.4.0 P9-E测试仍断言当前角色永远是v0.4.0/v0.3.5；删除历史证据与当前lifecycle的不当耦合，当前v0.4.1角色由独立测试精确守护 |
+| 首次本地commit因沙箱拒绝创建`.git/index.lock` | 1 | 工作树与暂存区未受损；按权限规则改在获准的Git写入执行面创建同一范围commit |
+
+## Current Status
+
+`P9_E_POINTER_PROMOTION_PASS / V0_4_1_ACCEPTED_LATEST / V0_4_0_IMMEDIATE_FALLBACK / STOP_BEFORE_P9_F`

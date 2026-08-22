@@ -13,8 +13,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - 保留显式uninstall的recovery合同：unknown普通文件和目录仍会先完整备份再清理；exact current/predecessor
   inventory admission、Host ABI、managed events与runtime trusted graph均未改变。
 - stable身份已物化为`v0.4.1`，只接受exact `v0.4.0` installed predecessor；外部bootstrap已固定当前确定性ZIP的
-  exact SHA并fail closed。programme与未完成gate见[`ROADMAP.md`](ROADMAP.md)，候选证据边界见
-  [`docs/v0.4.1-cloud-hard-acceptance.md`](docs/v0.4.1-cloud-hard-acceptance.md)，已发布身份仍只见
+  exact SHA并fail closed。immutable publication、Published Release Cloud与pointer-only promotion均已闭合；programme角色见
+  [`ROADMAP.md`](ROADMAP.md)，验收证据见[`docs/v0.4.1-cloud-hard-acceptance.md`](docs/v0.4.1-cloud-hard-acceptance.md)，已发布身份仍只见
   [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)。
 
 ## v0.4.0
