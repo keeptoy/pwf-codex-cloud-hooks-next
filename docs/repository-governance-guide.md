@@ -147,32 +147,47 @@ iterations/<version>/tests
 
 活动 planning 是施工现场，不是永久档案馆；completed scope 可以短期保留，但应由维护者控制数量和退役节奏。
 
-<a name="phase-history-capsules"></a>
+<a name="history-record-roles"></a>
 
-### 8.1 已完成 Phase 的精选摘要
+### 8.1 Phase history 的两种身份
 
-如果一个 Product Phase 跨多个版本或 Round，单看 CHANGELOG 很难恢复“为什么选择这条路线”；但把旧
-planning 和专项文档整体复制进 HEAD，又会把 cold history 重新变成当前树负担。可以在 warm layer 建立
-少量 **Phase capsule**。治理层只冻结生命周期和 authority 边界：
+`docs/history/`是warm history layer，不是只有一种“Phase摘要”。每个对象进入索引时必须明确以下role，不能把两者的
+数量和写入时机混用：
 
-1. Phase 已关闭，并有 immutable commit/tag/Release/acceptance 可以恢复完整原文；
-2. 一个闭合阶段只保留一份精选摘要，不按 Round、候选版本、测试批次或会话拆分；
-3. 不复制 production source、脚本、fixture、验收全文、SHA 表、测试计数或旧 planning，也不维护当前
-   candidate/accepted/rollback、Next Step 或 PASS/PENDING 状态；
-4. 摘要正文可以独立理解，完整历史仍从 immutable ref 恢复；
-5. 创建后冻结，只允许有证据的事实纠错或 immutable link repair；
-6. 所在目录被 Release、installer inventory、trusted graph 与 runtime dispatch 明确排除。
+| Record role | 形成方式 | Cardinality | 冻结语义 |
+|---|---|---|---|
+| `RETROSPECTIVE_CAPSULE` | Product Phase、patch/governance train或明确的历史interlude关闭后，根据immutable evidence回补的精选总复盘 | 同一闭合对象最多一份；没有长期解释价值时可以不建 | 创建时直接写最终已知事实；之后只做有证据的事实纠错、immutable link repair或current-authority link maintenance |
+| `FROZEN_DISCOVERY_RECORD` | 正式Discovery/decision round当时形成，round关闭并有exact source证据后封存的决策记录 | 一个Product Phase可以有多份，但每份必须对应真实且独立的正式Round；不能按聊天、测试批次或施工子门槛虚增 | 保留当时假设、证据、conditional-go与stop rules；只按证据追加post-*状态，不把原结论重写成事后全知视角 |
 
-文件名、章节顺序和写作提示统一从 [`Phase 历史摘要模板`](phase-history-template.md) 复制；它们是帮助
-上下文恢复的维护约定，不是 repository test 或 machine contract。模板可以随写作经验改进，不要求为此
-批量改写已经冻结的摘要。
+两种role共同遵守以下边界：不复制production source、脚本、fixture、验收全文、SHA表、测试计数或旧planning；不维护当前
+candidate/accepted/rollback、Next Step或PASS/PENDING；正文必须可独立理解，完整字节仍从immutable ref恢复；整个目录被
+Release、installer inventory、trusted graph与runtime dispatch排除。文件名、章节顺序和写作提示统一从
+[`Phase历史对象模板`](phase-history-template.md)选择对应role，不要求为模板改进批量回写已经冻结的历史正文。
 
-Phase capsule 是精选历史导航，不是新的 architecture、programme、provenance 或 acceptance authority。
-没有长期解释价值的阶段不必收录；讨论中、施工中或只有原型结论的阶段不得提前进入该目录。
-Phase history只开放两个受控宏观入口：README/文档地图负责全局索引，只链接Phase目录索引；ROADMAP是唯一
-第二入口，只在programme路线需要历史理由时直达具体Phase capsule的稳定显式anchor，不复制目录索引，也不把
-历史结论提升成当前programme authority。CHANGELOG、provenance和其他宏观文档不得建立第三入口。Capsule为解释
-阶段继承关系可以使用目录内相对链接，但不能借此创建第二份历史索引或把回顾性标签写成当前programme状态。
+Phase history只开放两个受控宏观入口：README/文档地图负责全局索引，只链接history目录索引；ROADMAP是唯一第二入口，
+只在programme路线需要历史理由时直达具体history record的稳定显式anchor，不复制目录索引，也不把历史结论提升成current
+programme authority。CHANGELOG、provenance和其他宏观文档不得建立第三入口。history records为解释继承关系可以使用目录内
+相对链接，但不能借此创建第二份索引。
+
+<a name="product-phase-authority-rotation"></a>
+
+### 8.2 ROADMAP current train → Product Phase authority 轮转
+
+ROADMAP第4节是current development train工作台，第5节是Product Phase的长期programme authority；二者按以下事务轮转：
+
+1. **开发中：** 活动planning、尚未封存的Discovery材料和需要current状态的验收材料可以引用第4节exact train anchor；
+   不得提前创建`RETROSPECTIVE_CAPSULE`冒充已关闭Phase。
+2. **Discovery Round关闭：** 当时的决策记录可以按`FROZEN_DISCOVERY_RECORD`进入history。若Product Phase仍活动，其明确标为
+   current-authority的链接可以暂指第4节；原始结论从此保持时间语义。
+3. **Product Phase closeout：** 只把长期Product目标、路线、边界与最终结论提炼进第5节对应小节，并为该Phase保留唯一
+   `product-phase-N` canonical anchor；必要时建立一份`RETROSPECTIVE_CAPSULE`，同时把所有current-authority链接从第4节迁到第5节。
+   这项link migration属于authority maintenance，不授权改写Discovery正文。
+4. **版本列车轮转：** 在第4节替换为下一列车前，完成旧train anchor的入链inventory、迁移和删除后复扫。版本号、SHA、
+   Cloud流水、Release资产与accepted/fallback角色分别进入CHANGELOG、provenance、acceptance和ROADMAP的版本角色区域，不能
+   整段搬进第5节。
+
+patch/governance列车没有新Product Phase时，不得为了清空第4节虚构第5节条目；多个Product Phase共用一条版本列车时，各Phase
+分别做closeout并进入第5节，而列车只在最终Release closeout后轮转一次。
 
 ## 9. Provenance 的准入标准
 
@@ -213,10 +228,10 @@ Release notes；不要提前创建大量按版本 archive 文件。
 
 清退acceptance、runbook、operator guide或其他被引用的治理文件时，还必须把链接完整性纳入同一个retirement transaction：
 
-1. **删除前做入链inventory。** 全仓扫描所有指向目标文件或其anchors的current引用，至少覆盖README/ROADMAP、Phase
-   capsules、provenance、CHANGELOG、acceptance/template、planning、tests和其他repository docs；逐项登记owner、历史/当前
+1. **删除前做入链inventory。** 全仓扫描所有指向目标文件或其anchors的current引用，至少覆盖README/ROADMAP、history
+   records、provenance、CHANGELOG、acceptance/template、planning、tests和其他repository docs；逐项登记owner、历史/当前
    语义和替代authority，不能只检查准备删除文件所在目录。
-2. **删除与引用迁移原子闭合。** 需要继续承担导航或证据职责的引用，必须迁移到自包含Phase摘要、仍在位的current
+2. **删除与引用迁移原子闭合。** 需要继续承担导航或证据职责的引用，必须迁移到自包含history record、仍在位的current
    authority或immutable commit/tag/Release URL及其稳定显式anchor；不得用moving branch、删除引用文字或保留无owner的root
    copy来掩盖证据缺口。
 3. **删除后做反向复扫。** 再次检查broken relative links、retired filename/path、失效anchor、current test/oracle依赖和重复
@@ -267,7 +282,7 @@ Release notes；不要提前创建大量按版本 archive 文件。
   execution graph排除。
 
 这种拆分允许稳定协议跨版本复用，也允许复杂Phase按真实Discovery risk保留多轮证据：活动planning控制施工，
-每个guide只承担一轮教程及其channel/final结果，ROADMAP/Phase capsule只做宏观索引，不再把所有层次拼成一份增长总账。
+每个guide只承担一轮教程及其channel/final结果，ROADMAP/history records只做宏观索引，不再把所有层次拼成一份增长总账。
 
 ## 12. Promotion 与 eviction 是一个事务
 
@@ -333,7 +348,7 @@ pristine parser helper，则应通过独立 trusted-graph gate 评估恢复 pris
 来源证明永久保留。
 
 machine contract 只保存机器实际消费的身份、hash、inventory、ABI 和失败语义。仅用于回忆施工先后的
-Phase/Round 元数据，如果不参与运行时、构建或验证语义，应迁往 ROADMAP、CHANGELOG 或精选 history capsule，
+Phase/Round 元数据，如果不参与运行时、构建或验证语义，应迁往 ROADMAP、CHANGELOG 或精选 history record，
 不能由 contract test 自我引用后变成永久机器事实。
 
 ## 13. 推荐的治理测试
@@ -342,7 +357,7 @@ Phase/Round 元数据，如果不参与运行时、构建或验证语义，应�
 - 当前树不得包含第二套 production/runtime/contracts；
 - executable/trusted zones 必须 exact allowlisted；
 - docs/planning/experiments 必须被 Release 明确排除；
-- Phase history 只能包含被索引覆盖的冻结 Markdown capsule，不得成为源码、脚本或逐 Round archive；
+- Phase history 只能包含被索引覆盖、标明role的冻结Markdown history objects，不得成为源码、脚本或非正式Round archive；
 - 当前版本角色窗口不得超限；
 - 退役路径、旧原型和 moving artifact URL 必须被拒绝；
 - cross-document links 和显式稳定 anchors 必须有效；
@@ -377,7 +392,7 @@ commit、资产 hash 或“当前 PASS/PENDING”状态；candidate/accepted 文
 | eviction trigger | `<baseline promotion event>` |
 | retirement Definition of Done | `<role window / invariant migration / immutable recovery / validation>` |
 | publication oracle window | `<accepted + immediate fallback>` |
-| optional Phase capsule policy | `<closed phase / authoring template / immutable evidence / Release exclusion>` |
+| history record role policy | `<record roles / admission / authoring template / immutable evidence / Release exclusion>` |
 
 随后按顺序实施：authority map → failing-first guards → history migration → link rewrite → full validation。
 
@@ -399,7 +414,7 @@ commit、资产 hash 或“当前 PASS/PENDING”状态；candidate/accepted 文
 - 在 README、AGENTS 或通用 operator guide 中逐版追加固定 bootstrap 文件名；
 - 为每个历史版本复制一整块 publication test，而不旋转 accepted/fallback 席位；
 - 创建 `archive/` 或 `old/` 把膨胀换一个目录继续累积；
-- 为每个 Round、测试批次或候选版复制一份“Phase 历史”，让精选摘要重新膨胀成流水账；
+- 为聊天、测试批次、施工子门槛或候选版虚构Discovery record，或把没有正式Round的材料塞进history；
 - 复制整套源码到版本文件夹，再人工“合回主目录”；
 - 把普通 patch 写成 provenance 长篇里程碑；
 - 用静态全仓库文件清单同时治理 executable 与活动文档；

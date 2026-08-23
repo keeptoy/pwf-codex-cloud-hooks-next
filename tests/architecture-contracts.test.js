@@ -359,12 +359,19 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(currentTrain, /Release candidate[\s\S]*未授权/);
   assert.match(currentTrain, /candidate \+ accepted role window/);
   assert.match(currentTrain, /trusted\/Release zones 继续 exact[\s\S]*docs\/planning zones 按 lifecycle policy/);
+  assert.match(currentTrain,
+    /current development train工作台[\s\S]*活动planning[\s\S]*不会自动成为长期Product Phase authority/);
   assert.doesNotMatch(currentTrain, /F3B2 closeout|回退 smart-only|unreachable code/);
   assert.doesNotMatch(currentTrain,
     /Phase 4 已采纳 gate 路线|F2 activation\/disarm 前置协议|F2B Discovery 交接|P9-A pre-seal|P9-F second retirement|流水账文件/);
   assert.match(productPhases, /^#### 5\.1\.1 Phase 4 为什么存在：给计划行为授权，不给模型扩权$/m);
   assert.match(productPhases, /^#### 5\.1\.2 F2 activation\/disarm 前置协议$/m);
   assert.match(productPhases, /^#### 5\.1\.3 Phase 4 activation\/lifecycle 决策$/m);
+  assert.match(productPhases,
+    /Product Phase closeout时[\s\S]*Phase-level canonical anchor[\s\S]*current-authority链接从第4节迁到这里/);
+  assert.match(productPhases, /patch\/governance列车没有新Product Phase时不得虚构条目/);
+  assert.match(productPhases,
+    /repository-governance-guide\.md#product-phase-authority-rotation/);
   assert.match(productPhases, /\| 5 \|[\s\S]*PreCompact\/PostCompact/);
   assert.match(productPhases, /\| 6 \|[\s\S]*噪声[\s\S]*`NO_GO`/);
   assert.match(productPhases, /\| 7 \|[\s\S]*唯一[\s\S]*read-only/);

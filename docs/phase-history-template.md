@@ -1,27 +1,49 @@
 <a name="phase-history-template"></a>
 
-# Phase 历史摘要模板
+# Phase 历史对象模板
 
 本文件是写作和上下文恢复工具，不是 machine contract，也不是当前 architecture、programme、provenance
-或 acceptance authority。新增已经闭合的 Phase/迁移摘要时复制本模板，再按现有证据删改提示文字；不要
+或 acceptance authority。新增history对象时先选择record role，再复制本模板并按现有证据删改提示文字；不要
 为了满足模板猜测历史事实。
+
+## 先选择 record role
+
+| Record role | 何时使用 | 数量与时间语义 |
+|---|---|---|
+| `RETROSPECTIVE_CAPSULE` | Product Phase、patch/governance train或回顾性interlude已经关闭，需要从immutable evidence回补一份精选总复盘 | 同一闭合对象最多一份；创建时写最终已知事实，没有长期解释价值时不建 |
+| `FROZEN_DISCOVERY_RECORD` | 正式Discovery/decision round已经关闭，需要封存当时的假设、证据、决定与stop rules | 一个Product Phase可以有多份，但每份对应一个真实正式Round；原结论保持当时时间语义，后续只追加有证据的post-*状态 |
+
+`FROZEN_DISCOVERY_RECORD`在round关闭后即可进入history，不要求整个Product Phase已经结束；讨论中、未形成正式Round或只有
+临时原型的材料仍留在planning/专项工作区。`RETROSPECTIVE_CAPSULE`必须等它总结的对象关闭后才允许创建。
 
 ## 使用步骤
 
 1. 先恢复对应 immutable commit/tag/Release、CHANGELOG、provenance 与当时 acceptance，区分历史事实和
    当前实现。
-2. 只在阶段已经闭合、具有长期解释价值且完整原文可从 immutable ref 恢复时建立摘要。
-3. 复制下方骨架到历史目录；文件名优先使用 `phase-<编号>-<主题>.md`，回顾性 interlude 必须显式说明，
+2. 确认所选role的admission条件已经满足、具有长期解释价值且完整原文可从immutable ref恢复。
+3. 复制下方骨架到历史目录；文件名优先使用`phase-<编号>-<主题>.md`，回顾性interlude必须显式说明，
    但文件名和小节结构是写作约定，不是测试合同。
 4. 正文保持自洽、短小，不复制源码、脚本、fixture、验收全文、SHA 表、测试计数或逐 Round 流水账。
-5. 完成后在历史目录索引登记。README 文档地图是全局历史索引入口；ROADMAP 是唯一第二入口，只能在
-   programme 路线需要历史理由时直达具体 Phase 的稳定显式 anchor。CHANGELOG、provenance 和其他宏观文档
+5. 完成后在历史目录索引登记record role。README文档地图是全局历史索引入口；ROADMAP是唯一第二入口，只能在
+   programme路线需要历史理由时直达具体history record的稳定显式anchor。CHANGELOG、provenance和其他宏观文档
    不得建立第三入口。
-6. 摘要进入历史目录后原则上冻结，只做有证据的事实纠错或 immutable link 修复。
+6. history对象进入目录后原则上冻结，只做role允许的append-only status、事实纠错、immutable link repair或
+   current-authority link maintenance。
+
+## Current authority link lifecycle
+
+- Product Phase仍活动时，已冻结Discovery record中明确承担current-authority职责的链接可以暂指ROADMAP第4节exact train
+  anchor；普通历史叙述不得把moving train当immutable evidence。
+- Product Phase closeout后，相关current-authority链接必须迁移到ROADMAP第5节唯一`product-phase-N` anchor；新建的
+  retrospective Product Phase capsule直接指向第5节，不先经过第4节。
+- patch/governance列车没有新Product Phase时，不得虚构`product-phase-N`；按对象性质链接版本角色、Release治理或immutable
+  evidence，或者移除不再承担current职责的链接。
+- 第4节列车轮转前必须完成入链inventory、迁移和删除后复扫；只改current-authority指针，不回写旧Discovery结论。
 
 ## 可选 append-only status note
 
-默认闭合摘要把最终事实直接写进 `Completed delivery` 与 `Acceptance conclusion`，不要机械创建空尾注。只有原决策快照
+`RETROSPECTIVE_CAPSULE`默认把最终事实直接写进`Completed delivery`与`Acceptance conclusion`，不要机械创建空尾注。
+`FROZEN_DISCOVERY_RECORD`只有在原决策快照
 早于后续实施或真实live证据，而且 planning → implementation、implementation → live/lifecycle 或后续Discovery偏差本身
 具有长期解释价值时，才在原摘要后追加status note；常见名称是`Post-implementation status`、`Post-live status`与
 `Post-discovery status`，但它们是同一家族的可选时间注释，不是每个Phase的固定三段式。
@@ -59,13 +81,16 @@
 
 <!-- 复制时从这里开始；删除所有提示注释。 -->
 
+> Record role: `<RETROSPECTIVE_CAPSULE | FROZEN_DISCOVERY_RECORD>`
+
 <a name="historical-position"></a>
 
-# <Phase / interlude 标签>：<主题>
+# <Product Phase / Discovery Round / train / interlude 标签>：<主题>
 
 ## Historical position
 
-<!-- 当时位于哪条版本/programme 路线上？为什么它已经闭合？回顾性标签必须明确不是原授权。 -->
+<!-- 当时位于哪条版本/programme 路线上？先说明所选record role及其对应对象/Round为何已经闭合。
+FROZEN_DISCOVERY_RECORD不得暗示整个Product Phase已经关闭；回顾性标签必须明确不是原授权。 -->
 
 <a name="problem-before"></a>
 
@@ -83,13 +108,15 @@
 
 ## Completed delivery
 
-<!-- 只写真正交付并进入后继基线的闭环，不写逐次提交日志。 -->
+<!-- RETROSPECTIVE_CAPSULE写真正交付并进入后继基线的闭环；FROZEN_DISCOVERY_RECORD写该Round实际形成的
+决策、证据或停止结论，不得把尚未发生的implementation写成已交付。两种role都不写逐次提交日志。 -->
 
 <a name="acceptance-conclusion"></a>
 
 ## Acceptance conclusion
 
-<!-- 说明证据证明了什么，以及没有证明什么；不冻结易漂移的测试数量。 -->
+<!-- 按所选role说明证据证明了什么，以及没有证明什么；Discovery证据不得冒充implementation/live验收，
+回顾性证据不得反向改写当时结论；不冻结易漂移的测试数量。 -->
 
 <a name="explicit-non-goals"></a>
 
@@ -101,7 +128,7 @@
 
 ## Successor inheritance
 
-<!-- 后继阶段继承了什么，哪些临时机制已经退役？必要时可相对链接另一份历史摘要。 -->
+<!-- 后继阶段继承了什么，哪些临时机制已经退役？必要时可相对链接另一份history object。 -->
 
 <a name="immutable-evidence"></a>
 

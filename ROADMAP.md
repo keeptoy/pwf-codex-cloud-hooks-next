@@ -60,6 +60,9 @@ immediate fallback。版本 delta见
 trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证；历史细节只从README文档地图进入Phase history、
 provenance和对应版本acceptance，不在本节重建逐P9流水。
 
+本节是current development train工作台：活动planning、未封存Discovery和需要current状态的验收材料可以引用对应train anchor，
+但这里的临时施工状态不会自动成为长期Product Phase authority。
+
 <a name="v0-4-2-documentation-governance"></a>
 
 ### 4.1 当前 `v0.4.2-dev` documentation governance
@@ -76,6 +79,10 @@ Phase 4.12、Phase 4.13、Phase 4.14摘要、CHANGELOG、provenance和immutable 
 
 下表是未来 Discovery 的候选，不是发布承诺，也不自动授权下一 Phase。一个 Phase 可以有多个
 pre-release；多个低风险 Phase也只有在独立评审后才能进入同一版本列车。
+
+Product Phase closeout时，只把长期Product目标、路线、边界与结论提炼到对应小节，并保留一个Phase-level canonical anchor；
+相关history record的current-authority链接从第4节迁到这里。patch/governance列车没有新Product Phase时不得虚构条目，版本资产
+与Release角色也不得整段搬入本节。完整轮转规则只见[仓库治理指南](docs/repository-governance-guide.md#product-phase-authority-rotation)。
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|

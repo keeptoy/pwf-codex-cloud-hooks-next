@@ -345,6 +345,24 @@ test("historical documents have two controlled macro entrances and remain adviso
   for (const policyDoc of [historyIndex, historyTemplate, governanceGuide, agents]) {
     assert.match(policyDoc, /README[\s\S]*ROADMAP/);
   }
+  assert.match(governanceGuide, /^<a name="history-record-roles"><\/a>$/m);
+  assert.match(governanceGuide, /^<a name="product-phase-authority-rotation"><\/a>$/m);
+  assert.match(governanceGuide,
+    /RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD[\s\S]*一个Product Phase可以有多份/);
+  assert.match(governanceGuide,
+    /ROADMAP第4节是current development train工作台[\s\S]*Product Phase closeout[\s\S]*product-phase-N/);
+  assert.match(governanceGuide,
+    /patch\/governance列车没有新Product Phase时[\s\S]*不得[\s\S]*虚构第5节条目/);
+  assert.match(historyIndex, /RETROSPECTIVE_CAPSULE[\s\S]*Phase 0～3\.9\.3[\s\S]*14/);
+  assert.match(historyIndex, /FROZEN_DISCOVERY_RECORD[\s\S]*Phase 4\.1～4\.11[\s\S]*11/);
+  assert.match(historyIndex, /Phase 4\.1～4\.11[\s\S]*不表示[\s\S]*11个独立Product Phase/);
+  assert.match(historyTemplate, /先选择 record role/);
+  assert.match(historyTemplate, /RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
+  assert.match(historyTemplate,
+    /Product Phase仍活动时[\s\S]*ROADMAP第4节[\s\S]*Product Phase closeout后[\s\S]*ROADMAP第5节/);
+  assert.match(historyTemplate, /FROZEN_DISCOVERY_RECORD不得暗示整个Product Phase已经关闭/);
+  assert.match(historyTemplate, /Discovery证据不得冒充implementation\/live验收/);
+  assert.match(historyTemplate, /> Record role: `<RETROSPECTIVE_CAPSULE \| FROZEN_DISCOVERY_RECORD>`/);
   assert.match(historyTemplate, /可选[\s\S]*append-only status note/i);
   assert.match(historyTemplate, /Post-implementation status/);
   assert.match(historyTemplate, /Post-live status/);
@@ -444,8 +462,8 @@ test("portable repository governance keeps stable retirement anchors", () => {
   assert.match(guide, /^<a name="repository-governance-guide"><\/a>$/m);
   assert.match(guide, /^<a name="retirement-definition-of-done"><\/a>$/m);
   assert.match(guide, /清退acceptance、runbook、operator guide[\s\S]*同一个retirement transaction/);
-  assert.match(guide, /删除前做入链inventory[\s\S]*README\/ROADMAP[\s\S]*Phase[\s\S]*planning[\s\S]*tests/);
-  assert.match(guide, /删除与引用迁移原子闭合[\s\S]*自包含Phase摘要[\s\S]*immutable commit\/tag\/Release URL/);
+  assert.match(guide, /删除前做入链inventory[\s\S]*README\/ROADMAP[\s\S]*history[\s\S]*planning[\s\S]*tests/);
+  assert.match(guide, /删除与引用迁移原子闭合[\s\S]*自包含history record[\s\S]*immutable commit\/tag\/Release URL/);
   assert.match(guide, /删除后做反向复扫[\s\S]*broken relative links[\s\S]*失效anchor[\s\S]*test\/oracle依赖/);
   assert.match(guide, /未分类命中[\s\S]{0,40}阻断retirement PASS/);
   assert.match(guide, /允许保留的历史文字命中必须明确只是时间语义，不得仍被解析为current\s+link、required path或可执行教程/);
