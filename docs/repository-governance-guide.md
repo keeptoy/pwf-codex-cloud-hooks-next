@@ -189,6 +189,42 @@ ROADMAP第4节是current development train工作台，第5节是Product Phase的
 patch/governance列车没有新Product Phase时，不得为了清空第4节虚构第5节条目；多个Product Phase共用一条版本列车时，各Phase
 分别做closeout并进入第5节，而列车只在最终Release closeout后轮转一次。
 
+#### 大白话状态流
+
+```text
+Product Phase / Discovery正在进行
+  → ROADMAP第4节维护当前开发列车
+  → 活动planning、仍承担current-authority职责的Discovery record和验收材料可以引用第4节
+
+某个Discovery Round关闭
+  → 原始决策记录冻结并进入history
+  → Product Phase仍活动时，它的current-authority链接仍可指向第4节
+
+Product Phase正式关闭
+  → 把长期有效的Product结论提炼进第5节product-phase-N
+  → 必要时建立一份回补型RETROSPECTIVE_CAPSULE
+  → 所有冻结Discovery records中的current-authority链接从第4节迁到第5节
+  → 原始Discovery结论和时间语义保持不变
+
+版本列车完成Release并轮转
+  → 确认没有current引用继续指向旧第4节列车
+  → 第4节替换为下一条开发列车
+```
+
+#### 例外与归属判断
+
+- **默认是一条列车、一个Product Phase。** 当前维护方式只使用这一默认路线。只有维护者在ROADMAP与活动task plan中明确批准时，
+  才允许一条版本列车包含多个Product Phase；此时各Phase分别沉淀到第5节，整条列车仍只在最终Release closeout后轮转一次。
+- **先认Product继承，再用版本识别列车。** 版本号和version series可以帮助判断对象属于哪条patch/governance/development列车，
+  但不能单独创建Product Phase；是否开启新Phase必须由ROADMAP和活动task plan明确授权。
+- **patch继承它修补的Product baseline。** patch train通常归入被修补accepted/candidate baseline对应的既有Product Phase；版本delta
+  写CHANGELOG，若形成独立Release则写对应acceptance，涉及不可变身份或长期来源时再写provenance，必要时建立patch-train
+  retrospective closeout，但不新增第5节Phase。
+- **governance按声明的版本系列落位。** 文档/流程治理先看ROADMAP声明它属于当前版本系列还是一条新的development train；其结果进入
+  对应列车的治理closeout、CHANGELOG或history，仍不因版本号变化自动产生Product Phase。
+- **不能唯一判断就停下来问。** 若版本、ROADMAP、活动task plan与实际修补对象不能给出唯一归属，智能体不得自行推断或迁移
+  current-authority链接，必须先向维护者说明候选归属及影响并请求确认。
+
 ## 9. Provenance 的准入标准
 
 Provenance 是博物馆目录，不是逐版本流水账。只有以下变化进入里程碑：

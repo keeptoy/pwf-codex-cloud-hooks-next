@@ -78,11 +78,13 @@ Phase 4.12、Phase 4.13、Phase 4.14摘要、CHANGELOG、provenance和immutable 
 ## 5. Product Phase 路线
 
 下表是未来 Discovery 的候选，不是发布承诺，也不自动授权下一 Phase。一个 Phase 可以有多个
-pre-release；多个低风险 Phase也只有在独立评审后才能进入同一版本列车。
+pre-release。当前维护默认一条版本列车只承载一个Product Phase；只有维护者在ROADMAP与活动task plan中明确授权后，
+多个低风险Phase才可在分别closeout的前提下进入同一列车。
 
 Product Phase closeout时，只把长期Product目标、路线、边界与结论提炼到对应小节，并保留一个Phase-level canonical anchor；
-相关history record的current-authority链接从第4节迁到这里。patch/governance列车没有新Product Phase时不得虚构条目，版本资产
-与Release角色也不得整段搬入本节。完整轮转规则只见[仓库治理指南](docs/repository-governance-guide.md#product-phase-authority-rotation)。
+相关history record的current-authority链接从第4节迁到这里。patch/governance列车先按活动task plan、所修补Product baseline与
+ROADMAP声明的版本系列判断归属；patch/governance列车没有新Product Phase时不得虚构条目；不能唯一判断时先由维护者确认。
+版本资产与Release角色也不得整段搬入本节。完整轮转规则只见[仓库治理指南](docs/repository-governance-guide.md#product-phase-authority-rotation)。
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|

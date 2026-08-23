@@ -353,6 +353,14 @@ test("historical documents have two controlled macro entrances and remain adviso
     /ROADMAP第4节是current development train工作台[\s\S]*Product Phase closeout[\s\S]*product-phase-N/);
   assert.match(governanceGuide,
     /patch\/governance列车没有新Product Phase时[\s\S]*不得[\s\S]*虚构第5节条目/);
+  assert.match(governanceGuide,
+    /Product Phase \/ Discovery正在进行[\s\S]*某个Discovery Round关闭[\s\S]*Product Phase正式关闭[\s\S]*版本列车完成Release并轮转/);
+  assert.match(governanceGuide,
+    /默认是一条列车、一个Product Phase[\s\S]*只有维护者[\s\S]*明确批准/);
+  assert.match(governanceGuide,
+    /patch继承它修补的Product baseline[\s\S]*governance按声明的版本系列落位/);
+  assert.match(governanceGuide,
+    /不能唯一判断就停下来问[\s\S]*必须先向维护者[\s\S]*请求确认/);
   assert.match(historyIndex, /RETROSPECTIVE_CAPSULE[\s\S]*Phase 0～3\.9\.3[\s\S]*14/);
   assert.match(historyIndex, /FROZEN_DISCOVERY_RECORD[\s\S]*Phase 4\.1～4\.11[\s\S]*11/);
   assert.match(historyIndex, /Phase 4\.1～4\.11[\s\S]*不表示[\s\S]*11个独立Product Phase/);

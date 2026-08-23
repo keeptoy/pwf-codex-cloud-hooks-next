@@ -369,7 +369,11 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(productPhases, /^#### 5\.1\.3 Phase 4 activation\/lifecycle 决策$/m);
   assert.match(productPhases,
     /Product Phase closeout时[\s\S]*Phase-level canonical anchor[\s\S]*current-authority链接从第4节迁到这里/);
+  assert.match(productPhases,
+    /当前维护默认一条版本列车只承载一个Product Phase[\s\S]*维护者[\s\S]*明确授权/);
   assert.match(productPhases, /patch\/governance列车没有新Product Phase时不得虚构条目/);
+  assert.match(productPhases,
+    /所修补Product baseline[\s\S]*ROADMAP声明的版本系列[\s\S]*不能唯一判断时先由维护者确认/);
   assert.match(productPhases,
     /repository-governance-guide\.md#product-phase-authority-rotation/);
   assert.match(productPhases, /\| 5 \|[\s\S]*PreCompact\/PostCompact/);
