@@ -41,6 +41,9 @@
   slug 当作长期链接合同。
 - 当前 Next Step/禁止/停止条件只写 task plan；实施、测试和错误写 progress，研究取舍写 findings。
 - 历史 acceptance/runbook 保留时间语义，不用当前状态批量改写；不要在多个宏观文档复制流水账。
+- Phase history的宏观访问只允许README与ROADMAP两个入口：README文档地图只进入历史总索引；ROADMAP仅在
+  programme路线需要历史理由时直达具体Phase的稳定显式anchor。其他宏观文档不得建立第三入口，ROADMAP也不得
+  用历史证据替代当前programme authority。
 
 ## 交互与提交纪律
 

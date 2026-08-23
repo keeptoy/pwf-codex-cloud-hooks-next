@@ -80,12 +80,12 @@ pre-release；多个低风险 Phase也只有在独立评审后才能进入同一
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
 | 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | complete；F3C4、第一轮retirement及当时的v0.4.0 Release closeout均已闭合；功能基线由当前v0.4.1 accepted继承 |
-| 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
-| 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立 gate；必须有 use case、latency/token budget与 Cloud证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7前置 |
-| 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6进入 Discovery |
-| 8 | `0.8.0-*` | optional hard gating，复用 Phase 7 evaluator | 重新 Discovery writer/counter/atomicity/lock/cache/Resume/rollback；再增加 block cap、escape hatch与 stall state | pending；implementation前必须重新 Discovery |
+| 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload，比较现有 `SessionStart source=clear\|compact` 与 PreCompact/PostCompact 的时序和恢复能力；现有事件足够时不扩大 managed event set，只有真实 context/时序缺口才新增 Hook | pending |
+| 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立 gate；必须分别有 use case、latency/token budget、噪声预算与 Cloud证据 | pending / optional；没有明确收益就逐项或整体 `NO_GO`；不是 Phase 7前置 |
+| 7 | `0.7.0-*` | 唯一的 read-only advisory completion evaluator | bounded、non-recursive、无 plan时安静；只 advisory，不阻断、不写 counter/ledger或其他 mutable gate state | pending；可独立于 Phase 6进入 Discovery |
+| 8 | `0.8.0-*` | optional hard gating，复用 Phase 7 evaluator | 重新 Discovery writer/counter/atomicity/lock/cache/Resume/rollback；再增加 block cap、escape hatch与 stall state；不得把上游 best-effort shell lock提升为 managed authority | pending；implementation前必须重新 Discovery |
 
-Release closeout不属于Product Phase编号。任何Product Phase或获批的小型patch/governance列车形成RC后，都按第8节
+Release closeout不属于Product Phase编号。任何Product Phase或获批的小型patch/governance列车形成RC后，都按第9节
 进入同一版本无关workflow；只有出现新增Release风险、迁移、兼容切换或复杂rollback时，才按第7节增加专项
 Discovery/Release hardening gate。历史Phase 9 instances保留原名和时间语义，但不构成未来列车的强制模板。
 
@@ -153,7 +153,7 @@ F1A/F1B 可以先规划和实施；F2A/F2B 已把 smart/autonomous 的启用与�
 这条顺序防止 initializer 吞掉 attestation failure 后留下“看似已激活、实际状态残缺”的 mode。F2A 与 F2B
 仍分别授权；完成 F1 不会自动授权任何 opt-in behavior。
 
-这里的“授权”沿用[上面的四开关模型](#phase-4-opt-in-purpose)：本地 sandbox/approval 与 Cloud task/container policy
+这里的“授权”沿用[上面的四开关模型](ROADMAP.md#phase-4-opt-in-purpose)：本地 sandbox/approval 与 Cloud task/container policy
 是两个执行环境；system-managed requirements 决定 Hook 能否运行；plan-local activation state 才决定 PWF 是否对
 exact plan 启用 smart/autonomous。前三个开关不得直接充当或隐式写入第四个，第四个也不能绕过平台执行/trust 边界。
 
@@ -181,33 +181,6 @@ autonomous armed后若 task bytes变化，必须先 disarm、重新 attestation�
 跨版本恢复必须从 committed disarm开始，走 current-owned uninstall、immutable accepted clean install与 exact-current
 forward recovery；只回滚 runtime却保留 activation属于禁止路线。F3B/F3C的具体 Cloud轮次、refs、hash与 PASS证据只在
 版本 acceptance和 Phase历史中保存，不在 ROADMAP重建第二份流水账。
-
-<a name="phase-4-migration-lifecycle-governance"></a>
-
-### 5.4 迁移 transaction 与对象生命周期治理
-
-F1A/F1B可以作为独立审查、测试和停止点，但不形成两个可发布半成品。只要 runtime/schema bytes影响 bundle、manifest或
-ZIP hash，最终候选必须在同一 transaction内让 contract、代码、inventory、mode与 hash原子闭合；不得发布只完成一半或
-无法 deterministic build/check的中间状态。
-
-每个迁移 gate都必须在活动 planning维护对象生命周期账，覆盖文件/路径、schema字段、代码常量与分支、producer/consumer、
-hash/inventory、测试和 current文档；逐项记录 owner、`KEEP/REPLACE/RETIRE/DEFER`、落地 gate、依赖传播、验证证据、
-迁移后状态与再次 review条件。开工前做全仓 inventory，施工按 leaf → contract → manifest → installer/builder → Release
-闭合，退出前同时扫描旧符号/旧路径并正向核对新 authority。允许留在 immutable history的命中必须显式分类；无 owner或
-未关闭的对象阻断 gate PASS，也不得另建第二份 machine authority保存这张账。
-
-
-### 5.5 Phase 5～8 已采纳边界
-
-- **Phase 5：** 先重新核对实际 Cloud payload，比较现有 `SessionStart source=clear|compact` 与
-  PreCompact/PostCompact 的时序和恢复能力。现有事件足够时不扩大 managed event set；只有真实 context 丢失或
-  时序缺口才能提议新增 Hook。
-- **Phase 6：** 是可跳过的可选能力。PreToolUse、PostToolUse、PermissionRequest 分别建立 use case、预算、
-  噪声和 Cloud gate；没有明确收益就 `NO_GO`，也不阻塞 Phase 7。
-- **Phase 7：** 建立唯一的 read-only completion evaluator，只给 advisory，不阻断、不写 mutable gate state。
-- **Phase 8：** 复用 Phase 7 evaluator，只新增 blocking decision 与可恢复的 mutable state。实施前必须重新
-  Discovery ledger/counter owner、atomicity/lock、cache/Resume inheritance 与 rollback residue；不得直接把上游
-  best-effort shell lock 提升为 managed authority。
 
 ## 6. 版本号与晋级语义
 
@@ -307,7 +280,39 @@ Discovery
 每个箭头都是独立 gate；前一 gate PASS 不自动授权后一 gate。任一步出现 7.1 的触发条件，都回到
 Discovery，按 7.2 决定增加正式 Round 或 Round 内子门槛，再按 7.3 重新冻结结论。
 
-## 8. Release 授权与封板顺序
+<a name="migration-transaction-lifecycle-governance"></a>
+<a name="phase-4-migration-lifecycle-governance"></a>
+
+## 8. Migration transaction 与对象生命周期治理
+
+Phase 4的F1A/F1B可以作为独立审查、测试和停止点，但这一规则适用于所有关键迁移，且任何拆分都不能形成可发布的半成品。
+只要 runtime/schema bytes影响 bundle、manifest或
+ZIP hash，最终候选必须在同一 transaction内让 contract、代码、inventory、mode与 hash原子闭合；不得发布只完成一半或
+无法 deterministic build/check的中间状态。F1A/F1B只是这一通用规则的首个完整实例；旧
+`phase-4-migration-lifecycle-governance` anchor继续保留为兼容别名。
+
+每个迁移 gate都必须在活动 planning维护对象生命周期账，覆盖文件/路径、schema字段、代码常量与分支、producer/consumer、
+hash/inventory、测试和 current文档；逐项记录 owner、`KEEP/REPLACE/RETIRE/DEFER`、落地 gate、依赖传播、验证证据、
+迁移后状态与再次 review条件。开工前做全仓 inventory，施工按 leaf → contract → manifest → installer/builder → Release
+闭合，退出前同时扫描旧符号/旧路径并正向核对新 authority。允许留在 immutable history的命中必须显式分类；无 owner或
+未关闭的对象阻断 gate PASS，也不得另建第二份 machine authority保存这张账。
+
+这张账还要在两个不同时间点复核，而不是把原计划直接当作最终事实：
+
+1. **planning → implementation drift review：** 实施闭合后核对实际交付、相对原计划的偏差、对象最终去向、本地证据、
+   未授权边界和仍需live验证的停止点。Phase 4.8的
+   [post-implementation status](docs/history/phase-4.8-f3b3-autonomous-live-discovery.md#phase-4-8-post-implementation-status-f3b3)
+   是这种时间语义的历史实例。
+2. **implementation → live / lifecycle drift review：** 只有真实Cloud/live证据形成后，才核对实施假设与实际生命周期、
+   恢复/缓存/角色状态的差异，更新最终结论与剩余停止点。Phase 4.8的
+   [post-live status](docs/history/phase-4.8-f3b3-autonomous-live-discovery.md#phase-4-8-post-live-status-f3b3)
+   展示了这一闭环。
+
+这两个review是迁移账的时间检查点，不机械要求每个Phase都新增两段历史尾注，也不构成额外Discovery Round、Cloud gate或
+Release通道。只有偏差本身具有长期解释价值时，才按Phase历史模板追加对应status note；否则把最终事实直接收敛进
+`Completed delivery`与`Acceptance conclusion`。
+
+## 9. Release 授权与封板顺序
 
 只有 ROADMAP 把目标版本标为获批 Release candidate，且活动 task plan 明确授权具体 Release gate，
 才允许封板。稳定构建/验证命令由 [`README.md`](README.md) 管理，精确版本步骤和资产证据由相应版本
@@ -319,7 +324,7 @@ Release operator guide管理；single-Discovery版本可以继续使用`vX.Y.Z-c
 
 <a name="release-four-step-flow"></a>
 
-### 8.1 大白话 Release 四步
+### 9.1 大白话 Release 四步
 
 以后每个版本按四个大步骤走；前一步通过只允许进入下一步，不自动把后面的角色一起改掉：
 
@@ -373,7 +378,7 @@ candidate+accepted 窗口的本地版本文件与旧 oracle。
 
 <a name="version-train-two-retirement-reviews"></a>
 
-### 8.2 两个嵌入式 retirement checkpoint
+### 9.2 两个嵌入式 retirement checkpoint
 
 默认情况下，一个Product Phase完成目标并形成对应版本的功能/候选基线；ROADMAP批准该版本为Release candidate、活动task plan
 授权具体Release gate后，列车直接进入版本无关的Release closeout workflow。普通Release不需要另建standing Phase 9，也不从
@@ -409,7 +414,7 @@ Phase、Discovery Round或Cloud验收。若维护者明确批准多个低风险 
 
 <a name="pre-1-compatibility-admission"></a>
 
-### 8.3 Pre-1.0 compatibility 与历史债准入
+### 9.3 Pre-1.0 compatibility 与历史债准入
 
 本仓库目前仍是 `1.0.0` 前的内部验证线，但“pre-1.0”本身不能代替明确的支持合同。默认支持面只包括
 clean install，以及当前 installer、machine contracts 和行为测试明确覆盖的 managed install/doctor/repair/
@@ -472,13 +477,13 @@ RC/canary 通过不能替代最终字节验收。ZIP 或 bootstrap 任一字节�
 新的 downloaded-asset/Fresh Cloud 证据。bootstrap 永远是 ZIP 外部资产，禁止 moving branch、
 `latest` 或无 checksum URL。
 
-## 9. 回滚与基线提升
+## 10. rollback 原则
 
 当前角色只在第 2 节维护。未来版本只有在 immutable publication、重新下载、Fresh/Resume/doctor 和
 rollback 验证全部通过后，才能更新该表并成为新的基线。旧资产、tag、SHA、acceptance 和迁移 evidence
 refs 不得重写；pointer-only promotion 也不能反向修改 sealed ZIP 输入。
 
-## 10. 长期泛化边界
+## 11. 长期路线
 
 当前唯一正式集成仍是 PWF v3.8.2。第二个只读插件尚未证明 Host/runner/Driver 抽象，因此不得把项目
 描述为通用 Skill 转换器，也不预先为泛化能力分配版本号。只有独立 Discovery 和第二实现证据完成后，

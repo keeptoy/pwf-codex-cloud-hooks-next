@@ -301,27 +301,38 @@ test("DESIGN maps every test module back to the capability and boundary it prote
   assert.doesNotMatch(reverseIndex, /\b\d+\s+(?:tests?|cases?|passed|failed|skipped)\b/i);
 });
 
-test("ROADMAP keeps stable Discovery and Release governance anchors", () => {
+test("ROADMAP keeps stable Discovery, migration, and Release governance anchors", () => {
   const roadmap = readText("ROADMAP.md");
   const readme = readText("README.md");
   const currentTrainStart = roadmap.indexOf("## 4. 当前开发列车");
   const productPhaseStart = roadmap.indexOf("## 5. Product Phase 路线");
   const versioningStart = roadmap.indexOf("## 6. 版本号与晋级语义");
-  const releaseStart = roadmap.indexOf("## 8. Release 授权与封板顺序");
+  const discoveryStart = roadmap.indexOf("## 7. Discovery 与 gate 晋级模型");
+  const migrationStart = roadmap.indexOf("## 8. Migration transaction 与对象生命周期治理");
+  const releaseStart = roadmap.indexOf("## 9. Release 授权与封板顺序");
+  const rollbackStart = roadmap.indexOf("## 10. rollback 原则");
+  const longTermStart = roadmap.indexOf("## 11. 长期路线");
   const retirementStart = roadmap.indexOf('<a name="version-train-two-retirement-reviews"></a>');
   const compatibilityStart = roadmap.indexOf('<a name="pre-1-compatibility-admission"></a>');
   assert.notEqual(currentTrainStart, -1);
   assert.notEqual(productPhaseStart, -1);
   assert.notEqual(versioningStart, -1);
+  assert.notEqual(discoveryStart, -1);
+  assert.notEqual(migrationStart, -1);
   assert.notEqual(releaseStart, -1);
+  assert.notEqual(rollbackStart, -1);
+  assert.notEqual(longTermStart, -1);
   const currentTrain = roadmap.slice(currentTrainStart, productPhaseStart);
   const productPhases = roadmap.slice(productPhaseStart, versioningStart);
+  const migrationGovernance = roadmap.slice(migrationStart, releaseStart);
   const developmentTrain = roadmap.match(/^\| 当前开发列车 \| `(v[^`]+)`/m)?.[1];
   assert.ok(developmentTrain, "ROADMAP lacks a parseable current development train");
   const escapedDevelopmentTrain = developmentTrain.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   assert.match(roadmap, /^<a name="version-train-two-retirement-reviews"><\/a>$/m);
   assert.match(roadmap, /^<a name="phase-4-opt-in-purpose"><\/a>$/m);
   assert.match(roadmap, /^<a name="discovery-gate-governance"><\/a>$/m);
+  assert.match(roadmap, /^<a name="migration-transaction-lifecycle-governance"><\/a>$/m);
+  assert.match(roadmap, /^<a name="phase-4-migration-lifecycle-governance"><\/a>$/m);
   assert.match(roadmap, /^<a name="release-four-step-flow"><\/a>$/m);
   assert.match(roadmap, /^<a name="pre-1-compatibility-admission"><\/a>$/m);
   assert.match(roadmap, /每条发布列车都必须经过两轮 retirement review/);
@@ -329,6 +340,9 @@ test("ROADMAP keeps stable Discovery and Release governance anchors", () => {
   assert.match(roadmap, /第二轮：role-window closeout/);
   assert.match(roadmap, /review.*不是为了清单好看而强制删除/);
   assert.match(roadmap, /多个低风险 Phase合并到同一版本列车[\s\S]*每个 Phase仍分别做第一轮审查[\s\S]*只在最终发布时做一次[\s\S]*第二轮审查/);
+  assert.ok(discoveryStart < migrationStart && migrationStart < releaseStart
+    && releaseStart < rollbackStart && rollbackStart < longTermStart,
+    "Discovery, migration, Release, rollback, and long-term governance must remain ordered");
   assert.ok(releaseStart < retirementStart && retirementStart < compatibilityStart,
     "retirement reviews must live inside Release governance before compatibility policy");
   for (const role of [
@@ -349,8 +363,17 @@ test("ROADMAP keeps stable Discovery and Release governance anchors", () => {
   for (const anchor of ["phase-4-opt-in-purpose", "phase-4-f2-activation-protocol", "phase-4-f2b-discovery-handoff"]) {
     assert.match(productPhases, new RegExp(`<a name="${anchor}"></a>`));
   }
-  assert.match(productPhases, /F1A\/F1B[\s\S]*独立审查[\s\S]*候选[\s\S]*原子闭合/);
-  assert.match(productPhases, /对象生命周期账[\s\S]*KEEP\/REPLACE\/RETIRE\/DEFER/);
+  assert.match(productPhases, /\| 5 \|[\s\S]*PreCompact\/PostCompact/);
+  assert.match(productPhases, /\| 6 \|[\s\S]*噪声[\s\S]*`NO_GO`/);
+  assert.match(productPhases, /\| 7 \|[\s\S]*唯一[\s\S]*read-only/);
+  assert.match(productPhases, /\| 8 \|[\s\S]*best-effort shell lock[\s\S]*managed authority/);
+  assert.match(roadmap, /\]\(ROADMAP\.md#phase-4-opt-in-purpose\)/);
+  assert.doesNotMatch(roadmap, /### 5\.4 迁移 transaction 与对象生命周期治理/);
+  assert.doesNotMatch(roadmap, /### 5\.5 Phase 5～8 已采纳边界/);
+  assert.match(migrationGovernance, /F1A\/F1B[\s\S]*独立审查[\s\S]*候选[\s\S]*原子闭合/);
+  assert.match(migrationGovernance, /对象生命周期账[\s\S]*KEEP\/REPLACE\/RETIRE\/DEFER/);
+  assert.match(migrationGovernance, /planning[^\n]*implementation drift/i);
+  assert.match(migrationGovernance, /implementation[^\n]*live[^\n]*lifecycle drift/i);
   assert.doesNotMatch(roadmap, /### 4\.6 流水账/);
   assert.match(readme, /ROADMAP\.md#pre-1-compatibility-admission/);
 });

@@ -14,8 +14,46 @@
 3. 复制下方骨架到历史目录；文件名优先使用 `phase-<编号>-<主题>.md`，回顾性 interlude 必须显式说明，
    但文件名和小节结构是写作约定，不是测试合同。
 4. 正文保持自洽、短小，不复制源码、脚本、fixture、验收全文、SHA 表、测试计数或逐 Round 流水账。
-5. 完成后只在历史目录索引登记；不要从 CHANGELOG、ROADMAP、provenance 等宏观文档直链具体摘要。
+5. 完成后在历史目录索引登记。README 文档地图是全局历史索引入口；ROADMAP 是唯一第二入口，只能在
+   programme 路线需要历史理由时直达具体 Phase 的稳定显式 anchor。CHANGELOG、provenance 和其他宏观文档
+   不得建立第三入口。
 6. 摘要进入历史目录后原则上冻结，只做有证据的事实纠错或 immutable link 修复。
+
+## 可选 append-only status note
+
+默认闭合摘要把最终事实直接写进 `Completed delivery` 与 `Acceptance conclusion`，不要机械创建空尾注。只有原决策快照
+早于后续实施或真实live证据，而且 planning → implementation、implementation → live/lifecycle 或后续Discovery偏差本身
+具有长期解释价值时，才在原摘要后追加status note；常见名称是`Post-implementation status`、`Post-live status`与
+`Post-discovery status`，但它们是同一家族的可选时间注释，不是每个Phase的固定三段式。
+
+- `Post-implementation status — <gate>`记录实际交付、相对计划的实现偏差、对象生命周期账、本地证据、仍未授权的
+  边界和live停止点。
+- `Post-live status — <gate>`只能在真实Cloud/live完成后记录实际观察、implementation → live/lifecycle偏差、最终
+  结论和剩余停止点；不得预填PASS，本地证据不得替代Cloud/live证据。
+- `Post-discovery status — <gate>`只在后续Discovery实质修正原假设、边界或继承关系时使用。
+
+追加时为每个尾注建立Phase-scoped稳定英文显式anchor，并保留原正文时间语义；不要回写旧结论使其看似从一开始就知道
+后续结果。以下骨架只在对应事实存在时复制，否则整段省略：
+
+<!--
+<a name="<phase>-post-implementation-status-<gate>"></a>
+
+## Post-implementation status — <gate>
+
+实际交付 / planning → implementation drift / lifecycle ledger / local evidence / unauthorized boundaries。
+
+<a name="<phase>-post-live-status-<gate>"></a>
+
+## Post-live status — <gate>
+
+真实Cloud/live observation / implementation → live or lifecycle drift / final conclusion / remaining stops。
+
+<a name="<phase>-post-discovery-status-<gate>"></a>
+
+## Post-discovery status — <gate>
+
+后续Discovery修正的假设、边界、继承关系与证据。
+-->
 
 ---
 

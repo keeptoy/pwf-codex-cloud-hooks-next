@@ -309,16 +309,40 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(read("MAINTAINER_HANDOFF.md"), /\[[^\]]*仓库治理指南[^\]]*\]\(docs\/repository-governance-guide\.md\)/);
 });
 
-test("historical documents have one macro entrance and remain advisory", () => {
+test("historical documents have two controlled macro entrances and remain advisory", () => {
   const readme = read("README.md");
+  const roadmap = read("ROADMAP.md");
+  const historyIndex = read("docs/history/README.md");
+  const historyTemplate = read("docs/phase-history-template.md");
+  const governanceGuide = read("docs/repository-governance-guide.md");
+  const agents = read("AGENTS.md");
   assert.match(readme, /\]\(docs\/history\/README\.md\)/);
   assert.equal((readme.match(/docs\/history\//g) || []).length, 1,
     "README must expose exactly one historical-document entrance");
+  for (const anchor of [
+    "phase-4-8-post-implementation-status-f3b3",
+    "phase-4-8-post-live-status-f3b3",
+  ]) assert.match(roadmap, new RegExp(
+    `\\]\\(docs/history/phase-4\\.8-f3b3-autonomous-live-discovery\\.md#${anchor}\\)`,
+  ));
+  assert.equal((roadmap.match(/docs\/history\//g) || []).length, 2,
+    "ROADMAP may expose only the two exact Phase evidence links frozen by lifecycle governance");
+  assert.doesNotMatch(roadmap, /\]\(docs\/history\/README\.md\)/,
+    "ROADMAP must not duplicate README's history index");
   for (const macroDoc of [
     "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
-    "MAINTAINER_HANDOFF.md", "ROADMAP.md",
+    "MAINTAINER_HANDOFF.md",
   ]) assert.doesNotMatch(read(macroDoc), /docs\/history\//,
-    `${macroDoc} must not create a second historical-document entrance`);
+    `${macroDoc} must not create a third historical-document entrance`);
+  for (const policyDoc of [historyIndex, historyTemplate, governanceGuide, agents]) {
+    assert.match(policyDoc, /README[\s\S]*ROADMAP/);
+  }
+  assert.match(historyTemplate, /可选[\s\S]*append-only status note/i);
+  assert.match(historyTemplate, /Post-implementation status/);
+  assert.match(historyTemplate, /Post-live status/);
+  assert.match(historyTemplate, /Post-discovery status/);
+  assert.match(historyTemplate, /不得预填[^\n]*PASS|不预填[^\n]*PASS/);
+  assert.match(historyTemplate, /本地[^\n]*不得[^\n]*替代[^\n]*(Cloud|live)/i);
 });
 
 test("Phase 4.13 preserves the v0.4.1 path-safety patch rationale", () => {

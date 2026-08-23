@@ -25,6 +25,8 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 - 摘要不维护当前 candidate、accepted、rollback、PASS/PENDING 或下一步状态。
 - 每份摘要最多保留一个 immutable source snapshot，不直接链接旧 Phase/Round 设计文档或验收全文。
 - `docs/history/` 整体不得进入 Release、installer inventory、trusted graph 或 runtime dispatch。
+- 宏观访问只开放两个入口：README 文档地图只进入本索引；ROADMAP只在programme路线需要历史理由时直达具体
+  Phase的稳定显式anchor。ROADMAP不得复制本索引或把历史摘要提升为当前authority，其他宏观文档不得建立第三入口。
 
 ## 已收录 Phase
 
