@@ -317,6 +317,37 @@ test("historical documents have one macro entrance and remain advisory", () => {
     `${macroDoc} must not create a second historical-document entrance`);
 });
 
+test("Phase 4.12 preserves the v0.4.1 path-safety patch rationale", () => {
+  const relative = "docs/history/phase-4.12-v0.4.1-path-safety-patch-train.md";
+  const historyIndex = read("docs/history/README.md");
+  const artifact = JSON.parse(read(currentArtifactPath));
+  assert.equal(fs.existsSync(path.join(root, relative)), true, relative);
+  const history = read(relative);
+
+  for (const anchor of [
+    "phase-4-12-historical-position", "phase-4-12-problem-before",
+    "phase-4-12-core-decisions", "phase-4-12-completed-delivery",
+    "phase-4-12-acceptance-conclusion", "phase-4-12-explicit-non-goals",
+    "phase-4-12-successor-inheritance", "phase-4-12-immutable-evidence",
+  ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
+
+  assert.match(history, /回顾性[^\n]*patch-train标签/);
+  assert.match(history, /不是[^\n]*Product Phase/);
+  assert.match(history, /Windows junction[^\n]*穿透[^\n]*外部runtime/);
+  assert.match(history, /clean install[\s\S]*runtime不存在[\s\S]*linked parent[\s\S]*向外写入/);
+  assert.match(history, /path topology[\s\S]*exact inventory admission[\s\S]*分层/);
+  assert.match(history, /install、repair与uninstall[\s\S]*backup[^\n]*mutation前[^\n]*拒绝/);
+  assert.match(history, /symlink[\s\S]*junction[\s\S]*非目录component[\s\S]*nested special entry/);
+  assert.match(history, /unknown普通文件\/目录[^\n]*完整备份[^\n]*清理/);
+  assert.match(history, /`BLOCKED_UNSAFE_RUNTIME_PATH`/);
+  assert.match(history, /Linux\/POSIX[^\n]*零skip/);
+  assert.match(history, /99885b854bd9621c3340e99f031bf83ceb58414d/);
+  assert.match(historyIndex,
+    /phase-4\.12-v0\.4\.1-path-safety-patch-train\.md#phase-4-12-historical-position/);
+  assert.equal(artifact.entries.some(entry => entry.path === relative), false);
+  assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
+});
+
 test("Phase 4.13 preserves the Release closeout governance rationale", () => {
   const relative = "docs/history/phase-4.13-release-closeout-governance.md";
   const historyIndex = read("docs/history/README.md");
