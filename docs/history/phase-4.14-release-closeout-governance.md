@@ -157,6 +157,34 @@ lifecycle、evidence schema、rollback/revival negative与runtime行为oracle；
 不进入repository inventory、Release、Phase history或current authority。这个实例也是本轮为何把对象生命周期账、两次drift
 review和Release内嵌retirement checkpoint写成明确规则的直接背景。
 
+<a name="phase-4-14-post-governance-status-history-role-rotation"></a>
+
+## Post-governance status — history roles and Product Phase authority rotation
+
+第一轮Release closeout治理完成后，后续文档审计又确认`docs/history/`实际承载两种不同时间身份：Phase 0～3.9.3与
+Phase 4.12～4.14主要是对象关闭后回补的`RETROSPECTIVE_CAPSULE`；Phase 4.1～4.11则是正式Discovery/decision round关闭后
+冻结的`FROZEN_DISCOVERY_RECORD`。因此原先把所有history统一限制为“一Product Phase一份摘要”的规则过窄，无法准确解释
+Phase 4内部多轮真实Discovery，也会诱导维护者错误合并其conditional-go、stop rules和后续post-*状态。
+
+后续治理据此完成两项深化：
+
+1. repository governance、Phase history模板与索引明确区分两种record role。回补型capsule对同一闭合对象最多一份；正式
+   Discovery record按真实Round保留多份，但不能按聊天、测试批次或施工子门槛虚增。既有history文件不重命名、不批量回写，
+   原始Discovery结论继续保持当时时间语义。
+2. ROADMAP第4节与第5节形成显式authority rotation：Product Phase活动时，第4节维护current train；Round关闭后record可以
+   冻结进history并继续把current-authority链接指向第4节；Product Phase closeout后，只把长期Product结论提炼进第5节唯一
+   `product-phase-N`，同时把这些current-authority链接迁到第5节；Release完成并轮转前必须确认旧第4节没有current入链。
+
+当前维护默认一条版本列车只承载一个Product Phase；多个Product Phase共用列车只在维护者明确授权后适用。patch train继承它
+修补的accepted/candidate Product baseline，documentation/process governance按ROADMAP声明的当前或新version series落位；版本号
+用于识别列车，不能独自创建Product Phase。若版本、活动task plan、ROADMAP与实际修补对象不能给出唯一归属，智能体必须先把
+候选归属和影响交给维护者确认，不能为了完成第4节轮转自行虚构第5节条目。
+
+这项后续治理只补齐history身份、current/long-term authority与列车轮转的文档模型，没有修改production、contracts、runtime、
+package或Release字节，也没有授权`0.4.2`候选封板、Cloud、publication、Latest或下一Product Phase。详细current规则只见
+[repository governance guide](../repository-governance-guide.md#product-phase-authority-rotation)与ROADMAP；本节继续只是带时间语义的
+历史回补。
+
 <a name="phase-4-14-immutable-evidence"></a>
 <a name="phase-4-13-immutable-evidence"></a>
 

@@ -75,6 +75,17 @@ manifest、bootstrap、Release allowlist或package bytes；当前package identit
 Latest与下一Product Phase均未授权。已关闭的`v0.4.0`Release discovery、`v0.4.1`path-safety列车与本轮Release治理分别由
 Phase 4.12、Phase 4.13、Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节只维护当前边界。
 
+当前列车已经完成以下文档治理交付，但这些完成项不改变上述package/Release授权状态：
+
+- 把Phase history拆分为回补型`RETROSPECTIVE_CAPSULE`与正式Round关闭后冻结的`FROZEN_DISCOVERY_RECORD`，同步history索引、
+  写作模板和repository contracts；一个Product Phase可以有多份真实Discovery records，但同一闭合对象最多一份回补型capsule。
+- 冻结ROADMAP第4节current train工作台→Discovery Round归档→第5节`product-phase-N`长期authority→Release后列车轮转的完整状态流；
+  current-authority链接迁移不得改写原Discovery结论或时间语义。
+- 明确当前默认一条版本列车承载一个Product Phase；multi-Phase列车必须由维护者显式授权。patch继承其修补的Product baseline，
+  governance按ROADMAP声明的version series落位；无法唯一判断时先与维护者确认，不为迁移第4节虚构第5节Phase。
+- 上述详细规则仍由第5节唯一链接进入仓库治理指南；ROADMAP只保留programme级状态，Phase 4.14继续保存本轮治理为何形成
+  及其后续深化，不在第4节建立第二个authority入口。
+
 ## 5. Product Phase 路线
 
 下表是未来 Discovery 的候选，不是发布承诺，也不自动授权下一 Phase。一个 Phase 可以有多个

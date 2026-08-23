@@ -431,6 +431,7 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
     "phase-4-14-completed-delivery", "phase-4-14-acceptance-conclusion",
     "phase-4-14-explicit-non-goals", "phase-4-14-successor-inheritance",
     "phase-4-14-post-implementation-status-stage-guide-retirement",
+    "phase-4-14-post-governance-status-history-role-rotation",
     "phase-4-14-immutable-evidence",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(history, /^<a name="phase-4-13-historical-position"><\/a>$/m);
@@ -456,6 +457,13 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
   assert.match(history, /current tests[\s\S]{0,120}历史教程[\s\S]{0,80}必须存在的回归资产/);
   assert.match(history, /4份阶段guide[\s\S]{0,100}tracked tree清退/);
   assert.match(history, /`临时文件\/`[\s\S]{0,100}Git忽略/);
+  assert.match(history,
+    /Post-governance status — history roles and Product Phase authority rotation[\s\S]*RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
+  assert.match(history,
+    /ROADMAP第4节与第5节形成显式authority rotation[\s\S]*product-phase-N[\s\S]*旧第4节没有current入链/);
+  assert.match(history,
+    /patch train继承它[\s\S]*Product baseline[\s\S]*version series落位[\s\S]*维护者确认/);
+  assert.match(history, /没有授权`0\.4\.2`候选封板、Cloud、publication、Latest或下一Product Phase/);
   assert.match(historyIndex,
     /phase-4\.14-release-closeout-governance\.md#phase-4-14-historical-position/);
   assert.match(historyIndex, /Phase 4\.12[^\n]*原P9-A～P9-F[^\n]*历史语义/);

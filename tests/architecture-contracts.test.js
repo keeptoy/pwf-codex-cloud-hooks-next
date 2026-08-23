@@ -357,6 +357,12 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(currentTrain, /documentation governance/);
   assert.match(currentTrain, /package identity[\s\S]*0\.4\.1/);
   assert.match(currentTrain, /Release candidate[\s\S]*未授权/);
+  assert.match(currentTrain,
+    /已经完成以下文档治理交付[\s\S]*RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
+  assert.match(currentTrain,
+    /第4节current train工作台[\s\S]*第5节`product-phase-N`长期authority[\s\S]*列车轮转/);
+  assert.match(currentTrain,
+    /patch继承其修补的Product baseline[\s\S]*governance按ROADMAP声明的version series落位[\s\S]*维护者确认/);
   assert.match(currentTrain, /candidate \+ accepted role window/);
   assert.match(currentTrain, /trusted\/Release zones 继续 exact[\s\S]*docs\/planning zones 按 lifecycle policy/);
   assert.match(currentTrain,
