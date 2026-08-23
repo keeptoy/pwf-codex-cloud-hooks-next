@@ -129,6 +129,7 @@ test("trusted source zones are exact while repository governance paths remain li
   for (const required of [
     "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
     "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "docs/cloud-hard-acceptance-template.md",
+    "docs/cloud-acceptance-operator-guide-template.md",
     "docs/v0.4.0-dev-f3-cloud-lifecycle-runbook.md",
     "docs/repository-governance-guide.md",
   ]) {
@@ -181,25 +182,29 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.deepEqual(rootBootstraps, roleVersions.map(version => `init-cloud-sandbox-${version}.bash`));
   assert.deepEqual(acceptanceDocs, roleVersions.map(version => `docs/${version}-cloud-hard-acceptance.md`));
   const acceptanceTemplate = read("docs/cloud-hard-acceptance-template.md");
+  const operatorGuideTemplate = read("docs/cloud-acceptance-operator-guide-template.md");
   assert.match(acceptanceTemplate, /^<a name="cloud-hard-acceptance-template"><\/a>$/m);
   assert.match(acceptanceTemplate, /^<a name="acceptance-document-responsibilities"><\/a>$/m);
-  assert.match(acceptanceTemplate, /^<a name="version-gate-status-ledger"><\/a>$/m);
+  assert.match(acceptanceTemplate, /^<a name="version-discovery-round-routing"><\/a>$/m);
   assert.match(acceptanceTemplate, /^<a name="version-acceptance-delta"><\/a>$/m);
+  assert.match(operatorGuideTemplate, /^<a name="cloud-acceptance-operator-guide-template"><\/a>$/m);
+  assert.match(operatorGuideTemplate, /^<a name="operator-guide-document-lifecycle"><\/a>$/m);
   assert.match(acceptanceTemplate, /\| 本模板 \| Source\/Candidate 与 Published Release 的稳定执行协议/);
   assert.match(acceptanceTemplate, /\| 活动 Release task plan \|[^\n]*Next Step/);
-  assert.match(acceptanceTemplate, /\| 版本专项 acceptance \|[^\n]*最终结论/);
-  assert.match(acceptanceTemplate, /多 gate 开发版本可以维护一张简洁的版本内 gate 验收状态表/);
-  assert.match(acceptanceTemplate, /\| 版本专项 acceptance \|[^\n]*\| 逐步骤流水账/);
-  assert.match(acceptanceTemplate, /CURRENT \/ CLOUD_ACCEPTANCE_PENDING/);
-  assert.match(acceptanceTemplate, /CURRENT \/ EVIDENCE_WRITEBACK_PENDING/);
-  assert.match(acceptanceTemplate, /`NOT_AUTHORIZED`/);
-  assert.match(acceptanceTemplate, /一次性版本没有中间 gate 时\s*整个状态表省略/);
+  assert.match(acceptanceTemplate, /\| 本轮 operator guide \|[^\n]*Post-run status/);
+  assert.match(acceptanceTemplate, /多 Discovery 版本[^\n]*每个正式 Discovery Round/);
+  assert.match(acceptanceTemplate, /single-Discovery 版本专项 acceptance[^\n]*operator guide/);
+  assert.doesNotMatch(acceptanceTemplate, /多\s*gate\s*(?:开发)?版本/i);
+  assert.match(operatorGuideTemplate, /PRE_RUN_READY \/ LIVE_NOT_RUN/);
+  assert.match(operatorGuideTemplate, /POST_RUN_PASS|POST_RUN_FAIL|POST_RUN_INCOMPLETE/);
+  assert.match(operatorGuideTemplate, /Post-run status[^\n]*真实执行后追加/);
+  assert.match(operatorGuideTemplate, /失败重试[\s\S]{0,100}活动 planning/);
   assert.match(acceptanceTemplate, /development identity 收敛为 stable identity/);
-  assert.match(acceptanceTemplate, /不得让 dev\/stable\s+两份 acceptance 并存/);
-  assert.match(acceptanceTemplate, /### 0\.3 “当前 gate 验收增量”（可选）/);
+  assert.match(acceptanceTemplate, /不得让 dev\/stable\s+两份 single-Discovery acceptance 并存/);
+  assert.match(acceptanceTemplate, /### 0\.3 “当前 Discovery Round 验收增量”（可选）/);
   assert.match(acceptanceTemplate, /没有验收增量时/);
   assert.match(acceptanceTemplate, /B～E 黑盒提示词是否变化/);
-  assert.match(acceptanceTemplate, /版本文件不得再次复制脚本、提示词或完整执行步骤/);
+  assert.match(acceptanceTemplate, /operator guide 不得再次复制未变化的脚本、提示词或完整执行步骤/);
   assert.match(acceptanceTemplate, /Environment variables（“环境变量”）[\s\S]*PWF_ACCEPTANCE_NODE_MAJOR[\s\S]*不要只在 setup script 中/);
   assert.match(acceptanceTemplate, /### 4\.2 Published Release[\s\S]*__IMMUTABLE_BOOTSTRAP_URL__[\s\S]*__IMMUTABLE_BOOTSTRAP_SHA256__/);
   assert.match(acceptanceTemplate, /### 9\.2 Published Release[\s\S]*__IMMUTABLE_ZIP_URL__[\s\S]*__IMMUTABLE_ZIP_SHA256__/);
@@ -251,7 +256,7 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
     "both deep checks must derive inventory and hashes from all v2 bundle partitions");
   assert.equal((acceptanceTemplate.match(/hash_key = "pristine_sha256" if section == "upstream_files" else "sha256"/g) || []).length, 2);
   assert.doesNotMatch(acceptanceTemplate, /release-artifact-v1|runtime-bundle-v1|bundle\["files"\]/);
-  assert.match(acceptanceTemplate, /版本专项 acceptance 应保存以下原始证据/);
+  assert.match(acceptanceTemplate, /operator guide 的 Post-run status 应保存以下原始证据/);
   assert.doesNotMatch(acceptanceTemplate, new RegExp(versionPattern, "i"));
   assert.doesNotMatch(acceptanceTemplate, /\b[a-f0-9]{40,64}\b/i);
   assert.doesNotMatch(acceptanceTemplate, /Phase 4 marker/i);
@@ -261,6 +266,7 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   const fixedBootstrapName = /init-cloud-sandbox-v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\.bash/;
   for (const stableDoc of [
     "README.md", "AGENTS.md", "docs/cloud-hard-acceptance-template.md",
+    "docs/cloud-acceptance-operator-guide-template.md",
     "docs/repository-governance-guide.md",
   ]) {
     assert.doesNotMatch(read(stableDoc), fixedBootstrapName, `${stableDoc} must use a version-neutral bootstrap command`);

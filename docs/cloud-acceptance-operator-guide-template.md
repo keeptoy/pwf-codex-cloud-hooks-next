@@ -1,0 +1,173 @@
+<a name="cloud-acceptance-operator-guide-template"></a>
+
+# Cloud acceptance Operator Guide template
+
+本文件规定“一轮验收教程”怎样写、怎样从执行前状态回补真实结果，以及何时冻结。它不保存任何版本、
+commit、资产 SHA、当前 PASS/PENDING 或 programme 角色，也不复制
+[`Cloud hard acceptance template`](cloud-hard-acceptance-template.md)中的稳定 Source/Candidate、Published Release、
+B～E、deep-check 或 hard-stop 协议。
+
+`operator guide`是统一的内容职责：它既是维护者执行教程，也是执行完成后不可变证据的容器。
+`acceptance`不是第二种文档；single-Discovery版本可以沿用更短、容易发现的
+`vX.Y.Z-cloud-hard-acceptance.md`文件名。multi-Discovery版本则让每个正式Discovery Round拥有一份
+`vX.Y.Z-<round>-operator-guide.md`。
+
+本模板只适用于未来新建或仍在施工的文档。已经发布或关闭的acceptance、runbook与operator guide保留
+原文件名和时间语义，不批量重命名、重排章节或回写新模板。
+
+<a name="operator-guide-document-lifecycle"></a>
+
+## 0. 文档生命周期与使用规则
+
+```text
+Discovery decision
+  -> materialize one operator guide with Pre-run status
+  -> maintainer executes the exact tutorial
+  -> append exact Post-run status to the same file
+  -> freeze the guide
+  -> retire it to immutable history after its role window closes
+```
+
+适用规则：
+
+1. 正式Discovery Round才是新增验收文档的计数单位。Gate是Round内部或standing Release流程中的授权、
+   停止与晋级检查点，不是验收轮数。
+2. 一个 operator guide 可以编排多个 gate、Cloud task 或 stage；复杂状态DAG不需要按task拆成多份guide。
+3. 纯 aggregate、evidence closure或retirement closeout若只汇总已经冻结的证据，不新建operator guide，
+   也不重复黑盒。
+4. no-live/repository-only Round可以使用本模板，但Post-run结论必须明确限定为no-live，不能冒充Cloud live。
+5. Release Source/Candidate与Published Release是两个独立通道，可以由同一份Release operator guide按前后
+   阶段编排；两者不计作两个Product Discovery Round。
+6. Pre-run guide只保存已经审核的claim、exact输入、教程、停止条件和`PRE_RUN_READY / LIVE_NOT_RUN`。
+   不预填运行输出、测试数量、PASS或Post-run evidence。
+7. Post-run status只在真实执行后追加，并且必须先取得明确最终状态。失败重试、第一次错误、恢复位置和Next Step
+   继续写活动 planning；guide只保存最终结论及理解该结论必需的偏差。
+8. Post-run追加完成后冻结。后继模板改进不批量回写；只允许有证据的事实纠错或immutable link repair。
+9. 若执行前后product bytes、协议、risk claim、exact source或停止条件发生实质变化，当前guide失效；回到
+   Discovery判断是新Round还是同Round的新候选，不能直接改写预期后继续记PASS。
+10. Operator guide、版本acceptance和本模板必须被Release、installed inventory与trusted execution graph排除。
+
+生成具体guide时复制下面第1～5节，替换所有`<...>`；任何仍未解析的输入都必须fail closed。第6节不要
+提前复制到pre-run guide，等真实执行完成后再按本模板追加。
+
+<a name="operator-guide-positioning"></a>
+
+## 1. 定位与 Discovery claim
+
+具体guide必须用大白话回答：
+
+- 本轮属于哪个Product Phase、版本列车和正式Discovery Round；
+- 本轮新增或改变哪个risk/behavior claim；
+- 为什么现有已冻结证据不能覆盖它；
+- 本轮明确不证明什么，以及PASS后停在哪里；
+- 本轮是Cloud live、Source/Candidate、Published Release、no-live，还是这些通道的有序组合。
+
+推荐开头结构：
+
+```markdown
+# <version / round> <purpose> Operator Guide
+
+本轮只验证<one bounded claim>。它不授权<next gates / Release / promotion / cleanup>。
+
+执行关系：
+<exact stage/task graph>
+```
+
+single-Discovery版本专项acceptance使用相同结构，只把文件命名为
+`vX.Y.Z-cloud-hard-acceptance.md`；multi-Discovery版本的每个正式Round使用
+`vX.Y.Z-<round>-operator-guide.md`。不要再建立一份把所有Round全文重新拼接起来的巨型version acceptance。
+
+<a name="operator-guide-exact-inputs"></a>
+
+## 2. Exact inputs 与前置条件
+
+只列本轮执行实际依赖且可核验的输入，例如：
+
+| Input | Exact value / authority | Admission check |
+|---|---|---|
+| source / runtime source | `<immutable commit or approved checkout>` | `<exact command/output>` |
+| workspace lifecycle state | `<branch/ref/commit/plan>` | `<cleanliness and relation check>` |
+| candidate/public asset | `<filename, immutable URL, size, SHA>` | `<checksum/boundary check>` |
+| Host/Cloud prerequisite | `<environment, Node major, CODEX_HOME>` | `<controlled probe>` |
+
+规则：
+
+- moving branch、`latest`、cache receipt、模型声明或本次构建自行产生的“expected”值不能充当external identity；
+- dynamic URL/SHA、当前授权、失败记录和恢复位置仍由活动task plan控制；guide只在执行身份冻结后写入exact值；
+- 通用Cloud步骤直接链接
+  [`Cloud hard acceptance template`](cloud-hard-acceptance-template.md)的稳定anchor；只有本Round特有状态机、
+  负向case或身份关系才在guide内物化；
+- unresolved placeholder、dirty worktree、identity drift或前置通道缺失时停止，不进入执行教程。
+
+<a name="operator-guide-execution-tutorial"></a>
+
+## 3. 执行教程
+
+按操作者实际顺序写成可复制协议，而不是实现历史：
+
+1. 维护者本地preflight与需要的push/ref动作；远端写仍由维护者执行；
+2. Cloud environment/setup/maintenance配置；
+3. task/stage顺序以及哪些必须Fresh、UserPromptSubmit或real Resume；
+4. 每个stage允许的唯一workspace mutation；其余步骤默认只读；
+5. production probe、doctor、inventory、policy、residue与evidence record；
+6. 最终回传格式和明确停止点。
+
+如果稳定B～E或deep-check没有变化，只引用模板anchor并说明本轮选择哪些通道，不复制脚本或提示词。
+如果Round有独特DAG或tamper/rollback状态机，guide可以保持自包含，但必须清楚区分expected关系与actual evidence，
+不能让手册常量自行证明PASS。
+
+长命令只有取得明确最终`exit_code`后才能分类。stdout/stderr分片、session id、running状态、首次等待超时或
+暂时静默都不代表完成；无法取得最终状态只能进入`POST_RUN_INCOMPLETE`。
+
+<a name="operator-guide-evidence-and-stops"></a>
+
+## 4. 证据与停止条件
+
+每个具体guide至少冻结：
+
+- exact source/runtime/workspace/asset identity；
+- 实际执行的task/stage和最终exit code；
+- Host黑盒原始观察中与本轮claim直接相关的字段；
+- production probe、doctor、inventory/policy/residue或本轮专用machine oracle；
+- 首次失败是否改变环境，以及是否按规则从Fresh重新开始；
+- 本轮最终结论、未证明事项和下一gate不授权边界。
+
+共同硬停止：identity/worktree漂移、无最终exit code、模型越权修改/commit/push/PR/Release、自动修复后继续记PASS、
+doctor不健康、expected/actual关系不一致、需要修改production/contract/Host ABI/trusted graph才能继续。
+具体Round应在此基础上增加自己的fail-closed矩阵。
+
+<a name="operator-guide-pre-run-status"></a>
+
+## 5. Pre-run status
+
+具体guide在执行前以带日期的Pre-run section收口：
+
+```text
+<ROUND>_PRE_RUN_READY / LIVE_NOT_RUN / <STOP_BEFORE_NEXT_GATE>
+```
+
+这里可以记录已完成的本地materialization、failing-first、exact ref/path关系、candidate identity和维护者待执行动作，
+但不得出现尚未实际取得的Cloud PASS、Post-run output或promotion结论。
+
+<a name="operator-guide-post-run-status"></a>
+
+## 6. Post-run status
+
+本节只在真实执行后追加；Pre-run guide中不得预建或预填。状态只能是：
+
+- `POST_RUN_PASS`：全部必需task/stage和最终证据闭合；
+- `POST_RUN_FAIL`：取得明确非零/反例，且本轮claim未成立；
+- `POST_RUN_INCOMPLETE`：无最终状态、环境/权限中断或证据无法绑定，禁止猜测PASS/FAIL。
+
+追加内容最少包括：执行日期、exact identity、实际task/stage矩阵、关键原始输出摘要、最终exit code、偏差、
+未授权边界和一个可机器搜索的最终marker。不要复制活动planning中的逐次重试流水。
+
+Post-run status追加并通过本地治理验证后，该guide冻结。若结果推动programme、Release或rollback角色变化，
+再分别同步ROADMAP、provenance或CHANGELOG；不能由guide的PASS自动推导这些角色。
+
+## 7. 模板的非权威边界
+
+- 本模板不证明任何Discovery、Cloud task、commit、tag、Release、promotion或rollback已经发生；
+- 本模板不进入Release ZIP、installed runtime、Managed policy或production trusted graph；
+- 当前授权只读活动task plan，programme角色只读ROADMAP，published identity只读provenance；
+- 历史runbook/operator guide/acceptance保持其原名和时间语义，本模板只约束未来实例。

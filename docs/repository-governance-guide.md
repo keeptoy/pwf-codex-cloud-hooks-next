@@ -92,7 +92,7 @@ source baseline
 适用于非执行治理资料：
 
 - planning；
-- runbook/acceptance；
+- operator guide/acceptance，以及保留原名的historical runbook；
 - handoff 和研究文档；
 - migration notes。
 
@@ -213,27 +213,38 @@ Release notes；不要提前创建大量按版本 archive 文件。
 历史 oracle 应验证当前仍承担角色的 baseline。更早版本的完整安全证明由其 tag/Release 和周期性外部
 审计承担，不应让每次本地 suite 重跑所有历史实现。
 
-### 11.1 Cloud acceptance 模板与版本证据
+### 11.1 Cloud protocol、Operator Guide 与版本证据
 
-可重放 Cloud 流程应分成稳定协议、活动施工状态和当前角色窗口内的版本证据三层；详细写入规则只由
+可重放Cloud流程应分成稳定执行协议、一轮验收教程、活动施工状态和宏观角色索引；详细写入规则由
 [`Cloud hard acceptance template` 的“文档职责与写入时机”](cloud-hard-acceptance-template.md#acceptance-document-responsibilities)
-维护：
+与[`Cloud acceptance Operator Guide template`](cloud-acceptance-operator-guide-template.md)共同维护：
 
-- [`Cloud hard acceptance template`](cloud-hard-acceptance-template.md) 只维护双通道前置条件、信任输入、
-  版本中立黑盒提示词、deep-check 结构、停止条件和 evidence schema；
-- 模板不得保存具体版本、commit、资产名/size/SHA、测试计数、某次 gate 的 PASS/PENDING、Latest/rollback
-  或 programme 状态，也不占用 candidate + accepted 文件窗口；
-- 活动 Release task plan 保存当次授权、执行到哪一步、seal 输入、URL/SHA、Next Step、失败记录和恢复位置；
-- 多 gate 版本的专项 acceptance 可以维护简洁的 gate 验收状态表和当前 gate 的模板/提示词增量；状态表只回答
-  已通过、当前待验收和未授权，不保存逐步骤流水账、失败重试或 Next Step。相应通道完整通过后再一次性登记
-  exact source、资产身份、Cloud 原始输出和最终结论；一次性版本可以省略中间状态表；
-- development identity 收敛为 stable identity 时重命名同一份 acceptance，不得同时保留 dev/stable 两份；
-- 已发布 acceptance 是带时间语义的冷证据，不因模板改进而批量回写；模板只在 lifecycle、Host ABI、
-  trusted graph、Release boundary 或稳定观测协议变化时更新；
-- 模板和所有版本 acceptance 都必须被 Release、installed inventory 与 trusted execution graph 排除。
+- [`Cloud hard acceptance template`](cloud-hard-acceptance-template.md)只维护双通道前置条件、信任输入、
+  版本中立黑盒提示词、deep-check结构、停止条件和evidence schema；不保存具体版本、commit、资产identity、
+  某次PASS/PENDING、Latest/rollback或programme状态；
+- Operator Guide template只维护一轮教程的固定章节、Pre-run→Post-run→freeze生命周期与命名路由，不复制稳定
+  Cloud脚本或具体Round结果；
+- 活动task plan保存当次授权、执行到哪一步、seal输入、URL/SHA、Next Step、失败记录和恢复位置；这些施工状态
+  不进入冻结guide；
+- Discovery Round是新增risk/behavior claim和验收文档的计数单位。Gate仍是Round内部或standing Release流程中的
+  授权/停止检查点，Cloud task/stage仍是执行单元；一个guide可以包含多个gate、task和stage；
+- single-Discovery版本使用`vX.Y.Z-cloud-hard-acceptance.md`，它就是简化命名的operator guide；多 Discovery 版本
+  为每个正式Discovery Round建立一份`vX.Y.Z-<round>-operator-guide.md`，不维护一个累积所有Round全文的巨型
+  version acceptance；
+- 纯aggregate、evidence closure或retirement closeout只汇总已经冻结的exact records时，不新建guide、不重跑黑盒；
+- 同一guide执行前保存Pre-run status，真实执行后在同文件追加Post-run status和理解结论必需的exact evidence，
+  随后冻结；失败重试、恢复位置和Next Step继续留在活动planning；
+- Source/Candidate与Published Release是final source和public bytes的两个独立Release通道，可以由同一份Release guide
+  编排，但不能共享环境、identity或证据，也不计作两个Product Discovery Round；
+- development identity收敛为stable identity时，尚未冻结的single-Discovery acceptance可以原子重命名；已冻结的
+  multi-Discovery guide保留原Round身份；
+- 已发布或已冻结的acceptance、runbook与operator guide都是带时间语义的冷证据。以后统一新建operator-guide，
+  既有runbook与operator-guide保持原名，作为历史文件不批量重命名或回写新模板；
+- Cloud protocol template、Operator Guide template及所有具体guide都必须被Release、installed inventory与trusted
+  execution graph排除。
 
-这种拆分允许执行协议跨 patch 版本复用：细粒度执行状态只活在可归档的 task plan，版本 acceptance 保留
-粗粒度 gate 索引、验收增量和已完成不可变证据，两者不会互相冒充。
+这种拆分允许稳定协议跨版本复用，也允许复杂Phase按真实Discovery risk保留多轮证据：活动planning控制施工，
+每个guide只承担一轮教程及其Post-run结果，ROADMAP/Phase capsule只做宏观索引，不再把所有层次拼成一份增长总账。
 
 ## 12. Promotion 与 eviction 是一个事务
 
@@ -358,7 +369,7 @@ commit、资产 hash 或“当前 PASS/PENDING”状态；candidate/accepted 文
 ## 16. 常见反模式
 
 - 在当前树保留每次 planning、每版 acceptance 和每个 bootstrap；
-- 在 README、AGENTS 或通用 runbook 中逐版追加固定 bootstrap 文件名；
+- 在 README、AGENTS 或通用 operator guide 中逐版追加固定 bootstrap 文件名；
 - 为每个历史版本复制一整块 publication test，而不旋转 accepted/fallback 席位；
 - 创建 `archive/` 或 `old/` 把膨胀换一个目录继续累积；
 - 为每个 Round、测试批次或候选版复制一份“Phase 历史”，让精选摘要重新膨胀成流水账；

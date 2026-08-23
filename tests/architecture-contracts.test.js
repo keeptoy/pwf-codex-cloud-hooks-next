@@ -82,6 +82,42 @@ test("MAINTAINER_HANDOFF is a triage desk, not another mutable runbook", () => {
   assert.equal(artifact.entries.some(entry => entry.path === "MAINTAINER_HANDOFF.md"), false);
 });
 
+test("acceptance documents are counted by Discovery Round and share one operator-guide lifecycle", () => {
+  const cloudTemplate = readText("docs/cloud-hard-acceptance-template.md");
+  const operatorTemplate = readText("docs/cloud-acceptance-operator-guide-template.md");
+  const governance = readText("docs/repository-governance-guide.md");
+  const design = readText("DESIGN.md");
+  const artifact = readJson(currentArtifactPath);
+
+  assert.match(operatorTemplate, /^<a name="cloud-acceptance-operator-guide-template"><\/a>$/m);
+  assert.match(operatorTemplate, /^<a name="operator-guide-document-lifecycle"><\/a>$/m);
+  for (const heading of [
+    "## 1. 定位与 Discovery claim",
+    "## 2. Exact inputs 与前置条件",
+    "## 3. 执行教程",
+    "## 4. 证据与停止条件",
+    "## 5. Pre-run status",
+    "## 6. Post-run status",
+  ]) assert.match(operatorTemplate, new RegExp(`^${heading.replaceAll(".", "\\.")}$`, "m"));
+  assert.match(operatorTemplate, /single-Discovery[\s\S]*vX\.Y\.Z-cloud-hard-acceptance\.md/);
+  assert.match(operatorTemplate, /multi-Discovery[\s\S]*vX\.Y\.Z-<round>-operator-guide\.md/);
+  assert.match(operatorTemplate, /Pre-run[\s\S]*Post-run[\s\S]*冻结/);
+  assert.match(operatorTemplate, /一个 operator guide 可以编排多个 gate、Cloud task 或 stage/);
+  assert.match(operatorTemplate, /纯 aggregate[^\n]*不新建/);
+
+  for (const value of [cloudTemplate, governance]) {
+    assert.match(value, /多 Discovery 版本/);
+    assert.match(value, /Discovery Round/);
+    assert.doesNotMatch(value, /多\s*gate\s*(?:开发)?版本/i);
+  }
+  assert.match(cloudTemplate, /single-Discovery 版本专项 acceptance[^\n]*operator guide/);
+  assert.match(cloudTemplate, /Source\/Candidate 与 Published Release[^\n]*两个独立通道/);
+  assert.match(governance, /runbook[^\n]*operator-guide[^\n]*历史文件/);
+  assert.match(design, /cloud-acceptance-operator-guide-template\.md/);
+  assert.match(design, /Discovery Round[^\n]*Pre-run[^\n]*Post-run/);
+  assert.equal(artifact.entries.some(entry => entry.path === "docs/cloud-acceptance-operator-guide-template.md"), false);
+});
+
 test("canonical plan-context architecture is exact, plan-first, and adapter-thin", () => {
   const request = readJson("contracts/adapter-plan-context-request-v2.schema.json");
   const result = readJson("contracts/plan-context-result-v2.schema.json");

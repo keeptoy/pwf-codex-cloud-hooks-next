@@ -5,10 +5,15 @@
 本文件是 `pwf-codex-cloud-hooks` 新版本 Cloud hard acceptance 的稳定写作与执行模板，不是任何版本的
 验收结果，也不维护任何已发生的 candidate、accepted、Latest、rollback、PASS/PENDING、测试数量或资产大小。
 
-版本专项 acceptance 直接引用本模板。多 gate 开发版本可以维护一张简洁的版本内 gate 验收状态表，并说明当前
-gate 相对模板新增了什么验证；只有通道完成后才能登记 exact source、资产 identity 和实际证据。模板本身只在
-Cloud lifecycle、trusted graph、Host ABI、Release boundary 或稳定观测协议变化时修改；普通版本轮换不得把
-运行状态回填到这里，也不得整份复制模板脚本。
+具体的一轮验收教程按
+[`Cloud acceptance Operator Guide template`](cloud-acceptance-operator-guide-template.md)编写。single-Discovery 版本专项
+acceptance就是简化命名的operator guide；多 Discovery 版本让每个正式 Discovery Round拥有一份独立guide，而不是
+把所有Round和Release gate累积进一个巨型version acceptance。只有通道完成后才能在同一guide追加Post-run status、
+exact source、asset identity和实际证据。
+
+模板本身只在Cloud lifecycle、trusted graph、Host ABI、Release boundary或稳定观测协议变化时修改；普通版本轮换
+不得把运行状态回填到这里，也不得整份复制模板脚本。Source/Candidate 与 Published Release始终是两个独立通道；
+它们可以由同一份Release operator guide编排，但不能因版本只有一个Discovery Round而共享环境或证据。
 
 ## 0. 使用规则
 
@@ -19,50 +24,58 @@ Cloud lifecycle、trusted graph、Host ABI、Release boundary 或稳定观测协
 | 位置 | 唯一职责 | 不得保存 |
 |---|---|---|
 | 本模板 | Source/Candidate 与 Published Release 的稳定执行协议、停止条件和 evidence schema | 具体版本、当前进度、资产 SHA 或某次 PASS |
-| 活动 Release task plan | 当前授权、执行到哪一步、seal 输入、URL/SHA、Next Step、失败记录和恢复位置 | 已完成版本的长期不可变证据 |
-| 版本专项 acceptance | 版本内 gate 验收状态、当前 gate 验收增量/模板同步、已完成 gate 的 exact evidence 与最终结论 | 逐步骤流水账、重试记录、Next Step、模板脚本副本 |
+| Operator Guide结构模板 | 一轮教程的固定章节、Pre-run→Post-run→freeze生命周期和命名路由 | 稳定Cloud脚本、具体Round identity或运行结果 |
+| 活动 Release task plan | 当前授权、执行到哪一步、seal 输入、URL/SHA、Next Step、失败记录和恢复位置 | 已完成Round的长期不可变证据 |
+| 本轮 operator guide | 一轮Discovery/Release教程、exact身份、停止条件，以及执行后追加的Post-run status与最终结论 | 其他Round全文、逐次重试流水、当前Next Step或未变化的模板脚本副本 |
 | ROADMAP | programme 角色、宏观 Release 授权与 lifecycle 结论 | seal 流水账、逐资产 SHA、逐步骤状态 |
 
-多 gate 版本的状态表只回答“哪些 gate 已通过、当前验收哪个 gate、哪些 gate 尚未授权”，不能展开成执行到第几步、
-第一次失败、重跑命令或下一步操作。当前 gate 可以标为 `CLOUD_ACCEPTANCE_PENDING`，但不能预填 source/ZIP/hash 或
-伪造 PASS；通道完成后再把 exact evidence 一次性追加到同一文件。只有一次整体验收的版本可以省略状态表，直接
-保存最终证据。development identity 收敛为 stable identity 时，重命名这份文件并更新内容，不得让 dev/stable
-两份 acceptance 并存。
+Operator guide的结构与状态语义只见上述结构模板。本文件继续专注稳定执行协议，不复制另一份guide骨架。
+活动task plan回答“当前执行到哪里、下一步是什么”；operator guide的Pre-run status只证明教程已冻结且尚未执行，
+Post-run status只在真实结果返回后追加。失败重试与恢复位置留在planning，不能展开进冻结guide。
 
-<a name="version-gate-status-ledger"></a>
+<a name="version-discovery-round-routing"></a>
 
-### 0.2 版本内 gate 验收状态（多 gate 版本）
+### 0.2 Discovery Round 与文档路由
 
-状态表至少包含 gate、粗粒度状态、模板/证据入口和不授权边界。允许的状态语义是：已完成 gate 写 `PASS` 并链接
-完成证据；唯一当前 gate 写 `CURRENT / CLOUD_ACCEPTANCE_PENDING` 并链接当前模板小节；未来 gate 写
-`NOT_AUTHORIZED`。如果执行结果已通过但 exact source/asset/黑盒证据还未完整写回，可以短暂使用
-`CURRENT / EVIDENCE_WRITEBACK_PENDING`；它不等于 PASS，也不能跨入下一 gate。状态表是“这个版本各阶段测到哪里”
-的索引，不取代 ROADMAP 的 programme 状态，也不取代活动 task plan 的执行控制。一次性版本没有中间 gate 时
-整个状态表省略。
+- Discovery Round是新增risk/behavior claim和验收教程的计数单位；gate只是Round内部或standing Release流程里的
+  授权、停止与晋级检查点，Cloud task/stage则是guide内的执行单元。
+- single-Discovery 版本专项 acceptance是operator guide的简化命名，使用
+  `vX.Y.Z-cloud-hard-acceptance.md`并完成同样的Pre-run→Post-run→freeze生命周期。
+- 多 Discovery 版本不维护一个累积所有gate的巨型状态表；每个正式 Discovery Round使用一份
+  `vX.Y.Z-<round>-operator-guide.md`。当前Round与未授权边界由活动planning控制，Phase关闭后的宏观索引由
+  ROADMAP/Phase capsule承担。
+- 一个Round可以有多个gate、Cloud task或stage；纯aggregate/evidence closure只汇总已冻结证据时不新建guide、
+  不重复黑盒。
+- Release Source/Candidate与Published Release仍按本模板的两个通道执行。它们证明final source与public bytes，
+  不因同处一份Release guide就合并身份，也不自动增加Product Discovery Round。
+
+development identity 收敛为 stable identity时，尚未冻结的single-Discovery文件可以原子重命名并继续同一生命周期；
+不得让 dev/stable 两份 single-Discovery acceptance 并存。已经完成Post-run并冻结的multi-Discovery guide保留原Round身份，
+不随最终stable版本批量改名。
 
 <a name="version-acceptance-delta"></a>
 
-### 0.3 “当前 gate 验收增量”（可选）
+### 0.3 “当前 Discovery Round 验收增量”（可选）
 
-只有当前 gate 相对本模板新增或修改了验证面时，版本 acceptance 才写“当前 gate 验收增量”；没有验收增量时，
+只有当前Discovery Round相对本模板新增或修改了验证面时，本轮operator guide才写“验收增量”；没有验收增量时，
 整个章节直接省略，不写“无”或占位文字。该章节至少回答：
 
 1. 本版本改变了哪个 contract、信任边界或风险面，因此需要增加什么证明；
 2. 增量落在模板哪个稳定 anchor、哪项 portable/publication test 或哪个 machine oracle；
 3. B～E 黑盒提示词是否变化；若变化，指出模板中的具体小节和变化理由，若未变化则明确复用原协议；
-4. gate 未完成时，哪项 exact output/结论将作为完成判据；完成后，再绑定实际返回的对应证据。
+4. Round未完成时，哪项exact output/结论将作为完成判据；完成后，再绑定实际返回的对应证据。
 
-会被后续版本复用的共同验证必须先进入本模板，版本 acceptance 只链接对应小节并解释本版本为何需要它；
-版本文件不得再次复制脚本、提示词或完整执行步骤。只针对一次 immutable identity 的检查可以链接相应
+会被后续版本复用的共同验证必须先进入本模板，本轮operator guide只链接对应小节并解释本Round为何需要它；
+operator guide 不得再次复制未变化的脚本、提示词或完整执行步骤。只针对一次immutable identity的检查可以链接相应
 contract/test/oracle，不必把它提升为通用黑盒协议。
 
-1. 从 ROADMAP 和活动 task plan 确认目标版本、当前角色、授权 gate 与停止条件。
-2. 直接引用本模板执行，不把完整协议或脚本复制到版本 acceptance；版本专项文件必须进入当前角色窗口。
+1. 从ROADMAP和活动task plan确认目标版本、Discovery Round、当前角色、授权gate与停止条件。
+2. 先按Operator Guide结构模板物化本轮教程，再引用本模板的稳定anchor；不复制未变化的完整协议或脚本。
 3. 在活动 Release task plan 冻结当次 source、tag、filename、size、URL、SHA、测试计数和停止条件。
-4. 只有通道完整通过后，才在版本 acceptance 登记相应 exact identity、Cloud 原始结果和最终结论。
+4. 只有通道完整通过后，才在同一operator guide追加Post-run status、exact identity、Cloud原始结果和最终结论。
 5. 执行第 4.2 节时替换 immutable bootstrap URL/SHA，执行第 9.2 节时替换 immutable ZIP URL/SHA；不得用 moving
    branch、`latest`、zero hash 或本地文件代替 Published Release identity。
-6. 第 5～8 节的提示词原样使用，不嵌入版本名、动态 gate 结论或施工阶段 marker。
+6. 第5～8节的提示词原样使用，不嵌入版本名、动态Round/gate结论或施工阶段marker。
 7. Source/Candidate 与 Published Release 必须使用两个独立、可丢弃的 Cloud 环境，不共享安装、planning、
    transcript、cache 或 B～F 结果。
 8. 任一步失败立即停止并保存第一次错误；不得 repair 后继续把同一次 run 记为成功。
@@ -857,9 +870,9 @@ printf 'PWF_PUBLIC_POST_RESUME=PASS\n'
 
 <a name="acceptance-evidence-writeback"></a>
 
-## 10. 版本 acceptance 的证据写回
+## 10. Operator Guide 的 Post-run 证据写回
 
-模板不保存运行结果。版本专项 acceptance 应保存以下原始证据，并在证据闭合后由维护者写入版本结论：
+模板不保存运行结果。operator guide 的 Post-run status 应保存以下原始证据，并在证据闭合后由维护者写入本轮结论：
 
 - Source/Candidate：完整 commit、branch transport、测试 runner 原始摘要、明确排除的 publication suite、
   两次 ZIP build/check、entry count、size、SHA 与 override 安装输出；
@@ -871,13 +884,15 @@ printf 'PWF_PUBLIC_POST_RESUME=PASS\n'
 - publication oracle、失败的首次输出、停止点，以及是否从 Fresh 环境重新开始；
 - GitHub Latest、rollback baseline 或下一 Product Phase 的授权应另行记录，不能由 Cloud 结果自动推导。
 
-多 gate 版本专项文件可以维护粗粒度 gate 状态表；未完成 gate 只能写 current/pending 与模板入口，不能预建 exact
-evidence 表或填写 source/asset identity。任何版本号、测试计数、资产 identity 或动态状态都不得反向写回本模板。
+single-Discovery版本把Post-run结果追加到对应version acceptance；多 Discovery 版本把结果追加到本Round的
+operator guide。Post-run section不得在真实执行前预建或预填exact evidence。一个Release guide可以分别保存
+Source/Candidate与Published Release结果，但两个通道仍须使用独立环境和identity。任何版本号、测试计数、资产identity
+或动态状态都不得反向写回本模板。
 
 ## 11. 模板的非权威边界
 
 - 本模板不证明任何 commit、tag、Release、Cloud run 或 rollback 角色已经成立；
 - 本模板不进入 Release ZIP、installed runtime、Managed policy 或 trusted execution graph；
 - machine contracts 和源码优先于模板中的实现断言；架构变化时先进入 Discovery，再更新模板；
-- 已发布的版本 acceptance 保留其时间语义，不因模板改进而批量重写；
+- 已发布或已冻结的acceptance、runbook与operator guide保留其时间语义和原文件名，不因模板改进而批量重写；
 - 当前 programme 与角色只读 ROADMAP，当前授权与停止条件只读活动 task plan。
