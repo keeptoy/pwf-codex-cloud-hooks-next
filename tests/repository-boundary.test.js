@@ -47,17 +47,17 @@ function currentRoleWindow() {
   return { accepted, candidate, developmentTrain, immediateFallback, roadmap };
 }
 
-test("documentation governance preserves the accepted v0.4.1 identity window", () => {
+test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const pathSafetyHistory = read("docs/history/phase-4.13-v0.4.1-path-safety-patch-train.md");
-  assert.equal(developmentTrain, "v0.4.2-dev");
-  assert.equal(candidate, "v0.4.1");
+  assert.equal(developmentTrain, "v0.4.2");
+  assert.equal(candidate, "v0.4.2");
   assert.equal(accepted, "v0.4.1");
   assert.equal(immediateFallback, "v0.4.0");
-  assert.equal(candidate, accepted);
-  assert.match(roadmap, /`v0\.4\.2-dev`[\s\S]*documentation governance/);
-  assert.match(roadmap, /package identity[\s\S]*`0\.4\.1`/);
-  assert.match(roadmap, /Release candidate[\s\S]*未授权/);
+  assert.notEqual(candidate, accepted);
+  assert.match(roadmap, /`v0\.4\.2`[\s\S]*Release candidate/);
+  assert.match(roadmap, /package identity[\s\S]*`0\.4\.2`/);
+  assert.match(roadmap, /Source\/Candidate[\s\S]*PENDING/);
   assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.1`[^\n]*Latest/);
   assert.doesNotMatch(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(pathSafetyHistory, /兼容性安全/);
@@ -95,14 +95,11 @@ test("Phase 4.12 preserves the renamed v0.4.0 Release discovery and P9 evidence"
 
 test("P9-F evidence stays immutable while retired stage guides leave the current tree", () => {
   const acceptance = read("docs/v0.4.1-cloud-hard-acceptance.md");
-  const taskPlan = read(".planning/2026-08-22-v0.4.1-phase-9-release-discovery/task_plan.md");
   const provenance = read("BASELINE_PROVENANCE.md");
   const actual = repositoryPaths();
 
   assert.match(acceptance, /^<a name="v0-4-1-p9-f-second-retirement-closeout"><\/a>$/m);
   assert.match(acceptance,
-    /P9_F_SECOND_RETIREMENT_PASS \/ V0_4_1_TRAIN_CLOSED \/ NEXT_TRAIN_UNDECIDED/);
-  assert.match(taskPlan,
     /P9_F_SECOND_RETIREMENT_PASS \/ V0_4_1_TRAIN_CLOSED \/ NEXT_TRAIN_UNDECIDED/);
   assert.match(provenance,
     /\`v0\.4\.1\`[^\n]*docs\/v0\.4\.1-cloud-hard-acceptance\.md#v0-4-1-p9-f-second-retirement-closeout/);

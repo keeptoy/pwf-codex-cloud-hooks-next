@@ -355,8 +355,8 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.doesNotMatch(roadmap, /<a name="phase-9-v0-4-0-instance"><\/a>/);
   assert.match(currentTrain, new RegExp(`^### 4\\.1 当前 \`${escapedDevelopmentTrain}\``, "m"));
   assert.match(currentTrain, /documentation governance/);
-  assert.match(currentTrain, /package identity[\s\S]*0\.4\.1/);
-  assert.match(currentTrain, /Release candidate[\s\S]*未授权/);
+  assert.match(currentTrain, /package identity[\s\S]*0\.4\.2/);
+  assert.match(currentTrain, /Release candidate[\s\S]*Source\/Candidate[\s\S]*PENDING/);
   assert.match(currentTrain,
     /已经完成以下文档治理交付[\s\S]*RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
   assert.match(currentTrain,

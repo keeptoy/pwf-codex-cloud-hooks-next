@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.2-dev` documentation governance；只收敛Release/acceptance/history职责，不物化新package或Release candidate |
+| 当前开发列车 | `v0.4.2` Release closeout candidate；文档治理delta已冻结，production/runtime行为不变 |
 | 当前已接受版本 | `v0.4.1`；stable GitHub `Latest`与programme accepted |
 | 当前直接回退版本 | immutable `v0.4.0` immediate fallback |
 | 回退证据链 | immutable `v0.3.5` deeper fallback；`v0.3.4`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4与`v0.4.1`发布列车均已关闭；当前只治理文档authority与未来Release closeout流程，package identity仍为`0.4.1`。下一Product Phase、Release candidate、seal与外部状态变更均未授权 |
+| 当前 programme 边界 | Product Phase 4与`v0.4.1`发布列车均已关闭；`v0.4.2` package/Release candidate已物化，candidate-readiness retirement checkpoint已完成，Source/Candidate为`PENDING`。seal、publication、Published Release、Latest、下一Product Phase与外部状态变更仍未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -63,19 +63,20 @@ provenance和对应版本acceptance，不在本节重建逐P9流水。
 本节是current development train工作台：活动planning、未封存Discovery和需要current状态的验收材料可以引用对应train anchor，
 但这里的临时施工状态不会自动成为长期Product Phase authority。
 
-<a name="v0-4-2-documentation-governance"></a>
+<a name="v0-4-2-release-closeout"></a>
 
-### 4.1 当前 `v0.4.2-dev` documentation governance
+### 4.1 当前 `v0.4.2` Release closeout candidate
 
-当前列车只收敛Release、acceptance、retirement与history的文档authority和维护流程。它不修改production、contracts、runtime、
-manifest、bootstrap、Release allowlist或package bytes；当前package identity仍为`0.4.1`，当前accepted仍为`v0.4.1`，
-`v0.4.0`仍是immediate fallback。
+当前列车已经完成Release、acceptance、retirement与history的documentation governance，并在不修改production、runtime、Host ABI、
+trusted graph、managed events或Release allowlist的前提下物化`0.4.2`候选身份。package identity `0.4.2`、Release contract、exact v0.4.1
+predecessor transition与ZIP外zero-hash bootstrap构成同一候选事务；当前accepted仍为`v0.4.1`，`v0.4.0`仍是immediate fallback。
 
-`v0.4.2-dev`只是当前repository/programme工作标签，`0.4.2`package尚未物化；Release candidate、seal、Cloud、publication、
-Latest与下一Product Phase均未授权。已关闭的`v0.4.0`Release discovery、`v0.4.1`path-safety列车与本轮Release治理分别由
-Phase 4.12、Phase 4.13、Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节只维护当前边界。
+本列车不创建standing Phase 9。Release candidate已获批，candidate-readiness第一检查点已完成对象分类与旧planning测试依赖迁移；下一唯一Release
+通道是Source/Candidate，当前仍为`PENDING`。通过前不允许seal、tag或publication；Published Release、Latest与下一Product
+Phase也未授权。已关闭的`v0.4.0`Release discovery、`v0.4.1`path-safety列车与本轮Release治理分别由Phase 4.12、Phase 4.13、
+Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节只维护当前边界。
 
-当前列车已经完成以下文档治理交付，但这些完成项不改变上述package/Release授权状态：
+当前列车已经完成以下文档治理交付；这些完成项已进入本候选，但不冒充尚未运行的Cloud或publication证据：
 
 - 把Phase history拆分为回补型`RETROSPECTIVE_CAPSULE`与正式Round关闭后冻结的`FROZEN_DISCOVERY_RECORD`，同步history索引、
   写作模板和repository contracts；一个Product Phase可以有多份真实Discovery records，但同一闭合对象最多一份回补型capsule。

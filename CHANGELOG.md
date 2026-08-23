@@ -4,6 +4,22 @@
 [`ROADMAP.md`](ROADMAP.md)；当前唯一行动与授权边界见活动 `task_plan.md`；精确 source、资产、大小和
 SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 acceptance。
 
+## v0.4.2
+
+### Changed
+
+- 收敛Release closeout治理：普通版本不再创建standing Phase 9或复制P9-A～F；保留的两次retirement review分别作为
+  Source/Candidate前的candidate-readiness入口和Latest/postflight后的role-window出口，并用C0/C1/C2区分候选源码、
+  第一通道状态写回与最终治理提交。
+- 统一Cloud验收文档职责：single-Discovery版本的acceptance就是简化命名的operator guide，多Discovery版本才按正式
+  Discovery Round拆分guide；Source/Candidate与Published Release继续使用同一Release guide中的两个独立环境/身份通道。
+- 把Phase history区分为回补型`RETROSPECTIVE_CAPSULE`与冻结的`FROZEN_DISCOVERY_RECORD`，补齐ROADMAP current train→
+  Product Phase authority轮转、历史文件retirement入链检查及pre-1.0无入链alias清退规则。
+- 物化stable `0.4.2`候选身份而不改变production/runtime行为：Release contract与ZIP外bootstrap同步轮转到v0.4.2，
+  installer transition只接受exact v0.4.1 predecessor；bootstrap在Source/Candidate前保持64位zero hash并fail closed。
+  本版本双通道教程见[`docs/v0.4.2-cloud-hard-acceptance.md`](docs/v0.4.2-cloud-hard-acceptance.md)；已发布身份仍只由
+  [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)记录。
+
 ## v0.4.1
 
 ### Changed
