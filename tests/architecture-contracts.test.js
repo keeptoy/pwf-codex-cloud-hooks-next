@@ -325,6 +325,7 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   const currentTrain = roadmap.slice(currentTrainStart, productPhaseStart);
   const productPhases = roadmap.slice(productPhaseStart, versioningStart);
   const migrationGovernance = roadmap.slice(migrationStart, releaseStart);
+  const compatibilityGovernance = roadmap.slice(compatibilityStart, rollbackStart);
   const developmentTrain = roadmap.match(/^\| 当前开发列车 \| `(v[^`]+)`/m)?.[1];
   assert.ok(developmentTrain, "ROADMAP lacks a parseable current development train");
   const escapedDevelopmentTrain = developmentTrain.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -332,7 +333,6 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(roadmap, /^<a name="phase-4-opt-in-purpose"><\/a>$/m);
   assert.match(roadmap, /^<a name="discovery-gate-governance"><\/a>$/m);
   assert.match(roadmap, /^<a name="migration-transaction-lifecycle-governance"><\/a>$/m);
-  assert.match(roadmap, /^<a name="phase-4-migration-lifecycle-governance"><\/a>$/m);
   assert.match(roadmap, /^<a name="release-four-step-flow"><\/a>$/m);
   assert.match(roadmap, /^<a name="pre-1-compatibility-admission"><\/a>$/m);
   assert.match(roadmap, /每条发布列车都必须经过两轮 retirement review/);
@@ -377,6 +377,9 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(migrationGovernance, /对象生命周期账[\s\S]*KEEP\/REPLACE\/RETIRE\/DEFER/);
   assert.match(migrationGovernance, /planning[^\n]*implementation drift/i);
   assert.match(migrationGovernance, /implementation[^\n]*live[^\n]*lifecycle drift/i);
+  assert.match(compatibilityGovernance, /文档路径与anchor在`0\.x`阶段同样不会自动成为永久兼容合同/);
+  assert.match(compatibilityGovernance, /没有current入链的旧alias可以直接退休[\s\S]*immutable commit\/tag保留/);
+  assert.match(compatibilityGovernance, /进入`1\.0\.0`稳定线[\s\S]*public documentation surface[\s\S]*长期兼容面治理/);
   assert.doesNotMatch(roadmap, /### 4\.6 流水账/);
   assert.match(readme, /ROADMAP\.md#pre-1-compatibility-admission/);
 });

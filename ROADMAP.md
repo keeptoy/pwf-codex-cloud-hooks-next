@@ -281,7 +281,6 @@ Discovery
 Discovery，按 7.2 决定增加正式 Round 或 Round 内子门槛，再按 7.3 重新冻结结论。
 
 <a name="migration-transaction-lifecycle-governance"></a>
-<a name="phase-4-migration-lifecycle-governance"></a>
 
 ## 8. Migration transaction 与对象生命周期治理
 
@@ -430,6 +429,11 @@ uninstall 状态与转换；不默认承诺从任意早期原型、未知 manife
 migration contract。遇到来源、ownership 或字节身份无法证明的旧状态时，installer/repair 必须 fail closed；
 维护者应先保存诊断和备份，按明确卸载/清理流程回到 clean install，而不能猜测迁移、吸收 unknown drift
 或让新旧 handler 并存。
+
+文档路径与anchor在`0.x`阶段同样不会自动成为永久兼容合同。current文档之间的链接必须只使用仍在位的canonical
+path与显式anchor，并在改名或清退时完成入链inventory和删除后复扫；没有current入链的旧alias可以直接退休，不为了
+假设中的外部书签继续留redirect。旧版本的原始路径和anchor由immutable commit/tag保留。只有进入`1.0.0`稳定线并明确
+冻结public documentation surface后，才把获批的公共路径/anchor及其redirect策略作为长期兼容面治理。
 
 任何例外兼容都必须先进入独立 Discovery/compatibility gate，至少冻结：精确来源版本/状态窗口、owner、
 migration contract、fail-closed 边界、端到端升级与回滚测试、Linux/Cloud 验收，以及 sunset/retirement
