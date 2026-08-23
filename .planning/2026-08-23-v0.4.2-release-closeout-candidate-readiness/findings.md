@@ -26,6 +26,7 @@
 - v0.4.1 Phase-9 planning的长期P9-F结论已经存在于v0.4.1 acceptance；测试依赖应先迁移到acceptance，再决定账本退役。
 - v0.4.2 documentation-governance相关completed scopes仍解释本列车的施工与恢复位置，适合KEEP到C2 role-window closeout再复核；更早v0.4.0/v0.4.1与初始source-analysis scopes具备Git恢复且已由history/acceptance接管，是RETIRE候选。
 - 治理指南规定completed scope的实际删除必须由维护者在单独评审中明确决定；因此C2只是planning退役提醒与复核时点，不能把`RETIRE_AT_C2`解释为自动删除授权。
+- 维护者进一步澄清这不是v0.4.2特例：ROADMAP的两轮retirement checkpoint必须直接路由到治理指南，并长期冻结“检查点只列清单/建议，planning删除仍需维护者明确决定”。
 
 ## Local candidate evidence
 

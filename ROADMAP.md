@@ -413,6 +413,11 @@ Phase 4 / F3C4完成
 每条发布列车都必须经过两轮 retirement review；retirement review不是Cloud acceptance，也不因逐项审查就产生新的
 Operator Guide或黑盒轮次。“review”是逐项做`RETIRE/MIGRATE/KEEP`决定，不是为了清单好看而强制删除：
 
+涉及`.planning/`时，两轮检查点先列出exact scope、恢复证据与建议去向，再提醒维护者按
+[仓库治理指南的Planning生命周期](docs/repository-governance-guide.md#planning-lifecycle)明确决定是否移除。
+仅仅到达C0/C2、切换`.active_plan`、满足retirement DoD或已有Git恢复点，都不得自动删除planning；维护者尚未明确决定的
+scope继续`KEEP`。大白话：检查点负责把“哪些可以退、为什么可以退”摆到桌面上，真正删不删仍由维护者拍板。
+
 | Review | 触发点 | 主要对象 | 退出要求 |
 |---|---|---|---|
 | 第一轮：Phase/candidate closeout | Product Phase的最终aggregate/closeout gate；不进入独立Product Phase的小型patch/governance列车则落在candidate baseline closeout | 施工 planning、临时 fixture/脚本、重复摘要、过渡 seam、validation refs与当期 lifecycle账 | 清掉已满足 DoD的脚手架；仍承担恢复、Release或回归职责的对象明确 KEEP/MIGRATE与下一 review条件 |

@@ -20,3 +20,6 @@
 - focused `node --test`再次被Windows sandbox以`spawn EPERM`阻断；错误与本计划已记录的runner限制相同，改用两个test文件直接执行，不重复失败路径。
 - 在允许Node/git只读子进程的执行面重跑focused治理测试：22 tests / 22 pass / 0 fail；稳定anchor、跨文档fragment、planning lifecycle与Release治理边界均通过。
 - 首次本地commit被workspace沙箱阻止创建`.git/index.lock`；文件内容未丢失，改在获准的Git写入执行面重试同一精确暂存集合。
+- 维护者澄清长期意图后，先为ROADMAP→治理指南链接与planning非自动删除边界补failing-first治理断言；断言按预期因ROADMAP尚无该规则而失败。
+- ROADMAP两轮retirement checkpoint现已直接链接治理指南Planning生命周期，并用大白话冻结：C0/C2、pointer切换、DoD或Git恢复点都不自动授权删除，维护者未明确决定的scope继续KEEP。
+- focused治理回归PASS：22 tests / 22 pass / 0 fail；新增断言已保护ROADMAP链接、稳定anchor与planning非自动删除边界。

@@ -304,6 +304,7 @@ test("DESIGN maps every test module back to the capability and boundary it prote
 test("ROADMAP keeps stable Discovery, migration, and Release governance anchors", () => {
   const roadmap = readText("ROADMAP.md");
   const readme = readText("README.md");
+  const repositoryGovernance = readText("docs/repository-governance-guide.md");
   const phase41 = readText("docs/history/phase-4.1-managed-v3-discovery.md");
   const phase44 = readText("docs/history/phase-4.4-f2a-smart-activation-discovery.md");
   const currentTrainStart = roadmap.indexOf("## 4. 当前开发列车");
@@ -341,6 +342,9 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(roadmap, /第一轮：Phase\/candidate closeout/);
   assert.match(roadmap, /第二轮：role-window closeout/);
   assert.match(roadmap, /review.*不是为了清单好看而强制删除/);
+  assert.match(repositoryGovernance, /^<a name="planning-lifecycle"><\/a>$/m);
+  assert.match(roadmap, /docs\/repository-governance-guide\.md#planning-lifecycle/);
+  assert.match(roadmap, /planning[\s\S]{0,180}维护者[\s\S]{0,120}明确决定[\s\S]{0,120}不(?:得|会)自动删除/);
   assert.match(roadmap, /多个低风险 Phase合并到同一版本列车[\s\S]*每个 Phase仍分别做第一轮审查[\s\S]*只在最终发布时做一次[\s\S]*第二轮审查/);
   assert.ok(discoveryStart < migrationStart && migrationStart < releaseStart
     && releaseStart < rollbackStart && rollbackStart < longTermStart,
