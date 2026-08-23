@@ -22,15 +22,16 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.1` accepted/Latest；compatibility/security patch train；P9-A～P9-F全部PASS，列车已关闭；下一列车未决定 |
+| 当前开发列车 | `v0.4.2-dev` documentation governance；只收敛Release/acceptance/history职责，不物化新package或Release candidate |
 | 当前已接受版本 | `v0.4.1`；stable GitHub `Latest`与programme accepted |
 | 当前直接回退版本 | immutable `v0.4.0` immediate fallback |
 | 回退证据链 | immutable `v0.3.5` deeper fallback；`v0.3.4`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4保持闭合；`v0.4.1`仅修复 installer-owned `hooks`/runtime link、junction与special-path准入，不改变Host ABI、runtime trusted graph或unknown regular cleanup合同。公开bootstrap默认下载链、pointer-only promotion与第二轮retirement均已PASS；下一列车仍未决定或授权 |
+| 当前 programme 边界 | Product Phase 4与`v0.4.1`发布列车均已关闭；当前只治理文档authority与未来Release closeout流程，package identity仍为`0.4.1`。下一Product Phase、Release candidate、seal与外部状态变更均未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
-`v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight确认它为
-非 draft、非 prerelease 的 Latest，且v0.4.0/v0.3.5 tag、source与双资产均未改写。版本 delta见
+`v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
+非 draft、非 prerelease 的 Latest，且v0.4.0/v0.3.5 tag、source与双资产均未改写。当前它已随`v0.4.1`晋级轮转为
+immediate fallback。版本 delta见
 [`CHANGELOG.md`](CHANGELOG.md)，精确source/资产/SHA见[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，完整Cloud、
 晋级与第二轮退役证据见[immutable v0.4.0 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/6b388518855da9053713a58e5c918c8b727b6dc6/docs/v0.4.0-cloud-hard-acceptance.md#v0-4-0-p9-f-second-retirement-closeout)。
 
@@ -55,104 +56,21 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 
 ## 4. 当前开发列车
 
-仓库生命周期治理通常保持一个 active planning，并以 candidate + accepted role window 控制当前
-bootstrap/acceptance；P9-F closeout后，working tree只保留candidate/accepted同席的v0.4.1 bootstrap与acceptance；
-v0.4.0 immediate fallback、v0.3.5 deeper fallback以及v0.3.4与更早版本均由immutable commit、tag、Release、exact acceptance与
-publication oracle 恢复；更早历史只留在精选 provenance。
-trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证。
+仓库生命周期治理保持一个active planning，并继续用candidate + accepted role window区分开发工作流、已接受版本与回退资产。
+trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证；历史细节只从README文档地图进入Phase history、
+provenance和对应版本acceptance，不在本节重建逐P9流水。
 
-<a name="v0-4-1-path-safety-train"></a>
+<a name="v0-4-2-documentation-governance"></a>
 
-### 4.1 当前 `v0.4.1` path-safety patch train
+### 4.1 当前 `v0.4.2-dev` documentation governance
 
-本列车是`v0.4.0`之上的兼容性安全修复，不进入新的Product Phase。已确认旧uninstall在`<codex-home>/hooks`
-为Windows junction时可能穿透父路径删除外部runtime；clean install也会在runtime尚不存在时漏检linked parent并向外写入。
-当前本地实现把path topology与exact inventory admission分层：install/repair/uninstall在backup和mutation前拒绝
-symlink、junction、非目录component与nested special entry，同时显式uninstall继续允许unknown普通文件/目录被完整备份后清理。
+当前列车只收敛Release、acceptance、retirement与history的文档authority和维护流程。它不修改production、contracts、runtime、
+manifest、bootstrap、Release allowlist或package bytes；当前package identity仍为`0.4.1`，当前accepted仍为`v0.4.1`，
+`v0.4.0`仍是immediate fallback。
 
-P9-A已把package、Release contract、外部bootstrap和版本acceptance原子收敛为stable `v0.4.1` identity；P9-B随后把
-确定性ZIP的exact SHA写入外部bootstrap并完成本地seal。本地
-path-safety gate 与开发候选 exact source
-`6c1dd52a3878f59c7140a793b9a2c2a34580b188` 的 Source/Candidate Linux/Cloud 已通过；随后
-`0d470920f42651983062945a129e38838c46f4d7` 只固化 B→C bounded planning 权限交接，不改变候选 ZIP。
-上述dev evidence没有被提升为stable结论；维护者已从exact seal source
-`99885b854bd9621c3340e99f031bf83ceb58414d`完成P9-B Linux零skip、deterministic ZIP、Fresh/UserPrompt/real Resume、
-doctor与deep-check。P9-C随后把lightweight tag固定到同一source，创建非draft Pre-release、上传且仅上传22-entry ZIP与
-ZIP外bootstrap，并完成公开重新下载和tag-source重建审计。P9-D已从公开bootstrap默认下载链在独立Fresh environment完成
-4.2→5.2→6→7→8.1→真实8.2→9.2，公开ZIP的identity、doctor、inventory、pristine upstream、adapter-only policy与零residue
-全部闭合。P9-E pointer-only Latest promotion与只读postflight已PASS；`v0.4.1` accepted/Latest、`v0.4.0` immediate fallback、
-`v0.3.5` deeper fallback，两版tag/source/assets均未改写。P9-F已退役v0.4.0 working-tree bootstrap/acceptance并迁移immutable链接；
-installed transition、publication oracle、11个validation refs与长期回归资产继续KEEP，下一列车未决定。精确行动边界见活动plan，
-[P9-C publication evidence](docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-p9-c-immutable-publication-evidence)与
-[P9-D Published Release evidence](docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-p9-d-published-release-cloud-evidence)、
-[P9-E operator](docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-p9-e-latest-promotion-operator)与
-[P9-E evidence](docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-p9-e-latest-promotion-evidence)与
-[P9-F closeout](docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-p9-f-second-retirement-closeout)均由版本acceptance保存。
-
-<a name="phase-9-v0-4-0-instance"></a>
-
-### 4.2 已关闭的 `v0.4.0` Phase 9 instance
-
-本实例的P9-A～P9-F已关闭：stable identity、ZIP输入、exact ZIP/bootstrap SHA、exact-source Source/Candidate、immutable
-publication audit、公开默认下载链Fresh/Resume Cloud、pointer-only promotion与第二轮对象退役均已收敛。实际顺序为：
-
-`P9-D Published Release Cloud PASS`仍是已关闭的公开下载链证据；P9-E只在它之上改变Release metadata，没有继承或重跑Cloud。
-
-```text
-P9-A pre-seal materialization
-  → P9-B seal + exact final-source Source/Candidate
-  → P9-C immutable tag / Pre-release publication
-  → P9-D public-asset Fresh / Resume acceptance
-  → P9-E pointer-only Latest promotion + role rotation
-  → P9-F second retirement review + next-train handoff
-```
-
-P9-A已清理 README状态耦合、收敛 stable/current文档、原子传播 `0.4.0` identity，并修正未来 v2 accepted + v1 fallback
-publication oracle；P9-B已把frozen ZIP SHA写入ZIP外bootstrap，并从exact final source完成Linux零skip、deterministic build、
-install/doctor、Fresh/Resume与manifest-routed deep check。P9-C tag source固定为
-`fe8cd7f284ea2849f634aa68813dbb0f2cca83f9`，即P9-B实际Cloud验收的source；后继Release-excluded evidence/operator
-commit不替换tag目标。
-任一ZIP input变化都会使seal重新开始。P9-D证明公开默认下载链没有被旧F3 candidate SHA或本地资产替代；P9-E随后直接把
-已验收的同一个v0.4.0 Release晋级为stable Latest并完成只读postflight。P9-F仅清退v0.3.5 working-tree bootstrap/acceptance，
-immutable v0.3.5继续承担immediate fallback。11个validation refs中九个仍保留主线与stable tag均不可达的side-branch commits，
-因此全部KEEP；后继版本列车与Product Phase未在本实例中命名或授权。
-
-<a name="version-train-two-retirement-reviews"></a>
-
-### 4.3 每条版本列车的两轮退役审查
-
-默认情况下，一个 Product Phase完成一项目标并形成对应版本的功能/候选基线；ROADMAP批准该版本为Release candidate、
-活动task plan授权具体Release gate后，列车直接进入版本无关的Release closeout workflow，封板、发布、公开验收并轮转
-accepted/fallback角色。普通Release不需要另建standing Phase 9，也不从历史P9-A～F复制六轮施工。例如：
-
-```text
-Phase 4 / F3C4完成
-  → 形成0.4.0功能/候选基线
-  → candidate-readiness retirement checkpoint（第一轮对象退役审查）
-  → Source/Candidate Cloud
-  → immutable tag / Pre-release publication
-  → Published Release Cloud
-  → Latest promotion / postflight
-  → role-window closeout retirement checkpoint（第二轮版本窗口退役审查）
-  → 后继版本列车与Product Phase另行决策
-```
-
-每条发布列车都必须经过两轮 retirement review；retirement review不是Cloud acceptance，也不因逐项审查就产生新的
-Operator Guide或黑盒轮次。“review”是逐项做`RETIRE/MIGRATE/KEEP`决定，不是为了清单好看而强制删除：
-
-| Review | 触发点 | 主要对象 | 退出要求 |
-|---|---|---|---|
-| 第一轮：Phase/candidate closeout | Product Phase的最终aggregate/closeout gate；不进入独立Product Phase的小型patch/governance列车则落在candidate baseline closeout | 施工 planning、临时 fixture/脚本、重复摘要、过渡 seam、validation refs与当期 lifecycle账 | 清掉已满足 DoD的脚手架；仍承担恢复、Release或回归职责的对象明确 KEEP/MIGRATE与下一 review条件 |
-| 第二轮：role-window closeout | 同一列车的 public assets验收、Latest晋级与只读postflight之后 | candidate/accepted窗口专用 refs、oracles、compatibility transition、canary和版本化运维材料 | 新 accepted与 immediate fallback可恢复；退出角色窗口的对象按 retirement DoD清退或迁移；稳定 contracts/tests/history不得机械删除 |
-
-因此 Product Phase收官已经是正式生命周期边界，不必把所有清理推迟到Release closeout；但它只形成候选功能基线，
-不会自动产生immutable public assets或轮转 accepted角色。第一轮review作为Source/Candidate的进入条件：若其
-RETIRE/MIGRATE动作改变任一Release输入，必须先重新冻结候选再运行第一Cloud通道。第二轮review作为整个Release
-workflow的退出条件，只处理必须等公开身份、Latest和版本角色确定后才能判断的对象，且不得改写sealed tag或资产。
-不进入独立Product Phase的小型patch/governance列车仍要在candidate baseline closeout完成等价的第一轮对象审查，
-但不因此虚构Product Phase、Discovery Round或Cloud验收。
-若维护者明确批准多个低风险 Phase合并到同一版本列车，每个 Phase仍分别做第一轮审查，而该列车只在最终发布时做一次
-第二轮审查。
+`v0.4.2-dev`只是当前repository/programme工作标签，`0.4.2`package尚未物化；Release candidate、seal、Cloud、publication、
+Latest与下一Product Phase均未授权。已关闭的`v0.4.1`path-safety列车与历史P9实例分别由Phase 4.12、Phase 4.13、
+版本化Phase 9摘要、CHANGELOG、provenance和immutable acceptance恢复；本节只维护当前边界。
 
 ## 5. Product Phase 路线
 
@@ -161,7 +79,7 @@ pre-release；多个低风险 Phase也只有在独立评审后才能进入同一
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | complete；F3C4与第一轮retirement、当前列车P9-A～P9-F全部PASS；v0.4.0 accepted/Latest |
+| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | complete；F3C4、第一轮retirement及当时的v0.4.0 Release closeout均已闭合；功能基线由当前v0.4.1 accepted继承 |
 | 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload；先证明现有 `SessionStart source=clear\|compact` 是否足够，只有真实 context/时序缺口才新增 Hook | pending |
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立 gate；必须有 use case、latency/token budget与 Cloud证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6进入 Discovery |
@@ -412,6 +330,30 @@ Release operator guide管理；single-Discovery版本可以继续使用`vX.Y.Z-c
 | 3. 公开包验收 | 用另一套 Fresh Cloud 从公开 bootstrap 默认下载链安装，再重新下载公开 ZIP 做 Resume/doctor/deep check | “用户实际下载到的公开包也能工作” | 同一Release operator guide的Published Release证据；声明范围闭合后写final Post-run |
 | 4. 晋级 Latest | 前三步全绿后，由维护者把同一个 Release 取消 Pre-release 并设为 Latest，再做只读 postflight | “现在正式推荐这个版本”，并旋转 accepted/fallback 角色 | ROADMAP；tag、Release 和资产都原地保留，不删除重建 |
 
+对应的Git身份与证据写回按C0→C1→C2前进；分支HEAD可以前进，但正式tag目标始终保持C0：
+
+```text
+C0：候选源码 commit（SOURCE_CANDIDATE_HEAD）
+  → Source/Candidate Cloud PASS
+  → 正式验收tag精确指向C0
+  → 维护者创建immutable Pre-release并上传已验收ZIP/bootstrap
+
+C1：第一阶段状态commit（SOURCE_CANDIDATE_CHECKPOINT_HEAD）
+  → 本地回补第一阶段PASS与channel checkpoint
+  → 维护者push治理分支
+  → 启动独立Published Release Cloud
+
+C2：最终治理commit（PUBLISHED_RELEASE_CLOSEOUT_HEAD）
+  → 回补Published Release evidence
+  → 记录Latest promotion/postflight
+  → 完成第二轮退役检查与Release closeout
+  → 追加final Post-run并同步programme角色
+```
+
+正式tag必须精确指向Source/Candidate实际Cloud PASS的commit，即`SOURCE_CANDIDATE_HEAD`；
+`SOURCE_CANDIDATE_CHECKPOINT_HEAD`只记录第一通道证据并推进治理分支；`PUBLISHED_RELEASE_CLOSEOUT_HEAD`只在公开包、
+Latest/postflight和退出检查点全部闭合后形成。C1/C2都不能取代C0，也不是额外Cloud通道。
+
 第1、3步是两次独立Cloud验收执行；第2、4步是维护者控制面状态变更与核验，不是另外两轮黑盒。三个治理维度如下：
 
 | 维度 | 计数与必要性 | 不得冒充 |
@@ -425,22 +367,49 @@ Release operator guide管理；single-Discovery版本可以继续使用`vX.Y.Z-c
 必须再次核对新 accepted 和 immediate fallback 的 tag/source/asset identity，并按 retirement DoD 清理退出
 candidate+accepted 窗口的本地版本文件与旧 oracle。
 
-默认Release closeout只增加两个对象治理检查点，不增加Cloud轮次：Source/Candidate前完成
-candidate-readiness retirement checkpoint；Latest/postflight后完成role-window closeout retirement checkpoint。
-第一检查点若改变Release输入，必须在第一通道前重新冻结；第二检查点不得改写sealed tag、ZIP、bootstrap、URL或SHA。
-
-Source/Candidate Cloud PASS后，`SOURCE_CANDIDATE_HEAD`固定为该次Cloud实际checkout并通过的完整commit；
-正式tag必须精确指向Source/Candidate实际Cloud PASS的commit。随后第一阶段状态写回commit只记录channel checkpoint并推进治理分支，
-不替代tag目标。Published Release、Latest/postflight和第二检查点全部闭合后，第二阶段状态写回commit追加final Post-run、
-同步programme角色并关闭Release workflow。两次状态写回不是新的Cloud通道，也不要求P9-A～F式拆分。
-
 若某次Product/Discovery验收已经绑定final exact source，且随后所有Release输入保持不变，其证据可以直接承担第1步，
 不机械重跑Source/Candidate；任何相关输入变化都使复用失效。第3步不能提前复用，因为公开URL、bootstrap与资产身份
 只有第2步完成后才存在。
 
+<a name="version-train-two-retirement-reviews"></a>
+
+### 8.2 两个嵌入式 retirement checkpoint
+
+默认情况下，一个Product Phase完成目标并形成对应版本的功能/候选基线；ROADMAP批准该版本为Release candidate、活动task plan
+授权具体Release gate后，列车直接进入版本无关的Release closeout workflow。普通Release不需要另建standing Phase 9，也不从
+历史P9-A～F复制六轮施工。例如：
+
+```text
+Phase 4 / F3C4完成
+  → 形成0.4.0功能/候选基线
+  → candidate-readiness retirement checkpoint（第一轮对象退役审查）
+  → C0 / Source-Candidate与immutable publication
+  → C1 / 第一阶段状态写回与Published Release Cloud
+  → C2 / Latest、final evidence与programme closeout
+  → role-window closeout retirement checkpoint（第二轮版本窗口退役审查）
+  → 后继版本列车与Product Phase另行决策
+```
+
+每条发布列车都必须经过两轮 retirement review；retirement review不是Cloud acceptance，也不因逐项审查就产生新的
+Operator Guide或黑盒轮次。“review”是逐项做`RETIRE/MIGRATE/KEEP`决定，不是为了清单好看而强制删除：
+
+| Review | 触发点 | 主要对象 | 退出要求 |
+|---|---|---|---|
+| 第一轮：Phase/candidate closeout | Product Phase的最终aggregate/closeout gate；不进入独立Product Phase的小型patch/governance列车则落在candidate baseline closeout | 施工 planning、临时 fixture/脚本、重复摘要、过渡 seam、validation refs与当期 lifecycle账 | 清掉已满足 DoD的脚手架；仍承担恢复、Release或回归职责的对象明确 KEEP/MIGRATE与下一 review条件 |
+| 第二轮：role-window closeout | 同一列车的 public assets验收、Latest晋级与只读postflight之后 | candidate/accepted窗口专用 refs、oracles、compatibility transition、canary和版本化运维材料 | 新 accepted与 immediate fallback可恢复；退出角色窗口的对象按 retirement DoD清退或迁移；稳定 contracts/tests/history不得机械删除 |
+
+Product Phase收官已经是正式生命周期边界，但只形成候选功能基线，不会自动产生immutable public assets或轮转accepted角色。
+第一轮review是Source/Candidate的进入条件；若`RETIRE/MIGRATE`动作改变任一Release输入，必须先重新冻结候选再运行第一Cloud通道。
+第二轮review是Release workflow的退出条件，只处理必须等公开身份、Latest和版本角色确定后才能判断的对象，且不得改写sealed
+tag、ZIP、bootstrap、URL或SHA。
+
+不进入独立Product Phase的小型patch/governance列车仍要在candidate baseline closeout完成等价第一轮审查，但不因此虚构Product
+Phase、Discovery Round或Cloud验收。若维护者明确批准多个低风险 Phase合并到同一版本列车，每个 Phase仍分别做第一轮审查，
+而该列车只在最终发布时做一次第二轮审查。
+
 <a name="pre-1-compatibility-admission"></a>
 
-### 8.2 Pre-1.0 compatibility 与历史债准入
+### 8.3 Pre-1.0 compatibility 与历史债准入
 
 本仓库目前仍是 `1.0.0` 前的内部验证线，但“pre-1.0”本身不能代替明确的支持合同。默认支持面只包括
 clean install，以及当前 installer、machine contracts 和行为测试明确覆盖的 managed install/doctor/repair/

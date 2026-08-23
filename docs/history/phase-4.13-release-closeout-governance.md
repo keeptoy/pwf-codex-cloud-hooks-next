@@ -26,6 +26,18 @@ Latest promotion和第二轮退役逐项拆开。这对首次探路有价值，�
 如果把历史P9-A～F机械复制成未来默认模板，即使普通patch只有一个Discovery，也会产生多轮重复教程、状态同步和仓库提交；
 反过来，如果为了省步骤把两个Release通道或两个退役时点合并，又会丢失候选源码、公开资产和角色轮转各自需要的身份信息。
 
+<a name="phase-4-13-historical-p9-calibration"></a>
+
+## Historical P9 calibration
+
+`v0.4.0`与`v0.4.1`的P9-A～P9-F是本仓库首次完整Release探路：它把pre-seal、exact-source候选验收、immutable
+publication、公开包Fresh/Resume、Latest角色轮转和第二轮退役逐项拆开，使每个新风险都有独立停止点。该结构证明了这些
+职责不能互相冒充，但它不是未来默认模板；普通列车应把相同职责折叠进版本无关Release workflow，而不是保留六段编号。
+
+两条历史列车仍分别恢复：[v0.4.0版本化Phase 9](phase-9-v0.4.0-release-discovery.md#phase-9-v0-4-0-positioning)保存首次
+完整封板与角色轮转，[v0.4.1 path-safety patch train](phase-4.12-v0.4.1-path-safety-patch-train.md#phase-4-12-historical-position)
+保存兼容性安全修复如何复用同一Release生命周期。这里仅保留两者共同导出的治理结论，不复制逐gate状态、资产表或验收全文。
+
 <a name="phase-4-13-core-decisions"></a>
 
 ## Core decisions
@@ -79,7 +91,9 @@ C2：最终治理commit（PUBLISHED_RELEASE_CLOSEOUT_HEAD）
 governance guide与DESIGN，并增加repository/architecture治理断言：
 
 - 删除未来版本“每条列车必须进入standing Phase 9”的programme规则，同时保留历史Phase 9实例的原名和时间语义；
+- 从ROADMAP当前开发区移出已关闭P9流水，把历史校准留在本摘要与版本化Phase history；
 - 把两个retirement checkpoint写进Release guide的Pre-run进入边界和Final Post-run退出边界；
+- 把retirement programme规则迁入ROADMAP Release章节，并以C0/C1/C2图表达三笔Git身份；
 - 冻结Source/Candidate channel checkpoint、Published final Post-run和两笔状态commit的职责；
 - 明确正式tag绑定Cloud实际PASS的C0，而不是后继证据commit；
 - 保持稳定Cloud B～E/deep-check脚本、production、contracts、runtime、manifest、package和Release allowlist不变。

@@ -307,14 +307,18 @@ test("ROADMAP keeps stable Discovery and Release governance anchors", () => {
   const currentTrainStart = roadmap.indexOf("## 4. 当前开发列车");
   const productPhaseStart = roadmap.indexOf("## 5. Product Phase 路线");
   const versioningStart = roadmap.indexOf("## 6. 版本号与晋级语义");
+  const releaseStart = roadmap.indexOf("## 8. Release 授权与封板顺序");
+  const retirementStart = roadmap.indexOf('<a name="version-train-two-retirement-reviews"></a>');
+  const compatibilityStart = roadmap.indexOf('<a name="pre-1-compatibility-admission"></a>');
   assert.notEqual(currentTrainStart, -1);
   assert.notEqual(productPhaseStart, -1);
   assert.notEqual(versioningStart, -1);
+  assert.notEqual(releaseStart, -1);
   const currentTrain = roadmap.slice(currentTrainStart, productPhaseStart);
   const productPhases = roadmap.slice(productPhaseStart, versioningStart);
-  const candidate = roadmap.match(/^\| 当前开发列车 \| `(v[^`]+)`/m)?.[1];
-  assert.ok(candidate, "ROADMAP lacks a parseable current development train");
-  const escapedCandidate = candidate.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const developmentTrain = roadmap.match(/^\| 当前开发列车 \| `(v[^`]+)`/m)?.[1];
+  assert.ok(developmentTrain, "ROADMAP lacks a parseable current development train");
+  const escapedDevelopmentTrain = developmentTrain.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   assert.match(roadmap, /^<a name="version-train-two-retirement-reviews"><\/a>$/m);
   assert.match(roadmap, /^<a name="phase-4-opt-in-purpose"><\/a>$/m);
   assert.match(roadmap, /^<a name="discovery-gate-governance"><\/a>$/m);
@@ -325,12 +329,23 @@ test("ROADMAP keeps stable Discovery and Release governance anchors", () => {
   assert.match(roadmap, /第二轮：role-window closeout/);
   assert.match(roadmap, /review.*不是为了清单好看而强制删除/);
   assert.match(roadmap, /多个低风险 Phase合并到同一版本列车[\s\S]*每个 Phase仍分别做第一轮审查[\s\S]*只在最终发布时做一次[\s\S]*第二轮审查/);
-  assert.match(currentTrain, new RegExp(`^### 4\\.1 当前 \`${escapedCandidate}\``, "m"));
+  assert.ok(releaseStart < retirementStart && retirementStart < compatibilityStart,
+    "retirement reviews must live inside Release governance before compatibility policy");
+  for (const role of [
+    "SOURCE_CANDIDATE_HEAD", "SOURCE_CANDIDATE_CHECKPOINT_HEAD",
+    "PUBLISHED_RELEASE_CLOSEOUT_HEAD",
+  ]) assert.match(roadmap, new RegExp("`" + role + "`"));
+  assert.match(roadmap, /C0[\s\S]*C1[\s\S]*C2/);
+  assert.doesNotMatch(roadmap, /<a name="phase-9-v0-4-0-instance"><\/a>/);
+  assert.match(currentTrain, new RegExp(`^### 4\\.1 当前 \`${escapedDevelopmentTrain}\``, "m"));
+  assert.match(currentTrain, /documentation governance/);
+  assert.match(currentTrain, /package identity[\s\S]*0\.4\.1/);
+  assert.match(currentTrain, /Release candidate[\s\S]*未授权/);
   assert.match(currentTrain, /candidate \+ accepted role window/);
   assert.match(currentTrain, /trusted\/Release zones 继续 exact[\s\S]*docs\/planning zones 按 lifecycle policy/);
   assert.doesNotMatch(currentTrain, /F3B2 closeout|回退 smart-only|unreachable code/);
   assert.doesNotMatch(currentTrain,
-    /Phase 4 已采纳 gate 路线|F2 activation\/disarm 前置协议|F2B Discovery 交接|流水账文件/);
+    /Phase 4 已采纳 gate 路线|F2 activation\/disarm 前置协议|F2B Discovery 交接|P9-A pre-seal|P9-F second retirement|流水账文件/);
   for (const anchor of ["phase-4-opt-in-purpose", "phase-4-f2-activation-protocol", "phase-4-f2b-discovery-handoff"]) {
     assert.match(productPhases, new RegExp(`<a name="${anchor}"></a>`));
   }

@@ -32,39 +32,37 @@ function isTrustedSource(relative) {
 
 function currentRoleWindow() {
   const roadmap = read("ROADMAP.md");
-  const candidateMatch = roadmap.match(new RegExp("^\\| 当前开发列车 \\| `(" + versionPattern + ")`", "m"));
+  const developmentMatch = roadmap.match(new RegExp("^\\| 当前开发列车 \\| `(" + versionPattern + ")`", "m"));
   const acceptedMatch = roadmap.match(new RegExp("^\\| 当前已接受版本 \\| `(" + versionPattern + ")`", "m"));
   const fallbackMatch = roadmap.match(new RegExp("^\\| 当前直接回退版本 \\| immutable `(" + versionPattern + ")` immediate fallback", "m"));
-  assert.ok(candidateMatch, "ROADMAP lacks a parseable current candidate role");
+  assert.ok(developmentMatch, "ROADMAP lacks a parseable current development train");
   assert.ok(acceptedMatch, "ROADMAP lacks a parseable accepted baseline role");
   assert.ok(fallbackMatch, "ROADMAP lacks a parseable immediate fallback role");
-  const candidate = candidateMatch[1];
+  const developmentTrain = developmentMatch[1];
   const accepted = acceptedMatch[1];
   const immediateFallback = fallbackMatch[1];
   const packageVersion = JSON.parse(read("package.json")).version;
-  assert.equal(candidate, `v${packageVersion}`, "package identity must match the current candidate role");
+  const candidate = `v${packageVersion}`;
   assert.notEqual(accepted, immediateFallback, "accepted and immediate fallback roles must remain distinct");
-  return { accepted, candidate, immediateFallback, roadmap };
+  return { accepted, candidate, developmentTrain, immediateFallback, roadmap };
 }
 
-test("v0.4.1 accepted patch train preserves the fallback identity window", () => {
-  const { accepted, candidate, immediateFallback, roadmap } = currentRoleWindow();
+test("documentation governance preserves the accepted v0.4.1 identity window", () => {
+  const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
+  const pathSafetyHistory = read("docs/history/phase-4.12-v0.4.1-path-safety-patch-train.md");
+  assert.equal(developmentTrain, "v0.4.2-dev");
   assert.equal(candidate, "v0.4.1");
   assert.equal(accepted, "v0.4.1");
   assert.equal(immediateFallback, "v0.4.0");
   assert.equal(candidate, accepted);
-  assert.match(roadmap, /compatibility\/security patch train/);
-  assert.match(roadmap, /本地[\s\S]*path-safety gate 与开发候选 exact source/);
-  assert.match(roadmap, /P9-B Linux零skip、deterministic ZIP、Fresh\/UserPrompt\/real Resume/);
-  assert.match(roadmap, /P9-A～P9-F全部PASS，列车已关闭/);
-  assert.match(roadmap, /`v0\.4\.1` accepted\/Latest/);
-  assert.match(roadmap, /P9-D Published Release Cloud PASS/);
-  assert.match(roadmap, /P9-E pointer-only Latest promotion与只读postflight已PASS/);
-  assert.match(roadmap, /P9-A～P9-F全部PASS，列车已关闭/);
-  assert.match(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
+  assert.match(roadmap, /`v0\.4\.2-dev`[\s\S]*documentation governance/);
+  assert.match(roadmap, /package identity[\s\S]*`0\.4\.1`/);
+  assert.match(roadmap, /Release candidate[\s\S]*未授权/);
+  assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.1`[^\n]*Latest/);
+  assert.doesNotMatch(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
+  assert.match(pathSafetyHistory, /兼容性安全/);
+  assert.match(pathSafetyHistory, /99885b854bd9621c3340e99f031bf83ceb58414d/);
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.1`/);
-  assert.match(roadmap,
-    /Phase 4 \/ F3C4完成[\s\S]*形成0\.4\.0功能\/候选基线[\s\S]*后继版本列车与Product Phase另行决策/);
 });
 
 test("retired v0.4.0 role evidence remains immutable and history-linked", () => {
@@ -86,7 +84,7 @@ test("retired v0.4.0 role evidence remains immutable and history-linked", () => 
     /P9_F_SECOND_RETIREMENT_PASS \/ V0_4_0_TRAIN_CLOSED \/ NEXT_TRAIN_UNDECIDED/);
   assert.match(provenance,
     /blob\/6b388518855da9053713a58e5c918c8b727b6dc6\/docs\/v0\.4\.0-cloud-hard-acceptance\.md#v0-4-0-p9-f-second-retirement-closeout/);
-  assert.match(roadmap, /pointer-only promotion与第二轮对象退役均已收敛/);
+  assert.match(roadmap, /当前直接回退版本[^\n]*immutable `v0\.4\.0` immediate fallback/);
 });
 
 test("P9-F closes v0.4.1 without deleting durable fallback and regression assets", () => {
@@ -357,7 +355,7 @@ test("Phase 4.13 preserves the Release closeout governance rationale", () => {
 
   for (const anchor of [
     "phase-4-13-historical-position", "phase-4-13-problem-before",
-    "phase-4-13-core-decisions", "phase-4-13-c0-c1-c2",
+    "phase-4-13-historical-p9-calibration", "phase-4-13-core-decisions", "phase-4-13-c0-c1-c2",
     "phase-4-13-completed-delivery", "phase-4-13-acceptance-conclusion",
     "phase-4-13-explicit-non-goals", "phase-4-13-successor-inheritance",
     "phase-4-13-immutable-evidence",
@@ -367,6 +365,9 @@ test("Phase 4.13 preserves the Release closeout governance rationale", () => {
   assert.match(history, /Source\/Candidate[^\n]*Published Release[^\n]*两个独立/);
   assert.match(history, /retirement review[^\n]*对象治理/);
   assert.match(history, /普通Release[^\n]*不需要[^\n]*standing Phase 9/);
+  assert.match(history, /P9-A～P9-F[\s\S]*首次完整Release探路[\s\S]*不是未来默认模板/);
+  assert.match(history, /phase-9-v0\.4\.0-release-discovery\.md/);
+  assert.match(history, /phase-4\.12-v0\.4\.1-path-safety-patch-train\.md/);
   assert.match(history, /candidate-readiness retirement checkpoint/);
   assert.match(history, /role-window closeout retirement checkpoint/);
   for (const role of [
