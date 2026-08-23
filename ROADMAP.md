@@ -285,11 +285,10 @@ Discovery，按 7.2 决定增加正式 Round 或 Round 内子门槛，再按 7.3
 
 ## 8. Migration transaction 与对象生命周期治理
 
-Phase 4的F1A/F1B可以作为独立审查、测试和停止点，但这一规则适用于所有关键迁移，且任何拆分都不能形成可发布的半成品。
-只要 runtime/schema bytes影响 bundle、manifest或
-ZIP hash，最终候选必须在同一 transaction内让 contract、代码、inventory、mode与 hash原子闭合；不得发布只完成一半或
-无法 deterministic build/check的中间状态。F1A/F1B只是这一通用规则的首个完整实例；旧
-`phase-4-migration-lifecycle-governance` anchor继续保留为兼容别名。
+关键迁移可以按照风险、ownership和故障域拆成独立审查、实施、测试和停止点；具体拆分由当前Discovery与活动task plan
+针对迁移对象决定，不继承历史Phase的gate名称或数量。任何拆分都不能形成可发布的半成品。只要runtime/schema bytes影响
+bundle、manifest或ZIP hash，最终候选必须在同一transaction内让contract、代码、inventory、mode与hash原子闭合；不得发布
+只完成一半或无法deterministic build/check的中间状态。
 
 每个迁移 gate都必须在活动 planning维护对象生命周期账，覆盖文件/路径、schema字段、代码常量与分支、producer/consumer、
 hash/inventory、测试和 current文档；逐项记录 owner、`KEEP/REPLACE/RETIRE/DEFER`、落地 gate、依赖传播、验证证据、

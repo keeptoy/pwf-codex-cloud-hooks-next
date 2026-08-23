@@ -370,7 +370,10 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(roadmap, /\]\(ROADMAP\.md#phase-4-opt-in-purpose\)/);
   assert.doesNotMatch(roadmap, /### 5\.4 迁移 transaction 与对象生命周期治理/);
   assert.doesNotMatch(roadmap, /### 5\.5 Phase 5～8 已采纳边界/);
-  assert.match(migrationGovernance, /F1A\/F1B[\s\S]*独立审查[\s\S]*候选[\s\S]*原子闭合/);
+  assert.match(migrationGovernance, /关键迁移可以按照风险、ownership和故障域拆成独立审查、实施、测试和停止点/);
+  assert.match(migrationGovernance, /具体拆分由当前Discovery与活动task plan[\s\S]*不继承历史Phase的gate名称或数量/);
+  assert.match(migrationGovernance, /任何拆分都不能形成可发布的半成品[\s\S]*最终候选必须在同一transaction内[\s\S]*原子闭合/);
+  assert.doesNotMatch(migrationGovernance, /F1A|F1B/);
   assert.match(migrationGovernance, /对象生命周期账[\s\S]*KEEP\/REPLACE\/RETIRE\/DEFER/);
   assert.match(migrationGovernance, /planning[^\n]*implementation drift/i);
   assert.match(migrationGovernance, /implementation[^\n]*live[^\n]*lifecycle drift/i);
