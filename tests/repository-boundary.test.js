@@ -317,6 +317,42 @@ test("historical documents have one macro entrance and remain advisory", () => {
     `${macroDoc} must not create a second historical-document entrance`);
 });
 
+test("Phase 4.13 preserves the Release closeout governance rationale", () => {
+  const relative = "docs/history/phase-4.13-release-closeout-governance.md";
+  const historyIndex = read("docs/history/README.md");
+  const artifact = JSON.parse(read(currentArtifactPath));
+  assert.equal(fs.existsSync(path.join(root, relative)), true, relative);
+  const history = read(relative);
+
+  for (const anchor of [
+    "phase-4-13-historical-position", "phase-4-13-problem-before",
+    "phase-4-13-core-decisions", "phase-4-13-c0-c1-c2",
+    "phase-4-13-completed-delivery", "phase-4-13-acceptance-conclusion",
+    "phase-4-13-explicit-non-goals", "phase-4-13-successor-inheritance",
+    "phase-4-13-immutable-evidence",
+  ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
+
+  assert.match(history, /Product验收[^\n]*Discovery Round/);
+  assert.match(history, /Source\/Candidate[^\n]*Published Release[^\n]*两个独立/);
+  assert.match(history, /retirement review[^\n]*对象治理/);
+  assert.match(history, /普通Release[^\n]*不需要[^\n]*standing Phase 9/);
+  assert.match(history, /candidate-readiness retirement checkpoint/);
+  assert.match(history, /role-window closeout retirement checkpoint/);
+  for (const role of [
+    "SOURCE_CANDIDATE_HEAD", "SOURCE_CANDIDATE_CHECKPOINT_HEAD",
+    "PUBLISHED_RELEASE_CLOSEOUT_HEAD",
+  ]) assert.match(history, new RegExp(`\`${role}\``));
+  assert.match(history, /C0[\s\S]*Source\/Candidate Cloud PASS[\s\S]*正式验收tag[^\n]*C0/);
+  assert.match(history, /C1[\s\S]*第一阶段PASS[\s\S]*Published Release Cloud/);
+  assert.match(history, /C2[\s\S]*Published Release evidence[\s\S]*Latest promotion\/postflight[\s\S]*第二轮退役检查/);
+  assert.match(historyIndex,
+    /phase-4\.13-release-closeout-governance\.md#phase-4-13-historical-position/);
+  assert.match(historyIndex, /历史Phase 9实例[^\n]*未来Release closeout[^\n]*不要求固定Phase编号/);
+  assert.doesNotMatch(historyIndex, /standing Phase 9 是例外的重复 Release gate/);
+  assert.equal(artifact.entries.some(entry => entry.path === relative), false);
+  assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
+});
+
 test("portable repository governance keeps stable retirement anchors", () => {
   const guide = read("docs/repository-governance-guide.md");
 
