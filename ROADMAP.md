@@ -89,15 +89,15 @@ Release closeout不属于Product Phase编号。任何Product Phase或获批的�
 进入同一版本无关workflow；只有出现新增Release风险、迁移、兼容切换或复杂rollback时，才按第7节增加专项
 Discovery/Release hardening gate。历史Phase 9 instances保留原名和时间语义，但不构成未来列车的强制模板。
 
+<a name="product-phase-4"></a>
+
 ### 5.1 Phase 4 已采纳 gate 路线
 
 Phase 4 保持 Phase 4.1 冻结的 hybrid owned-boundary 与两个现有 turn-start events，不改变主架构；内部按
 风险和故障域拆成八个 gate。完整 programme 顺序为
 `F0 → F1A → F1B → F2A → F2B → F3A → F3B → F3C`：
 
-<a name="phase-4-opt-in-purpose"></a>
-
-#### Phase 4 为什么存在：给计划行为授权，不给模型扩权
+#### 5.1.1 Phase 4 为什么存在：给计划行为授权，不给模型扩权
 
 Phase 4 的一句话目标是：**在 legacy 默认完全不变的前提下，让维护者/用户能对一个 exact plan 显式、可撤销地选择
 smart 或 autonomous planning context；状态非法时拒绝，绝不静默降级或误激活。** 它不是让模型申请更高系统权限，
@@ -135,9 +135,7 @@ Phase 4 的施工顺序因此不是“逐步给模型加权限”，而是先铺
 | F3C — Disarm-first rollback | 证明先提交 disarm 再回滚/重装，不会留下 dormant token 在未来升级后“复活” | live PASS 不等于 Release；禁止 runtime-only rollback | installed state、workspace intent、rollback |
 
 
-<a name="phase-4-f2-activation-protocol"></a>
-
-### 5.2 F2 activation/disarm 前置协议
+#### 5.1.2 F2 activation/disarm 前置协议
 
 F1A/F1B 可以先规划和实施；F2A/F2B 已把 smart/autonomous 的启用与退出冻结为以下协议：
 
@@ -153,7 +151,7 @@ F1A/F1B 可以先规划和实施；F2A/F2B 已把 smart/autonomous 的启用与�
 这条顺序防止 initializer 吞掉 attestation failure 后留下“看似已激活、实际状态残缺”的 mode。F2A 与 F2B
 仍分别授权；完成 F1 不会自动授权任何 opt-in behavior。
 
-这里的“授权”沿用[上面的四开关模型](ROADMAP.md#phase-4-opt-in-purpose)：本地 sandbox/approval 与 Cloud task/container policy
+这里的“授权”沿用上面的四开关模型：本地 sandbox/approval 与 Cloud task/container policy
 是两个执行环境；system-managed requirements 决定 Hook 能否运行；plan-local activation state 才决定 PWF 是否对
 exact plan 启用 smart/autonomous。前三个开关不得直接充当或隐式写入第四个，第四个也不能绕过平台执行/trust 边界。
 
@@ -167,9 +165,7 @@ commit、plan 与容器内 state 的 consent callback。只有未来出现 authe
 才重新打开独立 Discovery；不得先引入外部认证服务、网络 callback、secret 或 chat-wide environment variable 来模拟。
 `.pwf-codex-managed` 始终是可被 runtime 读取的非秘密常量，不能承载用户身份、授权码或账户凭据。
 
-<a name="phase-4-f2b-discovery-handoff"></a>
-
-### 5.3 Phase 4 activation/lifecycle 决策
+#### 5.1.3 Phase 4 activation/lifecycle 决策
 
 Phase 4没有改变 hybrid owned-boundary、Host event集合或 managed runtime只读 workspace的原则。smart保持
 `codex-managed-v1\n`，autonomous使用 profile-bound `codex-managed-v1 autonomous\n`；mode、nonce、attestation与

@@ -142,7 +142,7 @@ commit、Fresh/Resume/cache 持久性和 opt-out/re-arm 必须留给 F3 live gat
 当前也不采用“生成链接、点击后激活”的外部路线：现有公开 Host contract 没有 authenticated、bounded、可审计且能
 原子绑定 exact user/repository/commit/plan/state 的 consent callback。只有将来出现这种官方 ABI 才重开独立
 Discovery。activation token 始终是非秘密常量，不得承载身份、授权码或账户凭据。现行完整边界以
-[`ROADMAP` 的 F2 activation/disarm 协议](../../ROADMAP.md#phase-4-f2-activation-protocol) 为准；本尾注只说明后继
+[`ROADMAP` 的 Phase 4 current authority](../../ROADMAP.md#product-phase-4) 为准；本尾注只说明后继
 复核如何继承本里程碑，不把历史摘要升级为第二份 current authority。
 
 <a name="phase-4-4-post-implementation-status"></a>

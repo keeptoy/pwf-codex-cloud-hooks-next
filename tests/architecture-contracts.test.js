@@ -304,6 +304,8 @@ test("DESIGN maps every test module back to the capability and boundary it prote
 test("ROADMAP keeps stable Discovery, migration, and Release governance anchors", () => {
   const roadmap = readText("ROADMAP.md");
   const readme = readText("README.md");
+  const phase41 = readText("docs/history/phase-4.1-managed-v3-discovery.md");
+  const phase44 = readText("docs/history/phase-4.4-f2a-smart-activation-discovery.md");
   const currentTrainStart = roadmap.indexOf("## 4. 当前开发列车");
   const productPhaseStart = roadmap.indexOf("## 5. Product Phase 路线");
   const versioningStart = roadmap.indexOf("## 6. 版本号与晋级语义");
@@ -330,7 +332,7 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.ok(developmentTrain, "ROADMAP lacks a parseable current development train");
   const escapedDevelopmentTrain = developmentTrain.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   assert.match(roadmap, /^<a name="version-train-two-retirement-reviews"><\/a>$/m);
-  assert.match(roadmap, /^<a name="phase-4-opt-in-purpose"><\/a>$/m);
+  assert.match(roadmap, /^<a name="product-phase-4"><\/a>$/m);
   assert.match(roadmap, /^<a name="discovery-gate-governance"><\/a>$/m);
   assert.match(roadmap, /^<a name="migration-transaction-lifecycle-governance"><\/a>$/m);
   assert.match(roadmap, /^<a name="release-four-step-flow"><\/a>$/m);
@@ -360,14 +362,16 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.doesNotMatch(currentTrain, /F3B2 closeout|回退 smart-only|unreachable code/);
   assert.doesNotMatch(currentTrain,
     /Phase 4 已采纳 gate 路线|F2 activation\/disarm 前置协议|F2B Discovery 交接|P9-A pre-seal|P9-F second retirement|流水账文件/);
-  for (const anchor of ["phase-4-opt-in-purpose", "phase-4-f2-activation-protocol", "phase-4-f2b-discovery-handoff"]) {
-    assert.match(productPhases, new RegExp(`<a name="${anchor}"></a>`));
-  }
+  assert.match(productPhases, /^#### 5\.1\.1 Phase 4 为什么存在：给计划行为授权，不给模型扩权$/m);
+  assert.match(productPhases, /^#### 5\.1\.2 F2 activation\/disarm 前置协议$/m);
+  assert.match(productPhases, /^#### 5\.1\.3 Phase 4 activation\/lifecycle 决策$/m);
   assert.match(productPhases, /\| 5 \|[\s\S]*PreCompact\/PostCompact/);
   assert.match(productPhases, /\| 6 \|[\s\S]*噪声[\s\S]*`NO_GO`/);
   assert.match(productPhases, /\| 7 \|[\s\S]*唯一[\s\S]*read-only/);
   assert.match(productPhases, /\| 8 \|[\s\S]*best-effort shell lock[\s\S]*managed authority/);
-  assert.match(roadmap, /\]\(ROADMAP\.md#phase-4-opt-in-purpose\)/);
+  assert.doesNotMatch(productPhases, /ROADMAP\.md#product-phase-4/);
+  assert.match(phase41, /\]\(\.\.\/\.\.\/ROADMAP\.md#product-phase-4\)/);
+  assert.match(phase44, /\]\(\.\.\/\.\.\/ROADMAP\.md#product-phase-4\)/);
   assert.doesNotMatch(roadmap, /### 5\.4 迁移 transaction 与对象生命周期治理/);
   assert.doesNotMatch(roadmap, /### 5\.5 Phase 5～8 已采纳边界/);
   assert.match(migrationGovernance, /关键迁移可以按照风险、ownership和故障域拆成独立审查、实施、测试和停止点/);
