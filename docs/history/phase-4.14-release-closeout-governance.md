@@ -1,5 +1,4 @@
 <a name="phase-4-14-historical-position"></a>
-<a name="phase-4-13-historical-position"></a>
 
 # Phase 4.14：Release closeout 与验收文档治理回顾
 
@@ -14,7 +13,6 @@ Product行为、Host ABI、trusted graph、package identity或Release字节，�
 path-safety的详细证据；当前programme、版本角色、授权和实际验收状态仍只读ROADMAP、活动planning与对应版本operator guide。
 
 <a name="phase-4-14-problem-before"></a>
-<a name="phase-4-13-problem-before"></a>
 
 ## Problem before
 
@@ -29,7 +27,6 @@ Latest promotion和第二轮退役逐项拆开。这对首次探路有价值，�
 反过来，如果为了省步骤把两个Release通道或两个退役时点合并，又会丢失候选源码、公开资产和角色轮转各自需要的身份信息。
 
 <a name="phase-4-14-historical-p9-calibration"></a>
-<a name="phase-4-13-historical-p9-calibration"></a>
 
 ## Historical P9 calibration
 
@@ -42,7 +39,6 @@ publication、公开包Fresh/Resume、Latest角色轮转和第二轮退役逐项
 保存兼容性安全修复如何复用同一Release生命周期。这里仅保留两者共同导出的治理结论，不复制逐gate状态、资产表或验收全文。
 
 <a name="phase-4-14-core-decisions"></a>
-<a name="phase-4-13-core-decisions"></a>
 
 ## Core decisions
 
@@ -61,7 +57,6 @@ publication、公开包Fresh/Resume、Latest角色轮转和第二轮退役逐项
    与Latest promotion/postflight，不是另外两轮黑盒。
 
 <a name="phase-4-14-c0-c1-c2"></a>
-<a name="phase-4-13-c0-c1-c2"></a>
 
 ## C0 / C1 / C2 身份与证据流
 
@@ -89,7 +84,6 @@ C2：最终治理commit（PUBLISHED_RELEASE_CLOSEOUT_HEAD）
 自引用最终hash，因此由Git历史和本地handoff返回exact HEAD，后继阶段再把已知HEAD作为治理输入。
 
 <a name="phase-4-14-completed-delivery"></a>
-<a name="phase-4-13-completed-delivery"></a>
 
 ## Completed delivery
 
@@ -108,7 +102,6 @@ governance guide与DESIGN，并增加repository/architecture治理断言：
 A/B/C施工子门槛和纯aggregate/retirement closeout不机械重跑整套黑盒。真正发布仍固定保留两个Release通道。
 
 <a name="phase-4-14-acceptance-conclusion"></a>
-<a name="phase-4-13-acceptance-conclusion"></a>
 
 ## Acceptance conclusion
 
@@ -120,7 +113,6 @@ Phase编号。
 tag、Pre-release、Latest、rollback或对象删除，也不能替代任何具体版本的真实Cloud证据。
 
 <a name="phase-4-14-explicit-non-goals"></a>
-<a name="phase-4-13-explicit-non-goals"></a>
 
 ## Explicit non-goals
 
@@ -132,7 +124,6 @@ tag、Pre-release、Latest、rollback或对象删除，也不能替代任何具�
 - 不因流程简化自动授权Cloud、push、tag、Release、Latest或后继Product Phase。
 
 <a name="phase-4-14-successor-inheritance"></a>
-<a name="phase-4-13-successor-inheritance"></a>
 
 ## Successor inheritance
 
@@ -186,7 +177,6 @@ package或Release字节，也没有授权`0.4.2`候选封板、Cloud、publicati
 历史回补。
 
 <a name="phase-4-14-immutable-evidence"></a>
-<a name="phase-4-13-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)
 

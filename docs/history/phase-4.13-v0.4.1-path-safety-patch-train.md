@@ -1,5 +1,4 @@
 <a name="phase-4-13-historical-position"></a>
-<a name="phase-4-12-historical-position"></a>
 
 # Phase 4.13：v0.4.1 path-safety patch train
 
@@ -13,7 +12,6 @@ Phase 4.11当时关闭Product Phase 4功能施工后，立即后继仍是`v0.4.0
 兼容性安全修复整理成长期可恢复的维护摘要。
 
 <a name="phase-4-13-problem-before"></a>
-<a name="phase-4-12-problem-before"></a>
 
 ## Problem before
 
@@ -26,7 +24,6 @@ Phase 4.11当时关闭Product Phase 4功能施工后，立即后继仍是`v0.4.0
 第三方工具、旧残留或文件系统异常，但它们一旦位于安全边界上就必须作为不可信拓扑处理。
 
 <a name="phase-4-13-core-decisions"></a>
-<a name="phase-4-12-core-decisions"></a>
 
 ## Core decisions
 
@@ -42,7 +39,6 @@ Phase 4.11当时关闭Product Phase 4功能施工后，立即后继仍是`v0.4.0
    `v0.4.0`已建立的Product Phase 4能力。
 
 <a name="phase-4-13-completed-delivery"></a>
-<a name="phase-4-12-completed-delivery"></a>
 
 ## Completed delivery
 
@@ -55,7 +51,6 @@ POSIX special entry和unknown regular tree。README、ARCHITECTURE、DESIGN与CH
 版本delta，没有把本补丁描述为通用文件系统sandbox或任意旧状态升级器。
 
 <a name="phase-4-13-acceptance-conclusion"></a>
-<a name="phase-4-12-acceptance-conclusion"></a>
 
 ## Acceptance conclusion
 
@@ -67,7 +62,6 @@ POSIX special entry和unknown regular tree。README、ARCHITECTURE、DESIGN与CH
 installer接管，也不授权沿link操作、吸收unknown installed state或跳过备份。
 
 <a name="phase-4-13-explicit-non-goals"></a>
-<a name="phase-4-12-explicit-non-goals"></a>
 
 ## Explicit non-goals
 
@@ -78,7 +72,6 @@ installer接管，也不授权沿link操作、吸收unknown installed state或�
 - 不复制逐P9状态、测试数字、ZIP/asset SHA或当前accepted/fallback角色。
 
 <a name="phase-4-13-successor-inheritance"></a>
-<a name="phase-4-12-successor-inheritance"></a>
 
 ## Successor inheritance
 
@@ -89,7 +82,6 @@ Windows junction证据不能替代Linux真实filesystem证据。涉及FIFO、dev
 零skip gate；unknown regular cleanup的正向用例必须与link/special拒绝用例一起保留，防止安全加固误伤既有恢复路线。
 
 <a name="phase-4-13-immutable-evidence"></a>
-<a name="phase-4-12-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)
 

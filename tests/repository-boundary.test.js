@@ -398,7 +398,6 @@ test("Phase 4.13 preserves the v0.4.1 path-safety patch rationale", () => {
     "phase-4-13-acceptance-conclusion", "phase-4-13-explicit-non-goals",
     "phase-4-13-successor-inheritance", "phase-4-13-immutable-evidence",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
-  assert.match(history, /^<a name="phase-4-12-historical-position"><\/a>$/m);
   assert.match(history, /^# Phase 4\.13：v0\.4\.1 path-safety patch train$/m);
 
   assert.match(history, /回顾性[^\n]*patch-train标签/);
@@ -434,7 +433,6 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
     "phase-4-14-post-governance-status-history-role-rotation",
     "phase-4-14-immutable-evidence",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
-  assert.match(history, /^<a name="phase-4-13-historical-position"><\/a>$/m);
   assert.match(history, /^# Phase 4\.14：Release closeout 与验收文档治理回顾$/m);
 
   assert.match(history, /Product验收[^\n]*Discovery Round/);
