@@ -49,7 +49,7 @@ function currentRoleWindow() {
 
 test("documentation governance preserves the accepted v0.4.1 identity window", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
-  const pathSafetyHistory = read("docs/history/phase-4.12-v0.4.1-path-safety-patch-train.md");
+  const pathSafetyHistory = read("docs/history/phase-4.13-v0.4.1-path-safety-patch-train.md");
   assert.equal(developmentTrain, "v0.4.2-dev");
   assert.equal(candidate, "v0.4.1");
   assert.equal(accepted, "v0.4.1");
@@ -65,8 +65,8 @@ test("documentation governance preserves the accepted v0.4.1 identity window", (
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.1`/);
 });
 
-test("retired v0.4.0 role evidence remains immutable and history-linked", () => {
-  const phase9 = read("docs/history/phase-9-v0.4.0-release-discovery.md");
+test("Phase 4.12 preserves the renamed v0.4.0 Release discovery and P9 evidence", () => {
+  const phase12 = read("docs/history/phase-4.12-v0.4.0-release-discovery.md");
   const provenance = read("BASELINE_PROVENANCE.md");
   const { roadmap } = currentRoleWindow();
 
@@ -79,8 +79,14 @@ test("retired v0.4.0 role evidence remains immutable and history-linked", () => 
     "phase-9-v0-4-0-p9-d-post-acceptance",
     "phase-9-v0-4-0-p9-e-post-promotion",
     "phase-9-v0-4-0-p9-f-post-implementation",
-  ]) assert.match(phase9, new RegExp(`<a name="${anchor}"></a>`));
-  assert.match(phase9,
+  ]) assert.match(phase12, new RegExp(`<a name="${anchor}"></a>`));
+  assert.match(phase12, /^<a name="phase-4-12-v0-4-0-release-discovery"><\/a>$/m);
+  assert.match(phase12, /^<a name="phase-9-v0-4-0-positioning"><\/a>$/m);
+  assert.match(phase12, /^# Phase 4\.12：v0\.4\.0 Release 收口 Discovery$/m);
+  assert.match(phase12, /^<a name="phase-4-12-renumbering-note"><\/a>$/m);
+  assert.match(phase12, /原名[^\n]*Phase 9[^\n]*回顾性[^\n]*Phase 4\.12/);
+  assert.match(phase12, /P9-A～P9-F[^\n]*保持/);
+  assert.match(phase12,
     /P9_F_SECOND_RETIREMENT_PASS \/ V0_4_0_TRAIN_CLOSED \/ NEXT_TRAIN_UNDECIDED/);
   assert.match(provenance,
     /blob\/6b388518855da9053713a58e5c918c8b727b6dc6\/docs\/v0\.4\.0-cloud-hard-acceptance\.md#v0-4-0-p9-f-second-retirement-closeout/);
@@ -315,19 +321,21 @@ test("historical documents have one macro entrance and remain advisory", () => {
     `${macroDoc} must not create a second historical-document entrance`);
 });
 
-test("Phase 4.12 preserves the v0.4.1 path-safety patch rationale", () => {
-  const relative = "docs/history/phase-4.12-v0.4.1-path-safety-patch-train.md";
+test("Phase 4.13 preserves the v0.4.1 path-safety patch rationale", () => {
+  const relative = "docs/history/phase-4.13-v0.4.1-path-safety-patch-train.md";
   const historyIndex = read("docs/history/README.md");
   const artifact = JSON.parse(read(currentArtifactPath));
   assert.equal(fs.existsSync(path.join(root, relative)), true, relative);
   const history = read(relative);
 
   for (const anchor of [
-    "phase-4-12-historical-position", "phase-4-12-problem-before",
-    "phase-4-12-core-decisions", "phase-4-12-completed-delivery",
-    "phase-4-12-acceptance-conclusion", "phase-4-12-explicit-non-goals",
-    "phase-4-12-successor-inheritance", "phase-4-12-immutable-evidence",
+    "phase-4-13-historical-position", "phase-4-13-problem-before",
+    "phase-4-13-core-decisions", "phase-4-13-completed-delivery",
+    "phase-4-13-acceptance-conclusion", "phase-4-13-explicit-non-goals",
+    "phase-4-13-successor-inheritance", "phase-4-13-immutable-evidence",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
+  assert.match(history, /^<a name="phase-4-12-historical-position"><\/a>$/m);
+  assert.match(history, /^# Phase 4\.13：v0\.4\.1 path-safety patch train$/m);
 
   assert.match(history, /回顾性[^\n]*patch-train标签/);
   assert.match(history, /不是[^\n]*Product Phase/);
@@ -341,33 +349,35 @@ test("Phase 4.12 preserves the v0.4.1 path-safety patch rationale", () => {
   assert.match(history, /Linux\/POSIX[^\n]*零skip/);
   assert.match(history, /99885b854bd9621c3340e99f031bf83ceb58414d/);
   assert.match(historyIndex,
-    /phase-4\.12-v0\.4\.1-path-safety-patch-train\.md#phase-4-12-historical-position/);
+    /phase-4\.13-v0\.4\.1-path-safety-patch-train\.md#phase-4-13-historical-position/);
   assert.equal(artifact.entries.some(entry => entry.path === relative), false);
   assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
 });
 
-test("Phase 4.13 preserves the Release closeout governance rationale", () => {
-  const relative = "docs/history/phase-4.13-release-closeout-governance.md";
+test("Phase 4.14 preserves the Release closeout governance rationale", () => {
+  const relative = "docs/history/phase-4.14-release-closeout-governance.md";
   const historyIndex = read("docs/history/README.md");
   const artifact = JSON.parse(read(currentArtifactPath));
   assert.equal(fs.existsSync(path.join(root, relative)), true, relative);
   const history = read(relative);
 
   for (const anchor of [
-    "phase-4-13-historical-position", "phase-4-13-problem-before",
-    "phase-4-13-historical-p9-calibration", "phase-4-13-core-decisions", "phase-4-13-c0-c1-c2",
-    "phase-4-13-completed-delivery", "phase-4-13-acceptance-conclusion",
-    "phase-4-13-explicit-non-goals", "phase-4-13-successor-inheritance",
-    "phase-4-13-immutable-evidence",
+    "phase-4-14-historical-position", "phase-4-14-problem-before",
+    "phase-4-14-historical-p9-calibration", "phase-4-14-core-decisions", "phase-4-14-c0-c1-c2",
+    "phase-4-14-completed-delivery", "phase-4-14-acceptance-conclusion",
+    "phase-4-14-explicit-non-goals", "phase-4-14-successor-inheritance",
+    "phase-4-14-immutable-evidence",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
+  assert.match(history, /^<a name="phase-4-13-historical-position"><\/a>$/m);
+  assert.match(history, /^# Phase 4\.14：Release closeout 与验收文档治理回顾$/m);
 
   assert.match(history, /Product验收[^\n]*Discovery Round/);
   assert.match(history, /Source\/Candidate[^\n]*Published Release[^\n]*两个独立/);
   assert.match(history, /retirement review[^\n]*对象治理/);
   assert.match(history, /普通Release[^\n]*不需要[^\n]*standing Phase 9/);
   assert.match(history, /P9-A～P9-F[\s\S]*首次完整Release探路[\s\S]*不是未来默认模板/);
-  assert.match(history, /phase-9-v0\.4\.0-release-discovery\.md/);
-  assert.match(history, /phase-4\.12-v0\.4\.1-path-safety-patch-train\.md/);
+  assert.match(history, /phase-4\.12-v0\.4\.0-release-discovery\.md/);
+  assert.match(history, /phase-4\.13-v0\.4\.1-path-safety-patch-train\.md/);
   assert.match(history, /candidate-readiness retirement checkpoint/);
   assert.match(history, /role-window closeout retirement checkpoint/);
   for (const role of [
@@ -378,8 +388,8 @@ test("Phase 4.13 preserves the Release closeout governance rationale", () => {
   assert.match(history, /C1[\s\S]*第一阶段PASS[\s\S]*Published Release Cloud/);
   assert.match(history, /C2[\s\S]*Published Release evidence[\s\S]*Latest promotion\/postflight[\s\S]*第二轮退役检查/);
   assert.match(historyIndex,
-    /phase-4\.13-release-closeout-governance\.md#phase-4-13-historical-position/);
-  assert.match(historyIndex, /历史Phase 9实例[^\n]*未来Release closeout[^\n]*不要求固定Phase编号/);
+    /phase-4\.14-release-closeout-governance\.md#phase-4-14-historical-position/);
+  assert.match(historyIndex, /Phase 4\.12[^\n]*原P9-A～P9-F[^\n]*历史语义/);
   assert.doesNotMatch(historyIndex, /standing Phase 9 是例外的重复 Release gate/);
   assert.equal(artifact.entries.some(entry => entry.path === relative), false);
   assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
@@ -428,7 +438,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   const architecture = read("ARCHITECTURE.md");
   const design = read("DESIGN.md");
   const agents = read("AGENTS.md");
-  const phase9History = read("docs/history/phase-9-v0.4.0-release-discovery.md");
+  const phase9History = read("docs/history/phase-4.12-v0.4.0-release-discovery.md");
   const artifact = JSON.parse(read(currentArtifactPath));
   const runtimeBundle = JSON.parse(read(currentBundlePath));
   const { accepted, candidate, immediateFallback, roadmap } = currentRoleWindow();

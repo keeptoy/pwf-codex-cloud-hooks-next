@@ -1,15 +1,18 @@
+<a name="phase-4-13-historical-position"></a>
 <a name="phase-4-12-historical-position"></a>
 
-# Phase 4.12：v0.4.1 path-safety patch train
+# Phase 4.13：v0.4.1 path-safety patch train
 
 ## Historical position
 
-Phase 4.12是后来为`v0.4.1`分配的**回顾性path-safety patch-train标签**。该列车位于已发布`v0.4.0`之上，
+Phase 4.13是后来为`v0.4.1`分配的**回顾性path-safety patch-train标签**。该列车位于已发布`v0.4.0`之上，
 只修复installer路径安全边界，不是新的Product Phase、Discovery Round或Host/runtime能力扩展。
 
-Phase 4.11当时关闭Product Phase 4功能施工后，立即后继仍是`v0.4.0`的版本化Phase 9；本文不反向改写那段时间线。
-它只把随后独立发生并已发布验收的`v0.4.1`兼容性安全修复整理成长期可恢复的维护摘要。
+Phase 4.11当时关闭Product Phase 4功能施工后，立即后继仍是`v0.4.0`的版本化Phase 9；该Release discovery现已
+回顾性编号为Phase 4.12，本文不反向改写那段时间线。Phase 4.13只把随后独立发生并已发布验收的`v0.4.1`
+兼容性安全修复整理成长期可恢复的维护摘要。
 
+<a name="phase-4-13-problem-before"></a>
 <a name="phase-4-12-problem-before"></a>
 
 ## Problem before
@@ -22,6 +25,7 @@ Phase 4.11当时关闭Product Phase 4功能施工后，立即后继仍是`v0.4.0
 的情况下漏检linked parent并向外写入。正常installer不会主动制造symlink、junction或special file；这些状态通常来自人工操作、
 第三方工具、旧残留或文件系统异常，但它们一旦位于安全边界上就必须作为不可信拓扑处理。
 
+<a name="phase-4-13-core-decisions"></a>
 <a name="phase-4-12-core-decisions"></a>
 
 ## Core decisions
@@ -37,6 +41,7 @@ Phase 4.11当时关闭Product Phase 4功能施工后，立即后继仍是`v0.4.0
 5. **补丁范围保持兼容。** 不改变Host ABI、managed events、adapter-only policy、runtime trusted graph、legacy默认行为或
    `v0.4.0`已建立的Product Phase 4能力。
 
+<a name="phase-4-13-completed-delivery"></a>
 <a name="phase-4-12-completed-delivery"></a>
 
 ## Completed delivery
@@ -49,6 +54,7 @@ uninstall只消费topology结论，从而同时满足越界拒绝和unknown regu
 POSIX special entry和unknown regular tree。README、ARCHITECTURE、DESIGN与CHANGELOG同步了稳定行为、ownership理由、实现路由和
 版本delta，没有把本补丁描述为通用文件系统sandbox或任意旧状态升级器。
 
+<a name="phase-4-13-acceptance-conclusion"></a>
 <a name="phase-4-12-acceptance-conclusion"></a>
 
 ## Acceptance conclusion
@@ -60,6 +66,7 @@ POSIX special entry和unknown regular tree。README、ARCHITECTURE、DESIGN与CH
 这些证据证明`v0.4.1`发布字节保留原Product行为，同时补齐installer-owned路径拓扑安全。它们不证明任意第三方目录可以由
 installer接管，也不授权沿link操作、吸收unknown installed state或跳过备份。
 
+<a name="phase-4-13-explicit-non-goals"></a>
 <a name="phase-4-12-explicit-non-goals"></a>
 
 ## Explicit non-goals
@@ -70,6 +77,7 @@ installer接管，也不授权沿link操作、吸收unknown installed state或�
 - 不承诺从任意历史原型、陌生manifest、无ownership marker或被篡改runtime原地升级。
 - 不复制逐P9状态、测试数字、ZIP/asset SHA或当前accepted/fallback角色。
 
+<a name="phase-4-13-successor-inheritance"></a>
 <a name="phase-4-12-successor-inheritance"></a>
 
 ## Successor inheritance
@@ -80,6 +88,7 @@ uninstall或cleanup入口时，也必须在第一笔backup/shared-state/runtime 
 Windows junction证据不能替代Linux真实filesystem证据。涉及FIFO、device或其他POSIX special entry的变更仍需在Linux/Cloud执行
 零skip gate；unknown regular cleanup的正向用例必须与link/special拒绝用例一起保留，防止安全加固误伤既有恢复路线。
 
+<a name="phase-4-13-immutable-evidence"></a>
 <a name="phase-4-12-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

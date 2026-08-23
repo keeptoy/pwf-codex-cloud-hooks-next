@@ -69,8 +69,8 @@ manifest、bootstrap、Release allowlist或package bytes；当前package identit
 `v0.4.0`仍是immediate fallback。
 
 `v0.4.2-dev`只是当前repository/programme工作标签，`0.4.2`package尚未物化；Release candidate、seal、Cloud、publication、
-Latest与下一Product Phase均未授权。已关闭的`v0.4.1`path-safety列车与历史P9实例分别由Phase 4.12、Phase 4.13、
-版本化Phase 9摘要、CHANGELOG、provenance和immutable acceptance恢复；本节只维护当前边界。
+Latest与下一Product Phase均未授权。已关闭的`v0.4.0`Release discovery、`v0.4.1`path-safety列车与本轮Release治理分别由
+Phase 4.12、Phase 4.13、Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节只维护当前边界。
 
 ## 5. Product Phase 路线
 

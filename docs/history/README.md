@@ -18,8 +18,9 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 - 跨多个已关闭阶段的回顾性 overview 只负责组织已经证实的历史关系，必须明确不是正式 Phase，并链接而不
   取代各段详细摘要；不能借 overview 把原型推断成验收、把功能模型推断成当前架构。
 - 每个 Phase 只保留一份摘要，不按 Round、测试批次、候选版本或会话继续拆文件。
-- 历史Phase 9实例按版本和原时间语义分别保留；未来Release closeout不要求固定Phase编号。普通列车直接按当前ROADMAP与
-  Release operator guide闭合，只有新增Release风险时才增加专项Discovery/Release hardening摘要。
+- v0.4.0首次完整Release discovery现回顾性编号为Phase 4.12；原P9-A～P9-F名称、证据anchors与历史语义继续保留。
+  未来Release closeout不要求固定Phase编号；普通列车直接按当前ROADMAP与Release operator guide闭合，只有新增Release
+  风险时才增加专项Discovery/Release hardening摘要。
 - 不复制 production source、脚本、fixture、验收全文、SHA 表、测试计数或旧 planning。
 - 摘要不维护当前 candidate、accepted、rollback、PASS/PENDING 或下一步状态。
 - 每份摘要最多保留一个 immutable source snapshot，不直接链接旧 Phase/Round 设计文档或验收全文。
@@ -51,9 +52,9 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 | Phase 4.9 | F3B4 evidence closure 小型 Discovery：把 F3B2 smart 四份与 F3B3 autonomous 六份 live evidence、exact refs、candidate、Host/probe provenance、markerless residue audit 和对象保留期统一对账；结论只 conditional-go 到 Release-excluded closure implementation，不删除 refs、不重跑 Cloud，也不授权 F3C | [`phase-4.9-f3b4-evidence-closure-discovery.md`](phase-4.9-f3b4-evidence-closure-discovery.md#phase-4-9-decision) |
 | Phase 4.10 | F3C disarm-first rollback 小型 Discovery：区分 publication identity 与 installed-state downgrade，冻结 committed disarm → current-owned uninstall → immutable v0.3.5 clean install → current forward recovery、smart/autonomous 独立 live 与 evidence 分工；原结论只 conditional-go 到 F3C1，后继尾注分别记录 F3C1 no-live、F3C2 smart 与 F3C3 autonomous live 已闭合，仍不产生 aggregate PASS或 ref cleanup授权 | [`phase-4.10-f3c-rollback-discovery.md`](phase-4.10-f3c-rollback-discovery.md#phase-4-10-decision) |
 | Phase 4.11 | F3C4 aggregate-closure 小型 Discovery：统一对账四份 rollback/recovered live record、两项 runtime-only revival negative、exact identities、refs/residue与对象生命周期，并冻结两轮退役关系；原结论只 conditional-go，后继尾注记录 aggregate closure与第一轮 retirement review已形成 `0.4.0`功能基线，仍停止在当前列车 Phase 9前 | [`phase-4.11-f3c4-aggregate-closure-discovery.md`](phase-4.11-f3c4-aggregate-closure-discovery.md#phase-4-11-post-implementation-status-f3c4) |
-| Phase 4.12 | 回顾性`v0.4.1`path-safety patch-train标签：修复linked `hooks` parent导致clean install越界写入和uninstall穿透删除，冻结topology/inventory分层与unknown regular backup-and-cleanup不变量；不是新Product Phase | [`phase-4.12-v0.4.1-path-safety-patch-train.md`](phase-4.12-v0.4.1-path-safety-patch-train.md#phase-4-12-historical-position) |
-| Phase 4.13 | 回顾性Release/acceptance文档治理里程碑：拆分Discovery验收、Release双通道与retirement review，取消未来列车强制Phase 9，把两轮退役嵌入Release进入/退出检查点，并冻结C0候选/tag、C1第一状态写回与C2最终closeout身份流；不是新的Product Phase或Release授权 | [`phase-4.13-release-closeout-governance.md`](phase-4.13-release-closeout-governance.md#phase-4-13-historical-position) |
-| Phase 9 / v0.4.0 | standing Release gate 的版本化 Discovery：冻结 pre-seal 输入、stable identity/hash 传播、Source/Candidate→publication→Published Release→promotion顺序、混合 v2/v1 rollback oracle与第二轮对象生命周期；原结论只 conditional-go 到 P9-A，后继尾注记录 P9-A～P9-F、stable publication/Cloud/promotion与第二轮retirement均已闭合 | [`phase-9-v0.4.0-release-discovery.md`](phase-9-v0.4.0-release-discovery.md#phase-9-v0-4-0-decision) |
+| Phase 4.12 | 回顾性`v0.4.0`Release discovery标签：原standing Phase 9实例冻结pre-seal输入、stable identity/hash传播、Source/Candidate→publication→Published Release→promotion顺序、混合v2/v1 rollback oracle与第二轮对象生命周期；P9-A～P9-F、stable publication/Cloud/promotion与第二轮retirement均已闭合 | [`phase-4.12-v0.4.0-release-discovery.md`](phase-4.12-v0.4.0-release-discovery.md#phase-4-12-v0-4-0-release-discovery) |
+| Phase 4.13 | 回顾性`v0.4.1`path-safety patch-train标签：修复linked `hooks` parent导致clean install越界写入和uninstall穿透删除，冻结topology/inventory分层与unknown regular backup-and-cleanup不变量；不是新Product Phase | [`phase-4.13-v0.4.1-path-safety-patch-train.md`](phase-4.13-v0.4.1-path-safety-patch-train.md#phase-4-13-historical-position) |
+| Phase 4.14 | 回顾性Release/acceptance文档治理里程碑：拆分Discovery验收、Release双通道与retirement review，取消未来列车强制Phase 9，把两轮退役嵌入Release进入/退出检查点，并冻结C0候选/tag、C1第一状态写回与C2最终closeout身份流；不是新的Product Phase或Release授权 | [`phase-4.14-release-closeout-governance.md`](phase-4.14-release-closeout-governance.md#phase-4-14-historical-position) |
 
 ## 阅读方式
 

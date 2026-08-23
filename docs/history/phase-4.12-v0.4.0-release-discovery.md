@@ -1,15 +1,17 @@
+<a name="phase-4-12-v0-4-0-release-discovery"></a>
 <a name="phase-9-v0-4-0-positioning"></a>
 
-# Phase 9 / v0.4.0：Release 收口 Discovery
+# Phase 4.12：v0.4.0 Release 收口 Discovery
 
 ## 定位
 
-这是 standing Phase 9 在 `v0.4.0` 版本列车上的独立实例，不是 Product Phase `4.12`，也不是未来每个版本共用的一次性
-`Phase 9 PASS`。Phase 4.11 已经关闭功能施工并形成 `0.4.0` 功能/候选基线；本轮只回答怎样把该基线安全地变成
+本文最初是 standing Phase 9 在 `v0.4.0` 版本列车上的独立实例；在当时的programme语义中，它不是后继Product Phase
+`4.12`，也不是未来每个版本共用的一次性`Phase 9 PASS`。Phase 4.11 已经关闭功能施工并形成 `0.4.0` 功能/候选基线；本轮只回答怎样把该基线安全地变成
 immutable public Release、怎样轮转 accepted/fallback，以及第二轮对象退役应在什么证据之后发生。
 
-未来版本若进入发布收口，应各自建立 `phase-9-vX.Y.Z-...` 实例，不追加为本文件的“下一轮 Phase 9”。
-通用 Release 顺序仍以 ROADMAP 和 Cloud hard acceptance template 为准；本文只记录 `v0.4.0` 的差异、风险和 gate 决策。
+本文当时建议未来版本各自建立`phase-9-vX.Y.Z-...`实例，不追加为本文件的“下一轮Phase 9”；这项旧建议已由文末
+renumbering note校准。通用Release顺序始终以当前ROADMAP与Cloud hard acceptance template为准；本文只记录`v0.4.0`
+的差异、风险和gate决策。
 
 <a name="phase-9-v0-4-0-starting-facts"></a>
 
@@ -406,3 +408,14 @@ Linux/POSIX-only诚实skip；importer/compile/Node/Bash syntax与whitespace均PA
 SHA-256`24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`，changed paths与Release inputs交集为0。结论为：
 
 `P9_F_SECOND_RETIREMENT_PASS / V0_4_0_TRAIN_CLOSED / NEXT_TRAIN_UNDECIDED`
+
+<a name="phase-4-12-renumbering-note"></a>
+
+## Renumbering note — Phase 4.12
+
+本文原名“Phase 9 / v0.4.0 Release收口Discovery”；2026-08-23的history统一治理把它改为回顾性Phase 4.12，
+让Phase 4.11之后的Release discovery、v0.4.1 path-safety patch train与Release closeout治理按4.12～4.14连续排列。
+
+这次改名只调整warm-history文件名、标题、索引和canonical引用，不改写当时的programme授权、Cloud证据或Release结果。
+原P9-A～P9-F gate名称、执行顺序、结论与`phase-9-v0-4-0-*`证据anchors全部保持；旧positioning anchor也保留为兼容别名。
+未来普通Release不再要求standing Phase 9，仍按当前ROADMAP的版本无关Release workflow和嵌入式retirement checkpoints闭合。

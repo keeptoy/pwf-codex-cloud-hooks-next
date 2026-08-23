@@ -215,6 +215,7 @@ acceptance章节承担。测试数字只描述本次运行，不成为长期合�
 
 ## Successor note — v0.4.0 Phase 9
 
-F3C4关闭后，后继不叫 Phase 4.12。standing Phase 9已按版本列车建立独立的
-[`v0.4.0 Release Discovery`](phase-9-v0.4.0-release-discovery.md#phase-9-v0-4-0-positioning)，负责 pre-seal、公开资产、
-accepted/fallback轮转与第二轮 retirement review；该后继记录不改写本文件当时“停止在 Phase 9前”的历史语义。
+F3C4关闭时，后继没有被当作Product Phase 4.12，而是按版本列车建立独立standing Phase 9；后来的history统一治理把该
+[`v0.4.0 Release Discovery`](phase-4.12-v0.4.0-release-discovery.md#phase-4-12-v0-4-0-release-discovery)回顾性编号为
+Phase 4.12。它负责pre-seal、公开资产、accepted/fallback轮转与第二轮retirement review；改名不重写本文件当时
+“停止在Phase 9前”的历史语义。

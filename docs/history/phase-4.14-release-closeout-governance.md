@@ -1,17 +1,19 @@
+<a name="phase-4-14-historical-position"></a>
 <a name="phase-4-13-historical-position"></a>
 
-# Phase 4.13：Release closeout 与验收文档治理回顾
+# Phase 4.14：Release closeout 与验收文档治理回顾
 
 ## Historical position
 
-Phase 4.13是`v0.4.1`完成发布后，在后继`0.4.2`文档治理列车中形成的**回顾性维护者里程碑**。它没有新增
+Phase 4.14是`v0.4.1`完成发布后，在后继`0.4.2`文档治理列车中形成的**回顾性维护者里程碑**。它没有新增
 Product行为、Host ABI、trusted graph、package identity或Release字节，而是重新整理已经跑通过的Release实践：以后怎样
 计算Discovery验收轮次、怎样组织Source/Candidate与Published Release、两轮退役审查放在哪里，以及状态commit和正式tag
 分别代表什么。
 
-它不是新的Product Phase、Discovery Round或Release acceptance，也不补写相邻编号的其他历史文件；当前programme、版本角色、
-授权和实际验收状态仍只读ROADMAP、活动planning与对应版本operator guide。
+它不是新的Product Phase、Discovery Round或Release acceptance，也不接管Phase 4.12 Release discovery或Phase 4.13
+path-safety的详细证据；当前programme、版本角色、授权和实际验收状态仍只读ROADMAP、活动planning与对应版本operator guide。
 
+<a name="phase-4-14-problem-before"></a>
 <a name="phase-4-13-problem-before"></a>
 
 ## Problem before
@@ -26,6 +28,7 @@ Latest promotion和第二轮退役逐项拆开。这对首次探路有价值，�
 如果把历史P9-A～F机械复制成未来默认模板，即使普通patch只有一个Discovery，也会产生多轮重复教程、状态同步和仓库提交；
 反过来，如果为了省步骤把两个Release通道或两个退役时点合并，又会丢失候选源码、公开资产和角色轮转各自需要的身份信息。
 
+<a name="phase-4-14-historical-p9-calibration"></a>
 <a name="phase-4-13-historical-p9-calibration"></a>
 
 ## Historical P9 calibration
@@ -34,10 +37,11 @@ Latest promotion和第二轮退役逐项拆开。这对首次探路有价值，�
 publication、公开包Fresh/Resume、Latest角色轮转和第二轮退役逐项拆开，使每个新风险都有独立停止点。该结构证明了这些
 职责不能互相冒充，但它不是未来默认模板；普通列车应把相同职责折叠进版本无关Release workflow，而不是保留六段编号。
 
-两条历史列车仍分别恢复：[v0.4.0版本化Phase 9](phase-9-v0.4.0-release-discovery.md#phase-9-v0-4-0-positioning)保存首次
-完整封板与角色轮转，[v0.4.1 path-safety patch train](phase-4.12-v0.4.1-path-safety-patch-train.md#phase-4-12-historical-position)
+两条历史列车仍分别恢复：[v0.4.0 Release discovery](phase-4.12-v0.4.0-release-discovery.md#phase-4-12-v0-4-0-release-discovery)保存首次
+完整封板与角色轮转，[v0.4.1 path-safety patch train](phase-4.13-v0.4.1-path-safety-patch-train.md#phase-4-13-historical-position)
 保存兼容性安全修复如何复用同一Release生命周期。这里仅保留两者共同导出的治理结论，不复制逐gate状态、资产表或验收全文。
 
+<a name="phase-4-14-core-decisions"></a>
 <a name="phase-4-13-core-decisions"></a>
 
 ## Core decisions
@@ -56,6 +60,7 @@ publication、公开包Fresh/Resume、Latest角色轮转和第二轮退役逐项
 6. **Cloud与控制面分开。** Release四步继续保留：第1、3步是两次独立Cloud；第2、4步是维护者的Pre-release publication
    与Latest promotion/postflight，不是另外两轮黑盒。
 
+<a name="phase-4-14-c0-c1-c2"></a>
 <a name="phase-4-13-c0-c1-c2"></a>
 
 ## C0 / C1 / C2 身份与证据流
@@ -83,6 +88,7 @@ C2：最终治理commit（PUBLISHED_RELEASE_CLOSEOUT_HEAD）
 最终治理闭合。两笔状态commit不是新的Cloud通道，也不能因为位于分支新HEAD就取代C0的tag身份。commit不能在自己的内容中
 自引用最终hash，因此由Git历史和本地handoff返回exact HEAD，后继阶段再把已知HEAD作为治理输入。
 
+<a name="phase-4-14-completed-delivery"></a>
 <a name="phase-4-13-completed-delivery"></a>
 
 ## Completed delivery
@@ -101,6 +107,7 @@ governance guide与DESIGN，并增加repository/architecture治理断言：
 这次治理也把“多gate版本”纠正为“多Discovery版本”：一个正式Discovery Round对应一轮新增风险的Product验收；Round内
 A/B/C施工子门槛和纯aggregate/retirement closeout不机械重跑整套黑盒。真正发布仍固定保留两个Release通道。
 
+<a name="phase-4-14-acceptance-conclusion"></a>
 <a name="phase-4-13-acceptance-conclusion"></a>
 
 ## Acceptance conclusion
@@ -112,6 +119,7 @@ Phase编号。
 该结论只证明文档authority、索引、Release exclusion和治理契约闭合。它没有执行新的Source/Candidate、Published Release、
 tag、Pre-release、Latest、rollback或对象删除，也不能替代任何具体版本的真实Cloud证据。
 
+<a name="phase-4-14-explicit-non-goals"></a>
 <a name="phase-4-13-explicit-non-goals"></a>
 
 ## Explicit non-goals
@@ -123,6 +131,7 @@ tag、Pre-release、Latest、rollback或对象删除，也不能替代任何具�
 - 不把history摘要变成当前ROADMAP、operator guide、provenance或Release资产账本。
 - 不因流程简化自动授权Cloud、push、tag、Release、Latest或后继Product Phase。
 
+<a name="phase-4-14-successor-inheritance"></a>
 <a name="phase-4-13-successor-inheritance"></a>
 
 ## Successor inheritance
@@ -135,6 +144,7 @@ Discovery/Release hardening gate；不能为了沿用旧编号重新制造Phase 
 Published Release → Latest/postflight → exit retirement checkpoint → final Post-run → freeze。历史runbook、acceptance和Phase 9
 实例继续作为cold evidence保留，不用当前模板批量重写。
 
+<a name="phase-4-14-immutable-evidence"></a>
 <a name="phase-4-13-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)
