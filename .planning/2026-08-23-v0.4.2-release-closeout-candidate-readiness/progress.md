@@ -16,3 +16,7 @@
 - importer/compile/Node/Bash syntax、manifest hash、bootstrap delta与git静态检查PASS。
 - v0.4.2候选双构建/check一致：22 entries、85,912 bytes、SHA-256 `4a059fa512a2c144cef42478d217935825ee7aca0599dca5582c62dd12df415c`；尚未seal、push或运行Cloud。
 - 本地C0内容与Source/Candidate教程已准备完毕；exact commit hash由commit后的维护者handoff返回，避免文件自引用。
+- 按维护者复核统一planning退役语义：治理指南新增稳定`planning-lifecycle` anchor；v0.4.2 guide把C2表述收窄为提醒维护者单独评审，所有相关scope当前保持`KEEP`，未经明确决定不删除。
+- focused `node --test`再次被Windows sandbox以`spawn EPERM`阻断；错误与本计划已记录的runner限制相同，改用两个test文件直接执行，不重复失败路径。
+- 在允许Node/git只读子进程的执行面重跑focused治理测试：22 tests / 22 pass / 0 fail；稳定anchor、跨文档fragment、planning lifecycle与Release治理边界均通过。
+- 首次本地commit被workspace沙箱阻止创建`.git/index.lock`；文件内容未丢失，改在获准的Git写入执行面重试同一精确暂存集合。

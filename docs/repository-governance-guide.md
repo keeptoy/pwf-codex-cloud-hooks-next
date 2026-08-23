@@ -126,6 +126,8 @@ iterations/<version>/tests
 - 有 owner、预算和退出条件；
 - 合并前把有效结论提升到 canonical path，并删除实验副本。
 
+<a name="planning-lifecycle"></a>
+
 ## 8. Planning 生命周期
 
 `.planning/.active_plan` 只选择当前唯一活动 scope，不负责自动删除其他目录。current tree 可以按维护者
