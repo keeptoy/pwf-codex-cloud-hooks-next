@@ -131,31 +131,6 @@ test("F3A Git-backed activation and disarm commits change only the commit point"
   } finally { fs.rmSync(layout.root, { recursive: true, force: true }); }
 });
 
-test("F3 runbook freezes the no-live boundary and exact lifecycle checks", () => {
-  const runbook = fs.readFileSync(path.join(root, "docs", "v0.4.0-dev-f3-cloud-lifecycle-runbook.md"), "utf8");
-  for (const anchor of [
-    "f3-safety-boundary", "f3-prepare-state", "f3-activation-only-commit", "f3-production-read-only-probe",
-    "f3-disarm-commit", "f3-live-matrix", "f3-evidence-schema",
-  ]) assert.match(runbook, new RegExp(`<a name="${anchor}"></a>`));
-  assert.match(runbook, /F3B1 不授权真实 prepare、activate、disarm 或 Cloud lifecycle/);
-  assert.match(runbook, /activation commit 必须直接以 preparation commit 为 parent/);
-  assert.match(runbook, /diff-tree --no-commit-id --name-status --no-renames -r/);
-  assert.match(runbook, /A\t\.planning\/\$PLAN_ID\/\.pwf-codex-managed/);
-  assert.match(runbook, /D\t\.planning\/\$PLAN_ID\/\.pwf-codex-managed/);
-  assert.match(runbook, /F3_READ_ONLY_PROBE=PASS/);
-  assert.match(runbook, /F3_PREPARATION_PRODUCTION_PROBE=PASS/);
-  assert.match(runbook, /不复制第二套 ledger JSON parser/);
-  assert.match(runbook, /INCOMPLETE\/UNKNOWN/);
-  assert.match(runbook, /runtime-only rollback/);
-  assert.doesNotMatch(runbook, /(?:export\s+)?(?:SECRET|TOKEN|PASSWORD)=/i);
-  const bashBlocks = [...runbook.matchAll(/```bash\n([\s\S]*?)```/g)].map(match => match[1]);
-  assert.ok(bashBlocks.length >= 8, "F3 runbook must retain independently reviewable shell stages");
-  for (const [index, source] of bashBlocks.entries()) {
-    const syntax = spawnSync("bash", ["-n"], { input: source, encoding: "utf8" });
-    assert.equal(syntax.status, 0, `F3 runbook bash block ${index + 1}: ${syntax.stderr}`);
-  }
-});
-
 test("Phase 4.6 records F3A implementation drift and object retirement without promoting live evidence", () => {
   const history = fs.readFileSync(path.join(root, "docs", "history", "phase-4.6-f3-cloud-lifecycle-discovery.md"), "utf8");
   assert.match(history, /<a name="phase-4-6-post-implementation-design-reconciliation"><\/a>/);
@@ -172,8 +147,6 @@ test("Phase 4.6 records F3A implementation drift and object retirement without p
 test("Phase 4.7 freezes a two-identity staged F3B protocol and records F3B2 Cloud closure", () => {
   const history = fs.readFileSync(
     path.join(root, "docs", "history", "phase-4.7-f3b-live-preflight-discovery.md"), "utf8");
-  const operatorGuide = fs.readFileSync(
-    path.join(root, "docs", "v0.4.0-dev-f3b2-smart-live-operator-guide.md"), "utf8");
   for (const anchor of [
     "phase-4-7-new-evidence", "phase-4-7-frozen-invariants", "phase-4-7-validation-topology",
     "phase-4-7-gate-plan", "phase-4-7-evidence-and-stop-rules", "phase-4-7-lifecycle-ledger",
@@ -198,15 +171,10 @@ test("Phase 4.7 freezes a two-identity staged F3B protocol and records F3B2 Clou
     /F3B2_SMART_LIVE_PASS \/ REVERSIBLE_OPT_IN_CONFIRMED \/ STOP_AND_REVIEW \/ STOP_BEFORE_F3B3/);
   assert.match(history, /FROZEN ACCEPTED EVIDENCE/);
   assert.match(history, /F3B3 autonomous\/tamper objects[^\n]*ABSENT \/ NOT AUTHORIZED/);
-  for (const text of [history, operatorGuide]) {
-    assert.match(text, /workspace(?:_| )stage/i);
-    assert.match(text, /repository(?:_| )state/i);
-    assert.match(text, /effective(?:_| )profile/i);
-    assert.match(text, /S_DISARM[\s\S]*smart_prepared[\s\S]*legacy/);
-  }
-  assert.match(operatorGuide, /EXPECTED_EFFECTIVE_PROFILE/);
-  assert.match(operatorGuide, /actual 等于 expected/);
-  assert.match(operatorGuide, /production probe JSON/);
+  assert.match(history, /workspace(?:_| )stage/i);
+  assert.match(history, /repository(?:_| )state/i);
+  assert.match(history, /effective(?:_| )profile/i);
+  assert.match(history, /S_DISARM[\s\S]*smart_prepared[\s\S]*legacy/);
   assert.match(history, /F3B1[\s\S]*无 live 模拟考/);
   assert.match(history, /F3B2[\s\S]*smart 第一次正式实考/);
   assert.match(history, /F3B3[\s\S]*autonomous 到底能不能在真实 Cloud 跑通/);
@@ -238,7 +206,8 @@ test("Phase 4.8 preserves Discovery history and records autonomous local plus Cl
   assert.match(history,
     /F3B3_LOCAL_CHAIN_READY \/ CLOUD_LIVE_NOT_AUTHORIZED \/ LIVE_PASS_ABSENT \/ STOP_BEFORE_F3B4/);
   assert.match(history, /Discovery 上方的 `ABSENT` 表保留当时历史语义/);
-  assert.match(history, /v0\.4\.0-dev-f3b3-autonomous-live-operator-guide\.md#f3b3-operator-positioning/);
+  assert.match(history, /current root copy按retirement DoD清退/);
+  assert.match(history, /Cold evidence[^\n]*immutable snapshot恢复/);
   assert.match(history,
     /F3B3_AUTONOMOUS_LIVE_PASS \/ TAMPER_REFUSAL_AND_REATTEST_CONFIRMED \/ STOP_AND_REVIEW \/ STOP_BEFORE_F3B4/);
   assert.match(history, /tamper environment[\s\S]*DESTROYED/);

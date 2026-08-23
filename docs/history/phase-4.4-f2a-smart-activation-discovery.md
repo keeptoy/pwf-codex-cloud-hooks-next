@@ -191,7 +191,7 @@ branch、commit、push、PR：只有 C 可创建带日期与随机 run ID 的 ca
 
 这些修正只治理验收 harness 的权限、重复运行和证据身份，没有改变本里程碑冻结的独立 commit point、legacy
 zero-read、fail-closed admission、schema-v2 reuse 或生命周期表。精确执行结果继续只由
-[`v0.4.0-dev` acceptance](../v0.4.0-dev-cloud-hard-acceptance.md#v0-4-0-dev-f2a-source-candidate-evidence) 管理；本尾注只解释
+[immutable `v0.4.0` acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/6b388518855da9053713a58e5c918c8b727b6dc6/docs/v0.4.0-cloud-hard-acceptance.md#v0-4-0-dev-f2a-source-candidate-evidence)管理；本尾注只解释
 “为什么后来微调验收代码”，不复制动态测试数、source 或 ZIP hash。
 
 <a name="phase-4-4-immutable-evidence"></a>

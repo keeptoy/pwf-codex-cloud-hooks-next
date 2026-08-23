@@ -201,7 +201,7 @@ autonomous attestation/nonce/ledger 与 F3 Cloud/rollback 仍分别属于后续 
 完成 F0、F1A 与 F1B；exact source `fb61ca74517de399e80835a38ef4b2444d9e6468` 又通过 Linux/no-live
 Source/Candidate Cloud：133/133 tests、0 fail、0 skip，22-entry deterministic ZIP、override install、B～E、
 post-Resume doctor/inventory/policy/residue 全部闭合。精确可变验收状态只见当前
-[`v0.4.0-dev` acceptance](../v0.4.0-dev-cloud-hard-acceptance.md#v0-4-0-dev-source-candidate-evidence)，programme
+[immutable `v0.4.0` acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/6b388518855da9053713a58e5c918c8b727b6dc6/docs/v0.4.0-cloud-hard-acceptance.md#v0-4-0-dev-source-candidate-evidence)，programme
 状态只见 [`ROADMAP`](../../ROADMAP.md)。
 
 实施结果与施工图一致：

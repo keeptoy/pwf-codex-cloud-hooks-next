@@ -144,6 +144,19 @@ Discovery/Release hardening gate；不能为了沿用旧编号重新制造Phase 
 Published Release → Latest/postflight → exit retirement checkpoint → final Post-run → freeze。历史runbook、acceptance和Phase 9
 实例继续作为cold evidence保留，不用当前模板批量重写。
 
+<a name="phase-4-14-post-implementation-status-stage-guide-retirement"></a>
+
+## Post-implementation status — v0.4.0 stage-guide retirement
+
+本轮治理随后暴露了一个实际生命周期偏差：早前清退`v0.4.0`版本级black-box acceptance的current root copy时，关联的F3
+runbook、smart/autonomous与rollback阶段guide没有在同一retirement transaction中退出；current tests还继续把这些历史教程
+当作必须存在的回归资产。结果是版本验收已经由immutable evidence接管，但阶段教程仍滞留current tree，退役只完成了一半。
+
+后续closeout已把边界补齐：4份阶段guide从tracked tree清退，旧全文继续由immutable Git恢复；current suite只保留Git-backed
+lifecycle、evidence schema、rollback/revival negative与runtime行为oracle；本机`临时文件/`副本仅供维护者参考并被Git忽略，
+不进入repository inventory、Release、Phase history或current authority。这个实例也是本轮为何把对象生命周期账、两次drift
+review和Release内嵌retirement checkpoint写成明确规则的直接背景。
+
 <a name="phase-4-14-immutable-evidence"></a>
 <a name="phase-4-13-immutable-evidence"></a>
 

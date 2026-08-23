@@ -93,10 +93,11 @@ test("Phase 4.12 preserves the renamed v0.4.0 Release discovery and P9 evidence"
   assert.match(roadmap, /当前直接回退版本[^\n]*immutable `v0\.4\.0` immediate fallback/);
 });
 
-test("P9-F closes v0.4.1 without deleting durable fallback and regression assets", () => {
+test("P9-F evidence stays immutable while retired stage guides leave the current tree", () => {
   const acceptance = read("docs/v0.4.1-cloud-hard-acceptance.md");
   const taskPlan = read(".planning/2026-08-22-v0.4.1-phase-9-release-discovery/task_plan.md");
   const provenance = read("BASELINE_PROVENANCE.md");
+  const actual = repositoryPaths();
 
   assert.match(acceptance, /^<a name="v0-4-1-p9-f-second-retirement-closeout"><\/a>$/m);
   assert.match(acceptance,
@@ -110,12 +111,20 @@ test("P9-F closes v0.4.1 without deleting durable fallback and regression assets
   assert.match(acceptance, /11个validation refs[^\n]*KEEP/);
   for (const retained of [
     "contracts/installed-state-transition-v1.json",
-    "docs/v0.4.0-dev-f3b2-smart-live-operator-guide.md",
-    "docs/v0.4.0-dev-f3b3-autonomous-live-operator-guide.md",
-    "docs/v0.4.0-dev-f3c-rollback-operator-guide.md",
     "tests/f3-lifecycle-helpers.js",
     "tests/owned-plan-runtime.test.js",
   ]) assert.equal(fs.existsSync(path.join(root, retained)), true, retained);
+  for (const retired of [
+    "docs/v0.4.0-dev-f3-cloud-lifecycle-runbook.md",
+    "docs/v0.4.0-dev-f3b2-smart-live-operator-guide.md",
+    "docs/v0.4.0-dev-f3b3-autonomous-live-operator-guide.md",
+    "docs/v0.4.0-dev-f3c-rollback-operator-guide.md",
+  ]) {
+    assert.equal(actual.includes(retired), false, retired);
+    assert.equal(fs.existsSync(path.join(root, retired)), false, retired);
+  }
+  assert.match(read(".gitignore"), /^\/临时文件\/$/m);
+  assert.equal(actual.some(relative => relative.startsWith("临时文件/")), false);
 });
 
 test("trusted source zones are exact while repository governance paths remain lifecycle-managed", () => {
@@ -134,7 +143,6 @@ test("trusted source zones are exact while repository governance paths remain li
     "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
     "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "docs/cloud-hard-acceptance-template.md",
     "docs/cloud-acceptance-operator-guide-template.md",
-    "docs/v0.4.0-dev-f3-cloud-lifecycle-runbook.md",
     "docs/repository-governance-guide.md",
   ]) {
     assert.equal(actual.includes(required), true, required);
@@ -343,6 +351,12 @@ test("historical documents have two controlled macro entrances and remain adviso
   assert.match(historyTemplate, /Post-discovery status/);
   assert.match(historyTemplate, /不得预填[^\n]*PASS|不预填[^\n]*PASS/);
   assert.match(historyTemplate, /本地[^\n]*不得[^\n]*替代[^\n]*(Cloud|live)/i);
+  const phaseHistory = repositoryPaths()
+    .filter(relative => /^docs\/history\/[^/]+\.md$/.test(relative))
+    .map(read)
+    .join("\n");
+  assert.doesNotMatch(phaseHistory, /\]\(\.\.\/v0\.4\.0-dev-cloud-hard-acceptance\.md/,
+    "Phase history must use immutable evidence after a version acceptance root copy retires");
 });
 
 test("Phase 4.13 preserves the v0.4.1 path-safety patch rationale", () => {
@@ -390,6 +404,7 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
     "phase-4-14-historical-p9-calibration", "phase-4-14-core-decisions", "phase-4-14-c0-c1-c2",
     "phase-4-14-completed-delivery", "phase-4-14-acceptance-conclusion",
     "phase-4-14-explicit-non-goals", "phase-4-14-successor-inheritance",
+    "phase-4-14-post-implementation-status-stage-guide-retirement",
     "phase-4-14-immutable-evidence",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(history, /^<a name="phase-4-13-historical-position"><\/a>$/m);
@@ -411,6 +426,10 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
   assert.match(history, /C0[\s\S]*Source\/Candidate Cloud PASS[\s\S]*正式验收tag[^\n]*C0/);
   assert.match(history, /C1[\s\S]*第一阶段PASS[\s\S]*Published Release Cloud/);
   assert.match(history, /C2[\s\S]*Published Release evidence[\s\S]*Latest promotion\/postflight[\s\S]*第二轮退役检查/);
+  assert.match(history, /版本级black-box acceptance[\s\S]{0,240}阶段guide没有[\s\S]{0,120}同一retirement transaction/);
+  assert.match(history, /current tests[\s\S]{0,120}历史教程[\s\S]{0,80}必须存在的回归资产/);
+  assert.match(history, /4份阶段guide[\s\S]{0,100}tracked tree清退/);
+  assert.match(history, /`临时文件\/`[\s\S]{0,100}Git忽略/);
   assert.match(historyIndex,
     /phase-4\.14-release-closeout-governance\.md#phase-4-14-historical-position/);
   assert.match(historyIndex, /Phase 4\.12[^\n]*原P9-A～P9-F[^\n]*历史语义/);

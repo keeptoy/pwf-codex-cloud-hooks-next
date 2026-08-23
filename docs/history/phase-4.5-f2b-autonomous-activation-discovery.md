@@ -232,4 +232,4 @@ candidate、安装/doctor、B～E markerless legacy 黑盒与 manifest-routed v2
 `F3-UNPROVEN`；没有任何 token、nonce、attestation 或 ledger 因这次验收被真实创建或激活。
 
 本尾注不复制动态 source、计数或 ZIP hash；精确证据只见
-[`v0.4.0-dev` F2B acceptance](../v0.4.0-dev-cloud-hard-acceptance.md#v0-4-0-dev-f2b-source-candidate-evidence)。
+[immutable `v0.4.0` F2B acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/6b388518855da9053713a58e5c918c8b727b6dc6/docs/v0.4.0-cloud-hard-acceptance.md#v0-4-0-dev-f2b-source-candidate-evidence)。

@@ -222,8 +222,9 @@ production、contract、Host ABI、trusted graph、README 或 Release bytes。�
 - activation/disarm/re-arm 仍分别是单一文件的 add/delete/add commit，tamper 仍没有 commit/ref；
 - candidate 继续是同一 22-entry、85,533-byte、SHA-256
   `df60010402d1faf937d82a66007bd6a7d78f557b8da41a14ab283922c9a4494c`；
-- [F3B3 autonomous operator guide](../v0.4.0-dev-f3b3-autonomous-live-operator-guide.md#f3b3-operator-positioning)
-  已把六轮 Cloud 顺序、两个 mandatory Resume、tamper-only verifier 和六份 evidence record 冻结为一条自包含路径。
+- 当时的F3B3 autonomous operator guide已把六轮Cloud顺序、两个mandatory Resume、tamper-only verifier和六份
+  evidence record冻结为一条自包含路径；版本列车退出角色窗口后，current root copy按retirement DoD清退，完整字节由
+  本文末尾Cold evidence的immutable snapshot恢复。
 
 这次施工对生命周期账本的影响如下；Discovery 上方的 `ABSENT` 表保留当时历史语义，不回写成“当时已存在”：
 
@@ -266,7 +267,8 @@ disposable environment 已销毁，没有 re-attest、repair、commit/ref 或正
 
 六份 `prepared/armed/tampered/disarmed/reprepared/rearmed` JSON 均使用同一 frozen runtime source/candidate，并通过
 repository-only exact-key validator；所有 setup/verifier/validator 都取得明确最终 exit code 0。完整 exact HEAD、SHA、nonce、
-字段关系与操作协议见 [operator guide post-run status](../v0.4.0-dev-f3b3-autonomous-live-operator-guide.md#f3b3-post-run-status)。
+字段关系、操作协议与post-run结果已经由本摘要的状态表和结论自包含；旧operator guide全文从末尾Cold evidence恢复，
+不再要求current root copy。
 
 生命周期账本因此更新为：
 

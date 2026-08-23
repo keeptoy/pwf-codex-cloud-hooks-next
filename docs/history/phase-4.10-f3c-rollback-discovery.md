@@ -310,10 +310,10 @@ predecessor，再由 exact current candidate完成受支持的 forward recovery�
 probe、doctor、backup、zero residue和两份 rollback evidence均已闭合；accepted 与 recovered current runtime都只产生 legacy
 context，smart activation没有复活。
 
-完整身份与逐项证据只见
-[`v0.4.0-dev` acceptance](../v0.4.0-dev-cloud-hard-acceptance.md#v0-4-0-dev-f3c2-smart-live-evidence)和
-[`operator guide` post-run](../v0.4.0-dev-f3c-rollback-operator-guide.md#f3c2-smart-post-run-status)。本历史尾注只记录后继
-结果，不改写上方 Discovery/F3C1 当时尚未执行 live rollback的时间语义。
+完整身份与逐项证据见
+[immutable `v0.4.0` acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/6b388518855da9053713a58e5c918c8b727b6dc6/docs/v0.4.0-cloud-hard-acceptance.md#v0-4-0-dev-f3c2-smart-live-evidence)；
+旧operator guide全文由本文末尾Cold evidence恢复，不再要求current root copy。本历史尾注只记录后继结果，不改写上方
+Discovery/F3C1当时尚未执行live rollback的时间语义。
 
 `F3C2_SMART_LIVE_PASS / SMART_ROLLBACK_AND_EXACT_RECOVERY_CONFIRMED / STOP_BEFORE_F3C3`
 
@@ -328,10 +328,10 @@ context，smart activation没有复活。
 context；nonce delimiter、`Plan-SHA256` 和 ledger summary没有进入 Fresh/real Resume，autonomous没有复活。两份 evidence、
 production probe、doctor、backup、zero residue与最终 exit code均已验证。
 
-完整身份与逐项证据只见
-[`v0.4.0-dev` acceptance](../v0.4.0-dev-cloud-hard-acceptance.md#v0-4-0-dev-f3c3-autonomous-live-evidence)和
-[`operator guide` post-run](../v0.4.0-dev-f3c-rollback-operator-guide.md#f3c3-autonomous-post-run-status)。本尾注不把四份 disposable
-JSON复制进仓库，也不把 F3C2/F3C3单项 PASS提前汇总成 F3C aggregate PASS。
+完整身份与逐项证据见
+[immutable `v0.4.0` acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/6b388518855da9053713a58e5c918c8b727b6dc6/docs/v0.4.0-cloud-hard-acceptance.md#v0-4-0-dev-f3c3-autonomous-live-evidence)；
+旧operator guide全文由本文末尾Cold evidence恢复，不再要求current root copy。本尾注不把四份disposable JSON复制进仓库，
+也不把F3C2/F3C3单项PASS提前汇总成F3C aggregate PASS。
 
 `F3C3_AUTONOMOUS_LIVE_PASS / AUTONOMOUS_ROLLBACK_AND_EXACT_RECOVERY_CONFIRMED / STOP_BEFORE_F3C4`
 
