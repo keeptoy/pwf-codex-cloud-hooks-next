@@ -110,6 +110,15 @@ test("acceptance documents are counted by Discovery Round and share one operator
     /SOURCE_CANDIDATE_PASS \/ PUBLISHED_RELEASE_NOT_RUN \/ STOP_BEFORE_PUBLICATION/);
   assert.match(operatorTemplate, /正常等待[^\n]*不是`POST_RUN_INCOMPLETE`/);
   assert.match(operatorTemplate, /channel checkpoint[\s\S]*不会?冻结[\s\S]*Final Post-run[\s\S]*冻结/);
+  assert.match(operatorTemplate,
+    /^<a name="operator-guide-release-entry-retirement-checkpoint"><\/a>$/m);
+  assert.match(operatorTemplate,
+    /^<a name="operator-guide-release-exit-retirement-checkpoint"><\/a>$/m);
+  assert.match(operatorTemplate, /SOURCE_CANDIDATE_HEAD[\s\S]*正式tag[\s\S]*实际Cloud PASS/);
+  assert.match(operatorTemplate, /第一阶段状态写回commit[^\n]*不替代[^\n]*tag/);
+  assert.match(operatorTemplate, /两次状态写回[^\n]*不是[^\n]*Cloud/);
+  assert.match(operatorTemplate, /SOURCE_CANDIDATE_CHECKPOINT_HEAD/);
+  assert.match(operatorTemplate, /PUBLISHED_RELEASE_CLOSEOUT_HEAD/);
 
   for (const value of [cloudTemplate, governance]) {
     assert.match(value, /多 Discovery 版本/);
@@ -126,6 +135,12 @@ test("acceptance documents are counted by Discovery Round and share one operator
   assert.match(roadmap, /retirement review[^\n]*不是Cloud acceptance/);
   assert.match(roadmap, /第1、3步[^\n]*Cloud[^\n]*第2、4步[^\n]*控制面/);
   assert.match(roadmap, /candidate baseline closeout/);
+  assert.match(roadmap, /普通Release[^\n]*不需要[^\n]*standing Phase 9/);
+  assert.match(roadmap, /candidate-readiness retirement checkpoint/);
+  assert.match(roadmap, /role-window closeout retirement checkpoint/);
+  assert.match(roadmap, /正式tag[^\n]*Source\/Candidate[^\n]*实际Cloud PASS[^\n]*commit/);
+  assert.doesNotMatch(roadmap,
+    /随后该版本列车进入自己的 standing Phase 9|每条未来列车都要重新进入的 standing gate/);
   assert.equal(artifact.entries.some(entry => entry.path === "docs/cloud-acceptance-operator-guide-template.md"), false);
 });
 
@@ -307,7 +322,7 @@ test("ROADMAP keeps stable Discovery and Release governance anchors", () => {
   assert.match(roadmap, /^<a name="pre-1-compatibility-admission"><\/a>$/m);
   assert.match(roadmap, /每条发布列车都必须经过两轮 retirement review/);
   assert.match(roadmap, /第一轮：Phase\/candidate closeout/);
-  assert.match(roadmap, /第二轮：Phase 9 role rotation/);
+  assert.match(roadmap, /第二轮：role-window closeout/);
   assert.match(roadmap, /review.*不是为了清单好看而强制删除/);
   assert.match(roadmap, /多个低风险 Phase合并到同一版本列车[\s\S]*每个 Phase仍分别做第一轮审查[\s\S]*只在最终发布时做一次[\s\S]*第二轮审查/);
   assert.match(currentTrain, new RegExp(`^### 4\\.1 当前 \`${escapedCandidate}\``, "m"));

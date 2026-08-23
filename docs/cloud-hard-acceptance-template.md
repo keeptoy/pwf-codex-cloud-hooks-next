@@ -38,7 +38,7 @@ Operator guide的结构与状态语义只见上述结构模板。本文件继续
 
 ### 0.2 Discovery Round 与文档路由
 
-- Discovery Round是新增risk/behavior claim和验收教程的计数单位；gate只是Round内部或standing Release流程里的
+- Discovery Round是新增risk/behavior claim和验收教程的计数单位；gate只是Round内部或Release closeout workflow里的
   授权、停止与晋级检查点，Cloud task/stage则是guide内的执行单元。
 - single-Discovery 版本专项 acceptance是operator guide的简化命名，使用
   `vX.Y.Z-cloud-hard-acceptance.md`并完成同样的Pre-run→可选channel checkpoint→final Post-run→freeze生命周期。
@@ -51,6 +51,8 @@ Operator guide的结构与状态语义只见上述结构模板。本文件继续
   不因同处一份Release guide就合并身份，也不自动增加Product Discovery Round。
 - Product验收按正式Discovery Round计数；Release验收固定保留Source/Candidate与Published Release两个通道；
   retirement review只做对象治理。三个维度名称相似但不能互相推导。
+- 普通Release不要求standing Phase 9。candidate-readiness retirement checkpoint是Source/Candidate的进入条件；
+  role-window closeout retirement checkpoint是Latest/postflight后的Release退出条件。两者不创建Cloud task或验收轮次。
 
 development identity 收敛为 stable identity时，尚未冻结的single-Discovery文件可以原子重命名并继续同一生命周期；
 不得让 dev/stable 两份 single-Discovery acceptance 并存。已经完成Post-run并冻结的multi-Discovery guide保留原Round身份，
@@ -152,6 +154,7 @@ tagless checkout 不应伪造 remote/tag；Published Release 也不能使用 wor
 
 ```text
 Source/Candidate fresh environment
+  <- candidate-readiness retirement checkpoint already closed
   -> 4.1 source setup
   -> new task: 5.1 B-SC
   -> 6 C -> 7 D -> 8.1 E1
@@ -166,6 +169,9 @@ Published Release fresh environment
   -> reopen same task: 8.2 E2
   -> 9.2 public ZIP deep check
   -> discard environment
+  -> maintainer Latest promotion + read-only postflight
+  -> role-window closeout retirement checkpoint
+  -> final Post-run and Release closeout
 ```
 
 安装脚本内的 direct adapter probe 或 doctor 只证明静态安装链健康，不能替代 agent/task lifecycle 中自动
@@ -889,6 +895,16 @@ printf 'PWF_PUBLIC_POST_RESUME=PASS\n'
 - 两条通道各自的 doctor JSON、installed inventory、upstream/helper、adapter-only policy 与 residue 输出；
 - publication oracle、失败的首次输出、停止点，以及是否从 Fresh 环境重新开始；
 - GitHub Latest、rollback baseline 或下一 Product Phase 的授权应另行记录，不能由 Cloud 结果自动推导。
+
+Release guide在第一通道前还必须绑定candidate-readiness retirement checkpoint；其中任何`RETIRE/MIGRATE`动作若改变
+Release输入，都必须先重新冻结候选再运行Source/Candidate。第一通道PASS后，正式tag必须精确指向`SOURCE_CANDIDATE_HEAD`，
+也就是该次Source/Candidate Cloud实际checkout并PASS的完整commit；后继状态commit不得取代它。
+
+第一阶段状态写回commit保存Source/Candidate channel checkpoint并保持guide开放；第二阶段状态写回commit只在
+Published Release、Latest/postflight和role-window closeout retirement checkpoint全部闭合后追加final Post-run并同步
+programme角色。两次状态写回是仓库证据闭合，不是额外Cloud通道；稳定Cloud执行仍只有两个独立环境中的两条通道。
+两笔commit在Git历史中的版本无关角色名分别是`SOURCE_CANDIDATE_CHECKPOINT_HEAD`与
+`PUBLISHED_RELEASE_CLOSEOUT_HEAD`；它们都不是version tag target，也不要求在自身内容中自引用自身hash。
 
 若既有Product/Discovery验收精确绑定exact final source，并且从该证据到seal期间所有Release输入保持不变，它可以直接
 承担Source/Candidate通道证据；任一source、package identity、contract、runtime、bootstrap输入或ZIP allowlist变化都必须

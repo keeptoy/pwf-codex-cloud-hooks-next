@@ -121,16 +121,19 @@ immutable v0.3.5继续承担immediate fallback。11个validation refs中九个�
 
 ### 4.3 每条版本列车的两轮退役审查
 
-默认情况下，一个 Product Phase完成一项目标并形成对应版本的功能/候选基线；随后该版本列车进入自己的 standing Phase 9，
-封板、发布、公开验收并轮转 accepted/fallback角色；再切换下一条 development列车进入后继 Phase。例如：
+默认情况下，一个 Product Phase完成一项目标并形成对应版本的功能/候选基线；ROADMAP批准该版本为Release candidate、
+活动task plan授权具体Release gate后，列车直接进入版本无关的Release closeout workflow，封板、发布、公开验收并轮转
+accepted/fallback角色。普通Release不需要另建standing Phase 9，也不从历史P9-A～F复制六轮施工。例如：
 
 ```text
 Phase 4 / F3C4完成
   → 形成0.4.0功能/候选基线
-  → 第一轮对象退役审查
-  → 当前0.4.0列车的Phase 9
-  → 发布并晋级0.4.0 accepted baseline
-  → 第二轮版本窗口退役审查
+  → candidate-readiness retirement checkpoint（第一轮对象退役审查）
+  → Source/Candidate Cloud
+  → immutable tag / Pre-release publication
+  → Published Release Cloud
+  → Latest promotion / postflight
+  → role-window closeout retirement checkpoint（第二轮版本窗口退役审查）
   → 后继版本列车与Product Phase另行决策
 ```
 
@@ -140,10 +143,12 @@ Operator Guide或黑盒轮次。“review”是逐项做`RETIRE/MIGRATE/KEEP`决
 | Review | 触发点 | 主要对象 | 退出要求 |
 |---|---|---|---|
 | 第一轮：Phase/candidate closeout | Product Phase的最终aggregate/closeout gate；不进入独立Product Phase的小型patch/governance列车则落在candidate baseline closeout | 施工 planning、临时 fixture/脚本、重复摘要、过渡 seam、validation refs与当期 lifecycle账 | 清掉已满足 DoD的脚手架；仍承担恢复、Release或回归职责的对象明确 KEEP/MIGRATE与下一 review条件 |
-| 第二轮：Phase 9 role rotation | 同一列车的 public assets验收并晋级 accepted之后 | candidate/accepted窗口专用 refs、oracles、compatibility transition、canary和版本化运维材料 | 新 accepted与 immediate fallback可恢复；退出角色窗口的对象按 retirement DoD清退或迁移；稳定 contracts/tests/history不得机械删除 |
+| 第二轮：role-window closeout | 同一列车的 public assets验收、Latest晋级与只读postflight之后 | candidate/accepted窗口专用 refs、oracles、compatibility transition、canary和版本化运维材料 | 新 accepted与 immediate fallback可恢复；退出角色窗口的对象按 retirement DoD清退或迁移；稳定 contracts/tests/history不得机械删除 |
 
-因此 Product Phase收官已经是正式生命周期边界，不必把所有清理推迟到 Phase 9；但它只形成候选功能基线，不会自动产生
-immutable public assets或轮转 accepted角色。Phase 9的第二轮审查只处理必须等发布身份和版本角色确定后才能判断的对象。
+因此 Product Phase收官已经是正式生命周期边界，不必把所有清理推迟到Release closeout；但它只形成候选功能基线，
+不会自动产生immutable public assets或轮转 accepted角色。第一轮review作为Source/Candidate的进入条件：若其
+RETIRE/MIGRATE动作改变任一Release输入，必须先重新冻结候选再运行第一Cloud通道。第二轮review作为整个Release
+workflow的退出条件，只处理必须等公开身份、Latest和版本角色确定后才能判断的对象，且不得改写sealed tag或资产。
 不进入独立Product Phase的小型patch/governance列车仍要在candidate baseline closeout完成等价的第一轮对象审查，
 但不因此虚构Product Phase、Discovery Round或Cloud验收。
 若维护者明确批准多个低风险 Phase合并到同一版本列车，每个 Phase仍分别做第一轮审查，而该列车只在最终发布时做一次
@@ -161,11 +166,10 @@ pre-release；多个低风险 Phase也只有在独立评审后才能进入同一
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立 gate；必须有 use case、latency/token budget与 Cloud证据 | pending / optional；允许逐项或整体 `NO_GO`；不是 Phase 7前置 |
 | 7 | `0.7.0-*` | read-only advisory completion evaluator | bounded、non-recursive、无 plan时安静；只 advisory，不阻断、不写 counter/ledger | pending；可独立于 Phase 6进入 Discovery |
 | 8 | `0.8.0-*` | optional hard gating，复用 Phase 7 evaluator | 重新 Discovery writer/counter/atomicity/lock/cache/Resume/rollback；再增加 block cap、escape hatch与 stall state | pending；implementation前必须重新 Discovery |
-| 9 | 当前列车的 `rc.N` → stable | standing Release收口：完整矩阵、最终字节、canary retirement、正式发布 | RC与最终资产分别验收；重新下载双资产；可逆 | standing gate；`v0.3.5`、`v0.4.0`与`v0.4.1` instances complete；下一列车未决定 |
 
-Phase 9是 Release收口，不机械等于 `0.9.0`。例如只完成 Phase 4时，它可以封板 `0.4.0`；如果多个
-Phase经独立 gate后被明确合并，则封板当时获批的同一版本列车。`v0.3.5`的 Phase 9 instance已完成，
-但 Phase 9本身是每条未来列车都要重新进入的 standing gate，不能继承上一版本的 PASS。
+Release closeout不属于Product Phase编号。任何Product Phase或获批的小型patch/governance列车形成RC后，都按第8节
+进入同一版本无关workflow；只有出现新增Release风险、迁移、兼容切换或复杂rollback时，才按第7节增加专项
+Discovery/Release hardening gate。历史Phase 9 instances保留原名和时间语义，但不构成未来列车的强制模板。
 
 ### 5.1 Phase 4 已采纳 gate 路线
 
@@ -420,6 +424,15 @@ Release operator guide管理；single-Discovery版本可以继续使用`vX.Y.Z-c
 回答“现在推荐谁”。Latest promotion 只改 Release metadata 与 lifecycle 指针，不重新上传包；postflight
 必须再次核对新 accepted 和 immediate fallback 的 tag/source/asset identity，并按 retirement DoD 清理退出
 candidate+accepted 窗口的本地版本文件与旧 oracle。
+
+默认Release closeout只增加两个对象治理检查点，不增加Cloud轮次：Source/Candidate前完成
+candidate-readiness retirement checkpoint；Latest/postflight后完成role-window closeout retirement checkpoint。
+第一检查点若改变Release输入，必须在第一通道前重新冻结；第二检查点不得改写sealed tag、ZIP、bootstrap、URL或SHA。
+
+Source/Candidate Cloud PASS后，`SOURCE_CANDIDATE_HEAD`固定为该次Cloud实际checkout并通过的完整commit；
+正式tag必须精确指向Source/Candidate实际Cloud PASS的commit。随后第一阶段状态写回commit只记录channel checkpoint并推进治理分支，
+不替代tag目标。Published Release、Latest/postflight和第二检查点全部闭合后，第二阶段状态写回commit追加final Post-run、
+同步programme角色并关闭Release workflow。两次状态写回不是新的Cloud通道，也不要求P9-A～F式拆分。
 
 若某次Product/Discovery验收已经绑定final exact source，且随后所有Release输入保持不变，其证据可以直接承担第1步，
 不机械重跑Source/Candidate；任何相关输入变化都使复用失效。第3步不能提前复用，因为公开URL、bootstrap与资产身份

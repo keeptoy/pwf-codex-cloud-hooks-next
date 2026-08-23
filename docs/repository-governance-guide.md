@@ -226,7 +226,7 @@ Release notes；不要提前创建大量按版本 archive 文件。
   Cloud脚本或具体Round结果；
 - 活动task plan保存当次授权、执行到哪一步、seal输入、URL/SHA、Next Step、失败记录和恢复位置；这些施工状态
   不进入冻结guide；
-- Discovery Round是新增risk/behavior claim和验收文档的计数单位。Gate仍是Round内部或standing Release流程中的
+- Discovery Round是新增risk/behavior claim和验收文档的计数单位。Gate仍是Round内部或Release closeout workflow中的
   授权/停止检查点，Cloud task/stage仍是执行单元；一个guide可以包含多个gate、task和stage；
 - single-Discovery版本使用`vX.Y.Z-cloud-hard-acceptance.md`，它就是简化命名的operator guide；多 Discovery 版本
   为每个正式Discovery Round建立一份`vX.Y.Z-<round>-operator-guide.md`，不维护一个累积所有Round全文的巨型
@@ -239,6 +239,13 @@ Release notes；不要提前创建大量按版本 archive 文件。
   编排，但不能共享环境、identity或证据，也不计作两个Product Discovery Round；
 - 两轮retirement review只在candidate closeout与accepted role rotation做对象RETIRE/MIGRATE/KEEP判断，不是Cloud
   acceptance；纯review不新建guide、不重复黑盒；
+- 普通Release不要求一个固定编号的standing Release Phase。第一轮review作为candidate-readiness retirement checkpoint，
+  在Source/Candidate前闭合；第二轮review作为role-window closeout retirement checkpoint，在Latest/postflight后闭合；
+- 第一检查点改变任何Release输入时必须重新冻结并运行Source/Candidate；第二检查点不得改写immutable tag、ZIP、
+  bootstrap、URL或SHA。两个检查点是同一Release workflow的进入/退出边界，不增加Cloud通道；
+- Source/Candidate PASS后，正式tag只指向该Cloud实际通过的candidate commit。第一阶段状态写回commit保存channel
+  checkpoint但不替代tag目标；第二阶段状态写回commit保存Published evidence、Latest/postflight、第二检查点与final Post-run；
+- 两次状态写回不是额外Cloud验收。普通Release仍只有Source/Candidate与Published Release两个独立环境/身份通道；
 - development identity收敛为stable identity时，尚未冻结的single-Discovery acceptance可以原子重命名；已冻结的
   multi-Discovery guide保留原Round身份；
 - 已发布或已冻结的acceptance、runbook与operator guide都是带时间语义的冷证据。以后统一新建operator-guide，
@@ -254,6 +261,10 @@ Release notes；不要提前创建大量按版本 archive 文件。
 这里的“一个事务”是指同一次 lifecycle rotation，不要求 promotion 与 eviction 位于同一个 commit、PR
 或实施 gate。高风险项目可以先完成 pointer/rollback promotion，再用独立 gate 做历史清退；但 eviction
 关闭前不得开启下一开发列车，否则临时兼容副本会被下一轮继续继承。
+
+在默认Release closeout workflow中，这个事务由前后两个retirement checkpoint包围：candidate readiness先清理或登记
+施工对象，再进入双通道；公开资产验收、Latest和postflight完成后，role-window closeout再执行角色旋转后的清退。
+这种前后分工保留两次审查所需的不同信息时点，但不要求Phase 9、六轮任务或额外黑盒。
 
 每次 baseline promotion 都应同时完成清退：
 

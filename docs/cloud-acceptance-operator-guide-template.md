@@ -22,9 +22,11 @@ B～E、deep-check 或 hard-stop 协议。
 ```text
 Discovery decision
   -> materialize one operator guide with Pre-run status
+  -> Release only: close candidate-readiness retirement checkpoint
   -> maintainer executes the exact tutorial or first declared channel
   -> if more declared channels remain: append a channel checkpoint and stop
   -> maintainer completes the remaining authorized channels
+  -> Release only: complete Latest/postflight and role-window closeout retirement checkpoint
   -> append exact Final Post-run status to the same file
   -> freeze the guide
   -> retire it to immutable history after its role window closes
@@ -32,7 +34,7 @@ Discovery decision
 
 适用规则：
 
-1. 正式Discovery Round才是新增Product验收文档的计数单位。Gate是Round内部或standing Release流程中的授权、
+1. 正式Discovery Round才是新增Product验收文档的计数单位。Gate是Round内部或Release closeout workflow中的授权、
    停止与晋级检查点，不是验收轮数；每条实际发布列车使用的Release guide也不自动增加Product Discovery Round。
 2. 一个 operator guide 可以编排多个 gate、Cloud task 或 stage；复杂状态DAG不需要按task拆成多份guide。
 3. 纯 aggregate、evidence closure或retirement closeout若只汇总已经冻结的证据，不新建operator guide，
@@ -50,6 +52,9 @@ Discovery decision
 10. 若执行前后product bytes、协议、risk claim、exact source或停止条件发生实质变化，当前guide失效；回到
    Discovery判断是新Round还是同Round的新候选，不能直接改写预期后继续记PASS。
 11. Operator guide、版本acceptance和本模板必须被Release、installed inventory与trusted execution graph排除。
+
+普通Release直接使用上述Release closeout workflow，不要求另建standing Phase 9或把历史P9-A～F复制为六轮任务。
+两个retirement checkpoint是同一流程的进入/退出对象审查，不是额外Cloud通道、Discovery Round或guide。
 
 生成具体guide时复制下面第1～5节，替换所有`<...>`；任何仍未解析的输入都必须fail closed。第6节只在
 多通道guide的前序通道真实PASS后追加，第7节等声明范围取得最终状态后再追加。
@@ -153,6 +158,15 @@ doctor不健康、expected/actual关系不一致、需要修改production/contra
 这里可以记录已完成的本地materialization、failing-first、exact ref/path关系、candidate identity和维护者待执行动作，
 但不得出现尚未实际取得的Cloud PASS、Post-run output或promotion结论。
 
+<a name="operator-guide-release-entry-retirement-checkpoint"></a>
+
+### 5.1 Release entry：candidate-readiness retirement checkpoint
+
+Release guide进入Source/Candidate前必须记录第一轮`RETIRE/MIGRATE/KEEP`结论。Product Phase final closeout已经完成的
+review可以直接引用；不进入独立Product Phase的小型patch/governance列车则在candidate baseline closeout完成等价审查。
+任何审查动作若改变source、package、contract、runtime、bootstrap输入或ZIP allowlist，必须先重新冻结候选，不能沿用
+变更前的Source/Candidate证据。该检查点只建立第一Cloud通道的准入，不创建新的Cloud task或验收轮次。
+
 <a name="operator-guide-channel-checkpoints"></a>
 
 ## 6. Channel checkpoints（多通道 guide）
@@ -167,6 +181,15 @@ SOURCE_CANDIDATE_PASS / PUBLISHED_RELEASE_NOT_RUN / STOP_BEFORE_PUBLICATION
 channel checkpoint必须绑定已完成通道的exact identity、最终exit code、关键原始证据与明确停止点。它不会冻结guide，
 不表示全部声明范围PASS，也不能授权维护者publication、Published Release、Latest或role rotation；下一步授权仍只读活动plan。
 
+Release guide必须把`SOURCE_CANDIDATE_HEAD`写成正式tag的唯一目标，它必须等于Source/Candidate实际Cloud PASS的完整commit。
+第一阶段状态写回commit只记录该channel checkpoint并推进治理分支，不替代经过Cloud验收的tag目标；维护者即使先push
+状态commit，也必须把tag显式固定到`SOURCE_CANDIDATE_HEAD`。该状态写回后，guide保持开放并等待immutable publication
+与第二通道，不把分支新HEAD冒充候选身份。
+
+这笔证据commit在Git历史中的角色名是`SOURCE_CANDIDATE_CHECKPOINT_HEAD`，推荐message为
+`docs: record <version> source candidate acceptance`。commit无法在自己的内容中自引用最终hash；创建后由本地handoff
+返回exact HEAD，并把它作为第二阶段guide/workspace的治理输入，但它始终不是version tag target。
+
 正常等待维护者完成publication或建立后序通道identity不是`POST_RUN_INCOMPLETE`。只有本应取得当前通道最终状态，
 却因session丢失、环境/权限中断或证据无法绑定而不能分类时，才使用最终状态中的INCOMPLETE语义。
 
@@ -179,6 +202,22 @@ Final Post-run status只在guide声明范围全部闭合后追加；Pre-run guid
 - `POST_RUN_PASS`：全部必需task/stage和最终证据闭合；
 - `POST_RUN_FAIL`：取得明确非零/反例，且本轮claim未成立；
 - `POST_RUN_INCOMPLETE`：无最终状态、环境/权限中断或证据无法绑定，禁止猜测PASS/FAIL。
+
+<a name="operator-guide-release-exit-retirement-checkpoint"></a>
+
+### 7.1 Release exit：role-window closeout retirement checkpoint
+
+Release guide只有在Published Release Cloud PASS、维护者完成同一Release的Latest promotion与只读postflight后，才执行
+第二轮`RETIRE/MIGRATE/KEEP`审查。它确认新accepted与immediate fallback可恢复，并治理退出candidate/accepted窗口的
+本地版本材料、oracles与compatibility transition；不得删除、移动、重建或重传sealed tag和资产。
+
+第二阶段状态写回commit负责保存Published evidence、Latest/postflight、第二检查点与final Post-run，并同步ROADMAP中的
+programme角色。两次状态写回只是仓库证据闭合，不是两次额外Cloud验收；真正的Cloud执行仍只有Source/Candidate与
+Published Release两个通道。
+
+这笔最终证据commit在Git历史中的角色名是`PUBLISHED_RELEASE_CLOSEOUT_HEAD`，推荐message为
+`docs: close <version> published release acceptance`。它成为治理分支的Release closeout HEAD，但不改写已经固定到
+`SOURCE_CANDIDATE_HEAD`的tag或任何sealed资产。
 
 追加内容最少包括：执行日期、exact identity、实际task/stage矩阵、关键原始输出摘要、最终exit code、偏差、
 未授权边界和一个可机器搜索的最终marker。不要复制活动planning中的逐次重试流水。

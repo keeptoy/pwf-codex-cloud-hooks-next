@@ -191,6 +191,10 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(operatorGuideTemplate, /^<a name="operator-guide-document-lifecycle"><\/a>$/m);
   assert.match(operatorGuideTemplate, /^<a name="operator-guide-channel-checkpoints"><\/a>$/m);
   assert.match(operatorGuideTemplate, /^<a name="operator-guide-final-post-run-status"><\/a>$/m);
+  assert.match(operatorGuideTemplate,
+    /^<a name="operator-guide-release-entry-retirement-checkpoint"><\/a>$/m);
+  assert.match(operatorGuideTemplate,
+    /^<a name="operator-guide-release-exit-retirement-checkpoint"><\/a>$/m);
   assert.match(acceptanceTemplate, /\| 本模板 \| Source\/Candidate 与 Published Release 的稳定执行协议/);
   assert.match(acceptanceTemplate, /\| 活动 Release task plan \|[^\n]*Next Step/);
   assert.match(acceptanceTemplate, /\| 本轮 operator guide \|[^\n]*channel checkpoint[^\n]*final Post-run/);
@@ -203,6 +207,11 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(operatorGuideTemplate, /SOURCE_CANDIDATE_PASS \/ PUBLISHED_RELEASE_NOT_RUN \/ STOP_BEFORE_PUBLICATION/);
   assert.match(operatorGuideTemplate, /channel checkpoint[^\n]*不会冻结guide/);
   assert.match(operatorGuideTemplate, /正常等待[^\n]*不是`POST_RUN_INCOMPLETE`/);
+  assert.match(operatorGuideTemplate, /SOURCE_CANDIDATE_HEAD[\s\S]*正式tag[\s\S]*实际Cloud PASS/);
+  assert.match(operatorGuideTemplate, /第一阶段状态写回commit[^\n]*不替代[^\n]*tag/);
+  assert.match(operatorGuideTemplate, /第二阶段状态写回commit[^\n]*final Post-run/);
+  assert.match(operatorGuideTemplate, /docs: record <version> source candidate acceptance/);
+  assert.match(operatorGuideTemplate, /docs: close <version> published release acceptance/);
   assert.match(operatorGuideTemplate, /失败重试[\s\S]{0,100}活动 planning/);
   assert.match(acceptanceTemplate, /development identity 收敛为 stable identity/);
   assert.match(acceptanceTemplate, /不得让 dev\/stable\s+两份 single-Discovery acceptance 并存/);
@@ -263,6 +272,12 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.doesNotMatch(acceptanceTemplate, /release-artifact-v1|runtime-bundle-v1|bundle\["files"\]/);
   assert.match(acceptanceTemplate, /^<a name="release-channel-checkpoint-routing"><\/a>$/m);
   assert.match(acceptanceTemplate, /operator guide 的channel checkpoint与final Post-run status应保存以下原始证据/);
+  assert.match(acceptanceTemplate, /candidate-readiness retirement checkpoint/);
+  assert.match(acceptanceTemplate, /role-window closeout retirement checkpoint/);
+  assert.match(acceptanceTemplate, /两次状态写回[^\n]*不是[^\n]*Cloud/);
+  assert.match(acceptanceTemplate, /正式tag[^\n]*SOURCE_CANDIDATE_HEAD/);
+  assert.match(acceptanceTemplate, /SOURCE_CANDIDATE_CHECKPOINT_HEAD/);
+  assert.match(acceptanceTemplate, /PUBLISHED_RELEASE_CLOSEOUT_HEAD/);
   assert.match(acceptanceTemplate, /exact final source[\s\S]{0,220}所有Release输入[^\n]*不变[\s\S]{0,220}Source\/Candidate/);
   assert.match(acceptanceTemplate, /Published Release[^\n]*不能提前复用/);
   assert.doesNotMatch(acceptanceTemplate, new RegExp(versionPattern, "i"));
