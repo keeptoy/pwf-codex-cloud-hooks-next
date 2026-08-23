@@ -211,6 +211,18 @@ Release notes；不要提前创建大量按版本 archive 文件。
 - rollback 所需入口仍可获得；
 - 当前 tests 不再错误依赖已清退的 root copy。
 
+清退acceptance、runbook、operator guide或其他被引用的治理文件时，还必须把链接完整性纳入同一个retirement transaction：
+
+1. **删除前做入链inventory。** 全仓扫描所有指向目标文件或其anchors的current引用，至少覆盖README/ROADMAP、Phase
+   capsules、provenance、CHANGELOG、acceptance/template、planning、tests和其他repository docs；逐项登记owner、历史/当前
+   语义和替代authority，不能只检查准备删除文件所在目录。
+2. **删除与引用迁移原子闭合。** 需要继续承担导航或证据职责的引用，必须迁移到自包含Phase摘要、仍在位的current
+   authority或immutable commit/tag/Release URL及其稳定显式anchor；不得用moving branch、删除引用文字或保留无owner的root
+   copy来掩盖证据缺口。
+3. **删除后做反向复扫。** 再次检查broken relative links、retired filename/path、失效anchor、current test/oracle依赖和重复
+   authority；任何未分类命中都阻断retirement PASS。允许保留的历史文字命中必须明确只是时间语义，不得仍被解析为current
+   link、required path或可执行教程。
+
 历史 oracle 应验证当前仍承担角色的 baseline。更早版本的完整安全证明由其 tag/Release 和周期性外部
 审计承担，不应让每次本地 suite 重跑所有历史实现。
 

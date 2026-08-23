@@ -443,6 +443,12 @@ test("portable repository governance keeps stable retirement anchors", () => {
 
   assert.match(guide, /^<a name="repository-governance-guide"><\/a>$/m);
   assert.match(guide, /^<a name="retirement-definition-of-done"><\/a>$/m);
+  assert.match(guide, /清退acceptance、runbook、operator guide[\s\S]*同一个retirement transaction/);
+  assert.match(guide, /删除前做入链inventory[\s\S]*README\/ROADMAP[\s\S]*Phase[\s\S]*planning[\s\S]*tests/);
+  assert.match(guide, /删除与引用迁移原子闭合[\s\S]*自包含Phase摘要[\s\S]*immutable commit\/tag\/Release URL/);
+  assert.match(guide, /删除后做反向复扫[\s\S]*broken relative links[\s\S]*失效anchor[\s\S]*test\/oracle依赖/);
+  assert.match(guide, /未分类命中[\s\S]{0,40}阻断retirement PASS/);
+  assert.match(guide, /允许保留的历史文字命中必须明确只是时间语义，不得仍被解析为current\s+link、required path或可执行教程/);
 });
 
 test("cold history stays on immutable refs and outside runtime, Release, and adapter dispatch", () => {
