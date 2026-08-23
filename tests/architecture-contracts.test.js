@@ -87,6 +87,7 @@ test("acceptance documents are counted by Discovery Round and share one operator
   const operatorTemplate = readText("docs/cloud-acceptance-operator-guide-template.md");
   const governance = readText("docs/repository-governance-guide.md");
   const design = readText("DESIGN.md");
+  const roadmap = readText("ROADMAP.md");
   const artifact = readJson(currentArtifactPath);
 
   assert.match(operatorTemplate, /^<a name="cloud-acceptance-operator-guide-template"><\/a>$/m);
@@ -97,13 +98,18 @@ test("acceptance documents are counted by Discovery Round and share one operator
     "## 3. 执行教程",
     "## 4. 证据与停止条件",
     "## 5. Pre-run status",
-    "## 6. Post-run status",
+    "## 6. Channel checkpoints（多通道 guide）",
+    "## 7. Final Post-run status",
   ]) assert.match(operatorTemplate, new RegExp(`^${heading.replaceAll(".", "\\.")}$`, "m"));
   assert.match(operatorTemplate, /single-Discovery[\s\S]*vX\.Y\.Z-cloud-hard-acceptance\.md/);
   assert.match(operatorTemplate, /multi-Discovery[\s\S]*vX\.Y\.Z-<round>-operator-guide\.md/);
   assert.match(operatorTemplate, /Pre-run[\s\S]*Post-run[\s\S]*冻结/);
   assert.match(operatorTemplate, /一个 operator guide 可以编排多个 gate、Cloud task 或 stage/);
   assert.match(operatorTemplate, /纯 aggregate[^\n]*不新建/);
+  assert.match(operatorTemplate,
+    /SOURCE_CANDIDATE_PASS \/ PUBLISHED_RELEASE_NOT_RUN \/ STOP_BEFORE_PUBLICATION/);
+  assert.match(operatorTemplate, /正常等待[^\n]*不是`POST_RUN_INCOMPLETE`/);
+  assert.match(operatorTemplate, /channel checkpoint[\s\S]*不会?冻结[\s\S]*Final Post-run[\s\S]*冻结/);
 
   for (const value of [cloudTemplate, governance]) {
     assert.match(value, /多 Discovery 版本/);
@@ -114,7 +120,12 @@ test("acceptance documents are counted by Discovery Round and share one operator
   assert.match(cloudTemplate, /Source\/Candidate 与 Published Release[^\n]*两个独立通道/);
   assert.match(governance, /runbook[^\n]*operator-guide[^\n]*历史文件/);
   assert.match(design, /cloud-acceptance-operator-guide-template\.md/);
-  assert.match(design, /Discovery Round[^\n]*Pre-run[^\n]*Post-run/);
+  assert.match(design, /Discovery Round[^\n]*Pre-run[^\n]*channel checkpoint[^\n]*final Post-run/);
+  assert.match(roadmap, /Product验收[^\n]*Discovery Round/);
+  assert.match(roadmap, /Release验收[^\n]*Source\/Candidate[^\n]*Published Release/);
+  assert.match(roadmap, /retirement review[^\n]*不是Cloud acceptance/);
+  assert.match(roadmap, /第1、3步[^\n]*Cloud[^\n]*第2、4步[^\n]*控制面/);
+  assert.match(roadmap, /candidate baseline closeout/);
   assert.equal(artifact.entries.some(entry => entry.path === "docs/cloud-acceptance-operator-guide-template.md"), false);
 });
 
@@ -295,7 +306,7 @@ test("ROADMAP keeps stable Discovery and Release governance anchors", () => {
   assert.match(roadmap, /^<a name="release-four-step-flow"><\/a>$/m);
   assert.match(roadmap, /^<a name="pre-1-compatibility-admission"><\/a>$/m);
   assert.match(roadmap, /每条发布列车都必须经过两轮 retirement review/);
-  assert.match(roadmap, /第一轮：Phase closeout/);
+  assert.match(roadmap, /第一轮：Phase\/candidate closeout/);
   assert.match(roadmap, /第二轮：Phase 9 role rotation/);
   assert.match(roadmap, /review.*不是为了清单好看而强制删除/);
   assert.match(roadmap, /多个低风险 Phase合并到同一版本列车[\s\S]*每个 Phase仍分别做第一轮审查[\s\S]*只在最终发布时做一次[\s\S]*第二轮审查/);

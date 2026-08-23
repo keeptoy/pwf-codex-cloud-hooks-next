@@ -222,7 +222,7 @@ Release notes；不要提前创建大量按版本 archive 文件。
 - [`Cloud hard acceptance template`](cloud-hard-acceptance-template.md)只维护双通道前置条件、信任输入、
   版本中立黑盒提示词、deep-check结构、停止条件和evidence schema；不保存具体版本、commit、资产identity、
   某次PASS/PENDING、Latest/rollback或programme状态；
-- Operator Guide template只维护一轮教程的固定章节、Pre-run→Post-run→freeze生命周期与命名路由，不复制稳定
+- Operator Guide template只维护一轮教程的固定章节、Pre-run→channel checkpoint→final Post-run→freeze生命周期与命名路由，不复制稳定
   Cloud脚本或具体Round结果；
 - 活动task plan保存当次授权、执行到哪一步、seal输入、URL/SHA、Next Step、失败记录和恢复位置；这些施工状态
   不进入冻结guide；
@@ -232,10 +232,13 @@ Release notes；不要提前创建大量按版本 archive 文件。
   为每个正式Discovery Round建立一份`vX.Y.Z-<round>-operator-guide.md`，不维护一个累积所有Round全文的巨型
   version acceptance；
 - 纯aggregate、evidence closure或retirement closeout只汇总已经冻结的exact records时，不新建guide、不重跑黑盒；
-- 同一guide执行前保存Pre-run status，真实执行后在同文件追加Post-run status和理解结论必需的exact evidence，
-  随后冻结；失败重试、恢复位置和Next Step继续留在活动planning；
+- 同一guide执行前保存Pre-run status；多通道guide的前序通道PASS后可追加channel checkpoint，但它不冻结guide、
+  不冒充最终PASS或授权下一gate；声明范围全部闭合后才追加final Post-run并冻结。失败重试、恢复位置和Next Step
+  继续留在活动planning；
 - Source/Candidate与Published Release是final source和public bytes的两个独立Release通道，可以由同一份Release guide
   编排，但不能共享环境、identity或证据，也不计作两个Product Discovery Round；
+- 两轮retirement review只在candidate closeout与accepted role rotation做对象RETIRE/MIGRATE/KEEP判断，不是Cloud
+  acceptance；纯review不新建guide、不重复黑盒；
 - development identity收敛为stable identity时，尚未冻结的single-Discovery acceptance可以原子重命名；已冻结的
   multi-Discovery guide保留原Round身份；
 - 已发布或已冻结的acceptance、runbook与operator guide都是带时间语义的冷证据。以后统一新建operator-guide，
@@ -244,7 +247,7 @@ Release notes；不要提前创建大量按版本 archive 文件。
   execution graph排除。
 
 这种拆分允许稳定协议跨版本复用，也允许复杂Phase按真实Discovery risk保留多轮证据：活动planning控制施工，
-每个guide只承担一轮教程及其Post-run结果，ROADMAP/Phase capsule只做宏观索引，不再把所有层次拼成一份增长总账。
+每个guide只承担一轮教程及其channel/final结果，ROADMAP/Phase capsule只做宏观索引，不再把所有层次拼成一份增长总账。
 
 ## 12. Promotion 与 eviction 是一个事务
 

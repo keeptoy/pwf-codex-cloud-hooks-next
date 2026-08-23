@@ -35,7 +35,7 @@ DESIGN 只提供实现层导航。函数、schema 字段、hash、allowlist 和�
 | [`tools/build_release.py`](tools/build_release.py) | contract-driven deterministic ZIP build/check |
 | [`tests/`](tests/) | production、安全、供应链、安装和仓库边界回归 |
 | [`docs/cloud-hard-acceptance-template.md`](docs/cloud-hard-acceptance-template.md) | 版本中立的Source/Candidate与Published Release双通道、B～E、deep-check、停止条件和evidence schema；不承担具体Round教程或结果 |
-| [`docs/cloud-acceptance-operator-guide-template.md`](docs/cloud-acceptance-operator-guide-template.md) | 一份Discovery Round教程的固定结构与Pre-run→Post-run→freeze生命周期；single-Discovery acceptance与multi-Discovery operator guide共享该骨架 |
+| [`docs/cloud-acceptance-operator-guide-template.md`](docs/cloud-acceptance-operator-guide-template.md) | 一份Discovery Round/Release教程的固定结构与Pre-run→channel checkpoint→final Post-run→freeze生命周期；single-Discovery acceptance与multi-Discovery operator guide共享该骨架 |
 | [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) | 持续维护的冷证据账本：已发布身份、迁移 refs、上游 archive、overlay 与不可变资产来源链 |
 | [`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) | 新维护者最短接手路径、踩坑摘要与检测结果分流 |
 

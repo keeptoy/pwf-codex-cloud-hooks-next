@@ -8,8 +8,8 @@
 具体的一轮验收教程按
 [`Cloud acceptance Operator Guide template`](cloud-acceptance-operator-guide-template.md)编写。single-Discovery 版本专项
 acceptance就是简化命名的operator guide；多 Discovery 版本让每个正式 Discovery Round拥有一份独立guide，而不是
-把所有Round和Release gate累积进一个巨型version acceptance。只有通道完成后才能在同一guide追加Post-run status、
-exact source、asset identity和实际证据。
+把所有Round和Release gate累积进一个巨型version acceptance。多通道Release guide在前序通道完成后追加channel
+checkpoint但保持开放，全部声明通道闭合后才追加final Post-run status并冻结。
 
 模板本身只在Cloud lifecycle、trusted graph、Host ABI、Release boundary或稳定观测协议变化时修改；普通版本轮换
 不得把运行状态回填到这里，也不得整份复制模板脚本。Source/Candidate 与 Published Release始终是两个独立通道；
@@ -24,14 +24,15 @@ exact source、asset identity和实际证据。
 | 位置 | 唯一职责 | 不得保存 |
 |---|---|---|
 | 本模板 | Source/Candidate 与 Published Release 的稳定执行协议、停止条件和 evidence schema | 具体版本、当前进度、资产 SHA 或某次 PASS |
-| Operator Guide结构模板 | 一轮教程的固定章节、Pre-run→Post-run→freeze生命周期和命名路由 | 稳定Cloud脚本、具体Round identity或运行结果 |
+| Operator Guide结构模板 | 一轮教程的固定章节、Pre-run→channel checkpoint→final Post-run→freeze生命周期和命名路由 | 稳定Cloud脚本、具体Round identity或运行结果 |
 | 活动 Release task plan | 当前授权、执行到哪一步、seal 输入、URL/SHA、Next Step、失败记录和恢复位置 | 已完成Round的长期不可变证据 |
-| 本轮 operator guide | 一轮Discovery/Release教程、exact身份、停止条件，以及执行后追加的Post-run status与最终结论 | 其他Round全文、逐次重试流水、当前Next Step或未变化的模板脚本副本 |
+| 本轮 operator guide | 一轮Discovery/Release教程、exact身份、停止条件，以及执行后追加的channel checkpoint、final Post-run与最终结论 | 其他Round全文、逐次重试流水、当前Next Step或未变化的模板脚本副本 |
 | ROADMAP | programme 角色、宏观 Release 授权与 lifecycle 结论 | seal 流水账、逐资产 SHA、逐步骤状态 |
 
 Operator guide的结构与状态语义只见上述结构模板。本文件继续专注稳定执行协议，不复制另一份guide骨架。
 活动task plan回答“当前执行到哪里、下一步是什么”；operator guide的Pre-run status只证明教程已冻结且尚未执行，
-Post-run status只在真实结果返回后追加。失败重试与恢复位置留在planning，不能展开进冻结guide。
+多通道guide的channel checkpoint只在前序通道真实PASS后追加且不冻结；final Post-run只在声明范围全部闭合后追加。
+失败重试与恢复位置留在planning，不能展开进冻结guide。
 
 <a name="version-discovery-round-routing"></a>
 
@@ -40,7 +41,7 @@ Post-run status只在真实结果返回后追加。失败重试与恢复位置�
 - Discovery Round是新增risk/behavior claim和验收教程的计数单位；gate只是Round内部或standing Release流程里的
   授权、停止与晋级检查点，Cloud task/stage则是guide内的执行单元。
 - single-Discovery 版本专项 acceptance是operator guide的简化命名，使用
-  `vX.Y.Z-cloud-hard-acceptance.md`并完成同样的Pre-run→Post-run→freeze生命周期。
+  `vX.Y.Z-cloud-hard-acceptance.md`并完成同样的Pre-run→可选channel checkpoint→final Post-run→freeze生命周期。
 - 多 Discovery 版本不维护一个累积所有gate的巨型状态表；每个正式 Discovery Round使用一份
   `vX.Y.Z-<round>-operator-guide.md`。当前Round与未授权边界由活动planning控制，Phase关闭后的宏观索引由
   ROADMAP/Phase capsule承担。
@@ -48,6 +49,8 @@ Post-run status只在真实结果返回后追加。失败重试与恢复位置�
   不重复黑盒。
 - Release Source/Candidate与Published Release仍按本模板的两个通道执行。它们证明final source与public bytes，
   不因同处一份Release guide就合并身份，也不自动增加Product Discovery Round。
+- Product验收按正式Discovery Round计数；Release验收固定保留Source/Candidate与Published Release两个通道；
+  retirement review只做对象治理。三个维度名称相似但不能互相推导。
 
 development identity 收敛为 stable identity时，尚未冻结的single-Discovery文件可以原子重命名并继续同一生命周期；
 不得让 dev/stable 两份 single-Discovery acceptance 并存。已经完成Post-run并冻结的multi-Discovery guide保留原Round身份，
@@ -72,7 +75,8 @@ contract/test/oracle，不必把它提升为通用黑盒协议。
 1. 从ROADMAP和活动task plan确认目标版本、Discovery Round、当前角色、授权gate与停止条件。
 2. 先按Operator Guide结构模板物化本轮教程，再引用本模板的稳定anchor；不复制未变化的完整协议或脚本。
 3. 在活动 Release task plan 冻结当次 source、tag、filename、size、URL、SHA、测试计数和停止条件。
-4. 只有通道完整通过后，才在同一operator guide追加Post-run status、exact identity、Cloud原始结果和最终结论。
+4. 多通道guide在前序通道完整通过后追加channel checkpoint、exact identity与该通道原始证据；只有声明范围全部
+   闭合后才追加final Post-run status并冻结。
 5. 执行第 4.2 节时替换 immutable bootstrap URL/SHA，执行第 9.2 节时替换 immutable ZIP URL/SHA；不得用 moving
    branch、`latest`、zero hash 或本地文件代替 Published Release identity。
 6. 第5～8节的提示词原样使用，不嵌入版本名、动态Round/gate结论或施工阶段marker。
@@ -870,9 +874,11 @@ printf 'PWF_PUBLIC_POST_RESUME=PASS\n'
 
 <a name="acceptance-evidence-writeback"></a>
 
-## 10. Operator Guide 的 Post-run 证据写回
+<a name="release-channel-checkpoint-routing"></a>
 
-模板不保存运行结果。operator guide 的 Post-run status 应保存以下原始证据，并在证据闭合后由维护者写入本轮结论：
+## 10. Operator Guide 的 channel checkpoint 与 final Post-run 证据写回
+
+模板不保存运行结果。operator guide 的channel checkpoint与final Post-run status应保存以下原始证据，并在对应证据闭合后由维护者写入通道或最终结论：
 
 - Source/Candidate：完整 commit、branch transport、测试 runner 原始摘要、明确排除的 publication suite、
   两次 ZIP build/check、entry count、size、SHA 与 override 安装输出；
@@ -884,10 +890,14 @@ printf 'PWF_PUBLIC_POST_RESUME=PASS\n'
 - publication oracle、失败的首次输出、停止点，以及是否从 Fresh 环境重新开始；
 - GitHub Latest、rollback baseline 或下一 Product Phase 的授权应另行记录，不能由 Cloud 结果自动推导。
 
-single-Discovery版本把Post-run结果追加到对应version acceptance；多 Discovery 版本把结果追加到本Round的
-operator guide。Post-run section不得在真实执行前预建或预填exact evidence。一个Release guide可以分别保存
-Source/Candidate与Published Release结果，但两个通道仍须使用独立环境和identity。任何版本号、测试计数、资产identity
-或动态状态都不得反向写回本模板。
+若既有Product/Discovery验收精确绑定exact final source，并且从该证据到seal期间所有Release输入保持不变，它可以直接
+承担Source/Candidate通道证据；任一source、package identity、contract、runtime、bootstrap输入或ZIP allowlist变化都必须
+重新执行最终Source/Candidate。Published Release在公开URL与资产存在前不能提前复用，正式发布时始终需要独立Fresh环境。
+
+single-Discovery版本把channel checkpoint与final Post-run追加到对应version acceptance；多 Discovery 版本把结果追加到
+本Round或最终Release guide。channel checkpoint不得冒充guide最终PASS，final Post-run section不得在声明范围闭合前预填。
+一个Release guide可以分别保存Source/Candidate与Published Release结果，但两个通道仍须使用独立环境和identity。任何版本号、
+测试计数、资产identity或动态状态都不得反向写回本模板。
 
 ## 11. 模板的非权威边界
 

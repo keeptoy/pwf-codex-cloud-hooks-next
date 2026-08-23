@@ -134,15 +134,18 @@ Phase 4 / F3C4完成
   → 后继版本列车与Product Phase另行决策
 ```
 
-每条发布列车都必须经过两轮 retirement review；“review”是逐项做 `RETIRE/MIGRATE/KEEP`决定，不是为了清单好看而强制删除：
+每条发布列车都必须经过两轮 retirement review；retirement review不是Cloud acceptance，也不因逐项审查就产生新的
+Operator Guide或黑盒轮次。“review”是逐项做`RETIRE/MIGRATE/KEEP`决定，不是为了清单好看而强制删除：
 
 | Review | 触发点 | 主要对象 | 退出要求 |
 |---|---|---|---|
-| 第一轮：Phase closeout | Product Phase的最终 aggregate/closeout gate | 施工 planning、临时 fixture/脚本、重复摘要、过渡 seam、validation refs与当期 lifecycle账 | 清掉已满足 DoD的脚手架；仍承担恢复、Release或回归职责的对象明确 KEEP/MIGRATE与下一 review条件 |
+| 第一轮：Phase/candidate closeout | Product Phase的最终aggregate/closeout gate；不进入独立Product Phase的小型patch/governance列车则落在candidate baseline closeout | 施工 planning、临时 fixture/脚本、重复摘要、过渡 seam、validation refs与当期 lifecycle账 | 清掉已满足 DoD的脚手架；仍承担恢复、Release或回归职责的对象明确 KEEP/MIGRATE与下一 review条件 |
 | 第二轮：Phase 9 role rotation | 同一列车的 public assets验收并晋级 accepted之后 | candidate/accepted窗口专用 refs、oracles、compatibility transition、canary和版本化运维材料 | 新 accepted与 immediate fallback可恢复；退出角色窗口的对象按 retirement DoD清退或迁移；稳定 contracts/tests/history不得机械删除 |
 
 因此 Product Phase收官已经是正式生命周期边界，不必把所有清理推迟到 Phase 9；但它只形成候选功能基线，不会自动产生
 immutable public assets或轮转 accepted角色。Phase 9的第二轮审查只处理必须等发布身份和版本角色确定后才能判断的对象。
+不进入独立Product Phase的小型patch/governance列车仍要在candidate baseline closeout完成等价的第一轮对象审查，
+但不因此虚构Product Phase、Discovery Round或Cloud验收。
 若维护者明确批准多个低风险 Phase合并到同一版本列车，每个 Phase仍分别做第一轮审查，而该列车只在最终发布时做一次
 第二轮审查。
 
@@ -386,8 +389,9 @@ Discovery，按 7.2 决定增加正式 Round 或 Round 内子门槛，再按 7.3
 
 只有 ROADMAP 把目标版本标为获批 Release candidate，且活动 task plan 明确授权具体 Release gate，
 才允许封板。稳定构建/验证命令由 [`README.md`](README.md) 管理，精确版本步骤和资产证据由相应版本
-acceptance 管理；[`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) 只提供维护者接手和结果分流入口。
-模板、活动 Release task plan、版本 acceptance 与 ROADMAP 的详细分工只由
+Release operator guide管理；single-Discovery版本可以继续使用`vX.Y.Z-cloud-hard-acceptance.md`简写命名。
+[`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md)只提供维护者接手和结果分流入口。
+模板、活动Release task plan、operator guide与ROADMAP的详细分工只由
 [`Cloud hard acceptance template` 的“文档职责与写入时机”](docs/cloud-hard-acceptance-template.md#acceptance-document-responsibilities)
 定义；本节只维护 programme 级授权与封板顺序，不复制逐资产或逐步骤状态。
 
@@ -399,15 +403,27 @@ acceptance 管理；[`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md) 只提供�
 
 | 步骤 | 大白话 | 必须证明 | 主要证据 |
 |---|---|---|---|
-| 1. 候选验证 | 先在源码和本地候选 ZIP 上测；除本地回归外，还要在 Cloud 的选定 branch/commit checkout 跑通 Source/Candidate | “这份代码可以发布”，但还没有真实公开包 | 活动 task plan；完成后写版本 acceptance 的 Source/Candidate 证据 |
+| 1. 候选验证 | 先在源码和本地候选 ZIP 上测；除本地回归外，还要在 Cloud 的选定 branch/commit checkout 跑通 Source/Candidate | “这份代码可以发布”，但还没有真实公开包 | 活动task plan；完成后写同一Release operator guide的Source/Candidate channel checkpoint |
 | 2. 发布 Pre-release | 创建新的 immutable tag 和对应 Pre-release，上传最终 ZIP 与 ZIP 外 bootstrap | “真实公开包已经存在”，tag/URL/size/SHA 已冻结 | provenance + publication audit；不得删 tag 或重传同名资产来修补 |
-| 3. 公开包验收 | 用另一套 Fresh Cloud 从公开 bootstrap 默认下载链安装，再重新下载公开 ZIP 做 Resume/doctor/deep check | “用户实际下载到的公开包也能工作” | 版本 acceptance 的 Published Release 证据 |
+| 3. 公开包验收 | 用另一套 Fresh Cloud 从公开 bootstrap 默认下载链安装，再重新下载公开 ZIP 做 Resume/doctor/deep check | “用户实际下载到的公开包也能工作” | 同一Release operator guide的Published Release证据；声明范围闭合后写final Post-run |
 | 4. 晋级 Latest | 前三步全绿后，由维护者把同一个 Release 取消 Pre-release 并设为 Latest，再做只读 postflight | “现在正式推荐这个版本”，并旋转 accepted/fallback 角色 | ROADMAP；tag、Release 和资产都原地保留，不删除重建 |
 
-对应关系也保持简单：provenance 回答“发布了什么字节”，acceptance 回答“公开包是否验收”，ROADMAP
+第1、3步是两次独立Cloud验收执行；第2、4步是维护者控制面状态变更与核验，不是另外两轮黑盒。三个治理维度如下：
+
+| 维度 | 计数与必要性 | 不得冒充 |
+|---|---|---|
+| Product验收 | 每个新增risk/behavior claim的正式Discovery Round一轮相称验收 | gate/task/stage数量或Release通道数量 |
+| Release验收 | 真正发布时固定保留Source/Candidate与Published Release两个独立身份/环境通道 | 两个Product Discovery Round或两份guide |
+| retirement review | candidate closeout与accepted role rotation两个对象治理时点 | Cloud acceptance、黑盒PASS或删除配额 |
+
+对应关系也保持简单：provenance回答“发布了什么字节”，Release operator guide回答“候选与公开包是否验收”，ROADMAP
 回答“现在推荐谁”。Latest promotion 只改 Release metadata 与 lifecycle 指针，不重新上传包；postflight
 必须再次核对新 accepted 和 immediate fallback 的 tag/source/asset identity，并按 retirement DoD 清理退出
 candidate+accepted 窗口的本地版本文件与旧 oracle。
+
+若某次Product/Discovery验收已经绑定final exact source，且随后所有Release输入保持不变，其证据可以直接承担第1步，
+不机械重跑Source/Candidate；任何相关输入变化都使复用失效。第3步不能提前复用，因为公开URL、bootstrap与资产身份
+只有第2步完成后才存在。
 
 <a name="pre-1-compatibility-admission"></a>
 
