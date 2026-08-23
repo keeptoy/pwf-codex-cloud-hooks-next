@@ -279,3 +279,45 @@
 ## Current Status
 
 `P9_E_POINTER_PROMOTION_PASS / V0_4_1_ACCEPTED_LATEST / V0_4_0_IMMEDIATE_FALLBACK / STOP_BEFORE_P9_F`
+
+## 2026-08-23 — P9-F authorization and entry audit
+
+- 维护者授权在时机合适时继续P9-F；catchup确认工作树clean，本地与`origin/0.4.1`同步，P9-E前置已经闭合。
+- 已恢复repository retirement DoD与v0.4.0 P9-F先例；当前初步分类为RETIRE v0.4.0 working-tree bootstrap/acceptance，MIGRATE其current-tree链接与旧role测试，KEEP immutable tag/Release/provenance、publication oracle、installed transition、validation refs和长期回归资产。
+- 本轮不执行任何远端写、不删除refs/Release assets、不处理历史兼容精简、不启动下一开发列车。
+- 全仓引用扫描确认v0.4.0 acceptance的四处文档链接需迁移，v0.4.1 operator中的v0.4.0 asset filename需作为immutable fallback identity保留；11个v0.4.0 validation refs本地/远端identity一致并继续KEEP。
+- `git log`已定位v0.4.0完整P9-F closeout commit为`6b388518855da9053713a58e5c918c8b727b6dc6`；组合审计命令最后一个无匹配`Select-String`使整体exit 1，但前置log证据完整，后续不重复该组合命令。
+- failing-first守卫按预期命中：v0.4.0 role files仍存在、v0.4.1尚无P9-F closeout；sandbox内repositoryPaths Git spawn失败继续归类为既有执行面限制。
+- 已从工作树退役`init-cloud-sandbox-v0.4.0.bash`与`docs/v0.4.0-cloud-hard-acceptance.md`；两者可由Git commit`6b388518…`、tag与公开Release恢复。
+- provenance、CHANGELOG与ROADMAP链接已迁移到exact immutable blob；v0.4.1 acceptance新增P9-F closeout，ROADMAP关闭本列车但不命名下一列车。
+- 旧v0.4.0 acceptance详细测试已从默认suite退役；当前守卫改为验证immutable history/link仍可恢复、v0.4.1 closeout、unique candidate+accepted working-tree窗口与durable fallback/regression资产KEEP。
+- 首轮正常repository/publication oracle复验为18 pass / 2 fail：一项是current-train断言仍冻结P9-B～P9-E旧摘要，已改为P9-A～P9-F列车关闭事实；另一项是task plan有意等待最终closeout marker，现已在实现闭合后更新。
+
+## Current Status
+
+`P9_F_SECOND_RETIREMENT_PASS / V0_4_1_TRAIN_CLOSED / NEXT_TRAIN_UNDECIDED`
+
+## 2026-08-23 — P9-F second retirement closeout
+
+- RETIRE：删除working-tree `init-cloud-sandbox-v0.4.0.bash`与`docs/v0.4.0-cloud-hard-acceptance.md`；二者仍可从immutable source/tag/Release恢复。
+- MIGRATE：provenance、CHANGELOG、ROADMAP的旧acceptance链接固定到commit `6b388518855da9053713a58e5c918c8b727b6dc6`；旧全文测试迁移为current P9-F、immutable history与version-neutral oracle断言；working-tree role window恢复为unique candidate+accepted，即只保留v0.4.1。
+- KEEP：v0.4.0 tag/Release/双资产、`contracts/installed-state-transition-v1.json`、dynamic accepted/fallback publication oracle、11个validation refs、F3 guides/validators/negative tests和长期runtime回归均未删除。
+- immutable object审计PASS：历史acceptance blob为`afdd8e853f992c7365dfb339fbb5ca13fcf8e380`，exact P9-F closeout anchor存在。
+- 完整Windows runner PASS：181 tests / 155 pass / 0 fail / 26 skipped；26项仍全部是既有Linux/POSIX-only case。测试总数减少3项是退役旧v0.4.0 acceptance全文耦合，长期不变量已迁移。
+- 最终repository/architecture/publication聚焦复验PASS：28 pass / 0 fail / 0 skipped；两版immutable ZIP重建、迁移/回滚恢复、当前role window、历史链接和closeout marker全部闭合。
+- static audit PASS：installer与两处治理测试`node --check`、owned Python compile、importer healthy、bootstrap `bash -n`、11个PowerShell block parser、4个upstream `100755` mode、零stale local acceptance link与`git diff --check`均通过。
+- current ZIP双构建均为22 entries、85,910 bytes、SHA-256 `94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291`；changed paths与Release entries/当前外部bootstrap交集为0。
+- 本轮没有production/runtime/contract/manifest/README/Host ABI/trusted graph改动，没有远端写、ref/asset删除、兼容精简或下一列车授权。
+
+### P9-F validation errors
+
+| Error | Attempt | Resolution |
+|---|---:|---|
+| 首次完整runner为154 pass / 1 fail / 26 skipped | 1 | immutable GitHub blob链接被cross-document测试误当本地路径；新增仅限本仓库exact 40-hex blob URL与稳定anchor的准入，targeted与完整runner均转绿 |
+| 组合static audit中的`git show <commit>:<path>`触发Git Bash signal-pipe失败，随后treeish形式`git cat-file`也未取得对象 | 2 | 改用`git ls-tree`取得exact blob id，再以`git cat-file -p <blob>`只读验证closeout anchor；PASS且未依赖working-tree副本 |
+| sandbox内`bash -n`因Win32 signal pipe error 5失败 | 1 | 在获准的正常Git Bash执行面只读复验，exit 0；归类为sandbox limitation，不是bootstrap语法缺陷 |
+| 最终聚焦Node runner在sandbox内因`spawn EPERM`失败 | 1 | 在获准的正常子进程执行面运行同一28项suite，28 pass / 0 fail / 0 skipped |
+
+## Current Status
+
+`P9_F_SECOND_RETIREMENT_PASS / V0_4_1_TRAIN_CLOSED / NEXT_TRAIN_UNDECIDED`

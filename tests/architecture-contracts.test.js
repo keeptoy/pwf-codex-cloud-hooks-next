@@ -24,6 +24,15 @@ test("cross-document fragments use stable explicit anchors", () => {
     const linkPattern = /\]\(([^)#]+\.md)#([^)]+)\)/g;
     for (const match of sourceText.matchAll(linkPattern)) {
       const [, relativeTarget, fragment] = match;
+      const immutableBlob = relativeTarget.match(
+        /^https:\/\/github\.com\/keeptoy\/pwf-codex-cloud-hooks-next\/blob\/[a-f0-9]{40}\/(.+\.md)$/,
+      );
+      if (immutableBlob) {
+        assert.match(fragment, /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/,
+          `${source}: unstable fragment #${fragment}`);
+        discovered.push(`${source}->${immutableBlob[1]}#${fragment}`);
+        continue;
+      }
       const targetPath = path.resolve(root, path.dirname(source), relativeTarget);
       assert.equal(fs.existsSync(targetPath), true, `${source}: missing target ${relativeTarget}`);
       assert.match(fragment, /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/, `${source}: unstable fragment #${fragment}`);

@@ -8,12 +8,12 @@
 
 ## Next Step
 
-等待维护者push本地累计的P9-E operator/evidence commits；随后停在P9-F前，只有维护者明确授权P9-F retirement后才进入
-第二轮对象分类，不提前清理working-tree role文件、refs、公开资产或历史证据。
+等待维护者push P9-F closeout commit；v0.4.1列车已经关闭，下一列车尚未决定或授权。后续先建立新的Discovery/活动plan，
+不得从本账本顺手删除refs、公开资产、兼容代码或历史证据，也不得提前进入新的Product Phase。
 
 ## Current Phase
 
-Phase 6 complete / P9-E Latest promotion and role rotation PASS; stop before P9-F
+Phase 7 complete / P9-F second retirement PASS; v0.4.1 train closed
 
 ## Phases
 
@@ -59,9 +59,9 @@ Phase 6 complete / P9-E Latest promotion and role rotation PASS; stop before P9-
 
 ### Phase 7: P9-F retirement and next-train handoff
 
-- [ ] 对退出 candidate/accepted 窗口的对象执行 `RETIRE / MIGRATE / KEEP`。
-- [ ] 历史兼容精简只形成下一列车 Discovery handoff，不夹带进 `v0.4.1`。
-- **Status:** pending / not authorized
+- [x] 对退出 candidate/accepted 窗口的对象执行 `RETIRE / MIGRATE / KEEP`。
+- [x] 历史兼容精简只形成下一列车 Discovery handoff，不夹带进 `v0.4.1`。
+- **Status:** complete / old role files retired、immutable recovery与oracles保留；next train undecided
 
 ## Frozen Invariants
 
@@ -79,7 +79,8 @@ Phase 6 complete / P9-E Latest promotion and role rotation PASS; stop before P9-
 - 已完成授权：P9-C tag source/双资产身份冻结、Pre-release publication与download audit、provenance/acceptance/ROADMAP evidence写回和本地commit。
 - 已完成授权：P9-D Published Release Cloud operator、维护者Cloud执行、exact evidence写回、planning/acceptance/ROADMAP更新与本地commit。
 - 已完成授权：P9-E pointer-only Latest promotion操作入口、维护者唯一Release metadata mutation与只读postflight、角色轮转evidence写回、本地守卫和本地commit。
-- P9-F retirement及其他后继gate均未授权。
+- 已完成授权：P9-F第二轮对象分类、旧working-tree role文件退役、必要immutable link/oracle迁移、planning/acceptance/ROADMAP写回、本地验证与本地commit。
+- 远端ref/asset删除、push、下一开发列车、历史兼容精简及其他后继gate均未授权。
 - 每一关键 gate 必须在专项设计和维护者明确授权后进入。
 
 ## Stop Conditions
@@ -110,7 +111,11 @@ Phase 6 complete / P9-E Latest promotion and role rotation PASS; stop before P9-
 | P9-E evidence聚焦复验暴露fallback诊断与working-tree角色窗口断言仍绑定旧版本形态 | 1 | 将安全oracle绑定到稳定fail-closed/零mutation合同，并显式表达P9-E→P9-F过渡窗口，不删除任何role文件 |
 | P9-E evidence首次完整runner的历史v0.4.0测试仍冻结旧current角色 | 1 | 分离immutable历史证据与ROADMAP当前角色；由v0.4.1当前测试守护新accepted/fallback窗口 |
 | 本地commit首次因沙箱无法创建`.git/index.lock` | 1 | 未修改Git索引；改在获准的Git写入执行面提交同一已验证范围 |
+| P9-F组合Git历史审计末尾无匹配`Select-String`导致exit 1 | 1 | 前置`git log -S`已唯一定位closeout commit；保存证据并改用直接commit/blob核验，不重复无匹配管道 |
+| P9-F首次正常repository/publication复验有2项旧状态断言失败 | 1 | current-train摘要改守P9-A～P9-F关闭事实；实现闭合后将task plan从in-progress更新为exact closeout marker |
+| P9-F首次完整runner有1项cross-document fragment失败 | 1 | 将本仓库exact 40-hex immutable blob URL纳入稳定anchor admission；完整runner转为155 pass / 0 fail / 26 skipped |
+| P9-F static audit的Git Bash/Node隔离子进程在sandbox内分别报signal-pipe与`spawn EPERM` | 2 | 在获准的正常执行面只读复验：bootstrap `bash -n` exit 0，聚焦suite 28 pass；不把sandbox limitation记为产品失败 |
 
 ## Current Status
 
-`P9_E_POINTER_PROMOTION_PASS / V0_4_1_ACCEPTED_LATEST / V0_4_0_IMMEDIATE_FALLBACK / STOP_BEFORE_P9_F`
+`P9_F_SECOND_RETIREMENT_PASS / V0_4_1_TRAIN_CLOSED / NEXT_TRAIN_UNDECIDED`

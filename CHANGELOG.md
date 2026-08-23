@@ -24,7 +24,7 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - 发布 stable `v0.4.0`：确定性 ZIP 与 ZIP 外 bootstrap 完成 immutable publication、公开资产重下载、
   Source/Candidate 与 Published Release Cloud 的 Fresh/Resume 验收及 pointer-only promotion。精确资产身份和验收证据见
   [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与
-  [`docs/v0.4.0-cloud-hard-acceptance.md`](docs/v0.4.0-cloud-hard-acceptance.md)，programme 角色只见
+  [immutable v0.4.0 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/6b388518855da9053713a58e5c918c8b727b6dc6/docs/v0.4.0-cloud-hard-acceptance.md#v0-4-0-p9-f-second-retirement-closeout)，programme 角色只见
   [`ROADMAP.md`](ROADMAP.md)。
 - 完成 contract/source foundation：source manifest schema 4 以 exact-key validation 路由 runtime bundle 与 Release artifact v2；
   `upstream_files`、`local_files`、`installed_contracts` 结构化表达来源，adapter 与 runtime ABI 纳入唯一安装投影，ZIP mode

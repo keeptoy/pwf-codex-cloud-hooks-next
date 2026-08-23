@@ -196,3 +196,25 @@
 - P9-F retirement、working-tree role文件清理、refs清理与下一列车仍未授权。
 - P9-E到P9-F之间是一个合法的过渡窗口：working tree暂时同时保留新accepted `v0.4.1`与新immediate fallback `v0.4.0`的bootstrap/acceptance；只有P9-F才能决定旧role文件的RETIRE/MIGRATE/KEEP。
 - publication oracle轮转后，旧`v0.4.0` installer直接覆盖`v0.4.1`会在更早的installed-manifest identity检查处fail closed，而不再必然列出v0.3.5时代的contract文件差异；稳定安全断言应绑定`BLOCKED_UNKNOWN_RUNTIME`与零backup/mutation，不把某代诊断细节冻结为跨版本合同。
+
+## P9-F entry reconciliation — 2026-08-23
+
+- 维护者明确授权在时机合适时继续P9-F；本地`0.4.1`与`origin/0.4.1`同步、工作树clean，P9-E accepted/Latest与evidence均已落库，入场条件满足。
+- 既有retirement DoD要求promotion后的working tree回到candidate+accepted文件窗口；当前candidate与accepted均为`v0.4.1`，因此`init-cloud-sandbox-v0.4.0.bash`与`docs/v0.4.0-cloud-hard-acceptance.md`进入RETIRE review。
+- `v0.4.0`仍是immediate fallback，但默认恢复authority已是immutable source/tag/Release/provenance/publication oracle；不需要为离线副本保留working-tree bootstrap/acceptance。
+- `contracts/installed-state-transition-v1.json`仍精确支持v0.4.0 predecessor，publication oracle仍需重建v0.4.0 immutable ZIP并验证恢复；两者KEEP，不得把role-file eviction误解为compatibility retirement。
+- 11个validation refs、F3 guides/validators/negative tests仍承担side-branch reachability与长期回归职责，全部KEEP；远端refs/assets、production、Release contracts、manifest、runtime与README不在本轮改动范围。
+- 必要MIGRATE对象是指向待退役v0.4.0 acceptance的current-tree链接和冻结旧role window的治理测试；目标是exact immutable source blob或版本中立current oracle，而不是复制另一份历史全文。
+- exact v0.4.0 P9-F closeout首次进入commit `6b388518855da9053713a58e5c918c8b727b6dc6`；provenance、CHANGELOG与ROADMAP中的working-tree acceptance链接应迁移到该commit的GitHub blob/稳定anchor。
+- 当前明确引用待退役文件的authority位置为`BASELINE_PROVENANCE.md`一处、`CHANGELOG.md`一处、`ROADMAP.md`两处；v0.4.1 P9-E operator中出现v0.4.0公开bootstrap资产名是immutable fallback identity，不是本地路径引用，必须KEEP。
+- `tests/repository-boundary.test.js`前半仍有四组直接读取v0.4.0 acceptance的P9-C/P9-D/P9-E/P9-F历史细节测试，后半还有永远不会在v0.4.1 current分支运行的旧v0.4.0 acceptance分支；P9-F应把长期不变量迁到当前v0.4.1 closeout与version-neutral oracle后删除这些旧默认-suite耦合。
+- current documentation lifecycle guard在P9-E→P9-F过渡窗口临时允许accepted==candidate时附加immediate fallback；P9-F完成后应恢复为working-tree文件精确等于unique candidate+accepted，即只保留v0.4.1 bootstrap/acceptance。
+
+## P9-F closeout reconciliation — 2026-08-23
+
+- P9-F只退役当前树中的旧role副本，不退役v0.4.0回滚身份：公开tag/Release/双资产、provenance、installed-state transition、publication oracle、11个validation refs与F3长期回归材料全部继续KEEP。
+- v0.4.0 acceptance的exact历史对象是commit `6b388518855da9053713a58e5c918c8b727b6dc6`中的blob `afdd8e853f992c7365dfb339fbb5ca13fcf8e380`；该对象包含稳定anchor `v0-4-0-p9-f-second-retirement-closeout`，因此current-tree链接可安全迁移到immutable GitHub blob。
+- cross-document guard只新增对本仓库`blob/<40-hex>/<path>.md#<stable-anchor>`这种exact immutable URL形态的准入；moving branch、未知域名或无稳定anchor的外链仍不会被当作历史authority。
+- current Release v2 allowlist与ZIP外bootstrap都没有进入changed-path集合；双构建仍得到22 entries、85,910 bytes与SHA-256 `94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291`，P9-F没有触碰sealed/public产品字节。
+- 默认完整suite从184项降为181项，是三项只读取已退役v0.4.0 acceptance全文的历史默认测试退出；长期不变量已迁移到current closeout、immutable history/link和version-neutral publication oracle，没有减少production/runtime安全覆盖。
+- v0.4.1列车在P9-F后闭合；active pointer保留指向本已关闭账本，待下一项真实工作通过planning-with-files建立新plan时再自动切换，不由本gate删除pointer或预命名下一列车。
