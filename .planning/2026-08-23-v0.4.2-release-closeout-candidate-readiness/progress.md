@@ -58,3 +58,10 @@
 - 最终双构建脚本第一次在PowerShell解析`SequenceEqual[byte]`时退出，早于临时目录创建；改用原生字节序列比较后重跑，不把该脚本错误误记为candidate失败。
 - 最终候选双构建/check逐字一致：22 entries、87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`；安全核对临时目录位于系统Temp后已清理。
 - Phase 4.8完成，活动计划回到Phase 5停止点；Source/Candidate未运行，下一步仅为维护者审核、push新的C0并决定何时开启Fresh Cloud。
+- 维护者要求把根README手工Release交接与新人化结果同步到ROADMAP 4.1和Phase 4.14；Phase 4.9已开启，Source/Candidate继续暂停。
+- 恢复时一次ROADMAP完整标题组合检索无匹配；已改用短关键词定位实际4.1和Phase 4.14，并确认同步目标均属于Release-excluded治理区。
+- 状态同步failing-first按预期为13 tests / 11 pass / 2 fail：ROADMAP 4.1尚未声明README候选输入影响，Phase 4.14也没有本轮Release handoff后续状态；没有production回归。
+- ROADMAP 4.1已补current train摘要；Phase 4.14已追加README Release handoff后续状态与稳定anchor，明确本地SHA不是Cloud或公开资产证据。
+- 聚焦repository治理回归恢复13/13；本轮6个改动文件与22-entry Release allowlist交集为`NONE`，不会改变已计算的候选ZIP字节。
+- Phase 4.9完成，活动计划回到Phase 5停止点；Source/Candidate仍未运行，下一步为维护者审核并push新的C0。
+- 最终architecture/repository治理验证PASS：22/22；单次Release build/check再次得到22 entries、87,386 bytes和SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`，确认本轮Release-excluded同步未改变候选字节。

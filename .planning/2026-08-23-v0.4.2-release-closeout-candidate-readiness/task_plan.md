@@ -70,6 +70,13 @@ Phase 5 / Source-Candidate paused pending maintainer push
 - [x] 更新契约测试、重新双构建/check和运行风险相称回归，创建新的本地C0 commit。
 - **Status:** complete
 
+### Phase 4.9: README governance status synchronization
+
+- [x] ROADMAP 4.1只记录current train影响：README是Release输入、旧候选身份失效、Source/Candidate仍未运行。
+- [x] Phase 4.14追加带时间语义的后续治理摘要，记录手工封板教程、新人术语顺序和候选双构建结果。
+- [x] 增加治理断言并运行风险相称验证；确认ROADMAP/history仍被Release ZIP排除，创建本地commit。
+- **Status:** complete
+
 ### Phase 5: Source/Candidate channel checkpoint
 
 - [ ] 维护者push并在独立Fresh Cloud完成4.1、B～E与9.1。
@@ -102,6 +109,7 @@ Phase 5 / Source-Candidate paused pending maintainer push
 | README新人顺序正文完成后契约仍搜索旧连续警告句，导致误判顺序缺失 | 1 | 保留更自然的新文案，把测试定位收窄到稳定核心短语`它本身也是Release ZIP输入`。 |
 | README提前增加ROADMAP入口后与后文原链接形成重复authority fragment，完整runner为153 pass / 1 fail / 26 skipped | 1 | 保留新人首次接触处的链接，把后文改成“上文链接的ROADMAP Release流程”，不弱化跨文档唯一入口断言。 |
 | PowerShell不接受静态泛型调用`SequenceEqual[byte]`，双构建脚本在解析阶段退出 | 1 | 解析发生在临时目录创建前，无文件副作用；改用`Compare-Object -SyncWindow 0`比较字节序列。 |
+| 恢复时组合检索使用的ROADMAP完整标题字面串与实际标题不一致，`rg`返回exit 1 | 1 | 已由短关键词定位实际`4.1`标题和Phase 4.14文件；工作树当时clean，无文件副作用。 |
 
 ## Current Status
 

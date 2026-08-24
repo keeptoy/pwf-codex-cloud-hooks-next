@@ -51,6 +51,10 @@ test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const pathSafetyHistory = read("docs/history/phase-4.13-v0.4.1-path-safety-patch-train.md");
   const candidateAcceptance = read("docs/v0.4.2-cloud-hard-acceptance.md");
+  const currentTrain = roadmap.slice(
+    roadmap.indexOf('<a name="v0-4-2-release-closeout"></a>'),
+    roadmap.indexOf("## 5. Product Phase 路线"),
+  );
   assert.equal(developmentTrain, "v0.4.2");
   assert.equal(candidate, "v0.4.2");
   assert.equal(accepted, "v0.4.1");
@@ -59,6 +63,8 @@ test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
   assert.match(roadmap, /`v0\.4\.2`[\s\S]*Release candidate/);
   assert.match(roadmap, /package identity[\s\S]*`0\.4\.2`/);
   assert.match(roadmap, /Source\/Candidate[\s\S]*PENDING/);
+  assert.match(currentTrain, /README\.md[\s\S]*Release ZIP输入[\s\S]*旧候选身份[\s\S]*失效/);
+  assert.match(currentTrain, /C0[\s\S]*Source\/Candidate[\s\S]*仍未运行/);
   assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.1`[^\n]*Latest/);
   assert.doesNotMatch(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(pathSafetyHistory, /兼容性安全/);
@@ -457,6 +463,7 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
     "phase-4-14-post-implementation-status-stage-guide-retirement",
     "phase-4-14-post-governance-status-history-role-rotation",
     "phase-4-14-post-governance-status-post-pass-retirement-ordering",
+    "phase-4-14-post-governance-status-readme-release-handoff",
     "phase-4-14-immutable-evidence",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(history, /^# Phase 4\.14：Release closeout 与验收文档治理回顾$/m);
@@ -489,6 +496,11 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
     /Post-governance status — history roles and Product Phase authority rotation[\s\S]*RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
   assert.match(history,
     /Post-governance status — post-PASS retirement ordering[\s\S]*Source\/Candidate失败[\s\S]*planning[\s\S]*回滚[\s\S]*新C0/);
+  assert.match(history,
+    /Post-governance status — README Release handoff[\s\S]*build\/check\/hash[\s\S]*HOOKS_VERSION[\s\S]*HOOKS_SHA256/);
+  assert.match(history,
+    /第一次接触[\s\S]*`C0`[\s\S]*`Source\/Candidate`[\s\S]*`Release-excluded`[\s\S]*README\.md[\s\S]*Release ZIP输入/);
+  assert.match(history, /d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e/);
   assert.match(history,
     /ROADMAP第4节与第5节形成显式authority rotation[\s\S]*product-phase-N[\s\S]*旧第4节没有current入链/);
   assert.match(history,

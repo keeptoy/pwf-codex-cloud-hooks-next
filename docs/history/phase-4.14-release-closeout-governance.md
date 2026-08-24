@@ -199,6 +199,25 @@ Source/Candidate。本节保留这次后续精炼的原因；当前执行顺序�
 [`ROADMAP` Release四步](../../ROADMAP.md#release-four-step-flow)与
 [`ROADMAP` 两轮retirement review](../../ROADMAP.md#version-train-two-retirement-reviews)。
 
+<a name="phase-4-14-post-governance-status-readme-release-handoff"></a>
+
+## Post-governance status — README Release handoff
+
+`v0.4.2`的Source/Candidate暂停期间，维护者发现稳定Release工具虽然已经存在，但根README缺少一段可以直接复制的手工交接：
+怎样执行candidate build/check/hash、怎样把本地中间ZIP准备成正式版本资产，以及标准bootstrap封板时到底改哪些字段。后续治理
+把这些说明提升到根README，明确标准命名不变时只替换`HOOKS_VERSION`与exact `HOOKS_SHA256`；`HOOKS_PACKAGE`和`HOOKS_URL`
+由前者派生，固定安全字段不能顺手改写。
+
+第一版说明随后暴露了新人阅读顺序问题：读者第一次接触流程时会先看到旧证据作废警告，却还不知道`C0`、
+`Source/Candidate`和`Release-excluded`分别是什么。最终README先用三条大白话解释这三个术语并提供ROADMAP唯一流程入口，
+再说明`README.md`本身也是Release ZIP输入。这样“为什么只改文档也可能重建候选”先有上下文，同时继续保持fail closed：
+如果README在第一通道PASS后变化，旧证据必须作废，形成新C0并重新运行Source/Candidate。
+
+由于README进入Release allowlist，本轮不是纯Release-excluded治理改动。最终本地zero-hash候选已重新完成双构建/check：
+22 entries、87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`，两份字节一致。
+这只是C0前本地候选快照，不是Source/Candidate PASS、sealed bootstrap或public asset证据；当前列车状态仍只读
+[`ROADMAP` v0.4.2 current train](../../ROADMAP.md#v0-4-2-release-closeout)，exact执行证据继续由活动planning和版本operator guide承接。
+
 <a name="phase-4-14-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

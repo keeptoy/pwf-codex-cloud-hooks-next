@@ -61,3 +61,11 @@
 - 维护者指出当前README在首次提到C0与Source/Candidate时直接给出作废/重验警告，而术语定义和ROADMAP流程链接要到约60行后才出现；新人无法先理解“为什么”。本轮应把简短定义和authority链接提前，再保留原fail-closed结论。
 - 最终README先用三条大白话定义C0、Source/Candidate与Release-excluded，再给出唯一ROADMAP流程入口和README-as-ZIP-input警告；后文仅承接“上文链接”，避免在同一authority文档重复同一跨文档fragment。
 - 最终候选双构建/check逐字一致：22 entries、87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`。该身份取代此前`f90dd5…`及改写期间所有临时候选，只供新的C0/Source-Candidate使用。
+
+## README governance status synchronization
+
+- ROADMAP 4.1是current train工作台，适合写“README进入候选、旧本地身份失效、Cloud仍PENDING”，但不应复制逐次命令或建立第二份exact证据表。
+- Phase 4.14是回顾性治理摘要，适合追加独立post-governance status，解释为什么手工交接说明最终必须进入根README、为什么新人术语必须先于fail-closed警告，以及这次README-as-ZIP-input如何触发重新双构建。
+- `ROADMAP.md`、`docs/history/*`、`.planning/*`和`tests/*`均在Release contract excluded prefixes内；本轮同步不会再次改变87,386-byte候选ZIP，但新的Git commit会成为待验收的更新C0 source HEAD。
+- ROADMAP 4.1现已记录README手工交接、新人术语顺序、旧候选身份失效与Cloud仍PENDING；没有把exact SHA或逐命令提升成programme authority。
+- Phase 4.14新增稳定`phase-4-14-post-governance-status-readme-release-handoff`锚点，保存README-as-ZIP-input的原因、本地`d1547a…`快照及“不是Cloud/sealed/public evidence”的边界。
