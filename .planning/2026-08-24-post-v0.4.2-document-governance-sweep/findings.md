@@ -129,6 +129,14 @@ Batch B不会改变历史事实，但会显著降低自然语言改写导致的�
 - 最终静态结果：changed paths与Release entries/external assets交集为0；legacy Phase 4.12 anchor definitions=0；CHANGELOG retired local links=0；dead candidate branches=0。
 - 验证：focused 18/18 PASS；完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped，skip均为既有Linux/POSIX-only cases。
 
+## Batch B Implementation Result
+
+- Phase 4.14的current regression从89行收敛为57行，不再逐段冻结“临时授权”等事故叙事和每次post-governance写回；它现在只保护20个稳定显式anchors、Product/Release/retirement职责、C0/C1/C2、两个真实退役检查点、ROADMAP authority links、history index入口及Release-excluded边界。
+- `docs/history/phase-4.14-release-closeout-governance.md`和`docs/acceptance/v0.4.2-cloud-hard-acceptance.md`正文均未修改，真实时间线仍完整保留。
+- ROADMAP 4.1只投影稳定C步骤能力结论，并链接immutable v0.4.2 acceptance；不复制临时授权过程，也不新增第三条直达history的宏观入口。
+- 首次focused测试23/24 PASS，唯一失败准确识别ROADMAP新增第三条history入口。撤回该入口、保留acceptance证据链接后复跑24/24 PASS，证明治理边界仍被实际保护。
+- 完整Windows suite为182 tests / 156 pass / 0 fail / 26 skipped；最终静态审计确认5个changed paths（含三件planning账本）与Release entries交集0、20个Phase 4.14 anchors全部存在、Phase 4.14正文diff为0、ROADMAP history链接数仍为2。
+
 ## Technical Decisions
 
 | Decision | Rationale |
@@ -136,6 +144,7 @@ Batch B不会改变历史事实，但会显著降低自然语言改写导致的�
 | planning 数量不是安全不变量 | 安全边界是 active pointer 唯一、scope 路径合法、inactive 只有三件套；目录数量属于维护者治理节奏。 |
 | C2 清退事实留在 acceptance/history/Git | current regression 不应让一次版本 closeout 快照支配所有后续 Discovery。 |
 | 历史叙事和稳定协议分层测试 | 既不抹掉真实验收过程，也避免长期测试依赖事故措辞和自然语言词序。 |
+| ROADMAP不为每次历史理由新增直达history入口 | programme authority只保留必要且已治理的两条历史证据入口；版本事故的精确证据优先链接immutable acceptance，完整Phase叙事继续经受控历史索引恢复。 |
 
 ## Issues Encountered
 

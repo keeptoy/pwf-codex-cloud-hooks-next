@@ -93,9 +93,11 @@ Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节�
   [`docs/acceptance/v0.4.2-cloud-hard-acceptance.md`](docs/acceptance/v0.4.2-cloud-hard-acceptance.md)。`v0.4.1`冻结guide与bootstrap
   已在C2退出current tree，其完整内容迁入exact immutable tag/source、Release资产与provenance链接；现有templates继续在稳定原路径
   `KEEP`，供当前及后继guide引用。本次清退保持README与22-entry ZIP输入不变。
-- Source/Candidate真实Cloud暴露C步骤的工具能力缺口：旧协议同时要求先做只读existence检查又禁止Shell，但实际会话没有独立只读
-  文件工具。维护者临时授权只读Shell后整条通道PASS；稳定template现允许无独立文件工具时的exact-path只读preflight，正文写入仍
-  只能使用apply_patch。该C1修正属于Release-excluded，不改变已验收C0或正式tag目标。
+- Source/Candidate真实Cloud暴露C步骤的工具能力缺口；稳定template现已归一化为：优先使用独立只读文件工具，没有该能力时
+  允许exact-path只读Shell preflight，正文写入仍只能使用apply_patch。真实诊断时间线与通道结果只见
+  [v0.4.2第一通道证据](docs/acceptance/v0.4.2-cloud-hard-acceptance.md#v0-4-2-source-candidate-channel-checkpoint)；该C1修正属于
+  Release-excluded，不改变已验收C0或正式tag目标。Phase历史仍只经README历史索引或本ROADMAP已有programme理由入口访问，
+  不为本次摘要新增第三条宏观history入口。
 - 维护者随后让tag精确指向C0，发布sealed bootstrap与22-entry ZIP；Published Release Fresh/Resume/9.2使用公开默认下载链全部
   `PASS`，已经冻结并验收exact tag/source/ZIP/bootstrap。维护者随后在GitHub Release编辑页面把同一Release取消Pre-release并
   设为Latest，Release详情页显示`v0.4.2`、`draft=false`、`prerelease=false`；这已按

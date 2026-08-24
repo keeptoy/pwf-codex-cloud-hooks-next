@@ -32,7 +32,7 @@
 
 ### Phase 4: Maintainer decision and scoped implementation
 
-- **Status:** waiting for maintainer
+- **Status:** complete
 - 维护者已批准先Batch A、后Batch B并允许分轮实施。
 - Batch A实施前反向枚举Phase 4.12正文，发现同类`phase-9-v0-4-0-*`anchors实际为21个，不是初扫由测试暴露的6个；21个均无真实文档入链，7个仅测试自证、14个仅有定义。
 - 为避免只清一半同类包袱，已暂停正文/test修改，等待维护者确认把该项扩大为21个原子清退；其余Batch A范围不变。
@@ -42,6 +42,9 @@
 - 完整Windows suite PASS：182 tests / 156 pass / 0 fail / 26 skipped；新增第182项为版本无关Markdown local path/explicit-anchor审计。
 - Batch A最终静态审计PASS：6个changed paths与Release inputs交集0；Phase 4.12旧anchor definitions=0；CHANGELOG退役local links=0；dead v0.4.0/v0.4.1 candidate branches=0；`git diff --check`通过。
 - Batch A停止在独立commit前；Batch B按维护者“先A后B”要求留到下一轮，不夹入本次变更。
+- Batch B把Phase 4.14 current regression由89行收敛为57行：保留20个显式anchor、核心Release/retirement/C0-C2不变量、三条ROADMAP authority links、history index入口与Release-excluded边界；移除逐段自然语言和事故措辞快照。Phase 4.14正文及v0.4.2 acceptance均未改写。
+- ROADMAP 4.1把C步骤事故过程压缩为稳定工具能力结果，并只链接immutable v0.4.2 acceptance。首次加入Phase 4.14直达链接后触发“两处受控宏观history入口”断言，已撤回该第三入口且不削弱历史可达性。
+- Batch B focused复跑24/24 PASS；完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped。最终静态审计：5个changed paths（含三件planning账本）与Release inputs交集0、20个Phase 4.14 anchors缺失0、Phase 4.14正文diff 0、ROADMAP history links保持2、`git diff --check`通过。
 
 ## Test Results
 
@@ -53,6 +56,9 @@
 | Batch A focused | history/acceptance/link/Release package边界保持且旧快照退役 | 18 tests / 18 pass / 0 fail | PASS |
 | Batch A `npm test` | 无production/runtime/Release回归 | 182 tests / 156 pass / 0 fail / 26 skipped | PASS |
 | Batch A static/Release audit | 无旧anchor/断链/dead branch；Release输入不变 | 4项残留计数均0；Release input intersection=0 | PASS |
+| Batch B focused | 稳定anchors/authority/宏观history入口保持；不锁定事故措辞 | 24 tests / 24 pass / 0 fail | PASS |
+| Batch B `npm test` | 无production/runtime/Release回归 | 182 tests / 156 pass / 0 fail / 26 skipped | PASS |
+| Batch B static/Release audit | Phase 4.14正文和Release输入不变；20个稳定anchors齐全；ROADMAP只有两处history入口 | history diff=0；Release input intersection=0；missing anchors=0；history links=2 | PASS |
 
 ## Error Log
 
@@ -63,13 +69,15 @@
 | 2026-08-24 | Phase 2首条`rg`命令被PowerShell错误解析双引号正则 | 1 | 命令在搜索前退出；改用单引号正则，未重复原转义。 |
 | 2026-08-24 | Phase 4.12 anchor审计末尾展示用`rg`返回exit 1 | 1 | 核心PowerShell枚举和逐anchor入链结果已成功；不重复展示命令，使用21项结构化结果。 |
 | 2026-08-24 | Batch A focused测试Phase 4.12尾注旧措辞断言失败 | 1 | 其余17项PASS；迁移断言为历史正文保留/compat anchors退役语义后重跑。 |
+| 2026-08-24 | Batch B首次focused测试23/24 PASS；ROADMAP新增第三条直达history链接触发宏观入口断言 | 1 | 归类为本批authority边界冲突；ROADMAP改为只链接immutable acceptance，不增加新的history宏观入口，待重跑。 |
+| 2026-08-24 | Batch B最终静态汇总命令被PowerShell反引号解析提前终止 | 1 | 未执行任何检查或写入；改用不含反引号的拆分命令完成审计，不重复原命令。 |
 
 ## 5-Question Reboot Check
 
 | Question | Answer |
 |---|---|
-| Where am I? | Phase 2：定向历史残留盘点。 |
-| Where am I going? | 形成 current tests/docs 的 RETIRE/MIGRATE/KEEP 建议，等待维护者批准实施。 |
+| Where am I? | Phase 5：Batch A/B均已实施并验证，等待closeout与列车归属决策。 |
+| Where am I going? | 确认本轮结果如何归档，并由维护者决定两个完整planning scope的KEEP/RETIRE。 |
 | What's the goal? | 清除历史快照对长期合同的错误耦合，同时保留真实历史和多轮 planning 恢复能力。 |
-| What have I learned? | 唯一-scope断言是 v0.4.2 C2快照过度泛化，不是稳定生命周期设计。 |
-| What have I done? | 新建并切换 Discovery；保留旧 scope；删除唯一-scope测试要求；focused与完整Windows回归均已PASS。 |
+| What have I learned? | 历史正文可以完整保留，但current regression和programme authority应只冻结稳定语义与受控入口。 |
+| What have I done? | 完成并分批提交A/B治理：清退死快照、修复链接、加入通用审计、收敛Phase 4.14回归与ROADMAP事故摘要；完整Windows回归均PASS。 |

@@ -584,7 +584,7 @@ test("Phase 4.13 preserves the v0.4.1 path-safety patch rationale", () => {
   assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
 });
 
-test("Phase 4.14 preserves the Release closeout governance rationale", () => {
+test("Phase 4.14 keeps stable Release closeout governance interfaces", () => {
   const relative = "docs/history/phase-4.14-release-closeout-governance.md";
   const historyIndex = read("docs/history/README.md");
   const artifact = JSON.parse(read(currentArtifactPath));
@@ -605,69 +605,37 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
     "phase-4-14-post-governance-status-canonical-baseline-tool-capability",
     "phase-4-14-post-governance-status-published-guide-completion",
     "phase-4-14-post-governance-status-latest-promotion-confirmation",
+    "phase-4-14-post-governance-status-role-window-closeout",
     "phase-4-14-immutable-evidence",
-  ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
-  assert.match(history, /^# Phase 4\.14：Release closeout 与验收文档治理回顾$/m);
+  ]) assert.match(history, new RegExp('<a name="' + anchor + '"></a>'));
 
-  assert.match(history, /Product验收[^\n]*Discovery Round/);
-  assert.match(history, /Source\/Candidate[^\n]*Published Release[^\n]*两个独立/);
-  assert.match(history, /retirement review[^\n]*对象治理/);
-  assert.match(history, /普通Release[^\n]*不需要[^\n]*standing Phase 9/);
-  assert.match(history, /P9-A～P9-F[\s\S]*首次完整Release探路[\s\S]*不是未来默认模板/);
-  assert.match(history, /phase-4\.12-v0\.4\.0-release-discovery\.md/);
-  assert.match(history, /phase-4\.13-v0\.4\.1-path-safety-patch-train\.md/);
-  assert.match(history, /candidate-readiness retirement checkpoint/);
-  assert.match(history, /candidate admission preflight/);
-  assert.match(history, /source-candidate closeout retirement checkpoint/);
-  assert.match(history, /role-window closeout retirement checkpoint/);
-  for (const role of [
-    "SOURCE_CANDIDATE_HEAD", "SOURCE_CANDIDATE_CHECKPOINT_HEAD",
-    "PUBLISHED_RELEASE_CLOSEOUT_HEAD",
-  ]) assert.match(history, new RegExp(`\`${role}\``));
-  assert.match(history, /C0[\s\S]*Source\/Candidate Cloud PASS[\s\S]*正式验收tag[^\n]*C0/);
-  assert.match(history, /C1[\s\S]*第一阶段PASS[\s\S]*Published Release Cloud/);
-  assert.match(history, /C2[\s\S]*Published Release evidence[\s\S]*Latest promotion\/postflight[\s\S]*第二轮退役检查/);
-  assert.match(history, /\.\.\/\.\.\/ROADMAP\.md#release-four-step-flow/);
-  assert.match(history, /\.\.\/\.\.\/ROADMAP\.md#version-train-two-retirement-reviews/);
-  assert.match(history, /版本级black-box acceptance[\s\S]{0,240}阶段guide没有[\s\S]{0,120}同一retirement transaction/);
-  assert.match(history, /current tests[\s\S]{0,120}历史教程[\s\S]{0,80}必须存在的回归资产/);
-  assert.match(history, /4份阶段guide[\s\S]{0,100}tracked tree清退/);
-  assert.match(history, /`临时文件\/`[\s\S]{0,100}Git忽略/);
-  assert.match(history,
-    /Post-governance status — history roles and Product Phase authority rotation[\s\S]*RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
-  assert.match(history,
-    /Post-governance status — post-PASS retirement ordering[\s\S]*Source\/Candidate失败[\s\S]*planning[\s\S]*回滚[\s\S]*新C0/);
-  assert.match(history,
-    /Post-governance status — README Release handoff[\s\S]*build\/check\/hash[\s\S]*HOOKS_VERSION[\s\S]*HOOKS_SHA256/);
-  assert.match(history,
-    /第一次接触[\s\S]*`C0`[\s\S]*`Source\/Candidate`[\s\S]*`Release-excluded`[\s\S]*README\.md[\s\S]*Release ZIP输入/);
-  assert.match(history, /d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e/);
-  assert.match(history,
-    /Post-governance status — persistent maintenance environment memory[\s\S]*planning[\s\S]*AGENTS[\s\S]*重验触发器/);
-  assert.match(history,
-    /maintenance-environment-profile\.md#maintenance-environment-profile[\s\S]*Release-excluded[\s\S]*Source\/Candidate[\s\S]*PENDING/);
-  assert.match(history,
-    /Post-governance status — staged acceptance directory migration[\s\S]*v0\.4\.1[\s\S]*冻结[\s\S]*v0\.4\.2[\s\S]*docs\/acceptance\//);
-  assert.match(history, /template[\s\S]*硬编码[\s\S]*不可原位改写[\s\S]*C2/);
-  assert.match(history,
-    /Post-governance status — canonical baseline tool capability[\s\S]*首次安全拒绝[\s\S]*临时授权[\s\S]*exact `[.]planning`路径/);
-  assert.match(history, /fixture正文仍只能由apply_patch创建[\s\S]*正式tag继续精确指向C0/);
-  assert.match(history, /Post-governance status — Published Release guide completion/);
-  assert.match(history, /教程缺口[\s\S]*Cloud hard acceptance template/);
-  assert.match(history, /Published Release PASS有效[\s\S]*不需要重跑/);
-  assert.match(history, /Pre-release[\s\S]*Latest[\s\S]*尚未[\s\S]*第二轮role-window closeout/);
-  assert.match(history,
-    /ROADMAP第4节与第5节形成显式authority rotation[\s\S]*product-phase-N[\s\S]*旧第4节没有current入链/);
-  assert.match(history,
-    /patch train继承它[\s\S]*Product baseline[\s\S]*version series落位[\s\S]*维护者确认/);
-  assert.match(history, /没有授权`0\.4\.2`候选封板、Cloud、publication、Latest或下一Product Phase/);
-  assert.match(history,
-    /Published Release[\s\S]*exact tag\/source\/ZIP\/bootstrap[\s\S]*GitHub Release编辑页面[\s\S]*Release详情页[\s\S]*Latest[\s\S]*不(?:再|另设)[\s\S]*独立postflight/);
-  assert.match(history, /\.\.\/\.\.\/ROADMAP\.md#github-release-latest-promotion-confirmation/);
-  assert.match(history, /本节[\s\S]{0,180}不重新定义[\s\S]{0,180}通用判断/);
+  assert.match(history, /^# Phase 4\.14：Release closeout 与验收文档治理回顾$/m);
+  for (const invariant of [
+    /Product验收[^\n]*Discovery Round/,
+    /Source\/Candidate[\s\S]{0,100}Published Release[\s\S]{0,100}两个独立Release/,
+    /retirement review[^\n]*对象治理/,
+    /普通Release[^\n]*不需要[^\n]*standing Phase 9/,
+    /candidate admission preflight/,
+    /source-candidate closeout retirement checkpoint/,
+    /role-window closeout retirement checkpoint/,
+    /SOURCE_CANDIDATE_HEAD/,
+    /SOURCE_CANDIDATE_CHECKPOINT_HEAD/,
+    /PUBLISHED_RELEASE_CLOSEOUT_HEAD/,
+    /C0[\s\S]*Source\/Candidate Cloud PASS[\s\S]*正式验收tag[^\n]*C0/,
+    /C1[\s\S]*第一阶段PASS[\s\S]*Published Release Cloud/,
+    /C2[\s\S]*Published Release evidence[\s\S]*第二轮退役检查/,
+    /phase-4\.12-v0\.4\.0-release-discovery\.md#phase-4-12-v0-4-0-release-discovery/,
+    /phase-4\.13-v0\.4\.1-path-safety-patch-train\.md#phase-4-13-historical-position/,
+  ]) assert.match(history, invariant);
+
+  for (const authority of [
+    "../../ROADMAP.md#release-four-step-flow",
+    "../../ROADMAP.md#version-train-two-retirement-reviews",
+    "../../ROADMAP.md#github-release-latest-promotion-confirmation",
+  ]) assert.equal(history.includes(authority), true, 'Phase 4.14 lacks authority link: ' + authority);
+
   assert.match(historyIndex,
     /phase-4\.14-release-closeout-governance\.md#phase-4-14-historical-position/);
-  assert.match(historyIndex, /Phase 4\.12[^\n]*原P9-A～P9-F[^\n]*历史语义/);
   assert.doesNotMatch(historyIndex, /standing Phase 9 是例外的重复 Release gate/);
   assert.equal(artifact.entries.some(entry => entry.path === relative), false);
   assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);

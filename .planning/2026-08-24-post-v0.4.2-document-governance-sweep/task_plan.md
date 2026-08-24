@@ -6,7 +6,7 @@
 
 ## Next Step
 
-下一轮实施Batch B：把Phase 4.14 current regression从逐段自然语言快照收敛为稳定anchors、核心决策和authority links，并压缩ROADMAP 4.1重复事故过程；先复核最小保留合同再编辑。
+进入Phase 5 closeout判断：确认本轮纯文档/测试治理结果的列车归属，并由维护者决定当前及旧v0.4.2 planning scope继续KEEP或后续RETIRE；不自动删除或激活新版本列车。
 
 ## Current Phase
 
@@ -45,9 +45,9 @@ Phase 4: maintainer decision and scoped implementation
 - [x] 确认Phase 4.12同类旧anchor由初扫6个扩大为完整21个的原子清退范围。
 - [x] 实施Batch A：清退确定死分支/快照断言/21个旧anchors，修复两条断链并增加通用Markdown链接审计。
 - [x] Batch A运行focused/full validation、反向残留扫描与Release-input交叉检查，记录真实结果。
-- [ ] 实施Batch B：收敛Phase 4.14自然语言断言与ROADMAP重复事故摘要；不改历史事实正文。
-- [ ] Batch B运行风险相称验证并独立提交。
-- **Status:** in_progress; Batch A checkpoint complete
+- [x] 实施Batch B：收敛Phase 4.14自然语言断言与ROADMAP重复事故摘要；不改历史事实正文。
+- [x] Batch B运行风险相称验证并独立提交。
+- **Status:** complete
 
 ### Phase 5: Closeout and train attribution
 
@@ -78,6 +78,7 @@ Phase 4: maintainer decision and scoped implementation
 - 已授权：删除 current repository test 中“只能存在一个 planning scope”的要求，保留其余 planning lifecycle 校验。
 - 已授权：只读扫描文档、tests、Git 历史和引用关系，形成后续治理建议。
 - 已授权：先实施Batch A、后实施Batch B；Batch A的Phase 4.12范围按复核后的全部21个无入链旧anchors原子清退。
+- 已授权：Batch B收敛Phase 4.14逐段自然语言断言，并压缩ROADMAP 4.1重复的临时授权事故过程；历史正文和真实acceptance证据保持不变。
 - 未授权：自动删除任何 planning、历史 acceptance/history、production/runtime/contract 或 Release 输入。
 - 未授权：push、远端 branch/tag/Release/资产、Latest、Cloud task、部署或下一 Product Phase/版本列车 activation。
 
@@ -97,7 +98,9 @@ Phase 4: maintainer decision and scoped implementation
 | Phase 2首条`rg`组合命令因PowerShell双引号与正则冲突，在解析阶段退出 | 1 | 未执行搜索；改用单引号包裹正则并拆分可读输出，不重复原转义方式。 |
 | Phase 4.12完整anchor审计末尾的展示用`rg`返回exit 1 | 1 | 主审计已成功枚举21个anchor及全部入链；展示命令不再重跑，改用已解析结果。 |
 | Batch A首次focused测试17 pass / 1 fail：Phase 4.12尾注断言仍匹配旧“保持”措辞 | 1 | anchors按授权继续清退；把断言迁移为“P9正文保留、旧anchors不保留”的新稳定语义后重跑。 |
+| Batch B首次focused测试23 pass / 1 fail：ROADMAP新增第三条直达history链接，违反“两处受控宏观入口”边界 | 1 | 保留真实时间线于immutable acceptance/history；ROADMAP只链接版本acceptance并明确不新增第三入口，随后重跑。 |
+| Batch B最终静态汇总命令被PowerShell反引号解析提前终止 | 1 | 命令未执行任何检查或写入；拆分为不含反引号的简单命令完成最终审计，不重复原命令。 |
 
 ## Current Status
 
-`BATCH_A_COMPLETE / 18_FOCUSED_PASS / 182_TOTAL_156_PASS_0_FAIL_26_SKIP / RELEASE_INPUT_DELTA_NONE / BATCH_B_NEXT`
+`BATCH_A_COMPLETE / BATCH_B_COMPLETE / RELEASE_INPUTS_UNCHANGED / PHASE_5_CLOSEOUT_DECISION_NEXT`
