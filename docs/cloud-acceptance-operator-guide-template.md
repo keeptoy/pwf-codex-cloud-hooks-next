@@ -7,6 +7,11 @@ commit、资产 SHA、当前 PASS/PENDING 或 programme 角色，也不复制
 [`Cloud hard acceptance template`](cloud-hard-acceptance-template.md)中的稳定 Source/Candidate、Published Release、
 B～E、deep-check 或 hard-stop 协议。
 
+programme级Release四步、C0/C1/C2身份顺序只读
+[`ROADMAP`](../ROADMAP.md#release-four-step-flow)，两个retirement checkpoint的进入/退出时点只读
+[`ROADMAP`](../ROADMAP.md#version-train-two-retirement-reviews)。本模板只把这些programme检查点投影成guide章节、
+channel checkpoint与final Post-run写入格式，不建立第二份宏观流程权威。
+
 `operator guide`是统一的内容职责：它既是维护者执行教程，也是执行完成后不可变证据的容器。
 `acceptance`不是第二种文档；single-Discovery版本可以沿用更短、容易发现的
 `vX.Y.Z-cloud-hard-acceptance.md`文件名。multi-Discovery版本则让每个正式Discovery Round拥有一份
@@ -53,8 +58,8 @@ Discovery decision
    Discovery判断是新Round还是同Round的新候选，不能直接改写预期后继续记PASS。
 11. Operator guide、版本acceptance和本模板必须被Release、installed inventory与trusted execution graph排除。
 
-普通Release直接使用上述Release closeout workflow，不要求另建standing Phase 9或把历史P9-A～F复制为六轮任务。
-两个retirement checkpoint是同一流程的进入/退出对象审查，不是额外Cloud通道、Discovery Round或guide。
+普通Release按上述ROADMAP入口进入版本无关closeout，不要求另建standing Phase 9或把历史P9-A～F复制为六轮任务。
+本模板中的两个retirement章节只承接同一流程的进入/退出对象审查，不是额外Cloud通道、Discovery Round或guide。
 
 生成具体guide时复制下面第1～5节，替换所有`<...>`；任何仍未解析的输入都必须fail closed。第6节只在
 多通道guide的前序通道真实PASS后追加，第7节等声明范围取得最终状态后再追加。
@@ -165,7 +170,7 @@ doctor不健康、expected/actual关系不一致、需要修改production/contra
 Release guide进入Source/Candidate前必须记录第一轮`RETIRE/MIGRATE/KEEP`结论。Product Phase final closeout已经完成的
 review可以直接引用；不进入独立Product Phase的小型patch/governance列车则在candidate baseline closeout完成等价审查。
 任何审查动作若改变source、package、contract、runtime、bootstrap输入或ZIP allowlist，必须先重新冻结候选，不能沿用
-变更前的Source/Candidate证据。该检查点只建立第一Cloud通道的准入，不创建新的Cloud task或验收轮次。
+变更前的Source/Candidate证据。该检查点只按ROADMAP的retirement入口建立第一Cloud通道准入，不创建新的Cloud task或验收轮次。
 
 <a name="operator-guide-channel-checkpoints"></a>
 
@@ -181,7 +186,7 @@ SOURCE_CANDIDATE_PASS / PUBLISHED_RELEASE_NOT_RUN / STOP_BEFORE_PUBLICATION
 channel checkpoint必须绑定已完成通道的exact identity、最终exit code、关键原始证据与明确停止点。它不会冻结guide，
 不表示全部声明范围PASS，也不能授权维护者publication、Published Release、Latest或role rotation；下一步授权仍只读活动plan。
 
-Release guide必须把`SOURCE_CANDIDATE_HEAD`写成正式tag的唯一目标，它必须等于Source/Candidate实际Cloud PASS的完整commit。
+按ROADMAP的C0→C1→C2顺序，Release guide必须把`SOURCE_CANDIDATE_HEAD`写成正式tag的唯一目标，它必须等于Source/Candidate实际Cloud PASS的完整commit。
 第一阶段状态写回commit只记录该channel checkpoint并推进治理分支，不替代经过Cloud验收的tag目标；维护者即使先push
 状态commit，也必须把tag显式固定到`SOURCE_CANDIDATE_HEAD`。该状态写回后，guide保持开放并等待immutable publication
 与第二通道，不把分支新HEAD冒充候选身份。
@@ -209,7 +214,8 @@ Final Post-run status只在guide声明范围全部闭合后追加；Pre-run guid
 
 Release guide只有在Published Release Cloud PASS、维护者完成同一Release的Latest promotion与只读postflight后，才执行
 第二轮`RETIRE/MIGRATE/KEEP`审查。它确认新accepted与immediate fallback可恢复，并治理退出candidate/accepted窗口的
-本地版本材料、oracles与compatibility transition；不得删除、移动、重建或重传sealed tag和资产。
+本地版本材料、oracles与compatibility transition；不得删除、移动、重建或重传sealed tag和资产。该审查必须先于C2，
+使最终状态commit能够保存真实检查点结论。
 
 第二阶段状态写回commit负责保存Published evidence、Latest/postflight、第二检查点与final Post-run，并同步ROADMAP中的
 programme角色。两次状态写回只是仓库证据闭合，不是两次额外Cloud验收；真正的Cloud执行仍只有Source/Candidate与

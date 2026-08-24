@@ -285,6 +285,11 @@ Release notes；不要提前创建大量按版本 archive 文件。
 [`Cloud hard acceptance template` 的“文档职责与写入时机”](cloud-hard-acceptance-template.md#acceptance-document-responsibilities)
 与[`Cloud acceptance Operator Guide template`](cloud-acceptance-operator-guide-template.md)共同维护：
 
+Release四步与C0/C1/C2身份顺序只读
+[`ROADMAP`](../ROADMAP.md#release-four-step-flow)，两轮review在Release中的时点只读
+[`ROADMAP`](../ROADMAP.md#version-train-two-retirement-reviews)。本指南只拥有对象、planning、链接与eviction怎样分类和清退，
+不建立第二份Release programme流程。
+
 - [`Cloud hard acceptance template`](cloud-hard-acceptance-template.md)只维护双通道前置条件、信任输入、
   版本中立黑盒提示词、deep-check结构、停止条件和evidence schema；不保存具体版本、commit、资产identity、
   某次PASS/PENDING、Latest/rollback或programme状态；
@@ -305,12 +310,10 @@ Release notes；不要提前创建大量按版本 archive 文件。
   编排，但不能共享环境、identity或证据，也不计作两个Product Discovery Round；
 - 两轮retirement review只在candidate closeout与accepted role rotation做对象RETIRE/MIGRATE/KEEP判断，不是Cloud
   acceptance；纯review不新建guide、不重复黑盒；
-- 普通Release不要求一个固定编号的standing Release Phase。第一轮review作为candidate-readiness retirement checkpoint，
-  在Source/Candidate前闭合；第二轮review作为role-window closeout retirement checkpoint，在Latest/postflight后闭合；
-- 第一检查点改变任何Release输入时必须重新冻结并运行Source/Candidate；第二检查点不得改写immutable tag、ZIP、
-  bootstrap、URL或SHA。两个检查点是同一Release workflow的进入/退出边界，不增加Cloud通道；
-- Source/Candidate PASS后，正式tag只指向该Cloud实际通过的candidate commit。第一阶段状态写回commit保存channel
-  checkpoint但不替代tag目标；第二阶段状态写回commit保存Published evidence、Latest/postflight、第二检查点与final Post-run；
+- 两轮review按ROADMAP的retirement入口/出口逐项记录对象决定；第一检查点改变Release输入时先重新冻结候选，第二检查点
+  不得改写immutable tag、ZIP、bootstrap、URL或SHA；
+- C0/C1/C2身份和写回先后只按ROADMAP解释；本指南只要求对应状态commit保存已经实际形成的对象治理结论，
+  不重新定义tag、publication或Cloud通道顺序；
 - 两次状态写回不是额外Cloud验收。普通Release仍只有Source/Candidate与Published Release两个独立环境/身份通道；
 - development identity收敛为stable identity时，尚未冻结的single-Discovery acceptance可以原子重命名；已冻结的
   multi-Discovery guide保留原Round身份；
@@ -328,9 +331,8 @@ Release notes；不要提前创建大量按版本 archive 文件。
 或实施 gate。高风险项目可以先完成 pointer/rollback promotion，再用独立 gate 做历史清退；但 eviction
 关闭前不得开启下一开发列车，否则临时兼容副本会被下一轮继续继承。
 
-在默认Release closeout workflow中，这个事务由前后两个retirement checkpoint包围：candidate readiness先清理或登记
-施工对象，再进入双通道；公开资产验收、Latest和postflight完成后，role-window closeout再执行角色旋转后的清退。
-这种前后分工保留两次审查所需的不同信息时点，但不要求Phase 9、六轮任务或额外黑盒。
+在ROADMAP定义的默认Release closeout workflow中，这个事务由前后两个retirement checkpoint包围；本节只解释第二检查点
+怎样完成角色旋转后的清退。两次审查保留不同信息时点，但不要求Phase 9、六轮任务或额外黑盒。
 
 每次 baseline promotion 都应同时完成清退：
 

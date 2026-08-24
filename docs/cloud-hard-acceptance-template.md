@@ -29,6 +29,11 @@ checkpoint但保持开放，全部声明通道闭合后才追加final Post-run s
 | 本轮 operator guide | 一轮Discovery/Release教程、exact身份、停止条件，以及执行后追加的channel checkpoint、final Post-run与最终结论 | 其他Round全文、逐次重试流水、当前Next Step或未变化的模板脚本副本 |
 | ROADMAP | programme 角色、宏观 Release 授权与 lifecycle 结论 | seal 流水账、逐资产 SHA、逐步骤状态 |
 
+programme级Release四步与C0/C1/C2顺序只读
+[`ROADMAP`](../ROADMAP.md#release-four-step-flow)，两个retirement checkpoint的时点只读
+[`ROADMAP`](../ROADMAP.md#version-train-two-retirement-reviews)。本模板只维护两个Cloud通道怎样执行和取证，
+不从脚本顺序反向生成programme流程。
+
 Operator guide的结构与状态语义只见上述结构模板。本文件继续专注稳定执行协议，不复制另一份guide骨架。
 活动task plan回答“当前执行到哪里、下一步是什么”；operator guide的Pre-run status只证明教程已冻结且尚未执行，
 多通道guide的channel checkpoint只在前序通道真实PASS后追加且不冻结；final Post-run只在声明范围全部闭合后追加。
@@ -51,8 +56,8 @@ Operator guide的结构与状态语义只见上述结构模板。本文件继续
   不因同处一份Release guide就合并身份，也不自动增加Product Discovery Round。
 - Product验收按正式Discovery Round计数；Release验收固定保留Source/Candidate与Published Release两个通道；
   retirement review只做对象治理。三个维度名称相似但不能互相推导。
-- 普通Release不要求standing Phase 9。candidate-readiness retirement checkpoint是Source/Candidate的进入条件；
-  role-window closeout retirement checkpoint是Latest/postflight后的Release退出条件。两者不创建Cloud task或验收轮次。
+- 普通Release不要求standing Phase 9。两个retirement checkpoint按上述ROADMAP入口承接Source/Candidate准入与
+  Latest/postflight后的Release退出治理；它们不创建Cloud task或验收轮次。
 
 development identity 收敛为 stable identity时，尚未冻结的single-Discovery文件可以原子重命名并继续同一生命周期；
 不得让 dev/stable 两份 single-Discovery acceptance 并存。已经完成Post-run并冻结的multi-Discovery guide保留原Round身份，

@@ -335,7 +335,8 @@ Release operator guide管理；single-Discovery版本可以继续使用`vX.Y.Z-c
 [`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md)只提供维护者接手和结果分流入口。
 模板、活动Release task plan、operator guide与ROADMAP的详细分工只由
 [`Cloud hard acceptance template` 的“文档职责与写入时机”](docs/cloud-hard-acceptance-template.md#acceptance-document-responsibilities)
-定义；本节只维护 programme 级授权与封板顺序，不复制逐资产或逐步骤状态。
+定义；本节只维护 programme 级授权与封板顺序，不复制逐资产或逐步骤状态。下面两个稳定anchor分别是Release四步/C0～C2
+和两轮retirement checkpoint时点的唯一programme authority；模板、治理指南、具体guide与history只能引用并保存职责内投影。
 
 <a name="release-four-step-flow"></a>
 
@@ -355,24 +356,25 @@ Release operator guide管理；single-Discovery版本可以继续使用`vX.Y.Z-c
 ```text
 C0：候选源码 commit（SOURCE_CANDIDATE_HEAD）
   → Source/Candidate Cloud PASS
-  → 正式验收tag精确指向C0
-  → 维护者创建immutable Pre-release并上传已验收ZIP/bootstrap
 
 C1：第一阶段状态commit（SOURCE_CANDIDATE_CHECKPOINT_HEAD）
   → 本地回补第一阶段PASS与channel checkpoint
   → 维护者push治理分支
-  → 启动独立Published Release Cloud
+  → 正式验收tag精确指向C0
+  → 维护者创建immutable Pre-release并上传已验收ZIP/bootstrap
+  → 独立Published Release Cloud PASS
+  → 维护者完成Latest promotion/postflight
+  → role-window closeout retirement checkpoint
 
 C2：最终治理commit（PUBLISHED_RELEASE_CLOSEOUT_HEAD）
-  → 回补Published Release evidence
-  → 记录Latest promotion/postflight
-  → 完成第二轮退役检查与Release closeout
+  → 回补Published Release、Latest/postflight与第二轮退役检查证据
   → 追加final Post-run并同步programme角色
 ```
 
 正式tag必须精确指向Source/Candidate实际Cloud PASS的commit，即`SOURCE_CANDIDATE_HEAD`；
-`SOURCE_CANDIDATE_CHECKPOINT_HEAD`只记录第一通道证据并推进治理分支；`PUBLISHED_RELEASE_CLOSEOUT_HEAD`只在公开包、
-Latest/postflight和退出检查点全部闭合后形成。C1/C2都不能取代C0，也不是额外Cloud通道。
+`SOURCE_CANDIDATE_CHECKPOINT_HEAD`在publication前记录第一通道证据并推进治理分支；维护者随后把tag显式固定到C0，不能让
+分支新HEAD取代tag目标。`PUBLISHED_RELEASE_CLOSEOUT_HEAD`只在公开包、Latest/postflight和退出检查点全部闭合后形成。
+C1/C2都不能取代C0，也不是额外Cloud通道。
 
 第1、3步是两次独立Cloud验收执行；第2、4步是维护者控制面状态变更与核验，不是另外两轮黑盒。三个治理维度如下：
 
@@ -403,10 +405,14 @@ candidate+accepted 窗口的本地版本文件与旧 oracle。
 Phase 4 / F3C4完成
   → 形成0.4.0功能/候选基线
   → candidate-readiness retirement checkpoint（第一轮对象退役审查）
-  → C0 / Source-Candidate与immutable publication
-  → C1 / 第一阶段状态写回与Published Release Cloud
-  → C2 / Latest、final evidence与programme closeout
+  → C0 / Source-Candidate候选源码
+  → Source/Candidate Cloud PASS
+  → C1 / 第一阶段状态写回
+  → tag精确指向C0并完成immutable publication
+  → Published Release Cloud PASS
+  → Latest/postflight
   → role-window closeout retirement checkpoint（第二轮版本窗口退役审查）
+  → C2 / final evidence与programme closeout
   → 后继版本列车与Product Phase另行决策
 ```
 

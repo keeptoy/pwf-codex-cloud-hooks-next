@@ -35,3 +35,10 @@
 - deterministic双构建：22 entries、85,912 bytes、SHA-256 `4a059fa512a2c144cef42478d217935825ee7aca0599dca5582c62dd12df415c`，两份字节身份一致。该hash只属于当前本地zero-hash candidate，不是sealed/public asset identity。
 - importer check、Python compile、`node --check install.js`、两份bootstrap Bash syntax、manifest contract hash、bootstrap identity-only delta与`git diff --check`全部PASS。
 - 相对v0.4.1，install.js、hooks、runtime、runtime bundle和tools仍为零delta；Release输入变化只限package identity、Release/transition contracts、manifest integrity references和新bootstrap。
+
+## Release workflow authority convergence
+
+- ROADMAP已有`release-four-step-flow`与`version-train-two-retirement-reviews`稳定anchors，但当前没有其他文档链接这两个入口；模板、治理指南、v0.4.2实例和Phase 4.14历史记录都重复了部分流程。
+- 当前存在两处真实顺序漂移：ROADMAP宏观流把Pre-release放在C1前，而v0.4.2 guide与Operator Guide模板要求先写C1再等待publication；ROADMAP示例把第二retirement checkpoint放在C2后，但C2定义又要求保存该检查点。
+- 维护者已批准采用单一顺序：candidate baseline →第一检查点→C0→Source/Candidate PASS→C1写回/push→tag精确指向C0并publication→Published Release PASS→Latest/postflight→第二检查点→C2 final closeout。
+- 其他文档只保留职责内细节：Cloud模板管执行协议，Operator Guide模板管状态容器，治理指南管对象/planning生命周期，版本guide管exact实例，Phase history管当时设计理由；current programme顺序一律链接ROADMAP。

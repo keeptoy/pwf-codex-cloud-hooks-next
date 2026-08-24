@@ -6,7 +6,7 @@
 
 ## Next Step
 
-维护者审核并push本地C0 commit；在全新Cloud按`docs/v0.4.2-cloud-hard-acceptance.md`执行Source/Candidate，回传exact HEAD与原始证据。停止在Cloud结果写回前。
+维护者审核并push最新本地C0 HEAD；在全新Cloud按`docs/v0.4.2-cloud-hard-acceptance.md`执行Source/Candidate，回传exact HEAD与原始证据。停止在Cloud结果写回前。
 
 ## Current Phase
 
@@ -38,6 +38,13 @@ Phase 5 / maintainer push and Source/Candidate Cloud pending
 - [x] 运行风险相称的 focused checks、完整 suite、Release build/check 和 deterministic double build。
 - [x] 写回 planning 与第一检查点状态，并准备范围单一的本地C0 commit。
 - [x] 停止在 Source/Candidate Cloud 前，准备向维护者交接精确commit、教程和待push动作。
+- **Status:** complete
+
+### Phase 4.5: Release workflow authority convergence
+
+- [x] 把ROADMAP冻结为Release四步、C0/C1/C2与两轮retirement checkpoint的唯一programme authority，并消除C1/publication及C2/第二检查点顺序冲突。
+- [x] 让模板、治理指南、v0.4.2实例和Phase 4.14历史记录按各自职责引用ROADMAP稳定anchors，不再形成第二份current authority。
+- [x] 增加防回归断言并运行focused与完整本地治理验证。
 - **Status:** complete
 
 ### Phase 5: Source/Candidate channel checkpoint

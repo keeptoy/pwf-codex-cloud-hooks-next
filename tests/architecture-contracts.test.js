@@ -119,6 +119,10 @@ test("acceptance documents are counted by Discovery Round and share one operator
   assert.match(operatorTemplate, /两次状态写回[^\n]*不是[^\n]*Cloud/);
   assert.match(operatorTemplate, /SOURCE_CANDIDATE_CHECKPOINT_HEAD/);
   assert.match(operatorTemplate, /PUBLISHED_RELEASE_CLOSEOUT_HEAD/);
+  for (const currentReleaseDoc of [operatorTemplate, cloudTemplate, governance]) {
+    assert.match(currentReleaseDoc, /\.\.\/ROADMAP\.md#release-four-step-flow/);
+    assert.match(currentReleaseDoc, /\.\.\/ROADMAP\.md#version-train-two-retirement-reviews/);
+  }
 
   for (const value of [cloudTemplate, governance]) {
     assert.match(value, /多 Discovery 版本/);
@@ -317,6 +321,7 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   const longTermStart = roadmap.indexOf("## 11. 长期路线");
   const retirementStart = roadmap.indexOf('<a name="version-train-two-retirement-reviews"></a>');
   const compatibilityStart = roadmap.indexOf('<a name="pre-1-compatibility-admission"></a>');
+  const releaseFlowStart = roadmap.indexOf('<a name="release-four-step-flow"></a>');
   assert.notEqual(currentTrainStart, -1);
   assert.notEqual(productPhaseStart, -1);
   assert.notEqual(versioningStart, -1);
@@ -351,6 +356,12 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
     "Discovery, migration, Release, rollback, and long-term governance must remain ordered");
   assert.ok(releaseStart < retirementStart && retirementStart < compatibilityStart,
     "retirement reviews must live inside Release governance before compatibility policy");
+  const releaseFlow = roadmap.slice(releaseFlowStart, retirementStart);
+  assert.match(releaseFlow,
+    /C0：候选源码 commit[\s\S]*Source\/Candidate Cloud PASS[\s\S]*C1：第一阶段状态commit[\s\S]*正式验收tag精确指向C0[\s\S]*immutable Pre-release[\s\S]*Published Release Cloud PASS[\s\S]*Latest promotion\/postflight[\s\S]*role-window closeout retirement checkpoint[\s\S]*C2：最终治理commit/);
+  const retirementFlow = roadmap.slice(retirementStart, compatibilityStart);
+  assert.match(retirementFlow,
+    /candidate-readiness retirement checkpoint[\s\S]*C0 \/ Source-Candidate[\s\S]*C1 \/ 第一阶段状态写回[\s\S]*immutable publication[\s\S]*Published Release Cloud[\s\S]*Latest\/postflight[\s\S]*role-window closeout retirement checkpoint[\s\S]*C2 \/ final evidence与programme closeout/);
   for (const role of [
     "SOURCE_CANDIDATE_HEAD", "SOURCE_CANDIDATE_CHECKPOINT_HEAD",
     "PUBLISHED_RELEASE_CLOSEOUT_HEAD",

@@ -50,6 +50,7 @@ function currentRoleWindow() {
 test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const pathSafetyHistory = read("docs/history/phase-4.13-v0.4.1-path-safety-patch-train.md");
+  const candidateAcceptance = read("docs/v0.4.2-cloud-hard-acceptance.md");
   assert.equal(developmentTrain, "v0.4.2");
   assert.equal(candidate, "v0.4.2");
   assert.equal(accepted, "v0.4.1");
@@ -63,6 +64,8 @@ test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
   assert.match(pathSafetyHistory, /兼容性安全/);
   assert.match(pathSafetyHistory, /99885b854bd9621c3340e99f031bf83ceb58414d/);
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.1`/);
+  assert.match(candidateAcceptance, /\.\.\/ROADMAP\.md#release-four-step-flow/);
+  assert.match(candidateAcceptance, /\.\.\/ROADMAP\.md#version-train-two-retirement-reviews/);
 });
 
 test("Phase 4.12 preserves the renamed v0.4.0 Release discovery and P9 evidence", () => {
@@ -287,6 +290,8 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(acceptanceTemplate, /正式tag[^\n]*SOURCE_CANDIDATE_HEAD/);
   assert.match(acceptanceTemplate, /SOURCE_CANDIDATE_CHECKPOINT_HEAD/);
   assert.match(acceptanceTemplate, /PUBLISHED_RELEASE_CLOSEOUT_HEAD/);
+  assert.match(acceptanceTemplate, /\.\.\/ROADMAP\.md#release-four-step-flow/);
+  assert.match(acceptanceTemplate, /\.\.\/ROADMAP\.md#version-train-two-retirement-reviews/);
   assert.match(acceptanceTemplate, /exact final source[\s\S]{0,220}所有Release输入[^\n]*不变[\s\S]{0,220}Source\/Candidate/);
   assert.match(acceptanceTemplate, /Published Release[^\n]*不能提前复用/);
   assert.doesNotMatch(acceptanceTemplate, new RegExp(versionPattern, "i"));
@@ -448,6 +453,8 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
   assert.match(history, /C0[\s\S]*Source\/Candidate Cloud PASS[\s\S]*正式验收tag[^\n]*C0/);
   assert.match(history, /C1[\s\S]*第一阶段PASS[\s\S]*Published Release Cloud/);
   assert.match(history, /C2[\s\S]*Published Release evidence[\s\S]*Latest promotion\/postflight[\s\S]*第二轮退役检查/);
+  assert.match(history, /\.\.\/\.\.\/ROADMAP\.md#release-four-step-flow/);
+  assert.match(history, /\.\.\/\.\.\/ROADMAP\.md#version-train-two-retirement-reviews/);
   assert.match(history, /版本级black-box acceptance[\s\S]{0,240}阶段guide没有[\s\S]{0,120}同一retirement transaction/);
   assert.match(history, /current tests[\s\S]{0,120}历史教程[\s\S]{0,80}必须存在的回归资产/);
   assert.match(history, /4份阶段guide[\s\S]{0,100}tracked tree清退/);

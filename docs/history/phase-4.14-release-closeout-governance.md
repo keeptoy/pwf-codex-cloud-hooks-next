@@ -10,7 +10,9 @@ Product行为、Host ABI、trusted graph、package identity或Release字节，�
 分别代表什么。
 
 它不是新的Product Phase、Discovery Round或Release acceptance，也不接管Phase 4.12 Release discovery或Phase 4.13
-path-safety的详细证据；当前programme、版本角色、授权和实际验收状态仍只读ROADMAP、活动planning与对应版本operator guide。
+path-safety的详细证据；当前programme顺序只读[`ROADMAP`的Release四步与C0/C1/C2](../../ROADMAP.md#release-four-step-flow)
+和[`两个retirement checkpoint`](../../ROADMAP.md#version-train-two-retirement-reviews)，当前授权与实际验收状态仍只读活动planning
+与对应版本operator guide。
 
 <a name="phase-4-14-problem-before"></a>
 
@@ -59,6 +61,8 @@ publication、公开包Fresh/Resume、Latest角色轮转和第二轮退役逐项
 <a name="phase-4-14-c0-c1-c2"></a>
 
 ## C0 / C1 / C2 身份与证据流
+
+下图保留Phase 4.14形成时的讨论快照，用于解释三个身份为什么分开，不作为后继版本的执行顺序；当前顺序只读上述ROADMAP入口。
 
 ```text
 C0：候选源码 commit（SOURCE_CANDIDATE_HEAD）
