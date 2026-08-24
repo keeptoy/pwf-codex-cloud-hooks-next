@@ -1,0 +1,95 @@
+# Task Plan: post-v0.4.2 文档治理扫尾 Discovery
+
+## Goal
+
+在不改写 v0.4.2 真实历史证据、不自动清退 planning 的前提下，识别并治理发布收官快照、临时事故叙事或版本专用规则泄漏到长期模板与 current regression 的残留。
+
+## Next Step
+
+盘点 current tests 对 v0.4.2“临时授权”时间线及其他版本快照的直接依赖，区分应保留的历史证据与应迁移的稳定语义断言；提出 RETIRE/MIGRATE/KEEP 建议后等待维护者授权实施。
+
+## Current Phase
+
+Phase 2: targeted documentation/test residue inventory
+
+## Phases
+
+### Phase 1: Recovery and planning lifecycle correction
+
+- [x] 确认 v0.4.2 Release closeout 已关闭且本地分支与远端同步。
+- [x] 追溯“current tree 只能存在一个 planning scope”断言的引入时间与背景。
+- [x] 确认该断言是 v0.4.2 C2 清退快照的过度泛化，并与稳定 planning lifecycle authority、底层 validator 冲突。
+- [x] 按维护者授权删除唯一-scope快照断言，保留 pointer、活动/非活动 scope 结构与三件套校验。
+- [x] 新建本 Discovery scope 并切换 `.planning/.active_plan`；旧 v0.4.2 scope 保留，不自动清退。
+- **Status:** complete
+
+### Phase 2: Targeted documentation/test residue inventory
+
+- [ ] 盘点 tests 对 v0.4.2“首次停止 → 临时授权 → PASS”事故时间线的直接依赖。
+- [ ] 区分 immutable acceptance/history 真实证据与 stable template/current regression 长期合同。
+- [ ] 扫描 C2、Phase 9、旧版本角色、一次性数量及其他 snapshot-specific 断言。
+- [ ] 把精确发现、影响范围与建议写入 `findings.md`。
+- **Status:** in_progress
+
+### Phase 3: Broader documentation authority and link sweep
+
+- [ ] 检查 current authority 重复、旧 current-state 投影、失效/过度兼容 anchor 与断链风险。
+- [ ] 核对 README/ROADMAP、治理指南、templates、acceptance 与 history 的职责边界。
+- [ ] 形成 RETIRE/MIGRATE/KEEP 清单，不提前修改未授权对象。
+- **Status:** pending
+
+### Phase 4: Maintainer decision and scoped implementation
+
+- [ ] 向维护者报告发现、依据、影响范围和最小修改建议。
+- [ ] 只实施维护者明确批准的条目；不把 Discovery 自动扩大为新 Release/Product Phase。
+- [ ] 运行风险相称的 focused/full validation，并记录真实结果。
+- **Status:** pending
+
+### Phase 5: Closeout and train attribution
+
+- [ ] 决定本轮结果属于独立 patch/governance train、后继版本输入或纯 Discovery 结论。
+- [ ] 把稳定结论提升到唯一 authority，更新必要的历史摘要与交接状态。
+- [ ] 由维护者决定本 scope 及旧 v0.4.2 scope 的后续 KEEP/RETIRE；pointer 切换不自动授权删除。
+- **Status:** pending
+
+## Key Questions
+
+1. 哪些 current tests 在保护稳定协议，哪些只是在逐字保护某次版本事故或 closeout 快照？
+2. v0.4.2 acceptance/history 中的真实临时授权时间线应保留到什么粒度，而 current regression 应迁移为什么稳定语义？
+3. 是否还有 C2/Phase 9/固定数量/版本角色等历史状态被错误提升为永久规则？
+4. 本轮治理 delta 是否需要新的版本身份与双通道 Release 验收？
+
+## Decisions Made
+
+| Decision | Rationale |
+|---|---|
+| 保留多个完整 planning scope | 复杂项目的多轮 Discovery 需要相邻上下文帮助恢复；维护者可见且控制退役节奏，测试无需强制只剩一个目录。 |
+| 删除 `planningScopes === [activePlan]` 断言 | 它只反映 v0.4.2 C2 清退后的瞬时结果，与稳定指南及支持 inactive 三件套的 validator 冲突。 |
+| 不删除旧 v0.4.2 scope | pointer 切换不是 planning 删除授权；旧 scope 已关闭但仍可作为本轮紧邻来源。 |
+| acceptance/history 保留真实时间线，模板/测试只冻结稳定协议 | 历史证据回答“当时发生了什么”，current regression 应回答“今后必须保证什么”。 |
+
+## Authorization
+
+- 已授权：新建并切换到 post-v0.4.2 文档治理扫尾 Discovery；保留旧 planning scope。
+- 已授权：删除 current repository test 中“只能存在一个 planning scope”的要求，保留其余 planning lifecycle 校验。
+- 已授权：只读扫描文档、tests、Git 历史和引用关系，形成后续治理建议。
+- 未授权：自动删除任何 planning、历史 acceptance/history、production/runtime/contract 或 Release 输入。
+- 未授权：push、远端 branch/tag/Release/资产、Latest、Cloud task、部署或下一 Product Phase/版本列车 activation。
+
+## Stop Conditions
+
+- 发现拟修改对象属于 immutable release identity、production/runtime、contract、bootstrap、ZIP allowlist 或其他 Release 输入时停止并报告。
+- 发现历史正文与稳定模板看似冲突时，先按角色分类，不用当前协议回写改造真实历史时间线。
+- 任何 planning 删除都必须由维护者明确决定；完成状态、Git 恢复点或 pointer 切换都不构成删除授权。
+- Discovery 结论扩大到实际文档/test批量治理前，先提交发现、影响和建议，等待维护者授权。
+
+## Errors Encountered
+
+| Error | Attempt | Resolution |
+|---|---:|---|
+| 初次 Git 追溯组合命令以 exit 1 结束，但 blame/pickaxe 已完整返回 | 1 | 不重复原命令；拆分为定向 `git show`、`git blame` 与 helper 读取，确认引入 commit 和原始生命周期语义。 |
+| 沙箱内 `git add` 无法创建 `.git/index.lock`，Node test runner 创建子进程返回 `EPERM` | 1 | 归类为维护机沙箱执行面限制；记录后改用获准的非沙箱执行面分别完成暂存与验证，不弱化断言。 |
+
+## Current Status
+
+`DISCOVERY_ACTIVE / MULTI_SCOPE_ALLOWED / V0_4_2_SCOPE_KEPT / SINGLE_SCOPE_ASSERTION_RETIRE_AUTHORIZED / BROADER_IMPLEMENTATION_NOT_AUTHORIZED`

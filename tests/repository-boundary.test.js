@@ -264,11 +264,8 @@ test("maintenance environment constraints survive planning retirement", () => {
 test("planning lifecycle has one valid active pointer and complete scoped records", () => {
   const actual = repositoryPaths();
   const activePlan = read(".planning/.active_plan").trim();
-  const planningScopes = fs.readdirSync(path.join(root, ".planning"), { withFileTypes: true })
-    .filter(entry => entry.isDirectory()).map(entry => entry.name).sort();
 
   assert.match(activePlan, /^\d{4}-\d{2}-\d{2}-[a-z0-9][a-z0-9.-]*$/);
-  assert.deepEqual(planningScopes, [activePlan], "completed inactive planning scopes must retire at C2");
   assert.equal(validatePlanningScopes(root, activePlan, actual), "legacy",
     "the development candidate's real active planning scope must remain markerless before F3B live");
 
