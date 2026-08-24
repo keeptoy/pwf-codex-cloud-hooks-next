@@ -145,6 +145,22 @@ Batch B不会改变历史事实，但会显著降低自然语言改写导致的�
 - 新段使用独立稳定anchor，但ROADMAP不增加第三条直达history链接；宏观历史入口仍保持README历史索引与ROADMAP既有两条programme理由。
 - 最终验证：新段使Phase 4.14当前稳定anchor总数增至21；focused governance tests 24/24 PASS，完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped；6个changed paths与22-entry Release allowlist交集为0，ROADMAP history links仍为2。
 
+## ROADMAP Phase 5 Documentation Governance Rotation
+
+- 维护者授权把文档治理正式登记为Product Phase 5，原候选Product Phase 5～8顺延为6～9；这次改号必须连同anchors、跨文档链接和测试原子闭合。
+- 已关闭v0.4.2 Release closeout不再作为第4节current train实体保留，其长期结论需要内化到第5节的`5.1.4`；但第4节仍保留“当前开发列车工作台”的通用规则、active planning以及candidate/accepted role-window等治理说明。
+- 两个现存planning scope均明确`KEEP`，用于Phase 5文档治理与相邻Discovery恢复；pointer或programme轮转不产生删除授权。
+- 当前需进一步核对：`5.1.4`在既有层级中位于“5.1 Phase 4已采纳路线”之下，因此迁移时必须用标题和正文清楚区分“v0.4.2/Phase 4长期closeout结论”与新Product Phase 5身份，避免层级语义混淆。
+- 引用inventory确认：current ROADMAP只有`product-phase-4` canonical anchor，候选Phase 5～8表格尚无独立anchors；新增文档治理应建立`product-phase-5`，顺延候选6～9可继续留在路线表，等实际closeout时再建立各自canonical小节。
+- `v0-4-2-release-closeout`当前只有Phase 4.14历史链接和current-role测试消费；anchor应随正文迁到`5.1.4`，保持旧链接可解析，但Phase 4.14原始“当时current train”措辞不批量改写。
+- 大量Phase 4.1/4.2等冻结history records仍使用旧Phase 5～8编号，这些是当时真实programme时间语义，不能跟current ROADMAP机械顺延；现有历史测试也明确保护这些旧说法。
+- ROADMAP顶层programme表与current-role helpers目前要求“当前开发列车”必须是可解析`vX.Y.Z`；要表达空列车，需要选择机器可解析的显式空值，并同步repository/architecture tests，不能只删除表格行或写自然语言空白。
+- 采用显式空值`NONE`表示当前没有获批development train；accepted/fallback仍保持`v0.4.2`/`v0.4.1`，package identity仍可由Release/package tests独立解析，不把accepted误当活动开发列车。
+- 为同时满足`5.1.4`与Phase-level authority，将`5.1`标题校准为“Phase 4～5已采纳路线”：`product-phase-4`继续覆盖5.1.1～5.1.3，新增`product-phase-5`紧邻5.1.4；`v0-4-2-release-closeout`随完整closeout正文迁入5.1.4以保持旧深链接可解析。
+- 新Phase 5使用已经完成的`0.4.2`documentation-governance列车；原compaction/tool/advisory/hard-gating候选工作的version series保持`0.5.0-*`～`0.8.0-*`，只把Product Phase编号顺延为6～9，并相应改写它们之间的Phase引用。
+- repository governance补充列车间空窗合同：旧列车关闭且下一列车未授权时，第4节保留通用工作台、角色表写`NONE`、旧exact train anchor退场；planning可由维护者决定`KEEP`，但不等于列车激活。
+- 最终迁移验证：focused governance 24/24 PASS；完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped。Release allowlist交集保持0，旧`v0-4-2-release-closeout`和新`product-phase-5`各只有一个定义，ROADMAP history入口仍为2。
+
 ## Technical Decisions
 
 | Decision | Rationale |

@@ -6,11 +6,11 @@
 
 ## Next Step
 
-按维护者决定完成Phase 5归属写回：Batch A/B归入v0.4.2 post-C2文档治理扫尾，在ROADMAP 4.1追加programme摘要，并在Phase 4.14追加详细历史与稳定anchor；验证后独立提交，不删除planning或激活新列车。
+ROADMAP lifecycle轮转已完成并验证；保持当前开发列车`NONE`、两个planning scope继续KEEP。下一Product Phase/版本列车未授权，等待维护者push本地commit或给出新的programme指令。
 
 ## Current Phase
 
-Phase 5: closeout and train attribution
+Phase 6: ROADMAP lifecycle rotation
 
 ## Phases
 
@@ -53,8 +53,16 @@ Phase 5: closeout and train attribution
 
 - [x] 决定Batch A/B归入v0.4.2 post-C2文档治理扫尾，不另开版本身份，也不改写immutable Release。
 - [x] 把programme级摘要写入ROADMAP 4.1，把详细取舍与验证写入Phase 4.14，并同步稳定边界测试。
-- [ ] 由维护者决定本 scope 及旧 v0.4.2 scope 的后续 KEEP/RETIRE；pointer 切换不自动授权删除。
-- **Status:** in_progress
+- [x] 维护者决定本 scope 及旧 v0.4.2 scope 继续KEEP，作为Phase 5文档治理与多轮Discovery恢复参考。
+- **Status:** complete
+
+### Phase 6: ROADMAP lifecycle rotation
+
+- [x] 盘点ROADMAP第4/5节结构、Product Phase 5～8 anchors及全仓库引用。
+- [x] 新增Product Phase 5文档治理，把原候选Phase 5～8原子顺延为6～9。
+- [x] 把4.1已关闭v0.4.2 Release closeout长期结论内化迁入5.1.4；第4节保留无活动列车工作台规则。
+- [x] 同步authority链接、tests和活动planning，运行风险相称验证并独立提交。
+- **Status:** complete
 
 ## Key Questions
 
@@ -80,6 +88,7 @@ Phase 5: closeout and train attribution
 - 已授权：先实施Batch A、后实施Batch B；Batch A的Phase 4.12范围按复核后的全部21个无入链旧anchors原子清退。
 - 已授权：Batch B收敛Phase 4.14逐段自然语言断言，并压缩ROADMAP 4.1重复的临时授权事故过程；历史正文和真实acceptance证据保持不变。
 - 已授权：把Batch A/B明确归入v0.4.2，在ROADMAP 4.1追加programme摘要，并同步到Phase 4.14历史；只改治理文档、相应测试与活动planning，不碰22项Release输入。
+- 已授权：新增Product Phase 5文档治理，原Phase 5～8顺延为6～9；把4.1 closed v0.4.2内容迁到5.1.4，但保留第4节current-workbench通用说明；所有planning scope明确KEEP。
 - 未授权：自动删除任何 planning、历史 acceptance/history、production/runtime/contract 或 Release 输入。
 - 未授权：push、远端 branch/tag/Release/资产、Latest、Cloud task、部署或下一 Product Phase/版本列车 activation。
 
@@ -102,7 +111,11 @@ Phase 5: closeout and train attribution
 | Batch B首次focused测试23 pass / 1 fail：ROADMAP新增第三条直达history链接，违反“两处受控宏观入口”边界 | 1 | 保留真实时间线于immutable acceptance/history；ROADMAP只链接版本acceptance并明确不新增第三入口，随后重跑。 |
 | Batch B最终静态汇总命令被PowerShell反引号解析提前终止 | 1 | 命令未执行任何检查或写入；拆分为不含反引号的简单命令完成最终审计，不重复原命令。 |
 | Phase 5首次planning结项补丁因progress表格上下文不精确而未应用 | 1 | 没有文件被部分修改；读取精确UTF-8上下文后拆分补丁，不重复旧上下文。 |
+| ROADMAP结构展示用`rg`正则缺少闭合字符类并返回解析错误 | 1 | 后续`Get-Content`已成功提供主体结构；不重复该正则，改用literal searches和分项引用inventory。 |
+| ROADMAP首个组合迁移补丁因历史Phase 9说明的实际换行与预期不一致而未应用 | 1 | 没有部分修改；拆为顶层角色、路线表、正文迁移和测试四个有界补丁，不重复大上下文。 |
+| Phase 6首次focused测试22/24 PASS：ROADMAP重复planning-lifecycle fragment；package identity与`0.4.2`关系不够直接 | 1 | 删除5.1.4重复authority链接并把正文明确为package identity `0.4.2`；不弱化唯一链接或身份断言。 |
+| Phase 6首次planning结项组合补丁因progress测试表格上下文不精确而未应用 | 1 | 仓库正文与测试结果未受影响；读取精确UTF-8上下文后拆分task/findings与progress补丁。 |
 
 ## Current Status
 
-`V0_4_2_ATTRIBUTION_AND_DOC_SYNC_COMPLETE / RELEASE_INPUTS_UNCHANGED / PLANNING_KEEP_RETIRE_DECISION_PENDING`
+`PHASE_5_DOCUMENTATION_GOVERNANCE_CLOSED / DEVELOPMENT_TRAIN_NONE / PRODUCT_PHASES_6_TO_9_PENDING / ALL_PLANNING_SCOPES_KEEP`

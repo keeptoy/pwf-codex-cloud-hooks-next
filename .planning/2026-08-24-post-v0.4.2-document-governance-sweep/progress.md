@@ -62,6 +62,8 @@
 | v0.4.2 Batch A/B归属同步 focused | ROADMAP摘要、Phase 4.14新anchor与Release-excluded边界一致 | 24 tests / 24 pass / 0 fail | PASS |
 | v0.4.2 Batch A/B归属同步 `npm test` | 无production/runtime/Release回归 | 182 tests / 156 pass / 0 fail / 26 skipped | PASS |
 | v0.4.2 Batch A/B归属同步 static audit | Release输入不变；ROADMAP宏观history入口不扩张 | 6 changed paths；Release intersection=0；history links=2；`git diff --check`通过 | PASS |
+| ROADMAP Phase 5/6～9 focused | `NONE`空列车、5.1.4 authority、顺延路线与历史链接闭合 | 24 tests / 24 pass / 0 fail | PASS |
+| ROADMAP Phase 5/6～9 `npm test` | 无production/runtime/Release/publication/planning回归 | 182 tests / 156 pass / 0 fail / 26 skipped | PASS |
 
 ### Phase 5: Closeout and train attribution
 
@@ -73,6 +75,21 @@
 - focused governance validation 24 tests / 24 pass / 0 fail；尚待完整Windows suite、最终账本状态与独立本地commit。
 - 完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped；skip均为既有Linux/POSIX-only case。本轮未触发Cloud/Release重验。
 - Phase 5版本归属与文档同步完成；当前只剩维护者决定本scope与旧v0.4.2 scope的KEEP/RETIRE，提交不会自动删除planning。
+- 维护者随后决定两个planning scope全部KEEP，并授权新增Product Phase 5文档治理、原Product Phase 5～8顺延为6～9，以及4.1 closed train向5.1.4迁移。
+
+### Phase 6: ROADMAP lifecycle rotation
+
+- **Status:** in_progress
+- 初读确认第5节表格当前包含Product Phase 4～8；`5.1.1～5.1.3`是Phase 4长期摘要，需先完成全仓库anchor/reference inventory再决定5.1.4标题与迁移边界。
+- 全仓库引用inventory完成：历史Phase 5～8编号保持冻结；current ROADMAP新增`product-phase-5`，旧`v0-4-2-release-closeout` anchor随正文迁入5.1.4；current-role tests需支持显式空开发列车。
+- 迁移结构冻结：第4节使用`NONE`空列车并保留通用工作台规则；5.1改为Phase 4～5已采纳路线，5.1.4承接Phase 5/v0.4.2 closeout；原候选工作只顺延Product Phase编号，version series不机械改号。
+- ROADMAP顶层角色已改为`NONE`空开发列车，programme边界登记Phase 4～5关闭；路线表新增complete Phase 5文档治理，原候选Product Phase 5～8已顺延为6～9并校准相互引用。正文迁移与tests尚未完成。
+- 4.1正文已内化整理到`5.1.4 Phase 5文档治理与v0.4.2 Release closeout`；`product-phase-5`与旧`v0-4-2-release-closeout` anchors均位于新长期authority。第4节只保留通用工作台规则、`NONE`空列车状态与planning KEEP说明。
+- repository-boundary与architecture contracts已同步`NONE`空列车、5.1.4长期authority、Product Phase 5 complete及原候选6～9路线；历史fixtures/tests未机械改号，等待静态审计与测试反馈。
+- repository-governance-guide已补列车间`NONE`空窗规则与状态流，明确保留planning不等于激活列车；architecture contract同步保护该长期边界。
+- 首轮静态审计PASS：7个changed paths与Release allowlist交集0；`v0-4-2-release-closeout`和`product-phase-5`各1个定义；第4节4.1标题0；ROADMAP history links仍为2；current authority没有旧Phase 5～8路线命中；两份Node测试文件语法通过。
+- 首次focused为22/24 PASS；删除重复planning-lifecycle fragment并明确package identity `0.4.2`后复跑24/24 PASS。空列车、Phase 5 authority、6～9路线、历史链接和治理指南空窗合同均通过。
+- 完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped；production/runtime/Release/publication/planning均无回归。Phase 6实施与验证完成，所有planning scope继续KEEP。
 
 ## Error Log
 
@@ -86,13 +103,17 @@
 | 2026-08-24 | Batch B首次focused测试23/24 PASS；ROADMAP新增第三条直达history链接触发宏观入口断言 | 1 | 归类为本批authority边界冲突；ROADMAP改为只链接immutable acceptance，不增加新的history宏观入口，待重跑。 |
 | 2026-08-24 | Batch B最终静态汇总命令被PowerShell反引号解析提前终止 | 1 | 未执行任何检查或写入；改用不含反引号的拆分命令完成审计，不重复原命令。 |
 | 2026-08-25 | Phase 5首次planning结项补丁因progress表格上下文不精确而未应用 | 1 | 没有文件被部分修改；读取精确UTF-8上下文后拆分补丁，不重复旧上下文。 |
+| 2026-08-25 | ROADMAP结构展示用`rg`正则缺少闭合字符类 | 1 | 主体`Get-Content`仍成功；后续改用literal searches和分项引用inventory，不重复错误正则。 |
+| 2026-08-25 | ROADMAP首个组合迁移补丁因历史Phase 9说明换行不匹配而未应用 | 1 | 无部分修改；拆为四个有界补丁继续，不重复大上下文。 |
+| 2026-08-25 | Phase 6首次focused测试22/24 PASS：重复planning-lifecycle fragment、package identity关系表述不直接 | 1 | 保留唯一authority链接并明确package identity `0.4.2`；修正后再复跑。 |
+| 2026-08-25 | Phase 6首次planning结项组合补丁因progress测试表格上下文不精确而未应用 | 1 | 仓库正文与测试结果未受影响；读取精确UTF-8上下文后拆分补丁。 |
 
 ## 5-Question Reboot Check
 
 | Question | Answer |
 |---|---|
-| Where am I? | Phase 5：Batch A/B均已实施并验证，等待closeout与列车归属决策。 |
-| Where am I going? | 确认本轮结果如何归档，并由维护者决定两个完整planning scope的KEEP/RETIRE。 |
+| Where am I? | Phase 6完成：Product Phase 5已关闭，当前开发列车为NONE。 |
+| Where am I going? | 等待维护者push本地commit或另行授权Product Phase 6/下一版本列车。 |
 | What's the goal? | 清除历史快照对长期合同的错误耦合，同时保留真实历史和多轮 planning 恢复能力。 |
-| What have I learned? | 历史正文可以完整保留，但current regression和programme authority应只冻结稳定语义与受控入口。 |
-| What have I done? | 完成并分批提交A/B治理：清退死快照、修复链接、加入通用审计、收敛Phase 4.14回归与ROADMAP事故摘要；完整Windows回归均PASS。 |
+| What have I learned? | 列车关闭后可以合法进入NONE空窗；planning KEEP只保留恢复记忆，不会激活新列车。 |
+| What have I done? | 登记Phase 5文档治理，顺延候选Phase 6～9，把4.1迁入5.1.4并同步治理指南与测试；完整Windows回归PASS。 |

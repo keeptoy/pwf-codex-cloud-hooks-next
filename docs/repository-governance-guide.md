@@ -201,6 +201,9 @@ ROADMAP第4节是current development train工作台，第5节是Product Phase的
 4. **版本列车轮转：** 在第4节替换为下一列车前，完成旧train anchor的入链inventory、迁移和删除后复扫。版本号、SHA、
    Cloud流水、Release资产与accepted/fallback角色分别进入CHANGELOG、provenance、acceptance和ROADMAP的版本角色区域，不能
    整段搬进第5节。
+5. **列车间空窗：** 若旧列车已关闭而下一Product Phase/版本列车尚未获批，第4节保留current-workbench通用规则，但“当前开发列车”
+   必须写成机器可解析的`NONE`且不得保留旧exact train anchor。已完成planning可以按维护者决定继续`KEEP`供相邻Discovery恢复；
+   它们不构成列车激活，也不得被自动清退。
 
 patch/governance列车没有新Product Phase时，不得为了清空第4节虚构第5节条目；多个Product Phase共用一条版本列车时，各Phase
 分别做closeout并进入第5节，而列车只在最终Release closeout后轮转一次。
@@ -224,7 +227,9 @@ Product Phase正式关闭
 
 版本列车完成Release并轮转
   → 确认没有current引用继续指向旧第4节列车
-  → 第4节替换为下一条开发列车
+  → 下一列车已授权时，第4节替换为新的exact开发列车
+  → 下一列车未授权时，第4节保留工作台规则并把当前开发列车写为NONE
+  → 可按维护者决定保留完整planning，但不创建exact train anchor或推断新Product授权
 ```
 
 #### 例外与归属判断

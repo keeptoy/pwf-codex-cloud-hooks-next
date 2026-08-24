@@ -341,11 +341,12 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   const productPhases = roadmap.slice(productPhaseStart, versioningStart);
   const migrationGovernance = roadmap.slice(migrationStart, releaseStart);
   const compatibilityGovernance = roadmap.slice(compatibilityStart, rollbackStart);
-  const developmentTrain = roadmap.match(/^\| 当前开发列车 \| `(v[^`]+)`/m)?.[1];
-  assert.ok(developmentTrain, "ROADMAP lacks a parseable current development train");
-  const escapedDevelopmentTrain = developmentTrain.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const developmentTrain = roadmap.match(/^\| 当前开发列车 \| `(NONE|v[^`]+)`/m)?.[1];
+  assert.ok(developmentTrain, "ROADMAP lacks a parseable current development train state");
+  assert.equal(developmentTrain, "NONE");
   assert.match(roadmap, /^<a name="version-train-two-retirement-reviews"><\/a>$/m);
   assert.match(roadmap, /^<a name="product-phase-4"><\/a>$/m);
+  assert.match(roadmap, /^<a name="product-phase-5"><\/a>$/m);
   assert.match(roadmap, /^<a name="discovery-gate-governance"><\/a>$/m);
   assert.match(roadmap, /^<a name="migration-transaction-lifecycle-governance"><\/a>$/m);
   assert.match(roadmap, /^<a name="release-four-step-flow"><\/a>$/m);
@@ -355,6 +356,10 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(roadmap, /第二轮：role-window closeout/);
   assert.match(roadmap, /review.*不是为了清单好看而强制删除/);
   assert.match(repositoryGovernance, /^<a name="planning-lifecycle"><\/a>$/m);
+  assert.match(repositoryGovernance,
+    /列车间空窗[\s\S]*当前开发列车[\s\S]*`NONE`[\s\S]*不得保留旧exact train anchor/);
+  assert.match(repositoryGovernance,
+    /下一列车未授权时[\s\S]*工作台规则[\s\S]*NONE[\s\S]*不创建exact train anchor/);
   assert.match(roadmap, /docs\/repository-governance-guide\.md#planning-lifecycle/);
   assert.match(roadmap, /planning[\s\S]{0,180}维护者[\s\S]{0,120}明确决定[\s\S]{0,120}不(?:得|会)自动删除/);
   assert.match(roadmap, /candidate admission preflight[\s\S]{0,240}只读[\s\S]{0,240}不删除/);
@@ -396,22 +401,13 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   ]) assert.match(roadmap, new RegExp("`" + role + "`"));
   assert.match(roadmap, /C0[\s\S]*C1[\s\S]*C2/);
   assert.doesNotMatch(roadmap, /<a name="phase-9-v0-4-0-instance"><\/a>/);
-  assert.match(currentTrain,
-    new RegExp(`^### 4\\.1 已关闭的 \`${escapedDevelopmentTrain}\` Release closeout$`, "m"));
-  assert.match(currentTrain, /documentation governance/);
-  assert.match(currentTrain, /package identity[\s\S]*0\.4\.2/);
-  assert.match(currentTrain,
-    /Release candidate[\s\S]*Source\/Candidate[\s\S]*第二轮role-window closeout与C2均已闭合/);
-  assert.match(currentTrain,
-    /已经完成以下文档治理交付[\s\S]*RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
-  assert.match(currentTrain,
-    /第4节current train工作台[\s\S]*第5节`product-phase-N`长期authority[\s\S]*列车轮转/);
-  assert.match(currentTrain,
-    /patch继承其修补的Product baseline[\s\S]*governance按ROADMAP声明的version series落位[\s\S]*维护者确认/);
+  assert.match(currentTrain, /当前没有活动开发列车[\s\S]*没有exact train anchor/);
+  assert.match(currentTrain, /两个保留的planning scope[\s\S]*不会把[\s\S]*v0\.4\.2列车重新激活/);
   assert.match(currentTrain, /candidate \+ accepted role window/);
   assert.match(currentTrain, /trusted\/Release zones 继续 exact[\s\S]*docs\/planning zones 按 lifecycle policy/);
   assert.match(currentTrain,
     /current development train工作台[\s\S]*活动planning[\s\S]*不会自动成为长期Product Phase authority/);
+  assert.doesNotMatch(currentTrain, /v0-4-2-release-closeout|### 4\.1|documentation governance/);
   assert.doesNotMatch(currentTrain, /F3B2 closeout|回退 smart-only|unreachable code/);
   assert.doesNotMatch(currentTrain,
     /Phase 4 已采纳 gate 路线|F2 activation\/disarm 前置协议|F2B Discovery 交接|P9-A pre-seal|P9-F second retirement|流水账文件/);
@@ -427,15 +423,20 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
     /所修补Product baseline[\s\S]*ROADMAP声明的版本系列[\s\S]*不能唯一判断时先由维护者确认/);
   assert.match(productPhases,
     /repository-governance-guide\.md#product-phase-authority-rotation/);
-  assert.match(productPhases, /\| 5 \|[\s\S]*PreCompact\/PostCompact/);
-  assert.match(productPhases, /\| 6 \|[\s\S]*噪声[\s\S]*`NO_GO`/);
-  assert.match(productPhases, /\| 7 \|[\s\S]*唯一[\s\S]*read-only/);
-  assert.match(productPhases, /\| 8 \|[\s\S]*best-effort shell lock[\s\S]*managed authority/);
+  assert.match(productPhases, /\| 5 \| `0\.4\.2` \| documentation governance[\s\S]*complete[\s\S]*planning scope[\s\S]*`KEEP`/);
+  assert.match(productPhases, /\| 6 \| `0\.5\.0-\*`[\s\S]*PreCompact\/PostCompact/);
+  assert.match(productPhases, /\| 7 \| `0\.6\.0-\*`[\s\S]*噪声[\s\S]*`NO_GO`[\s\S]*不是 Phase 8前置/);
+  assert.match(productPhases, /\| 8 \| `0\.7\.0-\*`[\s\S]*唯一[\s\S]*read-only[\s\S]*Phase 7/);
+  assert.match(productPhases, /\| 9 \| `0\.8\.0-\*`[\s\S]*复用 Phase 8 evaluator[\s\S]*best-effort shell lock[\s\S]*managed authority/);
+  assert.match(productPhases, /^#### 5\.1\.4 Phase 5 文档治理与 `v0\.4\.2` Release closeout$/m);
+  assert.match(productPhases, /^<a name="v0-4-2-release-closeout"><\/a>$/m);
+  assert.match(productPhases,
+    /Product Phase 5[\s\S]*RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD[\s\S]*两个planning scope继续`KEEP`/);
   assert.doesNotMatch(productPhases, /ROADMAP\.md#product-phase-4/);
   assert.match(phase41, /\]\(\.\.\/\.\.\/ROADMAP\.md#product-phase-4\)/);
   assert.match(phase44, /\]\(\.\.\/\.\.\/ROADMAP\.md#product-phase-4\)/);
   assert.doesNotMatch(roadmap, /### 5\.4 迁移 transaction 与对象生命周期治理/);
-  assert.doesNotMatch(roadmap, /### 5\.5 Phase 5～8 已采纳边界/);
+  assert.doesNotMatch(roadmap, /### 5\.5 .*已采纳边界/);
   assert.match(migrationGovernance, /关键迁移可以按照风险、ownership和故障域拆成独立审查、实施、测试和停止点/);
   assert.match(migrationGovernance, /具体拆分由当前Discovery与活动task plan[\s\S]*不继承历史Phase的gate名称或数量/);
   assert.match(migrationGovernance, /任何拆分都不能形成可发布的半成品[\s\S]*最终候选必须在同一transaction内[\s\S]*原子闭合/);
