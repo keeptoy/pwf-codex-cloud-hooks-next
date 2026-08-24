@@ -311,9 +311,20 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   ]) {
     assert.doesNotMatch(read(stableDoc), fixedBootstrapName, `${stableDoc} must use a version-neutral bootstrap command`);
   }
-  assert.match(read("README.md"), /for bootstrap in init-cloud-sandbox-v\*\.bash; do/);
-  assert.doesNotMatch(read("README.md"), /尚需 F3 live gate|不得描述成 Cloud lifecycle PASS/);
-  assert.match(read("README.md"), /版本专项 acceptance/);
+  const stableReadme = read("README.md");
+  assert.equal(releasePaths.includes("README.md"), true, "README is a Release ZIP input");
+  assert.match(stableReadme, /for bootstrap in init-cloud-sandbox-v\*\.bash; do/);
+  assert.match(stableReadme,
+    /python tools\/build_release\.py build --output \.\/dist\/pwf-codex-cloud-hooks-candidate\.zip/);
+  assert.match(stableReadme,
+    /python tools\/build_release\.py check --archive \.\/dist\/pwf-codex-cloud-hooks-candidate\.zip/);
+  assert.match(stableReadme, /candidate\.zip[\s\S]{0,240}本地中间产物[\s\S]{0,240}正式资产名/);
+  assert.match(stableReadme, /HOOKS_VERSION[\s\S]{0,320}HOOKS_SHA256/);
+  assert.match(stableReadme, /HOOKS_PACKAGE[\s\S]{0,240}HOOKS_URL[\s\S]{0,240}派生/);
+  assert.match(stableReadme, /package、contract[\s\S]{0,240}Source\/Candidate[\s\S]{0,240}只(?:修改|替换)[\s\S]{0,160}HOOKS_VERSION[\s\S]{0,160}HOOKS_SHA256/);
+  assert.match(stableReadme, /README\.md[\s\S]{0,200}Release ZIP输入[\s\S]{0,240}Source\/Candidate[\s\S]{0,200}新C0/);
+  assert.doesNotMatch(stableReadme, /尚需 F3 live gate|不得描述成 Cloud lifecycle PASS/);
+  assert.match(stableReadme, /版本专项 acceptance/);
   for (const retired of [
     "docs/beta3-dev-m3-cloud-equivalence.md",
     "docs/beta3-dev-m4-cutover-plan.md",

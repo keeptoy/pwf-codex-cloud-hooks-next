@@ -40,3 +40,12 @@
 - 聚焦契约最终PASS：22 tests / 22 pass / 0 fail。
 - 完整Windows runner PASS：180 tests / 154 pass / 0 fail / 26 skipped；skip仍全部为既有Linux/POSIX-only case。
 - `git diff --check`通过；12个改动文件与22-entry Release allowlist交集为`NONE`，候选ZIP输入与production核心均未改变。
+- 维护者暂停Source/Candidate，授权先补根README的手工ZIP构建与bootstrap封板说明。
+- 已核对builder CLI与`init-cloud-sandbox-v0.4.2.bash`：标准命名下`HOOKS_PACKAGE`/`HOOKS_URL`从`HOOKS_VERSION`派生，seal需写入版本与ZIP exact SHA；用户未跟踪`test.zip`保持不动。
+- 检索README/tests时三次PowerShell复杂`rg`引用与一次Windows glob展开失败；已记录并改用简单逐项查询，没有重复执行失败命令或修改文件。
+- 已先补README手工发布契约断言；failing-first为12 pass / 1 fail，唯一缺口是根README尚无`./dist`候选命令。
+- README现已增加可复制candidate build/check/hash、versioned资产准备、Source/Candidate SHA比对、bootstrap两字段seal与上传后immutable边界；聚焦repository契约PASS：13/13。
+- Release allowlist交叉检查发现`README.md`是ZIP输入；已停止把本轮视为Release-excluded改动，转为重新冻结候选、双构建与新C0。Source/Candidate仍未运行，用户`test.zip`保持不动。
+- README-as-Release-input断言先得到12 pass / 1 fail，补齐新C0/重验说明后聚焦repository契约恢复13/13。
+- 新候选双构建/check逐字一致：22 entries、87,152 bytes、SHA-256 `f90dd556477a166cbe0faade8cab1b36976729b847a84e7591e0dba3a0caf709`；临时构建目录已在确认位于系统Temp后清理，未触及用户`test.zip`。
+- 完整Windows suite PASS：180 tests / 154 pass / 0 fail / 26 skipped；skip仍全部为既有Linux/POSIX-only case。`git diff --check`通过，candidate bootstrap仍是正确版本加64位zero hash。

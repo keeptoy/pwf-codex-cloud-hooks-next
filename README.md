@@ -262,13 +262,15 @@ Release allowlist 由 `upstream-manifest.json` 指向的当前
 [`release-artifact-v2.json`](contracts/release-artifact-v2.json) 唯一决定。每个 entry 自带 ZIP mode；构建器固定
 路径顺序、时间戳、压缩参数和 archive root，`check` 再核对 entries、mode、metadata 与源文件字节。
 
+`README.md`本身也是Release ZIP输入；修改本节会改变候选ZIP。应在C0与Source/Candidate前完成这类修改；如果已经取得
+Source/Candidate PASS，就必须作废原证据、形成新C0并重跑第一通道，不能把“只改文档”当成Release-excluded变更。
+
 PowerShell：
 
 ```powershell
-$zip = Join-Path $env:TEMP 'pwf-codex-cloud-hooks-candidate.zip'
-python tools/build_release.py build --output $zip
-python tools/build_release.py check --archive $zip
-Get-FileHash -Algorithm SHA256 $zip
+python tools/build_release.py build --output ./dist/pwf-codex-cloud-hooks-candidate.zip
+python tools/build_release.py check --archive ./dist/pwf-codex-cloud-hooks-candidate.zip
+Get-FileHash -Algorithm SHA256 ./dist/pwf-codex-cloud-hooks-candidate.zip
 ```
 
 Bash：
@@ -279,6 +281,50 @@ python3 tools/build_release.py build --output "$ZIP"
 python3 tools/build_release.py check --archive "$ZIP"
 sha256sum "$ZIP"
 ```
+
+`pwf-codex-cloud-hooks-candidate.zip`是本地中间产物；不要用这个名字上传。标准GitHub Release的正式资产名是
+`pwf-codex-cloud-hooks-vX.Y.Z.zip`，同版本ZIP外资产名是`init-cloud-sandbox-vX.Y.Z.bash`。维护者准备正式文件时可复制下面的
+PowerShell块，只把`vX.Y.Z`和Source/Candidate实际输出的ZIP SHA替换为本次值：
+
+```powershell
+$version = 'vX.Y.Z'
+$expectedSourceCandidateSha = '<Source/Candidate ZIP SHA-256，64位小写十六进制>'
+$releaseZip = "./dist/pwf-codex-cloud-hooks-$version.zip"
+$bootstrap = "./init-cloud-sandbox-$version.bash"
+
+python tools/build_release.py build --output $releaseZip
+python tools/build_release.py check --archive $releaseZip
+$zipSha256 = (Get-FileHash -Algorithm SHA256 $releaseZip).Hash.ToLowerInvariant()
+if ($zipSha256 -ne $expectedSourceCandidateSha) { throw "ZIP SHA mismatch: expected=$expectedSourceCandidateSha actual=$zipSha256" }
+"RELEASE_ZIP=$releaseZip"
+"RELEASE_ZIP_SHA256=$zipSha256"
+"EXTERNAL_BOOTSTRAP=$bootstrap"
+```
+
+只有package、contract、bootstrap文件名和version identity已经在C0冻结，且Source/Candidate实际PASS、Release输入没有变化，
+才进入bootstrap seal。使用标准tag、正式资产名、GitHub仓库地址和archive root时，bootstrap内只修改以下两个默认值：
+
+```bash
+readonly HOOKS_VERSION="${HOOKS_VERSION:-vX.Y.Z}"
+readonly HOOKS_SHA256="${HOOKS_SHA256:-<上一步的exact ZIP SHA-256>}"
+```
+
+`HOOKS_PACKAGE`从`HOOKS_VERSION`得到正式ZIP文件名；`HOOKS_URL`再从GitHub仓库、`HOOKS_VERSION`和`HOOKS_PACKAGE`得到默认
+下载地址，二者均为派生值，不需要手工替换。若候选bootstrap已经写着正确版本，实际seal通常只需把64位zero hash换成exact
+`HOOKS_SHA256`。不要顺手修改`HOOKS_ARCHIVE_ROOT`、PWF Skill pins、PowerShell pins或其他固定安全字段；非标准仓库/文件名属于
+另一条显式设计与验收路线，不能临时改URL后沿用当前证据。
+
+替换后先复核四个Hooks字段、Bash语法和bootstrap自身SHA，再把versioned ZIP与bootstrap作为两项独立资产上传：
+
+```powershell
+Select-String -Path $bootstrap -Pattern 'readonly HOOKS_(VERSION|PACKAGE|URL|SHA256)'
+bash -n $bootstrap
+(Get-FileHash -Algorithm SHA256 $bootstrap).Hash.ToLowerInvariant()
+```
+
+正式tag必须继续精确指向Source/Candidate实际PASS的C0。ZIP/bootstrap一经上传即视为immutable；不得通过移动tag、重传同名资产
+或在publication后重新打包来修补。完整授权、C0/C1/C2顺序和两轮退役时点仍以
+[`ROADMAP` Release流程](ROADMAP.md#release-four-step-flow)为准，具体版本的exact证据写回对应acceptance。
 
 ZIP entries、外部资产和 package identity 只由 Release contract 决定；不要在文档中另建可漂移的
 entry count。Self-contained importer 与四个 pinned pristine runtime 文件必须同时进入 allowlist，所有

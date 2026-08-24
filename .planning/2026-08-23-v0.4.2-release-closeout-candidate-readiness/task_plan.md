@@ -6,11 +6,11 @@
 
 ## Next Step
 
-维护者审核并push最新本地C0 HEAD，在全新Cloud按`docs/v0.4.2-cloud-hard-acceptance.md`执行Source/Candidate并回传exact证据；PASS后再进入第一轮真实退役检查与C1写回。
+维护者审核并push本轮README Release-input更新形成的新C0 HEAD；Source/Candidate继续暂停，直到维护者决定在全新Cloud按`docs/v0.4.2-cloud-hard-acceptance.md`执行并回传exact证据。
 
 ## Current Phase
 
-Phase 5 / Source-Candidate Cloud
+Phase 5 / Source-Candidate paused pending maintainer push
 
 ## Phases
 
@@ -55,6 +55,14 @@ Phase 5 / Source-Candidate Cloud
 - [x] 运行focused/full regression，确认改动仍被Release allowlist排除。
 - **Status:** complete
 
+### Phase 4.7: README manual Release commands
+
+- [x] 补充可直接复制的`./dist`候选ZIP build/check/hash命令，并区分本地candidate文件名与GitHub正式资产名。
+- [x] 明确标准bootstrap封板只修改`HOOKS_VERSION`与`HOOKS_SHA256`的条件，以及派生的package/URL和不得改动的固定安全字段。
+- [x] 明确README本身属于Release allowlist；本次变更必须形成新C0并重新双构建/check，不得沿用旧candidate SHA。
+- [x] 增加风险相称的README/Release契约与完整回归，保留用户未跟踪的`test.zip`，创建范围单一的本地commit。
+- **Status:** complete
+
 ### Phase 5: Source/Candidate channel checkpoint
 
 - [ ] 维护者push并在独立Fresh Cloud完成4.1、B～E与9.1。
@@ -82,7 +90,9 @@ Phase 5 / Source-Candidate Cloud
 | Windows sandbox拒绝Node test runner创建子进程：`spawn EPERM` | 1 | 改用直接执行单个test文件取得failing-first语义；完整runner在允许子进程的本地验证阶段重跑。 |
 | PowerShell不接受Bash式`||`状态检查 | 1 | 改用PowerShell原生`$LASTEXITCODE`分支；不重复原命令。 |
 | Windows sandbox阻止Git Bash创建signal pipe（Win32 error 5） | 1 | 仅为本地Bash语法检查申请允许子进程的执行面；不把Git Bash结果冒充Linux证据。 |
+| PowerShell中把`rg`正则、空格与`|`混在双/单引号命令里导致解析或路径错误 | 3 | 停止复用复杂组合模式，改用简单`rg README tests`与逐个关键词查询；文件未修改。 |
+| Windows PowerShell未展开传给`rg`的`init-cloud-sandbox-v*.bash` glob | 1 | 改为查询明确candidate文件或由PowerShell枚举；不重复把glob直接传给`rg`。 |
 
 ## Current Status
 
-`V0_4_2_LOCAL_CANDIDATE_READY / SOURCE_CANDIDATE_NOT_RUN / STOP_BEFORE_MAINTAINER_PUSH`
+`V0_4_2_README_RELEASE_INPUT_READY / SOURCE_CANDIDATE_NOT_RUN / STOP_BEFORE_MAINTAINER_PUSH`

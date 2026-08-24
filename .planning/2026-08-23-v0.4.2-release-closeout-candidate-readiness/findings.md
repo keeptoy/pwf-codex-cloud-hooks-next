@@ -49,3 +49,12 @@
 - 验收前仍保留`candidate admission preflight`，但它只做inventory、分类、恢复证据和风险检查；候选形成所需迁移必须在C0前闭合，preflight本身不删除planning、恢复材料或回滚线索。
 - 设计理由是让失败现场保持完整：Source/Candidate失败时不因提前清退增加排错/回滚成本；C1/C2分别保存已真实发生的一、二轮退役结论，不写未来承诺。
 - 第一轮PASS后的清退只适用于Release-excluded planning、临时教程和脚手架，且planning删除仍需维护者明确决定。若拟清退对象改变package、contract、runtime、bootstrap、ZIP allowlist或其他C0 Release输入，必须fail closed，形成新C0并重跑Source/Candidate。
+
+## README manual Release handoff
+
+- 维护者要求暂停Source/Candidate，先把可复制的本地ZIP build/check/hash与GitHub手工上传准备写入根README。
+- 当前bootstrap的`HOOKS_PACKAGE`由`HOOKS_VERSION`派生为`pwf-codex-cloud-hooks-${HOOKS_VERSION}.zip`，`HOOKS_URL`再由repo、version和package派生；标准tag/asset命名不变时，seal默认值只需写入`HOOKS_VERSION`与exact `HOOKS_SHA256`。
+- `pwf-codex-cloud-hooks-candidate.zip`适合作为本地中间文件；GitHub正式资产必须按bootstrap默认合同改名/构建为`pwf-codex-cloud-hooks-vX.Y.Z.zip`，否则必须显式改写`HOOKS_PACKAGE`或`HOOKS_URL`，不属于默认发布路线。
+- 工作树恢复时存在用户未跟踪`test.zip`；本任务只读保留，不纳入暂存、Release资产或删除范围。
+- Release allowlist交叉检查确认`README.md`本身是22-entry ZIP输入，因此本次说明不是Release-excluded治理改动。Source/Candidate尚未运行，允许现在改；但旧本地candidate ZIP/SHA与先前C0都必须作废，完成后重新双构建/check并形成新C0。
+- README更新后的本地双构建一致：22 entries、87,152 bytes、SHA-256 `f90dd556477a166cbe0faade8cab1b36976729b847a84e7591e0dba3a0caf709`；先前85,912-byte/`4a059f…`身份已被本次Release-input变化取代，不得再用于Source/Candidate。
