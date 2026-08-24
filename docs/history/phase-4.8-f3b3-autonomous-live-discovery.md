@@ -298,3 +298,12 @@ ref、runtime residue 或第二份 inventory authority。详细 inventory、prov
 当前只达到
 `CONDITIONAL_GO_TO_F3B4_EVIDENCE_CLOSURE / IMPLEMENTATION_NOT_AUTHORIZED / F3C_NOT_AUTHORIZED`；本尾注不把
 F3B aggregate PASS、ref cleanup、F3C rollback 或 Release 写成已授权。
+
+<a name="phase-4-8-post-programme-reindex-status"></a>
+
+## Post-programme reindex status — 2026-08-25
+
+本record正文中的Phase 5～8按当时programme编号冻结，不做事后搜索替换。后继ROADMAP在其前插入新的Phase 5文档治理占位后，
+旧Phase 5/6/7/8现分别对应Phase 6/7/8/9，候选版本系列相应为`0.6.0-*`/`0.7.0-*`/`0.8.0-*`/`0.9.0-*`。
+当前Phase 5只预占`0.5.0-*`，其scope、预期产物、gate与Release路线均为TBD；现行programme只读
+[`ROADMAP`](../../ROADMAP.md#product-phase-5)。本尾注只消除编号歧义，不产生development train激活、实施或Release授权。

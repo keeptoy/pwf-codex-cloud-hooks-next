@@ -26,7 +26,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 当前已接受版本 | `v0.4.2`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.1` immediate fallback |
 | 回退证据链 | immutable `v0.4.0` deeper fallback；`v0.3.5`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4、`v0.4.1`发布列车与`v0.4.2`documentation-governance列车均已关闭；Product Phase 5其他文档治理只处于planning，尚未激活development train或分配版本身份。`v0.4.2`双通道、Latest、第二轮退役与C2均已`PASS`；其他外部状态变更未授权 |
+| 当前 programme 边界 | Product Phase 4、`v0.4.1`发布列车与`v0.4.2`documentation-governance列车均已关闭；Product Phase 5只粗略规划为其他文档治理并预占`0.5.0-*`系列，其scope、预期产物、gate与Release路线均为TBD，尚未激活development train。`v0.4.2`双通道、Latest、第二轮退役与C2均已`PASS`；其他外部状态变更未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -64,9 +64,8 @@ provenance和对应版本acceptance，不在本节重建逐P9流水。
 本节是current development train工作台：活动planning、未封存Discovery和需要current状态的验收材料可以引用对应train anchor，
 但这里的临时施工状态不会自动成为长期Product Phase authority。
 
-当前没有活动开发列车，也没有exact train anchor。当前programme只提供一个入口：
-[Product Phase 5其他文档治理精简摘要](#product-phase-5)。该链接只指向planning中的Phase摘要，不构成列车激活、版本分配或实施授权；
-两个保留的planning scope继续承担相邻Discovery恢复与治理参考。
+当前没有活动开发列车，也没有exact train anchor。两个保留的planning scope继续承担相邻Discovery恢复与治理参考；
+尚未冻结内容的Product Phase占位不进入本工作台，也不从planning保留状态推断列车激活、具体范围或实施授权。
 
 ## 5. Product Phase 路线
 
@@ -82,11 +81,11 @@ ROADMAP声明的版本系列判断归属；patch/governance列车没有新Produc
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
 | 4 | `0.4.0-*`～`0.4.2` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理closeout | F0～F3C功能/rollback闭合；v0.4.1兼容修复与v0.4.2 Release/documentation governance不改变Phase归属 | complete；长期Product结论与v0.4.2 closeout见5.1.1～5.1.4 |
-| 5 | `TBD` | 其他文档治理 | 第一轮Discovery盘点剩余authority、目录编排、历史流水账与长期摘要边界，并冻结实际scope、版本身份和退出条件 | planning；不是当前开发列车，未授权实施或Release |
-| 6 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload，比较现有 `SessionStart source=clear\|compact` 与 PreCompact/PostCompact 的时序和恢复能力；现有事件足够时不扩大 managed event set，只有真实 context/时序缺口才新增 Hook | pending |
-| 7 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立 gate；必须分别有 use case、latency/token budget、噪声预算与 Cloud证据 | pending / optional；没有明确收益就逐项或整体 `NO_GO`；不是 Phase 8前置 |
-| 8 | `0.7.0-*` | 唯一的 read-only advisory completion evaluator | bounded、non-recursive、无 plan时安静；只 advisory，不阻断、不写 counter/ledger或其他 mutable gate state | pending；可独立于 Phase 7进入 Discovery |
-| 9 | `0.8.0-*` | optional hard gating，复用 Phase 8 evaluator | 重新 Discovery writer/counter/atomicity/lock/cache/Resume/rollback；再增加 block cap、escape hatch与 stall state；不得把上游 best-effort shell lock提升为 managed authority | pending；implementation前必须重新 Discovery |
+| 5 | `0.5.0-*` | 其他文档治理方向；具体scope与预期产物TBD | Discovery rounds、退出/Cloud gate、Release路线与对象清单均TBD | planning placeholder；不是当前开发列车，未授权实施或Release |
+| 6 | `0.6.0-*` | compaction lifecycle | 复核真实 Cloud payload，比较现有 `SessionStart source=clear\|compact` 与 PreCompact/PostCompact 的时序和恢复能力；现有事件足够时不扩大 managed event set，只有真实 context/时序缺口才新增 Hook | pending |
+| 7 | `0.7.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立 gate；必须分别有 use case、latency/token budget、噪声预算与 Cloud证据 | pending / optional；没有明确收益就逐项或整体 `NO_GO`；不是 Phase 8前置 |
+| 8 | `0.8.0-*` | 唯一的 read-only advisory completion evaluator | bounded、non-recursive、无 plan时安静；只 advisory，不阻断、不写 counter/ledger或其他 mutable gate state | pending；可独立于 Phase 7进入 Discovery |
+| 9 | `0.9.0-*` | optional hard gating，复用 Phase 8 evaluator | 重新 Discovery writer/counter/atomicity/lock/cache/Resume/rollback；再增加 block cap、escape hatch与 stall state；不得把上游 best-effort shell lock提升为 managed authority | pending；implementation前必须重新 Discovery |
 
 Release closeout不属于Product Phase编号。任何Product Phase或获批的小型patch/governance列车形成RC后，都按第9节
 进入同一版本无关workflow；只有出现新增Release风险、迁移、兼容切换或复杂rollback时，才按第7节增加专项
@@ -232,14 +231,15 @@ C2均已闭合。Phase 4.12、Phase 4.13、Phase 4.14摘要、CHANGELOG、proven
 
 <a name="product-phase-5"></a>
 
-### 5.2 Phase 5 其他文档治理（planning）
+### 5.2 Phase 5 其他文档治理（planning placeholder）
 
-Phase 5只是一份尚未激活的精简programme摘要：目标是继续治理尚未收口的权威文档编排、目录职责、Phase精简摘要与history流水账
-边界，避免current authority复制历史过程。具体对象、版本身份、Discovery rounds、退出条件和是否需要Release都必须在第一轮
-Discovery中重新盘点并由维护者授权；当前统一保持`TBD / planning`，不得从v0.4.2、现存planning或候选Phase 6～9反推实现范围。
+Phase 5目前只冻结两个programme占位事实：方向是其他文档治理，候选版本系列预留为`0.5.0-*`。具体scope、预期产物、
+Discovery rounds、对象清单、退出/Cloud gate和Release路线全部保持TBD，必须由后续维护者授权的第一轮Discovery重新盘点；
+不得从v0.4.2、本轮治理结论、现存planning或候选Phase 6～9反推实现范围。
 
-ROADMAP只在这里维护Phase 5的精简长期入口；后续真实Discovery记录进入history后仍是决策流水账，不替代本摘要。第4节只链接
-本anchor，不复制Phase内容。现有两个planning scope继续`KEEP`供相邻上下文恢复，但不会因此激活Phase 5或创建development train。
+本占位不进入第4节current development train工作台；预留`0.5.0-*`也不等于已经创建development identity、冻结Release输入或
+授权实施。现有两个planning scope继续`KEEP`只用于相邻上下文恢复，后续真实Discovery记录仍是history决策流水账，不替代
+ROADMAP的current programme authority。
 
 ## 6. 版本号与晋级语义
 

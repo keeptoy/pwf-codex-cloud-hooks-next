@@ -103,6 +103,16 @@
 - 完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped；production、runtime、installer、Release/publication、文档authority与planning lifecycle均无回归。Linux/POSIX-only项目继续诚实SKIP。
 - 最终静态审计通过：6条修改路径与22-entry Release allowlist交集为0；第4节Phase链接1个，Phase 5/v0.4.2 anchors各1个，错误归属命中0，ROADMAP直达history链接仍为2；planning scopes保持2个，active pointer未变，`git diff --check`通过。
 
+### Phase 8: Candidate train and frozen-history reindex
+
+- **Status:** in_progress
+- 维护者确认Phase 5预占`0.5.0-*`，其他programme字段保持TBD；原路线与版本同步顺延为Phase 6～9、`0.6.0-*`～`0.9.0-*`。第4节删除TBD Phase摘要链接，只保留`NONE`工作台与两个planning scope恢复语义。
+- ROADMAP、history索引、仓库治理指南和Phase history模板已同步；7份受旧编号影响的冻结record只在文件末尾追加`Post-programme reindex status`，正文未搜索替换。current tests已迁移到新版本映射、零Phase链接和7份尾注合同，等待静态与运行验证。
+- 首轮静态审计通过：第4节Product Phase链接0个，Phase 5～9候选版本连续为`0.5.0-*`～`0.9.0-*`，history尾注/anchor文件均恰好7份，Release allowlist交集0；测试文件语法、`git diff --check`均通过。
+- focused governance 24/24 PASS：空列车无Phase链接、Phase 5占位/0.5系列、Phase 6～9版本顺延、7份reindex尾注、history索引/模板/治理规则及受控宏观入口全部通过。
+- 完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped；production、runtime、installer、Release/publication、planning与history入口均无回归，Linux/POSIX-only项目继续诚实SKIP。
+- 最终静态审计通过：7份冻结history各追加9行、删除0行；16条修改路径与Release allowlist交集0；第4节Phase链接0、reindex尾注7、planning scopes 2、active pointer未变，`git diff --check`通过。
+
 ## Error Log
 
 | Timestamp | Error | Attempt | Resolution |
@@ -123,13 +133,15 @@
 | 2026-08-25 | Phase 7首次focused在沙箱内因Node test runner子进程`spawn EPERM`未执行 | 1 | 按维护机已知限制在沙箱外重跑，得到真实22/24结果。 |
 | 2026-08-25 | Phase 7首次真实focused为22/24 PASS：两条测试仍匹配旧Release摘要/Latest写法 | 1 | 保留新ROADMAP权威结构，只把断言迁到当前双通道/C2摘要与唯一Latest confirmation anchor。 |
 | 2026-08-25 | Phase 7第二次focused为23/24 PASS：同一测试残留一条重复旧programme摘要断言 | 2 | 将最后一条旧措辞断言同步到当前双通道/C2摘要。 |
+| 2026-08-25 | Phase 8首次读取使用了不存在的`docs/templates/phase-history-template.md` | 1 | 其他只读检查完成且无写入；使用真实路径`docs/phase-history-template.md`继续。 |
+| 2026-08-25 | Phase 8最终复合静态审计在PowerShell解析阶段报告缺少闭合括号 | 1 | 没有执行检查或写入；改用简单变量逐项计算，不重复原表达式。 |
 
 ## 5-Question Reboot Check
 
 | Question | Answer |
 |---|---|
-| Where am I? | Phase 7完成：v0.4.2已纠正为Product Phase 4 closeout；Phase 5只处于planning，当前开发列车为NONE。 |
-| Where am I going? | 等待维护者push本地纠正commit，或另行授权Product Phase 5 Discovery/下一版本列车。 |
+| Where am I? | Phase 8完成：Phase 5预占0.5系列但内容TBD，Phase 6～9及版本已同步顺延；当前开发列车仍为NONE。 |
+| Where am I going? | 等待维护者push本地commit，或另行授权Product Phase 5第一轮Discovery。 |
 | What's the goal? | 清除历史快照对长期合同的错误耦合，同时保留真实历史和多轮 planning 恢复能力。 |
-| What have I learned? | patch/governance列车不能因文档工作量自动升级为新Product Phase；history保存流水账，ROADMAP第5节保存精简Phase authority。 |
-| What have I done? | 把v0.4.2/5.1.4纠正回Phase 4，新建5.2 Phase 5 planning摘要，第4节收敛为单一链接；focused 24/24和完整Windows回归PASS。 |
+| What have I learned? | Phase编号与候选版本系列必须同步顺延；冻结history保留当时编号，通过post-programme尾注解释后继reindex。 |
+| What have I done? | 冻结Phase 5的0.5占位与TBD边界、顺延Phase 6～9至0.6～0.9、移除第4节占位链接，并为7份history追加纯后置说明；全部验证PASS。 |

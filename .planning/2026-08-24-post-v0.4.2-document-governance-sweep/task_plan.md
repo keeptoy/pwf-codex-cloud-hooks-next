@@ -6,11 +6,11 @@
 
 ## Next Step
 
-Phase归属纠正已经完成并验证：v0.4.2与5.1.4属于Product Phase 4；Product Phase 5保持5.2 planning摘要、TBD版本身份且未激活。第4节只有一个Phase摘要链接，两个planning scope继续KEEP。等待维护者push本地commit或另行授权Phase 5 Discovery/下一版本列车。
+实施第二次programme纠偏：Phase 5预占`0.5.0-*`，scope/预期/退出条件保持TBD；旧Phase 5～8路线及版本列车整体顺延为Phase 6～9、`0.6.0-*`～`0.9.0-*`。第4节空列车工作台不链接TBD Phase摘要；7份冻结history只追加post-programme reindex尾注，不改正文。
 
 ## Current Phase
 
-Phase 7 complete: Product Phase attribution correction
+Phase 8: Candidate train and frozen-history reindex analysis
 
 ## Phases
 
@@ -72,6 +72,17 @@ Phase 7 complete: Product Phase attribution correction
 - [x] 同步tests/planning并运行风险相称验证；通过后由仓库交互纪律自动创建独立纠正commit。
 - **Status:** complete
 
+### Phase 8: Candidate train and frozen-history reindex analysis
+
+- [x] 只读确认Phase 5应占用`0.5.0-*`，但当前scope、预期、Discovery rounds、退出条件和Release路线均应保持TBD。
+- [x] 识别原Phase 5～8路线必须整体顺延为Phase 6～9，候选版本同步顺延为`0.6.0-*`～`0.9.0-*`。
+- [x] 分类冻结history中的旧Phase 5～8编号：7份文件需要统一post-programme reindex尾注；Phase 4.11/4.12的泛化“下一Phase/0.5”语义仍正确，不机械加注。
+- [x] 向维护者提交最小修改建议、尾注措辞和测试影响，并取得实施授权。
+- [x] 修正ROADMAP的Phase 5占位、Phase 6～9版本映射及第4节空列车入口。
+- [x] 给7份冻结history追加统一reindex尾注，同步history索引、治理指南和可选模板说明。
+- [x] 更新稳定边界测试并运行focused/full/static验证；通过后由仓库交互纪律自动创建独立本地commit。
+- **Status:** complete
+
 ## Key Questions
 
 1. 哪些 current tests 在保护稳定协议，哪些只是在逐字保护某次版本事故或 closeout 快照？
@@ -98,6 +109,9 @@ Phase 7 complete: Product Phase attribution correction
 - 已授权：把Batch A/B明确归入v0.4.2，在ROADMAP 4.1追加programme摘要，并同步到Phase 4.14历史；只改治理文档、相应测试与活动planning，不碰22项Release输入。
 - 已授权：新增Product Phase 5文档治理，原Phase 5～8顺延为6～9；把4.1 closed v0.4.2内容迁到5.1.4，但保留第4节current-workbench通用说明；所有planning scope明确KEEP。
 - 维护者纠正：v0.4.2仍属于Product Phase 4，5.1.4编号正是该归属；Product Phase 5是另一轮仍在规划的文档治理，对应5.2摘要。第4节只保留一个Phase摘要链接，history定位为过程流水账。
+- 维护者第二次纠正：Product Phase 5虽未冻结内容，但必须预占`0.5.0-*`版本列车；原Phase 5～8及候选版本应同时顺延为Phase 6～9、`0.6.0-*`～`0.9.0-*`。Phase 5除编号和版本槽位外的内容均保持TBD。
+- 当前只授权分析与建议；冻结history的正文/尾注、ROADMAP和tests待维护者批准方案后再改。
+- 已授权实施上述方案；额外要求第4节不链接仍为TBD的Phase 5摘要，只保留空开发列车和planning恢复语义。
 - 未授权：自动删除任何 planning、历史 acceptance/history、production/runtime/contract 或 Release 输入。
 - 未授权：push、远端 branch/tag/Release/资产、Latest、Cloud task、部署或下一 Product Phase/版本列车 activation。
 
@@ -125,7 +139,9 @@ Phase 7 complete: Product Phase attribution correction
 | Phase 6首次focused测试22/24 PASS：ROADMAP重复planning-lifecycle fragment；package identity与`0.4.2`关系不够直接 | 1 | 删除5.1.4重复authority链接并把正文明确为package identity `0.4.2`；不弱化唯一链接或身份断言。 |
 | Phase 6首次planning结项组合补丁因progress测试表格上下文不精确而未应用 | 1 | 仓库正文与测试结果未受影响；读取精确UTF-8上下文后拆分task/findings与progress补丁。 |
 | Phase 7首次静态汇总命令因PowerShell复合表达式括号解析失败 | 1 | 命令未执行检查或写入；拆成简单Select-String与独立计数，不重复复合表达式。 |
+| Phase 8首次读取把history模板误写为`docs/templates/phase-history-template.md` | 1 | 其余只读输出成功；改用仓库真实路径`docs/phase-history-template.md`，不重复错误路径。 |
+| Phase 8最终复合静态审计因PowerShell嵌套插值缺少闭合括号而未解析 | 1 | 未执行检查或写入；拆成简单变量与逐项输出，不重复复合表达式。 |
 
 ## Current Status
 
-`V0_4_2_PRODUCT_PHASE_4_CORRECTED / PRODUCT_PHASE_5_PLANNING / DEVELOPMENT_TRAIN_NONE / ALL_PLANNING_SCOPES_KEEP`
+`PHASE_5_0_5_PLACEHOLDER / PHASE_6_TO_9_VERSION_REINDEXED / SEVEN_FROZEN_HISTORY_NOTES_APPENDED / DEVELOPMENT_TRAIN_NONE`

@@ -44,6 +44,10 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 这里的Phase编号和文件名保留历史语义，不表示Phase 4.1～4.11是11个独立Product Phase。未来新增对象必须在索引说明中明确
 role；若分类需要变化，必须基于原始形成方式和immutable evidence纠错，不能按当前叙述方便随意改身份。
 
+后继programme插入新Phase导致旧路线重编号时，冻结record正文仍按当时编号阅读，不做机械替换；受影响record只在末尾追加
+`Post-programme reindex status`，列出旧→现映射并链接当前ROADMAP。当前Phase 5预占`0.5.0-*`但其余内容TBD，因此旧路线中的
+Phase 5/6/7/8现分别对应Phase 6/7/8/9与`0.6.0-*`/`0.7.0-*`/`0.8.0-*`/`0.9.0-*`；该后置说明不产生实施或Release授权。
+
 ## 已收录 history objects
 
 | 对象 | 当时的交付闭环 | 文件 |

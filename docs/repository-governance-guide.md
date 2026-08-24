@@ -180,6 +180,11 @@ candidate/accepted/rollback、Next Step或PASS/PENDING；正文必须可独立�
 Release、installer inventory、trusted graph与runtime dispatch排除。文件名、章节顺序和写作提示统一从
 [`Phase历史对象模板`](phase-history-template.md)选择对应role，不要求为模板改进批量回写已经冻结的历史正文。
 
+programme在record冻结后插入、拆分或重编号Product Phase时，不得搜索替换历史正文中的旧Phase/version映射。只有确实承担
+旧路线映射或反复使用旧编号表达后继边界的record，才在文件末尾追加带Phase-scoped显式anchor的
+`Post-programme reindex status`：保留当时语义、列出旧→现映射、链接ROADMAP current authority，并明确不产生实施、版本列车
+激活或Release授权。history索引同步增加一次全局说明；仍然成立的泛化“下一Phase/下一列车未授权”语义不机械加注。
+
 Phase history只开放两个受控宏观入口：README/文档地图负责全局索引，只链接history目录索引；ROADMAP是唯一第二入口，
 只在programme路线需要历史理由时直达具体history record的稳定显式anchor，不复制目录索引，也不把历史结论提升成current
 programme authority。CHANGELOG、provenance和其他宏观文档不得建立第三入口。history records为解释继承关系可以使用目录内

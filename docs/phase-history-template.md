@@ -53,6 +53,8 @@
 - `Post-live status — <gate>`只能在真实Cloud/live完成后记录实际观察、implementation → live/lifecycle偏差、最终
   结论和剩余停止点；不得预填PASS，本地证据不得替代Cloud/live证据。
 - `Post-discovery status — <gate>`只在后续Discovery实质修正原假设、边界或继承关系时使用。
+- `Post-programme reindex status`只在后继ROADMAP插入、拆分或重编号Product Phase，导致正文中的历史Phase/version映射与
+  当前programme不同且可能误读时使用；它只列旧→现映射与current authority，不改正文，也不产生实施或Release授权。
 
 追加时为每个尾注建立Phase-scoped稳定英文显式anchor，并保留原正文时间语义；不要回写旧结论使其看似从一开始就知道
 后续结果。以下骨架只在对应事实存在时复制，否则整段省略：
@@ -75,6 +77,12 @@
 ## Post-discovery status — <gate>
 
 后续Discovery修正的假设、边界、继承关系与证据。
+
+<a name="<phase>-post-programme-reindex-status"></a>
+
+## Post-programme reindex status
+
+原正文按当时编号冻结 / 旧→现Phase与版本系列映射 / ROADMAP current authority / 不产生新授权。
 -->
 
 ---

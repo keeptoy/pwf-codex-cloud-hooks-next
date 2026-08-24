@@ -75,8 +75,8 @@ test("v0.4.2 C2 evidence stays in closed Product Phase 4 while Phase 5 remains p
   assert.match(roadmap,
     /当前 programme 边界[^\n]*`v0\.4\.2`双通道、Latest、第二轮退役与C2均已`PASS`/);
   assert.match(currentTrain, /当前没有活动开发列车[\s\S]*没有exact train anchor/);
-  assert.match(currentTrain, /Product Phase 5其他文档治理精简摘要[\s\S]*#product-phase-5/);
-  assert.match(currentTrain, /planning中的Phase摘要[\s\S]*不构成列车激活、版本分配或实施授权/);
+  assert.match(currentTrain, /尚未冻结内容的Product Phase占位不进入本工作台[\s\S]*不从planning保留状态推断列车激活/);
+  assert.doesNotMatch(currentTrain, /#product-phase-5/);
   assert.doesNotMatch(currentTrain, /v0-4-2-release-closeout|### 4\.1/);
   assert.match(phase4Closeout, /README\.md[\s\S]*Release ZIP输入[\s\S]*旧候选身份[\s\S]*失效/);
   assert.match(phase4Closeout, /最终README[\s\S]*Source\/Candidate[\s\S]*C0[\s\S]*版本acceptance/);
@@ -95,8 +95,9 @@ test("v0.4.2 C2 evidence stays in closed Product Phase 4 while Phase 5 remains p
   assert.match(phase4Closeout,
     /post-v0\.4\.2 residue sweep[\s\S]*Batch A[\s\S]*Batch B[\s\S]*22-entry Release allowlist交集为0/);
   assert.match(phase4Closeout, /两个planning scope继续`KEEP`[\s\S]*不是活动开发列车/);
-  assert.match(roadmap, /^### 5\.2 Phase 5 其他文档治理（planning）$/m);
-  assert.match(roadmap, /\| 5 \| `TBD` \| 其他文档治理[\s\S]*planning[\s\S]*未授权实施或Release/);
+  assert.match(roadmap, /^### 5\.2 Phase 5 其他文档治理（planning placeholder）$/m);
+  assert.match(roadmap, /\| 5 \| `0\.5\.0-\*` \| 其他文档治理方向[\s\S]*均TBD[\s\S]*planning placeholder/);
+  assert.match(roadmap, /\| 6 \| `0\.6\.0-\*`[\s\S]*\| 9 \| `0\.9\.0-\*`/);
   assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.2`[^\n]*programme accepted/);
   assert.match(roadmap, /当前 programme 边界[^\n]*`v0\.4\.2`双通道、Latest、第二轮退役与C2均已`PASS`/);
   assert.doesNotMatch(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
@@ -540,9 +541,13 @@ test("historical documents have two controlled macro entrances and remain adviso
     /patch继承它修补的Product baseline[\s\S]*governance按声明的版本系列落位/);
   assert.match(governanceGuide,
     /不能唯一判断就停下来问[\s\S]*必须先向维护者[\s\S]*请求确认/);
+  assert.match(governanceGuide,
+    /programme在record冻结后插入、拆分或重编号Product Phase时[\s\S]*不得搜索替换历史正文[\s\S]*Post-programme reindex status/);
   assert.match(historyIndex, /RETROSPECTIVE_CAPSULE[\s\S]*Phase 0～3\.9\.3[\s\S]*14/);
   assert.match(historyIndex, /FROZEN_DISCOVERY_RECORD[\s\S]*Phase 4\.1～4\.11[\s\S]*11/);
   assert.match(historyIndex, /Phase 4\.1～4\.11[\s\S]*不表示[\s\S]*11个独立Product Phase/);
+  assert.match(historyIndex,
+    /Post-programme reindex status[\s\S]*Phase 5\/6\/7\/8[\s\S]*Phase 6\/7\/8\/9[\s\S]*`0\.9\.0-\*`/);
   assert.match(historyTemplate, /先选择 record role/);
   assert.match(historyTemplate, /RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
   assert.match(historyTemplate,
@@ -554,8 +559,25 @@ test("historical documents have two controlled macro entrances and remain adviso
   assert.match(historyTemplate, /Post-implementation status/);
   assert.match(historyTemplate, /Post-live status/);
   assert.match(historyTemplate, /Post-discovery status/);
+  assert.match(historyTemplate, /Post-programme reindex status/);
   assert.match(historyTemplate, /不得预填[^\n]*PASS|不预填[^\n]*PASS/);
   assert.match(historyTemplate, /本地[^\n]*不得[^\n]*替代[^\n]*(Cloud|live)/i);
+  const reindexedHistory = [
+    ["phase-3.9.3-machine-field-lifecycle-and-origin.md", "phase-3-9-3"],
+    ["phase-4.1-managed-v3-discovery.md", "phase-4-1"],
+    ["phase-4.2-programme-route-review.md", "phase-4-2"],
+    ["phase-4.4-f2a-smart-activation-discovery.md", "phase-4-4"],
+    ["phase-4.5-f2b-autonomous-activation-discovery.md", "phase-4-5"],
+    ["phase-4.6-f3-cloud-lifecycle-discovery.md", "phase-4-6"],
+    ["phase-4.8-f3b3-autonomous-live-discovery.md", "phase-4-8"],
+  ];
+  for (const [file, phase] of reindexedHistory) {
+    const history = read(`docs/history/${file}`);
+    assert.match(history, new RegExp(`<a name="${phase}-post-programme-reindex-status"></a>`));
+    assert.match(history,
+      /Post-programme reindex status[\s\S]*旧Phase 5\/6\/7\/8[\s\S]*Phase 6\/7\/8\/9[\s\S]*`0\.9\.0-\*`/);
+    assert.match(history, /当前Phase 5只预占`0\.5\.0-\*`[\s\S]*不产生development train激活、实施或Release授权/);
+  }
   const phaseHistory = repositoryPaths()
     .filter(relative => /^docs\/history\/[^/]+\.md$/.test(relative))
     .map(read)

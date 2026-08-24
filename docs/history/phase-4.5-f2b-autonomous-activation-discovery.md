@@ -233,3 +233,12 @@ candidate、安装/doctor、B～E markerless legacy 黑盒与 manifest-routed v2
 
 本尾注不复制动态 source、计数或 ZIP hash；精确证据只见
 [immutable `v0.4.0` F2B acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/6b388518855da9053713a58e5c918c8b727b6dc6/docs/v0.4.0-cloud-hard-acceptance.md#v0-4-0-dev-f2b-source-candidate-evidence)。
+
+<a name="phase-4-5-post-programme-reindex-status"></a>
+
+## Post-programme reindex status — 2026-08-25
+
+本record正文中的Phase 5～8按当时programme编号冻结，不做事后搜索替换。后继ROADMAP在其前插入新的Phase 5文档治理占位后，
+旧Phase 5/6/7/8现分别对应Phase 6/7/8/9，候选版本系列相应为`0.6.0-*`/`0.7.0-*`/`0.8.0-*`/`0.9.0-*`。
+当前Phase 5只预占`0.5.0-*`，其scope、预期产物、gate与Release路线均为TBD；现行programme只读
+[`ROADMAP`](../../ROADMAP.md#product-phase-5)。本尾注只消除编号歧义，不产生development train激活、实施或Release授权。

@@ -170,6 +170,17 @@ Batch B不会改变历史事实，但会显著降低自然语言改写导致的�
 - 静态审计确认纠正后没有双重authority：第4节只有一个Phase 5摘要链接；`product-phase-5`和`v0-4-2-release-closeout`各自只有一个定义；旧归属措辞在ROADMAP中为0。历史Phase files未参与本次纠正，继续保留真实过程语义。
 - 最终验证确认本轮完全处于repository-governance zone：6条修改路径与Release allowlist交集为0；完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped。两个planning scope及active pointer均保持不变。
 
+### Candidate train and frozen-history reindex correction
+
+- Phase编号与候选版本列车是同一个programme坐标轴。新增Phase 5后，不能只把旧Phase 5～8改号为6～9而保留`0.5.0-*`～`0.8.0-*`；正确映射应是Phase 5=`0.5.0-*`占位，旧路线整体成为Phase 6～9=`0.6.0-*`～`0.9.0-*`。
+- Phase 5目前只冻结“存在这个Product Phase槽位”和“占用0.5系列”；由于未来文档治理可能触及README或22-entry ZIP中的其他输入，不能预判它是Release-excluded。scope、预期产物、Discovery rounds、exit/Cloud gate和Release结论都应写TBD，不能把本轮已知的authority/目录治理提前升级成获批范围。
+- history扫描显示，`phase-4.2-programme-route-review.md`是旧Phase 5～8映射的主要完整历史记录；`phase-4.1-managed-v3-discovery.md`和`phase-3.9.3-machine-field-lifecycle-and-origin.md`也明确冻结旧Phase 5～8边界。多份后续Phase 4.x记录只在局部使用旧“Phase 8”作为writer/hard-gating shorthand。
+- 冻结历史正文不应机械替换编号。更安全的治理是：在承担完整路线映射或反复作为后继authority的历史记录末尾追加统一post-history reindex note，说明正文按当时编号阅读、现行programme映射以ROADMAP为准；局部引用可由同一尾注覆盖，避免每一行插注破坏历史可读性。
+- 精确尾注范围为7份：`phase-3.9.3-machine-field-lifecycle-and-origin.md`、`phase-4.1-managed-v3-discovery.md`、`phase-4.2-programme-route-review.md`保存完整/纲领性旧映射；`phase-4.4-f2a-smart-activation-discovery.md`、`phase-4.5-f2b-autonomous-activation-discovery.md`、`phase-4.6-f3-cloud-lifecycle-discovery.md`、`phase-4.8-f3b3-autonomous-live-discovery.md`反复以旧Phase 8指代writer/hard-gating。它们应共享同一后置映射说明。
+- `phase-4.11-f3c4-aggregate-closure-discovery.md`和`phase-4.12-v0.4.0-release-discovery.md`只表达“当时不得自动进入Phase 5/0.5列车”，在当前Phase 5预占0.5但尚未授权的模型中仍然正确，不属于旧路线错号，不应机械追加尾注。
+- 建议尾注标题统一为`Post-programme reindex status`，明确：原正文按当时语义冻结；旧5/6/7/8分别对应现6/7/8/9；现Phase 5只预占`0.5.0-*`且其他字段TBD；当前programme只读ROADMAP；尾注不产生实施或Release授权。`docs/history/README.md`再增加一条全局索引说明，治理指南补充“重编号只追加尾注”的通用规则。
+- 实施验证确认7份冻结record均为纯追加9行、删除0行；第4节Product Phase链接为0，两个planning scope与active pointer保持不变，16条修改路径与22-entry Release allowlist交集为0。focused 24/24与完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped。
+
 ## Technical Decisions
 
 | Decision | Rationale |

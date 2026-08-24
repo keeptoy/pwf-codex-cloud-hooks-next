@@ -202,3 +202,12 @@ zero-read、fail-closed admission、schema-v2 reuse 或生命周期表。精确�
 
 该链接只证明本轮 Discovery 的进入基线，不解释后续实现；当前 contract、programme 与授权以当前仓库 authority
 为准。
+
+<a name="phase-4-4-post-programme-reindex-status"></a>
+
+## Post-programme reindex status — 2026-08-25
+
+本record正文中的Phase 5～8按当时programme编号冻结，不做事后搜索替换。后继ROADMAP在其前插入新的Phase 5文档治理占位后，
+旧Phase 5/6/7/8现分别对应Phase 6/7/8/9，候选版本系列相应为`0.6.0-*`/`0.7.0-*`/`0.8.0-*`/`0.9.0-*`。
+当前Phase 5只预占`0.5.0-*`，其scope、预期产物、gate与Release路线均为TBD；现行programme只读
+[`ROADMAP`](../../ROADMAP.md#product-phase-5)。本尾注只消除编号歧义，不产生development train激活、实施或Release授权。
