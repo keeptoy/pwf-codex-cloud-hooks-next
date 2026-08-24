@@ -149,3 +149,8 @@
 - ROADMAP新增唯一`github-release-latest-promotion-confirmation`anchor并保留完整规则；AGENTS、两份模板、repository governance和v0.4.2 acceptance均改为职责内摘要/事实与直接链接，冻结history、旧acceptance和CHANGELOG未改写。
 - 完整Windows suite PASS：181 tests / 155 pass / 0 fail / 26 skipped；`git diff --check`通过，Release allowlist交叉检查为`PWF_PROMOTION_AUTHORITY_RELEASE_INPUT_DELTA=NONE`。
 - Phase 7.2单一权威收敛完成；活动计划恢复等待维护者逐项决定第二轮role-window对象，未删除planning或其他窗口材料。
+- 维护者授权把本轮Latest精简结论同步到ROADMAP 4.1与Phase 4.14；Phase 7.3开启。只读核对确认4.1已有结果但缺少“Published exact identity已验收→正常路径不新增postflight”的因果投影，Phase 4.14需追加新时点而非改写此前Latest未发生的历史段落。
+- failing-first repository治理回归为14 tests / 12 pass / 2 fail，分别命中ROADMAP 4.1缺少因果投影与Phase 4.14缺少新时点；正文同步后恢复14/14 PASS。
+- ROADMAP 4.1现记录Published Release已冻结验收exact tag/source/ZIP/bootstrap、Latest confirmation已完成且正常路径不另设独立postflight；Phase 4.14追加带稳定anchor的后续状态并直链唯一promotion authority，旧时点正文保持不变。
+- 完整Windows suite PASS：181 tests / 155 pass / 0 fail / 26 skipped；`git diff --check`通过，Release allowlist交叉检查为`PWF_LATEST_STATUS_SYNC_RELEASE_INPUT_DELTA=NONE`。
+- Phase 7.3状态同步完成；活动计划恢复等待维护者逐项决定第二轮role-window对象，未删除planning或其他窗口材料。

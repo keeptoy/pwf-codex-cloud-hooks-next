@@ -77,6 +77,9 @@ test("v0.4.2 Latest promotion preserves the pre-C2 programme rollback window", (
   assert.match(roadmap, /`v0\.4\.2` published Latest closeout/);
   assert.match(currentTrain, /Published Release[\s\S]{0,120}`PASS`/);
   assert.match(currentTrain, /Latest promotion confirmation均已闭合/);
+  assert.match(currentTrain,
+    /Published Release[\s\S]{0,240}exact tag\/source\/ZIP\/bootstrap[\s\S]{0,240}Latest promotion confirmation[\s\S]{0,240}不(?:再|另设)[\s\S]{0,120}独立postflight/);
+  assert.match(currentTrain, /#github-release-latest-promotion-confirmation/);
   assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.1`[^\n]*programme accepted[^\n]*C2/);
   assert.match(roadmap, /当前 programme 边界[^\n]*`v0\.4\.2`[^\n]*GitHub `Latest`[^\n]*已确认/);
   assert.doesNotMatch(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
@@ -569,6 +572,7 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
     "phase-4-14-post-governance-status-acceptance-directory-migration",
     "phase-4-14-post-governance-status-canonical-baseline-tool-capability",
     "phase-4-14-post-governance-status-published-guide-completion",
+    "phase-4-14-post-governance-status-latest-promotion-confirmation",
     "phase-4-14-immutable-evidence",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(history, /^# Phase 4\.14：Release closeout 与验收文档治理回顾$/m);
@@ -625,6 +629,10 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
   assert.match(history,
     /patch train继承它[\s\S]*Product baseline[\s\S]*version series落位[\s\S]*维护者确认/);
   assert.match(history, /没有授权`0\.4\.2`候选封板、Cloud、publication、Latest或下一Product Phase/);
+  assert.match(history,
+    /Published Release[\s\S]*exact tag\/source\/ZIP\/bootstrap[\s\S]*GitHub Release编辑页面[\s\S]*Release详情页[\s\S]*Latest[\s\S]*不(?:再|另设)[\s\S]*独立postflight/);
+  assert.match(history, /\.\.\/\.\.\/ROADMAP\.md#github-release-latest-promotion-confirmation/);
+  assert.match(history, /本节[\s\S]{0,180}不重新定义[\s\S]{0,180}通用判断/);
   assert.match(historyIndex,
     /phase-4\.14-release-closeout-governance\.md#phase-4-14-historical-position/);
   assert.match(historyIndex, /Phase 4\.12[^\n]*原P9-A～P9-F[^\n]*历史语义/);

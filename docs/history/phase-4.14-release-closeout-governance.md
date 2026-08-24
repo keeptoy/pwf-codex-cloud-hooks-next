@@ -284,6 +284,24 @@ Cloud hard acceptance template完成验收；稳定模板本来就是唯一脚�
 继续承担accepted角色，第二轮role-window closeout、planning逐项决定和v0.4.2 guide冻结都继续等待。当前角色与下一步只读
 ROADMAP和活动planning，本节只保存为何需要补教程、又为何不重跑的治理理由。
 
+<a name="phase-4-14-post-governance-status-latest-promotion-confirmation"></a>
+
+## Post-governance status — Latest promotion confirmation
+
+上述Published guide回补之后，`v0.4.2`公开通道已经冻结并验收exact tag/source/ZIP/bootstrap：Source/Candidate实际PASS的C0
+继续是正式tag目标，公开ZIP与ZIP外bootstrap的URL、size和SHA也已由Published Release Fresh/Resume/deep check闭合。维护者随后
+在GitHub Release编辑页面把同一个Release取消Pre-release并设为Latest；保存后返回或刷新Release详情页，看到exact `v0.4.2`
+显示为Latest且不再是Pre-release。
+
+这次控制面动作没有产生新的package字节或Release identity。Published Release已经证明用户下载到的exact tag/source/ZIP/bootstrap，
+因此正常路径的GitHub Release Latest promotion confirmation在上述详情页状态明确后即告完成，不再另设独立postflight去重复
+下载资产或重算SHA。第二轮role-window closeout和C2仍须等待维护者逐项决定，v0.4.1在此期间继续作为programme accepted。
+
+本节只保存本次状态推进、证据充分性与流程精简的历史原因，不重新定义通用判断。成功条件、免独立postflight和异常诊断边界的
+唯一current authority只读
+[`ROADMAP`的GitHub Release Latest promotion confirmation](../../ROADMAP.md#github-release-latest-promotion-confirmation)；AGENTS、
+templates、版本acceptance与治理指南只保留职责内摘要、实际证据或时点投影。
+
 <a name="phase-4-14-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

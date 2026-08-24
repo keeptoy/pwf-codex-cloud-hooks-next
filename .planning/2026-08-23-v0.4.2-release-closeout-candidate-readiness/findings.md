@@ -171,3 +171,5 @@
 - 单一权威复核确认当前仍有语义重复：ROADMAP已经完整定义成功、免独立postflight和异常只读诊断；AGENTS、Operator Guide template与v0.4.2 acceptance又复制了同一套判断。正确分层应是ROADMAP独占规范，AGENTS只约束智能体执行，template只定义记录职责，版本acceptance只保存这次实际发生的GitHub Release状态事实，governance/provenance只保存时点或状态投影。
 - 现有`release-four-step-flow`覆盖范围较大；为避免其他文档链接到整段流程后自行挑规则，应在ROADMAP的promotion说明前新增`github-release-latest-promotion-confirmation`精确anchor。冻结历史继续保留当时措辞，不参与current authority去重。
 - 最终职责分层已收敛：ROADMAP唯一保存完整成功/免独立postflight/异常诊断规则；AGENTS只约束智能体如何消费维护者结果，Cloud template只声明协议引用，Operator Guide template只声明记录字段和进入retirement的条件，repository governance只消费时点，v0.4.2 acceptance只保存本次实际UI/Latest与identity证据，provenance继续只投影完成状态。
+- 当前状态同步仍缺一层可恢复投影：ROADMAP 4.1只记了Published PASS、GitHub UI结果和第二退役PENDING，没有明确说明Published Release已经冻结验收exact tag/source/ZIP/bootstrap，因此正常Latest confirmation不再新增独立postflight；Phase 4.14最后仍停在“Latest与postflight尚未发生”的旧时点。正确做法不是改写旧段，而是追加新post-governance status并链接ROADMAP唯一promotion authority。
+- 最终同步保持三层职责：ROADMAP 9.1精确anchor继续独占通用判断；ROADMAP 4.1只投影v0.4.2当前列车已满足该判断且第二退役/C2仍PENDING；Phase 4.14新增后续时点解释本轮为何精简，不改写此前Latest尚未发生的历史段，也不建立第二规则authority。

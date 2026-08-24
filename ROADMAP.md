@@ -95,9 +95,10 @@ Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节�
   文件工具。维护者临时授权只读Shell后整条通道PASS；稳定template现允许无独立文件工具时的exact-path只读preflight，正文写入仍
   只能使用apply_patch。该C1修正属于Release-excluded，不改变已验收C0或正式tag目标。
 - 维护者随后让tag精确指向C0，发布sealed bootstrap与22-entry ZIP；Published Release Fresh/Resume/9.2使用公开默认下载链全部
-  `PASS`。维护者已在GitHub Release编辑页面把同一Release晋级Latest，Release详情页显示`v0.4.2`、`draft=false`、
-  `prerelease=false`，tag与双资产identity
-  保持不变；第二退役检查与C2仍`PENDING`，因此programme accepted/fallback角色尚未在仓库中轮转。
+  `PASS`，已经冻结并验收exact tag/source/ZIP/bootstrap。维护者随后在GitHub Release编辑页面把同一Release取消Pre-release并
+  设为Latest，Release详情页显示`v0.4.2`、`draft=false`、`prerelease=false`；这已按
+  [GitHub Release Latest promotion confirmation](#github-release-latest-promotion-confirmation)完成正常确认，不再另设独立postflight，
+  tag与双资产identity保持不变。第二退役检查与C2仍`PENDING`，因此programme accepted/fallback角色尚未在仓库中轮转。
 - 把Phase history拆分为回补型`RETROSPECTIVE_CAPSULE`与正式Round关闭后冻结的`FROZEN_DISCOVERY_RECORD`，同步history索引、
   写作模板和repository contracts；一个Product Phase可以有多份真实Discovery records，但同一闭合对象最多一份回补型capsule。
 - 冻结ROADMAP第4节current train工作台→Discovery Round归档→第5节`product-phase-N`长期authority→Release后列车轮转的完整状态流；

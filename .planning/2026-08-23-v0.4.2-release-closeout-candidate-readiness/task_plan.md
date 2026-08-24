@@ -136,6 +136,9 @@ Phase 7: role-window closeout / waiting for maintainer
 - [x] 在ROADMAP建立GitHub Release Latest promotion confirmation精确稳定anchor，保留完整成功/异常规则。
 - [x] 把AGENTS、templates、governance与v0.4.2 acceptance收敛为职责内摘要或真实证据，并直接链接唯一authority。
 - [x] 增加防重复权威断言，运行风险相称验证并创建本地commit；冻结历史与Release输入保持不变。
+- [x] ROADMAP 4.1写入当前列车投影：Published Release已冻结验收exact身份，Latest confirmation已完成，正常路径不新增独立postflight。
+- [x] Phase 4.14追加带稳定anchor的后续治理摘要，保留时间线、精简原因和唯一authority链接，不改写旧时点正文。
+- [x] 增加治理断言并运行风险相称验证，确认Release输入不变后创建本地commit。
 - [ ] 由维护者逐项决定第二轮role-window清退对象；未明确授权的planning和冻结证据继续`KEEP`。
 - [ ] 写回Latest promotion confirmation、第二退役检查和final Post-run，形成C2并同步programme角色。
 - **Status:** waiting for maintainer
@@ -150,6 +153,7 @@ Phase 7: role-window closeout / waiting for maintainer
 - 已授权：维护者确认已通过GitHub Release编辑页面把`v0.4.2`晋级Latest；允许联网核对一次，并在无异常时把取消独立只读postflight的理由写入ROADMAP Release小节以精简后续流程。
 - 已授权：评估“UI成功”对新人缺少上下文的问题；有必要时全仓同步为明确的GitHub Release状态变更界面语义。
 - 已授权：把“Release状态UI提交成功后不需要独立postflight”的完整规则只留在ROADMAP；其他current文档改为职责内摘要、真实事实与稳定anchor链接。
+- 已授权：把本轮Published Release已验收exact tag/source/ZIP/bootstrap、GitHub Release Latest confirmation已完成且正常路径不另设postflight，同步到ROADMAP 4.1与Phase 4.14。
 - 未授权：push、远端 branch/tag、Pre-release/Release、资产上传、Cloud task、Latest、部署或填写未发生的 PASS/URL/SHA。
 
 ## Stop Conditions
