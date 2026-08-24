@@ -64,7 +64,8 @@ test("MAINTAINER_HANDOFF is a triage desk, not another mutable runbook", () => {
   for (const target of [
     "README.md#documentation-map", "README.md#local-development",
     "DESIGN.md#module-responsibilities", "ARCHITECTURE.md", "ROADMAP.md", "CHANGELOG.md",
-    "BASELINE_PROVENANCE.md", ".planning/.active_plan", "docs/",
+    "BASELINE_PROVENANCE.md", ".planning/.active_plan",
+    "docs/maintenance-environment-profile.md#maintenance-environment-profile", "docs/",
   ]) assert.match(handoff, new RegExp(target.replaceAll(".", "\\.")));
 
   for (const signal of [

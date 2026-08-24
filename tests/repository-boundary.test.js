@@ -149,6 +149,7 @@ test("trusted source zones are exact while repository governance paths remain li
     "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
     "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "docs/cloud-hard-acceptance-template.md",
     "docs/cloud-acceptance-operator-guide-template.md",
+    "docs/maintenance-environment-profile.md",
     "docs/repository-governance-guide.md",
   ]) {
     assert.equal(actual.includes(required), true, required);
@@ -166,6 +167,36 @@ test("trusted source zones are exact while repository governance paths remain li
     assert.doesNotMatch(relative, new RegExp(versionPattern, "i"),
       `test fixture path must use a semantic identity: ${relative}`);
   }
+});
+
+test("maintenance environment constraints survive planning retirement", () => {
+  const agents = read("AGENTS.md");
+  const handoff = read("MAINTAINER_HANDOFF.md");
+  const profilePath = "docs/maintenance-environment-profile.md";
+  const profile = read(profilePath);
+  const governance = read("docs/repository-governance-guide.md");
+  const artifact = JSON.parse(read(currentArtifactPath));
+
+  assert.match(profile, /^<a name="maintenance-environment-profile"><\/a>$/m);
+  assert.match(profile, /2026-08-22[\s\S]{0,500}`wsl\.exe`[\s\S]{0,300}没有已安装发行版/);
+  assert.match(profile, /Docker[\s\S]{0,200}Podman[\s\S]{0,200}nerdctl[\s\S]{0,200}不存在/);
+  assert.match(profile, /Git Bash[\s\S]{0,300}不能[\s\S]{0,200}Linux\/POSIX证据/);
+  assert.match(profile, /Linux零skip[\s\S]{0,200}FIFO\/device[\s\S]{0,200}filesystem/);
+  assert.match(profile, /Source\/Candidate Cloud教程[\s\S]{0,200}真实Linux gate/);
+  assert.match(profile, /跨阶段执行路由[\s\S]{0,120}不得只记录在planning/);
+  assert.match(profile, /重验触发器[\s\S]{0,400}维护者[\s\S]{0,200}环境已经改变/);
+  assert.match(profile, /不是[\s\S]{0,160}(?:Host ABI|产品支持合同|永久)/);
+  assert.doesNotMatch(profile, /C:\\Users\\|\/home\/|用户名|序列号|account id/i);
+  assert.match(agents,
+    /\]\(docs\/maintenance-environment-profile\.md#maintenance-environment-profile\)/);
+  assert.match(handoff,
+    /\]\(docs\/maintenance-environment-profile\.md#maintenance-environment-profile\)/);
+  assert.match(governance, /^<a name="maintenance-environment-memory"><\/a>$/m);
+  assert.match(governance,
+    /已确认、会跨任务或阶段反复改变本地\/Cloud执行路由的环境限制，不得只保存在会被清退的planning中/);
+  assert.match(governance, /应提升到一个持久的[\s\S]{0,80}maintenance environment profile/);
+  assert.equal(artifact.entries.some(entry => entry.path === profilePath), false);
+  assert.equal(artifact.excluded_prefixes.includes("docs/"), true);
 });
 
 test("planning lifecycle has one valid active pointer and complete scoped records", () => {

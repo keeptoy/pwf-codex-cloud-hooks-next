@@ -100,10 +100,12 @@
 - 维护者把 Cloud 原始结果带回后，智能体负责核对 exact source、测试/资产身份、Fresh/UserPrompt/real Resume、doctor
   和停止条件，再把真实证据写入版本 acceptance 并创建下一本地 commit。未实际运行的 Cloud 轮次保持 PENDING，
   本地 PASS 不得提升为 Cloud PASS。
-- 对本地所在 Windows 维护机，2026-08-22 已确认：`wsl.exe`
-  存在但没有已安装发行版，Docker、Podman 与 nerdctl 均不存在。除非维护者说明主机环境已经改变，默认流程不要
-  重复搜索这些执行面，也不要用 Git Bash 冒充 Linux/POSIX 证据；需要 Linux 零 skip、FIFO/device 或真实 filesystem
-  证据时，直接在版本 Cloud 验收教程中为维护者编排 Source/Candidate gate。
+- 本地维护机的已确认物理/工具限制、核对日期、默认解决方案和重验触发器只在
+  [`维护机执行环境档案`](docs/maintenance-environment-profile.md#maintenance-environment-profile)维护。没有触发器时直接使用其中
+  最近的`CONFIRMED`结论，不重复搜索WSL或容器执行面，也不用Git Bash冒充Linux/POSIX证据；Linux零skip、FIFO/device或
+  真实filesystem缺口默认直接编排进版本Source/Candidate Cloud教程。
+- 当任务发现一个已经确认、会跨任务或阶段反复影响执行路由的新环境限制时，不得只写进planning；关闭或清退该计划前，必须
+  把适用范围、影响、解决方案与重验条件提升到环境档案。单次错误和原始探测输出仍留在活动findings/progress。
 - 维护者可以为某个有界 gate 明确指定不同分工，例如授权智能体调用 Cloud CLI 或重新探测已变化的 WSL/容器环境；
   该授权只适用于当次范围，不自动改写上述默认职责，也不扩大 push、PR、Release、Latest 或部署权限。
 

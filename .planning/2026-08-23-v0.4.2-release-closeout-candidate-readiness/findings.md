@@ -69,3 +69,14 @@
 - `ROADMAP.md`、`docs/history/*`、`.planning/*`和`tests/*`均在Release contract excluded prefixes内；本轮同步不会再次改变87,386-byte候选ZIP，但新的Git commit会成为待验收的更新C0 source HEAD。
 - ROADMAP 4.1现已记录README手工交接、新人术语顺序、旧候选身份失效与Cloud仍PENDING；没有把exact SHA或逐命令提升成programme authority。
 - Phase 4.14新增稳定`phase-4-14-post-governance-status-readme-release-handoff`锚点，保存README-as-ZIP-input的原因、本地`d1547a…`快照及“不是Cloud/sealed/public evidence”的边界。
+
+## Persistent maintenance environment memory
+
+- 当前唯一持久记录在`AGENTS.md`：2026-08-22确认`wsl.exe`存在但无发行版，Docker/Podman/nerdctl不存在，Git Bash不能充当Linux/POSIX证据；planning一旦清退不会影响这条规则，但AGENTS不适合继续扩张成环境流水账。
+- 更稳妥的结构是新增`docs/maintenance-environment-profile.md`作为机器特定、带日期的执行环境档案：每条限制同时登记observed fact、验证时间/方式、影响、默认解决方案与重验触发器；它不是Host ABI、产品支持合同或永久硬件事实。
+- AGENTS保留强制入口与默认行为，具体事实链接新档案；README现已通过文档地图把“新维护者避坑与能力检测”路由到`MAINTAINER_HANDOFF.md`，因此由handoff再链接环境档案即可形成面向人的可发现链，无需再次修改Release ZIP输入README。
+- 当前仓库除AGENTS外没有维护机限制副本；新文档应被repository-boundary断言为required lifecycle document、Release-excluded，并要求AGENTS/handoff双入口和“已确认事实不得只写planning”的提升规则。
+- `repositoryPaths()`同时枚举tracked与未忽略untracked文件，因此新环境档案可在暂存前接受repository inventory测试；不需要为了测试提前写Git index。
+- `MAINTAINER_HANDOFF.md`已经承担“平台限制/能力检测结果分流”，适合作为人类间接入口；其稳定定位仍不保存版本、SHA或命令流水，只把已知环境限制导向新档案。
+- 最终结构形成单一事实权威：`docs/maintenance-environment-profile.md`保存机器事实和解决方案；AGENTS强制读取/提升；handoff负责人的发现；治理指南拥有跨阶段提升与隐私/重验规则。README继续只指向handoff，因此没有新增孤岛，也没有改变ZIP输入。
+- 环境档案把2026-08-22事实标为`CONFIRMED`/`CONFIRMED_BOUNDARY`，并明确只有维护者说明变化、实际信号冲突、有界安装授权或新primitive需求才重验；这避免旧事实永久化，也避免每轮无意义复查。

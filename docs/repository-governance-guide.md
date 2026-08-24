@@ -40,6 +40,7 @@ Hot 层追求单一权威和快速理解；Cold 层追求精确恢复。不要�
 | 当前 programme、candidate、accepted、rollback 状态 | ROADMAP |
 | upstream、来源、不可变身份和里程碑索引 | PROVENANCE |
 | 当前 Next Step、授权、禁止事项和现场证据 | active planning |
+| 已确认、会跨阶段复用的维护机执行限制与默认替代路线 | maintenance environment profile |
 | 完整历史字节和逐次验收 | immutable Git/tag/Release |
 
 其他文件只保留最小摘要和链接，不复制第二份状态表、测试流水或版本角色。
@@ -94,12 +95,25 @@ source baseline
 - planning；
 - operator guide/acceptance，以及保留原名的historical runbook；
 - handoff 和研究文档；
+- maintenance environment profile；
 - migration notes。
 
 这些区域应验证允许的路径 pattern、活动角色、数量/生命周期、链接有效性和 Release exclusion，而不是
 把每个历史文件名永久写入全仓库 exact list。
 
 分区治理不是弱化安全：Release 和 trusted graph 仍保持 exact；只是避免让非执行历史增长绑架执行边界。
+
+<a name="maintenance-environment-memory"></a>
+
+### 6.3 维护机环境限制的持久记忆
+
+已确认、会跨任务或阶段反复改变本地/Cloud执行路由的环境限制，不得只保存在会被清退的planning中；应提升到一个持久的
+maintenance environment profile。档案至少记录适用执行面、核对日期、事实状态、影响、默认解决方案与重验触发器；planning只
+保留当次命令、原始输出、错误和任务内判断。
+
+环境档案是可更新的维护事实，不是Host ABI、产品支持合同或永久机器承诺。只有维护者说明环境改变、实际信号与档案冲突、
+任务明确授权新执行面或新gate需要未分类primitive时才重验；确认变化后，在同一事务中更新档案和智能体入口。不要记录秘密、
+个人路径、账户身份或设备唯一标识，也不要把单次网络/进程故障提升成跨阶段限制。
 
 ## 7. 迭代方式
 

@@ -77,6 +77,14 @@ Phase 5 / Source-Candidate paused pending maintainer push
 - [x] 增加治理断言并运行风险相称验证；确认ROADMAP/history仍被Release ZIP排除，创建本地commit。
 - **Status:** complete
 
+### Phase 4.10: Persistent maintenance environment profile
+
+- [x] 新建带稳定anchor的维护机执行环境档案，区分observed fact、影响、默认路由、重验触发器和更新纪律。
+- [x] AGENTS的默认本地/Cloud职责直接链接档案并只保留强制执行摘要；通过维护者接手入口保证人也能发现该档案。
+- [x] 增加治理断言，确认环境事实不会只停留在planning、不会被误当永久Host/Product合同，并保持Release exclusion。
+- [x] 运行风险相称验证并创建本地commit；Source/Candidate保持暂停。
+- **Status:** complete
+
 ### Phase 5: Source/Candidate channel checkpoint
 
 - [ ] 维护者push并在独立Fresh Cloud完成4.1、B～E与9.1。
@@ -110,6 +118,10 @@ Phase 5 / Source-Candidate paused pending maintainer push
 | README提前增加ROADMAP入口后与后文原链接形成重复authority fragment，完整runner为153 pass / 1 fail / 26 skipped | 1 | 保留新人首次接触处的链接，把后文改成“上文链接的ROADMAP Release流程”，不弱化跨文档唯一入口断言。 |
 | PowerShell不接受静态泛型调用`SequenceEqual[byte]`，双构建脚本在解析阶段退出 | 1 | 解析发生在临时目录创建前，无文件副作用；改用`Compare-Object -SyncWindow 0`比较字节序列。 |
 | 恢复时组合检索使用的ROADMAP完整标题字面串与实际标题不一致，`rg`返回exit 1 | 1 | 已由短关键词定位实际`4.1`标题和Phase 4.14文件；工作树当时clean，无文件副作用。 |
+| 环境档案测试补丁中的正则换行转义被`apply_patch`解析为非法hunk | 1 | 校验阶段即停止、无部分写入；改用不含换行转义的有界跨行模式并拆分补丁。 |
+| 环境档案正文完成后聚焦测试仍1 fail：断言要求Source/Candidate先于Linux证据词出现 | 1 | 正文自然先列证据需求再给默认路由；拆为证据集合与Cloud路由两条断言，不反向扭曲文档。 |
+| 第二次聚焦仍1 fail：断言把“跨阶段执行路由”错误要求在“不得只写planning”之后 | 1 | 按正文因果顺序收窄为“跨阶段执行路由→不得只记录在planning”，不修改已清晰的正文。 |
+| 第三次聚焦仍1 fail：治理断言额外要求正文使用不存在的中文固定标签“持久环境档案” | 1 | 按3-strike重新收窄测试设计：分别断言“不得只留planning”和“提升到持久profile”两条直接合同。 |
 
 ## Current Status
 

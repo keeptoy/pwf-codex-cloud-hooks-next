@@ -65,3 +65,14 @@
 - 聚焦repository治理回归恢复13/13；本轮6个改动文件与22-entry Release allowlist交集为`NONE`，不会改变已计算的候选ZIP字节。
 - Phase 4.9完成，活动计划回到Phase 5停止点；Source/Candidate仍未运行，下一步为维护者审核并push新的C0。
 - 最终architecture/repository治理验证PASS：22/22；单次Release build/check再次得到22 entries、87,386 bytes和SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`，确认本轮Release-excluded同步未改变候选字节。
+- 维护者要求把本机物理/执行环境限制从易清退planning提升为跨阶段持久记忆；Phase 4.10已开启，Source/Candidate继续暂停。
+- 初步inventory确认限制目前只在AGENTS存在。决定采用“AGENTS强制入口 + 独立环境档案 + MAINTAINER_HANDOFF人类发现链”，不修改Release ZIP输入README。
+- 首次环境档案测试补丁因正则换行转义形成非法hunk而在校验阶段退出；没有部分写入，已改为拆分补丁和有界跨行断言。
+- 环境记忆failing-first为23 tests / 20 pass / 3 fail，缺口精确对应新档案、AGENTS/handoff入口与required lifecycle inventory。
+- 已新增维护机执行环境档案，并同步AGENTS强制入口、MAINTAINER_HANDOFF发现链和repository governance跨阶段提升规则；README保持不变。
+- 首次正文后聚焦回归为23 tests / 22 pass / 1 fail；唯一失败是测试把Source/Candidate与Linux证据关键词顺序写反，已拆成两个独立语义断言。
+- 第二次聚焦仍为22 pass / 1 fail；剩余fixture同样倒置了“跨阶段影响→不得只写planning”的正文顺序，已按因果语义修正断言。
+- 第三次聚焦仍为22 pass / 1 fail；确认正文合同完整，问题是测试虚构中文固定标签。已按3-strike拆为两个直接合同，停止继续堆叠宽泛跨行正则。
+- 最终architecture/repository治理回归PASS：23/23；稳定anchor、AGENTS/handoff双入口、required lifecycle inventory、planning提升规则、隐私边界与Release exclusion均闭合。
+- 本轮改动与22-entry Release allowlist交集为`NONE`；单次Release build/check仍为87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`。
+- Phase 4.10完成，活动计划回到Phase 5停止点；Source/Candidate未运行，下一步为维护者审核并push新的C0。
