@@ -144,3 +144,8 @@
 - current authority、templates、v0.4.2 guide、provenance与AGENTS已统一为`GitHub Release Latest promotion confirmation`，并明确不是Codex Cloud、GitHub Actions、资产上传页或任意窗口“未报错”；冻结历史未改写。
 - 完整Windows suite PASS：181 tests / 155 pass / 0 fail / 26 skipped；`git diff --check`通过，Release allowlist交叉检查为`PWF_UI_TERMINOLOGY_RELEASE_INPUT_DELTA=NONE`。
 - Phase 7.1术语校准完成；活动计划恢复等待维护者逐项决定第二轮role-window对象，未删除planning或其他窗口材料。
+- 维护者确认继续单一权威治理；Phase 7.2开启。只读扫描确认完整promotion成功/免postflight/异常规则目前在ROADMAP、AGENTS、Operator Guide template和v0.4.2 acceptance重复，拟以ROADMAP精确anchor为唯一规范，其他位置降为摘要、事实和链接。
+- failing-first聚焦回归为23 tests / 21 pass / 2 fail，精确命中ROADMAP缺少promotion anchor和v0.4.2 acceptance未引用该anchor；正文后剩余1 fail只是测试把AGENTS自然换行固定为空格，收窄fixture后恢复23/23 PASS。
+- ROADMAP新增唯一`github-release-latest-promotion-confirmation`anchor并保留完整规则；AGENTS、两份模板、repository governance和v0.4.2 acceptance均改为职责内摘要/事实与直接链接，冻结history、旧acceptance和CHANGELOG未改写。
+- 完整Windows suite PASS：181 tests / 155 pass / 0 fail / 26 skipped；`git diff --check`通过，Release allowlist交叉检查为`PWF_PROMOTION_AUTHORITY_RELEASE_INPUT_DELTA=NONE`。
+- Phase 7.2单一权威收敛完成；活动计划恢复等待维护者逐项决定第二轮role-window对象，未删除planning或其他窗口材料。

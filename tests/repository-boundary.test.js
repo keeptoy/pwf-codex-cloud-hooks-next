@@ -100,7 +100,10 @@ test("v0.4.2 Latest promotion preserves the pre-C2 programme rollback window", (
   assert.match(candidateAcceptance, /draft=false[\s\S]*prerelease=false/);
   assert.match(candidateAcceptance,
     /GitHub Release编辑页面[\s\S]*取消Pre-release[\s\S]*设为Latest[\s\S]*Release详情页/);
-  assert.match(candidateAcceptance, /不再单列[\s\S]*postflight/);
+  assert.match(candidateAcceptance, /\.\.\/\.\.\/ROADMAP\.md#github-release-latest-promotion-confirmation/);
+  assert.match(candidateAcceptance, /本节只保存本次[\s\S]*真实证据[\s\S]*不重新定义/);
+  assert.doesNotMatch(candidateAcceptance,
+    /它不是Codex Cloud|只有保存结果未知|不再单列重复下载、重算SHA/);
   assert.match(candidateAcceptance, /C步骤首次安全停止[\s\S]*维护者随后临时授权/);
   assert.match(candidateAcceptance, /只读Shell existence preflight[\s\S]*D～F顺利PASS/);
   assert.match(candidateAcceptance, /source-candidate closeout retirement checkpoint[\s\S]*所有仓库内planning[\s\S]*KEEP/);

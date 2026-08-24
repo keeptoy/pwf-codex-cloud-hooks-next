@@ -374,17 +374,22 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(releaseFlow, /不是Codex Cloud[\s\S]*GitHub Actions[\s\S]*任意[\s\S]*未报错/);
   assert.match(releaseFlow, /成功[\s\S]*不再单列[\s\S]*postflight/);
   assert.match(releaseFlow, /结果未知[\s\S]*停止角色轮转和C2[\s\S]*只读诊断/);
+  assert.match(roadmap, /^<a name="github-release-latest-promotion-confirmation"><\/a>$/m);
+  assert.equal((roadmap.match(/<a name="github-release-latest-promotion-confirmation"><\/a>/g) || []).length, 1);
   const retirementFlow = roadmap.slice(retirementStart, compatibilityStart);
   assert.match(retirementFlow,
     /candidate admission preflight[\s\S]*C0 \/ Source-Candidate[\s\S]*Source\/Candidate Cloud PASS[\s\S]*source-candidate closeout retirement checkpoint[\s\S]*C1 \/ 第一阶段状态写回[\s\S]*immutable publication[\s\S]*Published Release Cloud PASS[\s\S]*Latest promotion confirmation[\s\S]*role-window closeout retirement checkpoint[\s\S]*C2 \/ final evidence与programme closeout/);
   for (const currentPolicy of [cloudTemplate, operatorTemplate, repositoryGovernance]) {
     assert.match(currentPolicy, /GitHub Release Latest promotion confirmation/);
+    assert.match(currentPolicy, /ROADMAP\.md#github-release-latest-promotion-confirmation/);
     assert.doesNotMatch(currentPolicy, /完成(?:同一Release的)?Latest promotion与只读postflight|Latest(?: promotion)?\/postflight/);
   }
-  assert.match(agents,
-    /GitHub Release编辑页面[\s\S]*Pre-release\/Latest[\s\S]*Release详情页[\s\S]*exact目标状态/);
-  assert.match(agents, /不是[\s\S]{0,160}Codex Cloud[\s\S]{0,160}GitHub Actions[\s\S]{0,160}任意窗口/);
-  assert.match(agents, /结果未知[\s\S]{0,120}有界只读查询/);
+  assert.match(agents, /ROADMAP\.md#github-release-latest-promotion-confirmation/);
+  assert.match(agents, /GitHub Release Latest\s+promotion confirmation[\s\S]{0,240}只读[\s\S]{0,120}ROADMAP/);
+  for (const authorityProjection of [agents, operatorTemplate, cloudTemplate, repositoryGovernance]) {
+    assert.doesNotMatch(authorityProjection,
+      /GitHub Release编辑页面[\s\S]{0,240}Release详情页|不是Codex Cloud[\s\S]{0,200}GitHub Actions|不再重复下载资产、重算SHA/);
+  }
   for (const role of [
     "SOURCE_CANDIDATE_HEAD", "SOURCE_CANDIDATE_CHECKPOINT_HEAD",
     "PUBLISHED_RELEASE_CLOSEOUT_HEAD",

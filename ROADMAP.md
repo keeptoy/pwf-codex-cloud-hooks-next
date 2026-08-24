@@ -356,7 +356,8 @@ Release operator guide管理；single-Discovery版本可以继续使用`vX.Y.Z-c
 模板、活动Release task plan、operator guide与ROADMAP的详细分工只由
 [`Cloud hard acceptance template` 的“文档职责与写入时机”](docs/cloud-hard-acceptance-template.md#acceptance-document-responsibilities)
 定义；本节只维护 programme 级授权与封板顺序，不复制逐资产或逐步骤状态。下面两个稳定anchor分别是Release四步/C0～C2
-和两轮retirement checkpoint时点的唯一programme authority；模板、治理指南、具体guide与history只能引用并保存职责内投影。
+和两轮retirement checkpoint时点的唯一programme authority；四步内部的GitHub Release Latest promotion判断另有精确anchor。
+模板、治理指南、具体guide与history只能引用并保存职责内投影。
 
 <a name="release-four-step-flow"></a>
 
@@ -410,6 +411,8 @@ C1/C2都不能取代C0，也不是额外Cloud通道。
 | Product验收 | 每个新增risk/behavior claim的正式Discovery Round一轮相称验收 | gate/task/stage数量或Release通道数量 |
 | Release验收 | 真正发布时固定保留Source/Candidate与Published Release两个独立身份/环境通道 | 两个Product Discovery Round或两份guide |
 | retirement review | candidate closeout与accepted role rotation两个对象治理时点 | Cloud acceptance、黑盒PASS或删除配额 |
+
+<a name="github-release-latest-promotion-confirmation"></a>
 
 对应关系也保持简单：provenance回答“发布了什么字节”，Release operator guide回答“候选与公开包是否验收”，ROADMAP
 回答“现在推荐谁”。Latest promotion只改Release metadata与lifecycle指针，不重新上传包。Published Release已经冻结并验收

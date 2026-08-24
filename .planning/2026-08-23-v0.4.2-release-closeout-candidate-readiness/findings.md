@@ -168,3 +168,6 @@
 - 合理精简不是删除fail-closed确认，而是取消“成功promotion后必须另开一段独立只读postflight”的stage：维护者在GitHub Release编辑页面保存后，于Release详情页看到Latest成功即完成正常确认；只有结果未知、页面仍是Pre-release、Latest指错版本或观察到tag/asset变化时，才执行有界只读诊断并阻止C2。
 - 后续新人审阅发现“UI成功”仍缺少主语、产品和结果页面：离开本轮对话后，可能被误解为Codex Cloud task UI、GitHub Actions、上传资产窗口或任何没有弹错的按钮。current authority必须把它收窄为“GitHub Release编辑页面保存状态变更，并在返回/刷新后的Release详情页看到exact目标版本状态”；这不是历史事实变更，只是稳定术语补全。
 - 最终采用稳定术语`GitHub Release Latest promotion confirmation`：动作发生在GitHub Release编辑页面，结果由返回或刷新后的Release详情页呈现exact版本为Latest且不再是Pre-release来确认。current authority、直接模板、v0.4.2 guide、provenance与AGENTS同步；冻结history、旧acceptance和CHANGELOG不追改。
+- 单一权威复核确认当前仍有语义重复：ROADMAP已经完整定义成功、免独立postflight和异常只读诊断；AGENTS、Operator Guide template与v0.4.2 acceptance又复制了同一套判断。正确分层应是ROADMAP独占规范，AGENTS只约束智能体执行，template只定义记录职责，版本acceptance只保存这次实际发生的GitHub Release状态事实，governance/provenance只保存时点或状态投影。
+- 现有`release-four-step-flow`覆盖范围较大；为避免其他文档链接到整段流程后自行挑规则，应在ROADMAP的promotion说明前新增`github-release-latest-promotion-confirmation`精确anchor。冻结历史继续保留当时措辞，不参与current authority去重。
+- 最终职责分层已收敛：ROADMAP唯一保存完整成功/免独立postflight/异常诊断规则；AGENTS只约束智能体如何消费维护者结果，Cloud template只声明协议引用，Operator Guide template只声明记录字段和进入retirement的条件，repository governance只消费时点，v0.4.2 acceptance只保存本次实际UI/Latest与identity证据，provenance继续只投影完成状态。

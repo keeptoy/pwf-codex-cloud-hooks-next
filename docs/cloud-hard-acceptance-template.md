@@ -31,7 +31,9 @@ checkpoint但保持开放，全部声明通道闭合后才追加final Post-run s
 
 programme级Release四步与C0/C1/C2顺序只读
 [`ROADMAP`](../ROADMAP.md#release-four-step-flow)，两个retirement checkpoint的时点只读
-[`ROADMAP`](../ROADMAP.md#version-train-two-retirement-reviews)。本模板只维护两个Cloud通道怎样执行和取证，
+[`ROADMAP`](../ROADMAP.md#version-train-two-retirement-reviews)，GitHub Release Latest promotion confirmation的成功、
+免独立postflight与异常边界只读
+[`ROADMAP`](../ROADMAP.md#github-release-latest-promotion-confirmation)。本模板只维护两个Cloud通道怎样执行和取证，
 不从脚本顺序反向生成programme流程。
 
 Operator guide的结构与状态语义只见上述结构模板。本文件继续专注稳定执行协议，不复制另一份guide骨架。

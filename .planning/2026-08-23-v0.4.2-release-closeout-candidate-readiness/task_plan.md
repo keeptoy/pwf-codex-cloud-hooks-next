@@ -133,6 +133,9 @@ Phase 7: role-window closeout / waiting for maintainer
 - [x] 证据支持后更新ROADMAP Release流程与治理断言，把晋级成功确认和异常停止条件内嵌到UI操作，不再单列postflight。
 - [x] 把“UI成功”统一解释为GitHub Release编辑页的exact状态变更与Release详情页结果，不让新人误解为任意UI、Codex Cloud或GitHub Actions。
 - [x] 同步current authority/templates/guide/AGENTS与治理断言，保持历史证据不变并创建本地commit。
+- [x] 在ROADMAP建立GitHub Release Latest promotion confirmation精确稳定anchor，保留完整成功/异常规则。
+- [x] 把AGENTS、templates、governance与v0.4.2 acceptance收敛为职责内摘要或真实证据，并直接链接唯一authority。
+- [x] 增加防重复权威断言，运行风险相称验证并创建本地commit；冻结历史与Release输入保持不变。
 - [ ] 由维护者逐项决定第二轮role-window清退对象；未明确授权的planning和冻结证据继续`KEEP`。
 - [ ] 写回Latest promotion confirmation、第二退役检查和final Post-run，形成C2并同步programme角色。
 - **Status:** waiting for maintainer
@@ -146,6 +149,7 @@ Phase 7: role-window closeout / waiting for maintainer
 - 已授权：维护者确认`v0.4.2`公开资产已经发布且Published Release Cloud整条通道通过，允许直接同步状态并补全版本验收手册；本地已seal bootstrap属于维护者改动，必须原样保留并核对公开资产。
 - 已授权：维护者确认已通过GitHub Release编辑页面把`v0.4.2`晋级Latest；允许联网核对一次，并在无异常时把取消独立只读postflight的理由写入ROADMAP Release小节以精简后续流程。
 - 已授权：评估“UI成功”对新人缺少上下文的问题；有必要时全仓同步为明确的GitHub Release状态变更界面语义。
+- 已授权：把“Release状态UI提交成功后不需要独立postflight”的完整规则只留在ROADMAP；其他current文档改为职责内摘要、真实事实与稳定anchor链接。
 - 未授权：push、远端 branch/tag、Pre-release/Release、资产上传、Cloud task、Latest、部署或填写未发生的 PASS/URL/SHA。
 
 ## Stop Conditions
@@ -182,6 +186,7 @@ Phase 7: role-window closeout / waiting for maintainer
 | 正文后聚焦测试为12 pass / 2 fail，第二次为13 pass / 1 fail | 2 | 失败均来自测试把自然文案限定为固定距离或相反词序；拆为独立事实与稳定anchor断言，未扭曲正文。 |
 | Web工具拒绝直接打开本仓库`api.github.com` Release/tag endpoints，返回safe-open internal error | 1 | 保留官方GitHub Docs作为协议依据；实际公开状态改用只读HTTPS请求，不重复同一失败调用。 |
 | 单次PowerShell审计中Release-by-tag与Git-ref API分别返回504，导致两个派生字段为空 | 1 | 不使用空值；由成功的Latest endpoint核对Release/资产，另用`git ls-remote`核对tag source，避免重试同一路径。 |
+| 单一权威正文完成后聚焦测试仍1 fail：AGENTS断言把Markdown换行固定成普通空格 | 1 | 保留自然换行，把断言收窄为允许空白分隔的稳定术语；正文职责与链接不变。 |
 
 ## Current Status
 

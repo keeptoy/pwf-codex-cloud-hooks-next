@@ -314,7 +314,8 @@ lifecycle并链接ROADMAP/本指南，不得复制当前版本角色、PASS/PEND
 
 Release四步与C0/C1/C2身份顺序只读
 [`ROADMAP`](../ROADMAP.md#release-four-step-flow)，两轮review在Release中的时点只读
-[`ROADMAP`](../ROADMAP.md#version-train-two-retirement-reviews)。本指南只拥有对象、planning、链接与eviction怎样分类和清退，
+[`ROADMAP`](../ROADMAP.md#version-train-two-retirement-reviews)，GitHub Release Latest promotion confirmation是否成立只读
+[`ROADMAP`](../ROADMAP.md#github-release-latest-promotion-confirmation)。本指南只拥有对象、planning、链接与eviction怎样分类和清退，
 不建立第二份Release programme流程。
 
 - [`Cloud hard acceptance template`](cloud-hard-acceptance-template.md)只维护双通道前置条件、信任输入、

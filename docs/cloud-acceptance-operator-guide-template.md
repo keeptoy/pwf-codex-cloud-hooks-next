@@ -226,15 +226,14 @@ Final Post-run status只在guide声明范围全部闭合后追加；Pre-run guid
 
 ### 7.1 Release exit：role-window closeout retirement checkpoint
 
-Release guide只有在Published Release Cloud PASS、维护者完成同一Release的GitHub Release Latest promotion confirmation后，才执行
+Release guide只有在Published Release Cloud PASS、维护者完成同一Release的
+[`GitHub Release Latest promotion confirmation`](../ROADMAP.md#github-release-latest-promotion-confirmation)后，才执行
 第二轮`RETIRE/MIGRATE/KEEP`审查。它确认新accepted与immediate fallback可恢复，并治理退出candidate/accepted窗口的
 本地版本材料、oracles与compatibility transition；不得删除、移动、重建或重传sealed tag和资产。该审查必须先于C2，
 使最终状态commit能够保存真实检查点结论。
 
-正常路径中，维护者在GitHub Release编辑页面取消Pre-release并设为Latest，保存后返回或刷新GitHub Release详情页，确认
-exact版本显示为Latest且不再是Pre-release，就完成GitHub Release Latest promotion confirmation，不再单列read-only postflight。
-这里不是指Codex Cloud、GitHub Actions、资产上传页或任意窗口“未报错”。若保存结果未知、Release详情页状态矛盾、Latest
-指错版本或观察到tag/资产变化，必须停止并按ROADMAP执行有界只读诊断，不能进入C2。
+成功条件、正常路径是否另设独立postflight以及异常停止/诊断边界只读上述ROADMAP anchor。本模板不复制判断规则；具体guide
+只记录exact版本、维护者回传或专项证据呈现的实际状态、最终结论与偏差，然后决定能否进入第二轮审查。
 
 第二阶段状态写回commit负责保存Published evidence、GitHub Release Latest promotion confirmation、第二检查点与final Post-run，并同步ROADMAP中的
 programme角色。两次状态写回只是仓库证据闭合，不是两次额外Cloud验收；真正的Cloud执行仍只有Source/Candidate与
