@@ -33,7 +33,9 @@
 ### Phase 4: Maintainer decision and scoped implementation
 
 - **Status:** waiting for maintainer
-- 不提前修改Batch A/B对象；等待维护者明确批准范围后实施并验证。
+- 维护者已批准先Batch A、后Batch B并允许分轮实施。
+- Batch A实施前反向枚举Phase 4.12正文，发现同类`phase-9-v0-4-0-*`anchors实际为21个，不是初扫由测试暴露的6个；21个均无真实文档入链，7个仅测试自证、14个仅有定义。
+- 为避免只清一半同类包袱，已暂停正文/test修改，等待维护者确认把该项扩大为21个原子清退；其余Batch A范围不变。
 
 ## Test Results
 
@@ -50,6 +52,7 @@
 | 2026-08-24 | 初次组合 Git 追溯命令 exit 1 | 1 | 保留已返回证据，改用定向 Git 命令完成追溯；未重复失败调用。 |
 | 2026-08-24 | 沙箱内 Git index lock permission denied；Node test child-process spawn EPERM | 1 | 改用获准非沙箱执行面完成暂存与测试；focused suite 14/14 PASS。 |
 | 2026-08-24 | Phase 2首条`rg`命令被PowerShell错误解析双引号正则 | 1 | 命令在搜索前退出；改用单引号正则，未重复原转义。 |
+| 2026-08-24 | Phase 4.12 anchor审计末尾展示用`rg`返回exit 1 | 1 | 核心PowerShell枚举和逐anchor入链结果已成功；不重复展示命令，使用21项结构化结果。 |
 
 ## 5-Question Reboot Check
 

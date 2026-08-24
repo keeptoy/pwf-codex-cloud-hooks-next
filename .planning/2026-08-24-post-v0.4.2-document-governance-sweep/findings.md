@@ -63,8 +63,9 @@
    - 通用逻辑已经规定：若candidate等于accepted，bootstrap zero hash会直接失败；非零hash还必须等于当前确定性ZIP SHA。
    - 后续仅在acceptance包含`P9-B local seal PASS`时再次验证非零hash、SHA、entries和size；v0.4.2 guide不使用P9-B，该分支当前不执行。
    - 稳定package/hash合同已有无版本条件的强断言，因此删除旧P9-B条件不会降低Release安全性。
-2. **Phase 4.12 的六个旧`phase-9-v0-4-0-*` anchors及对应测试枚举 — 候选`RETIRE`。**
-   - 全仓入链扫描显示每个anchor只出现于Phase 4.12定义本身和`tests/repository-boundary.test.js`，没有README/ROADMAP/history index/provenance/current doc入链。
+2. **Phase 4.12 的全部21个旧`phase-9-v0-4-0-*` anchors及对应测试枚举 — 候选`RETIRE`。**
+   - 初扫只从测试枚举识别6个post-status anchor；实施前从正文定义反向枚举后确认同类前缀共有21个，包含positioning、starting facts、decision、gates、inventory、verification、lifecycle、stop/successor及P9各pre/operator/post节点。
+   - 全仓入链扫描显示21个anchor均没有真实文档入链；7个只被`tests/repository-boundary.test.js`自证，另外14个只存在于定义本身。没有README/ROADMAP/history index/provenance/current doc消费者。
    - Phase 4.12尾注明确把它们称为旧证据anchors/兼容别名；canonical `phase-4-12-v0-4-0-release-discovery`入口已由history index使用。
    - 按pre-1.0不为无入链兼容别名背负长期包袱的既定原则，可以删除别名和测试枚举；P9-A～F真实正文、时间线、结论和canonical history入口继续`KEEP`。
 3. **Phase 4.14逐段自然语言回归 — 候选`MIGRATE`。**
@@ -103,7 +104,7 @@
 2. 把“24个非活动planning RETIRE”数量断言替换为final semantic status（`ROLE_WINDOW_CLOSEOUT_PASS / C2_COMPLETE`），保留closeout事实但不冻结inventory数量。
 3. 删除`repository-boundary.test.js`中不可达的v0.4.0/v0.4.1 current CHANGELOG分支，以及约174行不可达v0.4.1 P9 operator/evidence分支；immutable P9-F test、provenance和publication oracle继续保留。
 4. 删除`release-package.test.js`中已被通用exact-SHA规则覆盖的P9-B conditional。
-5. 删除Phase 4.12六个无入链`phase-9-v0-4-0-*`兼容anchors、测试枚举及尾注的“继续保留兼容别名”表述；保留P9-A～F历史正文与canonical Phase 4.12入口。
+5. 删除Phase 4.12全部21个无入链`phase-9-v0-4-0-*`兼容anchors、测试枚举及尾注的“继续保留兼容别名”表述；保留P9-A～F历史正文与canonical Phase 4.12入口。该完整范围是实施前校准结果，需维护者确认后执行。
 6. 修复CHANGELOG的v0.3.4/v0.4.1两条missing local acceptance links，改指provenance已登记的exact immutable URLs。
 7. 增加版本无关的tracked Markdown本地path/explicit-anchor完整性测试，排除upstream fixture和明确模板占位符。
 

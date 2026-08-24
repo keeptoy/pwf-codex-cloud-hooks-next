@@ -6,7 +6,7 @@
 
 ## Next Step
 
-向维护者提交高置信最小治理批次与可选的Phase 4.14深度精简建议；等待明确授权后才修改tests、CHANGELOG、ROADMAP或history正文。
+等待维护者确认Phase 4.12旧anchor清退范围由初扫的6个校准为完整21个；确认后实施Batch A、验证并独立提交，随后另轮处理Batch B。
 
 ## Current Phase
 
@@ -41,6 +41,8 @@ Phase 4: maintainer decision and scoped implementation
 ### Phase 4: Maintainer decision and scoped implementation
 
 - [x] 向维护者报告发现、依据、影响范围和最小修改建议。
+- [x] 维护者批准先A后B、分步实施。
+- [ ] 确认Phase 4.12同类旧anchor由初扫6个扩大为完整21个的原子清退范围。
 - [ ] 只实施维护者明确批准的条目；不把 Discovery 自动扩大为新 Release/Product Phase。
 - [ ] 运行风险相称的 focused/full validation，并记录真实结果。
 - **Status:** waiting for maintainer
@@ -90,7 +92,8 @@ Phase 4: maintainer decision and scoped implementation
 | 初次 Git 追溯组合命令以 exit 1 结束，但 blame/pickaxe 已完整返回 | 1 | 不重复原命令；拆分为定向 `git show`、`git blame` 与 helper 读取，确认引入 commit 和原始生命周期语义。 |
 | 沙箱内 `git add` 无法创建 `.git/index.lock`，Node test runner 创建子进程返回 `EPERM` | 1 | 归类为维护机沙箱执行面限制；记录后改用获准的非沙箱执行面分别完成暂存与验证，不弱化断言。 |
 | Phase 2首条`rg`组合命令因PowerShell双引号与正则冲突，在解析阶段退出 | 1 | 未执行搜索；改用单引号包裹正则并拆分可读输出，不重复原转义方式。 |
+| Phase 4.12完整anchor审计末尾的展示用`rg`返回exit 1 | 1 | 主审计已成功枚举21个anchor及全部入链；展示命令不再重跑，改用已解析结果。 |
 
 ## Current Status
 
-`DISCOVERY_INVENTORY_COMPLETE / HIGH_CONFIDENCE_RETIRE_MIGRATE_KEEP_PROPOSED / V0_4_2_HISTORY_KEPT / IMPLEMENTATION_WAITING_FOR_MAINTAINER`
+`BATCH_A_AUTHORIZED_IN_PRINCIPLE / LEGACY_ANCHOR_SCOPE_RECALIBRATED_6_TO_21 / WAITING_FOR_EXACT_SCOPE_CONFIRMATION / BATCH_B_DEFERRED`
