@@ -80,3 +80,11 @@
 - `MAINTAINER_HANDOFF.md`已经承担“平台限制/能力检测结果分流”，适合作为人类间接入口；其稳定定位仍不保存版本、SHA或命令流水，只把已知环境限制导向新档案。
 - 最终结构形成单一事实权威：`docs/maintenance-environment-profile.md`保存机器事实和解决方案；AGENTS强制读取/提升；handoff负责人的发现；治理指南拥有跨阶段提升与隐私/重验规则。README继续只指向handoff，因此没有新增孤岛，也没有改变ZIP输入。
 - 环境档案把2026-08-22事实标为`CONFIRMED`/`CONFIRMED_BOUNDARY`，并明确只有维护者说明变化、实际信号冲突、有界安装授权或新primitive需求才重验；这避免旧事实永久化，也避免每轮无意义复查。
+
+## Maintenance environment status synchronization
+
+- ROADMAP 4.1应只记录当前列车完成了“环境事实从planning/AGENTS内联摘要提升为持久profile”的治理交付、其Release-excluded属性与Cloud仍PENDING；具体WSL/container事实继续只读profile。
+- Phase 4.14适合新增一个post-governance status，保存设计原因：planning会退役，AGENTS不应膨胀成事实流水账，环境限制又必须带日期、影响、解决方案和重验触发器跨阶段存活。
+- 当前分支比origin ahead 1，仅包含环境档案落地commit；本次状态同步将产生新的exact source C0，但ROADMAP/history/tests/planning均被Release artifact排除，不改变候选ZIP字节。
+- ROADMAP 4.1最终只链接profile并概括AGENTS/handoff/governance三方职责；WSL、容器和Git Bash事实没有被复制到programme authority。
+- Phase 4.14新增稳定`phase-4-14-post-governance-status-maintenance-environment-memory`锚点，记录planning清退风险、AGENTS膨胀风险、重验触发器和“不是永久Host/Product合同”的原因。

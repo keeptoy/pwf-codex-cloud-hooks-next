@@ -218,6 +218,23 @@ Source/Candidate。本节保留这次后续精炼的原因；当前执行顺序�
 这只是C0前本地候选快照，不是Source/Candidate PASS、sealed bootstrap或public asset证据；当前列车状态仍只读
 [`ROADMAP` v0.4.2 current train](../../ROADMAP.md#v0-4-2-release-closeout)，exact执行证据继续由活动planning和版本operator guide承接。
 
+<a name="phase-4-14-post-governance-status-maintenance-environment-memory"></a>
+
+## Post-governance status — persistent maintenance environment memory
+
+README Release handoff闭合后，维护者继续发现一类相同的生命周期风险：本机WSL、容器与Linux证据边界虽然已经写进AGENTS和
+活动planning，但planning会按生命周期清退，AGENTS也不适合扩张成带日期的环境事实流水账。若没有独立持久层，后继任务要么
+遗忘限制并重复搜索，要么把旧机器事实误当永久平台合同。
+
+后续治理因此建立一份可更新的[维护机执行环境档案](../maintenance-environment-profile.md#maintenance-environment-profile)。档案只保存
+经过维护者陈述或只读探测确认的跨阶段结论，并为每项事实同时登记适用执行面、核对日期、影响、默认解决方案与重验触发器；
+原始命令、输出和单次错误继续留在planning。AGENTS只保留强制入口与执行摘要，MAINTAINER_HANDOFF提供人的发现链，repository
+governance则冻结“已确认的长期限制不得只留planning”的提升与隐私规则。
+
+这份profile不是Host ABI、Product合同或永久机器承诺；只有维护者说明环境变化、实际信号冲突、有界安装授权或新primitive需求
+才触发重验。它与本轮ROADMAP/history/tests/planning同步都属于Release-excluded，没有改变候选ZIP字节；但新的治理commit仍会
+成为下一次exact source C0。Source/Candidate状态保持`PENDING`，本节不冒充本地平台重验、Cloud PASS或公开资产证据。
+
 <a name="phase-4-14-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

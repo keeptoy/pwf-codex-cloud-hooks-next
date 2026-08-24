@@ -82,6 +82,10 @@ Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节�
   `Source/Candidate`、`Release-excluded`的新人解释放在候选失效警告之前。`README.md`本身是Release ZIP输入，因此这两轮
   README调整已经使旧候选身份与旧C0失效；候选已按最终README重新双构建/check，本次Release-excluded状态同步完成后形成
   新C0。Source/Candidate仍未运行，不能沿用任何旧PASS、旧SHA或旧tag身份。
+- 把维护机限制从活动planning和AGENTS内联事实提升为
+  [`维护机执行环境档案`](docs/maintenance-environment-profile.md#maintenance-environment-profile)：档案保存带日期的事实状态、影响、
+  默认本地/Cloud解法与重验触发器；AGENTS负责强制执行，MAINTAINER_HANDOFF负责人的发现，repository governance负责跨阶段
+  提升规则。具体机器事实不在ROADMAP复制；该档案及本轮状态同步均为Release-excluded，Source/Candidate继续`PENDING`。
 - 把Phase history拆分为回补型`RETROSPECTIVE_CAPSULE`与正式Round关闭后冻结的`FROZEN_DISCOVERY_RECORD`，同步history索引、
   写作模板和repository contracts；一个Product Phase可以有多份真实Discovery records，但同一闭合对象最多一份回补型capsule。
 - 冻结ROADMAP第4节current train工作台→Discovery Round归档→第5节`product-phase-N`长期authority→Release后列车轮转的完整状态流；

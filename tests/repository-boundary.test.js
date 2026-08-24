@@ -65,6 +65,9 @@ test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
   assert.match(roadmap, /Source\/Candidate[\s\S]*PENDING/);
   assert.match(currentTrain, /README\.md[\s\S]*Release ZIP输入[\s\S]*旧候选身份[\s\S]*失效/);
   assert.match(currentTrain, /C0[\s\S]*Source\/Candidate[\s\S]*仍未运行/);
+  assert.match(currentTrain, /maintenance-environment-profile\.md#maintenance-environment-profile/);
+  assert.match(currentTrain, /重验触发器/);
+  assert.match(currentTrain, /跨阶段[\s\S]{0,40}提升规则/);
   assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.1`[^\n]*Latest/);
   assert.doesNotMatch(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(pathSafetyHistory, /兼容性安全/);
@@ -495,6 +498,7 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
     "phase-4-14-post-governance-status-history-role-rotation",
     "phase-4-14-post-governance-status-post-pass-retirement-ordering",
     "phase-4-14-post-governance-status-readme-release-handoff",
+    "phase-4-14-post-governance-status-maintenance-environment-memory",
     "phase-4-14-immutable-evidence",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(history, /^# Phase 4\.14：Release closeout 与验收文档治理回顾$/m);
@@ -532,6 +536,10 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
   assert.match(history,
     /第一次接触[\s\S]*`C0`[\s\S]*`Source\/Candidate`[\s\S]*`Release-excluded`[\s\S]*README\.md[\s\S]*Release ZIP输入/);
   assert.match(history, /d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e/);
+  assert.match(history,
+    /Post-governance status — persistent maintenance environment memory[\s\S]*planning[\s\S]*AGENTS[\s\S]*重验触发器/);
+  assert.match(history,
+    /maintenance-environment-profile\.md#maintenance-environment-profile[\s\S]*Release-excluded[\s\S]*Source\/Candidate[\s\S]*PENDING/);
   assert.match(history,
     /ROADMAP第4节与第5节形成显式authority rotation[\s\S]*product-phase-N[\s\S]*旧第4节没有current入链/);
   assert.match(history,

@@ -76,3 +76,9 @@
 - 最终architecture/repository治理回归PASS：23/23；稳定anchor、AGENTS/handoff双入口、required lifecycle inventory、planning提升规则、隐私边界与Release exclusion均闭合。
 - 本轮改动与22-entry Release allowlist交集为`NONE`；单次Release build/check仍为87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`。
 - Phase 4.10完成，活动计划回到Phase 5停止点；Source/Candidate未运行，下一步为维护者审核并push新的C0。
+- 维护者要求把维护机环境档案治理同步到ROADMAP 4.1和Phase 4.14；Phase 4.11已开启，Source/Candidate继续暂停。
+- 状态同步failing-first为14 tests / 12 pass / 2 fail：ROADMAP 4.1尚未登记环境profile治理交付，Phase 4.14尚无相应post-governance状态；没有production回归。
+- ROADMAP现只保存current train摘要与profile入口；Phase 4.14已追加跨阶段环境记忆的设计原因、职责分层、重验和Release-excluded边界。
+- 首次正文后architecture/repository聚焦回归为23 tests / 22 pass / 1 fail；Phase与链接均通过，唯一fixture倒置ROADMAP两个职责短语，已拆为三个直接断言。
+- 最终architecture/repository治理回归PASS：23/23；新ROADMAP入口、Phase 4.14稳定anchor、职责分层、Release-excluded和Cloud PENDING均受保护。
+- 本轮6个改动文件与22-entry Release allowlist交集为`NONE`，候选ZIP字节不变；Phase 4.11完成，活动计划回到Phase 5停止点。

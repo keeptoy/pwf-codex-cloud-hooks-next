@@ -85,6 +85,13 @@ Phase 5 / Source-Candidate paused pending maintainer push
 - [x] 运行风险相称验证并创建本地commit；Source/Candidate保持暂停。
 - **Status:** complete
 
+### Phase 4.11: Maintenance environment status synchronization
+
+- [x] ROADMAP 4.1记录current train新增环境档案、双入口与跨阶段提升规则，不复制具体机器事实表。
+- [x] Phase 4.14追加带时间语义的后续状态，解释为何planning/AGENTS内联事实不足，以及profile如何解决跨阶段记忆。
+- [x] 增加治理断言并确认本轮仍为Release-excluded、Source/Candidate仍未运行，创建本地commit。
+- **Status:** complete
+
 ### Phase 5: Source/Candidate channel checkpoint
 
 - [ ] 维护者push并在独立Fresh Cloud完成4.1、B～E与9.1。
@@ -122,6 +129,7 @@ Phase 5 / Source-Candidate paused pending maintainer push
 | 环境档案正文完成后聚焦测试仍1 fail：断言要求Source/Candidate先于Linux证据词出现 | 1 | 正文自然先列证据需求再给默认路由；拆为证据集合与Cloud路由两条断言，不反向扭曲文档。 |
 | 第二次聚焦仍1 fail：断言把“跨阶段执行路由”错误要求在“不得只写planning”之后 | 1 | 按正文因果顺序收窄为“跨阶段执行路由→不得只记录在planning”，不修改已清晰的正文。 |
 | 第三次聚焦仍1 fail：治理断言额外要求正文使用不存在的中文固定标签“持久环境档案” | 1 | 按3-strike重新收窄测试设计：分别断言“不得只留planning”和“提升到持久profile”两条直接合同。 |
+| 环境状态同步正文后1 fail：ROADMAP断言倒置“重验触发器”与“跨阶段提升规则”顺序 | 1 | 保留自然职责顺序，拆为profile入口、重验触发器、跨阶段规则三个直接断言。 |
 
 ## Current Status
 
