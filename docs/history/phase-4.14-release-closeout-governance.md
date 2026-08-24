@@ -319,6 +319,29 @@ C2据此把programme角色原子轮转为`v0.4.2` accepted、`v0.4.1` immediate 
 documentation-governance列车；下一Product Phase和下一版本列车仍未授权。通道、资产、Latest和逐项RETIRE/MIGRATE/KEEP的
 exact final Post-run见[v0.4.2 acceptance](../acceptance/v0.4.2-cloud-hard-acceptance.md#v0-4-2-role-window-closeout)，当前角色只读ROADMAP。
 
+<a name="phase-4-14-post-governance-status-post-v0-4-2-residue-sweep"></a>
+
+## Post-governance status — post-v0.4.2 residue sweep（Batch A/B）
+
+C2关闭列车后，维护者没有改写已经冻结的v0.4.2 Release，而是另开有界Discovery复扫current tree。复扫确认两类残留：一类是
+旧版本候选/P9教程分支、一次性数量或无入链兼容anchor仍被current tests保护；另一类是Phase 4.14测试和ROADMAP继续逐段复制
+真实但瞬时的“临时授权”事故过程。它们不影响用户运行，却会让后继文档治理误把历史快照当成长期合同。
+
+Batch A由commit `52f1fe7fcdafa698e4d716c7b3210f5186cd1fb1`落地：删除不可达的v0.4.0/v0.4.1 current候选分支、旧v0.4.1
+P9 operator/evidence分支和已被通用exact-SHA规则覆盖的P9-B条件；把v0.4.2 acceptance的current断言从事故时间线与一次性planning
+数量迁到final closeout语义；清退Phase 4.12全部无真实入链的`phase-9-v0-4-0-*`兼容anchors，但保留canonical Phase 4.12入口与
+P9-A～F历史正文；两条CHANGELOG退役链接迁到exact immutable source，并新增tracked Markdown local path/explicit-anchor通用审计。
+immutable P9-F证据、v0.4.1 predecessor transition contract和publication/fallback oracles继续`KEEP`。
+
+Batch B由commit `11b4b45c9fb422311b88779cc827169b35d61e91`落地：Phase 4.14的current regression不再逐段冻结自然语言与事故词序，
+只保护完整稳定anchors、Product/Release/retirement职责、C0/C1/C2、两轮退役检查点、ROADMAP authority links、history index入口和
+Release-excluded边界；ROADMAP 4.1只投影C步骤的稳定工具能力结论。首次验证还识别并撤回了一条多余的ROADMAP直达history链接，
+因此README历史索引与ROADMAP既有programme理由仍是唯二宏观历史入口。Phase 4.14正文和v0.4.2 acceptance真实时间线均未改写。
+
+两个Batch合计修改的仓库路径与22-entry Release allowlist实际交集为0；没有修改production、runtime、installer、contract、
+bootstrap、package identity或任何公开资产输入。聚焦治理测试和完整Windows suite均PASS，Linux/POSIX-only case保持诚实skip。
+因此本轮归入v0.4.2 post-C2文档治理扫尾，但不进入已经冻结的v0.4.2 tag/ZIP字节，不产生新C0、重新验收或重新发布义务。
+
 <a name="phase-4-14-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

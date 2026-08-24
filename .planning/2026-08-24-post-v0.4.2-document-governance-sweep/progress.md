@@ -59,6 +59,20 @@
 | Batch B focused | 稳定anchors/authority/宏观history入口保持；不锁定事故措辞 | 24 tests / 24 pass / 0 fail | PASS |
 | Batch B `npm test` | 无production/runtime/Release回归 | 182 tests / 156 pass / 0 fail / 26 skipped | PASS |
 | Batch B static/Release audit | Phase 4.14正文和Release输入不变；20个稳定anchors齐全；ROADMAP只有两处history入口 | history diff=0；Release input intersection=0；missing anchors=0；history links=2 | PASS |
+| v0.4.2 Batch A/B归属同步 focused | ROADMAP摘要、Phase 4.14新anchor与Release-excluded边界一致 | 24 tests / 24 pass / 0 fail | PASS |
+| v0.4.2 Batch A/B归属同步 `npm test` | 无production/runtime/Release回归 | 182 tests / 156 pass / 0 fail / 26 skipped | PASS |
+| v0.4.2 Batch A/B归属同步 static audit | Release输入不变；ROADMAP宏观history入口不扩张 | 6 changed paths；Release intersection=0；history links=2；`git diff --check`通过 | PASS |
+
+### Phase 5: Closeout and train attribution
+
+- **Status:** in_progress
+- 维护者决定Batch A/B归入v0.4.2 post-C2文档治理扫尾，不另开版本身份、不改写immutable Release。
+- ROADMAP 4.1已追加programme摘要；Phase 4.14已追加带稳定anchor的Batch A/B详细历史，包含exact commits、RETIRE/KEEP边界及Release allowlist交集0的解释。
+- repository-boundary已开始同步新Phase 4.14 anchor与核心Release-excluded结论；尚待补ROADMAP摘要断言、运行focused/full validation并提交。
+- ROADMAP摘要断言与Phase 4.14新anchor/Release-excluded断言已补齐；静态审计确认6个changed paths与22-entry Release allowlist交集0、ROADMAP history links仍为2、`git diff --check`通过。
+- focused governance validation 24 tests / 24 pass / 0 fail；尚待完整Windows suite、最终账本状态与独立本地commit。
+- 完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped；skip均为既有Linux/POSIX-only case。本轮未触发Cloud/Release重验。
+- Phase 5版本归属与文档同步完成；当前只剩维护者决定本scope与旧v0.4.2 scope的KEEP/RETIRE，提交不会自动删除planning。
 
 ## Error Log
 
@@ -71,6 +85,7 @@
 | 2026-08-24 | Batch A focused测试Phase 4.12尾注旧措辞断言失败 | 1 | 其余17项PASS；迁移断言为历史正文保留/compat anchors退役语义后重跑。 |
 | 2026-08-24 | Batch B首次focused测试23/24 PASS；ROADMAP新增第三条直达history链接触发宏观入口断言 | 1 | 归类为本批authority边界冲突；ROADMAP改为只链接immutable acceptance，不增加新的history宏观入口，待重跑。 |
 | 2026-08-24 | Batch B最终静态汇总命令被PowerShell反引号解析提前终止 | 1 | 未执行任何检查或写入；改用不含反引号的拆分命令完成审计，不重复原命令。 |
+| 2026-08-25 | Phase 5首次planning结项补丁因progress表格上下文不精确而未应用 | 1 | 没有文件被部分修改；读取精确UTF-8上下文后拆分补丁，不重复旧上下文。 |
 
 ## 5-Question Reboot Check
 

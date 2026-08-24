@@ -85,6 +85,10 @@ test("v0.4.2 C2 closes the release train and rotates the programme rollback wind
   assert.match(currentTrain,
     /Published Release[\s\S]{0,240}exact tag\/source\/ZIP\/bootstrap[\s\S]{0,240}Latest promotion confirmation[\s\S]{0,240}不(?:再|另设)[\s\S]{0,120}独立postflight/);
   assert.match(currentTrain, /#github-release-latest-promotion-confirmation/);
+  assert.match(currentTrain,
+    /post-v0\.4\.2 residue sweep[\s\S]*Batch A[\s\S]*Batch B[\s\S]*22-entry Release allowlist交集为0/);
+  assert.match(currentTrain,
+    /不改变production运行、C0、tag、公开ZIP\/bootstrap[\s\S]*不触发重新发布/);
   assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.2`[^\n]*programme accepted/);
   assert.match(roadmap, /当前 programme 边界[^\n]*`v0\.4\.2`[^\n]*GitHub `Latest` promotion confirmation[^\n]*C2均已`PASS`/);
   assert.doesNotMatch(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
@@ -606,6 +610,7 @@ test("Phase 4.14 keeps stable Release closeout governance interfaces", () => {
     "phase-4-14-post-governance-status-published-guide-completion",
     "phase-4-14-post-governance-status-latest-promotion-confirmation",
     "phase-4-14-post-governance-status-role-window-closeout",
+    "phase-4-14-post-governance-status-post-v0-4-2-residue-sweep",
     "phase-4-14-immutable-evidence",
   ]) assert.match(history, new RegExp('<a name="' + anchor + '"></a>'));
 
@@ -626,6 +631,8 @@ test("Phase 4.14 keeps stable Release closeout governance interfaces", () => {
     /C2[\s\S]*Published Release evidence[\s\S]*第二轮退役检查/,
     /phase-4\.12-v0\.4\.0-release-discovery\.md#phase-4-12-v0-4-0-release-discovery/,
     /phase-4\.13-v0\.4\.1-path-safety-patch-train\.md#phase-4-13-historical-position/,
+    /post-v0\.4\.2 residue sweep（Batch A\/B）/,
+    /22-entry Release allowlist[\s\S]{0,80}交集为0/,
   ]) assert.match(history, invariant);
 
   for (const authority of [

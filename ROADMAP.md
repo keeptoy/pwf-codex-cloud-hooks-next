@@ -111,6 +111,12 @@ Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节�
   current-authority链接迁移不得改写原Discovery结论或时间语义。
 - 明确当前默认一条版本列车承载一个Product Phase；multi-Phase列车必须由维护者显式授权。patch继承其修补的Product baseline，
   governance按ROADMAP声明的version series落位；无法唯一判断时先与维护者确认，不为迁移第4节虚构第5节Phase。
+- C2之后的post-v0.4.2 residue sweep仍归属本列车的文档治理扫尾，不另开版本身份。Batch A清退不可达的旧候选/P9测试分支、
+  重复P9-B条件和Phase 4.12无入链兼容anchors，迁移两条退役文档链接，并增加通用Markdown path/explicit-anchor审计；Batch B把
+  Phase 4.14回归从逐段事故措辞收敛为稳定anchors、Release/retirement/C0-C2不变量与authority links，同时压缩本节重复的
+  C步骤事故过程。两个Batch保留真实acceptance/history正文、immutable P9-F、predecessor contract与publication/fallback oracles；
+  两个commit的实际修改路径与22-entry Release allowlist交集为0，因此不改变production运行、C0、tag、公开ZIP/bootstrap或
+  accepted/fallback角色，也不触发重新发布。
 - 上述详细规则仍由第5节唯一链接进入仓库治理指南；ROADMAP只保留programme级状态，Phase 4.14继续保存本轮治理为何形成
   及其后续深化，不在第4节建立第二个authority入口。
 

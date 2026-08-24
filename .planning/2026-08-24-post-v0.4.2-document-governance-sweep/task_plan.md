@@ -6,11 +6,11 @@
 
 ## Next Step
 
-进入Phase 5 closeout判断：确认本轮纯文档/测试治理结果的列车归属，并由维护者决定当前及旧v0.4.2 planning scope继续KEEP或后续RETIRE；不自动删除或激活新版本列车。
+按维护者决定完成Phase 5归属写回：Batch A/B归入v0.4.2 post-C2文档治理扫尾，在ROADMAP 4.1追加programme摘要，并在Phase 4.14追加详细历史与稳定anchor；验证后独立提交，不删除planning或激活新列车。
 
 ## Current Phase
 
-Phase 4: maintainer decision and scoped implementation
+Phase 5: closeout and train attribution
 
 ## Phases
 
@@ -51,10 +51,10 @@ Phase 4: maintainer decision and scoped implementation
 
 ### Phase 5: Closeout and train attribution
 
-- [ ] 决定本轮结果属于独立 patch/governance train、后继版本输入或纯 Discovery 结论。
-- [ ] 把稳定结论提升到唯一 authority，更新必要的历史摘要与交接状态。
+- [x] 决定Batch A/B归入v0.4.2 post-C2文档治理扫尾，不另开版本身份，也不改写immutable Release。
+- [x] 把programme级摘要写入ROADMAP 4.1，把详细取舍与验证写入Phase 4.14，并同步稳定边界测试。
 - [ ] 由维护者决定本 scope 及旧 v0.4.2 scope 的后续 KEEP/RETIRE；pointer 切换不自动授权删除。
-- **Status:** pending
+- **Status:** in_progress
 
 ## Key Questions
 
@@ -79,6 +79,7 @@ Phase 4: maintainer decision and scoped implementation
 - 已授权：只读扫描文档、tests、Git 历史和引用关系，形成后续治理建议。
 - 已授权：先实施Batch A、后实施Batch B；Batch A的Phase 4.12范围按复核后的全部21个无入链旧anchors原子清退。
 - 已授权：Batch B收敛Phase 4.14逐段自然语言断言，并压缩ROADMAP 4.1重复的临时授权事故过程；历史正文和真实acceptance证据保持不变。
+- 已授权：把Batch A/B明确归入v0.4.2，在ROADMAP 4.1追加programme摘要，并同步到Phase 4.14历史；只改治理文档、相应测试与活动planning，不碰22项Release输入。
 - 未授权：自动删除任何 planning、历史 acceptance/history、production/runtime/contract 或 Release 输入。
 - 未授权：push、远端 branch/tag/Release/资产、Latest、Cloud task、部署或下一 Product Phase/版本列车 activation。
 
@@ -100,7 +101,8 @@ Phase 4: maintainer decision and scoped implementation
 | Batch A首次focused测试17 pass / 1 fail：Phase 4.12尾注断言仍匹配旧“保持”措辞 | 1 | anchors按授权继续清退；把断言迁移为“P9正文保留、旧anchors不保留”的新稳定语义后重跑。 |
 | Batch B首次focused测试23 pass / 1 fail：ROADMAP新增第三条直达history链接，违反“两处受控宏观入口”边界 | 1 | 保留真实时间线于immutable acceptance/history；ROADMAP只链接版本acceptance并明确不新增第三入口，随后重跑。 |
 | Batch B最终静态汇总命令被PowerShell反引号解析提前终止 | 1 | 命令未执行任何检查或写入；拆分为不含反引号的简单命令完成最终审计，不重复原命令。 |
+| Phase 5首次planning结项补丁因progress表格上下文不精确而未应用 | 1 | 没有文件被部分修改；读取精确UTF-8上下文后拆分补丁，不重复旧上下文。 |
 
 ## Current Status
 
-`BATCH_A_COMPLETE / BATCH_B_COMPLETE / RELEASE_INPUTS_UNCHANGED / PHASE_5_CLOSEOUT_DECISION_NEXT`
+`V0_4_2_ATTRIBUTION_AND_DOC_SYNC_COMPLETE / RELEASE_INPUTS_UNCHANGED / PLANNING_KEEP_RETIRE_DECISION_PENDING`

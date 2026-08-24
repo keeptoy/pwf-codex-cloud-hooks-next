@@ -137,6 +137,14 @@ Batch B不会改变历史事实，但会显著降低自然语言改写导致的�
 - 首次focused测试23/24 PASS，唯一失败准确识别ROADMAP新增第三条history入口。撤回该入口、保留acceptance证据链接后复跑24/24 PASS，证明治理边界仍被实际保护。
 - 完整Windows suite为182 tests / 156 pass / 0 fail / 26 skipped；最终静态审计确认5个changed paths（含三件planning账本）与Release entries交集0、20个Phase 4.14 anchors全部存在、Phase 4.14正文diff为0、ROADMAP history链接数仍为2。
 
+## Phase 5 Attribution Decision
+
+- 维护者明确决定Batch A/B归入v0.4.2，而不是另开v0.4.3或独立治理列车。准确时间语义是“v0.4.2 immutable Release完成后的post-C2仓库治理扫尾”：它属于该列车的文档生命周期，但不回写已经冻结的tag、ZIP或bootstrap字节。
+- ROADMAP 4.1只需追加programme级摘要：Batch A/B解决的残留、保留的重要证据/运行边界，以及两个commit与22-entry Release allowlist交集为0的结论。
+- Phase 4.14应追加详细历史段，记录Batch A commit `52f1fe7fcdafa698e4d716c7b3210f5186cd1fb1`与Batch B commit `11b4b45c9fb422311b88779cc827169b35d61e91`的RETIRE/KEEP边界、测试治理取舍和不触发重新发布的原因。
+- 新段使用独立稳定anchor，但ROADMAP不增加第三条直达history链接；宏观历史入口仍保持README历史索引与ROADMAP既有两条programme理由。
+- 最终验证：新段使Phase 4.14当前稳定anchor总数增至21；focused governance tests 24/24 PASS，完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped；6个changed paths与22-entry Release allowlist交集为0，ROADMAP history links仍为2。
+
 ## Technical Decisions
 
 | Decision | Rationale |
