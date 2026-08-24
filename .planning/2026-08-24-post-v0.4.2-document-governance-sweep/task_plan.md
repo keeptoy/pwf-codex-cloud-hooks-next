@@ -6,11 +6,11 @@
 
 ## Next Step
 
-盘点 current tests 对 v0.4.2“临时授权”时间线及其他版本快照的直接依赖，区分应保留的历史证据与应迁移的稳定语义断言；提出 RETIRE/MIGRATE/KEEP 建议后等待维护者授权实施。
+向维护者提交高置信最小治理批次与可选的Phase 4.14深度精简建议；等待明确授权后才修改tests、CHANGELOG、ROADMAP或history正文。
 
 ## Current Phase
 
-Phase 2: targeted documentation/test residue inventory
+Phase 4: maintainer decision and scoped implementation
 
 ## Phases
 
@@ -25,25 +25,25 @@ Phase 2: targeted documentation/test residue inventory
 
 ### Phase 2: Targeted documentation/test residue inventory
 
-- [ ] 盘点 tests 对 v0.4.2“首次停止 → 临时授权 → PASS”事故时间线的直接依赖。
-- [ ] 区分 immutable acceptance/history 真实证据与 stable template/current regression 长期合同。
-- [ ] 扫描 C2、Phase 9、旧版本角色、一次性数量及其他 snapshot-specific 断言。
-- [ ] 把精确发现、影响范围与建议写入 `findings.md`。
-- **Status:** in_progress
+- [x] 盘点 tests 对 v0.4.2“首次停止 → 临时授权 → PASS”事故时间线的直接依赖。
+- [x] 区分 immutable acceptance/history 真实证据与 stable template/current regression 长期合同。
+- [x] 扫描 C2、Phase 9、旧版本角色、一次性数量及其他 snapshot-specific 断言。
+- [x] 把精确发现、影响范围与建议写入 `findings.md`。
+- **Status:** complete
 
 ### Phase 3: Broader documentation authority and link sweep
 
-- [ ] 检查 current authority 重复、旧 current-state 投影、失效/过度兼容 anchor 与断链风险。
-- [ ] 核对 README/ROADMAP、治理指南、templates、acceptance 与 history 的职责边界。
-- [ ] 形成 RETIRE/MIGRATE/KEEP 清单，不提前修改未授权对象。
-- **Status:** pending
+- [x] 检查 current authority 重复、旧 current-state 投影、失效/过度兼容 anchor 与断链风险。
+- [x] 核对 README/ROADMAP、治理指南、templates、acceptance 与 history 的职责边界。
+- [x] 形成 RETIRE/MIGRATE/KEEP 清单，不提前修改未授权对象。
+- **Status:** complete
 
 ### Phase 4: Maintainer decision and scoped implementation
 
-- [ ] 向维护者报告发现、依据、影响范围和最小修改建议。
+- [x] 向维护者报告发现、依据、影响范围和最小修改建议。
 - [ ] 只实施维护者明确批准的条目；不把 Discovery 自动扩大为新 Release/Product Phase。
 - [ ] 运行风险相称的 focused/full validation，并记录真实结果。
-- **Status:** pending
+- **Status:** waiting for maintainer
 
 ### Phase 5: Closeout and train attribution
 
@@ -89,7 +89,8 @@ Phase 2: targeted documentation/test residue inventory
 |---|---:|---|
 | 初次 Git 追溯组合命令以 exit 1 结束，但 blame/pickaxe 已完整返回 | 1 | 不重复原命令；拆分为定向 `git show`、`git blame` 与 helper 读取，确认引入 commit 和原始生命周期语义。 |
 | 沙箱内 `git add` 无法创建 `.git/index.lock`，Node test runner 创建子进程返回 `EPERM` | 1 | 归类为维护机沙箱执行面限制；记录后改用获准的非沙箱执行面分别完成暂存与验证，不弱化断言。 |
+| Phase 2首条`rg`组合命令因PowerShell双引号与正则冲突，在解析阶段退出 | 1 | 未执行搜索；改用单引号包裹正则并拆分可读输出，不重复原转义方式。 |
 
 ## Current Status
 
-`DISCOVERY_ACTIVE / MULTI_SCOPE_ALLOWED / V0_4_2_SCOPE_KEPT / SINGLE_SCOPE_ASSERTION_RETIRE_AUTHORIZED / BROADER_IMPLEMENTATION_NOT_AUTHORIZED`
+`DISCOVERY_INVENTORY_COMPLETE / HIGH_CONFIDENCE_RETIRE_MIGRATE_KEEP_PROPOSED / V0_4_2_HISTORY_KEPT / IMPLEMENTATION_WAITING_FOR_MAINTAINER`

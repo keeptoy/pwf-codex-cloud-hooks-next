@@ -15,9 +15,25 @@
 
 ### Phase 2: Targeted documentation/test residue inventory
 
-- **Status:** in_progress
+- **Status:** complete
 - 下一步盘点 current tests 对 v0.4.2 临时授权时间线、C2/Phase 9/固定数量和版本角色快照的直接依赖。
 - 实际批量治理尚未授权；先形成 RETIRE/MIGRATE/KEEP 建议。
+- 第一轮定向扫描完成：确认stable template的只读Shell安全边界断言应保留；标出v0.4.2临时授权事故措辞、`24个`C2数量和可能不可达的v0.4.1 candidate/P9分支作为进一步核对对象。
+- 第二轮核对确认v0.4.1 candidate/P9大分支已不可达：candidate由当前package version生成，v0.4.1 current guide已清退，历史P9-F与fallback恢复另有immutable test/oracle负责。旧candidate分支建议整体RETIRE；v0.4.1 predecessor contract和fallback oracle继续KEEP。
+- 第三轮核对确认release-package中的P9-B条件已被通用exact-SHA规则覆盖；Phase 4.12六个旧`phase-9-*` anchors无真实入链、仅测试自证，符合pre-1.0兼容别名清退候选。Phase 4.14已有稳定anchors，逐段自然语言断言可迁移为结构/authority检查。
+- 退役路径复扫发现CHANGELOG v0.4.1仍相对链接已清退guide，属于确定断链；应迁移到provenance已使用的exact immutable acceptance URL。ROADMAP 4.1的临时授权细节属于真实但重复的current摘要，可在后续authority收敛中缩写并链接历史。
+- 精炼全仓相对链接审计覆盖45个tracked Markdown入口后确认2条真实missing targets：CHANGELOG中的v0.3.4与v0.4.1本地acceptance链接；现有本地fragment为0个缺失显式anchor。建议修复链接并新增版本无关的实际link-integrity test，避免只测试治理文案。
+
+### Phase 3: Broader documentation authority and link sweep
+
+- **Status:** complete
+- 完成README/ROADMAP、governance、templates、current acceptance、history与tests的职责/引用交叉核对。
+- 冻结两档建议：Batch A处理确定死分支、事故措辞断言、一次性数量、无入链aliases、真实断链和通用link audit；Batch B可选收敛Phase 4.14的50个自然语言断言与ROADMAP重复事故摘要。
+
+### Phase 4: Maintainer decision and scoped implementation
+
+- **Status:** waiting for maintainer
+- 不提前修改Batch A/B对象；等待维护者明确批准范围后实施并验证。
 
 ## Test Results
 
@@ -33,6 +49,7 @@
 |---|---|---:|---|
 | 2026-08-24 | 初次组合 Git 追溯命令 exit 1 | 1 | 保留已返回证据，改用定向 Git 命令完成追溯；未重复失败调用。 |
 | 2026-08-24 | 沙箱内 Git index lock permission denied；Node test child-process spawn EPERM | 1 | 改用获准非沙箱执行面完成暂存与测试；focused suite 14/14 PASS。 |
+| 2026-08-24 | Phase 2首条`rg`命令被PowerShell错误解析双引号正则 | 1 | 命令在搜索前退出；改用单引号正则，未重复原转义。 |
 
 ## 5-Question Reboot Check
 
