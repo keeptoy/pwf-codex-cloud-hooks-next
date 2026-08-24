@@ -1,5 +1,4 @@
 <a name="phase-4-12-v0-4-0-release-discovery"></a>
-<a name="phase-9-v0-4-0-positioning"></a>
 
 # Phase 4.12：v0.4.0 Release 收口 Discovery
 
@@ -13,7 +12,6 @@ immutable public Release、怎样轮转 accepted/fallback，以及第二轮对�
 renumbering note校准。通用Release顺序始终以当前ROADMAP与Cloud hard acceptance template为准；本文只记录`v0.4.0`
 的差异、风险和gate决策。
 
-<a name="phase-9-v0-4-0-starting-facts"></a>
 
 ## Starting facts
 
@@ -26,7 +24,6 @@ renumbering note校准。通用Release顺序始终以当前ROADMAP与Cloud hard 
 - `installed-state-transition-v1.json` 固定的 `0.3.5` 是 v0.4.0 installer 的 exact predecessor，不是会随 Latest 指针旋转的
   role 字段。
 
-<a name="phase-9-v0-4-0-pre-seal-inventory"></a>
 
 ## Pre-seal inventory
 
@@ -45,7 +42,6 @@ P9-A 必须先关闭四类债务，才能冻结 stable candidate：
 开发 acceptance 必须迁移为 stable acceptance，不能同时保留 dev/stable 两份；已经实际执行的 F3 operator guides则保持
 `v0.4.0-dev-*` 原名，因为它们是 exact dev evidence，不是当前状态文件。
 
-<a name="phase-9-v0-4-0-gates"></a>
 
 ## v0.4.0 gate 路线
 
@@ -61,7 +57,6 @@ P9-A 必须先关闭四类债务，才能冻结 stable candidate：
 RC 只在 P9-A/P9-B 暴露风险或维护者明确选择时使用；RC/canary 永远不能替代 final stable bytes 的验收。每个 gate 都有独立
 停止点，前一项 PASS 不自动授权下一项或任何远端写入。
 
-<a name="phase-9-v0-4-0-evidence-routing"></a>
 
 ## Evidence routing
 
@@ -71,7 +66,6 @@ RC 只在 P9-A/P9-B 暴露风险或维护者明确选择时使用；RC/canary �
 - ROADMAP：只在 promotion/postflight 通过后轮转 current/accepted/fallback，不用 acceptance 或 provenance 复制当前角色。
 - F3 guides/history：保留已执行 lifecycle/rollback 的 exact evidence；不能给改变后的 stable ZIP 字节背书。
 
-<a name="phase-9-v0-4-0-lifecycle-ledger"></a>
 
 ## 第二轮对象生命周期预决策
 
@@ -89,7 +83,6 @@ RC 只在 P9-A/P9-B 暴露风险或维护者明确选择时使用；RC/canary �
 
 这里的“第二轮退役”仍是做决定，不是强制删除。尤其不能因为文档已经记下 commit hash 就删除唯一保持对象可达的 ref。
 
-<a name="phase-9-v0-4-0-stop-rules"></a>
 
 ## Stop rules
 
@@ -99,7 +92,6 @@ RC 只在 P9-A/P9-B 暴露风险或维护者明确选择时使用；RC/canary �
 - public asset不得用分支内文件、本地 ZIP、旧 F3 candidate SHA或模型口述代替。
 - validation refs没有 durable replacement和维护者单独授权时保持不动。
 
-<a name="phase-9-v0-4-0-decision"></a>
 
 ## Decision
 
@@ -110,7 +102,6 @@ RC 只在 P9-A/P9-B 暴露风险或维护者明确选择时使用；RC/canary �
 
 `CONDITIONAL_GO_TO_V0_4_0_PHASE_9_PRE_SEAL_MATERIALIZATION / IMPLEMENTATION_NOT_AUTHORIZED / RELEASE_AND_REF_MUTATION_NOT_AUTHORIZED`
 
-<a name="phase-9-v0-4-0-verification"></a>
 
 ## Discovery verification
 
@@ -121,7 +112,6 @@ RC 只在 P9-A/P9-B 暴露风险或维护者明确选择时使用；RC/canary �
   stable identity；
 - changed-path与 Release v2 entries/external assets交集为零；11个 local/origin validation ref pairs身份一致。
 
-<a name="phase-9-v0-4-0-successor"></a>
 
 ## Successor
 
@@ -129,7 +119,6 @@ Discovery 当时的下一步是维护者决定是否授权 P9-A。后续状态�
 依次闭合后，才形成 `v0.4.0` accepted baseline。后继版本列车与Product Phase必须另行决策；本文只追加本实例的
 实施/验收尾注，不接管未来版本的 Phase 9。
 
-<a name="phase-9-v0-4-0-p9-a-post-implementation"></a>
 
 ## Post-implementation status — P9-A pre-seal materialization
 
@@ -169,7 +158,6 @@ ref mutation。结论为：
 
 `P9_A_PRE_SEAL_MATERIALIZATION_PASS / ZERO_HASH_CANDIDATE_FROZEN / STOP_BEFORE_P9_B / PUBLICATION_NOT_AUTHORIZED`
 
-<a name="phase-9-v0-4-0-p9-b-local-seal"></a>
 
 ## Post-implementation status — P9-B local seal
 
@@ -192,7 +180,6 @@ manifest-routed inventory证据。该证据返回前停止在 P9-C之前。结�
 
 `P9_B_LOCAL_SEAL_PASS / SEALED_SOURCE_CLOUD_PENDING / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`
 
-<a name="phase-9-v0-4-0-p9-b-sealed-source-cloud"></a>
 
 ## Post-acceptance status — P9-B sealed-source Cloud
 
@@ -212,7 +199,6 @@ Pre-release publication仍需维护者单独授权，不能由本尾注自动开
 
 `P9_B_SEALED_SOURCE_CLOUD_PASS / STOP_BEFORE_P9_C / PUBLICATION_NOT_AUTHORIZED`
 
-<a name="phase-9-v0-4-0-p9-c-pre-publication"></a>
 
 ## Pre-publication decision — P9-C immutable publication
 
@@ -246,7 +232,6 @@ Latest promotion/role rotation、P9-F retirement/ref cleanup均未授权。当�
 
 `P9_C_OPERATOR_READY / TAG_SOURCE_FROZEN / MAINTAINER_PUBLICATION_PENDING / STOP_BEFORE_P9_D`
 
-<a name="phase-9-v0-4-0-p9-c-post-publication"></a>
 
 ## Post-publication status — P9-C immutable publication
 
@@ -265,7 +250,6 @@ P9-D及后继gate仍需维护者单独授权。结论为：
 
 `P9_C_IMMUTABLE_PUBLICATION_PASS / PUBLIC_ASSETS_REBUILT_AND_MATCHED / STOP_BEFORE_P9_D`
 
-<a name="phase-9-v0-4-0-p9-d-pre-acceptance"></a>
 
 ## Pre-acceptance decision — P9-D Published Release Cloud
 
@@ -287,7 +271,6 @@ KEEP。P9-D PASS只允许写回Published Release证据；P9-E promotion/role rot
 
 `P9_D_OPERATOR_READY / MAINTAINER_FRESH_CLOUD_PENDING / STOP_BEFORE_P9_E`
 
-<a name="phase-9-v0-4-0-p9-d-operator-materialization"></a>
 
 ## Post-implementation status — P9-D operator materialization
 
@@ -309,7 +292,6 @@ Python compile、installer Node syntax、两个bootstrap Bash syntax、operator 
 
 `P9_D_OPERATOR_MATERIALIZED / LOCAL_GUARDS_PASS / MAINTAINER_FRESH_CLOUD_PENDING / STOP_BEFORE_P9_E`
 
-<a name="phase-9-v0-4-0-p9-d-post-acceptance"></a>
 
 ## Post-acceptance status — P9-D Published Release Cloud
 
@@ -331,7 +313,6 @@ guides/validators/negative tests也继续保留。当前结论为：
 
 `P9_D_PUBLISHED_RELEASE_CLOUD_PASS / PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED / STOP_BEFORE_P9_E`
 
-<a name="phase-9-v0-4-0-p9-e-pre-promotion"></a>
 
 ## Pre-promotion decision — P9-E Latest promotion
 
@@ -368,7 +349,6 @@ installed transition继续`KEEP`。P9-F仍是独立授权gate。
 
 `P9_E_OPERATOR_READY / PRE_PROMOTION_LATEST_DRIFT_RECORDED / MAINTAINER_POINTER_PROMOTION_PENDING / STOP_BEFORE_P9_F`
 
-<a name="phase-9-v0-4-0-p9-e-post-promotion"></a>
 
 ## Post-promotion status — P9-E Latest promotion
 
@@ -381,7 +361,6 @@ v0.3.5仍是stable Release，tag source`5d01b55890c1da2a5088e2b991b152a9fb1c3f87
 
 `P9_E_POINTER_PROMOTION_PASS / V0_4_0_ACCEPTED_LATEST / V0_3_5_IMMEDIATE_FALLBACK`
 
-<a name="phase-9-v0-4-0-p9-f-post-implementation"></a>
 
 ## Post-implementation status — P9-F second retirement and handoff
 
@@ -417,5 +396,5 @@ SHA-256`24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3`，chan
 让Phase 4.11之后的Release discovery、v0.4.1 path-safety patch train与Release closeout治理按4.12～4.14连续排列。
 
 这次改名只调整warm-history文件名、标题、索引和canonical引用，不改写当时的programme授权、Cloud证据或Release结果。
-原P9-A～P9-F gate名称、执行顺序、结论与`phase-9-v0-4-0-*`证据anchors全部保持；旧positioning anchor也保留为兼容别名。
+原P9-A～P9-F gate名称、执行顺序与结论继续作为历史正文保留；当前history只暴露canonical Phase 4.12入口，不再为无入链的旧Phase 9路径保留兼容anchors。
 未来普通Release不再要求standing Phase 9，仍按当前ROADMAP的版本无关Release workflow和嵌入式retirement checkpoints闭合。

@@ -36,6 +36,12 @@
 - 维护者已批准先Batch A、后Batch B并允许分轮实施。
 - Batch A实施前反向枚举Phase 4.12正文，发现同类`phase-9-v0-4-0-*`anchors实际为21个，不是初扫由测试暴露的6个；21个均无真实文档入链，7个仅测试自证、14个仅有定义。
 - 为避免只清一半同类包袱，已暂停正文/test修改，等待维护者确认把该项扩大为21个原子清退；其余Batch A范围不变。
+- 维护者确认21个完整清退范围后开始Batch A：两条CHANGELOG断链已迁到immutable URLs；21个旧anchors和尾注兼容承诺已移除；事故/数量断言收窄为C2语义；不可达v0.4.1 P9分支删除175行；P9-B重复条件删除；通用Markdown path/anchor审计已加入。
+- 首次focused测试为18 tests / 17 pass / 1 fail；唯一失败是Phase 4.12尾注测试仍期待旧“保持”措辞，新link audit和Release package均已PASS。按新稳定语义修正断言，不恢复aliases，等待重跑。
+- 迁移尾注断言后focused测试18/18 PASS；Phase 4.12正文历史、v0.4.1 immutable P9-F、current accepted身份、Release package和新Markdown link/anchor audit均通过。
+- 完整Windows suite PASS：182 tests / 156 pass / 0 fail / 26 skipped；新增第182项为版本无关Markdown local path/explicit-anchor审计。
+- Batch A最终静态审计PASS：6个changed paths与Release inputs交集0；Phase 4.12旧anchor definitions=0；CHANGELOG退役local links=0；dead v0.4.0/v0.4.1 candidate branches=0；`git diff --check`通过。
+- Batch A停止在独立commit前；Batch B按维护者“先A后B”要求留到下一轮，不夹入本次变更。
 
 ## Test Results
 
@@ -44,6 +50,9 @@
 | Focused repository boundary test（沙箱首次尝试） | 多个规范 planning scope 通过；pointer/三件套/状态安全仍受保护 | Node test runner 在加载测试前因 child-process `spawn EPERM` 退出；没有产生产品断言结果 | ENVIRONMENT_BLOCKED |
 | `node --test tests/repository-boundary.test.js`（非沙箱执行面） | 多个规范 planning scope 通过；pointer/三件套/状态安全仍受保护 | 14 tests / 14 pass / 0 fail | PASS |
 | `npm test` | 无 production/runtime 回归；多个规范 planning scope 被稳定 validator 接受 | 181 tests / 155 pass / 0 fail / 26 skipped；skip均为既有Linux/POSIX-only case | PASS |
+| Batch A focused | history/acceptance/link/Release package边界保持且旧快照退役 | 18 tests / 18 pass / 0 fail | PASS |
+| Batch A `npm test` | 无production/runtime/Release回归 | 182 tests / 156 pass / 0 fail / 26 skipped | PASS |
+| Batch A static/Release audit | 无旧anchor/断链/dead branch；Release输入不变 | 4项残留计数均0；Release input intersection=0 | PASS |
 
 ## Error Log
 
@@ -53,6 +62,7 @@
 | 2026-08-24 | 沙箱内 Git index lock permission denied；Node test child-process spawn EPERM | 1 | 改用获准非沙箱执行面完成暂存与测试；focused suite 14/14 PASS。 |
 | 2026-08-24 | Phase 2首条`rg`命令被PowerShell错误解析双引号正则 | 1 | 命令在搜索前退出；改用单引号正则，未重复原转义。 |
 | 2026-08-24 | Phase 4.12 anchor审计末尾展示用`rg`返回exit 1 | 1 | 核心PowerShell枚举和逐anchor入链结果已成功；不重复展示命令，使用21项结构化结果。 |
+| 2026-08-24 | Batch A focused测试Phase 4.12尾注旧措辞断言失败 | 1 | 其余17项PASS；迁移断言为历史正文保留/compat anchors退役语义后重跑。 |
 
 ## 5-Question Reboot Check
 

@@ -112,9 +112,7 @@ test("v0.4.2 C2 closes the release train and rotates the programme rollback wind
   assert.match(candidateAcceptance, /本节只保存本次[\s\S]*真实证据[\s\S]*不重新定义/);
   assert.doesNotMatch(candidateAcceptance,
     /它不是Codex Cloud|只有保存结果未知|不再单列重复下载、重算SHA/);
-  assert.match(candidateAcceptance, /C步骤首次安全停止[\s\S]*维护者随后临时授权/);
-  assert.match(candidateAcceptance, /只读Shell existence preflight[\s\S]*D～F顺利PASS/);
-  assert.match(candidateAcceptance, /Role-window closeout retirement checkpoint[\s\S]*24个非活动planning[\s\S]*RETIRE/);
+  assert.match(candidateAcceptance, /ROLE_WINDOW_CLOSEOUT_PASS \/ C2_COMPLETE \/ NEXT_TRAIN_UNAUTHORIZED/);
   for (const anchor of [
     "published-release-setup", "blackbox-fresh-startup", "blackbox-canonical-baseline",
     "blackbox-canonical-context", "blackbox-real-resume", "published-release-deep-check",
@@ -138,20 +136,12 @@ test("Phase 4.12 preserves the renamed v0.4.0 Release discovery and P9 evidence"
 
   assert.equal(fs.existsSync(path.join(root, "init-cloud-sandbox-v0.4.0.bash")), false);
   assert.equal(fs.existsSync(path.join(root, "docs/v0.4.0-cloud-hard-acceptance.md")), false);
-  for (const anchor of [
-    "phase-9-v0-4-0-p9-a-post-implementation",
-    "phase-9-v0-4-0-p9-b-sealed-source-cloud",
-    "phase-9-v0-4-0-p9-c-post-publication",
-    "phase-9-v0-4-0-p9-d-post-acceptance",
-    "phase-9-v0-4-0-p9-e-post-promotion",
-    "phase-9-v0-4-0-p9-f-post-implementation",
-  ]) assert.match(phase12, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(phase12, /^<a name="phase-4-12-v0-4-0-release-discovery"><\/a>$/m);
-  assert.match(phase12, /^<a name="phase-9-v0-4-0-positioning"><\/a>$/m);
+  assert.doesNotMatch(phase12, /<a name="phase-9-v0-4-0-/);
   assert.match(phase12, /^# Phase 4\.12：v0\.4\.0 Release 收口 Discovery$/m);
   assert.match(phase12, /^<a name="phase-4-12-renumbering-note"><\/a>$/m);
   assert.match(phase12, /原名[^\n]*Phase 9[^\n]*回顾性[^\n]*Phase 4\.12/);
-  assert.match(phase12, /P9-A～P9-F[^\n]*保持/);
+  assert.match(phase12, /P9-A～P9-F[^\n]*历史正文[^\n]*保留/);
   assert.match(phase12,
     /P9_F_SECOND_RETIREMENT_PASS \/ V0_4_0_TRAIN_CLOSED \/ NEXT_TRAIN_UNDECIDED/);
   assert.match(provenance,
@@ -272,6 +262,39 @@ test("planning lifecycle has one valid active pointer and complete scoped record
   const activeTask = read(`.planning/${activePlan}/task_plan.md`);
   for (const heading of ["Authorization", "Next Step", "Stop Conditions"]) {
     assert.match(activeTask, new RegExp(`^## ${heading}$`, "m"), `active task plan lacks ${heading}`);
+  }
+});
+
+test("tracked Markdown local links resolve to existing paths and explicit anchors", () => {
+  const placeholders = new Set(["exact-commit-url"]);
+  const markdownPaths = repositoryPaths().filter(relative =>
+    relative.endsWith(".md")
+    && !relative.startsWith(".planning/")
+    && !relative.startsWith("tests/fixtures/"));
+
+  for (const source of markdownPaths) {
+    const sourcePath = path.join(root, source);
+    for (const match of read(source).matchAll(/\]\(([^)]+)\)/g)) {
+      let target = match[1].trim();
+      if (target.startsWith("<") && target.endsWith(">")) target = target.slice(1, -1);
+      if (/^[a-z][a-z0-9+.-]*:/i.test(target) || target.startsWith("#")
+        || target.startsWith("__") || placeholders.has(target)) continue;
+
+      const [relativeTarget, fragment] = target.split("#", 2);
+      assert.notEqual(relativeTarget, "", `${source} has an empty local link target: ${target}`);
+      const resolved = path.resolve(path.dirname(sourcePath), decodeURIComponent(relativeTarget));
+      assert.equal(resolved === root || resolved.startsWith(`${root}${path.sep}`), true,
+        `${source} link escapes the repository: ${target}`);
+      assert.equal(fs.existsSync(resolved), true, `${source} link target is missing: ${target}`);
+
+      if (fragment) {
+        assert.equal(fs.statSync(resolved).isFile(), true,
+          `${source} fragment target is not a file: ${target}`);
+        const explicitAnchor = `<a name="${fragment}"></a>`;
+        assert.equal(fs.readFileSync(resolved, "utf8").includes(explicitAnchor), true,
+          `${source} link lacks an explicit target anchor: ${target}`);
+      }
+    }
   }
 });
 
@@ -722,34 +745,6 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(changelog, new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
   assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|Next Step|GitHub `Latest`|production rollback|\d+ registered/);
-  const currentDeltaStart = changelog.indexOf(`## ${candidate}`);
-  const nextDeltaStart = changelog.indexOf("\n## ", currentDeltaStart + 1);
-  const currentDelta = changelog.slice(currentDeltaStart,
-    nextDeltaStart === -1 ? changelog.length : nextDeltaStart);
-  if (candidate === "v0.4.0") {
-    for (const durableReleaseFact of [
-      /manifest schema 4/,
-      /runtime bundle[^\n]*Release artifact[^\n]*v2/,
-      /smart activation/,
-      /autonomous/,
-      /attestation/,
-      /nonce/,
-      /ledger/,
-      /Fresh\/Resume/,
-      /tamper refusal/,
-      /disarm-first rollback\/recovery/,
-      /deterministic ZIP|确定性 ZIP/,
-      /Published Release Cloud/,
-    ]) assert.match(currentDelta, durableReleaseFact);
-    assert.doesNotMatch(currentDelta, /P9-[A-F]|仍须后继 gate|真实 Cloud[^\n]*仍须|zero-hash pre-seal/,
-      "released version delta must not retain pre-release gate state or Phase 9 execution chronology");
-  } else if (candidate === "v0.4.1") {
-    assert.match(currentDelta, /path topology/);
-    assert.match(currentDelta, /unknown普通文件和目录仍会先完整备份再清理/);
-    assert.match(currentDelta, /exact SHA并fail closed/);
-    assert.match(currentDelta, /immutable publication[\s\S]*Published Release Cloud[\s\S]*pointer-only promotion/);
-    assert.doesNotMatch(currentDelta, /\b[a-f0-9]{64}\b|P9-[A-F]|仍须后继 gate|未完成gate|zero hash/);
-  }
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 
   assert.match(roadmap, new RegExp("## 3\\. 已接受基线 `" + accepted.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "`"));
@@ -792,181 +787,6 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotMatch(changelog, /Successor 迁移来源链/);
 
   assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));
-  if (candidate === "v0.4.1") {
-    assert.match(acceptance, /^<a name="v0-4-1-gate-status"><\/a>$/m);
-    assert.match(acceptance, /Windows path-topology local implementation[^\n]*`PASS`/);
-    assert.match(acceptance,
-      /Source\/Candidate Linux\/POSIX \+ Cloud[^\n]*`PASS`/);
-    assert.match(acceptance, /P9-B local seal[^\n]*`PASS`/);
-    assert.match(acceptance, /P9-B sealed-source Cloud[^\n]*`PASS`/);
-    assert.match(acceptance, /P9-C immutable publication[^\n]*`PASS`/);
-    assert.match(acceptance, /P9-D Published Release Cloud[^\n]*`PASS`/);
-    assert.match(acceptance, /P9-E \/ Latest[^\n]*`PASS`/);
-    assert.match(acceptance, /P9-F retirement[^\n]*`PASS`/);
-    assert.match(acceptance,
-      /V0_4_1_SOURCE_CANDIDATE_CLOUD_PASS \/ STOP_BEFORE_SEAL \/ RELEASE_NOT_AUTHORIZED/);
-    assert.match(acceptance,
-      /V0_4_1_P9_A_PRE_SEAL_MATERIALIZATION_PASS \/ ZERO_HASH_CANDIDATE_FROZEN \/ STOP_BEFORE_P9_B \/ RELEASE_NOT_AUTHORIZED/);
-    assert.match(acceptance,
-      /P9_B_SEALED_SOURCE_CLOUD_PASS \/ STOP_BEFORE_P9_C \/ PUBLICATION_NOT_AUTHORIZED/);
-    assert.match(acceptance, /^<a name="v0-4-1-p9-b-local-seal-evidence"><\/a>$/m);
-    assert.match(acceptance, /^<a name="v0-4-1-p9-b-sealed-source-cloud-operator"><\/a>$/m);
-    assert.match(acceptance, /^<a name="v0-4-1-p9-b-sealed-source-cloud-evidence"><\/a>$/m);
-    const p9bEvidenceAt = acceptance.indexOf('<a name="v0-4-1-p9-b-sealed-source-cloud-evidence"></a>');
-    const historicalDevAt = acceptance.indexOf('<a name="v0-4-1-dev-plain-language-workflow"></a>');
-    assert.ok(p9bEvidenceAt > 0 && historicalDevAt > p9bEvidenceAt);
-    const p9bEvidence = acceptance.slice(p9bEvidenceAt, historicalDevAt);
-    for (const fact of [
-      "99885b854bd9621c3340e99f031bf83ceb58414d",
-      "175 tests，175 pass，0 fail，0 skipped",
-      "94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291",
-      "PWF_SOURCE_CANDIDATE_SETUP=PASS", "PWF_WORKTREE_CHANGES=PLANNING_ONLY",
-      "POST_RESUME_DOCTOR=PASS", "INSTALLER_VERSION=0.4.1",
-      "RELEASE_ARTIFACT_ENTRIES=22", "INSTALLED_RUNTIME_FILES=12",
-      "UPSTREAM_PRISTINE_FILES=4", "BUNDLE_INSTALLED_INVENTORY=AUTHORITATIVE",
-      "MANAGED_POLICY=ADAPTER_ONLY", "SNAPSHOT_LEFTOVERS=0", "PWF_SC_POST_RESUME=PASS",
-    ]) assert.match(p9bEvidence, new RegExp(fact.replaceAll(".", "\\.")));
-    assert.match(acceptance, /^<a name="v0-4-1-p9-c-immutable-publication-operator"><\/a>$/m);
-    const p9cAt = acceptance.indexOf('<a name="v0-4-1-p9-c-immutable-publication-operator"></a>');
-    assert.ok(p9cAt > p9bEvidenceAt && historicalDevAt > p9cAt);
-    const p9cOperator = acceptance.slice(p9cAt, historicalDevAt);
-    for (const fact of [
-      "99885b854bd9621c3340e99f031bf83ceb58414d",
-      "5560175aac3a3a3505f56de1df22e9b81112c4b9",
-      "pwf-codex-cloud-hooks-v0.4.1.zip", "init-cloud-sandbox-v0.4.1.bash",
-      "22 entries", "85,910 bytes", "21,565 bytes",
-      "94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291",
-      "1832db08c16b4f7fde88df2699384f1fff8e324909b0e024cb6ef216aea30a43",
-      "PWF_P9C_REMOTE_ABSENCE_PREFLIGHT=PASS", "git tag v0.4.1",
-      "git push origin refs/tags/v0.4.1", "gh release create v0.4.1",
-      "--verify-tag", "--prerelease", "gh release download $tag",
-      "P9_C_PUBLICATION_AUDIT=PASS",
-      "P9_C_OPERATOR_READY / TAG_SOURCE_FROZEN / MAINTAINER_PUBLICATION_PENDING / STOP_BEFORE_P9_D",
-    ]) assert.match(p9cOperator, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-    assert.match(p9cOperator,
-      /tag source[^\n]*99885b854bd9621c3340e99f031bf83ceb58414d[\s\S]*5560175aac3a3a3505f56de1df22e9b81112c4b9[^\n]*Release-excluded/);
-    assert.match(p9cOperator, /Pre-release[\s\S]*不得[^\n]*(?:Latest|轮转)/);
-    assert.match(p9cOperator, /若tag push已成功[\s\S]*不得删除、移动或重建tag/);
-    assert.match(acceptance, /^<a name="v0-4-1-p9-c-immutable-publication-evidence"><\/a>$/m);
-    const p9cEvidenceAt = acceptance.indexOf('<a name="v0-4-1-p9-c-immutable-publication-evidence"></a>');
-    assert.ok(p9cEvidenceAt > p9cAt && historicalDevAt > p9cEvidenceAt);
-    const p9cEvidence = acceptance.slice(p9cEvidenceAt, historicalDevAt);
-    for (const fact of [
-      "99885b854bd9621c3340e99f031bf83ceb58414d",
-      "https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/tag/v0.4.1",
-      "pwf-codex-cloud-hooks-v0.4.1.zip", "init-cloud-sandbox-v0.4.1.bash",
-      "22 entries", "85,910 bytes", "21,565 bytes",
-      "94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291",
-      "1832db08c16b4f7fde88df2699384f1fff8e324909b0e024cb6ef216aea30a43",
-      "isDraft=false", "isPrerelease=true", "P9_C_PUBLICATION_AUDIT=PASS",
-      "P9_C_IMMUTABLE_PUBLICATION_PASS / PUBLIC_ASSETS_REBUILT_AND_MATCHED / STOP_BEFORE_P9_D",
-    ]) assert.match(p9cEvidence, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-    assert.match(acceptance, /^<a name="v0-4-1-p9-d-published-release-cloud-operator"><\/a>$/m);
-    const p9dAt = acceptance.indexOf('<a name="v0-4-1-p9-d-published-release-cloud-operator"></a>');
-    assert.match(acceptance, /^<a name="v0-4-1-p9-d-published-release-cloud-evidence"><\/a>$/m);
-    const p9dEvidenceAt = acceptance.indexOf('<a name="v0-4-1-p9-d-published-release-cloud-evidence"></a>');
-    assert.ok(p9dAt > p9cEvidenceAt && p9dEvidenceAt > p9dAt && historicalDevAt > p9dEvidenceAt);
-    const p9dOperator = acceptance.slice(p9dAt, p9dEvidenceAt);
-    for (const anchor of [
-      "published-release-setup", "blackbox-fresh-startup", "blackbox-canonical-baseline",
-      "blackbox-canonical-context", "blackbox-real-resume", "published-release-deep-check",
-    ]) assert.match(p9dOperator, new RegExp(`cloud-hard-acceptance-template\\.md#${anchor}`));
-    for (const fact of [
-      "__PWF_P9D_OPERATOR_HEAD__", "99885b854bd9621c3340e99f031bf83ceb58414d",
-      "https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/v0.4.1/init-cloud-sandbox-v0.4.1.bash",
-      "1832db08c16b4f7fde88df2699384f1fff8e324909b0e024cb6ef216aea30a43",
-      "https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/v0.4.1/pwf-codex-cloud-hooks-v0.4.1.zip",
-      "94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291",
-      "PWF_P9D_PUBLIC_IDENTITY_PREFLIGHT=PASS", "PWF_PUBLIC_RELEASE_SETUP=PASS",
-      "PUBLIC_PACKAGE_IDENTITY=0.4.1", "POST_RESUME_DOCTOR=PASS",
-      "BUNDLE_INSTALLED_INVENTORY=AUTHORITATIVE", "MANAGED_POLICY=ADAPTER_ONLY",
-      "PWF_PUBLIC_ZIP_BOUNDARY_IMPORTER=PASS", "PWF_PUBLIC_POST_RESUME=PASS",
-      "P9_D_OPERATOR_READY / MAINTAINER_FRESH_CLOUD_PENDING / STOP_BEFORE_P9_E",
-    ]) assert.match(p9dOperator, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-    assert.match(p9dOperator, /4\.2[\s\S]*5\.2[\s\S]*第6节[\s\S]*第7节[\s\S]*8\.1[\s\S]*8\.2[\s\S]*9\.2/);
-    assert.match(p9dOperator, /不得设置`HOOKS_URL`、`HOOKS_SHA256`或任何ZIP override/);
-    assert.match(p9dOperator, /必须停止在P9-E前/);
-    assert.doesNotMatch(p9dOperator, /set -Eeuo pipefail|readonly BOOTSTRAP_URL=|readonly ZIP_URL=/,
-      "version operator must not copy the shared Published Release Bash authority");
-    assert.match(acceptance, /^<a name="v0-4-1-p9-e-latest-promotion-operator"><\/a>$/m);
-    assert.match(acceptance, /^<a name="v0-4-1-p9-e-latest-promotion-evidence"><\/a>$/m);
-    const p9eAt = acceptance.indexOf('<a name="v0-4-1-p9-e-latest-promotion-operator"></a>');
-    const p9eEvidenceAt = acceptance.indexOf('<a name="v0-4-1-p9-e-latest-promotion-evidence"></a>');
-    assert.ok(p9eAt > p9dEvidenceAt && p9eEvidenceAt > p9eAt && historicalDevAt > p9eEvidenceAt);
-    const p9dEvidence = acceptance.slice(p9dEvidenceAt, p9eAt);
-    for (const fact of [
-      "b11464b85df8ff4ed90c34492286a0b1b64f32ca",
-      "99885b854bd9621c3340e99f031bf83ceb58414d",
-      "PWF_PUBLIC_RELEASE_SETUP=PASS", "PUBLIC_PACKAGE_IDENTITY=0.4.1",
-      '"healthy":true', '"repairable":false', '"managed":true',
-      '"events":["SessionStart","UserPromptSubmit"]', '"errors":[]', '"blockers":[]',
-      '"entries": 22', '"sha256": "94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291"',
-      '"size": 85910', "POST_RESUME_DOCTOR=PASS", "PWF_DEEP_CHECK_MANIFEST_SCHEMA=4",
-      "PWF_DEEP_CHECK_RELEASE_SCHEMA=2", "PWF_DEEP_CHECK_BUNDLE_SCHEMA=2",
-      "RELEASE_ARTIFACT_ENTRIES=22", "INSTALLED_RUNTIME_FILES=12", "UPSTREAM_PRISTINE_FILES=4",
-      "BUNDLE_INSTALLED_INVENTORY=AUTHORITATIVE", "MANAGED_POLICY=ADAPTER_ONLY",
-      "PWF_PUBLIC_ZIP_REDOWNLOAD_SHA256=94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291",
-      "PWF_PUBLIC_ZIP_BOUNDARY_IMPORTER=PASS", "SNAPSHOT_LEFTOVERS=0", "PWF_PUBLIC_POST_RESUME=PASS",
-      "P9_D_PUBLISHED_RELEASE_CLOUD_PASS / PUBLIC_DEFAULT_DOWNLOAD_CHAIN_CONFIRMED / STOP_BEFORE_P9_E",
-    ]) assert.match(p9dEvidence, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-    const p9eOperator = acceptance.slice(p9eAt, p9eEvidenceAt);
-    for (const fact of [
-      "99885b854bd9621c3340e99f031bf83ceb58414d",
-      "94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291",
-      "1832db08c16b4f7fde88df2699384f1fff8e324909b0e024cb6ef216aea30a43",
-      "fe8cd7f284ea2849f634aa68813dbb0f2cca83f9",
-      "24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3",
-      "4ae21c1fc99f52b1382543fac437096d4db1d3415cb40df578f29ed82cc4c64f",
-      "git push origin 0.4.1",
-      "gh release edit v0.4.1 --repo keeptoy/pwf-codex-cloud-hooks-next --prerelease=false --latest",
-      "PWF_P9E_OPERATOR_HEAD", "PWF_P9E_PREVIOUS_LATEST=v0.4.0", "PWF_P9E_PREFLIGHT=PASS",
-      "PWF_P9E_POINTER_PROMOTION=PASS", "PWF_P9E_LATEST=v0.4.1", "PWF_P9E_ACCEPTED=v0.4.1",
-      "PWF_P9E_IMMEDIATE_FALLBACK=v0.4.0", "PWF_P9E_DEEPER_FALLBACK=v0.3.5",
-      "PWF_P9E_POSTFLIGHT=PASS",
-      "P9_E_OPERATOR_READY / MAINTAINER_POINTER_PROMOTION_PENDING / STOP_BEFORE_P9_F",
-    ]) assert.match(p9eOperator, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-    assert.match(p9eOperator, /current Latest[^\n]*`v0\.4\.0`/);
-    assert.match(p9eOperator, /停止在P9-F前/);
-    assert.equal((p9eOperator.match(/^gh release edit v0\.4\.1 .*--prerelease=false --latest$/gm) || []).length, 1);
-    assert.doesNotMatch(p9eOperator,
-      /gh release (?:create|delete|upload)|git tag|refs\/tags\/v0\.4\.1|--notes|--title|--target/,
-      "P9-E operator must not recreate assets, mutate refs, or widen the pointer-only write");
-    const p9eEvidence = acceptance.slice(p9eEvidenceAt, historicalDevAt);
-    for (const fact of [
-      "PWF_P9E_POINTER_PROMOTION=PASS", "PWF_P9E_LATEST=v0.4.1", "PWF_P9E_ACCEPTED=v0.4.1",
-      "PWF_P9E_IMMEDIATE_FALLBACK=v0.4.0", "PWF_P9E_DEEPER_FALLBACK=v0.3.5",
-      "PWF_P9E_POSTFLIGHT=PASS", "isLatest=true", "isPrerelease=false", "isDraft=false",
-      "P9_E_POINTER_PROMOTION_PASS / V0_4_1_ACCEPTED_LATEST / V0_4_0_IMMEDIATE_FALLBACK / STOP_BEFORE_P9_F",
-    ]) assert.match(p9eEvidence, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-    const v041Provenance = provenance.split(/\r?\n/)
-      .find(line => line.startsWith("| `v0.4.1` |")) || "";
-    for (const fact of [
-      "99885b854bd9621c3340e99f031bf83ceb58414d", "22 entries", "85,910 bytes", "21,565 bytes",
-      "94f12fca8157b97a613a04f1857b6688c8d94650ac566c573345760ff6bb6291",
-      "1832db08c16b4f7fde88df2699384f1fff8e324909b0e024cb6ef216aea30a43",
-    ]) assert.match(v041Provenance, new RegExp(fact.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-    assert.match(acceptance, /__PWF_P9B_EXPECTED_HEAD__/);
-    assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-setup/);
-    assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-deep-check/);
-    assert.match(acceptance, /默认情况下，智能体不代替维护者 push/);
-    assert.match(acceptance, /维护者回传时请保留/);
-    assert.match(acceptance, /明确结束 B 的单次无工具\/不读文件观察限制/);
-    assert.match(acceptance, /cloud-hard-acceptance-template\.md#cloud-task-acceptance-permission-prefix/);
-    assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-setup/);
-    assert.match(acceptance, /cloud-hard-acceptance-template\.md#source-candidate-deep-check/);
-    assert.match(acceptance, /^<a name="v0-4-1-dev-source-candidate-evidence"><\/a>$/m);
-    assert.match(acceptance, /6c1dd52a3878f59c7140a793b9a2c2a34580b188/);
-    assert.match(acceptance, /175 tests \/ 175 pass \/ 0 fail \/ 0 skipped/);
-    assert.match(acceptance, /543a72a57fdd7ca04854d5d1dfde6f838bf40e3afa5eb2c52c2d559b3843854a/);
-    assert.match(acceptance, /PWF_SOURCE_CANDIDATE_SETUP=PASS/);
-    assert.match(acceptance, /PWF_SC_POST_RESUME=PASS/);
-    assert.match(acceptance, /首次拒绝作为诊断时间线保留/);
-    assert.match(acceptance, /0d470920f42651983062945a129e38838c46f4d7/);
-    assert.doesNotMatch(acceptance, /R5-PR=PASS|CLOUD-HARD-ACCEPTANCE-PASS/i);
-    assert.match(acceptance,
-      /https:\/\/github\.com\/keeptoy\/pwf-codex-cloud-hooks-next\/releases\/download\/v0\.4\.1\//);
-  }
-
 });
 
 test("stable architecture contracts do not freeze version history", () => {

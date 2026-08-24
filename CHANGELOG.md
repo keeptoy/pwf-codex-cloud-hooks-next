@@ -33,7 +33,7 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   inventory admission、Host ABI、managed events与runtime trusted graph均未改变。
 - stable身份已物化为`v0.4.1`，只接受exact `v0.4.0` installed predecessor；外部bootstrap已固定当前确定性ZIP的
   exact SHA并fail closed。immutable publication、Published Release Cloud与pointer-only promotion均已闭合；programme角色见
-  [`ROADMAP.md`](ROADMAP.md)，验收证据见[`docs/v0.4.1-cloud-hard-acceptance.md`](docs/v0.4.1-cloud-hard-acceptance.md)，已发布身份仍只见
+  [`ROADMAP.md`](ROADMAP.md)，验收证据见[immutable v0.4.1 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/3903326d7bbea344a8b03de1d9e1e7205eed57b1/docs/v0.4.1-cloud-hard-acceptance.md#v0-4-1-p9-f-second-retirement-closeout)，已发布身份仍只见
   [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)。
 
 ## v0.4.0
@@ -97,7 +97,7 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - 保留 `installed-manifest.json.runtime_files` 安装状态快照与 Release artifact ZIP allowlist；不删除
   `ledger-summary.sh`，不改变 runtime/installed inventory、Host ABI 或 production dispatch，也不进入 Product Phase 4。
 - 当前 gate 与后续 Cloud 状态见
-  [`docs/v0.3.4-cloud-hard-acceptance.md`](docs/v0.3.4-cloud-hard-acceptance.md)。
+  [immutable v0.3.4 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/5d01b55890c1da2a5088e2b991b152a9fb1c3f87/docs/v0.3.4-cloud-hard-acceptance.md)。
 
 ## v0.3.3
 

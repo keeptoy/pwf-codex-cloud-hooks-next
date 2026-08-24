@@ -118,6 +118,17 @@
 
 Batch B不会改变历史事实，但会显著降低自然语言改写导致的脆弱测试；由于涉及“history需要多强的current regression”这一治理取舍，建议与Batch A分开授权。
 
+## Batch A Implementation Result
+
+- 维护者确认后，Phase 4.12全部21个无入链`phase-9-v0-4-0-*`anchors原子清退；canonical Phase 4.12 anchor、P9-A～F标题/正文/结论全部保留。尾注改为明确“保留历史正文，不保留无入链兼容anchors”。
+- v0.4.2 acceptance的current test不再逐字冻结临时授权时间线或`24个`inventory数量，改为验证`ROLE_WINDOW_CLOSEOUT_PASS / C2_COMPLETE / NEXT_TRAIN_UNAUTHORIZED`语义；acceptance正文未改。
+- 删除current CHANGELOG test的不可达v0.4.0/v0.4.1分支，以及不可达v0.4.1 P9 operator/evidence分支175行；immutable P9-F test、v0.4.1 predecessor contract和publication/fallback oracles保持。
+- release-package删除旧P9-B条件与随之无用的acceptance读取；通用accepted bootstrap非零/exact ZIP SHA规则保持。
+- CHANGELOG两条退役local acceptance链接已迁到provenance登记的exact immutable commit URL。
+- repository-boundary新增版本无关的tracked Markdown local path/explicit-anchor审计，排除`.planning`、upstream fixture和明确模板placeholder。
+- 最终静态结果：changed paths与Release entries/external assets交集为0；legacy Phase 4.12 anchor definitions=0；CHANGELOG retired local links=0；dead candidate branches=0。
+- 验证：focused 18/18 PASS；完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped，skip均为既有Linux/POSIX-only cases。
+
 ## Technical Decisions
 
 | Decision | Rationale |
