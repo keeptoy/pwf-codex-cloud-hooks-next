@@ -119,3 +119,17 @@
 - acceptance目录可以采用角色安全的分阶段迁移：当前未冻结的`v0.4.2` candidate移入`docs/acceptance/`并更新自身相对链接；已冻结的`v0.4.1` accepted继续原路径KEEP。v0.4.2通过Published Release并晋级accepted后，v0.4.1退出candidate+accepted窗口，在第二retirement checkpoint按既有规则迁到exact immutable closeout链接并从current tree退役；届时current acceptance自然全部位于新目录。
 - 该过渡期不是永久双规范：`docs/acceptance/README.md`只声明“新建/未冻结guide进入本目录、冻结accepted保留原位直到角色退出、当前角色只读ROADMAP、旧证据读immutable refs”，并给旧根路径设置owner=`v0.4.1 accepted role`、退出点=`v0.4.2 C2 role-window closeout`。
 - 若维护者批准实施，第一事务建议仅包含：新增acceptance目录说明、移动v0.4.2 candidate、更新CHANGELOG/current links和candidate自身相对链接、调整lifecycle tests/role-path派生、把稳定目录合同写入治理指南，并在ROADMAP 4.1/Phase 4.14记录preflight结论。README是否把泛`docs/`入口收窄到`docs/acceptance/`会改变ZIP字节，应由维护者单独选择；不改README也不妨碍通过CHANGELOG/ROADMAP发现candidate guide。
+
+## Staged acceptance directory migration
+
+- 维护者批准实施收窄方案。当前candidate移动后的相对路径映射明确为：ROADMAP从`../ROADMAP.md`改为`../../ROADMAP.md`；Cloud template从同目录basename改为`../cloud-hard-acceptance-template.md`；repository governance从同目录basename改为`../repository-governance-guide.md`。
+- current root入链只需把CHANGELOG的v0.4.2入口改为`docs/acceptance/v0.4.2-cloud-hard-acceptance.md`。v0.4.1的ROADMAP/provenance/changelog入口继续原路径，直到C2角色轮转；README仍使用泛`docs/`专项证据入口，因此无需产生新的Release ZIP输入delta。
+- lifecycle test应识别两种有owner的角色路径：新建/未冻结candidate固定在`docs/acceptance/`；冻结accepted允许在本次过渡期保留`docs/`根。角色版本集合仍必须精确等于candidate+accepted，不能因过渡目录放宽数量。
+- `release-package.test.js`读取的是current candidate guide而非历史accepted，必须直接迁到`docs/acceptance/${candidate}-cloud-hard-acceptance.md`。repository authority separation测试中的candidate路径同样迁移；v0.4.1 P9-F immutable test保持旧路径。
+- ROADMAP 4.1应只新增一条current train摘要：preflight发现冻结路径合同、candidate已迁入新目录、v0.4.1 legacy root由accepted role拥有并在v0.4.2 C2退出、templates原位KEEP、Cloud仍PENDING。Phase 4.14保存为何分阶段而非批量搬家的设计理由。
+- failing-first在允许Git/Python子进程的执行面取得预期语义：17个聚焦tests中12 pass/5 fail，5个失败全部精确指向尚不存在的`docs/acceptance/README.md`、尚未移动的v0.4.2 guide及仍指向旧candidate路径的role-window集合；Release builder本身的determinism/negative tests继续通过，没有production defect。
+- 文件移动与链接补丁后，非planning current tree对旧`docs/v0.4.2-cloud-hard-acceptance.md`路径为零命中；两份closed planning仍用旧路径描述当时的“创建/准备”动作，属于允许保留的时间语义，不是current link、required path或可执行教程。
+- candidate guide移动前后SHA-256均为`A9E88B1112A5D04372EFAE5672F28FDABFFE9995F19E7C2EAAD50D063A77B421`；随后只按新目录深度更新相对链接，没有改变验收状态、identity、停止条件或PENDING结论。
+- 完整Windows suite在迁移后为181 tests / 155 pass / 0 fail / 26 skipped；新增1个pass来自acceptance目录生命周期合同，26个skip仍为既有Linux/POSIX-only cases，不产生新的平台缺口。
+- candidate ZIP双构建/check仍逐字同身份：22 entries、87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`。这直接证明本轮README未改且所有迁移对象继续被`docs/`Release exclusion覆盖；旧本地ZIP身份无需因package字节变化作废，但最终Source/Candidate source HEAD必须更新到本次新C0。
+- 最终静态边界核对确认：`docs/v0.4.1-cloud-hard-acceptance.md`及三份template的working-tree blob与HEAD完全相同；改动路径和22-entry Release allowlist交集为空，current非planning文档对旧v0.4.2路径为零命中。冻结证据、模板调用路径与package字节均未被本轮迁移改写。

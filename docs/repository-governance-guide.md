@@ -293,7 +293,20 @@ Release notes；不要提前创建大量按版本 archive 文件。
 历史 oracle 应验证当前仍承担角色的 baseline。更早版本的完整安全证明由其 tag/Release 和周期性外部
 审计承担，不应让每次本地 suite 重跑所有历史实现。
 
-### 11.1 Cloud protocol、Operator Guide 与版本证据
+<a name="acceptance-directory-lifecycle"></a>
+
+### 11.1 Acceptance目录与冻结路径
+
+新建或尚未冻结的acceptance/operator guide可以统一进入`docs/acceptance/`，但目录位置不产生新的programme authority；
+当前candidate、accepted与fallback角色仍只读ROADMAP。已经发布并冻结、且仍承担当前角色的guide若包含相对链接或字面
+执行路径，应在角色退出前保留原路径，不得为目录整齐原位改写证据。角色退出后，再在同一个retirement transaction中把
+current入口迁到exact immutable ref并清退旧副本。
+
+template路径也可能被冻结guide当作执行输入。若移动template会要求回写冻结guide，不得复制旧template作为兼容副本或保留
+两个可执行版本形成双authority；应保持template原路径，直到有独立迁移设计和明确退出条件。目录README只能解释上述
+lifecycle并链接ROADMAP/本指南，不得复制当前版本角色、PASS/PENDING或C0/C1/C2状态表。
+
+### 11.2 Cloud protocol、Operator Guide 与版本证据
 
 可重放Cloud流程应分成稳定执行协议、一轮验收教程、活动施工状态和宏观角色索引；详细写入规则由
 [`Cloud hard acceptance template` 的“文档职责与写入时机”](cloud-hard-acceptance-template.md#acceptance-document-responsibilities)

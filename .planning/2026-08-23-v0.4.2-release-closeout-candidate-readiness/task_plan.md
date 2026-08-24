@@ -6,11 +6,11 @@
 
 ## Next Step
 
-维护者审核角色安全的分阶段迁移建议：本轮仅新建`docs/acceptance/`并移动未冻结`v0.4.2` candidate；冻结`v0.4.1`与现有templates原路径KEEP。确认后再实施原子路径迁移、同步ROADMAP 4.1/Phase 4.14并形成新C0；Source/Candidate继续暂停。
+维护者审核并push包含分阶段acceptance目录迁移的新C0；随后由维护者决定何时在独立Fresh Cloud启动Source/Candidate。当前不得提前填写PASS、创建正式验收tag或进入publication。
 
 ## Current Phase
 
-Documentation topology migration preflight complete / awaiting maintainer topology decision
+Phase 5: Source/Candidate channel checkpoint / pending maintainer push
 
 ## Phases
 
@@ -100,6 +100,14 @@ Documentation topology migration preflight complete / awaiting maintainer topolo
 - [x] 将探路结论写入findings/progress，并提出ROADMAP 4.1与Phase 4.14的最小同步方案，等待维护者确认后再实施迁移。
 - **Status:** complete
 
+### Staged acceptance directory migration
+
+- [x] failing-first更新lifecycle/path测试：新candidate必须位于`docs/acceptance/`，冻结accepted可在角色退出前保留legacy根路径，templates继续固定在`docs/`根。
+- [x] 新建目录说明并移动未冻结v0.4.2 guide；原子更新candidate相对链接、current root docs、治理指南和活动planning，不改写v0.4.1 acceptance。
+- [x] ROADMAP 4.1只记录current train迁移状态/退出点，Phase 4.14追加带时间语义的设计结论；README保持不变，避免新的ZIP输入delta。
+- [x] 运行旧路径反向扫描、focused tests、完整suite、Release allowlist交叉检查、candidate build/check与`git diff --check`，创建范围单一的新C0 commit。
+- **Status:** complete
+
 ### Phase 5: Source/Candidate channel checkpoint
 
 - [ ] 维护者push并在独立Fresh Cloud完成4.1、B～E与9.1。
@@ -112,6 +120,7 @@ Documentation topology migration preflight complete / awaiting maintainer topolo
 
 - 已授权：按已讨论并冻结的版本无关 Release closeout 路线继续下一步；创建活动计划，完成 candidate-readiness、v0.4.2 候选身份与本地/Cloud教程准备，并创建本地 commit。
 - 已授权：在Source/Candidate前执行有界`Documentation topology migration preflight`，持久化分类、入链和迁移建议；未确认目标拓扑前不移动文件。
+- 已授权：按preflight结论实施角色安全的分阶段acceptance迁移；本轮只移动未冻结v0.4.2 candidate，冻结v0.4.1和template路径保持不变，并同步ROADMAP 4.1、Phase 4.14、治理指南、测试与本地commit。
 - 未授权：push、远端 branch/tag、Pre-release/Release、资产上传、Cloud task、Latest、部署或填写未发生的 PASS/URL/SHA。
 
 ## Stop Conditions
@@ -139,7 +148,8 @@ Documentation topology migration preflight complete / awaiting maintainer topolo
 | 第二次聚焦仍1 fail：断言把“跨阶段执行路由”错误要求在“不得只写planning”之后 | 1 | 按正文因果顺序收窄为“跨阶段执行路由→不得只记录在planning”，不修改已清晰的正文。 |
 | 第三次聚焦仍1 fail：治理断言额外要求正文使用不存在的中文固定标签“持久环境档案” | 1 | 按3-strike重新收窄测试设计：分别断言“不得只留planning”和“提升到持久profile”两条直接合同。 |
 | 环境状态同步正文后1 fail：ROADMAP断言倒置“重验触发器”与“跨阶段提升规则”顺序 | 1 | 保留自然职责顺序，拆为profile入口、重验触发器、跨阶段规则三个直接断言。 |
+| 迁移反向扫描把`rg --glob`选项放在`-- .`之后，导致选项被解析为文件路径 | 1 | 保留已取得的前半扫描结果；后续把所有glob选项放在pattern/path之前，正确完成current旧路径与标题复扫。 |
 
 ## Current Status
 
-`V0_4_2_DOCUMENT_TOPOLOGY_PREFLIGHT_COMPLETE / STAGED_ACCEPTANCE_MIGRATION_PROPOSED / SOURCE_CANDIDATE_NOT_RUN`
+`V0_4_2_ACCEPTANCE_DIRECTORY_MIGRATION_COMPLETE / RELEASE_INPUT_DELTA_NONE / SOURCE_CANDIDATE_NOT_RUN / STOP_BEFORE_MAINTAINER_PUSH`

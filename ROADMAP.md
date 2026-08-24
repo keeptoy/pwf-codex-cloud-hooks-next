@@ -86,6 +86,10 @@ Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节�
   [`维护机执行环境档案`](docs/maintenance-environment-profile.md#maintenance-environment-profile)：档案保存带日期的事实状态、影响、
   默认本地/Cloud解法与重验触发器；AGENTS负责强制执行，MAINTAINER_HANDOFF负责人的发现，repository governance负责跨阶段
   提升规则。具体机器事实不在ROADMAP复制；该档案及本轮状态同步均为Release-excluded，Source/Candidate继续`PENDING`。
+- 文档拓扑preflight把全局入口、专项authority和Release输入拆开盘点；未冻结的candidate guide现位于
+  [`docs/acceptance/v0.4.2-cloud-hard-acceptance.md`](docs/acceptance/v0.4.2-cloud-hard-acceptance.md)。`v0.4.1`已冻结
+  acceptance继续由accepted角色拥有旧根路径，退出点是v0.4.2完成Latest/postflight后的C2 role-window closeout；现有templates
+  因冻结guide仍含字面执行路径而原路径`KEEP`。本次迁移保持README与22-entry ZIP输入不变，Source/Candidate仍为`PENDING`。
 - 把Phase history拆分为回补型`RETROSPECTIVE_CAPSULE`与正式Round关闭后冻结的`FROZEN_DISCOVERY_RECORD`，同步history索引、
   写作模板和repository contracts；一个Product Phase可以有多份真实Discovery records，但同一闭合对象最多一份回补型capsule。
 - 冻结ROADMAP第4节current train工作台→Discovery Round归档→第5节`product-phase-N`长期authority→Release后列车轮转的完整状态流；

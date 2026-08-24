@@ -50,7 +50,7 @@ function currentRoleWindow() {
 test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const pathSafetyHistory = read("docs/history/phase-4.13-v0.4.1-path-safety-patch-train.md");
-  const candidateAcceptance = read("docs/v0.4.2-cloud-hard-acceptance.md");
+  const candidateAcceptance = read("docs/acceptance/v0.4.2-cloud-hard-acceptance.md");
   const currentTrain = roadmap.slice(
     roadmap.indexOf('<a name="v0-4-2-release-closeout"></a>'),
     roadmap.indexOf("## 5. Product Phase 路线"),
@@ -68,13 +68,16 @@ test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
   assert.match(currentTrain, /maintenance-environment-profile\.md#maintenance-environment-profile/);
   assert.match(currentTrain, /重验触发器/);
   assert.match(currentTrain, /跨阶段[\s\S]{0,40}提升规则/);
+  assert.match(currentTrain,
+    /docs\/acceptance\/v0\.4\.2-cloud-hard-acceptance\.md[\s\S]*v0\.4\.1[\s\S]*冻结[\s\S]*C2/);
+  assert.match(currentTrain, /templates[\s\S]{0,120}原路径[\s\S]{0,120}KEEP/);
   assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.1`[^\n]*Latest/);
   assert.doesNotMatch(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(pathSafetyHistory, /兼容性安全/);
   assert.match(pathSafetyHistory, /99885b854bd9621c3340e99f031bf83ceb58414d/);
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.1`/);
-  assert.match(candidateAcceptance, /\.\.\/ROADMAP\.md#release-four-step-flow/);
-  assert.match(candidateAcceptance, /\.\.\/ROADMAP\.md#version-train-two-retirement-reviews/);
+  assert.match(candidateAcceptance, /\.\.\/\.\.\/ROADMAP\.md#release-four-step-flow/);
+  assert.match(candidateAcceptance, /\.\.\/\.\.\/ROADMAP\.md#version-train-two-retirement-reviews/);
 });
 
 test("Phase 4.12 preserves the renamed v0.4.0 Release discovery and P9 evidence", () => {
@@ -152,6 +155,8 @@ test("trusted source zones are exact while repository governance paths remain li
     "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
     "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "docs/cloud-hard-acceptance-template.md",
     "docs/cloud-acceptance-operator-guide-template.md",
+    "docs/acceptance/README.md",
+    "docs/acceptance/v0.4.2-cloud-hard-acceptance.md",
     "docs/maintenance-environment-profile.md",
     "docs/repository-governance-guide.md",
   ]) {
@@ -224,7 +229,8 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   const { accepted, candidate } = currentRoleWindow();
   const roleVersions = [...new Set([accepted, candidate])].sort();
   const rootBootstraps = actual.filter(item => /^init-cloud-sandbox-v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\.bash$/.test(item));
-  const acceptanceDocs = docs.filter(item => /^docs\/v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?-cloud-hard-acceptance\.md$/.test(item));
+  const acceptanceDocs = docs.filter(item =>
+    /^docs\/(?:acceptance\/)?v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?-cloud-hard-acceptance\.md$/.test(item));
 
   assert.equal(artifact.excluded_prefixes.includes("docs/"), true);
   for (const relative of docs) {
@@ -232,7 +238,20 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
     assert.equal(releasePaths.includes(relative), false, relative);
   }
   assert.deepEqual(rootBootstraps, roleVersions.map(version => `init-cloud-sandbox-${version}.bash`));
-  assert.deepEqual(acceptanceDocs, roleVersions.map(version => `docs/${version}-cloud-hard-acceptance.md`));
+  assert.deepEqual(acceptanceDocs, [
+    `docs/${accepted}-cloud-hard-acceptance.md`,
+    `docs/acceptance/${candidate}-cloud-hard-acceptance.md`,
+  ].sort());
+  assert.deepEqual(acceptanceDocs.map(relative => path.basename(relative).replace("-cloud-hard-acceptance.md", "")).sort(),
+    roleVersions);
+  assert.equal(docs.some(item => item.startsWith("docs/templates/")), false,
+    "frozen accepted guides still bind the stable docs-root template paths");
+  const acceptanceIndex = read("docs/acceptance/README.md");
+  assert.match(acceptanceIndex, /^<a name="acceptance-role-window"><\/a>$/m);
+  assert.match(acceptanceIndex, /当前角色[\s\S]*ROADMAP/);
+  assert.match(acceptanceIndex, /已经冻结[\s\S]{0,80}accepted职责/);
+  assert.match(acceptanceIndex, /角色退出前保留原路径/);
+  assert.match(acceptanceIndex, /退出角色窗口后[\s\S]{0,160}immutable refs/);
   const acceptanceTemplate = read("docs/cloud-hard-acceptance-template.md");
   const operatorGuideTemplate = read("docs/cloud-acceptance-operator-guide-template.md");
   assert.match(acceptanceTemplate, /^<a name="cloud-hard-acceptance-template"><\/a>$/m);
@@ -499,6 +518,7 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
     "phase-4-14-post-governance-status-post-pass-retirement-ordering",
     "phase-4-14-post-governance-status-readme-release-handoff",
     "phase-4-14-post-governance-status-maintenance-environment-memory",
+    "phase-4-14-post-governance-status-acceptance-directory-migration",
     "phase-4-14-immutable-evidence",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(history, /^# Phase 4\.14：Release closeout 与验收文档治理回顾$/m);
@@ -541,6 +561,9 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
   assert.match(history,
     /maintenance-environment-profile\.md#maintenance-environment-profile[\s\S]*Release-excluded[\s\S]*Source\/Candidate[\s\S]*PENDING/);
   assert.match(history,
+    /Post-governance status — staged acceptance directory migration[\s\S]*v0\.4\.1[\s\S]*冻结[\s\S]*v0\.4\.2[\s\S]*docs\/acceptance\//);
+  assert.match(history, /template[\s\S]*硬编码[\s\S]*不可原位改写[\s\S]*C2/);
+  assert.match(history,
     /ROADMAP第4节与第5节形成显式authority rotation[\s\S]*product-phase-N[\s\S]*旧第4节没有current入链/);
   assert.match(history,
     /patch train继承它[\s\S]*Product baseline[\s\S]*version series落位[\s\S]*维护者确认/);
@@ -564,6 +587,11 @@ test("portable repository governance keeps stable retirement anchors", () => {
   assert.match(guide, /删除后做反向复扫[\s\S]*broken relative links[\s\S]*失效anchor[\s\S]*test\/oracle依赖/);
   assert.match(guide, /未分类命中[\s\S]{0,40}阻断retirement PASS/);
   assert.match(guide, /允许保留的历史文字命中必须明确只是时间语义，不得仍被解析为current\s+link、required path或可执行教程/);
+  assert.match(guide, /^<a name="acceptance-directory-lifecycle"><\/a>$/m);
+  assert.match(guide, /新建或尚未冻结的acceptance[\s\S]{0,100}docs\/acceptance\//);
+  assert.match(guide, /已经发布并冻结[\s\S]{0,160}角色退出前保留原路径/);
+  assert.match(guide, /角色退出后[\s\S]{0,180}exact immutable ref/);
+  assert.match(guide, /template路径[\s\S]*冻结guide[\s\S]*不得[\s\S]*双authority/);
 });
 
 test("cold history stays on immutable refs and outside runtime, Release, and adapter dispatch", () => {
@@ -606,7 +634,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   const artifact = JSON.parse(read(currentArtifactPath));
   const runtimeBundle = JSON.parse(read(currentBundlePath));
   const { accepted, candidate, immediateFallback, roadmap } = currentRoleWindow();
-  const acceptancePath = `docs/${candidate}-cloud-hard-acceptance.md`;
+  const acceptancePath = `docs/acceptance/${candidate}-cloud-hard-acceptance.md`;
   const acceptance = read(acceptancePath);
   const escapedCandidate = candidate.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 

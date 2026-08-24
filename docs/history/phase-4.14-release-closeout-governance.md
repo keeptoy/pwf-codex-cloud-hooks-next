@@ -235,6 +235,23 @@ governance则冻结“已确认的长期限制不得只留planning”的提升�
 才触发重验。它与本轮ROADMAP/history/tests/planning同步都属于Release-excluded，没有改变候选ZIP字节；但新的治理commit仍会
 成为下一次exact source C0。Source/Candidate状态保持`PENDING`，本节不冒充本地平台重验、Cloud PASS或公开资产证据。
 
+<a name="phase-4-14-post-governance-status-acceptance-directory-migration"></a>
+
+## Post-governance status — staged acceptance directory migration
+
+Source/Candidate继续暂停期间，维护者又审查了根目录与`docs/`的文档分区。preflight确认权威级别、目录位置和Release ZIP输入
+是三个独立维度：根README仍是全局文档地图，repository governance仍是`docs/`内的专项唯一authority；不能为了视觉对称把
+所有Markdown下沉，也不能让每个singleton各占一个目录。
+
+更关键的边界来自冻结证据：`v0.4.1` acceptance已经关闭整条Release列车，其中template链接和Cloud提示词硬编码了当时的
+`docs/`根路径。已发布acceptance不可原位改写；若现在批量移动template，要么破坏教程，要么保留旧副本形成双authority。
+因此本轮只把未冻结的`v0.4.2` candidate迁入`docs/acceptance/`，`v0.4.1`冻结guide与三个template继续原路径`KEEP`。
+
+这不是永久双目录规范，而是由版本角色拥有的迁移窗口：v0.4.1根级副本继续承担accepted职责；v0.4.2通过Published Release、
+Latest/postflight后，在C2第二retirement checkpoint把v0.4.1 current入口迁到exact immutable closeout证据并清退本地副本。
+目录README不复制当前版本表，只把读者导向ROADMAP和治理指南。整个迁移、状态同步与测试都被Release allowlist排除，根README
+未修改，22-entry候选ZIP输入不变；新的source commit仍将成为下一C0，Source/Candidate继续`PENDING`。
+
 <a name="phase-4-14-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

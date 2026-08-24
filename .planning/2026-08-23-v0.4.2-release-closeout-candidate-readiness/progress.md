@@ -93,3 +93,15 @@
 - 随后精确核对冻结证据，发现v0.4.1 accepted acceptance含硬编码旧Cloud template路径且已完成final closeout；依据“已发布acceptance不可原位改写”规则，撤回立即移动templates的建议。
 - 当前推荐改为角色安全分阶段迁移：仅把未冻结v0.4.2 candidate移入`docs/acceptance/`，v0.4.1原路径KEEP到v0.4.2 C2第二retirement checkpoint后再退役；templates和三个docs根级singleton均保持原位。等待维护者确认该目标拓扑后才实施。
 - Documentation topology migration preflight已完成并标记complete；活动计划停在维护者拓扑决策点，没有移动docs文件、改写冻结acceptance或启动Source/Candidate。
+- 维护者确认按preflight建议继续；已开启`Staged acceptance directory migration`，授权边界只包含未冻结v0.4.2 guide、current links/治理合同/测试/状态同步和本地commit，v0.4.1及templates继续KEEP原路径。
+- 已精确定位candidate guide移动后的三类相对链接、CHANGELOG current入口、repository-boundary/release-package测试路径，以及ROADMAP 4.1、治理指南与Phase 4.14的最小同步位置；README、v0.4.1、templates和provenance均不在本轮改写范围。
+- 已先补staged acceptance migration的failing-first测试合同：candidate新路径、过渡角色窗口、目录说明、template原位与candidate release-package读取路径。首次`node --test`再次命中已登记的Windows sandbox `spawn EPERM`；按既有方案改为直跑文件后，release-package内部Python子进程仍被sandbox阻止并返回`status=null`，尚未取得语义红灯，下一步在获准子进程执行面运行同一聚焦集合。
+- 获准子进程执行面上的failing-first为17 tests / 12 pass / 5 fail；失败全部是预期的new acceptance path/README/role-window缺口，builder negative与其余治理断言保持绿色。可以进入原子文件迁移，不需要修改production。
+- 已验证源/目标均在workspace且目标不存在后，把v0.4.2 guide移动到`docs/acceptance/`；移动前后SHA一致。新增非状态化目录说明，更新candidate相对链接、CHANGELOG、ROADMAP 4.1、治理指南、Phase 4.14和测试；v0.4.1、templates、README与provenance未改。
+- 反向扫描中一次`rg`因把glob选项放到`--`后而报路径错误，已按正确参数顺序复扫；current tree旧candidate路径零命中，仅closed planning保留历史文字。
+- 首次正文后聚焦回归为17 tests / 15 pass / 2 fail；两项均是测试把“角色退出前保留原路径”的自然语序倒置成“原路径→角色退出”。正文合同完整，已拆为冻结角色、退出前KEEP、退出后immutable migration三条直接断言，不反向扭曲文案。
+- assertion收窄后architecture/repository/release-package聚焦回归PASS：17 tests / 17 pass / 0 fail；candidate新路径、两席角色窗口、v0.4.1冻结KEEP、template原位、目录合同、ROADMAP/Phase状态和deterministic builder均闭合。
+- 完整Windows suite PASS：181 tests / 155 pass / 0 fail / 26 skipped；skip仍全部为既有Linux/POSIX-only case。
+- candidate双构建与双check PASS：两份均为22 entries、87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`；临时ZIP均在核对位于系统Temp后按exact path清理。
+- 最终静态检查PASS：`git diff --check`通过；v0.4.1 acceptance与三份template的working-tree blob均与HEAD一致；改动路径和Release allowlist交集为空；非planning current tree对旧v0.4.2 candidate路径为零命中。
+- Staged acceptance directory migration完成，活动计划回到Phase 5停止点；Source/Candidate仍未运行，下一步仅为维护者审核、push新C0并决定Fresh Cloud启动时点。

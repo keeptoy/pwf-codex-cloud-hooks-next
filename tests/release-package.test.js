@@ -79,7 +79,7 @@ test("current candidate ZIP is deterministic, self-contained, and bound to its e
     assert.ok(artifact.entries.every(entry => ["0644", "0755"].includes(entry.mode)));
     const bootstrap = fs.readFileSync(path.join(root, expectedBootstrap), "utf8");
     const acceptance = fs.readFileSync(
-      path.join(root, "docs", `${candidate}-cloud-hard-acceptance.md`), "utf8",
+      path.join(root, "docs", "acceptance", `${candidate}-cloud-hard-acceptance.md`), "utf8",
     );
     assert.equal(bootstrap.includes(`HOOKS_VERSION="\${HOOKS_VERSION:-${candidate}}"`), true);
     assert.match(bootstrap, /keeptoy\/pwf-codex-cloud-hooks-next\/releases\/download/);

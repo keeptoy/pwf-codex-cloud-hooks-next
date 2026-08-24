@@ -17,7 +17,7 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   Product Phase authority轮转、历史文件retirement入链检查及pre-1.0无入链alias清退规则。
 - 物化stable `0.4.2`候选身份而不改变production/runtime行为：Release contract与ZIP外bootstrap同步轮转到v0.4.2，
   installer transition只接受exact v0.4.1 predecessor；bootstrap在Source/Candidate前保持64位zero hash并fail closed。
-  本版本双通道教程见[`docs/v0.4.2-cloud-hard-acceptance.md`](docs/v0.4.2-cloud-hard-acceptance.md)；已发布身份仍只由
+  本版本双通道教程见[`docs/acceptance/v0.4.2-cloud-hard-acceptance.md`](docs/acceptance/v0.4.2-cloud-hard-acceptance.md)；已发布身份仍只由
   [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)记录。
 
 ## v0.4.1
