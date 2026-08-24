@@ -133,3 +133,13 @@
 - 完整Windows suite在迁移后为181 tests / 155 pass / 0 fail / 26 skipped；新增1个pass来自acceptance目录生命周期合同，26个skip仍为既有Linux/POSIX-only cases，不产生新的平台缺口。
 - candidate ZIP双构建/check仍逐字同身份：22 entries、87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`。这直接证明本轮README未改且所有迁移对象继续被`docs/`Release exclusion覆盖；旧本地ZIP身份无需因package字节变化作废，但最终Source/Candidate source HEAD必须更新到本次新C0。
 - 最终静态边界核对确认：`docs/v0.4.1-cloud-hard-acceptance.md`及三份template的working-tree blob与HEAD完全相同；改动路径和22-entry Release allowlist交集为空，current非planning文档对旧v0.4.2路径为零命中。冻结证据、模板调用路径与package字节均未被本轮迁移改写。
+
+## Source/Candidate PASS and C-step capability correction
+
+- 维护者明确确认整条Source/Candidate Cloud验收通过；9.1脚本exit 0，exact checkout HEAD为`d51f291566b5599cb21a9fc5c3f30fd1a1bbc74a`，doctor healthy/managed且errors、blockers为空，schema/inventory/policy/residue断言全部PASS。
+- C步骤拒绝直接写入的判断符合现有协议：B限制已经结束，但C自己重新禁止Shell，并要求先用只读文件工具确认目标不存在、再只用apply_patch创建fixture。当前Cloud会话只有Shell型读取与apply_patch，没有独立只读文件工具，因此协议能力集合不闭合。
+- 维护者临时授权Shell只读检查后C顺利完成，证明缺口在验收教程的工具能力声明，不是product/runtime缺陷。稳定修正应允许严格限定的只读existence preflight，同时继续禁止Shell创建/更新、覆盖已有文件、commit、push或PR。
+- 该模板、版本guide、ROADMAP状态、planning与tests都在Release artifact之外；只要不修改C0 package/runtime/bootstrap/allowlist输入，本轮可作为Source/Candidate PASS后的C1治理回补，不作废C0证据，正式验收tag仍精确指向C0。
+- 当前模板第6节把“只读文件工具检查”与“不得运行Shell”同时写死；repository-boundary测试也只保护旧能力组合。修正应同时改变正文和契约测试，明确Shell只可执行列出的存在性/类型只读检查，不能读取文件内容、创建目录或文件、重定向输出，任何目标已存在都立即停止。
+- v0.4.2 guide目前只有Pre-run与candidate admission preflight，没有channel checkpoint。C1需要在同一文件追加Source/Candidate exact evidence、C步骤诊断时间线和第一退役检查结果，并把顶部/current status从PENDING更新为“第一通道PASS、publication仍PENDING”。ROADMAP 4.1只保存programme摘要，不复制整段9.1输出。
+- 最终状态扫描发现ROADMAP顶部programme表仍保留Source/Candidate `PENDING`，与已更新的4.1冲突；这是current authority残留，必须随C1改为第一通道`PASS`、Published Release `PENDING`。版本guide 5.1中的`NOT_RUN`属于带日期Pre-run快照，保留才能维持状态演进时间语义。

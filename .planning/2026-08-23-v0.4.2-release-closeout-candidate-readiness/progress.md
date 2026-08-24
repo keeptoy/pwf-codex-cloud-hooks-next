@@ -105,3 +105,13 @@
 - candidate双构建与双check PASS：两份均为22 entries、87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`；临时ZIP均在核对位于系统Temp后按exact path清理。
 - 最终静态检查PASS：`git diff --check`通过；v0.4.1 acceptance与三份template的working-tree blob均与HEAD一致；改动路径和Release allowlist交集为空；非planning current tree对旧v0.4.2 candidate路径为零命中。
 - Staged acceptance directory migration完成，活动计划回到Phase 5停止点；Source/Candidate仍未运行，下一步仅为维护者审核、push新C0并决定Fresh Cloud启动时点。
+- 维护者回传Source/Candidate整条验收PASS；9.1最终exit 0，exact HEAD为`d51f291566b5599cb21a9fc5c3f30fd1a1bbc74a`，doctor、schema、inventory、adapter-only policy、HEAD稳定性与零snapshot residue均通过。
+- C步骤最初因协议禁止Shell且当前Cloud缺少独立只读文件工具而安全停止；维护者临时授权Shell existence check后整条黑盒成功。Phase 5转入C协议修正、第一退役检查与C1状态回补。
+- 已核对Cloud template第6节、v0.4.2 guide与现有repository契约：缺口是C步骤工具能力集合不闭合；版本guide尚无Source/Candidate channel checkpoint。下一步先补failing-first断言，再原子更新模板、guide、ROADMAP摘要与第一退役结果。
+- failing-first聚焦测试为14 tests / 12 pass / 2 fail，分别命中ROADMAP/guide尚无PASS状态与template尚无只读Shell preflight，符合预期。
+- 正文写回后首次聚焦仍为12 pass / 2 fail：旧PENDING断言需要随真实状态轮转，另一个失败只是测试与正文的`Shell不得`词序不一致；已收窄测试，不反向改写自然文案。
+- 第二次聚焦为13 pass / 1 fail；唯一剩余项把诊断时间线词序写反，现已拆为停止/授权和只读preflight/PASS两条直接合同。
+- C步骤协议、Source/Candidate C1证据、ROADMAP状态和第一退役检查的聚焦回归最终PASS：14 tests / 14 pass / 0 fail；Phase 4.14的新稳定anchor与设计原因也已加入同一治理契约。
+- 完整Windows suite PASS：181 tests / 155 pass / 0 fail / 26 skipped；skip仍全部为既有Linux/POSIX-only case。Release allowlist交集为`NONE`，candidate build/check仍为22 entries、87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`。
+- 最终current-state扫描发现并修正ROADMAP顶部programme表的旧Source/Candidate `PENDING`；guide 5.1的Pre-run `NOT_RUN`作为历史快照保留。
+- ROADMAP顶层状态修正后的聚焦治理回归再次PASS：14 tests / 14 pass / 0 fail。Phase 5完成，活动计划停止在维护者push C1、tag(C0)与immutable publication之前。

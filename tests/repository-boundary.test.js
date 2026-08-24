@@ -62,15 +62,18 @@ test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
   assert.notEqual(candidate, accepted);
   assert.match(roadmap, /`v0\.4\.2`[\s\S]*Release candidate/);
   assert.match(roadmap, /package identity[\s\S]*`0\.4\.2`/);
-  assert.match(roadmap, /Source\/Candidate[\s\S]*PENDING/);
+  assert.match(roadmap,
+    /当前 programme 边界[^\n]*Source\/Candidate已`PASS`[^\n]*Published Release仍为`PENDING`/);
   assert.match(currentTrain, /README\.md[\s\S]*Release ZIP输入[\s\S]*旧候选身份[\s\S]*失效/);
-  assert.match(currentTrain, /C0[\s\S]*Source\/Candidate[\s\S]*仍未运行/);
+  assert.match(currentTrain, /C0[\s\S]*已通过Source\/Candidate[\s\S]*exact HEAD[\s\S]*版本acceptance/);
   assert.match(currentTrain, /maintenance-environment-profile\.md#maintenance-environment-profile/);
   assert.match(currentTrain, /重验触发器/);
   assert.match(currentTrain, /跨阶段[\s\S]{0,40}提升规则/);
   assert.match(currentTrain,
     /docs\/acceptance\/v0\.4\.2-cloud-hard-acceptance\.md[\s\S]*v0\.4\.1[\s\S]*冻结[\s\S]*C2/);
   assert.match(currentTrain, /templates[\s\S]{0,120}原路径[\s\S]{0,120}KEEP/);
+  assert.match(currentTrain, /Source\/Candidate[\s\S]{0,120}`PASS`/);
+  assert.match(currentTrain, /Published Release[\s\S]{0,120}`PENDING`/);
   assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.1`[^\n]*Latest/);
   assert.doesNotMatch(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(pathSafetyHistory, /兼容性安全/);
@@ -78,6 +81,15 @@ test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.1`/);
   assert.match(candidateAcceptance, /\.\.\/\.\.\/ROADMAP\.md#release-four-step-flow/);
   assert.match(candidateAcceptance, /\.\.\/\.\.\/ROADMAP\.md#version-train-two-retirement-reviews/);
+  for (const fact of [
+    "d51f291566b5599cb21a9fc5c3f30fd1a1bbc74a",
+    "PWF_SOURCE_CANDIDATE_SETUP=PASS",
+    "PWF_SC_POST_RESUME=PASS",
+    "SOURCE_CANDIDATE_PASS / PUBLISHED_RELEASE_NOT_RUN / STOP_BEFORE_PUBLICATION",
+  ]) assert.match(candidateAcceptance, new RegExp(fact.replaceAll(".", "\\.")));
+  assert.match(candidateAcceptance, /C步骤首次安全停止[\s\S]*维护者随后临时授权/);
+  assert.match(candidateAcceptance, /只读Shell existence preflight[\s\S]*D～F顺利PASS/);
+  assert.match(candidateAcceptance, /source-candidate closeout retirement checkpoint[\s\S]*所有仓库内planning[\s\S]*KEEP/);
 });
 
 test("Phase 4.12 preserves the renamed v0.4.0 Release discovery and P9 evidence", () => {
@@ -298,8 +310,13 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(acceptanceTemplate, /PWF_CLOUD_ACCEPTANCE_CANONICAL_V1[\s\S]*PWF_CLOUD_ACCEPTANCE_REAL_RESUME_TAIL/);
   assert.match(acceptanceTemplate,
     /上一步 B 中“不要调用工具、运行 Shell、读取文件”的限制只适用于 B 的那一次黑盒观察回复，现在已经结束/);
-  assert.match(acceptanceTemplate,
-    /只允许使用只读文件工具检查 `[.]planning\/[.]active_plan`[\s\S]*只允许使用 apply_patch/);
+  const canonicalBaseline = acceptanceTemplate.slice(
+    acceptanceTemplate.indexOf("## 6. C"), acceptanceTemplate.indexOf("## 7. D"));
+  assert.match(canonicalBaseline, /优先使用独立的只读文件工具/);
+  assert.match(canonicalBaseline, /没有独立的只读文件工具[\s\S]*只读 Shell preflight/);
+  assert.match(canonicalBaseline, /Shell[\s\S]*只允许[\s\S]*存在性[\s\S]*类型[\s\S]*读取 `[.]planning\/[.]active_plan`/);
+  assert.match(canonicalBaseline, /Shell不得创建、修改、删除、移动[\s\S]*重定向/);
+  assert.match(canonicalBaseline, /正文写入[\s\S]*只允许使用 apply_patch/);
   assert.match(acceptanceTemplate,
     /PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_COMPLETED_V1[\s\S]*PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_ACTIVE_V1/);
   for (const sentinel of [
@@ -519,6 +536,7 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
     "phase-4-14-post-governance-status-readme-release-handoff",
     "phase-4-14-post-governance-status-maintenance-environment-memory",
     "phase-4-14-post-governance-status-acceptance-directory-migration",
+    "phase-4-14-post-governance-status-canonical-baseline-tool-capability",
     "phase-4-14-immutable-evidence",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(history, /^# Phase 4\.14：Release closeout 与验收文档治理回顾$/m);
@@ -563,6 +581,9 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
   assert.match(history,
     /Post-governance status — staged acceptance directory migration[\s\S]*v0\.4\.1[\s\S]*冻结[\s\S]*v0\.4\.2[\s\S]*docs\/acceptance\//);
   assert.match(history, /template[\s\S]*硬编码[\s\S]*不可原位改写[\s\S]*C2/);
+  assert.match(history,
+    /Post-governance status — canonical baseline tool capability[\s\S]*首次安全拒绝[\s\S]*临时授权[\s\S]*exact `[.]planning`路径/);
+  assert.match(history, /fixture正文仍只能由apply_patch创建[\s\S]*正式tag继续精确指向C0/);
   assert.match(history,
     /ROADMAP第4节与第5节形成显式authority rotation[\s\S]*product-phase-N[\s\S]*旧第4节没有current入链/);
   assert.match(history,

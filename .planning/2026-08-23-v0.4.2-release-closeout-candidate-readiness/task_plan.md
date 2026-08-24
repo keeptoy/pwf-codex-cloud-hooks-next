@@ -6,11 +6,11 @@
 
 ## Next Step
 
-维护者审核并push包含分阶段acceptance目录迁移的新C0；随后由维护者决定何时在独立Fresh Cloud启动Source/Candidate。当前不得提前填写PASS、创建正式验收tag或进入publication。
+维护者push C1，并让正式`v0.4.2`验收tag精确指向C0 `d51f291566b5599cb21a9fc5c3f30fd1a1bbc74a`；随后创建immutable Pre-release、上传已验收ZIP与ZIP外bootstrap。公开资产形成前停止，不启动或填写Published Release证据。
 
 ## Current Phase
 
-Phase 5: Source/Candidate channel checkpoint / pending maintainer push
+Publication handoff / pending maintainer actions
 
 ## Phases
 
@@ -110,23 +110,25 @@ Phase 5: Source/Candidate channel checkpoint / pending maintainer push
 
 ### Phase 5: Source/Candidate channel checkpoint
 
-- [ ] 维护者push并在独立Fresh Cloud完成4.1、B～E与9.1。
-- [ ] 核对exact C0 HEAD、Linux零skip、ZIP identity、lifecycle、doctor/inventory/policy/residue原始证据。
-- [ ] 真实PASS后执行第一轮retirement review；只有Release-excluded对象可在维护者明确决定后清退，任何C0 Release输入变化都回到新C0重验。
-- [ ] 将Source/Candidate与第一退役检查的真实证据一起追加到guide并创建C1；否则按首次错误停止。
-- **Status:** pending
+- [x] 维护者push并在独立Fresh Cloud完成4.1、B～E与9.1。
+- [x] 核对exact C0 HEAD、Linux零skip、ZIP identity、lifecycle、doctor/inventory/policy/residue原始证据。
+- [x] 真实PASS后执行第一轮retirement review；只有Release-excluded对象可在维护者明确决定后清退，任何C0 Release输入变化都回到新C0重验。
+- [x] 将Source/Candidate与第一退役检查的真实证据一起追加到guide并创建C1；否则按首次错误停止。
+- [x] 修正Cloud template的C步骤能力协议：只读existence preflight可用Shell，创建/更新仍仅限apply_patch，禁止覆盖、commit、push或PR。
+- **Status:** complete
 
 ## Authorization
 
 - 已授权：按已讨论并冻结的版本无关 Release closeout 路线继续下一步；创建活动计划，完成 candidate-readiness、v0.4.2 候选身份与本地/Cloud教程准备，并创建本地 commit。
 - 已授权：在Source/Candidate前执行有界`Documentation topology migration preflight`，持久化分类、入链和迁移建议；未确认目标拓扑前不移动文件。
 - 已授权：按preflight结论实施角色安全的分阶段acceptance迁移；本轮只移动未冻结v0.4.2 candidate，冻结v0.4.1和template路径保持不变，并同步ROADMAP 4.1、Phase 4.14、治理指南、测试与本地commit。
+- 已授权：维护者确认C0 `d51f291566b5599cb21a9fc5c3f30fd1a1bbc74a`的Source/Candidate全部通过，允许直接回补PASS；同时微调C步骤验收模板，吸收本轮临时授权的有界只读Shell预检并形成C1本地commit。
 - 未授权：push、远端 branch/tag、Pre-release/Release、资产上传、Cloud task、Latest、部署或填写未发生的 PASS/URL/SHA。
 
 ## Stop Conditions
 
 - 不创建或恢复 Phase 9/P9-A～F；第 9 节只是 ROADMAP 的通用 Release 章节。
-- Source/Candidate Cloud 未真实通过前，不创建正式验收 tag，也不把 guide 的 Cloud 状态写成 PASS。
+- 正式验收tag只能精确指向已通过Cloud的C0，不得指向C1或后续治理分支HEAD；tag与publication仍由维护者执行。
 - public assets 不存在前，不写 Published Release/provenance/Latest 证据。
 - 任一身份或 contract 变化必须保持 allowlist、hash、transition 与 tests 原子闭合。
 
@@ -149,7 +151,9 @@ Phase 5: Source/Candidate channel checkpoint / pending maintainer push
 | 第三次聚焦仍1 fail：治理断言额外要求正文使用不存在的中文固定标签“持久环境档案” | 1 | 按3-strike重新收窄测试设计：分别断言“不得只留planning”和“提升到持久profile”两条直接合同。 |
 | 环境状态同步正文后1 fail：ROADMAP断言倒置“重验触发器”与“跨阶段提升规则”顺序 | 1 | 保留自然职责顺序，拆为profile入口、重验触发器、跨阶段规则三个直接断言。 |
 | 迁移反向扫描把`rg --glob`选项放在`-- .`之后，导致选项被解析为文件路径 | 1 | 保留已取得的前半扫描结果；后续把所有glob选项放在pattern/path之前，正确完成current旧路径与标题复扫。 |
+| C1正文后聚焦测试仍为12 pass / 2 fail：一条旧断言继续要求Source/Candidate未运行，另一条把自然文案`Shell不得`写成`不得通过 Shell` | 1 | 第一条按真实programme状态迁到PASS合同；第二条只修正测试词序，不扭曲已清晰的fail-closed正文。 |
+| 第二次C1聚焦为13 pass / 1 fail：单条诊断断言把“只读Shell”错误要求在“临时授权”之前 | 1 | 按真实时间线拆成“首次安全停止→临时授权”和“只读preflight→后续PASS”两个直接断言。 |
 
 ## Current Status
 
-`V0_4_2_ACCEPTANCE_DIRECTORY_MIGRATION_COMPLETE / RELEASE_INPUT_DELTA_NONE / SOURCE_CANDIDATE_NOT_RUN / STOP_BEFORE_MAINTAINER_PUSH`
+`SOURCE_CANDIDATE_PASS / C0_D51F291 / FIRST_RETIREMENT_KEEP / C1_LOCAL_READY / STOP_BEFORE_PUBLICATION`

@@ -252,6 +252,22 @@ Latest/postflight后，在C2第二retirement checkpoint把v0.4.1 current入口�
 目录README不复制当前版本表，只把读者导向ROADMAP和治理指南。整个迁移、状态同步与测试都被Release allowlist排除，根README
 未修改，22-entry候选ZIP输入不变；新的source commit仍将成为下一C0，Source/Candidate继续`PENDING`。
 
+<a name="phase-4-14-post-governance-status-canonical-baseline-tool-capability"></a>
+
+## Post-governance status — canonical baseline tool capability
+
+`v0.4.2` Source/Candidate真实Cloud运行暴露了C步骤的教程能力闭环问题。B的“不要调用工具”限制已经在进入C时结束，但C自己又
+要求先用独立只读文件工具核对`.planning`目标是否存在，同时禁止Shell。实际Cloud会话只提供Shell型读取与apply_patch；模型若
+跳过检查直接Add File，就可能违反“存在即停止、不得覆盖”，因此首次安全拒绝是正确的fail-closed行为。
+
+维护者临时授权只读Shell检查后，canonical fixture与后续Resume/deep check全部通过。稳定修正不是放开Shell施工，而是把临时
+授权收窄为template合同：只有会话缺少独立只读文件工具时，才允许在apply_patch前对exact `.planning`路径执行存在性、类型和
+active pointer读取；Shell仍不得写入、重定向、删除、移动、commit、push或创建PR，fixture正文仍只能由apply_patch创建。
+
+这次发现和修正发生在Source/Candidate PASS后的C1回补中，只改变Release-excluded template、版本guide、治理状态、tests与planning，
+没有修改package、contract、runtime、bootstrap或ZIP allowlist。故已验收C0保持有效，正式tag继续精确指向C0；Published Release、
+Latest与第二轮role-window closeout仍未发生。current顺序与状态只读ROADMAP和版本acceptance，本节只保存设计原因。
+
 <a name="phase-4-14-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

@@ -454,9 +454,14 @@ SessionStart 与 UserPromptSubmit 必须被观察到，SessionStart source 必�
 这是 planning-with-files canonical planning baseline 创建步骤。
 
 上一步 B 中“不要调用工具、运行 Shell、读取文件”的限制只适用于 B 的那一次黑盒观察回复，现在已经结束；
-本步骤明确取代该限制。为完成 C，只允许使用只读文件工具检查 `.planning/.active_plan`、新生成的
-`.planning/PLAN_ID` 目录及下列目标文件是否存在，并只允许使用 apply_patch 创建规定的三个文件和更新
-`.planning/.active_plan`。不得运行 Shell，不得读取其他仓库文件，也不得进行下列清单之外的写入。
+本步骤明确取代该限制。为完成 C，优先使用独立的只读文件工具检查 `.planning/.active_plan`、新生成的
+`.planning/PLAN_ID` 目录及下列目标文件。如果当前会话没有独立的只读文件工具，可以仅在 apply_patch 前执行有界的
+只读 Shell preflight：Shell 只允许检查这些 exact path 的存在性与类型，并读取 `.planning/.active_plan` 当前内容，
+不得读取其他仓库文件。
+
+Shell不得创建、修改、删除、移动或重命名任何文件/目录，不得使用输出重定向、`tee`、Git、网络、package manager、
+脚本或解释器执行写入；若 `.planning` 拓扑异常，或新目录/任一目标文件已经存在，立即停止并报告冲突。preflight完成后，
+正文写入只允许使用 apply_patch：创建规定的三个文件并更新 `.planning/.active_plan`，不得进行清单之外的写入。
 
 请使用 apply_patch：
 1. 为本轮生成一个新的 plan ID，格式必须是 YYYY-MM-DD-pwf-cloud-acceptance-v1-xxxxxxxx，其中日期使用当前 UTC 日期，xxxxxxxx 是本轮新生成的 8 位小写十六进制 run ID。以下用 PLAN_ID 表示这个具体值。只能用 apply_patch 的 Add File 创建新文件；如果目标目录或任一目标文件已经存在，立即停止并报告冲突，不得覆盖、删除或改用 Update File。
