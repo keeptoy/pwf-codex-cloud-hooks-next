@@ -52,12 +52,12 @@ function currentRoleWindow() {
   return { accepted, candidate, developmentTrain, immediateFallback, roadmap };
 }
 
-test("v0.4.2 C2 evidence lives in closed Product Phase 5 while the development train is empty", () => {
+test("v0.4.2 C2 evidence stays in closed Product Phase 4 while Phase 5 remains planning", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const pathSafetyHistory = read("docs/history/phase-4.13-v0.4.1-path-safety-patch-train.md");
   const candidateAcceptance = read("docs/acceptance/v0.4.2-cloud-hard-acceptance.md");
   const provenance = read("BASELINE_PROVENANCE.md");
-  const phase5Closeout = roadmap.slice(
+  const phase4Closeout = roadmap.slice(
     roadmap.indexOf('<a name="v0-4-2-release-closeout"></a>'),
     roadmap.indexOf("## 6. 版本号与晋级语义"),
   );
@@ -73,29 +73,32 @@ test("v0.4.2 C2 evidence lives in closed Product Phase 5 while the development t
   assert.match(roadmap, /`v0\.4\.2`[\s\S]*Release closeout/);
   assert.match(roadmap, /package identity[\s\S]*`0\.4\.2`/);
   assert.match(roadmap,
-    /当前 programme 边界[^\n]*Published Release已`PASS`[^\n]*Latest[^\n]*第二轮退役[^\n]*C2[^\n]*`PASS`/);
+    /当前 programme 边界[^\n]*`v0\.4\.2`双通道、Latest、第二轮退役与C2均已`PASS`/);
   assert.match(currentTrain, /当前没有活动开发列车[\s\S]*没有exact train anchor/);
-  assert.match(currentTrain, /两个保留的planning scope[\s\S]*不会把[\s\S]*v0\.4\.2列车重新激活/);
+  assert.match(currentTrain, /Product Phase 5其他文档治理精简摘要[\s\S]*#product-phase-5/);
+  assert.match(currentTrain, /planning中的Phase摘要[\s\S]*不构成列车激活、版本分配或实施授权/);
   assert.doesNotMatch(currentTrain, /v0-4-2-release-closeout|### 4\.1/);
-  assert.match(phase5Closeout, /README\.md[\s\S]*Release ZIP输入[\s\S]*旧候选身份[\s\S]*失效/);
-  assert.match(phase5Closeout, /最终README[\s\S]*Source\/Candidate[\s\S]*C0[\s\S]*版本acceptance/);
-  assert.match(phase5Closeout, /maintenance-environment-profile\.md#maintenance-environment-profile/);
-  assert.match(phase5Closeout, /重验触发器/);
-  assert.match(phase5Closeout, /跨阶段提升/);
-  assert.match(phase5Closeout,
+  assert.match(phase4Closeout, /README\.md[\s\S]*Release ZIP输入[\s\S]*旧候选身份[\s\S]*失效/);
+  assert.match(phase4Closeout, /最终README[\s\S]*Source\/Candidate[\s\S]*C0[\s\S]*版本acceptance/);
+  assert.match(phase4Closeout, /maintenance-environment-profile\.md#maintenance-environment-profile/);
+  assert.match(phase4Closeout, /重验触发器/);
+  assert.match(phase4Closeout, /跨阶段提升/);
+  assert.match(phase4Closeout,
     /docs\/acceptance\/v0\.4\.2-cloud-hard-acceptance\.md[\s\S]*v0\.4\.1[\s\S]*immutable[\s\S]*清退/);
-  assert.match(phase5Closeout, /templates[\s\S]{0,120}原路径[\s\S]{0,120}KEEP/);
-  assert.match(roadmap, /5\.1\.4 Phase 5 文档治理与 `v0\.4\.2` Release closeout/);
-  assert.match(phase5Closeout, /Published Release[\s\S]{0,160}验收/);
-  assert.match(phase5Closeout, /Latest promotion confirmation[\s\S]*第二轮role-window closeout[\s\S]*C2均已闭合/);
-  assert.match(phase5Closeout,
+  assert.match(phase4Closeout, /templates[\s\S]{0,120}原路径[\s\S]{0,120}KEEP/);
+  assert.match(roadmap, /5\.1\.4 Phase 4 的 `v0\.4\.2` 文档治理与 Release closeout/);
+  assert.match(phase4Closeout, /Published Release[\s\S]{0,160}验收/);
+  assert.match(phase4Closeout, /Latest promotion confirmation[\s\S]*第二轮role-window closeout[\s\S]*C2均已闭合/);
+  assert.match(phase4Closeout,
     /Published Release[\s\S]*GitHub Release Latest promotion confirmation[\s\S]*不再重复下载或重算SHA/);
-  assert.match(phase5Closeout, /#github-release-latest-promotion-confirmation/);
-  assert.match(phase5Closeout,
+  assert.match(phase4Closeout, /#github-release-latest-promotion-confirmation/);
+  assert.match(phase4Closeout,
     /post-v0\.4\.2 residue sweep[\s\S]*Batch A[\s\S]*Batch B[\s\S]*22-entry Release allowlist交集为0/);
-  assert.match(phase5Closeout, /两个planning scope继续`KEEP`[\s\S]*不是活动开发列车/);
+  assert.match(phase4Closeout, /两个planning scope继续`KEEP`[\s\S]*不是活动开发列车/);
+  assert.match(roadmap, /^### 5\.2 Phase 5 其他文档治理（planning）$/m);
+  assert.match(roadmap, /\| 5 \| `TBD` \| 其他文档治理[\s\S]*planning[\s\S]*未授权实施或Release/);
   assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.2`[^\n]*programme accepted/);
-  assert.match(roadmap, /当前 programme 边界[^\n]*`v0\.4\.2`[^\n]*GitHub `Latest` promotion confirmation[^\n]*C2均已`PASS`/);
+  assert.match(roadmap, /当前 programme 边界[^\n]*`v0\.4\.2`双通道、Latest、第二轮退役与C2均已`PASS`/);
   assert.doesNotMatch(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(pathSafetyHistory, /兼容性安全/);
   assert.match(pathSafetyHistory, /99885b854bd9621c3340e99f031bf83ceb58414d/);
@@ -729,7 +732,7 @@ test("change history, programme, provenance, and current acceptance keep separat
 
   assert.match(roadmap, new RegExp("## 3\\. 已接受基线 `" + accepted.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "`"));
   assert.doesNotMatch(roadmap, /## 3\. 已完成的仓库迁移|M1 exact mirror|M2 slim transformation/);
-  assert.equal((roadmap.match(/GitHub `Latest`/g) || []).length, 1);
+  assert.equal((roadmap.match(/^<a name="github-release-latest-promotion-confirmation"><\/a>$/gm) || []).length, 1);
 
   for (const publishedRoleVersion of new Set([accepted, immediateFallback])) {
     assert.match(provenance, new RegExp(publishedRoleVersion.replaceAll(".", "\\.")));

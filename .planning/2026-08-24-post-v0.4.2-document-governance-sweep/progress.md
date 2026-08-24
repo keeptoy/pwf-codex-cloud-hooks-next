@@ -91,6 +91,18 @@
 - 首次focused为22/24 PASS；删除重复planning-lifecycle fragment并明确package identity `0.4.2`后复跑24/24 PASS。空列车、Phase 5 authority、6～9路线、历史链接和治理指南空窗合同均通过。
 - 完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped；production/runtime/Release/publication/planning均无回归。Phase 6实施与验证完成，所有planning scope继续KEEP。
 
+### Phase 7: Product Phase attribution correction
+
+- **Status:** in_progress
+- 维护者纠正v0.4.2归属：它仍是Product Phase 4并保留5.1.4；Product Phase 5是另一轮planning中的其他文档治理，应使用5.2精简摘要。上一轮本地commit尚未push，当前将以追加纠正commit修复，不删除planning。
+- ROADMAP已纠正Phase归属：5.1.4标题/正文恢复Phase 4，Phase 5改为`TBD / planning`并新增5.2精简摘要；第4节只有一个`#product-phase-5`链接。repository/architecture tests已同步新层级，等待静态审计与测试。
+- 首轮静态审计通过：第4节Phase摘要链接1个、`product-phase-5`与`v0-4-2-release-closeout`各1个；旧“Phase 5 = v0.4.2”归属命中为0，Phase 4～9结构与5.1.4/5.2位置正确，`git diff --check`和两个测试文件语法检查均通过。
+- 首次focused在沙箱内因Node runner创建子进程`EPERM`未执行；按既有环境路由在沙箱外重跑后22/24 PASS。两条失败均为旧测试措辞：一条仍要求旧`Published Release已PASS`句式，另一条仍计数已退场的`GitHub \`Latest\``写法；正文已有更精确的双通道/C2摘要与唯一Latest confirmation anchor，因此只更新断言，不改programme语义。
+- 第二次focused为23/24 PASS；同一测试稍后还有一条重复的旧`GitHub \`Latest\` promotion confirmation`programme摘要断言。继续把这条重复断言收敛到当前双通道/Latest/第二轮退役/C2事实，不改变ROADMAP。
+- 第三次focused 24/24 PASS：空开发列车、单一Phase 5摘要入口、v0.4.2归属Phase 4、5.2 planning状态、稳定anchors、history入口和planning lifecycle均通过。
+- 完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped；production、runtime、installer、Release/publication、文档authority与planning lifecycle均无回归。Linux/POSIX-only项目继续诚实SKIP。
+- 最终静态审计通过：6条修改路径与22-entry Release allowlist交集为0；第4节Phase链接1个，Phase 5/v0.4.2 anchors各1个，错误归属命中0，ROADMAP直达history链接仍为2；planning scopes保持2个，active pointer未变，`git diff --check`通过。
+
 ## Error Log
 
 | Timestamp | Error | Attempt | Resolution |
@@ -107,13 +119,17 @@
 | 2026-08-25 | ROADMAP首个组合迁移补丁因历史Phase 9说明换行不匹配而未应用 | 1 | 无部分修改；拆为四个有界补丁继续，不重复大上下文。 |
 | 2026-08-25 | Phase 6首次focused测试22/24 PASS：重复planning-lifecycle fragment、package identity关系表述不直接 | 1 | 保留唯一authority链接并明确package identity `0.4.2`；修正后再复跑。 |
 | 2026-08-25 | Phase 6首次planning结项组合补丁因progress测试表格上下文不精确而未应用 | 1 | 仓库正文与测试结果未受影响；读取精确UTF-8上下文后拆分补丁。 |
+| 2026-08-25 | Phase 7首次静态汇总命令因PowerShell复合表达式括号解析失败 | 1 | 未执行检查或写入；拆分为简单Select-String与独立计数。 |
+| 2026-08-25 | Phase 7首次focused在沙箱内因Node test runner子进程`spawn EPERM`未执行 | 1 | 按维护机已知限制在沙箱外重跑，得到真实22/24结果。 |
+| 2026-08-25 | Phase 7首次真实focused为22/24 PASS：两条测试仍匹配旧Release摘要/Latest写法 | 1 | 保留新ROADMAP权威结构，只把断言迁到当前双通道/C2摘要与唯一Latest confirmation anchor。 |
+| 2026-08-25 | Phase 7第二次focused为23/24 PASS：同一测试残留一条重复旧programme摘要断言 | 2 | 将最后一条旧措辞断言同步到当前双通道/C2摘要。 |
 
 ## 5-Question Reboot Check
 
 | Question | Answer |
 |---|---|
-| Where am I? | Phase 6完成：Product Phase 5已关闭，当前开发列车为NONE。 |
-| Where am I going? | 等待维护者push本地commit或另行授权Product Phase 6/下一版本列车。 |
+| Where am I? | Phase 7完成：v0.4.2已纠正为Product Phase 4 closeout；Phase 5只处于planning，当前开发列车为NONE。 |
+| Where am I going? | 等待维护者push本地纠正commit，或另行授权Product Phase 5 Discovery/下一版本列车。 |
 | What's the goal? | 清除历史快照对长期合同的错误耦合，同时保留真实历史和多轮 planning 恢复能力。 |
-| What have I learned? | 列车关闭后可以合法进入NONE空窗；planning KEEP只保留恢复记忆，不会激活新列车。 |
-| What have I done? | 登记Phase 5文档治理，顺延候选Phase 6～9，把4.1迁入5.1.4并同步治理指南与测试；完整Windows回归PASS。 |
+| What have I learned? | patch/governance列车不能因文档工作量自动升级为新Product Phase；history保存流水账，ROADMAP第5节保存精简Phase authority。 |
+| What have I done? | 把v0.4.2/5.1.4纠正回Phase 4，新建5.2 Phase 5 planning摘要，第4节收敛为单一链接；focused 24/24和完整Windows回归PASS。 |

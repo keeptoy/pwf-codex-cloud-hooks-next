@@ -26,7 +26,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 当前已接受版本 | `v0.4.2`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.1` immediate fallback |
 | 回退证据链 | immutable `v0.4.0` deeper fallback；`v0.3.5`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4～5、`v0.4.1`发布列车与`v0.4.2`documentation-governance列车均已关闭；`v0.4.2` Source/Candidate、immutable publication与Published Release已`PASS`，GitHub `Latest` promotion confirmation、第二轮退役与C2均已`PASS`。下一Product Phase、下一版本列车与其他外部状态变更未授权 |
+| 当前 programme 边界 | Product Phase 4、`v0.4.1`发布列车与`v0.4.2`documentation-governance列车均已关闭；Product Phase 5其他文档治理只处于planning，尚未激活development train或分配版本身份。`v0.4.2`双通道、Latest、第二轮退役与C2均已`PASS`；其他外部状态变更未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -64,8 +64,9 @@ provenance和对应版本acceptance，不在本节重建逐P9流水。
 本节是current development train工作台：活动planning、未封存Discovery和需要current状态的验收材料可以引用对应train anchor，
 但这里的临时施工状态不会自动成为长期Product Phase authority。
 
-当前没有活动开发列车，也没有exact train anchor。两个保留的planning scope只承担相邻Discovery恢复与治理参考；它们不会把
-已关闭的v0.4.2列车重新激活。下一Product Phase、下一版本列车或新的current-authority链接必须由维护者另行授权后再写入本节。
+当前没有活动开发列车，也没有exact train anchor。当前programme只提供一个入口：
+[Product Phase 5其他文档治理精简摘要](#product-phase-5)。该链接只指向planning中的Phase摘要，不构成列车激活、版本分配或实施授权；
+两个保留的planning scope继续承担相邻Discovery恢复与治理参考。
 
 ## 5. Product Phase 路线
 
@@ -80,8 +81,8 @@ ROADMAP声明的版本系列判断归属；patch/governance列车没有新Produc
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | complete；F3C4、第一轮retirement及当时的v0.4.0 Release closeout均已闭合；功能基线由当前v0.4.2 accepted继承 |
-| 5 | `0.4.2` | documentation governance | Release/retirement、Phase history、acceptance、环境记忆、文档authority与post-C2 residue治理；不改变production/runtime/Host ABI/trusted graph或Release allowlist | complete；长期结论见5.1.4，两个planning scope按维护者决定继续`KEEP` |
+| 4 | `0.4.0-*`～`0.4.2` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理closeout | F0～F3C功能/rollback闭合；v0.4.1兼容修复与v0.4.2 Release/documentation governance不改变Phase归属 | complete；长期Product结论与v0.4.2 closeout见5.1.1～5.1.4 |
+| 5 | `TBD` | 其他文档治理 | 第一轮Discovery盘点剩余authority、目录编排、历史流水账与长期摘要边界，并冻结实际scope、版本身份和退出条件 | planning；不是当前开发列车，未授权实施或Release |
 | 6 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload，比较现有 `SessionStart source=clear\|compact` 与 PreCompact/PostCompact 的时序和恢复能力；现有事件足够时不扩大 managed event set，只有真实 context/时序缺口才新增 Hook | pending |
 | 7 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立 gate；必须分别有 use case、latency/token budget、噪声预算与 Cloud证据 | pending / optional；没有明确收益就逐项或整体 `NO_GO`；不是 Phase 8前置 |
 | 8 | `0.7.0-*` | 唯一的 read-only advisory completion evaluator | bounded、non-recursive、无 plan时安静；只 advisory，不阻断、不写 counter/ledger或其他 mutable gate state | pending；可独立于 Phase 7进入 Discovery |
@@ -94,7 +95,7 @@ Discovery/Release hardening gate。历史standing Phase 9 Release instances保�
 
 <a name="product-phase-4"></a>
 
-### 5.1 Phase 4～5 已采纳路线
+### 5.1 Phase 4 已采纳路线
 
 Phase 4 保持 Phase 4.1 冻结的 hybrid owned-boundary 与两个现有 turn-start events，不改变主架构；内部按
 风险和故障域拆成八个 gate。完整 programme 顺序为
@@ -181,12 +182,11 @@ autonomous armed后若 task bytes变化，必须先 disarm、重新 attestation�
 forward recovery；只回滚 runtime却保留 activation属于禁止路线。F3B/F3C的具体 Cloud轮次、refs、hash与 PASS证据只在
 版本 acceptance和 Phase历史中保存，不在 ROADMAP重建第二份流水账。
 
-<a name="product-phase-5"></a>
 <a name="v0-4-2-release-closeout"></a>
 
-#### 5.1.4 Phase 5 文档治理与 `v0.4.2` Release closeout
+#### 5.1.4 Phase 4 的 `v0.4.2` 文档治理与 Release closeout
 
-Product Phase 5由`v0.4.2`documentation-governance列车完成。它整理Release/retirement、Phase history、acceptance、环境记忆与
+Product Phase 4由`v0.4.2`documentation-governance列车完成最后一轮治理closeout。它整理Release/retirement、Phase history、acceptance、环境记忆与
 文档authority，在不修改production、runtime、Host ABI、trusted graph、managed events或Release allowlist的前提下物化并发布
 `0.4.2`；package identity `0.4.2`、Release contract、exact v0.4.1 predecessor transition与ZIP外bootstrap构成同一候选事务。C2完成后
 `v0.4.2`成为accepted，`v0.4.1`成为immediate fallback，`v0.4.0`进入deeper fallback证据链。
@@ -196,7 +196,7 @@ tag(C0)、immutable publication、Published Release Cloud、GitHub Release Lates
 C2均已闭合。Phase 4.12、Phase 4.13、Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance分别保存历史理由与exact证据；
 本小节只保留长期programme结论，不重建逐gate流水。
 
-Phase 5完成以下文档治理交付：
+`v0.4.2`完成以下Phase 4文档治理交付：
 
 - 根`README.md`补齐可复制的candidate build/check/hash、正式资产命名与bootstrap两字段seal说明，并把`C0`、
   `Source/Candidate`、`Release-excluded`的新人解释放在候选失效警告之前。README是Release ZIP输入，因此旧候选身份曾随README
@@ -221,14 +221,25 @@ Phase 5完成以下文档治理交付：
 - ROADMAP第4节current train工作台→Discovery Round归档→第5节`product-phase-N`长期authority→Release后列车轮转的状态流已经
   冻结；current-authority链接迁移不得改写原Discovery结论或时间语义。默认一条版本列车承载一个Product Phase；multi-Phase列车
   必须由维护者显式授权，归属不能唯一判断时先与维护者确认。
-- post-v0.4.2 residue sweep仍归属Phase 5。Batch A清退不可达的旧候选/P9测试分支、重复P9-B条件和Phase 4.12无入链兼容anchors，
+- post-v0.4.2 residue sweep仍归属Phase 4。Batch A清退不可达的旧候选/P9测试分支、重复P9-B条件和Phase 4.12无入链兼容anchors，
   迁移两条退役文档链接并增加通用Markdown path/explicit-anchor审计；Batch B把Phase 4.14回归从事故措辞收敛为稳定anchors、
   Release/retirement/C0-C2不变量与authority links。两个Batch保留真实acceptance/history、immutable P9-F、predecessor contract与
   publication/fallback oracles；实际修改路径与22-entry Release allowlist交集为0，不改变production、公开资产或角色窗口。
 
-Phase 5关闭后新建的两个planning scope继续`KEEP`，分别保存v0.4.2 Release closeout和post-v0.4.2 residue Discovery的相邻上下文；
+`v0.4.2`关闭后新建的两个planning scope继续`KEEP`，分别保存Release closeout和post-v0.4.2 residue Discovery的相邻上下文；
 它们都不是活动开发列车，也不授权新Product行为。planning的active pointer、完整三件套与生命周期状态继续按仓库治理指南
 校验，是否退役仍只能由维护者另行明确决定。
+
+<a name="product-phase-5"></a>
+
+### 5.2 Phase 5 其他文档治理（planning）
+
+Phase 5只是一份尚未激活的精简programme摘要：目标是继续治理尚未收口的权威文档编排、目录职责、Phase精简摘要与history流水账
+边界，避免current authority复制历史过程。具体对象、版本身份、Discovery rounds、退出条件和是否需要Release都必须在第一轮
+Discovery中重新盘点并由维护者授权；当前统一保持`TBD / planning`，不得从v0.4.2、现存planning或候选Phase 6～9反推实现范围。
+
+ROADMAP只在这里维护Phase 5的精简长期入口；后续真实Discovery记录进入history后仍是决策流水账，不替代本摘要。第4节只链接
+本anchor，不复制Phase内容。现有两个planning scope继续`KEEP`供相邻上下文恢复，但不会因此激活Phase 5或创建development train。
 
 ## 6. 版本号与晋级语义
 

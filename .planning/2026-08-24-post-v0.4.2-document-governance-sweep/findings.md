@@ -161,6 +161,15 @@ Batch B不会改变历史事实，但会显著降低自然语言改写导致的�
 - repository governance补充列车间空窗合同：旧列车关闭且下一列车未授权时，第4节保留通用工作台、角色表写`NONE`、旧exact train anchor退场；planning可由维护者决定`KEEP`，但不等于列车激活。
 - 最终迁移验证：focused governance 24/24 PASS；完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped。Release allowlist交集保持0，旧`v0-4-2-release-closeout`和新`product-phase-5`各只有一个定义，ROADMAP history入口仍为2。
 
+### Maintainer correction after initial rotation
+
+- 上一轮把v0.4.2 documentation-governance列车提升为Product Phase 5属于归属错误。v0.4.2仍是Product Phase 4的后续治理/Release closeout，因此其长期摘要正确位置是`5.1.4`，标题必须明确Phase 4，不能占用`product-phase-5`。
+- Product Phase 5是另一轮“其他文档治理”，目前只处于programme planning；应建立独立`5.2`与`product-phase-5`精简摘要，但不得宣称complete、不得绑定已经发布的0.4.2，也不应在未Discovery前猜定版本列车。候选版本使用`TBD`。
+- history中的Phase records本质是过程流水账与历史理由；ROADMAP第5节才是每个Product Phase的精简长期摘要。第4节current-workbench不复制流水账，只保留通用规则和一个指向相关Phase摘要的链接。
+- 原compaction/tool/advisory/hard-gating继续顺延为Product Phase 6～9并保持原`0.5.0-*`～`0.8.0-*`候选版本系列；这部分不受归属纠正影响。
+- 静态审计确认纠正后没有双重authority：第4节只有一个Phase 5摘要链接；`product-phase-5`和`v0-4-2-release-closeout`各自只有一个定义；旧归属措辞在ROADMAP中为0。历史Phase files未参与本次纠正，继续保留真实过程语义。
+- 最终验证确认本轮完全处于repository-governance zone：6条修改路径与Release allowlist交集为0；完整Windows suite 182 tests / 156 pass / 0 fail / 26 skipped。两个planning scope及active pointer均保持不变。
+
 ## Technical Decisions
 
 | Decision | Rationale |

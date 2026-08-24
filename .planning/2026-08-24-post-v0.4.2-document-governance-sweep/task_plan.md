@@ -6,11 +6,11 @@
 
 ## Next Step
 
-ROADMAP lifecycle轮转已完成并验证；保持当前开发列车`NONE`、两个planning scope继续KEEP。下一Product Phase/版本列车未授权，等待维护者push本地commit或给出新的programme指令。
+Phase归属纠正已经完成并验证：v0.4.2与5.1.4属于Product Phase 4；Product Phase 5保持5.2 planning摘要、TBD版本身份且未激活。第4节只有一个Phase摘要链接，两个planning scope继续KEEP。等待维护者push本地commit或另行授权Phase 5 Discovery/下一版本列车。
 
 ## Current Phase
 
-Phase 6: ROADMAP lifecycle rotation
+Phase 7 complete: Product Phase attribution correction
 
 ## Phases
 
@@ -64,6 +64,14 @@ Phase 6: ROADMAP lifecycle rotation
 - [x] 同步authority链接、tests和活动planning，运行风险相称验证并独立提交。
 - **Status:** complete
 
+### Phase 7: Product Phase attribution correction
+
+- [x] 把v0.4.2/5.1.4重新明确归入Product Phase 4，移除“Phase 5 complete”错误投影。
+- [x] 新建`5.2` Product Phase 5其他文档治理精简摘要，状态保持planning、版本身份保持TBD。
+- [x] 第4节只保留通用工作台与指向Phase 5精简摘要的单一链接；history继续作为流水账。
+- [x] 同步tests/planning并运行风险相称验证；通过后由仓库交互纪律自动创建独立纠正commit。
+- **Status:** complete
+
 ## Key Questions
 
 1. 哪些 current tests 在保护稳定协议，哪些只是在逐字保护某次版本事故或 closeout 快照？
@@ -89,6 +97,7 @@ Phase 6: ROADMAP lifecycle rotation
 - 已授权：Batch B收敛Phase 4.14逐段自然语言断言，并压缩ROADMAP 4.1重复的临时授权事故过程；历史正文和真实acceptance证据保持不变。
 - 已授权：把Batch A/B明确归入v0.4.2，在ROADMAP 4.1追加programme摘要，并同步到Phase 4.14历史；只改治理文档、相应测试与活动planning，不碰22项Release输入。
 - 已授权：新增Product Phase 5文档治理，原Phase 5～8顺延为6～9；把4.1 closed v0.4.2内容迁到5.1.4，但保留第4节current-workbench通用说明；所有planning scope明确KEEP。
+- 维护者纠正：v0.4.2仍属于Product Phase 4，5.1.4编号正是该归属；Product Phase 5是另一轮仍在规划的文档治理，对应5.2摘要。第4节只保留一个Phase摘要链接，history定位为过程流水账。
 - 未授权：自动删除任何 planning、历史 acceptance/history、production/runtime/contract 或 Release 输入。
 - 未授权：push、远端 branch/tag/Release/资产、Latest、Cloud task、部署或下一 Product Phase/版本列车 activation。
 
@@ -115,7 +124,8 @@ Phase 6: ROADMAP lifecycle rotation
 | ROADMAP首个组合迁移补丁因历史Phase 9说明的实际换行与预期不一致而未应用 | 1 | 没有部分修改；拆为顶层角色、路线表、正文迁移和测试四个有界补丁，不重复大上下文。 |
 | Phase 6首次focused测试22/24 PASS：ROADMAP重复planning-lifecycle fragment；package identity与`0.4.2`关系不够直接 | 1 | 删除5.1.4重复authority链接并把正文明确为package identity `0.4.2`；不弱化唯一链接或身份断言。 |
 | Phase 6首次planning结项组合补丁因progress测试表格上下文不精确而未应用 | 1 | 仓库正文与测试结果未受影响；读取精确UTF-8上下文后拆分task/findings与progress补丁。 |
+| Phase 7首次静态汇总命令因PowerShell复合表达式括号解析失败 | 1 | 命令未执行检查或写入；拆成简单Select-String与独立计数，不重复复合表达式。 |
 
 ## Current Status
 
-`PHASE_5_DOCUMENTATION_GOVERNANCE_CLOSED / DEVELOPMENT_TRAIN_NONE / PRODUCT_PHASES_6_TO_9_PENDING / ALL_PLANNING_SCOPES_KEEP`
+`V0_4_2_PRODUCT_PHASE_4_CORRECTED / PRODUCT_PHASE_5_PLANNING / DEVELOPMENT_TRAIN_NONE / ALL_PLANNING_SCOPES_KEEP`
