@@ -57,7 +57,7 @@ Operator guide的结构与状态语义只见上述结构模板。本文件继续
 - Product验收按正式Discovery Round计数；Release验收固定保留Source/Candidate与Published Release两个通道；
   retirement review只做对象治理。三个维度名称相似但不能互相推导。
 - 普通Release不要求standing Phase 9。Source/Candidate前只做非破坏性candidate admission preflight；两个真实retirement
-  checkpoint分别承接Source/Candidate PASS后的第一通道closeout与Latest/postflight后的Release退出治理。它们不创建Cloud
+  checkpoint分别承接Source/Candidate PASS后的第一通道closeout与Latest promotion confirmation后的Release退出治理。它们不创建Cloud
   task或验收轮次。
 
 development identity 收敛为 stable identity时，尚未冻结的single-Discovery文件可以原子重命名并继续同一生命周期；
@@ -179,7 +179,7 @@ Published Release fresh environment
   -> reopen same task: 8.2 E2
   -> 9.2 public ZIP deep check
   -> discard environment
-  -> maintainer Latest promotion + read-only postflight
+  -> maintainer Latest promotion confirmation
   -> role-window closeout retirement checkpoint
   -> final Post-run and Release closeout
 ```
@@ -921,7 +921,7 @@ source-candidate closeout retirement checkpoint；planning删除仍需维护者�
 状态commit不得取代它。
 
 第一阶段状态写回commit保存Source/Candidate channel checkpoint与第一轮真实退役结论并保持guide开放；第二阶段状态写回commit只在
-Published Release、Latest/postflight和role-window closeout retirement checkpoint全部闭合后追加final Post-run并同步
+Published Release、Latest promotion confirmation和role-window closeout retirement checkpoint全部闭合后追加final Post-run并同步
 programme角色。两次状态写回是仓库证据闭合，不是额外Cloud通道；稳定Cloud执行仍只有两个独立环境中的两条通道。
 两笔commit在Git历史中的版本无关角色名分别是`SOURCE_CANDIDATE_CHECKPOINT_HEAD`与
 `PUBLISHED_RELEASE_CLOSEOUT_HEAD`；它们都不是version tag target，也不要求在自身内容中自引用自身hash。

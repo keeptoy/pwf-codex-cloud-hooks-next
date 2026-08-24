@@ -2,15 +2,15 @@
 
 ## Goal
 
-不创建standing Phase 9，按版本无关Release closeout workflow完成`v0.4.2`从candidate admission preflight、C0与双通道Cloud到Latest/postflight、第二退役检查和C2的完整闭环；每个阶段只在真实证据到达后推进。
+不创建standing Phase 9，按版本无关Release closeout workflow完成`v0.4.2`从candidate admission preflight、C0与双通道Cloud到Latest promotion confirmation、第二退役检查和C2的完整闭环；每个阶段只在真实证据到达后推进。
 
 ## Next Step
 
-维护者push本次Published Release checkpoint commit后，把同一个非draft Pre-release晋级Latest并执行只读postflight；回传Release metadata和accepted/fallback identity后，再由本计划执行第二退役检查与C2 final closeout。不得重新上传资产、移动tag或重跑已经PASS的Cloud通道。
+请维护者逐项决定第二轮role-window清退范围；在明确决定前，v0.4.2 planning、v0.4.1 current guide/bootstrap和其他窗口对象继续`KEEP`。取得决定后写回真实RETIRE/MIGRATE/KEEP结论，完成C2 final Post-run与programme accepted/fallback轮转。
 
 ## Current Phase
 
-Phase 7: Latest/postflight handoff / waiting for maintainer
+Phase 7: role-window closeout / waiting for maintainer
 
 ## Phases
 
@@ -126,12 +126,13 @@ Phase 7: Latest/postflight handoff / waiting for maintainer
 - [x] 保留并验证维护者的sealed bootstrap改动，运行风险相称回归并准备本地publication checkpoint commit。
 - **Status:** complete
 
-### Phase 7: Latest/postflight and C2 closeout
+### Phase 7: Latest confirmation and C2 closeout
 
-- [ ] 维护者push publication checkpoint，把同一`v0.4.2` Release从Pre-release晋级Latest并执行只读postflight。
-- [ ] 核对tag/source/ZIP/bootstrap字节未变，以及新accepted与immediate fallback身份可恢复。
+- [x] 维护者push publication checkpoint，并把同一`v0.4.2` Release从Pre-release晋级Latest。
+- [x] 联网核对公开Latest、tag source和双资产identity，评估是否可取消独立只读postflight。
+- [x] 证据支持后更新ROADMAP Release流程与治理断言，把晋级成功确认和异常停止条件内嵌到UI操作，不再单列postflight。
 - [ ] 由维护者逐项决定第二轮role-window清退对象；未明确授权的planning和冻结证据继续`KEEP`。
-- [ ] 写回Latest/postflight、第二退役检查和final Post-run，形成C2并同步programme角色。
+- [ ] 写回Latest promotion confirmation、第二退役检查和final Post-run，形成C2并同步programme角色。
 - **Status:** waiting for maintainer
 
 ## Authorization
@@ -141,13 +142,14 @@ Phase 7: Latest/postflight handoff / waiting for maintainer
 - 已授权：按preflight结论实施角色安全的分阶段acceptance迁移；本轮只移动未冻结v0.4.2 candidate，冻结v0.4.1和template路径保持不变，并同步ROADMAP 4.1、Phase 4.14、治理指南、测试与本地commit。
 - 已授权：维护者确认C0 `d51f291566b5599cb21a9fc5c3f30fd1a1bbc74a`的Source/Candidate全部通过，允许直接回补PASS；同时微调C步骤验收模板，吸收本轮临时授权的有界只读Shell预检并形成C1本地commit。
 - 已授权：维护者确认`v0.4.2`公开资产已经发布且Published Release Cloud整条通道通过，允许直接同步状态并补全版本验收手册；本地已seal bootstrap属于维护者改动，必须原样保留并核对公开资产。
+- 已授权：维护者确认已通过GitHub UI把`v0.4.2`晋级Latest；允许联网核对一次，并在无异常时把取消独立只读postflight的理由写入ROADMAP Release小节以精简后续流程。
 - 未授权：push、远端 branch/tag、Pre-release/Release、资产上传、Cloud task、Latest、部署或填写未发生的 PASS/URL/SHA。
 
 ## Stop Conditions
 
 - 不创建或恢复 Phase 9/P9-A～F；第 9 节只是 ROADMAP 的通用 Release 章节。
 - 正式验收tag只能精确指向已通过Cloud的C0，不得指向C1或后续治理分支HEAD；tag与publication仍由维护者执行。
-- Published Release已经PASS，但Release仍为Pre-release；没有真实Latest promotion与只读postflight前，不写Latest、accepted角色轮转、第二退役检查或C2 final closeout。
+- Latest promotion confirmation已经完成；维护者未逐项决定第二退役范围前，不删除planning或版本窗口对象，也不写accepted角色轮转、第二退役PASS或C2 final closeout。
 - 任一身份或 contract 变化必须保持 allowlist、hash、transition 与 tests 原子闭合。
 
 ## Errors Encountered
@@ -175,7 +177,9 @@ Phase 7: Latest/postflight handoff / waiting for maintainer
 | 组合读取模板anchors时PowerShell `Select-String`双引号转义形成非法正则 | 1 | 改用简单`rg -n`定位行号，再按固定范围读取；没有修改文件或重复失败表达式。 |
 | Published状态failing-first为12 pass / 2 fail | 1 | 两项均为预期缺口：ROADMAP尚未推进Published PASS、Phase 4.14尚无教程回补记录；随后先补正文再复跑。 |
 | 正文后聚焦测试为12 pass / 2 fail，第二次为13 pass / 1 fail | 2 | 失败均来自测试把自然文案限定为固定距离或相反词序；拆为独立事实与稳定anchor断言，未扭曲正文。 |
+| Web工具拒绝直接打开本仓库`api.github.com` Release/tag endpoints，返回safe-open internal error | 1 | 保留官方GitHub Docs作为协议依据；实际公开状态改用只读HTTPS请求，不重复同一失败调用。 |
+| 单次PowerShell审计中Release-by-tag与Git-ref API分别返回504，导致两个派生字段为空 | 1 | 不使用空值；由成功的Latest endpoint核对Release/资产，另用`git ls-remote`核对tag source，避免重试同一路径。 |
 
 ## Current Status
 
-`SOURCE_CANDIDATE_PASS / PUBLIC_ASSETS_VERIFIED / PUBLISHED_RELEASE_PASS / PRE_RELEASE_VERIFIED / STOP_BEFORE_LATEST`
+`SOURCE_CANDIDATE_PASS / PUBLIC_ASSETS_VERIFIED / PUBLISHED_RELEASE_PASS / LATEST_PROMOTION_CONFIRMED / STOP_BEFORE_ROLE_WINDOW_CLOSEOUT`

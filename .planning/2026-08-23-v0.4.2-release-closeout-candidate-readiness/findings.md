@@ -155,3 +155,14 @@
 - 稳定模板已经完整提供4.2、5.2、6、7、8与9.2；版本guide应只编排这些anchors、冻结exact URL/SHA和回传字段，不能复制Bash/提示词形成第二脚本authority。补教程不会改变本次“直接参考模板执行并PASS”的有效性。
 - `BASELINE_PROVENANCE.md`允许在新不可变证据闭合后新增identity行，同时明确角色只读ROADMAP。v0.4.2可以现在登记为immutable Pre-release + dual-channel Cloud PASS，但持久意义必须明确Latest/promotion尚未主张；ROADMAP accepted仍保持v0.4.1。
 - 现有Release/bootstrap测试已允许candidate在publication后从zero hash转为exact ZIP SHA，并断言非zero默认值等于deterministic ZIP；无需修改production测试模型，只需补版本guide/provenance/current-state契约。
+
+## Latest promotion sufficiency calibration
+
+- 维护者认为GitHub UI的Latest promotion只是稳定的单次submit，不需要在正常路径后再设置一项独立只读postflight；授权联网核对当前公开状态，并在无异常时把精简理由写入ROADMAP Release小节。
+- GitHub官方“Managing releases”把`Set as latest release`描述为Release编辑时的可选metadata动作；官方REST Release响应同时公开`tag_name`、`draft`、`prerelease`和每项asset的name/size/digest。因此晋级成功可以由同一UI结果或公开Release状态直接确认，不必把确认再包装成独立workflow stage。
+- 稳定性不能被解释成完全不设fail-closed边界：如果UI报错、页面仍显示Pre-release、Latest指向错误版本，或维护者观察到tag/asset变化，就必须停止C2并调查；正常成功路径则不需要重复下载、重算SHA或重跑Cloud。
+- Web open对本仓库`api.github.com`直链返回safe-open过滤错误；这是浏览工具限制，不是Release失败。实际公开metadata改用只读HTTPS请求核对，并把该工具错误登记到task plan。
+- 公开`releases/latest`实际返回：`tag_name=v0.4.2`、`draft=false`、`prerelease=false`；ZIP仍为87,386 bytes / SHA-256 `d1547ab5…`，bootstrap仍为21,565 bytes / SHA-256 `4c04b475…`。`git ls-remote`同时确认tag仍指向C0 `d51f291…`。
+- 两个附加GitHub API endpoint在同一PowerShell请求中返回504，因此其派生字段为空；这些空值已排除，不参与结论。Latest endpoint和Git ref远端查询已经分别覆盖Release状态、双资产identity与tag source。
+- 当前仓库的postflight措辞分成三类：ROADMAP/current templates/v0.4.2 guide是可更新的current流程；v0.4.1、CHANGELOG旧条目和Phase history是既有时间证据，不应为新流程批量改写；AGENTS是通用远端变更纪律，应保留异常时核验原则，但可让成功UI状态承担普通Latest确认。
+- 合理精简不是删除fail-closed确认，而是取消“成功promotion后必须另开一段独立只读postflight”的stage：维护者在同一UI事务看到Latest成功即完成正常确认；只有结果未知、页面仍是Pre-release、Latest指错版本或观察到tag/asset变化时，才执行有界只读诊断并阻止C2。

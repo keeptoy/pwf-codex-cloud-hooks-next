@@ -338,7 +338,7 @@ Release四步与C0/C1/C2身份顺序只读
 - Source/Candidate前的candidate admission preflight只读盘点inventory、恢复证据、未来可能退役对象和风险，不删除planning、
   恢复材料或回滚线索；它不是retirement review，也不产生删除授权；
 - 两轮retirement review只在对应验收PASS后做对象RETIRE/MIGRATE/KEEP判断：第一轮在Source/Candidate PASS后、C1前，
-  第二轮在Published Release PASS、Latest与postflight后、C2前；纯review不新建guide、不重复黑盒；
+  第二轮在Published Release PASS与Latest promotion confirmation后、C2前；纯review不新建guide、不重复黑盒；
 - 两轮review按ROADMAP时点逐项记录对象决定。第一轮只能直接处理Release-excluded对象；若拟退役动作改变package、contract、
   runtime、bootstrap、ZIP allowlist或其他C0 Release输入，必须形成新C0并重新运行Source/Candidate。第二轮不得改写immutable
   tag、ZIP、bootstrap、URL或SHA；

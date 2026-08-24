@@ -312,6 +312,9 @@ test("DESIGN maps every test module back to the capability and boundary it prote
 test("ROADMAP keeps stable Discovery, migration, and Release governance anchors", () => {
   const roadmap = readText("ROADMAP.md");
   const readme = readText("README.md");
+  const agents = readText("AGENTS.md");
+  const cloudTemplate = readText("docs/cloud-hard-acceptance-template.md");
+  const operatorTemplate = readText("docs/cloud-acceptance-operator-guide-template.md");
   const repositoryGovernance = readText("docs/repository-governance-guide.md");
   const phase41 = readText("docs/history/phase-4.1-managed-v3-discovery.md");
   const phase44 = readText("docs/history/phase-4.4-f2a-smart-activation-discovery.md");
@@ -365,10 +368,18 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
     "retirement reviews must live inside Release governance before compatibility policy");
   const releaseFlow = roadmap.slice(releaseFlowStart, retirementStart);
   assert.match(releaseFlow,
-    /candidate admission preflight[\s\S]*C0：候选源码 commit[\s\S]*Source\/Candidate Cloud PASS[\s\S]*source-candidate closeout retirement checkpoint[\s\S]*C1：第一阶段状态commit[\s\S]*正式验收tag精确指向C0[\s\S]*immutable Pre-release[\s\S]*Published Release Cloud PASS[\s\S]*Latest promotion\/postflight[\s\S]*role-window closeout retirement checkpoint[\s\S]*C2：最终治理commit/);
+    /candidate admission preflight[\s\S]*C0：候选源码 commit[\s\S]*Source\/Candidate Cloud PASS[\s\S]*source-candidate closeout retirement checkpoint[\s\S]*C1：第一阶段状态commit[\s\S]*正式验收tag精确指向C0[\s\S]*immutable Pre-release[\s\S]*Published Release Cloud PASS[\s\S]*Latest promotion confirmation[\s\S]*role-window closeout retirement checkpoint[\s\S]*C2：最终治理commit/);
+  assert.match(releaseFlow, /GitHub UI[\s\S]*成功[\s\S]*不再单列[\s\S]*postflight/);
+  assert.match(releaseFlow, /结果未知[\s\S]*停止角色轮转和C2[\s\S]*只读诊断/);
   const retirementFlow = roadmap.slice(retirementStart, compatibilityStart);
   assert.match(retirementFlow,
-    /candidate admission preflight[\s\S]*C0 \/ Source-Candidate[\s\S]*Source\/Candidate Cloud PASS[\s\S]*source-candidate closeout retirement checkpoint[\s\S]*C1 \/ 第一阶段状态写回[\s\S]*immutable publication[\s\S]*Published Release Cloud PASS[\s\S]*Latest\/postflight[\s\S]*role-window closeout retirement checkpoint[\s\S]*C2 \/ final evidence与programme closeout/);
+    /candidate admission preflight[\s\S]*C0 \/ Source-Candidate[\s\S]*Source\/Candidate Cloud PASS[\s\S]*source-candidate closeout retirement checkpoint[\s\S]*C1 \/ 第一阶段状态写回[\s\S]*immutable publication[\s\S]*Published Release Cloud PASS[\s\S]*Latest promotion confirmation[\s\S]*role-window closeout retirement checkpoint[\s\S]*C2 \/ final evidence与programme closeout/);
+  for (const currentPolicy of [cloudTemplate, operatorTemplate, repositoryGovernance]) {
+    assert.match(currentPolicy, /Latest promotion confirmation/);
+    assert.doesNotMatch(currentPolicy, /完成(?:同一Release的)?Latest promotion与只读postflight|Latest(?: promotion)?\/postflight/);
+  }
+  assert.match(agents, /明确的UI成功状态[\s\S]{0,80}结果确认/);
+  assert.match(agents, /结果未知[\s\S]{0,120}有界只读查询/);
   for (const role of [
     "SOURCE_CANDIDATE_HEAD", "SOURCE_CANDIDATE_CHECKPOINT_HEAD",
     "PUBLISHED_RELEASE_CLOSEOUT_HEAD",

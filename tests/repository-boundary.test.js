@@ -47,7 +47,7 @@ function currentRoleWindow() {
   return { accepted, candidate, developmentTrain, immediateFallback, roadmap };
 }
 
-test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
+test("v0.4.2 Latest promotion preserves the pre-C2 programme rollback window", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const pathSafetyHistory = read("docs/history/phase-4.13-v0.4.1-path-safety-patch-train.md");
   const candidateAcceptance = read("docs/acceptance/v0.4.2-cloud-hard-acceptance.md");
@@ -64,7 +64,7 @@ test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
   assert.match(roadmap, /`v0\.4\.2`[\s\S]*Release candidate/);
   assert.match(roadmap, /package identity[\s\S]*`0\.4\.2`/);
   assert.match(roadmap,
-    /当前 programme 边界[^\n]*Published Release已`PASS`[^\n]*Latest[^\n]*`PENDING`/);
+    /当前 programme 边界[^\n]*Published Release已`PASS`[^\n]*Latest[^\n]*已确认[^\n]*第二轮退役[^\n]*`PENDING`/);
   assert.match(currentTrain, /README\.md[\s\S]*Release ZIP输入[\s\S]*旧候选身份[\s\S]*失效/);
   assert.match(currentTrain, /C0[\s\S]*已通过Source\/Candidate[\s\S]*exact HEAD[\s\S]*版本acceptance/);
   assert.match(currentTrain, /maintenance-environment-profile\.md#maintenance-environment-profile/);
@@ -74,10 +74,11 @@ test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
     /docs\/acceptance\/v0\.4\.2-cloud-hard-acceptance\.md[\s\S]*v0\.4\.1[\s\S]*冻结[\s\S]*C2/);
   assert.match(currentTrain, /templates[\s\S]{0,120}原路径[\s\S]{0,120}KEEP/);
   assert.match(currentTrain, /该C0现已通过Source\/Candidate/);
-  assert.match(roadmap, /`v0\.4\.2` published prerelease candidate/);
+  assert.match(roadmap, /`v0\.4\.2` published Latest closeout/);
   assert.match(currentTrain, /Published Release[\s\S]{0,120}`PASS`/);
-  assert.match(currentTrain, /Latest[\s\S]{0,120}`PENDING`/);
-  assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.1`[^\n]*Latest/);
+  assert.match(currentTrain, /Latest promotion confirmation均已闭合/);
+  assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.1`[^\n]*programme accepted[^\n]*C2/);
+  assert.match(roadmap, /当前 programme 边界[^\n]*`v0\.4\.2`[^\n]*GitHub `Latest`[^\n]*已确认/);
   assert.doesNotMatch(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(pathSafetyHistory, /兼容性安全/);
   assert.match(pathSafetyHistory, /99885b854bd9621c3340e99f031bf83ceb58414d/);
@@ -90,11 +91,14 @@ test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
     "PWF_SC_POST_RESUME=PASS",
     "PWF_PUBLIC_ZIP_BOUNDARY_IMPORTER=PASS",
     "PWF_PUBLIC_POST_RESUME=PASS",
-    "SOURCE_CANDIDATE_PASS / PUBLISHED_RELEASE_PASS / LATEST_NOT_RUN / STOP_BEFORE_LATEST",
+    "SOURCE_CANDIDATE_PASS / PUBLISHED_RELEASE_PASS / LATEST_PROMOTION_CONFIRMED / STOP_BEFORE_ROLE_WINDOW_CLOSEOUT",
     "https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/v0.4.2/pwf-codex-cloud-hooks-v0.4.2.zip",
     "https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/v0.4.2/init-cloud-sandbox-v0.4.2.bash",
     "4c04b4758bce0f3e9eb22afcba05dcb8788958357c24e31014a55edf850dec64",
   ]) assert.match(candidateAcceptance, new RegExp(fact.replaceAll(".", "\\.")));
+  assert.match(candidateAcceptance, /latest_tag=v0\.4\.2/);
+  assert.match(candidateAcceptance, /draft=false[\s\S]*prerelease=false/);
+  assert.match(candidateAcceptance, /不再单列[\s\S]*postflight/);
   assert.match(candidateAcceptance, /C步骤首次安全停止[\s\S]*维护者随后临时授权/);
   assert.match(candidateAcceptance, /只读Shell existence preflight[\s\S]*D～F顺利PASS/);
   assert.match(candidateAcceptance, /source-candidate closeout retirement checkpoint[\s\S]*所有仓库内planning[\s\S]*KEEP/);
@@ -111,6 +115,7 @@ test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
     "d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e",
     "4c04b4758bce0f3e9eb22afcba05dcb8788958357c24e31014a55edf850dec64",
   ]) assert.match(provenance, new RegExp(fact.replaceAll(".", "\\.")));
+  assert.match(provenance, /Latest promotion confirmation已完成[\s\S]*第二轮退役[\s\S]*尚未/);
 });
 
 test("Phase 4.12 preserves the renamed v0.4.0 Release discovery and P9 evidence", () => {
@@ -733,7 +738,9 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.match(provenance, new RegExp(publishedRoleVersion.replaceAll(".", "\\.")));
   }
   if (candidate !== accepted) {
-    const candidateIsPublished = roadmap.includes(`\`${candidate}\` published prerelease candidate`);
+    const candidateIsPublished = new RegExp(
+      `\`${candidate.replaceAll(".", "\\.")}\` published (?:prerelease candidate|Latest closeout)`,
+    ).test(roadmap);
     const candidatePattern = new RegExp(candidate.replaceAll(".", "\\."));
     if (candidateIsPublished) {
       assert.match(provenance, candidatePattern,
