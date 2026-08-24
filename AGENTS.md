@@ -59,8 +59,10 @@
   不得为了自动 commit 覆盖、暂存或改写用户工作。
 - 所有远端写操作由维护者负责。智能体不得执行 push/force-push，不得创建、删除或移动远端 branch/tag，
   不得创建或编辑 PR/Release、切换 Pre-release/Latest、上传或删除资产，也不得修改仓库设置或触发部署。
-- 智能体可以在活动任务授权范围内执行远端只读查询，准备精确命令和待推送的本地 commit。维护者完成普通远端动作后，
-  明确的UI成功状态可以作为结果确认；若结果未知、页面状态矛盾或专项authority要求诊断，智能体再做有界只读查询。
+- 智能体可以在活动任务授权范围内执行远端只读查询，准备精确命令和待推送的本地 commit。对ROADMAP定义的
+  Latest promotion，所谓“UI结果确认”特指维护者在GitHub Release编辑页面保存Pre-release/Latest状态变更后，返回或刷新
+  GitHub Release详情页并看到exact目标状态；它不是Codex Cloud、GitHub Actions、资产上传窗口或任意窗口“未报错”。
+  若结果未知、页面状态矛盾或专项authority要求诊断，智能体再做有界只读查询。
   最终交接必须明确本地 commit、待维护者执行的远端动作和核验结果。
 - 大白话：本地改完、测完就自动存成 commit；联网改 GitHub 的动作统一由维护者点按钮或执行命令。这样减少
   权限确认、网络重试和来回等待，通常也更省 token，但不得因此跳过测试、hash、资产或远端结果确认。Latest promotion的

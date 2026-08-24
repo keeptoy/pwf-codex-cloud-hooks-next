@@ -369,16 +369,21 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   const releaseFlow = roadmap.slice(releaseFlowStart, retirementStart);
   assert.match(releaseFlow,
     /candidate admission preflight[\s\S]*C0：候选源码 commit[\s\S]*Source\/Candidate Cloud PASS[\s\S]*source-candidate closeout retirement checkpoint[\s\S]*C1：第一阶段状态commit[\s\S]*正式验收tag精确指向C0[\s\S]*immutable Pre-release[\s\S]*Published Release Cloud PASS[\s\S]*Latest promotion confirmation[\s\S]*role-window closeout retirement checkpoint[\s\S]*C2：最终治理commit/);
-  assert.match(releaseFlow, /GitHub UI[\s\S]*成功[\s\S]*不再单列[\s\S]*postflight/);
+  assert.match(releaseFlow,
+    /GitHub Release编辑页面[\s\S]*取消Pre-release[\s\S]*设为Latest[\s\S]*Release详情页[\s\S]*exact版本[\s\S]*Latest/);
+  assert.match(releaseFlow, /不是Codex Cloud[\s\S]*GitHub Actions[\s\S]*任意[\s\S]*未报错/);
+  assert.match(releaseFlow, /成功[\s\S]*不再单列[\s\S]*postflight/);
   assert.match(releaseFlow, /结果未知[\s\S]*停止角色轮转和C2[\s\S]*只读诊断/);
   const retirementFlow = roadmap.slice(retirementStart, compatibilityStart);
   assert.match(retirementFlow,
     /candidate admission preflight[\s\S]*C0 \/ Source-Candidate[\s\S]*Source\/Candidate Cloud PASS[\s\S]*source-candidate closeout retirement checkpoint[\s\S]*C1 \/ 第一阶段状态写回[\s\S]*immutable publication[\s\S]*Published Release Cloud PASS[\s\S]*Latest promotion confirmation[\s\S]*role-window closeout retirement checkpoint[\s\S]*C2 \/ final evidence与programme closeout/);
   for (const currentPolicy of [cloudTemplate, operatorTemplate, repositoryGovernance]) {
-    assert.match(currentPolicy, /Latest promotion confirmation/);
+    assert.match(currentPolicy, /GitHub Release Latest promotion confirmation/);
     assert.doesNotMatch(currentPolicy, /完成(?:同一Release的)?Latest promotion与只读postflight|Latest(?: promotion)?\/postflight/);
   }
-  assert.match(agents, /明确的UI成功状态[\s\S]{0,80}结果确认/);
+  assert.match(agents,
+    /GitHub Release编辑页面[\s\S]*Pre-release\/Latest[\s\S]*Release详情页[\s\S]*exact目标状态/);
+  assert.match(agents, /不是[\s\S]{0,160}Codex Cloud[\s\S]{0,160}GitHub Actions[\s\S]{0,160}任意窗口/);
   assert.match(agents, /结果未知[\s\S]{0,120}有界只读查询/);
   for (const role of [
     "SOURCE_CANDIDATE_HEAD", "SOURCE_CANDIDATE_CHECKPOINT_HEAD",

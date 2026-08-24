@@ -131,6 +131,8 @@ Phase 7: role-window closeout / waiting for maintainer
 - [x] 维护者push publication checkpoint，并把同一`v0.4.2` Release从Pre-release晋级Latest。
 - [x] 联网核对公开Latest、tag source和双资产identity，评估是否可取消独立只读postflight。
 - [x] 证据支持后更新ROADMAP Release流程与治理断言，把晋级成功确认和异常停止条件内嵌到UI操作，不再单列postflight。
+- [x] 把“UI成功”统一解释为GitHub Release编辑页的exact状态变更与Release详情页结果，不让新人误解为任意UI、Codex Cloud或GitHub Actions。
+- [x] 同步current authority/templates/guide/AGENTS与治理断言，保持历史证据不变并创建本地commit。
 - [ ] 由维护者逐项决定第二轮role-window清退对象；未明确授权的planning和冻结证据继续`KEEP`。
 - [ ] 写回Latest promotion confirmation、第二退役检查和final Post-run，形成C2并同步programme角色。
 - **Status:** waiting for maintainer
@@ -142,7 +144,8 @@ Phase 7: role-window closeout / waiting for maintainer
 - 已授权：按preflight结论实施角色安全的分阶段acceptance迁移；本轮只移动未冻结v0.4.2 candidate，冻结v0.4.1和template路径保持不变，并同步ROADMAP 4.1、Phase 4.14、治理指南、测试与本地commit。
 - 已授权：维护者确认C0 `d51f291566b5599cb21a9fc5c3f30fd1a1bbc74a`的Source/Candidate全部通过，允许直接回补PASS；同时微调C步骤验收模板，吸收本轮临时授权的有界只读Shell预检并形成C1本地commit。
 - 已授权：维护者确认`v0.4.2`公开资产已经发布且Published Release Cloud整条通道通过，允许直接同步状态并补全版本验收手册；本地已seal bootstrap属于维护者改动，必须原样保留并核对公开资产。
-- 已授权：维护者确认已通过GitHub UI把`v0.4.2`晋级Latest；允许联网核对一次，并在无异常时把取消独立只读postflight的理由写入ROADMAP Release小节以精简后续流程。
+- 已授权：维护者确认已通过GitHub Release编辑页面把`v0.4.2`晋级Latest；允许联网核对一次，并在无异常时把取消独立只读postflight的理由写入ROADMAP Release小节以精简后续流程。
+- 已授权：评估“UI成功”对新人缺少上下文的问题；有必要时全仓同步为明确的GitHub Release状态变更界面语义。
 - 未授权：push、远端 branch/tag、Pre-release/Release、资产上传、Cloud task、Latest、部署或填写未发生的 PASS/URL/SHA。
 
 ## Stop Conditions

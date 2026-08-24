@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.2` published Latest closeout；双通道Cloud与Latest promotion confirmation已完成，等待第二轮退役/C2，production/runtime行为不变 |
+| 当前开发列车 | `v0.4.2` published Latest closeout；双通道Cloud与GitHub Release Latest promotion confirmation已完成，等待第二轮退役/C2，production/runtime行为不变 |
 | 当前已接受版本 | `v0.4.1`；programme accepted，等待v0.4.2 C2原子轮转 |
 | 当前直接回退版本 | immutable `v0.4.0` immediate fallback |
 | 回退证据链 | immutable `v0.3.5` deeper fallback；`v0.3.4`与更早发布里程碑见 provenance museum |
@@ -72,7 +72,7 @@ trusted graph、managed events或Release allowlist的前提下物化`0.4.2`候�
 predecessor transition与ZIP外zero-hash bootstrap构成同一候选事务；当前accepted仍为`v0.4.1`，`v0.4.0`仍是immediate fallback。
 
 本列车不创建standing Phase 9。Release candidate已获批；非破坏性candidate admission preflight、Source/Candidate、第一轮
-source-candidate closeout、tag(C0)、immutable publication、Published Release Cloud与Latest promotion confirmation均已闭合。
+source-candidate closeout、tag(C0)、immutable publication、Published Release Cloud与GitHub Release Latest promotion confirmation均已闭合。
 下一步只允许执行第二轮role-window closeout和C2；下一Product Phase尚未授权。已关闭的`v0.4.0`Release discovery、
 `v0.4.1`path-safety列车与本轮Release治理分别由Phase 4.12、Phase 4.13、
 Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节只维护当前边界。
@@ -89,13 +89,14 @@ Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节�
   提升规则。具体机器事实不在ROADMAP复制；该档案及本轮状态同步均为Release-excluded。
 - 文档拓扑preflight把全局入口、专项authority和Release输入拆开盘点；未冻结的candidate guide现位于
   [`docs/acceptance/v0.4.2-cloud-hard-acceptance.md`](docs/acceptance/v0.4.2-cloud-hard-acceptance.md)。`v0.4.1`已冻结
-  acceptance继续由accepted角色拥有旧根路径，退出点是v0.4.2完成Latest promotion confirmation后的C2 role-window closeout；现有templates
+  acceptance继续由accepted角色拥有旧根路径，退出点是v0.4.2完成GitHub Release Latest promotion confirmation后的C2 role-window closeout；现有templates
   因冻结guide仍含字面执行路径而原路径`KEEP`。本次迁移保持README与22-entry ZIP输入不变。
 - Source/Candidate真实Cloud暴露C步骤的工具能力缺口：旧协议同时要求先做只读existence检查又禁止Shell，但实际会话没有独立只读
   文件工具。维护者临时授权只读Shell后整条通道PASS；稳定template现允许无独立文件工具时的exact-path只读preflight，正文写入仍
   只能使用apply_patch。该C1修正属于Release-excluded，不改变已验收C0或正式tag目标。
 - 维护者随后让tag精确指向C0，发布sealed bootstrap与22-entry ZIP；Published Release Fresh/Resume/9.2使用公开默认下载链全部
-  `PASS`。GitHub UI已把同一Release晋级Latest，公开状态显示`v0.4.2`、`draft=false`、`prerelease=false`，tag与双资产identity
+  `PASS`。维护者已在GitHub Release编辑页面把同一Release晋级Latest，Release详情页显示`v0.4.2`、`draft=false`、
+  `prerelease=false`，tag与双资产identity
   保持不变；第二退役检查与C2仍`PENDING`，因此programme accepted/fallback角色尚未在仓库中轮转。
 - 把Phase history拆分为回补型`RETROSPECTIVE_CAPSULE`与正式Round关闭后冻结的`FROZEN_DISCOVERY_RECORD`，同步history索引、
   写作模板和repository contracts；一个Product Phase可以有多份真实Discovery records，但同一闭合对象最多一份回补型capsule。
@@ -368,7 +369,7 @@ Release operator guide管理；single-Discovery版本可以继续使用`vX.Y.Z-c
 | 1. 候选验证 | 先在源码和本地候选 ZIP 上测；除本地回归外，还要在 Cloud 的选定 branch/commit checkout 跑通 Source/Candidate | “这份代码可以发布”，但还没有真实公开包 | 活动task plan；完成后写同一Release operator guide的Source/Candidate channel checkpoint |
 | 2. 发布 Pre-release | 创建新的 immutable tag 和对应 Pre-release，上传最终 ZIP 与 ZIP 外 bootstrap | “真实公开包已经存在”，tag/URL/size/SHA 已冻结 | provenance + publication audit；不得删 tag 或重传同名资产来修补 |
 | 3. 公开包验收 | 用另一套 Fresh Cloud 从公开 bootstrap 默认下载链安装，再重新下载公开 ZIP 做 Resume/doctor/deep check | “用户实际下载到的公开包也能工作” | 同一Release operator guide的Published Release证据；声明范围闭合后写final Post-run |
-| 4. 晋级 Latest | 前三步全绿后，由维护者在GitHub UI把同一个Release取消Pre-release并设为Latest；UI保存成功且页面显示exact版本为Latest，就是正常路径的Latest promotion confirmation | “现在正式推荐这个版本”，并允许进入accepted/fallback角色轮转 | ROADMAP；tag、Release和资产都原地保留，不删除重建；正常成功不再单列独立postflight |
+| 4. 晋级 Latest | 前三步全绿后，维护者在GitHub Release编辑页面把同一个Release取消Pre-release并设为Latest；保存后返回或刷新GitHub Release详情页，确认exact版本显示为Latest且不再是Pre-release，就是正常路径的GitHub Release Latest promotion confirmation | “现在正式推荐这个版本”，并允许进入accepted/fallback角色轮转 | ROADMAP；tag、Release和资产都原地保留，不删除重建；正常成功不再单列独立postflight |
 
 对应的Git身份与证据写回按C0→C1→C2前进；分支HEAD可以前进，但正式tag目标始终保持C0。C0前只做非破坏性
 candidate admission preflight；两轮真实退役分别在对应验收PASS后执行：
@@ -389,17 +390,17 @@ C1：第一阶段状态commit（SOURCE_CANDIDATE_CHECKPOINT_HEAD）
   → 正式验收tag精确指向C0
   → 维护者创建immutable Pre-release并上传已验收ZIP/bootstrap
   → 独立Published Release Cloud PASS
-  → 维护者完成Latest promotion confirmation
+  → 维护者完成GitHub Release Latest promotion confirmation
   → role-window closeout retirement checkpoint
 
 C2：最终治理commit（PUBLISHED_RELEASE_CLOSEOUT_HEAD）
-  → 回补Published Release、Latest promotion confirmation与第二轮退役检查证据
+  → 回补Published Release、GitHub Release Latest promotion confirmation与第二轮退役检查证据
   → 追加final Post-run并同步programme角色
 ```
 
 正式tag必须精确指向Source/Candidate实际Cloud PASS的commit，即`SOURCE_CANDIDATE_HEAD`；
 `SOURCE_CANDIDATE_CHECKPOINT_HEAD`在publication前记录第一通道与第一轮真实退役证据并推进治理分支；维护者随后把tag显式固定到C0，不能让
-分支新HEAD取代tag目标。`PUBLISHED_RELEASE_CLOSEOUT_HEAD`只在公开包、Latest promotion confirmation和退出检查点全部闭合后形成。
+分支新HEAD取代tag目标。`PUBLISHED_RELEASE_CLOSEOUT_HEAD`只在公开包、GitHub Release Latest promotion confirmation和退出检查点全部闭合后形成。
 C1/C2都不能取代C0，也不是额外Cloud通道。
 
 第1、3步是两次独立Cloud验收执行；第2、4步是维护者控制面状态变更与核验，不是另外两轮黑盒。三个治理维度如下：
@@ -412,10 +413,13 @@ C1/C2都不能取代C0，也不是额外Cloud通道。
 
 对应关系也保持简单：provenance回答“发布了什么字节”，Release operator guide回答“候选与公开包是否验收”，ROADMAP
 回答“现在推荐谁”。Latest promotion只改Release metadata与lifecycle指针，不重新上传包。Published Release已经冻结并验收
-exact tag/source/ZIP/bootstrap；因此GitHub UI保存成功且Release页面显示exact版本为Latest时，就完成正常路径的promotion
-confirmation，不再重复下载资产、重算SHA或另设只读postflight。这样避免用第二套检查重复证明第3步已经证明的immutable identity。
+exact tag/source/ZIP/bootstrap；因此维护者在GitHub Release编辑页面保存“取消Pre-release并设为Latest”后，返回或刷新
+GitHub Release详情页并看到exact版本显示为Latest且不再是Pre-release时，就完成正常路径的GitHub Release Latest promotion
+confirmation，不再重复下载资产、重算SHA或另设只读postflight。这里的成功不是Codex Cloud、GitHub Actions、资产上传页或
+任意窗口“未报错”，而是GitHub Release详情页呈现了目标metadata。这样避免用第二套检查重复证明第3步已经证明的immutable identity。
 
-该精简不取消fail-closed：如果UI提交结果未知、页面仍显示Pre-release、Latest指向错误版本，或维护者观察到tag/资产被改写，
+该精简不取消fail-closed：如果GitHub Release编辑页面的保存结果未知、Release详情页仍显示Pre-release、Latest指向错误版本，
+或维护者观察到tag/资产被改写，
 必须停止角色轮转和C2，改做有界只读诊断；不得盲目重复promotion、移动tag或重传资产。只有成功状态明确时，才按retirement DoD
 治理退出candidate+accepted窗口的本地版本文件与旧oracle。
 
@@ -441,7 +445,7 @@ Phase 4 / F3C4完成
   → C1 / 第一阶段状态写回
   → tag精确指向C0并完成immutable publication
   → Published Release Cloud PASS
-  → Latest promotion confirmation
+  → GitHub Release Latest promotion confirmation
   → role-window closeout retirement checkpoint（第二轮版本窗口退役审查）
   → C2 / final evidence与programme closeout
   → 后继版本列车与Product Phase另行决策
@@ -461,7 +465,7 @@ scope继续`KEEP`。大白话：检查点负责把“哪些可以退、为什么
 | Review | 触发点 | 主要对象 | 退出要求 |
 |---|---|---|---|
 | 第一轮：source-candidate closeout | Source/Candidate Cloud实际PASS之后、C1写回之前 | 施工 planning、临时 fixture/脚本、重复摘要、过渡 seam、validation refs与当期 lifecycle账 | 只对Release-excluded对象提出RETIRE/MIGRATE/KEEP；planning删除由维护者明确决定；C1保存已经实际形成的结论 |
-| 第二轮：role-window closeout | 同一列车的public assets验收与Latest promotion confirmation之后 | candidate/accepted窗口专用 refs、oracles、compatibility transition、canary和版本化运维材料 | 新 accepted与 immediate fallback可恢复；退出角色窗口的对象按 retirement DoD清退或迁移；稳定 contracts/tests/history不得机械删除 |
+| 第二轮：role-window closeout | 同一列车的public assets验收与GitHub Release Latest promotion confirmation之后 | candidate/accepted窗口专用 refs、oracles、compatibility transition、canary和版本化运维材料 | 新 accepted与 immediate fallback可恢复；退出角色窗口的对象按 retirement DoD清退或迁移；稳定 contracts/tests/history不得机械删除 |
 
 Product Phase收官已经是正式生命周期边界，但只形成候选功能基线，不会自动产生immutable public assets或轮转accepted角色。
 其closeout结论可以输入candidate admission preflight，但第一轮真实review必须等待Source/Candidate PASS。若PASS后的拟退役动作会改变

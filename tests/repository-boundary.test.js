@@ -98,6 +98,8 @@ test("v0.4.2 Latest promotion preserves the pre-C2 programme rollback window", (
   ]) assert.match(candidateAcceptance, new RegExp(fact.replaceAll(".", "\\.")));
   assert.match(candidateAcceptance, /latest_tag=v0\.4\.2/);
   assert.match(candidateAcceptance, /draft=false[\s\S]*prerelease=false/);
+  assert.match(candidateAcceptance,
+    /GitHub Release编辑页面[\s\S]*取消Pre-release[\s\S]*设为Latest[\s\S]*Release详情页/);
   assert.match(candidateAcceptance, /不再单列[\s\S]*postflight/);
   assert.match(candidateAcceptance, /C步骤首次安全停止[\s\S]*维护者随后临时授权/);
   assert.match(candidateAcceptance, /只读Shell existence preflight[\s\S]*D～F顺利PASS/);

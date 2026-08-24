@@ -126,16 +126,21 @@
 - 本地Release复验PASS：重建ZIP为22 entries、87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`；sealed bootstrap为21,565 bytes、SHA-256 `4c04b4758bce0f3e9eb22afcba05dcb8788958357c24e31014a55edf850dec64`，与公开资产一致。
 - 完整Windows suite PASS：181 tests / 155 pass / 0 fail / 26 skipped；skip仍全部是既有Linux/POSIX-only cases。`git diff --check`通过。
 - Phase 6完成。当前停在维护者push publication checkpoint、把同一Release晋级Latest并做只读postflight之前；无需重跑已经PASS的双通道Cloud。
-- 维护者确认已通过GitHub UI把v0.4.2晋级Latest，并授权评估取消独立只读postflight；Phase 7转为Latest promotion sufficiency calibration。
+- 维护者确认已通过GitHub Release编辑页面把v0.4.2晋级Latest，并授权评估取消独立只读postflight；Phase 7转为Latest promotion sufficiency calibration。
 - GitHub官方资料确认Latest是Release metadata动作，公开Release API会呈现tag/draft/prerelease和asset identity；正常路径可以把成功确认内嵌到promotion，不需要重复形成独立验收stage。
 - 公开联网核对PASS：Latest=`v0.4.2`、draft=false、prerelease=false；tag source仍为C0 `d51f291…`；ZIP/bootstrap size与digest均与Published Release证据一致。
 - 两个附加API endpoint返回504，未把空派生字段当证据；改用Latest endpoint覆盖Release+asset、`git ls-remote`覆盖tag source，结论闭合。
 - 全仓postflight扫描完成：本轮只更新current Release authority、直接模板、v0.4.2 guide和契约测试；冻结v0.4.1、CHANGELOG历史条目与Phase history保留原时间语义。
 - failing-first治理回归为23 tests / 21 pass / 2 fail；两项失败精确命中ROADMAP仍要求独立postflight、v0.4.2 current状态仍停在Latest PENDING，其他authority与历史边界保持绿色。
-- ROADMAP现把Latest正常路径冻结为promotion confirmation：GitHub UI保存成功且页面显示exact Latest即完成；Published Release已证明的tag/source/资产identity不再由独立postflight重复验证，异常/未知状态才触发有界只读诊断并阻止C2。
+- ROADMAP现把Latest正常路径冻结为promotion confirmation：GitHub Release编辑页面保存后，Release详情页显示exact Latest即完成；Published Release已证明的tag/source/资产identity不再由独立postflight重复验证，异常/未知状态才触发有界只读诊断并阻止C2。
 - Cloud hard template、Operator Guide template、repository governance、AGENTS、v0.4.2 guide与provenance已同步同一语义；冻结v0.4.1、旧CHANGELOG和Phase history未改写。
 - programme状态推进到GitHub v0.4.2 Latest已确认、第二退役/C2 PENDING；v0.4.1暂时继续作为programme accepted，避免在C2前提前轮转仓库角色。
 - 正文后的三项聚焦失败均为旧fixture假设或自然语序限制；按直接事实收窄后，architecture/repository治理回归PASS：23/23。`git diff --check`通过。
 - 完整Windows suite PASS：181 tests / 155 pass / 0 fail / 26 skipped；skip仍全部为既有Linux/POSIX-only cases。
 - Release allowlist交叉检查为`PWF_LATEST_GOVERNANCE_RELEASE_INPUT_DELTA=NONE`；本轮只改变Release-excluded programme、模板、guide、planning与tests，不改变已发布字节。
 - Latest sufficiency calibration完成，活动计划停止在第二轮role-window对象决定前；planning和版本窗口文件不会因取消postflight而自动清退。
+- 维护者指出“UI成功”缺少GitHub Release上下文；全仓扫描确认AGENTS、ROADMAP、Operator Guide template与v0.4.2 guide均可能让新人误解，Phase 7.1开启术语校准，历史文件继续冻结。
+- failing-first聚焦回归为23 tests / 21 pass / 2 fail，两项失败精确证明ROADMAP和v0.4.2 guide缺少GitHub Release编辑页/详情页语义；实施后架构合同单进程9/9 PASS。本机沙箱内Node worker与测试内Git子进程触发`spawn EPERM`，按platform limitation分类并在沙箱外运行完整suite。
+- current authority、templates、v0.4.2 guide、provenance与AGENTS已统一为`GitHub Release Latest promotion confirmation`，并明确不是Codex Cloud、GitHub Actions、资产上传页或任意窗口“未报错”；冻结历史未改写。
+- 完整Windows suite PASS：181 tests / 155 pass / 0 fail / 26 skipped；`git diff --check`通过，Release allowlist交叉检查为`PWF_UI_TERMINOLOGY_RELEASE_INPUT_DELTA=NONE`。
+- Phase 7.1术语校准完成；活动计划恢复等待维护者逐项决定第二轮role-window对象，未删除planning或其他窗口材料。

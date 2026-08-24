@@ -158,11 +158,13 @@
 
 ## Latest promotion sufficiency calibration
 
-- 维护者认为GitHub UI的Latest promotion只是稳定的单次submit，不需要在正常路径后再设置一项独立只读postflight；授权联网核对当前公开状态，并在无异常时把精简理由写入ROADMAP Release小节。
+- 维护者认为GitHub Release编辑页面的Latest promotion只是稳定的单次submit，不需要在正常路径后再设置一项独立只读postflight；授权联网核对当前公开状态，并在无异常时把精简理由写入ROADMAP Release小节。
 - GitHub官方“Managing releases”把`Set as latest release`描述为Release编辑时的可选metadata动作；官方REST Release响应同时公开`tag_name`、`draft`、`prerelease`和每项asset的name/size/digest。因此晋级成功可以由同一UI结果或公开Release状态直接确认，不必把确认再包装成独立workflow stage。
 - 稳定性不能被解释成完全不设fail-closed边界：如果UI报错、页面仍显示Pre-release、Latest指向错误版本，或维护者观察到tag/asset变化，就必须停止C2并调查；正常成功路径则不需要重复下载、重算SHA或重跑Cloud。
 - Web open对本仓库`api.github.com`直链返回safe-open过滤错误；这是浏览工具限制，不是Release失败。实际公开metadata改用只读HTTPS请求核对，并把该工具错误登记到task plan。
 - 公开`releases/latest`实际返回：`tag_name=v0.4.2`、`draft=false`、`prerelease=false`；ZIP仍为87,386 bytes / SHA-256 `d1547ab5…`，bootstrap仍为21,565 bytes / SHA-256 `4c04b475…`。`git ls-remote`同时确认tag仍指向C0 `d51f291…`。
 - 两个附加GitHub API endpoint在同一PowerShell请求中返回504，因此其派生字段为空；这些空值已排除，不参与结论。Latest endpoint和Git ref远端查询已经分别覆盖Release状态、双资产identity与tag source。
 - 当前仓库的postflight措辞分成三类：ROADMAP/current templates/v0.4.2 guide是可更新的current流程；v0.4.1、CHANGELOG旧条目和Phase history是既有时间证据，不应为新流程批量改写；AGENTS是通用远端变更纪律，应保留异常时核验原则，但可让成功UI状态承担普通Latest确认。
-- 合理精简不是删除fail-closed确认，而是取消“成功promotion后必须另开一段独立只读postflight”的stage：维护者在同一UI事务看到Latest成功即完成正常确认；只有结果未知、页面仍是Pre-release、Latest指错版本或观察到tag/asset变化时，才执行有界只读诊断并阻止C2。
+- 合理精简不是删除fail-closed确认，而是取消“成功promotion后必须另开一段独立只读postflight”的stage：维护者在GitHub Release编辑页面保存后，于Release详情页看到Latest成功即完成正常确认；只有结果未知、页面仍是Pre-release、Latest指错版本或观察到tag/asset变化时，才执行有界只读诊断并阻止C2。
+- 后续新人审阅发现“UI成功”仍缺少主语、产品和结果页面：离开本轮对话后，可能被误解为Codex Cloud task UI、GitHub Actions、上传资产窗口或任何没有弹错的按钮。current authority必须把它收窄为“GitHub Release编辑页面保存状态变更，并在返回/刷新后的Release详情页看到exact目标版本状态”；这不是历史事实变更，只是稳定术语补全。
+- 最终采用稳定术语`GitHub Release Latest promotion confirmation`：动作发生在GitHub Release编辑页面，结果由返回或刷新后的Release详情页呈现exact版本为Latest且不再是Pre-release来确认。current authority、直接模板、v0.4.2 guide、provenance与AGENTS同步；冻结history、旧acceptance和CHANGELOG不追改。
