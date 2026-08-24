@@ -143,3 +143,15 @@
 - 当前模板第6节把“只读文件工具检查”与“不得运行Shell”同时写死；repository-boundary测试也只保护旧能力组合。修正应同时改变正文和契约测试，明确Shell只可执行列出的存在性/类型只读检查，不能读取文件内容、创建目录或文件、重定向输出，任何目标已存在都立即停止。
 - v0.4.2 guide目前只有Pre-run与candidate admission preflight，没有channel checkpoint。C1需要在同一文件追加Source/Candidate exact evidence、C步骤诊断时间线和第一退役检查结果，并把顶部/current status从PENDING更新为“第一通道PASS、publication仍PENDING”。ROADMAP 4.1只保存programme摘要，不复制整段9.1输出。
 - 最终状态扫描发现ROADMAP顶部programme表仍保留Source/Candidate `PENDING`，与已更新的4.1冲突；这是current authority残留，必须随C1改为第一通道`PASS`、Published Release `PENDING`。版本guide 5.1中的`NOT_RUN`属于带日期Pre-run快照，保留才能维持状态演进时间语义。
+
+## Published Release PASS and guide completion
+
+- 维护者明确确认Published Release整条Cloud通道PASS；9.2脚本使用公开ZIP URL与exact SHA运行至exit 0，输出`PWF_PUBLIC_ZIP_BOUNDARY_IMPORTER=PASS`、`PWF_PUBLIC_POST_RESUME=PASS`、healthy doctor、authoritative inventory、adapter-only policy和零snapshot residue。
+- 公开GitHub Release只读核对：tag `v0.4.2`存在且直接指向C0 `d51f291566b5599cb21a9fc5c3f30fd1a1bbc74a`；Release为`draft=false`、`prerelease=true`，尚不是Latest。ZIP为87,386 bytes、digest `d1547ab5…`；bootstrap为21,565 bytes、digest `4c04b475…`。
+- 本地`init-cloud-sandbox-v0.4.2.bash`只有维护者将64位zero hash seal为exact ZIP SHA这一处未提交改动；本地大小与SHA精确等于公开bootstrap资产，必须保留并纳入publication状态提交，不能还原或重建。
+- v0.4.2 guide的3.3只有一句“按模板4.2、5.2、C～E、9.2执行”，没有像Source/Candidate 3.2那样给出第二通道的版本化顺序表、exact URL/identity和必须回传字段。模板仍是唯一脚本authority，所以本次Cloud结果有效；缺口属于operator guide可操作性，应在状态回补时补齐。
+- Cloud环境中的commit `0dc2e3b`只记录disposable canonical acceptance planning结果，不是本仓库C2、tag目标或publication source；不得把它写成programme commit。
+- Latest promotion、只读postflight和第二轮role-window closeout没有维护者证据，因此本轮只能推进到`PUBLISHED_RELEASE_PASS / STOP_BEFORE_LATEST`，不能把v0.4.2提升为accepted或旋转v0.4.1/v0.4.0角色。
+- 稳定模板已经完整提供4.2、5.2、6、7、8与9.2；版本guide应只编排这些anchors、冻结exact URL/SHA和回传字段，不能复制Bash/提示词形成第二脚本authority。补教程不会改变本次“直接参考模板执行并PASS”的有效性。
+- `BASELINE_PROVENANCE.md`允许在新不可变证据闭合后新增identity行，同时明确角色只读ROADMAP。v0.4.2可以现在登记为immutable Pre-release + dual-channel Cloud PASS，但持久意义必须明确Latest/promotion尚未主张；ROADMAP accepted仍保持v0.4.1。
+- 现有Release/bootstrap测试已允许candidate在publication后从zero hash转为exact ZIP SHA，并断言非zero默认值等于deterministic ZIP；无需修改production测试模型，只需补版本guide/provenance/current-state契约。

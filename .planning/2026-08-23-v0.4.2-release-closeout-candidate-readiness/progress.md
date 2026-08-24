@@ -115,3 +115,14 @@
 - 完整Windows suite PASS：181 tests / 155 pass / 0 fail / 26 skipped；skip仍全部为既有Linux/POSIX-only case。Release allowlist交集为`NONE`，candidate build/check仍为22 entries、87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`。
 - 最终current-state扫描发现并修正ROADMAP顶部programme表的旧Source/Candidate `PENDING`；guide 5.1的Pre-run `NOT_RUN`作为历史快照保留。
 - ROADMAP顶层状态修正后的聚焦治理回归再次PASS：14 tests / 14 pass / 0 fail。Phase 5完成，活动计划停止在维护者push C1、tag(C0)与immutable publication之前。
+- 维护者回传Published Release整条Cloud通道PASS与9.2 exit 0；本地恢复时发现唯一工作树改动是维护者把v0.4.2 bootstrap从zero hash seal为exact ZIP SHA，已原样保护。
+- 公开GitHub只读审计确认Release为非draft Pre-release，tag直接指向C0；公开ZIP为87,386 bytes / `d1547ab5…`，公开bootstrap为21,565 bytes / `4c04b475…`，后者与本地sealed文件完全一致。
+- v0.4.2 guide确实缺少独立Published Release操作表，仅有对稳定模板的压缩引用；本轮进入Phase 6，补齐教程、真实证据与programme/provenance状态，但停止在Latest/postflight前。
+- 一次PowerShell本地tag peel因`^{}`解析丢失右花括号而失败；本地也没有可用v0.4.2 tag ref，已改用GitHub API与`git ls-remote`取得公开事实。一次模板anchor组合`Select-String`因引号转义形成非法正则，已改用`rg`定位固定范围。
+- 已核对稳定Published协议与测试：版本guide只需编排4.2→5.2→6→7→8→9.2并绑定exact资产，不复制脚本；provenance可以登记Pre-release identity而不轮转accepted，sealed bootstrap已受现有hash契约支持。
+- failing-first治理回归为14 tests / 12 pass / 2 fail，分别命中ROADMAP Published状态与Phase 4.14教程回补缺口；正文完成后的两轮剩余失败均是测试的固定距离/词序假设，拆成直接事实断言后聚焦回归PASS：14/14。
+- v0.4.2 guide现已补齐Published Release版本化操作表、六个稳定模板anchor、公开双资产identity、9.2原始摘要和“先从模板执行、后补操作表”的时间语义；没有复制稳定Bash或黑盒提示词。
+- provenance已登记immutable Pre-release身份；ROADMAP只推进到Published Release PASS并继续保留v0.4.1 accepted、v0.4.0 immediate fallback。Latest/postflight、第二轮role-window closeout和C2均未提前填写。
+- 本地Release复验PASS：重建ZIP为22 entries、87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`；sealed bootstrap为21,565 bytes、SHA-256 `4c04b4758bce0f3e9eb22afcba05dcb8788958357c24e31014a55edf850dec64`，与公开资产一致。
+- 完整Windows suite PASS：181 tests / 155 pass / 0 fail / 26 skipped；skip仍全部是既有Linux/POSIX-only cases。`git diff --check`通过。
+- Phase 6完成。当前停在维护者push publication checkpoint、把同一Release晋级Latest并做只读postflight之前；无需重跑已经PASS的双通道Cloud。

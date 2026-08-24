@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.2` Release closeout candidate；文档治理delta已冻结，production/runtime行为不变 |
+| 当前开发列车 | `v0.4.2` published prerelease candidate；双通道Cloud已PASS，等待Latest/postflight与第二轮退役，production/runtime行为不变 |
 | 当前已接受版本 | `v0.4.1`；stable GitHub `Latest`与programme accepted |
 | 当前直接回退版本 | immutable `v0.4.0` immediate fallback |
 | 回退证据链 | immutable `v0.3.5` deeper fallback；`v0.3.4`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4与`v0.4.1`发布列车均已关闭；`v0.4.2` package/Release candidate的Source/Candidate已`PASS`，第一轮真实退役检查已完成且没有删除仓库对象。下一步是C1 push、tag精确指向C0与immutable Pre-release；Published Release仍为`PENDING`，Latest、下一Product Phase与其他外部状态变更未授权 |
+| 当前 programme 边界 | Product Phase 4与`v0.4.1`发布列车均已关闭；`v0.4.2` Source/Candidate、immutable Pre-release与Published Release已`PASS`。当前Release仍为Pre-release；Latest/postflight与第二轮退役为`PENDING`，完成前v0.4.1继续是accepted，下一Product Phase与其他外部状态变更未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -71,10 +71,10 @@ provenance和对应版本acceptance，不在本节重建逐P9流水。
 trusted graph、managed events或Release allowlist的前提下物化`0.4.2`候选身份。package identity `0.4.2`、Release contract、exact v0.4.1
 predecessor transition与ZIP外zero-hash bootstrap构成同一候选事务；当前accepted仍为`v0.4.1`，`v0.4.0`仍是immediate fallback。
 
-本列车不创建standing Phase 9。Release candidate已获批；非破坏性candidate admission preflight和Source/Candidate Cloud已经
-`PASS`，第一轮source-candidate closeout retirement checkpoint也已完成且没有删除仓库对象。本次状态写回commit构成C1，下一步是
-维护者push C1、让正式tag精确指向已验收C0，再创建immutable Pre-release并上传资产。Published Release仍为`PENDING`，Latest与
-下一Product Phase也未授权。已关闭的`v0.4.0`Release discovery、`v0.4.1`path-safety列车与本轮Release治理分别由Phase 4.12、Phase 4.13、
+本列车不创建standing Phase 9。Release candidate已获批；非破坏性candidate admission preflight、Source/Candidate、第一轮
+source-candidate closeout、tag(C0)、immutable Pre-release与Published Release Cloud均已闭合。公开双资产与provenance已核对；
+下一步只允许维护者把同一Release晋级Latest并做只读postflight，然后执行第二轮role-window closeout和C2。Latest与下一Product
+Phase尚未授权。已关闭的`v0.4.0`Release discovery、`v0.4.1`path-safety列车与本轮Release治理分别由Phase 4.12、Phase 4.13、
 Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节只维护当前边界。
 
 当前列车已经完成以下文档治理交付；这些完成项已进入本候选，但不冒充尚未运行的Cloud或publication证据：
@@ -94,6 +94,9 @@ Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节�
 - Source/Candidate真实Cloud暴露C步骤的工具能力缺口：旧协议同时要求先做只读existence检查又禁止Shell，但实际会话没有独立只读
   文件工具。维护者临时授权只读Shell后整条通道PASS；稳定template现允许无独立文件工具时的exact-path只读preflight，正文写入仍
   只能使用apply_patch。该C1修正属于Release-excluded，不改变已验收C0或正式tag目标。
+- 维护者随后让tag精确指向C0，发布sealed bootstrap与22-entry ZIP；Published Release Fresh/Resume/9.2使用公开默认下载链全部
+  `PASS`。版本guide已补齐此前缺失的第二通道操作表，并保留“本次实际直接从稳定模板执行”的时间语义。Release当前仍为
+  Pre-release，Latest/postflight与第二退役检查继续`PENDING`，因此accepted/fallback角色尚未轮转。
 - 把Phase history拆分为回补型`RETROSPECTIVE_CAPSULE`与正式Round关闭后冻结的`FROZEN_DISCOVERY_RECORD`，同步history索引、
   写作模板和repository contracts；一个Product Phase可以有多份真实Discovery records，但同一闭合对象最多一份回补型capsule。
 - 冻结ROADMAP第4节current train工作台→Discovery Round归档→第5节`product-phase-N`长期authority→Release后列车轮转的完整状态流；

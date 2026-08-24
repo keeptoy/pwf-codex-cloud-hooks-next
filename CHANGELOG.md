@@ -16,7 +16,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 - 把Phase history区分为回补型`RETROSPECTIVE_CAPSULE`与冻结的`FROZEN_DISCOVERY_RECORD`，补齐ROADMAP current train→
   Product Phase authority轮转、历史文件retirement入链检查及pre-1.0无入链alias清退规则。
 - 物化stable `0.4.2`候选身份而不改变production/runtime行为：Release contract与ZIP外bootstrap同步轮转到v0.4.2，
-  installer transition只接受exact v0.4.1 predecessor；bootstrap在Source/Candidate前保持64位zero hash并fail closed。
+  installer transition只接受exact v0.4.1 predecessor；bootstrap在Source/Candidate前保持64位zero hash并fail closed，通过后
+  seal为exact ZIP SHA。immutable publication与Source/Candidate/Published Release双通道已闭合，Latest晋级另由ROADMAP记录。
 - 修正Cloud canonical baseline步骤的工具能力闭环：没有独立只读文件工具时，允许exact-path只读Shell preflight；fixture正文仍
   只能由`apply_patch`创建，继续禁止Shell写入、覆盖与远端动作。
   本版本双通道教程见[`docs/acceptance/v0.4.2-cloud-hard-acceptance.md`](docs/acceptance/v0.4.2-cloud-hard-acceptance.md)；已发布身份仍只由

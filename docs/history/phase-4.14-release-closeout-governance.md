@@ -268,6 +268,22 @@ active pointer读取；Shell仍不得写入、重定向、删除、移动、comm
 没有修改package、contract、runtime、bootstrap或ZIP allowlist。故已验收C0保持有效，正式tag继续精确指向C0；Published Release、
 Latest与第二轮role-window closeout仍未发生。current顺序与状态只读ROADMAP和版本acceptance，本节只保存设计原因。
 
+<a name="phase-4-14-post-governance-status-published-guide-completion"></a>
+
+## Post-governance status — Published Release guide completion
+
+`v0.4.2`的真实Published Release运行又暴露一个较小的教程缺口：版本guide已经声明第二通道并链接稳定模板，但只用一句话压缩
+4.2、5.2、C～E与9.2，没有像Source/Candidate那样给出版本化操作表、exact公开identity和回传字段。维护者因此直接读取
+Cloud hard acceptance template完成验收；稳定模板本来就是唯一脚本authority，所以整条Published Release PASS有效，不需要重跑。
+
+回补方案没有复制Bash或黑盒提示词，而是在同一v0.4.2 guide中补齐anchor编排、公开bootstrap/ZIP identity、实际9.2证据和
+“本次先执行模板、后补版本表”的时间语义。GitHub只读审计同时确认tag精确指向C0、双资产digest与Cloud输出一致，Release为
+非draft的Pre-release；sealed bootstrap本地字节也与公开资产一致。
+
+该状态仍不是C2 final closeout。Published Release PASS只允许进入Latest promotion与只读postflight；Latest尚未发生，故v0.4.1
+继续承担accepted角色，第二轮role-window closeout、planning逐项决定和v0.4.2 guide冻结都继续等待。当前角色与下一步只读
+ROADMAP和活动planning，本节只保存为何需要补教程、又为何不重跑的治理理由。
+
 <a name="phase-4-14-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

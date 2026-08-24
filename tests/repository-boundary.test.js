@@ -51,6 +51,7 @@ test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const pathSafetyHistory = read("docs/history/phase-4.13-v0.4.1-path-safety-patch-train.md");
   const candidateAcceptance = read("docs/acceptance/v0.4.2-cloud-hard-acceptance.md");
+  const provenance = read("BASELINE_PROVENANCE.md");
   const currentTrain = roadmap.slice(
     roadmap.indexOf('<a name="v0-4-2-release-closeout"></a>'),
     roadmap.indexOf("## 5. Product Phase 路线"),
@@ -63,7 +64,7 @@ test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
   assert.match(roadmap, /`v0\.4\.2`[\s\S]*Release candidate/);
   assert.match(roadmap, /package identity[\s\S]*`0\.4\.2`/);
   assert.match(roadmap,
-    /当前 programme 边界[^\n]*Source\/Candidate已`PASS`[^\n]*Published Release仍为`PENDING`/);
+    /当前 programme 边界[^\n]*Published Release已`PASS`[^\n]*Latest[^\n]*`PENDING`/);
   assert.match(currentTrain, /README\.md[\s\S]*Release ZIP输入[\s\S]*旧候选身份[\s\S]*失效/);
   assert.match(currentTrain, /C0[\s\S]*已通过Source\/Candidate[\s\S]*exact HEAD[\s\S]*版本acceptance/);
   assert.match(currentTrain, /maintenance-environment-profile\.md#maintenance-environment-profile/);
@@ -72,8 +73,10 @@ test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
   assert.match(currentTrain,
     /docs\/acceptance\/v0\.4\.2-cloud-hard-acceptance\.md[\s\S]*v0\.4\.1[\s\S]*冻结[\s\S]*C2/);
   assert.match(currentTrain, /templates[\s\S]{0,120}原路径[\s\S]{0,120}KEEP/);
-  assert.match(currentTrain, /Source\/Candidate[\s\S]{0,120}`PASS`/);
-  assert.match(currentTrain, /Published Release[\s\S]{0,120}`PENDING`/);
+  assert.match(currentTrain, /该C0现已通过Source\/Candidate/);
+  assert.match(roadmap, /`v0\.4\.2` published prerelease candidate/);
+  assert.match(currentTrain, /Published Release[\s\S]{0,120}`PASS`/);
+  assert.match(currentTrain, /Latest[\s\S]{0,120}`PENDING`/);
   assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.1`[^\n]*Latest/);
   assert.doesNotMatch(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(pathSafetyHistory, /兼容性安全/);
@@ -85,11 +88,29 @@ test("v0.4.2 candidate preserves the accepted v0.4.1 rollback window", () => {
     "d51f291566b5599cb21a9fc5c3f30fd1a1bbc74a",
     "PWF_SOURCE_CANDIDATE_SETUP=PASS",
     "PWF_SC_POST_RESUME=PASS",
-    "SOURCE_CANDIDATE_PASS / PUBLISHED_RELEASE_NOT_RUN / STOP_BEFORE_PUBLICATION",
+    "PWF_PUBLIC_ZIP_BOUNDARY_IMPORTER=PASS",
+    "PWF_PUBLIC_POST_RESUME=PASS",
+    "SOURCE_CANDIDATE_PASS / PUBLISHED_RELEASE_PASS / LATEST_NOT_RUN / STOP_BEFORE_LATEST",
+    "https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/v0.4.2/pwf-codex-cloud-hooks-v0.4.2.zip",
+    "https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/v0.4.2/init-cloud-sandbox-v0.4.2.bash",
+    "4c04b4758bce0f3e9eb22afcba05dcb8788958357c24e31014a55edf850dec64",
   ]) assert.match(candidateAcceptance, new RegExp(fact.replaceAll(".", "\\.")));
   assert.match(candidateAcceptance, /C步骤首次安全停止[\s\S]*维护者随后临时授权/);
   assert.match(candidateAcceptance, /只读Shell existence preflight[\s\S]*D～F顺利PASS/);
   assert.match(candidateAcceptance, /source-candidate closeout retirement checkpoint[\s\S]*所有仓库内planning[\s\S]*KEEP/);
+  for (const anchor of [
+    "published-release-setup", "blackbox-fresh-startup", "blackbox-canonical-baseline",
+    "blackbox-canonical-context", "blackbox-real-resume", "published-release-deep-check",
+  ]) assert.match(candidateAcceptance, new RegExp(`cloud-hard-acceptance-template\\.md#${anchor}`));
+  assert.match(candidateAcceptance, /4\.2[\s\S]*5\.2[\s\S]*第6节[\s\S]*第7节[\s\S]*8\.1[\s\S]*8\.2[\s\S]*9\.2/);
+  assert.doesNotMatch(candidateAcceptance, /set -Eeuo pipefail|readonly BOOTSTRAP_URL=|readonly ZIP_URL=/,
+    "version guide must not copy the stable Published Release scripts");
+  for (const fact of [
+    "v0.4.2", "d51f291566b5599cb21a9fc5c3f30fd1a1bbc74a",
+    "87,386 bytes", "21,565 bytes",
+    "d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e",
+    "4c04b4758bce0f3e9eb22afcba05dcb8788958357c24e31014a55edf850dec64",
+  ]) assert.match(provenance, new RegExp(fact.replaceAll(".", "\\.")));
 });
 
 test("Phase 4.12 preserves the renamed v0.4.0 Release discovery and P9 evidence", () => {
@@ -537,6 +558,7 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
     "phase-4-14-post-governance-status-maintenance-environment-memory",
     "phase-4-14-post-governance-status-acceptance-directory-migration",
     "phase-4-14-post-governance-status-canonical-baseline-tool-capability",
+    "phase-4-14-post-governance-status-published-guide-completion",
     "phase-4-14-immutable-evidence",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(history, /^# Phase 4\.14：Release closeout 与验收文档治理回顾$/m);
@@ -584,6 +606,10 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
   assert.match(history,
     /Post-governance status — canonical baseline tool capability[\s\S]*首次安全拒绝[\s\S]*临时授权[\s\S]*exact `[.]planning`路径/);
   assert.match(history, /fixture正文仍只能由apply_patch创建[\s\S]*正式tag继续精确指向C0/);
+  assert.match(history, /Post-governance status — Published Release guide completion/);
+  assert.match(history, /教程缺口[\s\S]*Cloud hard acceptance template/);
+  assert.match(history, /Published Release PASS有效[\s\S]*不需要重跑/);
+  assert.match(history, /Pre-release[\s\S]*Latest[\s\S]*尚未[\s\S]*第二轮role-window closeout/);
   assert.match(history,
     /ROADMAP第4节与第5节形成显式authority rotation[\s\S]*product-phase-N[\s\S]*旧第4节没有current入链/);
   assert.match(history,
