@@ -25,6 +25,7 @@ function publishedRole(role, version) {
   const row = provenance.split(/\r?\n/).find(line => line.startsWith(`| \`${version}\` |`));
   assert.ok(row, `provenance lacks ${role} ${version}`);
   const commit = row.match(/\[source `([a-f0-9]{40})`\]/);
+  const bootstrapSource = row.match(/\[sealed bootstrap source `([a-f0-9]{40})`\]/);
   const entryCount = row.match(/；(\d+) entries；/);
   const hashes = [...row.matchAll(/SHA-256 `([a-f0-9]{64})`/g)].map(match => match[1]);
   assert.ok(commit, `${version} provenance lacks source commit`);
@@ -34,6 +35,7 @@ function publishedRole(role, version) {
     role,
     version,
     commit: commit[1],
+    bootstrapCommit: bootstrapSource ? bootstrapSource[1] : commit[1],
     entryCount: Number(entryCount[1]),
     zipSha256: hashes[0],
     bootstrapSha256: hashes[1],
@@ -222,7 +224,18 @@ for (const release of publicationRoles) {
       );
       assert.equal(result.status, 0, result.stderr);
       assert.equal(sha256(releaseZip), release.zipSha256);
-      assert.equal(sha256(path.join(releaseRoot, bootstrapName)), release.bootstrapSha256);
+      let bootstrapPath = path.join(releaseRoot, bootstrapName);
+      if (release.bootstrapCommit !== release.commit) {
+        result = spawnSync("git", ["show", `${release.bootstrapCommit}:${bootstrapName}`], {
+          cwd: root,
+          encoding: null,
+          maxBuffer: 2 * 1024 * 1024,
+        });
+        assert.equal(result.status, 0, result.stderr?.toString("utf8"));
+        bootstrapPath = path.join(workspace, bootstrapName);
+        fs.writeFileSync(bootstrapPath, result.stdout);
+      }
+      assert.equal(sha256(bootstrapPath), release.bootstrapSha256);
     } finally {
       fs.rmSync(workspace, { recursive: true, force: true });
     }

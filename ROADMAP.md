@@ -22,24 +22,25 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.2` published Latest closeout；双通道Cloud与GitHub Release Latest promotion confirmation已完成，等待第二轮退役/C2，production/runtime行为不变 |
-| 当前已接受版本 | `v0.4.1`；programme accepted，等待v0.4.2 C2原子轮转 |
-| 当前直接回退版本 | immutable `v0.4.0` immediate fallback |
-| 回退证据链 | immutable `v0.3.5` deeper fallback；`v0.3.4`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4与`v0.4.1`发布列车均已关闭；`v0.4.2` Source/Candidate、immutable publication与Published Release已`PASS`，GitHub `Latest` promotion confirmation已确认。第二轮退役与C2仍为`PENDING`；完成前v0.4.1继续是programme accepted，下一Product Phase与其他外部状态变更未授权 |
+| 当前开发列车 | `v0.4.2` Release closeout已完成；双通道Cloud、GitHub Release Latest promotion confirmation、第二轮退役与C2均已闭合，production/runtime行为不变；下一列车未授权 |
+| 当前已接受版本 | `v0.4.2`；programme accepted |
+| 当前直接回退版本 | immutable `v0.4.1` immediate fallback |
+| 回退证据链 | immutable `v0.4.0` deeper fallback；`v0.3.5`与更早发布里程碑见 provenance museum |
+| 当前 programme 边界 | Product Phase 4、`v0.4.1`发布列车与`v0.4.2`documentation-governance列车均已关闭；`v0.4.2` Source/Candidate、immutable publication与Published Release已`PASS`，GitHub `Latest` promotion confirmation、第二轮退役与C2均已`PASS`。下一Product Phase、下一版本列车与其他外部状态变更未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
-非 draft、非 prerelease 的 Latest，且v0.4.0/v0.3.5 tag、source与双资产均未改写。当前它已随`v0.4.1`晋级轮转为
-immediate fallback。版本 delta见
+非 draft、非 prerelease 的 Latest，且v0.4.0/v0.3.5 tag、source与双资产均未改写。当前它已随`v0.4.2`晋级轮转为
+deeper fallback。版本 delta见
 [`CHANGELOG.md`](CHANGELOG.md)，精确source/资产/SHA见[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，完整Cloud、
 晋级与第二轮退役证据见[immutable v0.4.0 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/6b388518855da9053713a58e5c918c8b727b6dc6/docs/v0.4.0-cloud-hard-acceptance.md#v0-4-0-p9-f-second-retirement-closeout)。
 
-## 3. 已接受基线 `v0.4.1`
+## 3. 已接受基线 `v0.4.2`
 
-`v0.4.1` 是当前已接受的兼容性安全补丁基线。它完整继承`v0.4.0`已经闭合的Product Phase 4功能与Release合同，
-并在不改变Host ABI、adapter-only policy、pristine upstream、owned runtime信任边界和legacy默认行为的前提下，
-补齐installer-owned路径拓扑准入；精确delta见CHANGELOG，底层功能收口仍由下表概括：
+`v0.4.2` 是当前已接受的documentation-governance基线。它完整继承`v0.4.1`的兼容性路径安全修复与`v0.4.0`
+已经闭合的Product Phase 4功能和Release合同；本版只整理Release/retirement、Phase history、acceptance与环境记忆的
+文档治理，不改变Host ABI、adapter-only policy、pristine upstream、owned runtime信任边界或legacy默认行为。
+精确delta见CHANGELOG，底层功能收口仍由下表概括：
 
 | 问题域 | 已完成结果 |
 |---|---|
@@ -51,8 +52,8 @@ immediate fallback。版本 delta见
 | Release | 22-entry deterministic ZIP、ZIP外bootstrap、Source/Candidate与Published Release双通道、公开下载及pointer-only promotion全部PASS |
 
 该基线的实际版本delta见[`CHANGELOG.md`](CHANGELOG.md)，精确source/资产身份与predecessor迁移链见
-[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，完整阶段、Cloud、晋级和P9-F证据见
-[`docs/v0.4.1-cloud-hard-acceptance.md`](docs/v0.4.1-cloud-hard-acceptance.md)。
+[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，完整双通道、晋级、第二轮退役与C2证据见
+[`docs/acceptance/v0.4.2-cloud-hard-acceptance.md`](docs/acceptance/v0.4.2-cloud-hard-acceptance.md#v0-4-2-role-window-closeout)。
 
 ## 4. 当前开发列车
 
@@ -65,15 +66,16 @@ provenance和对应版本acceptance，不在本节重建逐P9流水。
 
 <a name="v0-4-2-release-closeout"></a>
 
-### 4.1 当前 `v0.4.2` Release closeout
+### 4.1 已关闭的 `v0.4.2` Release closeout
 
 当前列车已经完成Release、acceptance、retirement与history的documentation governance，并在不修改production、runtime、Host ABI、
 trusted graph、managed events或Release allowlist的前提下物化`0.4.2`候选身份。package identity `0.4.2`、Release contract、exact v0.4.1
-predecessor transition与ZIP外zero-hash bootstrap构成同一候选事务；当前accepted仍为`v0.4.1`，`v0.4.0`仍是immediate fallback。
+predecessor transition与ZIP外zero-hash bootstrap构成同一候选事务；C2完成后`v0.4.2`是accepted，`v0.4.1`是immediate fallback，
+`v0.4.0`进入deeper fallback证据链。
 
 本列车不创建standing Phase 9。Release candidate已获批；非破坏性candidate admission preflight、Source/Candidate、第一轮
-source-candidate closeout、tag(C0)、immutable publication、Published Release Cloud与GitHub Release Latest promotion confirmation均已闭合。
-下一步只允许执行第二轮role-window closeout和C2；下一Product Phase尚未授权。已关闭的`v0.4.0`Release discovery、
+source-candidate closeout、tag(C0)、immutable publication、Published Release Cloud、GitHub Release Latest promotion confirmation、
+第二轮role-window closeout与C2均已闭合。下一Product Phase和下一版本列车尚未授权。已关闭的`v0.4.0`Release discovery、
 `v0.4.1`path-safety列车与本轮Release治理分别由Phase 4.12、Phase 4.13、
 Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节只维护当前边界。
 
@@ -88,9 +90,9 @@ Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节�
   默认本地/Cloud解法与重验触发器；AGENTS负责强制执行，MAINTAINER_HANDOFF负责人的发现，repository governance负责跨阶段
   提升规则。具体机器事实不在ROADMAP复制；该档案及本轮状态同步均为Release-excluded。
 - 文档拓扑preflight把全局入口、专项authority和Release输入拆开盘点；未冻结的candidate guide现位于
-  [`docs/acceptance/v0.4.2-cloud-hard-acceptance.md`](docs/acceptance/v0.4.2-cloud-hard-acceptance.md)。`v0.4.1`已冻结
-  acceptance继续由accepted角色拥有旧根路径，退出点是v0.4.2完成GitHub Release Latest promotion confirmation后的C2 role-window closeout；现有templates
-  因冻结guide仍含字面执行路径而原路径`KEEP`。本次迁移保持README与22-entry ZIP输入不变。
+  [`docs/acceptance/v0.4.2-cloud-hard-acceptance.md`](docs/acceptance/v0.4.2-cloud-hard-acceptance.md)。`v0.4.1`冻结guide与bootstrap
+  已在C2退出current tree，其完整内容迁入exact immutable tag/source、Release资产与provenance链接；现有templates继续在稳定原路径
+  `KEEP`，供当前及后继guide引用。本次清退保持README与22-entry ZIP输入不变。
 - Source/Candidate真实Cloud暴露C步骤的工具能力缺口：旧协议同时要求先做只读existence检查又禁止Shell，但实际会话没有独立只读
   文件工具。维护者临时授权只读Shell后整条通道PASS；稳定template现允许无独立文件工具时的exact-path只读preflight，正文写入仍
   只能使用apply_patch。该C1修正属于Release-excluded，不改变已验收C0或正式tag目标。
@@ -98,7 +100,9 @@ Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节�
   `PASS`，已经冻结并验收exact tag/source/ZIP/bootstrap。维护者随后在GitHub Release编辑页面把同一Release取消Pre-release并
   设为Latest，Release详情页显示`v0.4.2`、`draft=false`、`prerelease=false`；这已按
   [GitHub Release Latest promotion confirmation](#github-release-latest-promotion-confirmation)完成正常确认，不再另设独立postflight，
-  tag与双资产identity保持不变。第二退役检查与C2仍`PENDING`，因此programme accepted/fallback角色尚未在仓库中轮转。
+  tag与双资产identity保持不变。第二退役检查随后完成：维护者授权清退24个已完成且无current入链的非活动planning，以及
+  v0.4.1的current guide/bootstrap；长期publication oracle迁移为动态读取`v0.4.2` accepted与`v0.4.1` immediate fallback。
+  C2已经把真实退役结果与programme角色原子写回。
 - 把Phase history拆分为回补型`RETROSPECTIVE_CAPSULE`与正式Round关闭后冻结的`FROZEN_DISCOVERY_RECORD`，同步history索引、
   写作模板和repository contracts；一个Product Phase可以有多份真实Discovery records，但同一闭合对象最多一份回补型capsule。
 - 冻结ROADMAP第4节current train工作台→Discovery Round归档→第5节`product-phase-N`长期authority→Release后列车轮转的完整状态流；
@@ -121,7 +125,7 @@ ROADMAP声明的版本系列判断归属；patch/governance列车没有新Produc
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | complete；F3C4、第一轮retirement及当时的v0.4.0 Release closeout均已闭合；功能基线由当前v0.4.1 accepted继承 |
+| 4 | `0.4.0-*` | owned v3 state foundation；显式 smart/autonomous opt-in | F0 → F1A/F1B → F2A/F2B → F3A lifecycle foundation → F3B0～F3B4 Fresh/Resume/disarm/re-arm → F3C rollback；legacy 默认不变 | complete；F3C4、第一轮retirement及当时的v0.4.0 Release closeout均已闭合；功能基线由当前v0.4.2 accepted继承 |
 | 5 | `0.5.0-*` | compaction lifecycle | 复核真实 Cloud payload，比较现有 `SessionStart source=clear\|compact` 与 PreCompact/PostCompact 的时序和恢复能力；现有事件足够时不扩大 managed event set，只有真实 context/时序缺口才新增 Hook | pending |
 | 6 | `0.6.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立 gate；必须分别有 use case、latency/token budget、噪声预算与 Cloud证据 | pending / optional；没有明确收益就逐项或整体 `NO_GO`；不是 Phase 7前置 |
 | 7 | `0.7.0-*` | 唯一的 read-only advisory completion evaluator | bounded、non-recursive、无 plan时安静；只 advisory，不阻断、不写 counter/ledger或其他 mutable gate state | pending；可独立于 Phase 6进入 Discovery |

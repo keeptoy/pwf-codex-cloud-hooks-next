@@ -9,6 +9,11 @@ const { validatePlanningScopes } = require("./f3-lifecycle-helpers");
 
 const root = path.resolve(__dirname, "..");
 const read = relative => fs.readFileSync(path.join(root, relative), "utf8");
+const readGit = (ref, relative) => {
+  const result = spawnSync("git", ["show", `${ref}:${relative}`], { cwd: root, encoding: "utf8" });
+  assert.equal(result.status, 0, result.stderr);
+  return result.stdout;
+};
 const trustedPrefixes = ["contracts/", "hooks/", "patches/", "runtime/", "tools/"];
 const trustedRootPaths = new Set(["install.js", "package.json", "upstream-manifest.json"]);
 const versionPattern = "v\\d+\\.\\d+\\.\\d+(?:-[A-Za-z0-9.]+)?";
@@ -47,7 +52,7 @@ function currentRoleWindow() {
   return { accepted, candidate, developmentTrain, immediateFallback, roadmap };
 }
 
-test("v0.4.2 Latest promotion preserves the pre-C2 programme rollback window", () => {
+test("v0.4.2 C2 closes the release train and rotates the programme rollback window", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const pathSafetyHistory = read("docs/history/phase-4.13-v0.4.1-path-safety-patch-train.md");
   const candidateAcceptance = read("docs/acceptance/v0.4.2-cloud-hard-acceptance.md");
@@ -58,34 +63,34 @@ test("v0.4.2 Latest promotion preserves the pre-C2 programme rollback window", (
   );
   assert.equal(developmentTrain, "v0.4.2");
   assert.equal(candidate, "v0.4.2");
-  assert.equal(accepted, "v0.4.1");
-  assert.equal(immediateFallback, "v0.4.0");
-  assert.notEqual(candidate, accepted);
-  assert.match(roadmap, /`v0\.4\.2`[\s\S]*Release candidate/);
+  assert.equal(accepted, "v0.4.2");
+  assert.equal(immediateFallback, "v0.4.1");
+  assert.equal(candidate, accepted);
+  assert.match(roadmap, /`v0\.4\.2`[\s\S]*Release closeout/);
   assert.match(roadmap, /package identity[\s\S]*`0\.4\.2`/);
   assert.match(roadmap,
-    /当前 programme 边界[^\n]*Published Release已`PASS`[^\n]*Latest[^\n]*已确认[^\n]*第二轮退役[^\n]*`PENDING`/);
+    /当前 programme 边界[^\n]*Published Release已`PASS`[^\n]*Latest[^\n]*第二轮退役[^\n]*C2[^\n]*`PASS`/);
   assert.match(currentTrain, /README\.md[\s\S]*Release ZIP输入[\s\S]*旧候选身份[\s\S]*失效/);
   assert.match(currentTrain, /C0[\s\S]*已通过Source\/Candidate[\s\S]*exact HEAD[\s\S]*版本acceptance/);
   assert.match(currentTrain, /maintenance-environment-profile\.md#maintenance-environment-profile/);
   assert.match(currentTrain, /重验触发器/);
   assert.match(currentTrain, /跨阶段[\s\S]{0,40}提升规则/);
   assert.match(currentTrain,
-    /docs\/acceptance\/v0\.4\.2-cloud-hard-acceptance\.md[\s\S]*v0\.4\.1[\s\S]*冻结[\s\S]*C2/);
+    /docs\/acceptance\/v0\.4\.2-cloud-hard-acceptance\.md[\s\S]*v0\.4\.1[\s\S]*immutable[\s\S]*清退/);
   assert.match(currentTrain, /templates[\s\S]{0,120}原路径[\s\S]{0,120}KEEP/);
   assert.match(currentTrain, /该C0现已通过Source\/Candidate/);
-  assert.match(roadmap, /`v0\.4\.2` published Latest closeout/);
+  assert.match(roadmap, /`v0\.4\.2` Release closeout已完成/);
   assert.match(currentTrain, /Published Release[\s\S]{0,120}`PASS`/);
-  assert.match(currentTrain, /Latest promotion confirmation均已闭合/);
+  assert.match(currentTrain, /Latest promotion confirmation[\s\S]{0,120}第二轮role-window closeout与C2均已闭合/);
   assert.match(currentTrain,
     /Published Release[\s\S]{0,240}exact tag\/source\/ZIP\/bootstrap[\s\S]{0,240}Latest promotion confirmation[\s\S]{0,240}不(?:再|另设)[\s\S]{0,120}独立postflight/);
   assert.match(currentTrain, /#github-release-latest-promotion-confirmation/);
-  assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.1`[^\n]*programme accepted[^\n]*C2/);
-  assert.match(roadmap, /当前 programme 边界[^\n]*`v0\.4\.2`[^\n]*GitHub `Latest`[^\n]*已确认/);
+  assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.2`[^\n]*programme accepted/);
+  assert.match(roadmap, /当前 programme 边界[^\n]*`v0\.4\.2`[^\n]*GitHub `Latest` promotion confirmation[^\n]*C2均已`PASS`/);
   assert.doesNotMatch(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(pathSafetyHistory, /兼容性安全/);
   assert.match(pathSafetyHistory, /99885b854bd9621c3340e99f031bf83ceb58414d/);
-  assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.1`/);
+  assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.2`/);
   assert.match(candidateAcceptance, /\.\.\/\.\.\/ROADMAP\.md#release-four-step-flow/);
   assert.match(candidateAcceptance, /\.\.\/\.\.\/ROADMAP\.md#version-train-two-retirement-reviews/);
   for (const fact of [
@@ -109,7 +114,7 @@ test("v0.4.2 Latest promotion preserves the pre-C2 programme rollback window", (
     /它不是Codex Cloud|只有保存结果未知|不再单列重复下载、重算SHA/);
   assert.match(candidateAcceptance, /C步骤首次安全停止[\s\S]*维护者随后临时授权/);
   assert.match(candidateAcceptance, /只读Shell existence preflight[\s\S]*D～F顺利PASS/);
-  assert.match(candidateAcceptance, /source-candidate closeout retirement checkpoint[\s\S]*所有仓库内planning[\s\S]*KEEP/);
+  assert.match(candidateAcceptance, /Role-window closeout retirement checkpoint[\s\S]*24个非活动planning[\s\S]*RETIRE/);
   for (const anchor of [
     "published-release-setup", "blackbox-fresh-startup", "blackbox-canonical-baseline",
     "blackbox-canonical-context", "blackbox-real-resume", "published-release-deep-check",
@@ -123,7 +128,7 @@ test("v0.4.2 Latest promotion preserves the pre-C2 programme rollback window", (
     "d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e",
     "4c04b4758bce0f3e9eb22afcba05dcb8788958357c24e31014a55edf850dec64",
   ]) assert.match(provenance, new RegExp(fact.replaceAll(".", "\\.")));
-  assert.match(provenance, /Latest promotion confirmation已完成[\s\S]*第二轮退役[\s\S]*尚未/);
+  assert.match(provenance, /Latest promotion confirmation[\s\S]*第二轮退役[\s\S]*C2 programme轮转均已闭合/);
 });
 
 test("Phase 4.12 preserves the renamed v0.4.0 Release discovery and P9 evidence", () => {
@@ -151,11 +156,12 @@ test("Phase 4.12 preserves the renamed v0.4.0 Release discovery and P9 evidence"
     /P9_F_SECOND_RETIREMENT_PASS \/ V0_4_0_TRAIN_CLOSED \/ NEXT_TRAIN_UNDECIDED/);
   assert.match(provenance,
     /blob\/6b388518855da9053713a58e5c918c8b727b6dc6\/docs\/v0\.4\.0-cloud-hard-acceptance\.md#v0-4-0-p9-f-second-retirement-closeout/);
-  assert.match(roadmap, /当前直接回退版本[^\n]*immutable `v0\.4\.0` immediate fallback/);
+  assert.match(roadmap, /回退证据链[^\n]*immutable `v0\.4\.0` deeper fallback/);
 });
 
-test("P9-F evidence stays immutable while retired stage guides leave the current tree", () => {
-  const acceptance = read("docs/v0.4.1-cloud-hard-acceptance.md");
+test("v0.4.1 P9-F evidence stays immutable after its local role-window files retire", () => {
+  const acceptance = readGit("3903326d7bbea344a8b03de1d9e1e7205eed57b1",
+    "docs/v0.4.1-cloud-hard-acceptance.md");
   const provenance = read("BASELINE_PROVENANCE.md");
   const actual = repositoryPaths();
 
@@ -163,7 +169,7 @@ test("P9-F evidence stays immutable while retired stage guides leave the current
   assert.match(acceptance,
     /P9_F_SECOND_RETIREMENT_PASS \/ V0_4_1_TRAIN_CLOSED \/ NEXT_TRAIN_UNDECIDED/);
   assert.match(provenance,
-    /\`v0\.4\.1\`[^\n]*docs\/v0\.4\.1-cloud-hard-acceptance\.md#v0-4-1-p9-f-second-retirement-closeout/);
+    /\`v0\.4\.1\`[^\n]*blob\/3903326d7bbea344a8b03de1d9e1e7205eed57b1\/docs\/v0\.4\.1-cloud-hard-acceptance\.md#v0-4-1-p9-f-second-retirement-closeout/);
   assert.match(provenance,
     /\`v0\.4\.0\`[^\n]*fe8cd7f284ea2849f634aa68813dbb0f2cca83f9[^\n]*24a412c19e220a60134547a18797fbd382a48fd5319a1f30a6d5c9b47bd53bb3/);
   assert.match(acceptance, /11个validation refs[^\n]*KEEP/);
@@ -173,6 +179,8 @@ test("P9-F evidence stays immutable while retired stage guides leave the current
     "tests/owned-plan-runtime.test.js",
   ]) assert.equal(fs.existsSync(path.join(root, retained)), true, retained);
   for (const retired of [
+    "docs/v0.4.1-cloud-hard-acceptance.md",
+    "init-cloud-sandbox-v0.4.1.bash",
     "docs/v0.4.0-dev-f3-cloud-lifecycle-runbook.md",
     "docs/v0.4.0-dev-f3b2-smart-live-operator-guide.md",
     "docs/v0.4.0-dev-f3b3-autonomous-live-operator-guide.md",
@@ -256,8 +264,11 @@ test("maintenance environment constraints survive planning retirement", () => {
 test("planning lifecycle has one valid active pointer and complete scoped records", () => {
   const actual = repositoryPaths();
   const activePlan = read(".planning/.active_plan").trim();
+  const planningScopes = fs.readdirSync(path.join(root, ".planning"), { withFileTypes: true })
+    .filter(entry => entry.isDirectory()).map(entry => entry.name).sort();
 
   assert.match(activePlan, /^\d{4}-\d{2}-\d{2}-[a-z0-9][a-z0-9.-]*$/);
+  assert.deepEqual(planningScopes, [activePlan], "completed inactive planning scopes must retire at C2");
   assert.equal(validatePlanningScopes(root, activePlan, actual), "legacy",
     "the development candidate's real active planning scope must remain markerless before F3B live");
 
@@ -284,10 +295,10 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
     assert.equal(releasePaths.includes(relative), false, relative);
   }
   assert.deepEqual(rootBootstraps, roleVersions.map(version => `init-cloud-sandbox-${version}.bash`));
-  assert.deepEqual(acceptanceDocs, [
-    `docs/${accepted}-cloud-hard-acceptance.md`,
-    `docs/acceptance/${candidate}-cloud-hard-acceptance.md`,
-  ].sort());
+  const expectedAcceptanceDocs = accepted === candidate
+    ? [`docs/acceptance/${candidate}-cloud-hard-acceptance.md`]
+    : [`docs/${accepted}-cloud-hard-acceptance.md`, `docs/acceptance/${candidate}-cloud-hard-acceptance.md`];
+  assert.deepEqual(acceptanceDocs, expectedAcceptanceDocs.sort());
   assert.deepEqual(acceptanceDocs.map(relative => path.basename(relative).replace("-cloud-hard-acceptance.md", "")).sort(),
     roleVersions);
   assert.equal(docs.some(item => item.startsWith("docs/templates/")), false,
@@ -295,8 +306,9 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   const acceptanceIndex = read("docs/acceptance/README.md");
   assert.match(acceptanceIndex, /^<a name="acceptance-role-window"><\/a>$/m);
   assert.match(acceptanceIndex, /当前角色[\s\S]*ROADMAP/);
-  assert.match(acceptanceIndex, /已经冻结[\s\S]{0,80}accepted职责/);
-  assert.match(acceptanceIndex, /角色退出前保留原路径/);
+  assert.match(acceptanceIndex, /已经冻结[\s\S]{0,120}accepted职责/);
+  assert.match(acceptanceIndex, /旧版guide在角色退出前/);
+  assert.match(acceptanceIndex, /清退current副本/);
   assert.match(acceptanceIndex, /退出角色窗口后[\s\S]{0,160}immutable refs/);
   const acceptanceTemplate = read("docs/cloud-hard-acceptance-template.md");
   const operatorGuideTemplate = read("docs/cloud-acceptance-operator-guide-template.md");

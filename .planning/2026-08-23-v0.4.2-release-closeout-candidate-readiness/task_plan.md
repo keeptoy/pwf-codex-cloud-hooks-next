@@ -6,11 +6,11 @@
 
 ## Next Step
 
-请维护者逐项决定第二轮role-window清退范围；在明确决定前，v0.4.2 planning、v0.4.1 current guide/bootstrap和其他窗口对象继续`KEEP`。取得决定后写回真实RETIRE/MIGRATE/KEEP结论，完成C2 final Post-run与programme accepted/fallback轮转。
+维护者push本地C2 closeout commit；本计划保持为唯一active恢复账，直到维护者另行决定下一Product Phase/版本列车或是否退役本活动planning。不得自动启动下一列车。
 
 ## Current Phase
 
-Phase 7: role-window closeout / waiting for maintainer
+Phase 7: role-window retirement and C2 closeout / complete; maintainer push pending
 
 ## Phases
 
@@ -139,9 +139,12 @@ Phase 7: role-window closeout / waiting for maintainer
 - [x] ROADMAP 4.1写入当前列车投影：Published Release已冻结验收exact身份，Latest confirmation已完成，正常路径不新增独立postflight。
 - [x] Phase 4.14追加带稳定anchor的后续治理摘要，保留时间线、精简原因和唯一authority链接，不改写旧时点正文。
 - [x] 增加治理断言并运行风险相称验证，确认Release输入不变后创建本地commit。
-- [ ] 由维护者逐项决定第二轮role-window清退对象；未明确授权的planning和冻结证据继续`KEEP`。
-- [ ] 写回Latest promotion confirmation、第二退役检查和final Post-run，形成C2并同步programme角色。
-- **Status:** waiting for maintainer
+- [x] 由维护者决定第二轮role-window清退对象：24个非活动planning与本地v0.4.1 guide/bootstrap明确`RETIRE`；远端immutable资产、稳定contracts/tests/history与活动closeout planning继续`KEEP`或按职责`MIGRATE`。
+- [x] 核对远端v0.4.2 tag并创建同一C0本地tag，确保轮转后的publication oracle可重建accepted/fallback。
+- [x] 删除24个非活动planning scope与本地v0.4.1 guide/bootstrap；删除前已证明完成、Git可恢复、无current入链和无脏字节。
+- [x] 写回Latest promotion confirmation、第二退役检查和final Post-run，形成C2并同步programme角色。
+- [x] 运行role-window、publication oracle与完整回归，创建本地C2 commit并停止在维护者push前。
+- **Status:** complete
 
 ## Authorization
 
@@ -154,13 +157,14 @@ Phase 7: role-window closeout / waiting for maintainer
 - 已授权：评估“UI成功”对新人缺少上下文的问题；有必要时全仓同步为明确的GitHub Release状态变更界面语义。
 - 已授权：把“Release状态UI提交成功后不需要独立postflight”的完整规则只留在ROADMAP；其他current文档改为职责内摘要、真实事实与稳定anchor链接。
 - 已授权：把本轮Published Release已验收exact tag/source/ZIP/bootstrap、GitHub Release Latest confirmation已完成且正常路径不另设postflight，同步到ROADMAP 4.1与Phase 4.14。
+- 已授权：智能体可以核对远端v0.4.2身份并自行创建同身份本地tag；安全审计通过后清退全部24个非活动planning scope以及本地v0.4.1 acceptance/bootstrap，并完成相应role-window closeout。
 - 未授权：push、远端 branch/tag、Pre-release/Release、资产上传、Cloud task、Latest、部署或填写未发生的 PASS/URL/SHA。
 
 ## Stop Conditions
 
 - 不创建或恢复 Phase 9/P9-A～F；第 9 节只是 ROADMAP 的通用 Release 章节。
 - 正式验收tag只能精确指向已通过Cloud的C0，不得指向C1或后续治理分支HEAD；tag与publication仍由维护者执行。
-- Latest promotion confirmation已经完成；维护者未逐项决定第二退役范围前，不删除planning或版本窗口对象，也不写accepted角色轮转、第二退役PASS或C2 final closeout。
+- Latest promotion confirmation已经完成；只删除本轮明确授权且通过退役准入的对象。远端tag/Release/资产、稳定contracts/runtime/templates/history、活动closeout planning不得随批量清退删除。
 - 任一身份或 contract 变化必须保持 allowlist、hash、transition 与 tests 原子闭合。
 
 ## Errors Encountered
@@ -191,7 +195,11 @@ Phase 7: role-window closeout / waiting for maintainer
 | Web工具拒绝直接打开本仓库`api.github.com` Release/tag endpoints，返回safe-open internal error | 1 | 保留官方GitHub Docs作为协议依据；实际公开状态改用只读HTTPS请求，不重复同一失败调用。 |
 | 单次PowerShell审计中Release-by-tag与Git-ref API分别返回504，导致两个派生字段为空 | 1 | 不使用空值；由成功的Latest endpoint核对Release/资产，另用`git ls-remote`核对tag source，避免重试同一路径。 |
 | 单一权威正文完成后聚焦测试仍1 fail：AGENTS断言把Markdown换行固定成普通空格 | 1 | 保留自然换行，把断言收窄为允许空白分隔的稳定术语；正文职责与链接不变。 |
+| PowerShell用`Sort-Object Active -Descending, Scope`组合属性时解析失败 | 1 | 命令在只读枚举前退出；改用显式property expression排序，完成24个非活动scope审计。 |
+| 沙箱内`git ls-remote`触发Git for Windows `sh.exe` signal pipe权限错误 | 1 | 在获准的只读非沙箱执行面重跑，确认远端v0.4.2 tag精确指向C0后才创建本地tag。 |
+| C2聚焦oracle首次把v0.4.2 C0内zero-hash bootstrap与publication后sealed bootstrap混为同一Git source | 1 | provenance新增exact sealed-bootstrap source commit；oracle仍从C0重建ZIP，但从该独立immutable commit恢复公开bootstrap并核对SHA，不把治理分支当前文件冒充发布资产。 |
+| 完整suite首次仍要求ROADMAP 4.1标题保持“当前v0.4.2” | 1 | C2已关闭列车，更新架构合同为“已关闭的v0.4.2 Release closeout”；单项9/9及最终全量回归通过。 |
 
 ## Current Status
 
-`SOURCE_CANDIDATE_PASS / PUBLIC_ASSETS_VERIFIED / PUBLISHED_RELEASE_PASS / LATEST_PROMOTION_CONFIRMED / STOP_BEFORE_ROLE_WINDOW_CLOSEOUT`
+`SOURCE_CANDIDATE_PASS / PUBLIC_ASSETS_VERIFIED / PUBLISHED_RELEASE_PASS / LATEST_PROMOTION_CONFIRMED / ROLE_WINDOW_CLOSEOUT_PASS / C2_COMPLETE / MAINTAINER_PUSH_PENDING / NEXT_TRAIN_UNAUTHORIZED`

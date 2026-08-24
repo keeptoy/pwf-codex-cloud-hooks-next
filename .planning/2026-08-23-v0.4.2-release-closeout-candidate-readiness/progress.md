@@ -154,3 +154,12 @@
 - ROADMAP 4.1现记录Published Release已冻结验收exact tag/source/ZIP/bootstrap、Latest confirmation已完成且正常路径不另设独立postflight；Phase 4.14追加带稳定anchor的后续状态并直链唯一promotion authority，旧时点正文保持不变。
 - 完整Windows suite PASS：181 tests / 155 pass / 0 fail / 26 skipped；`git diff --check`通过，Release allowlist交叉检查为`PWF_LATEST_STATUS_SYNC_RELEASE_INPUT_DELTA=NONE`。
 - Phase 7.3状态同步完成；活动计划恢复等待维护者逐项决定第二轮role-window对象，未删除planning或其他窗口材料。
+- 维护者授权第二轮实际清退与本地tag：24个非活动planning、本地v0.4.1 guide/bootstrap进入`RETIRE`，远端资产保持immutable；Phase 7.4开启。
+- 退役准入审计PASS：24 scopes、三件套全齐、72 files全部tracked、0 dirty、0 current exact-path入链。唯一未勾选Linux证据已由后继Linux gate与Phase 4.13闭合，原scope状态为`PLAN_CLOSED`，不阻止清退。
+- 远端`v0.4.2` tag核对为C0 `d51f291566b5599cb21a9fc5c3f30fd1a1bbc74a`；已创建同身份本地lightweight tag并再次解析为同一commit。
+- 精确退役事务完成：删除24个非活动scope的72个tracked planning文件和空目录；删除本地v0.4.1 acceptance/bootstrap current副本。所有删除均可由Git/tag/Release恢复，活动planning和v0.4.2 current文件未触及。
+- ROADMAP、v0.4.2 acceptance、provenance、acceptance索引与Phase 4.14已写回第二轮RETIRE/MIGRATE/KEEP、final Post-run和C2角色轮转；programme现为v0.4.2 accepted、v0.4.1 immediate fallback、v0.4.0 deeper fallback。
+- publication oracle首次复跑揭示v0.4.2 C0按设计仍含zero-hash bootstrap，而公开资产由后续commit `a7d9a54…`seal；已在provenance登记独立sealed bootstrap source并让oracle分别验证C0 ZIP与sealed asset，v0.4.2 accepted/v0.4.1 fallback全部恢复场景通过。
+- 聚焦C2回归最终PASS：26 tests / 26 pass / 0 fail；repository-boundary单项14/14、architecture contract单项9/9均PASS。
+- 完整Windows suite最终PASS：181 tests / 155 pass / 0 fail / 26 skipped；skip仍全部是既有Linux/POSIX-only case。`import_upstream_runtime.py check` healthy、`node --check install.js`与`git diff --check`通过。
+- 最终静态审计：85个changed paths与当前22-entry Release inputs/external asset交集为0；只剩1个活动planning；v0.4.1本地guide/bootstrap不存在；本地/远端v0.4.2 tag、sealed bootstrap SHA和`a7d9a54…`恢复字节全部一致。

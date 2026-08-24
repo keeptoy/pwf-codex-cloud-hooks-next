@@ -302,6 +302,23 @@ ROADMAP和活动planning，本节只保存为何需要补教程、又为何不�
 [`ROADMAP`的GitHub Release Latest promotion confirmation](../../ROADMAP.md#github-release-latest-promotion-confirmation)；AGENTS、
 templates、版本acceptance与治理指南只保留职责内摘要、实际证据或时点投影。
 
+<a name="phase-4-14-post-governance-status-role-window-closeout"></a>
+
+## Post-governance status — role-window closeout and C2
+
+Latest promotion confirmation之后，维护者明确授权第二轮具体清退。执行前只读审计24个非活动planning scope：三件套齐全、
+72个文件全部被Git追踪、工作树干净且没有current外部入链；旧Windows path-safety账本唯一未勾选的Linux/POSIX项已由后继
+Linux gate完成并由Phase 4.13固化，不构成未完成欠账。因此本轮把24个非活动scope整体`RETIRE`，只保留承担C2交接的活动planning。
+
+同一窗口中，v0.4.1已从accepted轮转为immediate fallback，本地guide与bootstrap副本退出current tree；完整guide由exact Git
+commit `3903326d7bbea344a8b03de1d9e1e7205eed57b1`恢复，bootstrap与package由immutable tag和公开Release恢复。长期publication
+oracle没有固定旧版本号，而是继续从ROADMAP动态读取`v0.4.2` accepted与`v0.4.1` immediate fallback并验证双向恢复。
+contracts、runtime、templates、history、v0.4.2 current guide/bootstrap及所有远端tag/Release/资产均`KEEP`。
+
+C2据此把programme角色原子轮转为`v0.4.2` accepted、`v0.4.1` immediate fallback、`v0.4.0` deeper fallback，并关闭
+documentation-governance列车；下一Product Phase和下一版本列车仍未授权。通道、资产、Latest和逐项RETIRE/MIGRATE/KEEP的
+exact final Post-run见[v0.4.2 acceptance](../acceptance/v0.4.2-cloud-hard-acceptance.md#v0-4-2-role-window-closeout)，当前角色只读ROADMAP。
+
 <a name="phase-4-14-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)
