@@ -262,8 +262,15 @@ Release allowlist 由 `upstream-manifest.json` 指向的当前
 [`release-artifact-v2.json`](contracts/release-artifact-v2.json) 唯一决定。每个 entry 自带 ZIP mode；构建器固定
 路径顺序、时间戳、压缩参数和 archive root，`check` 再核对 entries、mode、metadata 与源文件字节。
 
-`README.md`本身也是Release ZIP输入；修改本节会改变候选ZIP。应在C0与Source/Candidate前完成这类修改；如果已经取得
-Source/Candidate PASS，就必须作废原证据、形成新C0并重跑第一通道，不能把“只改文档”当成Release-excluded变更。
+如果你第一次接触本仓库的Release流程，先记住三个词：
+
+- `C0`：准备送入第一通道验证的候选源码exact source commit；通过后，正式tag仍精确指向它。
+- `Source/Candidate`：第一条Cloud验收通道，用独立环境验证C0的源码checkout和由它构建的候选ZIP。
+- `Release-excluded`：不进入Release ZIP的治理或施工文件；只改这类文件不会改变用户下载的package字节。
+
+完整四步、C0/C1/C2和停止点见[`ROADMAP` Release流程](ROADMAP.md#release-four-step-flow)。`README.md`不属于
+Release-excluded：它本身也是Release ZIP输入，修改本节就会改变候选ZIP。因此应在冻结C0、执行Source/Candidate前完成这类
+修改；如果已经取得Source/Candidate PASS，就必须作废原证据、形成新C0并重跑第一通道，不能因为“只改文档”而沿用旧PASS。
 
 PowerShell：
 
@@ -323,8 +330,8 @@ bash -n $bootstrap
 ```
 
 正式tag必须继续精确指向Source/Candidate实际PASS的C0。ZIP/bootstrap一经上传即视为immutable；不得通过移动tag、重传同名资产
-或在publication后重新打包来修补。完整授权、C0/C1/C2顺序和两轮退役时点仍以
-[`ROADMAP` Release流程](ROADMAP.md#release-four-step-flow)为准，具体版本的exact证据写回对应acceptance。
+或在publication后重新打包来修补。完整授权、C0/C1/C2顺序和两轮退役时点仍以上文链接的ROADMAP Release流程为准；具体版本的
+exact证据写回对应acceptance。
 
 ZIP entries、外部资产和 package identity 只由 Release contract 决定；不要在文档中另建可漂移的
 entry count。Self-contained importer 与四个 pinned pristine runtime 文件必须同时进入 allowlist，所有

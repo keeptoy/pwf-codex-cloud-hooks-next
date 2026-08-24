@@ -313,6 +313,15 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   }
   const stableReadme = read("README.md");
   assert.equal(releasePaths.includes("README.md"), true, "README is a Release ZIP input");
+  const newcomerTerms = stableReadme.indexOf("如果你第一次接触本仓库的Release流程");
+  const readmeInputWarning = stableReadme.indexOf("它本身也是Release ZIP输入");
+  assert.ok(newcomerTerms >= 0 && newcomerTerms < readmeInputWarning,
+    "README must explain Release terms before warning that it changes candidate bytes");
+  const newcomerIntro = stableReadme.slice(newcomerTerms, readmeInputWarning);
+  assert.match(newcomerIntro, /`C0`[\s\S]*exact source commit/);
+  assert.match(newcomerIntro, /`Source\/Candidate`[\s\S]*第一条Cloud验收通道/);
+  assert.match(newcomerIntro, /`Release-excluded`[\s\S]*不进入Release ZIP/);
+  assert.match(newcomerIntro, /ROADMAP\.md#release-four-step-flow/);
   assert.match(stableReadme, /for bootstrap in init-cloud-sandbox-v\*\.bash; do/);
   assert.match(stableReadme,
     /python tools\/build_release\.py build --output \.\/dist\/pwf-codex-cloud-hooks-candidate\.zip/);

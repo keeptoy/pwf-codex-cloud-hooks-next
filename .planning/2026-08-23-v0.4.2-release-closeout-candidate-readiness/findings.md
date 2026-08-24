@@ -58,3 +58,6 @@
 - 工作树恢复时存在用户未跟踪`test.zip`；本任务只读保留，不纳入暂存、Release资产或删除范围。
 - Release allowlist交叉检查确认`README.md`本身是22-entry ZIP输入，因此本次说明不是Release-excluded治理改动。Source/Candidate尚未运行，允许现在改；但旧本地candidate ZIP/SHA与先前C0都必须作废，完成后重新双构建/check并形成新C0。
 - README更新后的本地双构建一致：22 entries、87,152 bytes、SHA-256 `f90dd556477a166cbe0faade8cab1b36976729b847a84e7591e0dba3a0caf709`；先前85,912-byte/`4a059f…`身份已被本次Release-input变化取代，不得再用于Source/Candidate。
+- 维护者指出当前README在首次提到C0与Source/Candidate时直接给出作废/重验警告，而术语定义和ROADMAP流程链接要到约60行后才出现；新人无法先理解“为什么”。本轮应把简短定义和authority链接提前，再保留原fail-closed结论。
+- 最终README先用三条大白话定义C0、Source/Candidate与Release-excluded，再给出唯一ROADMAP流程入口和README-as-ZIP-input警告；后文仅承接“上文链接”，避免在同一authority文档重复同一跨文档fragment。
+- 最终候选双构建/check逐字一致：22 entries、87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`。该身份取代此前`f90dd5…`及改写期间所有临时候选，只供新的C0/Source-Candidate使用。

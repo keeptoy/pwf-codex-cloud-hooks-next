@@ -49,3 +49,12 @@
 - README-as-Release-input断言先得到12 pass / 1 fail，补齐新C0/重验说明后聚焦repository契约恢复13/13。
 - 新候选双构建/check逐字一致：22 entries、87,152 bytes、SHA-256 `f90dd556477a166cbe0faade8cab1b36976729b847a84e7591e0dba3a0caf709`；临时构建目录已在确认位于系统Temp后清理，未触及用户`test.zip`。
 - 完整Windows suite PASS：180 tests / 154 pass / 0 fail / 26 skipped；skip仍全部为既有Linux/POSIX-only case。`git diff --check`通过，candidate bootstrap仍是正确版本加64位zero hash。
+- 维护者要求微调README新人阅读顺序：首次警告前先解释C0、Source/Candidate与Release-excluded，并提前提供ROADMAP流程入口；Source/Candidate继续暂停。
+- 一次组合`rg`因第二个测试正则无匹配返回exit 1；已改用单一稳定定位`const stableReadme`读取测试上下文，未修改文件。
+- 新人顺序failing-first按预期为12 pass / 1 fail。正文改写后首次复跑仍1 fail，定位为测试继续搜索旧连续句`README.md本身也是...`；已改为定位新版警告核心短语，不反向扭曲文案。
+- 新人定义正文与聚焦repository契约已恢复13/13；随后完整runner为180 tests / 153 pass / 1 fail / 26 skipped，唯一失败是README提前增加的ROADMAP链接与后文既有同fragment链接重复。
+- 保留首次术语说明处的新人入口，把后文改成“上文链接的ROADMAP Release流程”；继续维护每个authority fragment在同一来源文档内只出现一次的契约。
+- 聚焦architecture/repository契约最终PASS：22/22；完整Windows runner最终PASS：180 tests / 154 pass / 0 fail / 26 skipped。
+- 最终双构建脚本第一次在PowerShell解析`SequenceEqual[byte]`时退出，早于临时目录创建；改用原生字节序列比较后重跑，不把该脚本错误误记为candidate失败。
+- 最终候选双构建/check逐字一致：22 entries、87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`；安全核对临时目录位于系统Temp后已清理。
+- Phase 4.8完成，活动计划回到Phase 5停止点；Source/Candidate未运行，下一步仅为维护者审核、push新的C0并决定何时开启Fresh Cloud。

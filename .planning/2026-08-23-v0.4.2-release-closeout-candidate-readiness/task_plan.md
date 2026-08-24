@@ -6,7 +6,7 @@
 
 ## Next Step
 
-维护者审核并push本轮README Release-input更新形成的新C0 HEAD；Source/Candidate继续暂停，直到维护者决定在全新Cloud按`docs/v0.4.2-cloud-hard-acceptance.md`执行并回传exact证据。
+维护者审核并push新的C0 HEAD；Source/Candidate继续暂停，直到维护者决定在全新Cloud执行。
 
 ## Current Phase
 
@@ -63,6 +63,13 @@ Phase 5 / Source-Candidate paused pending maintainer push
 - [x] 增加风险相称的README/Release契约与完整回归，保留用户未跟踪的`test.zip`，创建范围单一的本地commit。
 - **Status:** complete
 
+### Phase 4.8: README newcomer-friendly Release context
+
+- [x] 在README首次出现C0/Source-Candidate/Release-excluded前，用大白话定义三个术语并提前链接ROADMAP权威流程。
+- [x] 保留“README是ZIP输入，PASS后修改必须新C0重验”的fail-closed边界，但让原因在警告前可理解。
+- [x] 更新契约测试、重新双构建/check和运行风险相称回归，创建新的本地C0 commit。
+- **Status:** complete
+
 ### Phase 5: Source/Candidate channel checkpoint
 
 - [ ] 维护者push并在独立Fresh Cloud完成4.1、B～E与9.1。
@@ -92,6 +99,9 @@ Phase 5 / Source-Candidate paused pending maintainer push
 | Windows sandbox阻止Git Bash创建signal pipe（Win32 error 5） | 1 | 仅为本地Bash语法检查申请允许子进程的执行面；不把Git Bash结果冒充Linux证据。 |
 | PowerShell中把`rg`正则、空格与`|`混在双/单引号命令里导致解析或路径错误 | 3 | 停止复用复杂组合模式，改用简单`rg README tests`与逐个关键词查询；文件未修改。 |
 | Windows PowerShell未展开传给`rg`的`init-cloud-sandbox-v*.bash` glob | 1 | 改为查询明确candidate文件或由PowerShell枚举；不重复把glob直接传给`rg`。 |
+| README新人顺序正文完成后契约仍搜索旧连续警告句，导致误判顺序缺失 | 1 | 保留更自然的新文案，把测试定位收窄到稳定核心短语`它本身也是Release ZIP输入`。 |
+| README提前增加ROADMAP入口后与后文原链接形成重复authority fragment，完整runner为153 pass / 1 fail / 26 skipped | 1 | 保留新人首次接触处的链接，把后文改成“上文链接的ROADMAP Release流程”，不弱化跨文档唯一入口断言。 |
+| PowerShell不接受静态泛型调用`SequenceEqual[byte]`，双构建脚本在解析阶段退出 | 1 | 解析发生在临时目录创建前，无文件副作用；改用`Compare-Object -SyncWindow 0`比较字节序列。 |
 
 ## Current Status
 
