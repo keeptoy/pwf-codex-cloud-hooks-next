@@ -204,7 +204,9 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(operatorGuideTemplate, /^<a name="operator-guide-channel-checkpoints"><\/a>$/m);
   assert.match(operatorGuideTemplate, /^<a name="operator-guide-final-post-run-status"><\/a>$/m);
   assert.match(operatorGuideTemplate,
-    /^<a name="operator-guide-release-entry-retirement-checkpoint"><\/a>$/m);
+    /^<a name="operator-guide-candidate-admission-preflight"><\/a>$/m);
+  assert.match(operatorGuideTemplate,
+    /^<a name="operator-guide-source-candidate-closeout-retirement-checkpoint"><\/a>$/m);
   assert.match(operatorGuideTemplate,
     /^<a name="operator-guide-release-exit-retirement-checkpoint"><\/a>$/m);
   assert.match(acceptanceTemplate, /\| 本模板 \| Source\/Candidate 与 Published Release 的稳定执行协议/);
@@ -284,7 +286,8 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.doesNotMatch(acceptanceTemplate, /release-artifact-v1|runtime-bundle-v1|bundle\["files"\]/);
   assert.match(acceptanceTemplate, /^<a name="release-channel-checkpoint-routing"><\/a>$/m);
   assert.match(acceptanceTemplate, /operator guide 的channel checkpoint与final Post-run status应保存以下原始证据/);
-  assert.match(acceptanceTemplate, /candidate-readiness retirement checkpoint/);
+  assert.match(acceptanceTemplate, /candidate admission preflight/);
+  assert.match(acceptanceTemplate, /source-candidate closeout retirement checkpoint/);
   assert.match(acceptanceTemplate, /role-window closeout retirement checkpoint/);
   assert.match(acceptanceTemplate, /两次状态写回[^\n]*不是[^\n]*Cloud/);
   assert.match(acceptanceTemplate, /正式tag[^\n]*SOURCE_CANDIDATE_HEAD/);
@@ -433,6 +436,7 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
     "phase-4-14-explicit-non-goals", "phase-4-14-successor-inheritance",
     "phase-4-14-post-implementation-status-stage-guide-retirement",
     "phase-4-14-post-governance-status-history-role-rotation",
+    "phase-4-14-post-governance-status-post-pass-retirement-ordering",
     "phase-4-14-immutable-evidence",
   ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(history, /^# Phase 4\.14：Release closeout 与验收文档治理回顾$/m);
@@ -445,6 +449,8 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
   assert.match(history, /phase-4\.12-v0\.4\.0-release-discovery\.md/);
   assert.match(history, /phase-4\.13-v0\.4\.1-path-safety-patch-train\.md/);
   assert.match(history, /candidate-readiness retirement checkpoint/);
+  assert.match(history, /candidate admission preflight/);
+  assert.match(history, /source-candidate closeout retirement checkpoint/);
   assert.match(history, /role-window closeout retirement checkpoint/);
   for (const role of [
     "SOURCE_CANDIDATE_HEAD", "SOURCE_CANDIDATE_CHECKPOINT_HEAD",
@@ -461,6 +467,8 @@ test("Phase 4.14 preserves the Release closeout governance rationale", () => {
   assert.match(history, /`临时文件\/`[\s\S]{0,100}Git忽略/);
   assert.match(history,
     /Post-governance status — history roles and Product Phase authority rotation[\s\S]*RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
+  assert.match(history,
+    /Post-governance status — post-PASS retirement ordering[\s\S]*Source\/Candidate失败[\s\S]*planning[\s\S]*回滚[\s\S]*新C0/);
   assert.match(history,
     /ROADMAP第4节与第5节形成显式authority rotation[\s\S]*product-phase-N[\s\S]*旧第4节没有current入链/);
   assert.match(history,

@@ -2,15 +2,15 @@
 
 ## Goal
 
-不创建 standing Phase 9，按版本无关 Release closeout workflow 完成 `v0.4.2` 的第一退役检查点、候选身份物化、本地验收和 Source/Candidate Cloud 教程准备，并停止在维护者 push/Cloud 之前。
+不创建 standing Phase 9，按版本无关 Release closeout workflow 完成 `v0.4.2` 的非破坏性candidate admission preflight、候选身份物化、本地验收和 Source/Candidate Cloud教程准备；第一轮真实退役只在Source/Candidate PASS后执行并写入C1。
 
 ## Next Step
 
-维护者审核并push最新本地C0 HEAD；在全新Cloud按`docs/v0.4.2-cloud-hard-acceptance.md`执行Source/Candidate，回传exact HEAD与原始证据。停止在Cloud结果写回前。
+维护者审核并push最新本地C0 HEAD，在全新Cloud按`docs/v0.4.2-cloud-hard-acceptance.md`执行Source/Candidate并回传exact证据；PASS后再进入第一轮真实退役检查与C1写回。
 
 ## Current Phase
 
-Phase 5 / maintainer push and Source/Candidate Cloud pending
+Phase 5 / Source-Candidate Cloud
 
 ## Phases
 
@@ -20,10 +20,10 @@ Phase 5 / maintainer push and Source/Candidate Cloud pending
 - [x] 复核 v0.4.2 的实际 delta、Release allowlist、版本身份与停止条件。
 - **Status:** complete
 
-### Phase 2: Candidate-readiness retirement checkpoint
+### Phase 2: Candidate admission preflight
 
-- [x] 对施工 planning、临时对象、旧证据依赖和版本窗口对象作 RETIRE/MIGRATE/KEEP 判断。
-- [x] 只实施能在 C0 前安全闭合且不损坏 immutable recovery 的最小退役事务。
+- [x] 对施工planning、临时对象、旧证据依赖和版本窗口对象完成inventory、风险分类与候选形成前迁移。
+- [x] 保留旧planning、恢复材料和回滚线索；C0前不执行retirement删除。
 - **Status:** complete
 
 ### Phase 3: Atomic v0.4.2 candidate materialization
@@ -36,7 +36,7 @@ Phase 5 / maintainer push and Source/Candidate Cloud pending
 ### Phase 4: Local validation and handoff
 
 - [x] 运行风险相称的 focused checks、完整 suite、Release build/check 和 deterministic double build。
-- [x] 写回 planning 与第一检查点状态，并准备范围单一的本地C0 commit。
+- [x] 写回 planning 与candidate admission preflight状态，并准备范围单一的本地C0 commit。
 - [x] 停止在 Source/Candidate Cloud 前，准备向维护者交接精确commit、教程和待push动作。
 - **Status:** complete
 
@@ -47,11 +47,20 @@ Phase 5 / maintainer push and Source/Candidate Cloud pending
 - [x] 增加防回归断言并运行focused与完整本地治理验证。
 - **Status:** complete
 
+### Phase 4.6: Post-PASS retirement ordering
+
+- [x] 把验收前步骤冻结为只读`candidate admission preflight`，把第一轮真实退役移动到Source/Candidate PASS之后、C1之前。
+- [x] 保留设计理由：失败前不删恢复线索；C1/C2各保存一轮真实退役结论；触及C0 Release输入时fail closed并重建C0重验。
+- [x] 同步ROADMAP、模板、治理指南、v0.4.2 guide、Phase 4.14后续状态与治理测试。
+- [x] 运行focused/full regression，确认改动仍被Release allowlist排除。
+- **Status:** complete
+
 ### Phase 5: Source/Candidate channel checkpoint
 
 - [ ] 维护者push并在独立Fresh Cloud完成4.1、B～E与9.1。
 - [ ] 核对exact C0 HEAD、Linux零skip、ZIP identity、lifecycle、doctor/inventory/policy/residue原始证据。
-- [ ] 真实PASS后才追加guide channel checkpoint并创建C1；否则按首次错误停止。
+- [ ] 真实PASS后执行第一轮retirement review；只有Release-excluded对象可在维护者明确决定后清退，任何C0 Release输入变化都回到新C0重验。
+- [ ] 将Source/Candidate与第一退役检查的真实证据一起追加到guide并创建C1；否则按首次错误停止。
 - **Status:** pending
 
 ## Authorization

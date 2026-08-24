@@ -308,10 +308,13 @@ Release四步与C0/C1/C2身份顺序只读
   继续留在活动planning；
 - Source/Candidate与Published Release是final source和public bytes的两个独立Release通道，可以由同一份Release guide
   编排，但不能共享环境、identity或证据，也不计作两个Product Discovery Round；
-- 两轮retirement review只在candidate closeout与accepted role rotation做对象RETIRE/MIGRATE/KEEP判断，不是Cloud
-  acceptance；纯review不新建guide、不重复黑盒；
-- 两轮review按ROADMAP的retirement入口/出口逐项记录对象决定；第一检查点改变Release输入时先重新冻结候选，第二检查点
-  不得改写immutable tag、ZIP、bootstrap、URL或SHA；
+- Source/Candidate前的candidate admission preflight只读盘点inventory、恢复证据、未来可能退役对象和风险，不删除planning、
+  恢复材料或回滚线索；它不是retirement review，也不产生删除授权；
+- 两轮retirement review只在对应验收PASS后做对象RETIRE/MIGRATE/KEEP判断：第一轮在Source/Candidate PASS后、C1前，
+  第二轮在Published Release PASS、Latest与postflight后、C2前；纯review不新建guide、不重复黑盒；
+- 两轮review按ROADMAP时点逐项记录对象决定。第一轮只能直接处理Release-excluded对象；若拟退役动作改变package、contract、
+  runtime、bootstrap、ZIP allowlist或其他C0 Release输入，必须形成新C0并重新运行Source/Candidate。第二轮不得改写immutable
+  tag、ZIP、bootstrap、URL或SHA；
 - C0/C1/C2身份和写回先后只按ROADMAP解释；本指南只要求对应状态commit保存已经实际形成的对象治理结论，
   不重新定义tag、publication或Cloud通道顺序；
 - 两次状态写回不是额外Cloud验收。普通Release仍只有Source/Candidate与Published Release两个独立环境/身份通道；
@@ -331,8 +334,9 @@ Release四步与C0/C1/C2身份顺序只读
 或实施 gate。高风险项目可以先完成 pointer/rollback promotion，再用独立 gate 做历史清退；但 eviction
 关闭前不得开启下一开发列车，否则临时兼容副本会被下一轮继续继承。
 
-在ROADMAP定义的默认Release closeout workflow中，这个事务由前后两个retirement checkpoint包围；本节只解释第二检查点
-怎样完成角色旋转后的清退。两次审查保留不同信息时点，但不要求Phase 9、六轮任务或额外黑盒。
+在ROADMAP定义的默认Release closeout workflow中，这个事务由两次post-PASS retirement checkpoint分阶段闭合；本节只解释第二检查点
+怎样完成角色旋转后的清退。两次审查保留不同信息时点，但不要求Phase 9、六轮任务或额外黑盒。验收前只允许非破坏性
+candidate admission preflight，以便失败时保留planning、恢复材料和回滚线索。
 
 每次 baseline promotion 都应同时完成清退：
 

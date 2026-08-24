@@ -34,3 +34,9 @@
 - focused治理回归PASS：22/22；完整Windows suite PASS：180 tests / 154 pass / 0 fail / 26 skipped，skip仍全部是既有Linux/POSIX-only证据缺口。
 - authority收敛完成，活动计划回到Phase 5；Source/Candidate仍未运行，最新本地commit形成后才交维护者push。
 - Release allowlist交叉检查为`PWF_AUTHORITY_GOVERNANCE_RELEASE_INPUT_DELTA=NONE`；本轮只改变Release-excluded治理文档、planning与tests，候选ZIP输入和既有本地ZIP identity不变。
+- 维护者批准继续细化：两轮真实退役均移到对应验收PASS后；验收前只保留非破坏性candidate admission preflight，并冻结触及C0 Release输入就重建C0重验的fail-closed边界。
+- failing-first聚焦契约测试按预期失败：18 pass / 4 fail；失败均指向旧preflight/retirement锚点与顺序尚未同步，没有production测试回归。
+- 已同步ROADMAP、Cloud hard acceptance模板、Operator Guide模板、repository governance、v0.4.2 guide、DESIGN与Phase 4.14后续回顾；等待聚焦与完整回归确认。
+- 聚焦契约最终PASS：22 tests / 22 pass / 0 fail。
+- 完整Windows runner PASS：180 tests / 154 pass / 0 fail / 26 skipped；skip仍全部为既有Linux/POSIX-only case。
+- `git diff --check`通过；12个改动文件与22-entry Release allowlist交集为`NONE`，候选ZIP输入与production核心均未改变。

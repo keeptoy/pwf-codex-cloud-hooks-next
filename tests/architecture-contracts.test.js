@@ -111,7 +111,9 @@ test("acceptance documents are counted by Discovery Round and share one operator
   assert.match(operatorTemplate, /正常等待[^\n]*不是`POST_RUN_INCOMPLETE`/);
   assert.match(operatorTemplate, /channel checkpoint[\s\S]*不会?冻结[\s\S]*Final Post-run[\s\S]*冻结/);
   assert.match(operatorTemplate,
-    /^<a name="operator-guide-release-entry-retirement-checkpoint"><\/a>$/m);
+    /^<a name="operator-guide-candidate-admission-preflight"><\/a>$/m);
+  assert.match(operatorTemplate,
+    /^<a name="operator-guide-source-candidate-closeout-retirement-checkpoint"><\/a>$/m);
   assert.match(operatorTemplate,
     /^<a name="operator-guide-release-exit-retirement-checkpoint"><\/a>$/m);
   assert.match(operatorTemplate, /SOURCE_CANDIDATE_HEAD[\s\S]*正式tag[\s\S]*实际Cloud PASS/);
@@ -140,7 +142,8 @@ test("acceptance documents are counted by Discovery Round and share one operator
   assert.match(roadmap, /第1、3步[^\n]*Cloud[^\n]*第2、4步[^\n]*控制面/);
   assert.match(roadmap, /candidate baseline closeout/);
   assert.match(roadmap, /普通Release[^\n]*不需要[^\n]*standing Phase 9/);
-  assert.match(roadmap, /candidate-readiness retirement checkpoint/);
+  assert.match(roadmap, /candidate admission preflight/);
+  assert.match(roadmap, /source-candidate closeout retirement checkpoint/);
   assert.match(roadmap, /role-window closeout retirement checkpoint/);
   assert.match(roadmap, /正式tag[^\n]*Source\/Candidate[^\n]*实际Cloud PASS[^\n]*commit/);
   assert.doesNotMatch(roadmap,
@@ -344,12 +347,15 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(roadmap, /^<a name="release-four-step-flow"><\/a>$/m);
   assert.match(roadmap, /^<a name="pre-1-compatibility-admission"><\/a>$/m);
   assert.match(roadmap, /每条发布列车都必须经过两轮 retirement review/);
-  assert.match(roadmap, /第一轮：Phase\/candidate closeout/);
+  assert.match(roadmap, /第一轮：source-candidate closeout/);
   assert.match(roadmap, /第二轮：role-window closeout/);
   assert.match(roadmap, /review.*不是为了清单好看而强制删除/);
   assert.match(repositoryGovernance, /^<a name="planning-lifecycle"><\/a>$/m);
   assert.match(roadmap, /docs\/repository-governance-guide\.md#planning-lifecycle/);
   assert.match(roadmap, /planning[\s\S]{0,180}维护者[\s\S]{0,120}明确决定[\s\S]{0,120}不(?:得|会)自动删除/);
+  assert.match(roadmap, /candidate admission preflight[\s\S]{0,240}只读[\s\S]{0,240}不删除/);
+  assert.match(roadmap, /Source\/Candidate[\s\S]{0,240}失败[\s\S]{0,240}planning[\s\S]{0,180}回滚/);
+  assert.match(roadmap, /package、contract、runtime、bootstrap、ZIP allowlist[\s\S]{0,240}新C0[\s\S]{0,160}Source\/Candidate/);
   assert.match(roadmap, /多个低风险 Phase合并到同一版本列车[\s\S]*每个 Phase仍分别做第一轮审查[\s\S]*只在最终发布时做一次[\s\S]*第二轮审查/);
   assert.ok(discoveryStart < migrationStart && migrationStart < releaseStart
     && releaseStart < rollbackStart && rollbackStart < longTermStart,
@@ -358,10 +364,10 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
     "retirement reviews must live inside Release governance before compatibility policy");
   const releaseFlow = roadmap.slice(releaseFlowStart, retirementStart);
   assert.match(releaseFlow,
-    /C0：候选源码 commit[\s\S]*Source\/Candidate Cloud PASS[\s\S]*C1：第一阶段状态commit[\s\S]*正式验收tag精确指向C0[\s\S]*immutable Pre-release[\s\S]*Published Release Cloud PASS[\s\S]*Latest promotion\/postflight[\s\S]*role-window closeout retirement checkpoint[\s\S]*C2：最终治理commit/);
+    /candidate admission preflight[\s\S]*C0：候选源码 commit[\s\S]*Source\/Candidate Cloud PASS[\s\S]*source-candidate closeout retirement checkpoint[\s\S]*C1：第一阶段状态commit[\s\S]*正式验收tag精确指向C0[\s\S]*immutable Pre-release[\s\S]*Published Release Cloud PASS[\s\S]*Latest promotion\/postflight[\s\S]*role-window closeout retirement checkpoint[\s\S]*C2：最终治理commit/);
   const retirementFlow = roadmap.slice(retirementStart, compatibilityStart);
   assert.match(retirementFlow,
-    /candidate-readiness retirement checkpoint[\s\S]*C0 \/ Source-Candidate[\s\S]*C1 \/ 第一阶段状态写回[\s\S]*immutable publication[\s\S]*Published Release Cloud[\s\S]*Latest\/postflight[\s\S]*role-window closeout retirement checkpoint[\s\S]*C2 \/ final evidence与programme closeout/);
+    /candidate admission preflight[\s\S]*C0 \/ Source-Candidate[\s\S]*Source\/Candidate Cloud PASS[\s\S]*source-candidate closeout retirement checkpoint[\s\S]*C1 \/ 第一阶段状态写回[\s\S]*immutable publication[\s\S]*Published Release Cloud PASS[\s\S]*Latest\/postflight[\s\S]*role-window closeout retirement checkpoint[\s\S]*C2 \/ final evidence与programme closeout/);
   for (const role of [
     "SOURCE_CANDIDATE_HEAD", "SOURCE_CANDIDATE_CHECKPOINT_HEAD",
     "PUBLISHED_RELEASE_CLOSEOUT_HEAD",

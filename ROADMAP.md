@@ -26,7 +26,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 当前已接受版本 | `v0.4.1`；stable GitHub `Latest`与programme accepted |
 | 当前直接回退版本 | immutable `v0.4.0` immediate fallback |
 | 回退证据链 | immutable `v0.3.5` deeper fallback；`v0.3.4`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4与`v0.4.1`发布列车均已关闭；`v0.4.2` package/Release candidate已物化，candidate-readiness retirement checkpoint已完成，Source/Candidate为`PENDING`。seal、publication、Published Release、Latest、下一Product Phase与外部状态变更仍未授权 |
+| 当前 programme 边界 | Product Phase 4与`v0.4.1`发布列车均已关闭；`v0.4.2` package/Release candidate已物化，非破坏性candidate admission preflight已完成，Source/Candidate为`PENDING`。第一轮真实退役、seal、publication、Published Release、Latest、下一Product Phase与外部状态变更仍未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -71,7 +71,7 @@ provenance和对应版本acceptance，不在本节重建逐P9流水。
 trusted graph、managed events或Release allowlist的前提下物化`0.4.2`候选身份。package identity `0.4.2`、Release contract、exact v0.4.1
 predecessor transition与ZIP外zero-hash bootstrap构成同一候选事务；当前accepted仍为`v0.4.1`，`v0.4.0`仍是immediate fallback。
 
-本列车不创建standing Phase 9。Release candidate已获批，candidate-readiness第一检查点已完成对象分类与旧planning测试依赖迁移；下一唯一Release
+本列车不创建standing Phase 9。Release candidate已获批，非破坏性candidate admission preflight已完成inventory、对象分类与风险检查；下一唯一Release
 通道是Source/Candidate，当前仍为`PENDING`。通过前不允许seal、tag或publication；Published Release、Latest与下一Product
 Phase也未授权。已关闭的`v0.4.0`Release discovery、`v0.4.1`path-safety列车与本轮Release治理分别由Phase 4.12、Phase 4.13、
 Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance恢复；本节只维护当前边界。
@@ -351,14 +351,21 @@ Release operator guide管理；single-Discovery版本可以继续使用`vX.Y.Z-c
 | 3. 公开包验收 | 用另一套 Fresh Cloud 从公开 bootstrap 默认下载链安装，再重新下载公开 ZIP 做 Resume/doctor/deep check | “用户实际下载到的公开包也能工作” | 同一Release operator guide的Published Release证据；声明范围闭合后写final Post-run |
 | 4. 晋级 Latest | 前三步全绿后，由维护者把同一个 Release 取消 Pre-release 并设为 Latest，再做只读 postflight | “现在正式推荐这个版本”，并旋转 accepted/fallback 角色 | ROADMAP；tag、Release 和资产都原地保留，不删除重建 |
 
-对应的Git身份与证据写回按C0→C1→C2前进；分支HEAD可以前进，但正式tag目标始终保持C0：
+对应的Git身份与证据写回按C0→C1→C2前进；分支HEAD可以前进，但正式tag目标始终保持C0。C0前只做非破坏性
+candidate admission preflight；两轮真实退役分别在对应验收PASS后执行：
 
 ```text
+形成候选基线
+  → candidate admission preflight
+     （只读inventory、分类和风险检查，不删除）
+
 C0：候选源码 commit（SOURCE_CANDIDATE_HEAD）
   → Source/Candidate Cloud PASS
+  → source-candidate closeout retirement checkpoint
+     （planning删除仍需维护者明确决定）
 
 C1：第一阶段状态commit（SOURCE_CANDIDATE_CHECKPOINT_HEAD）
-  → 本地回补第一阶段PASS与channel checkpoint
+  → 本地回补第一阶段PASS、channel checkpoint与第一退役检查证据
   → 维护者push治理分支
   → 正式验收tag精确指向C0
   → 维护者创建immutable Pre-release并上传已验收ZIP/bootstrap
@@ -372,7 +379,7 @@ C2：最终治理commit（PUBLISHED_RELEASE_CLOSEOUT_HEAD）
 ```
 
 正式tag必须精确指向Source/Candidate实际Cloud PASS的commit，即`SOURCE_CANDIDATE_HEAD`；
-`SOURCE_CANDIDATE_CHECKPOINT_HEAD`在publication前记录第一通道证据并推进治理分支；维护者随后把tag显式固定到C0，不能让
+`SOURCE_CANDIDATE_CHECKPOINT_HEAD`在publication前记录第一通道与第一轮真实退役证据并推进治理分支；维护者随后把tag显式固定到C0，不能让
 分支新HEAD取代tag目标。`PUBLISHED_RELEASE_CLOSEOUT_HEAD`只在公开包、Latest/postflight和退出检查点全部闭合后形成。
 C1/C2都不能取代C0，也不是额外Cloud通道。
 
@@ -404,9 +411,10 @@ candidate+accepted 窗口的本地版本文件与旧 oracle。
 ```text
 Phase 4 / F3C4完成
   → 形成0.4.0功能/候选基线
-  → candidate-readiness retirement checkpoint（第一轮对象退役审查）
+  → candidate admission preflight（只读inventory、分类和风险检查）
   → C0 / Source-Candidate候选源码
   → Source/Candidate Cloud PASS
+  → source-candidate closeout retirement checkpoint（第一轮真实退役检查）
   → C1 / 第一阶段状态写回
   → tag精确指向C0并完成immutable publication
   → Published Release Cloud PASS
@@ -419,18 +427,23 @@ Phase 4 / F3C4完成
 每条发布列车都必须经过两轮 retirement review；retirement review不是Cloud acceptance，也不因逐项审查就产生新的
 Operator Guide或黑盒轮次。“review”是逐项做`RETIRE/MIGRATE/KEEP`决定，不是为了清单好看而强制删除：
 
-涉及`.planning/`时，两轮检查点先列出exact scope、恢复证据与建议去向，再提醒维护者按
+在C0前还必须有一次非破坏性`candidate admission preflight`，只读盘点未来可能退役的对象、恢复证据和风险，不删除planning、
+恢复材料或回滚线索。这样Source/Candidate失败时，planning、恢复材料和回滚线索仍完整，不会因为提前清退增加排错与回滚难度。
+
+涉及`.planning/`时，两轮真实检查点先列出exact scope、恢复证据与建议去向，再提醒维护者按
 [仓库治理指南的Planning生命周期](docs/repository-governance-guide.md#planning-lifecycle)明确决定是否移除。
 仅仅到达C0/C2、切换`.active_plan`、满足retirement DoD或已有Git恢复点，都不得自动删除planning；维护者尚未明确决定的
 scope继续`KEEP`。大白话：检查点负责把“哪些可以退、为什么可以退”摆到桌面上，真正删不删仍由维护者拍板。
 
 | Review | 触发点 | 主要对象 | 退出要求 |
 |---|---|---|---|
-| 第一轮：Phase/candidate closeout | Product Phase的最终aggregate/closeout gate；不进入独立Product Phase的小型patch/governance列车则落在candidate baseline closeout | 施工 planning、临时 fixture/脚本、重复摘要、过渡 seam、validation refs与当期 lifecycle账 | 清掉已满足 DoD的脚手架；仍承担恢复、Release或回归职责的对象明确 KEEP/MIGRATE与下一 review条件 |
+| 第一轮：source-candidate closeout | Source/Candidate Cloud实际PASS之后、C1写回之前 | 施工 planning、临时 fixture/脚本、重复摘要、过渡 seam、validation refs与当期 lifecycle账 | 只对Release-excluded对象提出RETIRE/MIGRATE/KEEP；planning删除由维护者明确决定；C1保存已经实际形成的结论 |
 | 第二轮：role-window closeout | 同一列车的 public assets验收、Latest晋级与只读postflight之后 | candidate/accepted窗口专用 refs、oracles、compatibility transition、canary和版本化运维材料 | 新 accepted与 immediate fallback可恢复；退出角色窗口的对象按 retirement DoD清退或迁移；稳定 contracts/tests/history不得机械删除 |
 
 Product Phase收官已经是正式生命周期边界，但只形成候选功能基线，不会自动产生immutable public assets或轮转accepted角色。
-第一轮review是Source/Candidate的进入条件；若`RETIRE/MIGRATE`动作改变任一Release输入，必须先重新冻结候选再运行第一Cloud通道。
+其closeout结论可以输入candidate admission preflight，但第一轮真实review必须等待Source/Candidate PASS。若PASS后的拟退役动作会改变
+package、contract、runtime、bootstrap、ZIP allowlist或其他C0 Release输入，必须fail closed：不得沿用原PASS，必须形成新C0并
+重新运行Source/Candidate。只有Release-excluded planning、临时教程和脚手架适合在第一轮提出清退，且planning删除仍需维护者明确决定。
 第二轮review是Release workflow的退出条件，只处理必须等公开身份、Latest和版本角色确定后才能判断的对象，且不得改写sealed
 tag、ZIP、bootstrap、URL或SHA。
 

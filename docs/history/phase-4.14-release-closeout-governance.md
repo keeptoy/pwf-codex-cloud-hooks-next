@@ -180,6 +180,25 @@ package或Release字节，也没有授权`0.4.2`候选封板、Cloud、publicati
 [repository governance guide](../repository-governance-guide.md#product-phase-authority-rotation)与ROADMAP；本节继续只是带时间语义的
 历史回补。
 
+<a name="phase-4-14-post-governance-status-post-pass-retirement-ordering"></a>
+
+## Post-governance status — post-PASS retirement ordering
+
+`v0.4.2`候选准备期间，维护者又收窄了本章早期形成的“入口/出口检查点”表达：两轮真实retirement review都应等待对应验收
+PASS。Source/Candidate前仍保留`candidate admission preflight`，但它只读inventory、分类、恢复证据与风险，不删除任何对象。
+原因很直接：Source/Candidate失败时，旧planning、恢复材料和回滚线索必须仍在，不能让提前清退增加排错与回滚难度。
+
+第一通道PASS后才执行`source-candidate closeout retirement checkpoint`，并让C1保存第一通道与第一轮真实退役结论；Published
+Release PASS且Latest/postflight完成后，才执行`role-window closeout retirement checkpoint`，并让C2保存第二轮真实退役和最终
+closeout。这样C1、C2记录的都是已经发生的检查，不是“准备以后检查”的承诺。planning的实际删除仍须维护者按
+[Planning生命周期](../repository-governance-guide.md#planning-lifecycle)明确决定。
+
+第一轮还有一条fail-closed边界：只有Release-excluded planning、临时教程和脚手架适合在PASS后提出清退。若拟退役对象会改变
+package、contract、runtime、bootstrap、ZIP allowlist或其他C0 Release输入，就不能沿用原PASS，必须形成新C0并重新运行
+Source/Candidate。本节保留这次后续精炼的原因；当前执行顺序仍只读
+[`ROADMAP` Release四步](../../ROADMAP.md#release-four-step-flow)与
+[`ROADMAP` 两轮retirement review](../../ROADMAP.md#version-train-two-retirement-reviews)。
+
 <a name="phase-4-14-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

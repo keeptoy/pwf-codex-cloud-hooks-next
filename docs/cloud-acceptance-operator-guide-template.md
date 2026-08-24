@@ -27,9 +27,10 @@ channel checkpoint与final Post-run写入格式，不建立第二份宏观流程
 ```text
 Discovery decision
   -> materialize one operator guide with Pre-run status
-  -> Release only: close candidate-readiness retirement checkpoint
+  -> Release only: complete non-destructive candidate admission preflight
   -> maintainer executes the exact tutorial or first declared channel
-  -> if more declared channels remain: append a channel checkpoint and stop
+  -> Release only after Source/Candidate PASS: complete source-candidate closeout retirement checkpoint
+  -> if more declared channels remain: append a channel checkpoint, write C1, and stop
   -> maintainer completes the remaining authorized channels
   -> Release only: complete Latest/postflight and role-window closeout retirement checkpoint
   -> append exact Final Post-run status to the same file
@@ -59,7 +60,8 @@ Discovery decision
 11. Operator guide、版本acceptance和本模板必须被Release、installed inventory与trusted execution graph排除。
 
 普通Release按上述ROADMAP入口进入版本无关closeout，不要求另建standing Phase 9或把历史P9-A～F复制为六轮任务。
-本模板中的两个retirement章节只承接同一流程的进入/退出对象审查，不是额外Cloud通道、Discovery Round或guide。
+本模板中的candidate admission preflight与两个post-PASS retirement章节只承接同一流程的对象治理，不是额外Cloud通道、
+Discovery Round或guide。preflight只读盘点，不是第三轮retirement review。
 
 生成具体guide时复制下面第1～5节，替换所有`<...>`；任何仍未解析的输入都必须fail closed。第6节只在
 多通道guide的前序通道真实PASS后追加，第7节等声明范围取得最终状态后再追加。
@@ -163,14 +165,14 @@ doctor不健康、expected/actual关系不一致、需要修改production/contra
 这里可以记录已完成的本地materialization、failing-first、exact ref/path关系、candidate identity和维护者待执行动作，
 但不得出现尚未实际取得的Cloud PASS、Post-run output或promotion结论。
 
-<a name="operator-guide-release-entry-retirement-checkpoint"></a>
+<a name="operator-guide-candidate-admission-preflight"></a>
 
-### 5.1 Release entry：candidate-readiness retirement checkpoint
+### 5.1 Release entry：candidate admission preflight
 
-Release guide进入Source/Candidate前必须记录第一轮`RETIRE/MIGRATE/KEEP`结论。Product Phase final closeout已经完成的
-review可以直接引用；不进入独立Product Phase的小型patch/governance列车则在candidate baseline closeout完成等价审查。
-任何审查动作若改变source、package、contract、runtime、bootstrap输入或ZIP allowlist，必须先重新冻结候选，不能沿用
-变更前的Source/Candidate证据。该检查点只按ROADMAP的retirement入口建立第一Cloud通道准入，不创建新的Cloud task或验收轮次。
+Release guide进入Source/Candidate前必须完成一次非破坏性preflight：只读inventory、分类未来可能退役的对象、核对恢复证据并
+标记风险，不删除planning、恢复材料或回滚线索。Product Phase final closeout已经形成的对象账可以引用；不进入独立Product
+Phase的小型patch/governance列车则在candidate baseline closeout形成等价盘点。这样第一通道失败时，排错现场与回滚路径仍完整。
+该preflight只建立第一Cloud通道准入，不创建新的Cloud task、验收轮次或删除授权。
 
 <a name="operator-guide-channel-checkpoints"></a>
 
@@ -186,8 +188,20 @@ SOURCE_CANDIDATE_PASS / PUBLISHED_RELEASE_NOT_RUN / STOP_BEFORE_PUBLICATION
 channel checkpoint必须绑定已完成通道的exact identity、最终exit code、关键原始证据与明确停止点。它不会冻结guide，
 不表示全部声明范围PASS，也不能授权维护者publication、Published Release、Latest或role rotation；下一步授权仍只读活动plan。
 
+<a name="operator-guide-source-candidate-closeout-retirement-checkpoint"></a>
+
+### 6.1 Source/Candidate closeout：source-candidate closeout retirement checkpoint
+
+Release guide只有在Source/Candidate Cloud真实PASS后，才执行第一轮`RETIRE/MIGRATE/KEEP`审查，并在C1中保存已经实际形成的
+结论。只有Release-excluded planning、临时教程和脚手架适合在这里提出清退；planning删除仍需维护者按
+[仓库治理指南的Planning生命周期](repository-governance-guide.md#planning-lifecycle)明确决定。
+
+若拟退役动作会改变package、contract、runtime、bootstrap、ZIP allowlist或其他C0 Release输入，必须fail closed：不得沿用
+原PASS或直接写C1，必须形成新C0并重新运行Source/Candidate。大白话：可以在验收前列出“以后可能删什么”，但只有PASS后
+才能做第一次真实退役检查；触及已验收字节就必须重新验收。
+
 按ROADMAP的C0→C1→C2顺序，Release guide必须把`SOURCE_CANDIDATE_HEAD`写成正式tag的唯一目标，它必须等于Source/Candidate实际Cloud PASS的完整commit。
-第一阶段状态写回commit只记录该channel checkpoint并推进治理分支，不替代经过Cloud验收的tag目标；维护者即使先push
+第一阶段状态写回commit记录该channel checkpoint与第一轮真实退役结论并推进治理分支，不替代经过Cloud验收的tag目标；维护者即使先push
 状态commit，也必须把tag显式固定到`SOURCE_CANDIDATE_HEAD`。该状态写回后，guide保持开放并等待immutable publication
 与第二通道，不把分支新HEAD冒充候选身份。
 
