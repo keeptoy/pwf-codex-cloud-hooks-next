@@ -82,3 +82,14 @@
 - 首次正文后architecture/repository聚焦回归为23 tests / 22 pass / 1 fail；Phase与链接均通过，唯一fixture倒置ROADMAP两个职责短语，已拆为三个直接断言。
 - 最终architecture/repository治理回归PASS：23/23；新ROADMAP入口、Phase 4.14稳定anchor、职责分层、Release-excluded和Cloud PENDING均受保护。
 - 本轮6个改动文件与22-entry Release allowlist交集为`NONE`，候选ZIP字节不变；Phase 4.11完成，活动计划回到Phase 5停止点。
+- 维护者批准在Source/Candidate前开展有界`Documentation topology migration preflight`；已将其加入现有活动planning并明确本gate只读盘点、不移动文件，Source/Candidate继续暂停。
+- 已恢复planning-with-files技能、运行session catch-up且无未同步输出；活动pointer仍指向本`v0.4.2` closeout计划，开始登记文档authority、受众、Release边界、入链与测试依赖。
+- 第一轮只读inventory完成：登记9份根Markdown、8份`docs/`顶层专项文档和既有history分区；确认acceptance、templates、governance、operations当前混放，且三份测试与多个根级authority对旧路径有精确依赖。
+- 已把“candidate + accepted角色窗口”“路径迁移必须原子更新current入链/测试”“最终source必须形成新C0”等发现写入findings；尚未移动或改写任何production、authority正文或专项文档。
+- 第二轮只读核对完成：Release allowlist中的Markdown仅为根README与THIRD_PARTY_NOTICES；确认根目录位置、authority级别和package输入是三个独立维度，并登记现有专项文档稳定anchors。
+- 第三轮核对README文档地图与治理指南现有分层/清退合同，并完成8个候选移动文件的current可见入链分组；确认应采用一次原子目录迁移，而非逐文件搬家。默认`rg`未覆盖hidden planning，已登记为下一轮必须补齐的inventory边界。
+- hidden复扫补出20个planning入链；已区分活动路径迁移与冻结planning时间语义。核对v0.4.1 tag后确认当前accepted acceptance含tag后C1/C2大幅回补，迁移不能只依赖tag内早期副本；测试中的角色路径派生和acceptance相对ROADMAP链接也已登记。
+- 复核6份专项正文和现有测试路由后形成收窄建议：立即新增`docs/acceptance/`与`docs/templates/`，保留history；governance guide、environment profile与Git mode继续留在docs根，避免单文件目录和错误operations归类。已登记目录README的非authority边界与正式迁移验证组合。
+- 随后精确核对冻结证据，发现v0.4.1 accepted acceptance含硬编码旧Cloud template路径且已完成final closeout；依据“已发布acceptance不可原位改写”规则，撤回立即移动templates的建议。
+- 当前推荐改为角色安全分阶段迁移：仅把未冻结v0.4.2 candidate移入`docs/acceptance/`，v0.4.1原路径KEEP到v0.4.2 C2第二retirement checkpoint后再退役；templates和三个docs根级singleton均保持原位。等待维护者确认该目标拓扑后才实施。
+- Documentation topology migration preflight已完成并标记complete；活动计划停在维护者拓扑决策点，没有移动docs文件、改写冻结acceptance或启动Source/Candidate。
