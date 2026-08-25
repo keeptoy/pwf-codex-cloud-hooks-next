@@ -2,6 +2,17 @@
 
 ## Latest verification update
 
+- Work Step B完整回归通过：`npm test`为182 tests、156 PASS、26个Windows/POSIX预期SKIP、0 FAIL；聚焦authority测试24/24通过。
+- upstream importer check、Python production compile、`install.js` syntax、两个bootstrap `bash -n`与`git diff --check`全部PASS。
+- 新authority目录保持Release-excluded；候选ZIP仍为22 entries并通过build/check。本地临时候选为87,474 bytes、SHA-256 `8f1c8f84be5eedb2fc34d8c3a23006ccb6e146a377bbe070b8d23544a64ecd5c`，只作development验证，不构成sealed资产身份。
+- 首次三轮聚焦测试19/24、20/24、22/24的失败均为旧authority位置/措辞断言漂移；按新模型改为直接语义断言后24/24通过，没有production defect或边界弱化。
+- 已建立`docs/product-phases/README.md`与真实`phase-4.md`，并在authority目录外建立轻量`docs/product-phase-overview-template.md`；未创建Phase 5实例。
+- Phase 4 overview已承接原ROADMAP长期Product目标、F0～F3C路线、activation/lifecycle协议、版本列车映射、v0.4.2治理closeout与后继继承边界；exact Release证据仍只链接原authority。
+- ROADMAP大段原子替换三次均在写入前被截断/上下文校验阻止；没有部分修改。后续改按入口、各长期小节、Phase 5占位和轮转规则拆分小补丁。
+- 小块迁移已完成ROADMAP核心重构：第4节成为Phase 4 overview指针，第5节成为Phase 4～9路线索引，新增唯一overview轮转规则；原5.1.1～5.1.4长期正文与5.2 Phase 5占位正文已移出/删除。
+- README文档地图、CHANGELOG、history索引/模板已同步新authority；repository-governance-guide删除重复8.2状态机，只链接ROADMAP唯一规则。
+- Phase 4.14追加overview authority后继状态并修复v0.4.2 closeout链接；Phase 4.1/4.4 current links迁到Phase 4 overview，未激活Phase 5重编号尾注统一指向ROADMAP路线索引。
+- 维护者确认Product Phase overview新模型并清除临时`docs/overview/`；Work Step B开始施工，目标路径为`docs/product-phases/`，不物化未激活Phase 5实例。
 - planning消歧修改通过repository boundary 15/15与`git diff --check`；`docs/overview/`仍保持维护者未跟踪状态，未纳入验证或提交范围。
 - 按维护者反馈消除planning/Product Phase同名歧义：内部`Phase 1`改名为`Work Step A: history角色边界`，原`Phase 2`取消；现有history保持精选过程流水账，不再安排重新编排。
 - 工作树出现维护者未跟踪的`docs/overview/`材料；本轮只读分析并保留，不暂存、不改写，等待authority模型确认。
@@ -45,6 +56,7 @@
 | 2026-08-25 | 第二次扫描包含不存在的`tests/release-artifact.test.js` | 1 | 其余匹配有效；枚举确认真实模块为`release-package.test.js`，不再使用错误路径。 |
 | 2026-08-25 | v0.4.3-dev首次focused 37/45 PASS，8项身份/治理断言失败 | 1 | 分类为旧列车快照、CHANGELOG第三入口、predecessor canonical hash drift及两项待定边界；逐类修正后重跑。 |
 | 2026-08-25 | Node计算v0.4.2 canonical upstream hash时派生Git子进程EPERM | 1 | 无写入；PowerShell先读取immutable JSON，再交给Node纯计算。 |
+| 2026-08-25 | 首次staged diff检查发现4处新Markdown行尾空格 | 1 | commit未创建；移除非必要hard-break空格后重新暂存并检查。 |
 
 ## 5-Question Reboot Check
 

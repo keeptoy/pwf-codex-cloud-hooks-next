@@ -57,9 +57,10 @@ test("v0.4.3-dev history governance stays in Product Phase 4 while v0.4.2 eviden
   const pathSafetyHistory = read("docs/history/phase-4.13-v0.4.1-path-safety-patch-train.md");
   const acceptedAcceptance = read("docs/acceptance/v0.4.2-cloud-hard-acceptance.md");
   const provenance = read("BASELINE_PROVENANCE.md");
-  const phase4Closeout = roadmap.slice(
-    roadmap.indexOf('<a name="v0-4-2-release-closeout"></a>'),
-    roadmap.indexOf("## 6. 版本号与晋级语义"),
+  const phase4Overview = read("docs/product-phases/phase-4.md");
+  const phase4Closeout = phase4Overview.slice(
+    phase4Overview.indexOf('<a name="v0-4-2-release-closeout"></a>'),
+    phase4Overview.indexOf("## Closeout and successor inheritance"),
   );
   const currentTrain = roadmap.slice(
     roadmap.indexOf("## 4. 当前开发列车"),
@@ -71,33 +72,31 @@ test("v0.4.3-dev history governance stays in Product Phase 4 while v0.4.2 eviden
   assert.equal(immediateFallback, "v0.4.1");
   assert.notEqual(candidate, accepted);
   assert.match(roadmap, /`v0\.4\.2`[\s\S]*Release closeout/);
-  assert.match(roadmap, /package identity[\s\S]*`0\.4\.2`/);
+  assert.match(phase4Closeout,
+    /`v0\.4\.2`整理Release\/retirement[\s\S]*文档authority[\s\S]*C2完成后`v0\.4\.2`成为accepted/);
   assert.match(roadmap,
     /当前 programme 边界[^\n]*`v0\.4\.2`及其前序列车均已关闭[^\n]*`v0\.4\.3-dev`[^\n]*Product Phase 5[^\n]*TBD/);
   assert.match(currentTrain, /^<a name="v0-4-3-phase-history-governance-train"><\/a>$/m);
-  assert.match(currentTrain, /当前exact开发列车是`v0\.4\.3-dev`[\s\S]*继续归属Product Phase 4/);
-  assert.match(currentTrain, /history角色边界[\s\S]*Phase history是精选历史[\s\S]*过程账本[\s\S]*ROADMAP第5节才是长期Product Phase摘要/);
+  assert.match(currentTrain,
+    /当前exact开发列车是`v0\.4\.3-dev`[\s\S]*继续归属[\s\S]*Product Phase 4 Overview/);
+  assert.match(currentTrain,
+    /Product Phase 4 Overview[\s\S]*Work Step A[\s\S]*精选过程[\s\S]*Work Step B[\s\S]*长期Product authority/);
+  assert.match(currentTrain, /docs\/product-phases\/phase-4\.md#product-phase-4-overview/);
   assert.doesNotMatch(currentTrain, /#product-phase-5/);
   assert.doesNotMatch(currentTrain, /v0-4-2-release-closeout|### 4\.1/);
   assert.match(phase4Closeout, /README\.md[\s\S]*Release ZIP输入[\s\S]*旧候选身份[\s\S]*失效/);
-  assert.match(phase4Closeout, /最终README[\s\S]*Source\/Candidate[\s\S]*C0[\s\S]*版本acceptance/);
   assert.match(phase4Closeout, /maintenance-environment-profile\.md#maintenance-environment-profile/);
   assert.match(phase4Closeout, /重验触发器/);
-  assert.match(phase4Closeout, /跨阶段提升/);
-  assert.match(phase4Closeout,
-    /docs\/acceptance\/v0\.4\.2-cloud-hard-acceptance\.md[\s\S]*v0\.4\.1[\s\S]*immutable[\s\S]*清退/);
-  assert.match(phase4Closeout, /templates[\s\S]{0,120}原路径[\s\S]{0,120}KEEP/);
-  assert.match(roadmap, /5\.1\.4 Phase 4 的 `v0\.4\.2` 文档治理与 Release closeout/);
+  assert.match(phase4Closeout, /v0\.4\.2-cloud-hard-acceptance\.md/);
+  assert.match(phase4Closeout, /templates[\s\S]{0,120}KEEP/);
+  assert.doesNotMatch(roadmap, /5\.1\.4 Phase 4 的 `v0\.4\.2` 文档治理与 Release closeout/);
   assert.match(phase4Closeout, /Published Release[\s\S]{0,160}验收/);
-  assert.match(phase4Closeout, /Latest promotion confirmation[\s\S]*第二轮role-window closeout[\s\S]*C2均已闭合/);
-  assert.match(phase4Closeout,
-    /Published Release[\s\S]*GitHub Release Latest promotion confirmation[\s\S]*不再重复下载或重算SHA/);
+  assert.match(phase4Closeout, /Latest promotion confirmation[\s\S]*第二轮role-window closeout与C2均已闭合/);
   assert.match(phase4Closeout, /#github-release-latest-promotion-confirmation/);
   assert.match(phase4Closeout,
-    /post-v0\.4\.2 residue sweep[\s\S]*Batch A[\s\S]*Batch B[\s\S]*22-entry Release allowlist交集为0/);
-  assert.match(phase4Closeout, /两个planning scope继续`KEEP`[\s\S]*不是活动开发列车/);
-  assert.match(roadmap, /^### 5\.2 Phase 5 其他文档治理（planning placeholder）$/m);
-  assert.match(roadmap, /\| 5 \| `0\.5\.0-\*` \| 其他文档治理方向[\s\S]*均TBD[\s\S]*planning placeholder/);
+    /post-v0\.4\.2 residue Batch A\/B[\s\S]*22-entry Release allowlist交集为零/);
+  assert.doesNotMatch(roadmap, /^### 5\.2 Phase 5/m);
+  assert.match(roadmap, /\| 5 \| `0\.5\.0-\*` \| 其他文档治理方向[\s\S]*均TBD[\s\S]*route placeholder[\s\S]*不创建overview/);
   assert.match(roadmap, /\| 6 \| `0\.6\.0-\*`[\s\S]*\| 9 \| `0\.9\.0-\*`/);
   assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.2`[^\n]*programme accepted/);
   assert.match(roadmap,
@@ -323,6 +322,7 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   const rootBootstraps = actual.filter(item => /^init-cloud-sandbox-v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\.bash$/.test(item));
   const acceptanceDocs = docs.filter(item =>
     /^docs\/(?:acceptance\/)?v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?-cloud-hard-acceptance\.md$/.test(item));
+  const phaseOverviewDocs = docs.filter(item => /^docs\/product-phases\/phase-\d+\.md$/.test(item));
 
   assert.equal(artifact.excluded_prefixes.includes("docs/"), true);
   for (const relative of docs) {
@@ -337,6 +337,9 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.deepEqual(acceptanceDocs, expectedAcceptanceDocs.sort());
   assert.deepEqual(acceptanceDocs.map(relative => path.basename(relative).replace("-cloud-hard-acceptance.md", "")).sort(),
     expectedAcceptanceDocs.map(relative => path.basename(relative).replace("-cloud-hard-acceptance.md", "")).sort());
+  assert.deepEqual(phaseOverviewDocs, ["docs/product-phases/phase-4.md"]);
+  assert.equal(docs.includes("docs/product-phase-overview-template.md"), true);
+  assert.equal(docs.includes("docs/product-phases/README.md"), true);
   assert.equal(docs.some(item => item.startsWith("docs/templates/")), false,
     "frozen accepted guides still bind the stable docs-root template paths");
   const acceptanceIndex = read("docs/acceptance/README.md");
@@ -506,10 +509,13 @@ test("historical documents have two controlled macro entrances and remain adviso
   const historyIndex = read("docs/history/README.md");
   const historyTemplate = read("docs/phase-history-template.md");
   const governanceGuide = read("docs/repository-governance-guide.md");
+  const phaseOverviewIndex = read("docs/product-phases/README.md");
+  const phaseOverviewTemplate = read("docs/product-phase-overview-template.md");
+  const phase4Overview = read("docs/product-phases/phase-4.md");
   const agents = read("AGENTS.md");
   assert.match(readme, /\]\(docs\/history\/README\.md\)/);
   assert.match(readme,
-    /Phase 历史过程账本[\s\S]*长期 Product Phase 摘要与现行 programme 只读 ROADMAP/);
+    /Product Phase Overview[\s\S]*Phase 历史过程账本[\s\S]*长期 Product Phase 结论读对应 overview/);
   assert.doesNotMatch(readme, /Phase 历史摘要/);
   assert.equal((readme.match(/docs\/history\//g) || []).length, 1,
     "README must expose exactly one historical-document entrance");
@@ -532,28 +538,18 @@ test("historical documents have two controlled macro entrances and remain adviso
     assert.match(policyDoc, /README[\s\S]*ROADMAP/);
   }
   assert.match(governanceGuide, /^<a name="history-record-roles"><\/a>$/m);
-  assert.match(governanceGuide, /^<a name="product-phase-authority-rotation"><\/a>$/m);
+  assert.doesNotMatch(governanceGuide, /product-phase-authority-rotation/);
   assert.match(governanceGuide,
     /RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD[\s\S]*一个Product Phase可以有多份/);
   assert.match(governanceGuide,
-    /ROADMAP第4节是current development train工作台[\s\S]*Product Phase closeout[\s\S]*product-phase-N/);
-  assert.match(governanceGuide,
-    /patch\/governance列车没有新Product Phase时[\s\S]*不得[\s\S]*虚构第5节条目/);
-  assert.match(governanceGuide,
-    /Product Phase \/ Discovery正在进行[\s\S]*某个Discovery Round关闭[\s\S]*Product Phase正式关闭[\s\S]*版本列车完成Release并轮转/);
-  assert.match(governanceGuide,
-    /默认是一条列车、一个Product Phase[\s\S]*只有维护者[\s\S]*明确批准/);
-  assert.match(governanceGuide,
-    /patch继承它修补的Product baseline[\s\S]*governance按声明的版本系列落位/);
-  assert.match(governanceGuide,
-    /不能唯一判断就停下来问[\s\S]*必须先向维护者[\s\S]*请求确认/);
+    /ROADMAP\.md#product-phase-overview-rotation[\s\S]*通用history冻结[\s\S]*不复制[\s\S]*仓库专用状态机/);
   assert.match(governanceGuide,
     /programme在record冻结后插入、拆分或重编号Product Phase时[\s\S]*不得搜索替换历史正文[\s\S]*Post-programme reindex status/);
   assert.match(historyIndex, /RETROSPECTIVE_CAPSULE[\s\S]*Phase 0～3\.9\.3[\s\S]*14/);
   assert.match(historyIndex, /FROZEN_DISCOVERY_RECORD[\s\S]*Phase 4\.1～4\.11[\s\S]*11/);
   assert.match(historyIndex, /Phase 4\.1～4\.11[\s\S]*不表示[\s\S]*11个独立Product Phase/);
   assert.match(historyIndex,
-    /精选过的历史过程账本[\s\S]*不保存原始聊天、逐命令日志[\s\S]*长期Product结论与现行programme只读ROADMAP第5节/);
+    /精选过的历史过程账本[\s\S]*不保存原始聊天、逐命令日志[\s\S]*长期Product结论读对应[\s\S]*Product Phase Overview[\s\S]*现行programme只读ROADMAP/);
   assert.match(historyIndex,
     /过程账本只有两种record role[\s\S]*回顾型`RETROSPECTIVE_CAPSULE`[\s\S]*探路\/决策型`FROZEN_DISCOVERY_RECORD`[\s\S]*不再扩展第三种身份/);
   assert.match(historyIndex,
@@ -561,7 +557,16 @@ test("historical documents have two controlled macro entrances and remain adviso
   assert.match(historyTemplate, /先选择 record role/);
   assert.match(historyTemplate, /RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
   assert.match(historyTemplate,
-    /Product Phase仍活动时[\s\S]*ROADMAP第4节[\s\S]*Product Phase closeout后[\s\S]*ROADMAP第5节/);
+    /Product Phase激活后[\s\S]*docs\/product-phases\/phase-N\.md#product-phase-N-overview[\s\S]*Product Phase closeout[\s\S]*不再把history current links从ROADMAP第4节迁到第5节/);
+  assert.match(phaseOverviewIndex, /^<a name="product-phase-overview-index"><\/a>$/m);
+  assert.match(phaseOverviewIndex,
+    /真实激活过的 Product Phase 的长期说明书[\s\S]*未激活[\s\S]*不提前创建空文件/);
+  assert.match(phaseOverviewIndex,
+    /不(?:是|等同于)某个 SemVer 或 GitHub Release note[\s\S]*Product Phase可以覆盖[\s\S]*多个版本列车/);
+  assert.match(phaseOverviewTemplate, /^<a name="product-phase-overview-template"><\/a>$/m);
+  assert.match(phaseOverviewTemplate, /未激活[\s\S]*不得先建空overview/);
+  assert.match(phase4Overview, /^<a name="product-phase-4-overview"><\/a>$/m);
+  assert.equal(fs.existsSync(path.join(root, "docs/product-phases/phase-5.md")), false);
   assert.match(historyTemplate, /FROZEN_DISCOVERY_RECORD不得暗示整个Product Phase已经关闭/);
   assert.match(historyTemplate, /Discovery证据不得冒充implementation\/live验收/);
   assert.match(historyTemplate, /> Record role: `<RETROSPECTIVE_CAPSULE \| FROZEN_DISCOVERY_RECORD>`/);
@@ -587,6 +592,7 @@ test("historical documents have two controlled macro entrances and remain adviso
     assert.match(history,
       /Post-programme reindex status[\s\S]*旧Phase 5\/6\/7\/8[\s\S]*Phase 6\/7\/8\/9[\s\S]*`0\.9\.0-\*`/);
     assert.match(history, /当前Phase 5只预占`0\.5\.0-\*`[\s\S]*不产生development train激活、实施或Release授权/);
+    assert.match(history, /ROADMAP\.md#product-phase-route-index/);
   }
   const phaseHistory = repositoryPaths()
     .filter(relative => /^docs\/history\/[^/]+\.md$/.test(relative))
@@ -642,6 +648,7 @@ test("Phase 4.14 keeps stable Release closeout governance interfaces", () => {
     "phase-4-14-explicit-non-goals", "phase-4-14-successor-inheritance",
     "phase-4-14-post-implementation-status-stage-guide-retirement",
     "phase-4-14-post-governance-status-history-role-rotation",
+    "phase-4-14-post-governance-status-product-phase-overview-authority",
     "phase-4-14-post-governance-status-post-pass-retirement-ordering",
     "phase-4-14-post-governance-status-readme-release-handoff",
     "phase-4-14-post-governance-status-maintenance-environment-memory",
@@ -679,6 +686,8 @@ test("Phase 4.14 keeps stable Release closeout governance interfaces", () => {
     "../../ROADMAP.md#release-four-step-flow",
     "../../ROADMAP.md#version-train-two-retirement-reviews",
     "../../ROADMAP.md#github-release-latest-promotion-confirmation",
+    "../../ROADMAP.md#product-phase-overview-rotation",
+    "../product-phases/phase-4.md#product-phase-4-overview",
   ]) assert.equal(history.includes(authority), true, 'Phase 4.14 lacks authority link: ' + authority);
 
   assert.match(historyIndex,

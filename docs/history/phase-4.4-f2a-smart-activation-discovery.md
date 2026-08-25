@@ -142,7 +142,7 @@ commit、Fresh/Resume/cache 持久性和 opt-out/re-arm 必须留给 F3 live gat
 当前也不采用“生成链接、点击后激活”的外部路线：现有公开 Host contract 没有 authenticated、bounded、可审计且能
 原子绑定 exact user/repository/commit/plan/state 的 consent callback。只有将来出现这种官方 ABI 才重开独立
 Discovery。activation token 始终是非秘密常量，不得承载身份、授权码或账户凭据。现行完整边界以
-[`ROADMAP` 的 Phase 4 current authority](../../ROADMAP.md#product-phase-4) 为准；本尾注只说明后继
+[`Product Phase 4 current authority`](../product-phases/phase-4.md#product-phase-4-overview) 为准；本尾注只说明后继
 复核如何继承本里程碑，不把历史摘要升级为第二份 current authority。
 
 <a name="phase-4-4-post-implementation-status"></a>
@@ -210,4 +210,4 @@ zero-read、fail-closed admission、schema-v2 reuse 或生命周期表。精确�
 本record正文中的Phase 5～8按当时programme编号冻结，不做事后搜索替换。后继ROADMAP在其前插入新的Phase 5文档治理占位后，
 旧Phase 5/6/7/8现分别对应Phase 6/7/8/9，候选版本系列相应为`0.6.0-*`/`0.7.0-*`/`0.8.0-*`/`0.9.0-*`。
 当前Phase 5只预占`0.5.0-*`，其scope、预期产物、gate与Release路线均为TBD；现行programme只读
-[`ROADMAP`](../../ROADMAP.md#product-phase-5)。本尾注只消除编号歧义，不产生development train激活、实施或Release授权。
+[`ROADMAP`](../../ROADMAP.md#product-phase-route-index)。本尾注只消除编号歧义，不产生development train激活、实施或Release授权。

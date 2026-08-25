@@ -32,13 +32,13 @@
 
 ## Current authority link lifecycle
 
-- Product Phase仍活动时，已冻结Discovery record中明确承担current-authority职责的链接可以暂指ROADMAP第4节exact train
-  anchor；普通历史叙述不得把moving train当immutable evidence。
-- Product Phase closeout后，相关current-authority链接必须迁移到ROADMAP第5节唯一`product-phase-N` anchor；新建的
-  retrospective Product Phase capsule直接指向第5节，不先经过第4节。
-- patch/governance列车没有新Product Phase时，不得虚构`product-phase-N`；按对象性质链接版本角色、Release治理或immutable
-  evidence，或者移除不再承担current职责的链接。
-- 第4节列车轮转前必须完成入链inventory、迁移和删除后复扫；只改current-authority指针，不回写旧Discovery结论。
+- Product Phase激活后，已冻结Discovery record或retrospective capsule需要current Product authority时，直接链接唯一
+  `docs/product-phases/phase-N.md#product-phase-N-overview`；普通历史叙述不得把ROADMAP moving train当immutable evidence。
+- Product Phase closeout只补齐同一overview的最终交付和后继继承，不再把history current links从ROADMAP第4节迁到第5节。
+- patch/governance列车没有新Product Phase时，不得虚构overview；按对象性质链接既有Product baseline、版本角色、Release治理或
+  immutable evidence，或者移除不再承担current职责的链接。
+- overview创建、closeout与第4节current pointer轮转只见
+  [`ROADMAP`](../ROADMAP.md#product-phase-overview-rotation)；link maintenance不得回写旧Discovery结论。
 
 ## 可选 append-only status note
 

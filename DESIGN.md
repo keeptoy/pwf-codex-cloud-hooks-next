@@ -15,6 +15,7 @@ contract 或测试中的字段级行为。
 | 稳定用户行为、安装、doctor/repair、测试和打包命令 | [`README.md`](README.md) |
 | 已发布版本与 Unreleased 已经改变了什么 | [`CHANGELOG.md`](CHANGELOG.md) |
 | 当前 programme、版本列车与 Release/rollback 状态 | [`ROADMAP.md`](ROADMAP.md) |
+| 已激活 Product Phase 的长期目标、已采纳路线、稳定边界与最终结论 | [`docs/product-phases/`](docs/product-phases/README.md#product-phase-overview-index) |
 | 当前唯一 Next Step 与授权边界 | `.planning/.active_plan` 指向的活动 `task_plan.md` |
 | 已发布身份、迁移 refs、upstream/overlay 与不可变资产的精确来源 | [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) |
 

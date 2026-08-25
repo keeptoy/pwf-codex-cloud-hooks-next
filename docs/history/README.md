@@ -3,7 +3,8 @@
 # Product Phase、Discovery 与架构谱系历史
 
 大白话：这里是**精选过的历史过程账本**。它保存值得跨阶段回看的探路、决定、条件和后继回补，不保存原始聊天、逐命令日志、
-整段测试输出或current状态，也不是Product Phase的长期摘要；长期Product结论与现行programme只读ROADMAP第5节。
+整段测试输出或current状态，也不是Product Phase的长期摘要；长期Product结论读对应
+[`Product Phase Overview`](../product-phases/README.md)，现行programme只读ROADMAP。
 
 过程账本只有两种record role。回顾型`RETROSPECTIVE_CAPSULE`在对象关闭后依据immutable evidence回补，回答“后来如何总览
 这段历史”；探路/决策型`FROZEN_DISCOVERY_RECORD`在正式Discovery/decision round关闭时封存，回答“当时为什么这样决定、
@@ -33,9 +34,10 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 - `docs/history/` 整体不得进入 Release、installer inventory、trusted graph 或 runtime dispatch。
 - 宏观访问只开放两个入口：README 文档地图只进入本索引；ROADMAP只在programme路线需要历史理由时直达具体
   history record的稳定显式anchor。ROADMAP不得复制本索引或把历史对象提升为current authority，其他宏观文档不得建立第三入口。
-- frozen Discovery record在Product Phase活动时可以把明确的current-authority链接暂指ROADMAP第4节；Phase closeout后必须
-  迁移到第5节对应`product-phase-N`。Retrospective Product Phase capsule创建时直接指向第5节；纯patch/governance列车不得
-  因此虚构Product Phase。
+- Product Phase激活后，frozen Discovery record与retrospective capsule需要current Product authority时都直接链接对应
+  `docs/product-phases/phase-N.md#product-phase-N-overview`；不再先指ROADMAP第4节、closeout后再批量迁链。未激活Phase没有
+  overview，纯patch/governance列车也不得因此虚构Product Phase。完整指针事务只见
+  [`ROADMAP`](../../ROADMAP.md#product-phase-overview-rotation)。
 
 ## Current role classification
 

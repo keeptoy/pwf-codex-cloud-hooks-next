@@ -26,7 +26,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 当前已接受版本 | `v0.4.2`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.1` immediate fallback |
 | 回退证据链 | immutable `v0.4.0` deeper fallback；`v0.3.5`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | `v0.4.2`及其前序列车均已关闭；`v0.4.3-dev`作为Product Phase 4上的文档治理patch train已激活，当前只治理history过程账本与ROADMAP长期摘要边界。Product Phase 5仍只预占`0.5.0-*`，其scope、预期产物、gate与Release路线均为TBD；其他外部状态变更未授权 |
+| 当前 programme 边界 | `v0.4.2`及其前序列车均已关闭；`v0.4.3-dev`作为Product Phase 4上的文档治理patch train已激活，已把长期Product authority迁入`docs/product-phases/`并收敛ROADMAP指针。Product Phase 5仍只预占`0.5.0-*`，其scope、预期产物、gate与Release路线均为TBD；其他外部状态变更未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -58,197 +58,88 @@ deeper fallback。版本 delta见
 ## 4. 当前开发列车
 
 仓库生命周期治理保持一个active planning，并继续用candidate + accepted role window区分开发工作流、已接受版本与回退资产。
-trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证；历史细节只从README文档地图进入Phase history、
-provenance和对应版本acceptance，不在本节重建逐P9流水。
+trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy 验证；长期Product结论进入Product Phase overview，历史
+过程、exact来源与验收分别进入Phase history、provenance和对应版本acceptance，不在本节重建正文或逐P9流水。
 
-本节是current development train工作台：活动planning、未封存Discovery和需要current状态的验收材料可以引用对应train anchor，
-但这里的临时施工状态不会自动成为长期Product Phase authority。
+本节是current development train指针：只保留exact列车身份、当前授权边界与对应Product Phase overview链接。活动planning、
+未封存Discovery和需要current状态的验收材料可以引用train anchor，但本节不再承载长期Product摘要。
 
 <a name="v0-4-3-phase-history-governance-train"></a>
 
-当前exact开发列车是`v0.4.3-dev`，继续归属Product Phase 4。首个Discovery只治理history角色边界：Phase history是精选历史
-过程账本，包含回顾型capsule与探路/决策型frozen record；ROADMAP第5节才是长期Product Phase摘要。该列车不修改production、
+当前exact开发列车是`v0.4.3-dev`，继续归属
+[`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)。Work Step A已把Phase history冻结为精选过程
+账本；Work Step B已把长期Product authority从ROADMAP正文迁入overview，并由本节持有current指针。该列车不修改production、
 runtime、Host ABI或trusted graph，也不激活仍为TBD的Product Phase 5。
 
 三个planning scope继续承担相邻Discovery恢复与治理参考；只有`.active_plan`指向当前v0.4.3任务。保留旧scope不扩大本列车范围，
 `0.4.3-dev`也不表示stable candidate、Release或Cloud PASS已经形成。
 
-## 5. Product Phase 路线
+<a name="product-phase-route-index"></a>
 
-下表是未来 Discovery 的候选，不是发布承诺，也不自动授权下一 Phase。一个 Phase 可以有多个
-pre-release。当前维护默认一条版本列车只承载一个Product Phase；只有维护者在ROADMAP与活动task plan中明确授权后，
-多个低风险Phase才可在分别closeout的前提下进入同一列车。
+## 5. Product Phase 路线索引
 
-Product Phase closeout时，只把长期Product目标、路线、边界与结论提炼到对应小节，并保留一个Phase-level canonical anchor；
-相关history record的current-authority链接从第4节迁到这里。patch/governance列车先按活动task plan、所修补Product baseline与
-ROADMAP声明的版本系列判断归属；patch/governance列车没有新Product Phase时不得虚构条目；不能唯一判断时先由维护者确认。
-版本资产与Release角色也不得整段搬入本节。完整轮转规则只见[仓库治理指南](docs/repository-governance-guide.md#product-phase-authority-rotation)。
+本节只保存未来Product Phase路线、候选版本系列、最低退出方向与物化overview入口；它不是发布承诺，也不自动授权下一Phase。
+一个Phase可以有多个pre-release。当前维护默认一条版本列车只承载一个Product Phase；只有维护者在ROADMAP与活动task plan中
+明确授权后，多个低风险Phase才可在分别closeout的前提下进入同一列车。
 
-大白话：本节是“长期摘要”，只留下跨版本仍有效的Product结论；Phase history是“精选过程账本”，保留当时怎样探路、
-为什么决定以及后来怎样回补。过程账本可以更详细，但不会因此成为第二份programme authority。
+长期Product目标、已采纳路线、稳定边界与最终结论由
+[`Product Phase Overview`](docs/product-phases/README.md#product-phase-overview-index)独占。只有真实激活的Phase才创建
+`docs/product-phases/phase-N.md`；TBD路线行不提前物化空overview。Phase history继续保存精选过程账本，不因细节更多而成为
+第二份Product authority。
 
-| Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
+| Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 / overview |
 |---|---|---|---|---|
-| 4 | `0.4.0-*`～`0.4.3-dev` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理 | F0～F3C功能/rollback已闭合；后续patch/governance列车不得改变Product行为或激活Phase 5 | Product基线complete；当前v0.4.3-dev文档治理见第4节，长期结论与v0.4.2 closeout见5.1.1～5.1.4 |
-| 5 | `0.5.0-*` | 其他文档治理方向；具体scope与预期产物TBD | Discovery rounds、退出/Cloud gate、Release路线与对象清单均TBD | planning placeholder；不是当前开发列车，未授权实施或Release |
-| 6 | `0.6.0-*` | compaction lifecycle | 复核真实 Cloud payload，比较现有 `SessionStart source=clear\|compact` 与 PreCompact/PostCompact 的时序和恢复能力；现有事件足够时不扩大 managed event set，只有真实 context/时序缺口才新增 Hook | pending |
-| 7 | `0.7.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立 gate；必须分别有 use case、latency/token budget、噪声预算与 Cloud证据 | pending / optional；没有明确收益就逐项或整体 `NO_GO`；不是 Phase 8前置 |
-| 8 | `0.8.0-*` | 唯一的 read-only advisory completion evaluator | bounded、non-recursive、无 plan时安静；只 advisory，不阻断、不写 counter/ledger或其他 mutable gate state | pending；可独立于 Phase 7进入 Discovery |
-| 9 | `0.9.0-*` | optional hard gating，复用 Phase 8 evaluator | 重新 Discovery writer/counter/atomicity/lock/cache/Resume/rollback；再增加 block cap、escape hatch与 stall state；不得把上游 best-effort shell lock提升为 managed authority | pending；implementation前必须重新 Discovery |
+| 4 | `0.4.0-*`～`0.4.3-dev` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理 | F0～F3C功能/rollback已闭合；后续patch/governance列车不得改变Product行为或激活Phase 5 | Product baseline complete；[`Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview) |
+| 5 | `0.5.0-*` | 其他文档治理方向；具体scope与预期产物TBD | Discovery rounds、退出/Cloud gate、Release路线与对象清单均TBD | route placeholder；不是当前开发列车，未授权实施或Release，不创建overview |
+| 6 | `0.6.0-*` | compaction lifecycle | 复核真实Cloud payload，比较现有`SessionStart source=clear\|compact`与PreCompact/PostCompact的时序和恢复能力；现有事件足够时不扩大managed event set，只有真实context/时序缺口才新增Hook | pending |
+| 7 | `0.7.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立gate；必须分别有use case、latency/token budget、噪声预算与Cloud证据 | pending / optional；没有明确收益就逐项或整体`NO_GO`；不是Phase 8前置 |
+| 8 | `0.8.0-*` | 唯一的read-only advisory completion evaluator | bounded、non-recursive、无plan时安静；只advisory，不阻断、不写counter/ledger或其他mutable gate state | pending；可独立于Phase 7进入Discovery |
+| 9 | `0.9.0-*` | optional hard gating，复用Phase 8 evaluator | 重新Discovery writer/counter/atomicity/lock/cache/Resume/rollback；再增加block cap、escape hatch与stall state；不得把上游best-effort shell lock提升为managed authority | pending；implementation前必须重新Discovery |
 
 Release closeout不属于Product Phase编号。任何Product Phase或获批的小型patch/governance列车形成RC后，都按第9节
 进入同一版本无关workflow；只有出现新增Release风险、迁移、兼容切换或复杂rollback时，才按第7节增加专项
 Discovery/Release hardening gate。历史standing Phase 9 Release instances保留原名和时间语义，不等同于Product Phase 9，
 也不构成未来列车的强制模板。
 
-<a name="product-phase-4"></a>
+<a name="product-phase-overview-rotation"></a>
 
-### 5.1 Phase 4 已采纳路线
+### 5.1 Product Phase overview与current pointer轮转
 
-Phase 4 保持 Phase 4.1 冻结的 hybrid owned-boundary 与两个现有 turn-start events，不改变主架构；内部按
-风险和故障域拆成八个 gate。完整 programme 顺序为
-`F0 → F1A → F1B → F2A → F2B → F3A → F3B → F3C`：
+本节是overview指针轮转的唯一权威；仓库治理指南、模板和history只引用本规则，不复制第二份状态机。
 
-#### 5.1.1 Phase 4 为什么存在：给计划行为授权，不给模型扩权
+1. **Product Phase激活：** ROADMAP和活动task plan先明确Phase、版本系列与授权；随后从模板创建唯一
+   `docs/product-phases/phase-N.md`，第4节exact train anchor指向其`product-phase-N-overview`。
+2. **Discovery Round关闭：** 当时的决策记录按`FROZEN_DISCOVERY_RECORD`进入history；需要current Product authority时直接
+   链接同一overview，不再经过ROADMAP第4节或等待Phase closeout后批量迁链。
+3. **Product Phase closeout：** 在overview补齐最终交付、稳定边界和后继继承。关闭后只做事实纠错、链接维护或有证据的状态尾注；
+   ROADMAP第5节仍只保留路线索引。
+4. **版本列车轮转：** 旧列车完成Release closeout后，第4节切换到已获批下一列车及其overview；下一列车未授权时写`NONE`并
+   不保留旧exact train anchor。overview本身保持长期canonical，不随列车指针移动。
+5. **patch/governance归属：** 先按活动task plan、所修补Product baseline与ROADMAP声明的版本系列判断；没有新Product Phase时
+   不创建overview。不能唯一判断时先由维护者确认。
 
-Phase 4 的一句话目标是：**在 legacy 默认完全不变的前提下，让维护者/用户能对一个 exact plan 显式、可撤销地选择
-smart 或 autonomous planning context；状态非法时拒绝，绝不静默降级或误激活。** 它不是让模型申请更高系统权限，
-也不是把 Cloud 后台任务、root、联网或本机文件访问包装成产品功能。这里的 `autonomous` 只描述 plan context 的
-attestation/nonce/ledger 语义，不表示 Codex 获得更高 OS 权限或开始自动写 workspace。
+```text
+Product Phase激活
+  → 创建唯一phase-N overview
+  → ROADMAP第4节指向该overview
 
-新人应把四个容易都叫“授权/opt-in”的开关分开：
+Discovery Round关闭
+  → 决策记录冻结进入history
+  → current-authority链接直接指向同一overview
 
-| 开关 | 它回答的问题 | 不能替代什么 |
-|---|---|---|
-| 本地 sandbox / approval | 本地 Codex 命令能否越过当前文件、网络或执行边界；边界内例行工作可自动继续 | 不能表示某个 plan 同意启用 smart/autonomous |
-| Cloud task / container policy | 这次远程任务能在隔离容器、checkout 与网络策略内做什么 | 不能访问用户未提供的本机文件，也不能自动产生 PWF profile consent |
-| system-managed Hook trust | Cloud 是否信任并执行 installer 注册的 absolute adapter | 只回答“Hook 能不能跑”，不回答“对哪个 plan 跑什么 profile” |
-| Phase 4 plan-local opt-in | exact plan 是否通过 profile-bound activation-only commit 选择 smart/autonomous | 不授予模型 root、网络、账户身份、workspace writer 或远端写权限 |
+Product Phase正式关闭
+  → overview补齐最终交付与后继继承
+  → ROADMAP第5节继续只保存路线索引
 
-OpenAI 官方把本地 sandbox 定义为技术边界、approval 定义为越界时是否停下询问；Cloud 文档则描述远程 container、
-checkout、setup/maintenance 与 agent task 流程。二者都是平台执行权限，不是 PWF 行为授权。Cloud 官方也未把 root 身份
-承诺为稳定 Host contract，且 container state 可能缓存；因此本项目只依赖显式 Host/config 输入和受控探测，不以“Cloud
-默认已经 opt in”或“任务结束立即销毁”为正确性前提。参考 [Sandbox](https://learn.chatgpt.com/docs/sandboxing?surface=app)、
-[Agent approvals & security](https://learn.chatgpt.com/docs/agent-approvals-security) 与
-[Cloud environments](https://learn.chatgpt.com/docs/environments/cloud-environment)。
+版本列车完成Release并轮转
+  → 第4节切换到已授权下一列车及其overview
+  → 未授权下一列车时写NONE
+  → 已关闭overview保持原位，不批量迁移history正文
+```
 
-Phase 4 的施工顺序因此不是“逐步给模型加权限”，而是先铺一条不会误激活的供应链和只读 consumer，再加入显式 profile
-选择，最后证明该选择在真实 Cloud lifecycle 中可进入、可退出、可回滚：
-
-| Gate | 施工目标（大白话） | 必须保持的边界 | 典型故障归属 |
-|---|---|---|---|
-| F0 — Development identity preparation | 先开一条明确的 `0.4.0-dev` 施工列车，让后续试验有身份但不冒充已发布功能 | zero-hash bootstrap；不改 runtime、contract 或用户行为 | identity、bootstrap、governance |
-| F1A — Contract/source foundation | 先让 manifest、bundle、Release 与 installer 能完整、单一权威地运送未来 runtime | 行为仍为 legacy；contract transaction 必须原子闭合 | contracts、importer、installer、builder |
-| F1B — Inactive runtime foundation | 把安全读取、规范化和 v2 协议装好，但 production 只准 legacy，证明“能力存在≠已经启用” | marker 不可达；Host 输出与 v0.3.5 等价 | owned runtime、adapter/runtime protocol |
-| F2A — Smart activation | 增加独立 managed commit point；只有显式 armed 才改变 plan 选段 | 未 armed 完全不读旧 `.mode`；不碰 nonce/attestation/ledger/gated | smart selection、state admission、opt-in policy |
-| F2B — Autonomous activation | 增加 profile-bound attestation、nonce 与 normalized ledger context；这是上下文语义，不是系统自治扩权 | raw progress 不回退；invalid/incomplete state 只拒绝 | state validation、tamper/refusal、ledger rendering |
-| F3A — Lifecycle foundation | 把“先准备并审核、最后单独激活、可单独 disarm”做成 Git-backed repository/runbook 协议 | managed runtime 只读；无 live activation；planning state 不进 ZIP | repository/producer/runbook |
-| F3B — Live Cloud lifecycle | 分 B0～B4 证明 exact smart/autonomous commit 在 true Fresh、UserPrompt、real Resume、disarm/re-arm 中确实成立 | runtime/workspace 双身份 exact；cache 不是 authority；不执行 rollback | Cloud lifecycle、takeover |
-| F3C — Disarm-first rollback | 证明先提交 disarm 再回滚/重装，不会留下 dormant token 在未来升级后“复活” | live PASS 不等于 Release；禁止 runtime-only rollback | installed state、workspace intent、rollback |
-
-
-#### 5.1.2 F2 activation/disarm 前置协议
-
-F1A/F1B 可以先规划和实施；F2A/F2B 已把 smart/autonomous 的启用与退出冻结为以下协议：
-
-1. plan-local `.pwf-codex-managed` 的 exact `codex-managed-v1` 内容是独立 activation commit point，也是显式
-   opt-in，不是 secret 或身份凭据；
-2. smart profile 先在 upstream `.mode` 中准备为 exact `inject-smart`，最后原子写 activation file；删除
-   activation file 即退出 managed opt-in，未 armed 时 runtime 不读取旧 `.mode`；
-3. autonomous 先由 pristine Skill/用户侧流程建立 nonce、attestation 与所需状态，确认 attestation 成功后，最后写入
-   与 autonomous profile 绑定的新 exact token；旧 smart token 不得被 `.mode` 变化静默扩权；
-4. token 存在但其他状态不完整或非法时只拒绝，不能按“未启用”降级到 legacy；
-5. managed Hook/runtime 继续只读 workspace，上游 writer 不进入 production trusted graph。
-
-这条顺序防止 initializer 吞掉 attestation failure 后留下“看似已激活、实际状态残缺”的 mode。F2A 与 F2B
-仍分别授权；完成 F1 不会自动授权任何 opt-in behavior。
-
-这里的“授权”沿用上面的四开关模型：本地 sandbox/approval 与 Cloud task/container policy
-是两个执行环境；system-managed requirements 决定 Hook 能否运行；plan-local activation state 才决定 PWF 是否对
-exact plan 启用 smart/autonomous。前三个开关不得直接充当或隐式写入第四个，第四个也不能绕过平台执行/trust 边界。
-
-本地 CLI 可通过交互 approval 或用户在独立终端手工执行显式状态变更；Cloud 是后台任务后查看结果/diff、再 follow-up
-的工作面，不能假定存在相同的任务中确认框。F2A 只冻结跨端共用的 exact plan-local protocol；Cloud 中 prepare、人工
-复核、最后 commit、Fresh/Resume/cache 持久性和 opt-out/re-arm 是否成立，统一留给 F3 live gate。F3 通过前不得宣称
-Cloud opt-in 已可用。
-
-当前不采用“生成链接、用户点击即激活”：公开 Host contract 没有提供能把点击原子绑定到 exact user、repository、
-commit、plan 与容器内 state 的 consent callback。只有未来出现 authenticated、bounded、可审计的官方 Host ABI 时，
-才重新打开独立 Discovery；不得先引入外部认证服务、网络 callback、secret 或 chat-wide environment variable 来模拟。
-`.pwf-codex-managed` 始终是可被 runtime 读取的非秘密常量，不能承载用户身份、授权码或账户凭据。
-
-#### 5.1.3 Phase 4 activation/lifecycle 决策
-
-Phase 4没有改变 hybrid owned-boundary、Host event集合或 managed runtime只读 workspace的原则。smart保持
-`codex-managed-v1\n`，autonomous使用 profile-bound `codex-managed-v1 autonomous\n`；mode、nonce、attestation与
-bounded ledger先准备，activation最后原子写入。runtime每次重新验证 task digest和全部 state，只投影 ledger的
-`tick/event`；零 ledger合法，raw `progress.md`不读取，invalid/incomplete/mutated/over-budget状态只拒绝。
-
-真实 lifecycle采用 Git-backed preparation commit加独立 activation-only commit。Fresh task从 activated commit启动；
-autonomous armed后若 task bytes变化，必须先 disarm、重新 attestation，再用新的 activation-only commit re-arm。
-跨版本恢复必须从 committed disarm开始，走 current-owned uninstall、immutable accepted clean install与 exact-current
-forward recovery；只回滚 runtime却保留 activation属于禁止路线。F3B/F3C的具体 Cloud轮次、refs、hash与 PASS证据只在
-版本 acceptance和 Phase历史中保存，不在 ROADMAP重建第二份流水账。
-
-<a name="v0-4-2-release-closeout"></a>
-
-#### 5.1.4 Phase 4 的 `v0.4.2` 文档治理与 Release closeout
-
-Product Phase 4由`v0.4.2`documentation-governance列车完成最后一轮治理closeout。它整理Release/retirement、Phase history、acceptance、环境记忆与
-文档authority，在不修改production、runtime、Host ABI、trusted graph、managed events或Release allowlist的前提下物化并发布
-`0.4.2`；package identity `0.4.2`、Release contract、exact v0.4.1 predecessor transition与ZIP外bootstrap构成同一候选事务。C2完成后
-`v0.4.2`成为accepted，`v0.4.1`成为immediate fallback，`v0.4.0`进入deeper fallback证据链。
-
-该列车没有创建standing Phase 9。非破坏性candidate admission preflight、Source/Candidate、第一轮source-candidate closeout、
-tag(C0)、immutable publication、Published Release Cloud、GitHub Release Latest promotion confirmation、第二轮role-window closeout与
-C2均已闭合。Phase 4.12、Phase 4.13、Phase 4.14摘要、CHANGELOG、provenance和immutable acceptance分别保存历史理由与exact证据；
-本小节只保留长期programme结论，不重建逐gate流水。
-
-`v0.4.2`完成以下Phase 4文档治理交付：
-
-- 根`README.md`补齐可复制的candidate build/check/hash、正式资产命名与bootstrap两字段seal说明，并把`C0`、
-  `Source/Candidate`、`Release-excluded`的新人解释放在候选失效警告之前。README是Release ZIP输入，因此旧候选身份曾随README
-  变化而失效；最终README重新双构建/check并形成通过Source/Candidate的C0，exact HEAD与通道证据只见版本acceptance。
-- 维护机限制从活动planning和AGENTS内联事实提升到
-  [`维护机执行环境档案`](docs/maintenance-environment-profile.md#maintenance-environment-profile)：档案保存带日期的事实状态、影响、
-  默认本地/Cloud解法与重验触发器；AGENTS强制执行，MAINTAINER_HANDOFF提供人的发现入口，repository governance负责跨阶段提升。
-- 文档拓扑把全局入口、专项authority和Release输入拆开治理；版本guide位于
-  [`docs/acceptance/v0.4.2-cloud-hard-acceptance.md`](docs/acceptance/v0.4.2-cloud-hard-acceptance.md)。v0.4.1冻结guide/bootstrap在C2退出
-  current tree并迁到exact immutable source与Release资产；稳定templates继续在原路径`KEEP`。
-- Source/Candidate暴露C步骤工具能力缺口，稳定template归一化为：优先使用独立只读文件工具；缺少该能力时允许exact-path只读
-  Shell preflight，正文仍只能用apply_patch写入。真实诊断时间线只见
-  [v0.4.2第一通道证据](docs/acceptance/v0.4.2-cloud-hard-acceptance.md#v0-4-2-source-candidate-channel-checkpoint)；该C1修正属于
-  Release-excluded，不改变C0或正式tag目标。
-- 公开的sealed bootstrap与22-entry ZIP通过Published Release Fresh/Resume/9.2默认下载链验收。维护者在GitHub Release详情页确认
-  同一Release已取消Pre-release并成为Latest；按
-  [GitHub Release Latest promotion confirmation](#github-release-latest-promotion-confirmation)，正常路径不再重复下载或重算SHA。
-  第二轮退役随后清退24个已完成且无current入链的旧planning及v0.4.1 current guide/bootstrap，并把publication oracle迁移为
-  动态读取accepted/immediate-fallback角色。
-- Phase history明确区分回补型`RETROSPECTIVE_CAPSULE`与正式Round关闭后冻结的`FROZEN_DISCOVERY_RECORD`；一个Product Phase可有
-  多份真实Discovery records，但同一闭合对象最多一份回补型capsule。
-- ROADMAP第4节current train工作台→Discovery Round归档→第5节`product-phase-N`长期authority→Release后列车轮转的状态流已经
-  冻结；current-authority链接迁移不得改写原Discovery结论或时间语义。默认一条版本列车承载一个Product Phase；multi-Phase列车
-  必须由维护者显式授权，归属不能唯一判断时先与维护者确认。
-- post-v0.4.2 residue sweep仍归属Phase 4。Batch A清退不可达的旧候选/P9测试分支、重复P9-B条件和Phase 4.12无入链兼容anchors，
-  迁移两条退役文档链接并增加通用Markdown path/explicit-anchor审计；Batch B把Phase 4.14回归从事故措辞收敛为稳定anchors、
-  Release/retirement/C0-C2不变量与authority links。两个Batch保留真实acceptance/history、immutable P9-F、predecessor contract与
-  publication/fallback oracles；实际修改路径与22-entry Release allowlist交集为0，不改变production、公开资产或角色窗口。
-
-`v0.4.2`关闭后新建的两个planning scope继续`KEEP`，分别保存Release closeout和post-v0.4.2 residue Discovery的相邻上下文；
-它们都不是活动开发列车，也不授权新Product行为。planning的active pointer、完整三件套与生命周期状态继续按仓库治理指南
-校验，是否退役仍只能由维护者另行明确决定。
-
-<a name="product-phase-5"></a>
-
-### 5.2 Phase 5 其他文档治理（planning placeholder）
-
-Phase 5目前只冻结两个programme占位事实：方向是其他文档治理，候选版本系列预留为`0.5.0-*`。具体scope、预期产物、
-Discovery rounds、对象清单、退出/Cloud gate和Release路线全部保持TBD，必须由后续维护者授权的第一轮Discovery重新盘点；
-不得从v0.4.2、本轮治理结论、现存planning或候选Phase 6～9反推实现范围。
-
-本占位不进入第4节current development train工作台；预留`0.5.0-*`也不等于已经创建development identity、冻结Release输入或
-授权实施。现有两个planning scope继续`KEEP`只用于相邻上下文恢复，后续真实Discovery记录仍是history决策流水账，不替代
-ROADMAP的current programme authority。
+版本号、SHA、Cloud流水、Release资产与accepted/fallback角色分别进入CHANGELOG、provenance、acceptance和ROADMAP版本角色区域，
+不得塞入overview。默认一条列车承载一个Product Phase；只有维护者明确批准时才允许multi-Phase列车，此时每个真实Phase仍有
+独立overview，整条列车只在最终Release closeout后轮转一次。
 
 ## 6. 版本号与晋级语义
 

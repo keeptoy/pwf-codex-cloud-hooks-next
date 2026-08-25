@@ -254,7 +254,7 @@ Discovery 还对 Phase 4.1 做了一个必要的微调：当时“token 放在�
 
 这个调整没有改变本里程碑冻结的 hybrid owned-boundary、只读 workspace、versioned opt-in、fail-closed refusal、
 trusted graph 或 Host event set；它只是用更强的物理零读取边界替换了尚未实施的同文件示例。当前协议与授权状态以
-[`ROADMAP` 的 Phase 4 current authority](../../ROADMAP.md#product-phase-4) 和 Phase 4.4 后继 Discovery 为准。
+[`Product Phase 4 current authority`](../product-phases/phase-4.md#product-phase-4-overview) 和 Phase 4.4 后继 Discovery 为准。
 
 <a name="phase-4-1-post-implementation-opt-in-clarification"></a>
 
@@ -312,4 +312,4 @@ authority 为准。
 本record正文中的Phase 5～8按当时programme编号冻结，不做事后搜索替换。后继ROADMAP在其前插入新的Phase 5文档治理占位后，
 旧Phase 5/6/7/8现分别对应Phase 6/7/8/9，候选版本系列相应为`0.6.0-*`/`0.7.0-*`/`0.8.0-*`/`0.9.0-*`。
 当前Phase 5只预占`0.5.0-*`，其scope、预期产物、gate与Release路线均为TBD；现行programme只读
-[`ROADMAP`](../../ROADMAP.md#product-phase-5)。本尾注只消除编号歧义，不产生development train激活、实施或Release授权。
+[`ROADMAP`](../../ROADMAP.md#product-phase-route-index)。本尾注只消除编号歧义，不产生development train激活、实施或Release授权。

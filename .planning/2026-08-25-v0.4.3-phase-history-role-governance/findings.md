@@ -31,3 +31,22 @@
 - 引用盘点显示迁移面不只ROADMAP与治理指南：history模板、history索引、Phase 4.14、Phase 4.1/4.4的`product-phase-4` current links，以及architecture/repository tests都冻结了旧模型；实施时必须原子迁移链接与断言。
 - 多份history尾注链接`ROADMAP#product-phase-5`，它们表达的是programme重编号后的未来Phase 5，而不是已形成的长期Phase 5总结。新模型下应继续指向ROADMAP的Phase 5路线anchor；不能因为存在空`phase5-release-note.md`就把未激活Phase提升为overview authority。
 - 新模型最好把两类链接分开：ROADMAP保留`product-phase-N-route`用于候选/未激活programme路线；`docs/overview/phaseN-release-note.md#product-phase-N-overview`只在Phase实际激活后成为current/long-term Product authority。
+
+## Work Step B implementation decisions
+
+- 维护者已清除临时`docs/overview/`，工作树在施工前干净；正式结构采用`docs/product-phases/README.md`与`phase-4.md`，模板单独放`docs/product-phase-overview-template.md`，避免模板冒充真实Phase实例。
+- ROADMAP第5节改成`Product Phase路线索引`：保留Phase 4～9表与Release-closeout边界，删除5.1/5.2长期正文；Phase 4行链接真实overview，Phase 5继续只作为TBD路线行，不创建overview。
+- ROADMAP新增稳定`product-phase-route-index`与`product-phase-overview-rotation` anchors。前者服务未激活Phase路线引用；后者独占current train→overview的指针事务。
+- Phase 4 overview保留原5.1.1～5.1.4的长期Product内容，但所有相对链接按新目录重写；精确Release/Cloud证据仍只链接acceptance/provenance，不复制SHA或原始输出。
+- 旧`product-phase-4` current-authority链接迁到`docs/product-phases/phase-4.md#product-phase-4-overview`；旧`product-phase-5`重编号尾注迁到ROADMAP的路线索引anchor，因为Phase 5尚未激活。
+- repository-governance-guide删除仓库专用8.2轮转正文与旧anchor，只在history通用治理中引用ROADMAP新规则；Phase 4.14按允许的current-link maintenance改链并追加新authority状态说明。
+- 稳定测试目前把ROADMAP长期正文、治理指南8.2、Phase 5占位正文与旧current links都写成正向合同；这些是本次应迁移的test authority，而非产品失败。新断言应覆盖目录准入、模板边界、Phase 4 overview内容、ROADMAP路线/轮转唯一性及Release exclusion。
+- repository-boundary首个版本测试过去从ROADMAP切出v0.4.2 closeout；新模型必须改为读取`docs/product-phases/phase-4.md`，同时继续证明accepted acceptance与ROADMAP role window不变。
+
+## Work Step B final conclusion
+
+- `docs/product-phases/`现在是已激活Product Phase长期authority；当前只物化Phase 4，Phase 5继续只存在于ROADMAP的TBD路线行。
+- ROADMAP第4节只做current train指针，第5节只做Phase 4～9路线索引并独占overview轮转规则；治理指南不再保存第二份仓库状态机。
+- history两种record role和原时间语义保持不变；需要current Product authority的链接直接指向同一Phase overview，不再经历第4节→第5节批量迁链。
+- Phase overview模板放在authority目录之外，并使用显式relative-link占位符，避免模板自身被误认成真实Phase或复制后继承错误相对路径。
+- 新目录、模板和全部history迁链均不进入22-entry Release allowlist；本轮没有修改production/runtime/contract行为。

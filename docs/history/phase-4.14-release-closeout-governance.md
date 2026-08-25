@@ -176,9 +176,18 @@ Phase 4内部多轮真实Discovery，也会诱导维护者错误合并其conditi
 候选归属和影响交给维护者确认，不能为了完成第4节轮转自行虚构第5节条目。
 
 这项后续治理只补齐history身份、current/long-term authority与列车轮转的文档模型，没有修改production、contracts、runtime、
-package或Release字节，也没有授权`0.4.2`候选封板、Cloud、publication、Latest或下一Product Phase。详细current规则只见
-[repository governance guide](../repository-governance-guide.md#product-phase-authority-rotation)与ROADMAP；本节继续只是带时间语义的
-历史回补。
+package或Release字节，也没有授权`0.4.2`候选封板、Cloud、publication、Latest或下一Product Phase。本段保留当时形成的
+第4节→第5节模型；v0.4.3后的current规则只见
+[`ROADMAP` overview pointer轮转](../../ROADMAP.md#product-phase-overview-rotation)，本节继续只是带时间语义的历史回补。
+
+<a name="phase-4-14-post-governance-status-product-phase-overview-authority"></a>
+
+## Post-governance status — Product Phase overview authority
+
+`v0.4.3-dev`后续文档治理把长期Product authority从ROADMAP第5节大段正文迁入
+[`Product Phase 4 Overview`](../product-phases/phase-4.md#product-phase-4-overview)。ROADMAP第4节只保存current train指针，
+第5节只保存Phase 4～9路线索引与唯一overview轮转规则；history current links从此直接指向同一overview，不再在Phase closeout时
+从第4节批量迁到第5节。上文旧状态流保持当时语义，本尾注只记录后继authority替换，不改变原治理结论或产生新Product授权。
 
 <a name="phase-4-14-post-governance-status-post-pass-retirement-ordering"></a>
 
@@ -216,7 +225,7 @@ Source/Candidate。本节保留这次后续精炼的原因；当前执行顺序�
 由于README进入Release allowlist，本轮不是纯Release-excluded治理改动。最终本地zero-hash候选已重新完成双构建/check：
 22 entries、87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`，两份字节一致。
 这只是C0前本地候选快照，不是Source/Candidate PASS、sealed bootstrap或public asset证据；当前列车状态仍只读
-[`ROADMAP` v0.4.2 current train](../../ROADMAP.md#v0-4-2-release-closeout)，exact执行证据继续由活动planning和版本operator guide承接。
+[`Product Phase 4` v0.4.2 closeout](../product-phases/phase-4.md#v0-4-2-release-closeout)，exact执行证据继续由活动planning和版本operator guide承接。
 
 <a name="phase-4-14-post-governance-status-maintenance-environment-memory"></a>
 

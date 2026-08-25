@@ -2,15 +2,15 @@
 
 ## Goal
 
-在继续归属Product Phase 4的前提下开启`v0.4.3-dev`文档治理列车，明确`docs/history/`是精选历史过程账本，冻结回顾型`RETROSPECTIVE_CAPSULE`与探路/决策型`FROZEN_DISCOVERY_RECORD`两种身份，并保持ROADMAP第5节为长期Product Phase摘要与现行programme authority。
+在继续归属Product Phase 4的前提下推进`v0.4.3-dev`文档治理：明确`docs/history/`是精选历史过程账本，并把长期Product Phase authority迁入`docs/product-phases/`；ROADMAP只维护current train指针、版本角色、未来路线索引与唯一轮转规则。
 
 ## Next Step
 
-向维护者汇报history两角色边界已经完成；当前只讨论ROADMAP指针与`docs/overview/` Phase release note的新authority模型，未确认前不修改宏观文档。
+维护者push本轮本地治理commit；任何后续v0.4.3文档治理范围需另行明确，不从本轮完成状态自动扩展。
 
 ## Current Phase
 
-Work Step A complete; overview authority model under discussion
+Work Step B: Product Phase overview authority migration — completed
 
 ## Work Steps
 
@@ -22,19 +22,31 @@ Work Step A complete; overview authority model under discussion
 - [x] 实施最小文档与测试修改，运行风险相称验证并独立提交。
 - **Status:** completed
 
+### Work Step B: Product Phase overview authority 迁移
+
+- [x] 创建`docs/product-phases/README.md`、`phase-4.md`与`docs/product-phase-overview-template.md`。
+- [x] 把ROADMAP的Phase 4长期正文迁入Phase 4 overview；第4节改为指针，第5节只保留路线索引并删除Phase 5占位正文。
+- [x] 由ROADMAP独占overview指针轮转规则；治理指南、history索引/模板与冻结record只保留职责内投影或有证据的迁移尾注。
+- [x] 原子迁移稳定anchors、README文档地图与测试，不物化未激活的Phase 5 overview。
+- [x] 运行链接、authority、Release边界与完整回归，创建独立本地commit。
+- **Status:** completed
+
 ## Decisions Made
 
 | Decision | Rationale |
 |---|---|
 | v0.4.3继续归属Product Phase 4 | 这是v0.4.2之后的文档治理patch train，不自动激活TBD Product Phase 5。 |
 | history只有两种record role | 回顾型capsule与当时形成的Discovery/decision record回答不同历史问题，不能混成第三种长期authority。 |
-| 现行模型由ROADMAP第5节保存长期摘要（待本次讨论决定是否迁移） | history保存精选过程与时间语义；programme长期结论不能反向沉入历史流水账。 |
+| Product Phase长期authority迁入`docs/product-phases/` | ROADMAP保持轻量programme控制面；history继续保存过程时间语义，不承担长期Product authority。 |
 | 不再设置planning Phase 2 | 当前history对象就是有意保留的精选历史流水账，不再启动“重新编排/重复摘要盘点”批次。 |
+| 使用`docs/product-phases/phase-N.md`而不是release-note命名 | Product Phase可能覆盖多个SemVer Release；避免与GitHub Release note、CHANGELOG和acceptance混淆。 |
+| ROADMAP独占overview指针轮转规则 | 指针与programme状态由同一authority维护；治理指南不再冻结第二份仓库专用步骤。 |
 
 ## Authorization
 
 - 已授权：版本迭代为`v0.4.3-dev`，继续Phase 4文档治理。
 - 已授权：明确history两种角色及“过程流水账”定位，并同步ROADMAP长期摘要边界和测试。
+- 已授权：按确认模型建立Product Phase overview目录/模板，迁移Phase 4长期摘要与current links，删除ROADMAP Phase 5占位正文并收敛轮转规则。
 - 未授权：删除任何planning/history/acceptance，修改production/runtime/contract行为，push或远端branch/tag/Release/Cloud动作。
 
 ## Stop Conditions
@@ -42,6 +54,8 @@ Work Step A complete; overview authority model under discussion
 - 若版本改号发现ZIP输入、bootstrap hash或Release身份需要seal，先保持development zero-hash并停止在本地候选前。
 - 若发现第三种history身份确有独立生命周期需求，先报告，不强行归类。
 - 历史正文保持时间语义；本轮不批量改写已冻结record。
+- 冻结history record若必须迁移current-authority链接，只做link maintenance或append-only迁移尾注，不反写原结论。
+- Phase 5尚未激活；不得创建或链接Phase 5 overview authority。
 
 ## Errors Encountered
 
@@ -58,7 +72,10 @@ Work Step A complete; overview authority model under discussion
 | Git Bash在Windows沙箱内因error 5无法创建signal pipe | 1 | ZIP build/check及Python/Node静态检查已先通过；在获准的沙箱外重跑全部bootstrap `bash -n`并通过。 |
 | planning改名首个组合补丁把原Work Step B状态误写成`completed`上下文，实际文件为`pending`，补丁整体拒绝 | 1 | 没有部分修改；按实际文本重发有界补丁，完成Work Step A改名并删除原内部Phase 2。 |
 | overview引用盘点的第二个`rg`没有找到既有`docs/overview`引用，整组shell因此返回exit 1 | 1 | 第一个引用inventory完整有效；将“当前无overview入链”记录为发现，不重复同一组合搜索。 |
+| ROADMAP第5节自动大块迁移连续遇到两次shell输出截断导致end boundary不可见，扩大/分段读取后又因整块上下文校验失败 | 3 | 三次均未产生部分写入；停止动态大块替换，改用按语义小节拆分的可审查`apply_patch`，逐块迁移并在每步复扫。 |
+| overview迁移后首次聚焦测试为19/24，后续两轮为20/24、22/24 | 3 | 失败均为旧authority位置、措辞顺序或有意双入口的测试断言漂移；未弱化产品边界，逐项改成新唯一authority的直接语义断言后24/24通过。 |
+| 首次staged diff检查发现新overview/template的4处Markdown行尾空格 | 1 | commit未创建；移除非必要hard-break空格，记录后重新暂存并复跑`git diff --cached --check`。 |
 
 ## Current Status
 
-`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / OVERVIEW_AUTHORITY_MODEL_UNDER_DISCUSSION / PRODUCT_PHASE_4`
+`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / PRODUCT_PHASE_4`
