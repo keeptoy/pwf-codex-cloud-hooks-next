@@ -6,11 +6,11 @@
 
 ## Next Step
 
-等待维护者push本轮Source/Candidate bootstrap选择链说明commit；后续继续v0.4.3治理或进入C0前核对。
+等待维护者push本轮双通道合同说明commit；后续继续v0.4.3治理或进入C0前核对。
 
 ## Current Phase
 
-Work Step F: Source/Candidate bootstrap selection clarification — completed
+Work Step G: dual-channel contract clarification — completed
 
 ## Work Steps
 
@@ -64,6 +64,13 @@ Work Step F: Source/Candidate bootstrap selection clarification — completed
 - [x] 大白话解释`HOOKS_URL`与`HOOKS_SHA256`本地override验证什么，以及它与Published Release默认下载链的区别。
 - [x] 收窄candidate bootstrap的C0/PASS后字节变化边界，并补稳定语义断言。
 - [x] 运行相称回归、ZIP build/check与静态检查，创建独立本地commit。
+- **Status:** completed
+
+### Work Step G: 双通道合同定位提升
+
+- [x] 把Source/Candidate与Published Release各自证明的对象补入验收模板第1节。
+- [x] 用稳定语义断言保护“C0 + contract bootstrap + source-built ZIP”与“正式bootstrap默认公开下载链”的分工。
+- [x] 运行相称回归并创建独立本地commit。
 - **Status:** completed
 
 ## Decisions Made
@@ -125,4 +132,4 @@ Work Step F: Source/Candidate bootstrap selection clarification — completed
 
 ## Current Status
 
-`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / WORK_STEP_C_COMPLETE / WORK_STEP_D_COMPLETE / WORK_STEP_E_COMPLETE / WORK_STEP_F_COMPLETE / PRODUCT_PHASE_4`
+`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / WORK_STEP_C_COMPLETE / WORK_STEP_D_COMPLETE / WORK_STEP_E_COMPLETE / WORK_STEP_F_COMPLETE / WORK_STEP_G_COMPLETE / PRODUCT_PHASE_4`

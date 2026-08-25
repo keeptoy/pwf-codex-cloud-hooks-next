@@ -2,6 +2,9 @@
 
 ## Latest verification update
 
+- Work Step G验证完成：repository boundary 15/15 PASS；完整`npm test`为186 tests、160 PASS、26个Windows/POSIX预期SKIP、0 FAIL。模板属于Release-excluded docs，没有改变22-entry ZIP输入或production/runtime行为。
+- Cloud hard acceptance template第1节现在直接冻结两条通道的证明对象，并明确Source/Candidate本地override不得被Published Release沿用；后续版本guide可引用模板，不必重写该合同。
+- Work Step G开始：维护者授权把双通道大白话定位提升到Cloud hard acceptance template第1节；正文与repository boundary直接语义断言已写入，等待回归。
 - Work Step F验证完成：README明确当前checkout contract的唯一bootstrap选择链、双版本共存语义、两个本地override与Published Release默认下载链的证据边界；repository boundary增加直接语义断言。
 - 聚焦README/Release/architecture回归31/31 PASS；完整`npm test`为186 tests、160 PASS、26个Windows/POSIX预期SKIP、0 FAIL；candidate bootstrap exact check返回`state=unchanged`，`git diff --check`PASS。
 - README变化后的22-entry候选ZIP build/check PASS（89,623 bytes，development SHA `44c6d67a522c53dfcd79a757ffdf2239113bc81623ac9f09c054ec3a3373d894`）。该SHA只是当前本地开发快照，不是Source/Candidate证据。

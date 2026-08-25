@@ -122,6 +122,13 @@ contract/test/oracle，不必把它提升为通用黑盒协议。
 | Source/Candidate | Cloud 实际 checkout 的完整 commit + 当次确定性构建 ZIP | 从 source 构建/check ZIP，以显式本地 `HOOKS_URL`/`HOOKS_SHA256` override 安装 | 当前 source、portable suite、候选 ZIP 与 installed behavior |
 | Published Release | immutable public bootstrap URL + bootstrap SHA；bootstrap 内嵌默认 ZIP URL/SHA | environment setup 在 agent startup 前校验并执行 public bootstrap | 公开默认下载链、Fresh startup 与最终发布字节 |
 
+大白话固定分工：
+
+- Source/Candidate 验证“当前 C0 源码 + 当前 contract 指定的 bootstrap + 当前源码构建的 ZIP”。本通道的本地
+  `HOOKS_URL`/`HOOKS_SHA256` override只把contract选中的candidate bootstrap接到当次候选ZIP，不代表公开下载链。
+- Published Release 才验证正式 bootstrap 的默认 GitHub 下载地址、内嵌exact ZIP SHA和公开 ZIP；本通道不得沿用
+  Source/Candidate的本地override。
+
 Publication audit 另行在具备 exact refs 的维护环境执行完整 tag/source/asset oracle。Source/Candidate 的
 tagless checkout 不应伪造 remote/tag；Published Release 也不能使用 workspace 同名工具代替公开资产。
 

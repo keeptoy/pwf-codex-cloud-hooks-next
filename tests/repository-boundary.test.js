@@ -388,6 +388,12 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(operatorGuideTemplate,
     /^<a name="operator-guide-release-exit-retirement-checkpoint"><\/a>$/m);
   assert.match(acceptanceTemplate, /\| 本模板 \| Source\/Candidate 与 Published Release 的稳定执行协议/);
+  assert.match(acceptanceTemplate,
+    /Source\/Candidate 验证“当前 C0 源码 \+ 当前 contract 指定的 bootstrap \+ 当前源码构建的 ZIP”/);
+  assert.match(acceptanceTemplate,
+    /Published Release 才验证正式 bootstrap 的默认 GitHub 下载地址、内嵌exact ZIP SHA和公开 ZIP/);
+  assert.match(acceptanceTemplate,
+    /HOOKS_URL`\/`HOOKS_SHA256` override[\s\S]{0,180}不代表公开下载链[\s\S]{0,240}不得沿用[\s\S]{0,100}本地override/);
   assert.match(acceptanceTemplate, /\| 活动 Release task plan \|[^\n]*Next Step/);
   assert.match(acceptanceTemplate, /\| 本轮 operator guide \|[^\n]*channel checkpoint[^\n]*final Post-run/);
   assert.match(acceptanceTemplate, /多 Discovery 版本[^\n]*每个正式 Discovery Round/);

@@ -146,3 +146,8 @@ Fail-closed条件：version必须同时匹配package、Release contract和extern
 - 第4.1节把当前源码双构建出的临时ZIP通过`HOOKS_URL=file://...`交给candidate bootstrap，并用`HOOKS_SHA256=<actual candidate SHA>`替换zero-hash默认值。该override验证candidate脚本、C0源码与本地候选ZIP的组合，不验证公开GitHub默认下载链。
 - Published Release是独立证据通道：它使用已发布的exact-hash bootstrap及默认公开URL重新下载资产，不带Source/Candidate的本地override。两条通道分别证明source bytes与public bytes，不能互相冒充。
 - PASS后只有tracked candidate或canonical template实际发生字节变化才使C0证据失效；`candidate-bootstrap --write`返回`state=unchanged`没有变化，正常`release`命令只写ignored `dist/`也不改变C0。
+
+### Work Step G dual-channel contract placement
+
+- README负责维护者构建入口和新人展开说明；Cloud hard acceptance template第1节负责两个Release验收通道的稳定证明范围。把“C0 + contract bootstrap + source-built ZIP”与“正式bootstrap默认公开下载链”提升到该节，可以让后续版本operator guide只引用模板，不重复解释或产生第二份authority。
+- Source/Candidate的`HOOKS_URL`/`HOOKS_SHA256`是本地candidate ZIP接线，不是公开URL验收；Published Release必须不带这两个override，才能证明用户实际获得的默认公开资产链。
