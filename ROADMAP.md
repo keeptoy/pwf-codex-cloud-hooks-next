@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.3-dev`；继续归属Product Phase 4的文档治理patch train，只授权当前history角色边界Discovery，不激活Product Phase 5 |
+| 当前开发列车 | `v0.4.3-dev`；继续归属Product Phase 4的文档治理patch train，当前授权history/overview authority与环境限制记忆治理，不激活Product Phase 5 |
 | 当前已接受版本 | `v0.4.2`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.1` immediate fallback |
 | 回退证据链 | immutable `v0.4.0` deeper fallback；`v0.3.5`与更早发布里程碑见 provenance museum |
@@ -68,7 +68,9 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 
 当前exact开发列车是`v0.4.3-dev`，继续归属
 [`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)。Work Step A已把Phase history冻结为精选过程
-账本；Work Step B已把长期Product authority从ROADMAP正文迁入overview，并由本节持有current指针。该列车不修改production、
+账本；Work Step B已把长期Product authority从ROADMAP正文迁入overview，并由本节持有current指针；当前Work Step C把
+local/remote执行限制与默认对策
+收敛到README可发现的长期档案。该列车不修改production、
 runtime、Host ABI或trusted graph，也不激活仍为TBD的Product Phase 5。
 
 三个planning scope继续承担相邻Discovery恢复与治理参考；只有`.active_plan`指向当前v0.4.3任务。保留旧scope不扩大本列车范围，

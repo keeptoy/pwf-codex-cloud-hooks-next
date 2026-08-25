@@ -14,6 +14,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   `FROZEN_DISCOVERY_RECORD`保留正式Discovery当时的判断、条件与停止点。
 - 把长期Product Phase authority从ROADMAP大段正文迁到`docs/product-phases/phase-N.md`；ROADMAP只维护current train指针、
   未来Phase路线索引与唯一overview轮转规则，未激活的Phase不提前创建空overview。
+- 把maintenance environment profile从单一本机事实表扩展为local/remote执行限制与默认对策档案，并在README文档地图增加
+  新人直达入口；Cloud task瞬时错误与具体验收步骤仍不进入该长期authority。
 
 ## v0.4.2
 

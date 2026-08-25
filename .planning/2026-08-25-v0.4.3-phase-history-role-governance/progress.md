@@ -2,6 +2,16 @@
 
 ## Latest verification update
 
+- Work Step C最终完整回归：182 tests、156 PASS、26个Windows/POSIX预期SKIP、0 FAIL；聚焦architecture 9/9与repository boundary 15/15均PASS。
+- importer、Python production compile、`install.js` syntax、两个bootstrap `bash -n`、Markdown links与`git diff --check`全部PASS。
+- README是Release输入，因此开发候选已重建为22 entries、87,574 bytes、SHA-256 `a0bd5833df666d9db87da006c70d87466f78cb3253385cb93f4b610b4c98ca9e`；只作development验证，不构成sealed身份。profile正文仍由`docs/` exclusion排除。
+- 最终引用面：6份面向人的文档各有1条可点击链接（README、AGENTS、handoff、治理指南、Phase 4 overview、Phase 4.14）；另有2个测试文件3次合同引用和2个planning文件5次记忆引用。
+- Work Step C正文已实施：profile保留原路径/anchor，标题与scope升级为local/remote限制+对策档案；增加三类remote状态、README入口、治理链接、AGENTS/handoff摘要、ROADMAP/CHANGELOG和测试断言。
+- Work Step C聚焦验证通过：repository boundary 15/15，Markdown links、Release exclusion与新remote状态断言全部PASS；当前overview链接文字已同步新标题，Phase 4.14旧称按历史时间语义保留。
+- Work Step C首次完整suite为155 PASS、1治理断言FAIL、26平台SKIP；失败因ROADMAP插入新step时漏掉current-pointer稳定语义，已恢复原句，下一步先聚焦复验再重跑完整suite。
+- Work Step C开始：已读取环境档案并完成首轮引用盘点；当前档案正式scope仅覆盖本机，README尚无直接文档地图入口。
+- 引用计数完成：路径字面11次/8个tracked文件，面向人的直接文档引用4处；治理指南已允许local/Cloud两类限制，现需修正profile scope并新增README入口。
+- 已从v0.4.2 immutable acceptance确认两项可登记remote事实：disposable Linux Cloud是已跑通的Linux证据路线；Cloud task只读工具inventory会变化，模板已有exact-path只读Shell fallback。
 - Work Step B完整回归通过：`npm test`为182 tests、156 PASS、26个Windows/POSIX预期SKIP、0 FAIL；聚焦authority测试24/24通过。
 - upstream importer check、Python production compile、`install.js` syntax、两个bootstrap `bash -n`与`git diff --check`全部PASS。
 - 新authority目录保持Release-excluded；候选ZIP仍为22 entries并通过build/check。本地临时候选为87,474 bytes、SHA-256 `8f1c8f84be5eedb2fc34d8c3a23006ccb6e146a377bbe070b8d23544a64ecd5c`，只作development验证，不构成sealed资产身份。

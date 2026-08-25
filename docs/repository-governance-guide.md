@@ -40,7 +40,7 @@ Hot 层追求单一权威和快速理解；Cold 层追求精确恢复。不要�
 | 当前 programme、candidate、accepted、rollback 状态 | ROADMAP |
 | upstream、来源、不可变身份和里程碑索引 | PROVENANCE |
 | 当前 Next Step、授权、禁止事项和现场证据 | active planning |
-| 已确认、会跨阶段复用的维护机执行限制与默认替代路线 | maintenance environment profile |
+| 已确认、会跨阶段复用的local/remote执行限制与默认替代路线 | [maintenance environment profile](maintenance-environment-profile.md#maintenance-environment-profile) |
 | 完整历史字节和逐次验收 | immutable Git/tag/Release |
 
 其他文件只保留最小摘要和链接，不复制第二份状态表、测试流水或版本角色。
@@ -105,7 +105,7 @@ source baseline
 
 <a name="maintenance-environment-memory"></a>
 
-### 6.3 维护机环境限制的持久记忆
+### 6.3 维护执行环境限制与对策的持久记忆
 
 已确认、会跨任务或阶段反复改变本地/Cloud执行路由的环境限制，不得只保存在会被清退的planning中；应提升到一个持久的
 maintenance environment profile。档案至少记录适用执行面、核对日期、事实状态、影响、默认解决方案与重验触发器；planning只

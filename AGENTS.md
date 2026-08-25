@@ -104,9 +104,9 @@
 - 维护者把 Cloud 原始结果带回后，智能体负责核对 exact source、测试/资产身份、Fresh/UserPrompt/real Resume、doctor
   和停止条件，再把真实证据写入版本 acceptance 并创建下一本地 commit。未实际运行的 Cloud 轮次保持 PENDING，
   本地 PASS 不得提升为 Cloud PASS。
-- 本地维护机的已确认物理/工具限制、核对日期、默认解决方案和重验触发器只在
-  [`维护机执行环境档案`](docs/maintenance-environment-profile.md#maintenance-environment-profile)维护。没有触发器时直接使用其中
-  最近的`CONFIRMED`结论，不重复搜索WSL或容器执行面，也不用Git Bash冒充Linux/POSIX证据；Linux零skip、FIFO/device或
+- 本地维护机与远程/Cloud执行面的已确认物理/工具限制、核对日期、默认对策和重验触发器只在
+  [`维护执行环境限制与对策档案`](docs/maintenance-environment-profile.md#maintenance-environment-profile)维护。没有触发器时直接使用其中
+  最近适用的`CONFIRMED*`结论，不重复搜索WSL或容器执行面，也不用Git Bash冒充Linux/POSIX证据；Linux零skip、FIFO/device或
   真实filesystem缺口默认直接编排进版本Source/Candidate Cloud教程。
 - 当任务发现一个已经确认、会跨任务或阶段反复影响执行路由的新环境限制时，不得只写进planning；关闭或清退该计划前，必须
   把适用范围、影响、解决方案与重验条件提升到环境档案。单次错误和原始探测输出仍留在活动findings/progress。

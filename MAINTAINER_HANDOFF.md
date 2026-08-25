@@ -29,7 +29,7 @@
 | 安装、doctor 或 repair 异常 | [README](README.md) → ARCHITECTURE → 相关 contract/tests | 稳定操作入口是什么、结果属于 owned drift 还是未知现场 |
 | 版本、Release 或回滚问题 | [ROADMAP](ROADMAP.md) → [CHANGELOG](CHANGELOG.md) → [BASELINE_PROVENANCE](BASELINE_PROVENANCE.md) | 当前角色、已发生 delta 与不可变身份是否被分开解释 |
 | Cloud 事实或历史验收争议 | BASELINE_PROVENANCE → [docs 专项证据](docs/) | 争议属于当前 programme，还是带日期的 acceptance/runbook 快照 |
-| 本机能力不足、重复platform SKIP或不确定是否要再探测 | [维护机执行环境档案](docs/maintenance-environment-profile.md#maintenance-environment-profile) → 活动task plan | 这是已确认的长期限制、出现了重验触发器，还是只属于本轮的临时错误 |
+| 本地/Cloud执行面能力不足、重复platform SKIP或不确定是否要再探测 | [维护执行环境限制与对策档案](docs/maintenance-environment-profile.md#maintenance-environment-profile) → 活动task plan | 这是已确认的长期限制、出现了重验触发器，还是只属于本轮的临时错误 |
 
 这张表不是第二份文档地图。若问题继续下钻，以目标 authority、machine contract、源码和测试为准，
 并把本轮研究与验证分别记入活动 findings 和 progress。
@@ -60,7 +60,7 @@
 | doctor blocker / unknown drift | 现场超出受控 repair 边界，或身份无法可信解释 | 否；不得覆盖 | ARCHITECTURE、活动 findings |
 | tests PASS | 已运行断言在当前平台和输入上通过 | 仅作为当前 gate 的一份证据 | DESIGN 验证路由、活动 progress |
 | test failure | 失败尚未完成 product defect、test defect 或 fixture drift 分类 | 否；先用只读证据分类 | 相关源码、contract/tests、活动 findings |
-| platform limitation / SKIP | 当前平台不能提供所需 primitive；并不证明产品通过或失败 | 可继续无关工作，缺失 gate 仍未完成 | 维护机执行环境档案、ROADMAP、活动 task plan |
+| platform limitation / SKIP | 当前平台不能提供所需 primitive；并不证明产品通过或失败 | 可继续无关工作，缺失 gate 仍未完成 | 维护执行环境限制与对策档案、ROADMAP、活动 task plan |
 | deterministic package 或 Cloud gate PASS | 指定输入或平台证据已闭合 | 只推进明确授权的对应 gate | ROADMAP、provenance、专项 acceptance |
 
 分类时先保留原始输出和平台条件。不得为了绿色摘要把 product defect 改名为 platform limitation，

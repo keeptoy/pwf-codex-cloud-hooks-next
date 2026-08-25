@@ -238,17 +238,24 @@ test("trusted source zones are exact while repository governance paths remain li
 test("maintenance environment constraints survive planning retirement", () => {
   const agents = read("AGENTS.md");
   const handoff = read("MAINTAINER_HANDOFF.md");
+  const readme = read("README.md");
   const profilePath = "docs/maintenance-environment-profile.md";
   const profile = read(profilePath);
   const governance = read("docs/repository-governance-guide.md");
   const artifact = JSON.parse(read(currentArtifactPath));
 
   assert.match(profile, /^<a name="maintenance-environment-profile"><\/a>$/m);
+  assert.match(profile, /本地维护机与远程\/Cloud执行面[\s\S]{0,200}物理\/工具限制[\s\S]{0,120}默认对策/);
   assert.match(profile, /2026-08-22[\s\S]{0,500}`wsl\.exe`[\s\S]{0,300}没有已安装发行版/);
   assert.match(profile, /Docker[\s\S]{0,200}Podman[\s\S]{0,200}nerdctl[\s\S]{0,200}不存在/);
   assert.match(profile, /Git Bash[\s\S]{0,300}不能[\s\S]{0,200}Linux\/POSIX证据/);
   assert.match(profile, /Linux零skip[\s\S]{0,200}FIFO\/device[\s\S]{0,200}filesystem/);
   assert.match(profile, /Source\/Candidate Cloud教程[\s\S]{0,200}真实Linux gate/);
+  assert.match(profile, /2026-08-25[\s\S]*`CONFIRMED_ROUTE`[\s\S]*disposable Linux Cloud[\s\S]*portable Linux suite/);
+  assert.match(profile, /`CONFIRMED_BOUNDARY`[\s\S]*`\/opt\/codex`[\s\S]*不是永久常量/);
+  assert.match(profile,
+    /`CONFIRMED_VARIABILITY`[\s\S]*只有Shell型读取与apply_patch[\s\S]*exact-path只读Shell preflight/);
+  assert.match(profile, /不是[\s\S]{0,160}验收[\s\S]{0,160}永久[\s\S]{0,160}平台承诺/);
   assert.match(profile, /跨阶段执行路由[\s\S]{0,120}不得只记录在planning/);
   assert.match(profile, /重验触发器[\s\S]{0,400}维护者[\s\S]{0,200}环境已经改变/);
   assert.match(profile, /不是[\s\S]{0,160}(?:Host ABI|产品支持合同|永久)/);
@@ -257,10 +264,14 @@ test("maintenance environment constraints survive planning retirement", () => {
     /\]\(docs\/maintenance-environment-profile\.md#maintenance-environment-profile\)/);
   assert.match(handoff,
     /\]\(docs\/maintenance-environment-profile\.md#maintenance-environment-profile\)/);
+  assert.match(readme,
+    /\]\(docs\/maintenance-environment-profile\.md#maintenance-environment-profile\)/);
   assert.match(governance, /^<a name="maintenance-environment-memory"><\/a>$/m);
   assert.match(governance,
     /已确认、会跨任务或阶段反复改变本地\/Cloud执行路由的环境限制，不得只保存在会被清退的planning中/);
   assert.match(governance, /应提升到一个持久的[\s\S]{0,80}maintenance environment profile/);
+  assert.match(governance,
+    /\]\(maintenance-environment-profile\.md#maintenance-environment-profile\)/);
   assert.equal(artifact.entries.some(entry => entry.path === profilePath), false);
   assert.equal(artifact.excluded_prefixes.includes("docs/"), true);
 });

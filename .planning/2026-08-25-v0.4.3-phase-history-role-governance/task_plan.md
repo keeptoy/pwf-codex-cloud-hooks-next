@@ -2,15 +2,15 @@
 
 ## Goal
 
-在继续归属Product Phase 4的前提下推进`v0.4.3-dev`文档治理：明确`docs/history/`是精选历史过程账本，并把长期Product Phase authority迁入`docs/product-phases/`；ROADMAP只维护current train指针、版本角色、未来路线索引与唯一轮转规则。
+在继续归属Product Phase 4的前提下推进`v0.4.3-dev`文档治理：明确history与Product Phase overview职责，并把会跨任务影响执行路由的本地/远程环境限制及其默认对策固化为新人可发现的长期档案。
 
 ## Next Step
 
-维护者push本轮本地治理commit；任何后续v0.4.3文档治理范围需另行明确，不从本轮完成状态自动扩展。
+维护者push本轮环境档案治理commit；后续环境事实只有出现档案定义的重验触发器时才更新。
 
 ## Current Phase
 
-Work Step B: Product Phase overview authority migration — completed
+Work Step C: maintenance environment constraints and remedies profile — completed
 
 ## Work Steps
 
@@ -31,6 +31,14 @@ Work Step B: Product Phase overview authority migration — completed
 - [x] 运行链接、authority、Release边界与完整回归，创建独立本地commit。
 - **Status:** completed
 
+### Work Step C: 环境限制与对策档案
+
+- [x] 盘点环境档案现有内容、引用入口和测试合同，区分物理/工具事实、远程执行面限制与单次错误。
+- [x] 把档案定位收敛为本地维护机和远程/Cloud执行面的长期限制与默认对策账本，不复制临时planning日志。
+- [x] 在README文档地图增加新人入口，并同步必要的AGENTS/maintainer摘要与稳定测试。
+- [x] 运行链接、authority、Release边界与完整回归，创建独立本地commit。
+- **Status:** completed
+
 ## Decisions Made
 
 | Decision | Rationale |
@@ -41,12 +49,14 @@ Work Step B: Product Phase overview authority migration — completed
 | 不再设置planning Phase 2 | 当前history对象就是有意保留的精选历史流水账，不再启动“重新编排/重复摘要盘点”批次。 |
 | 使用`docs/product-phases/phase-N.md`而不是release-note命名 | Product Phase可能覆盖多个SemVer Release；避免与GitHub Release note、CHANGELOG和acceptance混淆。 |
 | ROADMAP独占overview指针轮转规则 | 指针与programme状态由同一authority维护；治理指南不再冻结第二份仓库专用步骤。 |
+| 环境档案同时覆盖本地与远程执行面 | 只要限制会跨任务反复改变执行/验收路线，就应与默认对策一起持久化；单次错误仍留planning。 |
 
 ## Authorization
 
 - 已授权：版本迭代为`v0.4.3-dev`，继续Phase 4文档治理。
 - 已授权：明确history两种角色及“过程流水账”定位，并同步ROADMAP长期摘要边界和测试。
 - 已授权：按确认模型建立Product Phase overview目录/模板，迁移Phase 4长期摘要与current links，删除ROADMAP Phase 5占位正文并收敛轮转规则。
+- 已授权：盘点并完善maintenance environment profile，使其覆盖本地/远程限制与对策，并在README提供新人入口。
 - 未授权：删除任何planning/history/acceptance，修改production/runtime/contract行为，push或远端branch/tag/Release/Cloud动作。
 
 ## Stop Conditions
@@ -75,7 +85,8 @@ Work Step B: Product Phase overview authority migration — completed
 | ROADMAP第5节自动大块迁移连续遇到两次shell输出截断导致end boundary不可见，扩大/分段读取后又因整块上下文校验失败 | 3 | 三次均未产生部分写入；停止动态大块替换，改用按语义小节拆分的可审查`apply_patch`，逐块迁移并在每步复扫。 |
 | overview迁移后首次聚焦测试为19/24，后续两轮为20/24、22/24 | 3 | 失败均为旧authority位置、措辞顺序或有意双入口的测试断言漂移；未弱化产品边界，逐项改成新唯一authority的直接语义断言后24/24通过。 |
 | 首次staged diff检查发现新overview/template的4处Markdown行尾空格 | 1 | commit未创建；移除非必要hard-break空格，记录后重新暂存并复跑`git diff --cached --check`。 |
+| Work Step C首次完整回归为155 PASS / 1 FAIL / 26 SKIP | 1 | 唯一失败是ROADMAP插入Work Step C时丢失“第4节持有current指针”稳定语义；恢复正文，不放宽断言，然后重跑聚焦与完整suite。 |
 
 ## Current Status
 
-`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / PRODUCT_PHASE_4`
+`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / WORK_STEP_C_COMPLETE / PRODUCT_PHASE_4`

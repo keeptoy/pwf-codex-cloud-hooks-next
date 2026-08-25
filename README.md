@@ -379,6 +379,7 @@ README 只维护稳定支持行为和用户/开发命令，不复制频繁变化
 | 各已发布版本和 Unreleased 已经改变了什么 | [`CHANGELOG.md`](CHANGELOG.md) |
 | 当前 programme、版本列车、Cloud/Release/rollback 状态 | [`ROADMAP.md`](ROADMAP.md) |
 | 某个已激活 Product Phase 为什么存在、最终采用什么路线、留下哪些长期边界 | [`Product Phase Overview`](docs/product-phases/README.md) |
+| 本地维护机或远程/Cloud执行面有哪些已确认限制、默认怎样绕行、何时重验 | [`维护执行环境限制与对策档案`](docs/maintenance-environment-profile.md#maintenance-environment-profile) |
 | 当前唯一 Next Step、授权、禁止事项和停止条件 | `.planning/.active_plan` 指向的活动 `task_plan.md` |
 | 已发布身份、迁移 refs、upstream/overlay 与不可变资产从哪里来 | [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 冷证据账本 |
 | 历史如何分层保留、planning/版本文件何时退场，以及怎样迁移到新项目 | [`仓库治理指南`](docs/repository-governance-guide.md) |

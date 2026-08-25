@@ -103,7 +103,7 @@ immutable publication、Published Release Cloud、GitHub Release Latest promotio
 
 - 根[`README`](../../README.md)形成新人可复制的candidate build/check/hash、正式资产命名与bootstrap两字段seal说明；README是
   Release ZIP输入，变更会使旧候选身份失效。
-- 维护机限制提升到[`维护机执行环境档案`](../maintenance-environment-profile.md#maintenance-environment-profile)，保存带日期的
+- 维护机限制提升到[`维护执行环境限制与对策档案`](../maintenance-environment-profile.md#maintenance-environment-profile)，保存带日期的
   事实状态、影响、默认本地/Cloud解法与重验触发器。
 - 文档拓扑把全局入口、专项authority和Release输入拆开治理；版本guide位于
   [`docs/acceptance`](../acceptance/v0.4.2-cloud-hard-acceptance.md)，稳定templates继续`KEEP`。
