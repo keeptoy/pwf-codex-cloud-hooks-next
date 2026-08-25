@@ -2,6 +2,11 @@
 
 ## Latest verification update
 
+- Work Step E验证完成：聚焦README/Release/architecture 31/31 PASS；完整`npm test`仍为186 tests、160 PASS、26个Windows/POSIX预期SKIP、0 FAIL。
+- README变化后的22-entry候选ZIP build/check PASS（88,721 bytes，development SHA `49909e9758c1303acf6160ada0d4d04c3ad7c251450065c7c248493ce59b4e55`）；candidate bootstrap exact check与`git diff --check`PASS。该SHA仅为本地开发快照，不是Source/Candidate证据。
+- README新人说明已扩展：新增三对象职责表、`--write`与check-only逐条解释、C0后变更作废边界、正式命令五项使用前提、Cloud SHA来源和“临时重建→SHA比较→dist双资产”的完整流程；原大白话内容已全部持久化。
+- repository boundary测试已从“命令出现即可”升级为直接保护上述新人语义，尤其断言生成器不读取/重命名旧candidate、第二条命令只读、SHA来自Cloud evidence。
+- Work Step E开始：维护者确认README现有命令缺少新人上下文，授权保留本轮大白话解释，重点澄清`--write`/只读检查和“正式ZIP不是重命名旧candidate.zip”。
 - Work Step D最终验证完成：完整`npm test`为186 tests、160 PASS、26个Windows/POSIX预期SKIP、0 FAIL；最后的write-state小修后`release-assets`再验4/4 PASS。
 - importer check、Python production/materializer compile、`install.js` syntax、22-entry ZIP build/check、candidate write/check幂等、全部bootstrap/template `bash -n`、LF attributes与`git diff --check`均PASS；未在真实`dist/`生成未经Cloud PASS的正式资产。
 - 修正治理登记后Release/architecture聚焦回归40/40 PASS；新增generator/template明确属于source-only trusted inventory，但继续不进入22-entry ZIP。
@@ -87,6 +92,7 @@
 | 2026-08-25 | 新增Node测试在Windows沙箱内由test runner返回`spawn EPERM` | 1 | 测试未进入断言；沙箱外用原命令复验4/4 PASS。 |
 | 2026-08-25 | 首轮Release/architecture聚焦回归38/40 | 1 | 两项均为新增文件的治理登记缺口；补DESIGN反向索引和source-only trusted inventory，不把工具/template加入22-entry ZIP。 |
 | 2026-08-25 | 沙箱内`git add`因`.git/index.lock`只读失败 | 1 | 无部分暂存；沙箱外按显式文件清单暂存成功，cached diff/check与三项新/改脚本mode均为100644。 |
+| 2026-08-25 | Work Step E首轮聚焦测试30/31 | 1 | 唯一失败是稳定README硬编码当前开发版本；改为`vX.Y.Z-dev`通用例子后复验。 |
 
 ## 5-Question Reboot Check
 

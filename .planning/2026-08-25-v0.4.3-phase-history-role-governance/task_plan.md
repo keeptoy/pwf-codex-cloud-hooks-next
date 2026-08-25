@@ -6,11 +6,11 @@
 
 ## Next Step
 
-等待维护者push本轮本地commit；后续继续v0.4.3治理或进入C0前，先按README核对candidate bootstrap与Release输入。
+等待维护者push本轮README新人说明commit；后续继续v0.4.3治理或进入C0前，按扩展后的三对象/双阶段说明核对Release输入。
 
 ## Current Phase
 
-Work Step D: Release asset materialization implementation — completed
+Work Step E: Release materialization newcomer documentation — completed
 
 ## Work Steps
 
@@ -48,6 +48,14 @@ Work Step D: Release asset materialization implementation — completed
 - [x] 建立canonical bootstrap模板和双资产materializer，从模板重新生成无乱码的v0.4.3-dev bootstrap。
 - [x] 补齐渲染一致性、乱码哨兵、SHA/version准入、输出冲突和端到端生成测试。
 - [x] 把一条post-PASS命令及输出身份说明写入README，运行相称回归并创建独立本地commit。
+- **Status:** completed
+
+### Work Step E: Release materialization新人文档
+
+- [x] 在README明确区分本地`candidate.zip`、tracked zero-hash bootstrap与`dist/`正式双资产。
+- [x] 大白话解释`candidate-bootstrap --write`会修改什么、无`--write`为何只读检查，以及两条命令为何连续执行。
+- [x] 明确`release`重新构建ZIP而非读取/重命名旧candidate，Cloud SHA的来源、使用前提、生成流程和fail-closed结果。
+- [x] 同步稳定语义断言，运行相称回归并创建独立本地commit。
 - **Status:** completed
 
 ## Decisions Made
@@ -104,7 +112,8 @@ Work Step D: Release asset materialization implementation — completed
 | 新增Node测试在Windows沙箱内由test runner创建worker时返回`spawn EPERM` | 1 | 测试未进入断言；按已登记环境限制在沙箱外用原命令复验，4/4 PASS。 |
 | 首轮聚焦回归38/40，新增test module未进入DESIGN反向索引，source-only trusted generator/template未进入exact inventory | 1 | 产品与生成器断言均通过；补登记DESIGN测试职责，并把两项源码维护输入显式加入source-only trusted清单且继续断言不进ZIP。 |
 | 沙箱内`git add`无法创建`.git/index.lock`并返回permission denied | 1 | 文件未被部分暂存；使用沙箱外同一显式路径清单暂存，cached diff/check与mode检查通过。 |
+| Work Step E首轮聚焦回归30/31，README新人例子硬编码当前`v0.4.3-dev` | 1 | 保留解释但把例子改成version-neutral `vX.Y.Z-dev`，不放宽稳定README的版本中立断言。 |
 
 ## Current Status
 
-`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / WORK_STEP_C_COMPLETE / WORK_STEP_D_COMPLETE / PRODUCT_PHASE_4`
+`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / WORK_STEP_C_COMPLETE / WORK_STEP_D_COMPLETE / WORK_STEP_E_COMPLETE / PRODUCT_PHASE_4`

@@ -289,20 +289,52 @@ python3 tools/build_release.py check --archive "$ZIP"
 sha256sum "$ZIP"
 ```
 
-`pwf-codex-cloud-hooks-candidate.zip`是本地中间产物；不要用这个名字上传。标准GitHub Release的正式资产名是
-`pwf-codex-cloud-hooks-vX.Y.Z.zip`，同版本ZIP外资产名是`init-cloud-sandbox-vX.Y.Z.bash`。
+后面的命令会涉及三个看起来相似、实际职责完全不同的本地对象。先分清它们，才不容易上传错文件：
 
-版本列车在C0前若修改了bootstrap正文或版本identity，先从唯一模板重新生成并核对根目录的development zero-hash bootstrap；
-该文件属于C0受测输入，生成后仍需正常提交并进入Source/Candidate：
+| 对象 | 什么时候产生 | 大白话用途 | 是否作为正式资产上传 |
+|---|---|---|---|
+| `dist/pwf-codex-cloud-hooks-candidate.zip` | C0前的本地开发预检 | 方便本地提前build/check/hash；可以随时重建，不是Cloud证据 | 否；不要把`candidate.zip`改名上传 |
+| 根目录`init-cloud-sandbox-vX.Y.Z[-dev].bash` | 版本改号或bootstrap模板变化后、C0前 | tracked候选源码输入；默认ZIP SHA是64位zero，故会fail closed，不能冒充正式下载脚本 | 否；它随源码进入Source/Candidate验证 |
+| `dist/pwf-codex-cloud-hooks-vX.Y.Z.zip`与`dist/init-cloud-sandbox-vX.Y.Z.bash` | Source/Candidate实际PASS后 | 重新构建、核对Cloud SHA并生成的正式双资产 | 是；这两项才上传同一GitHub Release |
+
+本地`candidate.zip`只是可选的早期预检产物。后面的Release生成器不读取它，也不会把它重命名成正式ZIP；即使本地从未生成过
+`candidate.zip`，只要Source/Candidate已经给出exact SHA，仍可正常生成正式双资产。
+
+### C0前：生成并核对development bootstrap
+
+版本列车在C0前若修改了bootstrap正文、canonical模板或version identity，先运行：
 
 ```powershell
 python tools/materialize_release_assets.py candidate-bootstrap --write
 python tools/materialize_release_assets.py candidate-bootstrap
 ```
 
-只有package、contract、bootstrap文件名和version identity已经在C0冻结，且Source/Candidate实际PASS、Release输入没有变化，
-才生成待上传资产。维护者只替换下面命令中的`vX.Y.Z`和第一通道实际输出的ZIP SHA；脚本会重新build/check ZIP、核对exact SHA，
-并从同一模板同时生成ZIP外bootstrap：
+第一条带`--write`，会真正写文件：生成器读取当前`package.json`、Release contract、external asset文件名和唯一bootstrap模板，
+然后创建或重写根目录对应版本的bootstrap。开发身份使用当前版本号和64位zero ZIP SHA；例如开发身份是`X.Y.Z-dev`，目标就是
+`init-cloud-sandbox-vX.Y.Z-dev.bash`。它适用于新开版本列车、版本改号、模板变化、乱码修复或C0前重新物化候选脚本。
+
+第二条不带`--write`，只检查、不修改：它重新计算“当前模板 + 当前版本 + zero SHA”应该得到的完整字节，再与根目录bootstrap
+逐字节比较。相同就输出`state=unchanged`；缺失、内容漂移或路径不安全就报错，不会偷偷修复。因此两条连续执行的大白话就是：
+
+```text
+第一条：按唯一模板真正生成候选bootstrap
+第二条：用只读模式确认刚生成的完整字节没有漂移
+```
+
+根目录development bootstrap属于C0受测输入，生成后必须正常提交并进入Source/Candidate。若第一通道已经PASS，再运行`--write`
+造成字节变化，就必须作废旧证据、形成新C0并重跑，而不是把它当成无影响的本地整理。
+
+### Source/Candidate PASS后：生成待上传双资产
+
+只有以下前提全部成立，才运行正式生成命令：
+
+- package、Release contract、bootstrap文件名和version identity已经稳定为正式目标版本，例如`X.Y.Z`而不是`X.Y.Z-dev`；
+- Source/Candidate Cloud已经对exact C0和候选ZIP给出PASS；
+- 已复制第一通道原始输出中的exact ZIP SHA-256；这个SHA来自Cloud evidence，不由早期本地`candidate.zip`代替；
+- PASS后没有修改README、package、contract、runtime、builder或其他ZIP输入；允许的C1写回只能是Release-excluded治理/证据文件；
+- 根目录zero-hash candidate仍与canonical模板逐字节一致。
+
+维护者只替换下面命令中的`vX.Y.Z`和Source/Candidate实际输出的64位小写ZIP SHA：
 
 ```powershell
 python tools/materialize_release_assets.py release `
@@ -311,14 +343,26 @@ python tools/materialize_release_assets.py release `
   --output-dir ./dist
 ```
 
-成功后`dist/`中会同时得到：
+这条命令不是“复制旧ZIP并改名”，而是执行下面的完整闭环：
+
+```text
+读取当前checkout的Release输入
+  → 在临时目录重新build/check一份全新确定性ZIP
+  → 计算新ZIP SHA并与Source/Candidate Cloud SHA逐字节比较
+  → 一致后才把versioned ZIP写入dist/
+  → 从同一canonical模板生成绑定exact ZIP SHA的正式bootstrap
+  → 输出两项资产的路径、大小、SHA和ZIP entry数
+```
+
+因为ZIP构建是确定性的，只要当前Release输入仍与C0一致，重新构建的SHA就必须等于Cloud证据；不一致说明输入或证据已经漂移，
+生成器会停止，而不是沿用旧`candidate.zip`掩盖问题。成功后`dist/`中会同时得到：
 
 ```text
 dist/pwf-codex-cloud-hooks-vX.Y.Z.zip
 dist/init-cloud-sandbox-vX.Y.Z.bash
 ```
 
-命令输出一行JSON，包含两项资产的路径、大小、SHA和ZIP entry数，直接用于publication/acceptance回填。`HOOKS_PACKAGE`与
+命令输出一行JSON，包含两项资产的路径、大小、SHA和ZIP entry数，可直接用于publication/acceptance回填。`HOOKS_PACKAGE`与
 `HOOKS_URL`继续由版本派生；生成器不会改动`HOOKS_ARCHIVE_ROOT`、PWF Skill pins、PowerShell pins或其他固定安全字段。
 如果Source/Candidate SHA不匹配、根candidate偏离模板，或`dist/`已有同名但不同字节的文件，命令会停止且不覆盖旧资产；相同字节则
 允许幂等重跑。模板和生成器是C0前必须冻结、测试的源码维护输入，但它们本身不进入Release ZIP，也不是待上传资产。

@@ -131,3 +131,10 @@ Fail-closed条件：version必须同时匹配package、Release contract和extern
 - `release`在写入前核对package、contract、external asset、tracked candidate、template token/UTF-8 sentinel与重建ZIP SHA；同名相同字节幂等，同名不同字节拒绝覆盖。generator/template是source-only trusted inputs，不进入22-entry ZIP。
 - v0.4.3-dev的19行mojibake提示已按v0.4.2已验证正文重新派生为正确UTF-8；candidate checker返回`state=unchanged`，证明tracked脚本完整字节等于canonical template的v0.4.3-dev/zero-hash render。
 - README、DESIGN、ARCHITECTURE、CHANGELOG、ROADMAP与Phase 4.14只分别承载命令入口、实现导航、部署关系、版本delta、current train和历史原因；没有复制第二份machine规则。
+
+### Work Step E newcomer explanation boundary
+
+- README必须先分离三个对象：本地`candidate.zip`只是可选预检，tracked root bootstrap是C0的zero-hash源码输入，`dist/`双资产才是Source/Candidate PASS后上传对象。只列文件名而不解释生命周期，会诱导新人把旧candidate改名发布。
+- `candidate-bootstrap --write`是显式mutation，用于C0前从canonical template真正创建/重写tracked candidate；无`--write`是read-only exact-byte admission。两条连续执行表达“先生成、再独立核对”，不是重复做同一件事。
+- `release`不消费早期candidate文件。它从当前checkout重新构建临时ZIP，再把实际SHA与Cloud evidence比较；只有相等才向`dist/`写versioned ZIP并渲染exact-hash bootstrap。该设计用确定性重建发现PASS后的Release-input drift，而不是让陈旧本地文件绕过证据。
+- 正式命令的SHA authority是Source/Candidate原始输出；本地candidate hash只能preflight。正式version identity、Cloud PASS、Release输入未变、tracked candidate等于zero-hash template render是共同前提。

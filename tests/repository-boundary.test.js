@@ -510,15 +510,27 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
     /python tools\/build_release\.py build --output \.\/dist\/pwf-codex-cloud-hooks-candidate\.zip/);
   assert.match(stableReadme,
     /python tools\/build_release\.py check --archive \.\/dist\/pwf-codex-cloud-hooks-candidate\.zip/);
-  assert.match(stableReadme, /candidate\.zip[\s\S]{0,240}本地中间产物[\s\S]{0,240}正式资产名/);
+  assert.match(stableReadme, /三个看起来相似、实际职责完全不同的本地对象/);
+  assert.match(stableReadme,
+    /pwf-codex-cloud-hooks-candidate\.zip[\s\S]{0,320}本地开发预检[\s\S]{0,320}不要把`candidate\.zip`改名上传/);
+  assert.match(stableReadme,
+    /Release生成器不读取它[\s\S]{0,120}不会把它重命名成正式ZIP/);
   assert.match(stableReadme, /materialize_release_assets\.py candidate-bootstrap --write/);
+  assert.match(stableReadme,
+    /第一条带`--write`[\s\S]{0,80}真正写文件[\s\S]{0,400}64位zero ZIP SHA/);
+  assert.match(stableReadme,
+    /第二条不带`--write`[\s\S]{0,80}只检查、不修改[\s\S]{0,360}逐字节比较/);
+  assert.match(stableReadme,
+    /第一条：按唯一模板真正生成候选bootstrap[\s\S]{0,120}第二条：用只读模式确认/);
   assert.match(stableReadme,
     /materialize_release_assets\.py release[\s\S]{0,160}--version vX\.Y\.Z[\s\S]{0,160}--expected-zip-sha/);
   assert.match(stableReadme,
+    /exact ZIP SHA-256[\s\S]{0,160}来自Cloud evidence[\s\S]{0,160}不由早期本地`candidate\.zip`代替/);
+  assert.match(stableReadme,
+    /不是“复制旧ZIP并改名”[\s\S]{0,500}重新build\/check[\s\S]{0,240}Source\/Candidate Cloud SHA/);
+  assert.match(stableReadme,
     /dist\/pwf-codex-cloud-hooks-vX\.Y\.Z\.zip[\s\S]{0,160}dist\/init-cloud-sandbox-vX\.Y\.Z\.bash/);
   assert.match(stableReadme, /HOOKS_PACKAGE[\s\S]{0,240}HOOKS_URL[\s\S]{0,240}派生/);
-  assert.match(stableReadme,
-    /package、contract[\s\S]{0,240}Source\/Candidate[\s\S]{0,320}重新build\/check ZIP[\s\S]{0,160}核对exact SHA/);
   assert.match(stableReadme, /同名但不同字节[\s\S]{0,120}停止[\s\S]{0,120}不覆盖/);
   assert.doesNotMatch(stableReadme, /readonly HOOKS_VERSION="\$\{HOOKS_VERSION:-vX\.Y\.Z\}"/);
   assert.match(stableReadme, /README\.md[\s\S]{0,200}Release ZIP输入[\s\S]{0,240}Source\/Candidate[\s\S]{0,200}新C0/);
