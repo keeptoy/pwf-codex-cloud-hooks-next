@@ -84,7 +84,7 @@ exact user、repository、commit、plan与容器state的consent callback；未�
 
 ## Version-train mapping and governance closeout
 
-Phase 4的Product能力由`0.4.0-*`功能/迁移列车形成，后续`v0.4.1`path-safety patch与`v0.4.2`、`v0.4.3-dev`文档治理
+Phase 4的Product能力由`0.4.0-*`功能/迁移列车形成，后续`v0.4.1`path-safety patch与`v0.4.2`、`v0.4.3`文档治理
 继续归属同一Product baseline；patch/governance列车不因版本号变化自动创建新Product Phase。具体版本delta只见CHANGELOG。
 
 <a name="v0-4-2-release-closeout"></a>
@@ -120,9 +120,10 @@ immutable publication、Published Release Cloud、GitHub Release Latest promotio
 
 ### v0.4.3 Release资产物化与验收边界
 
-`v0.4.3-dev`在已闭合的Phase 4 Product baseline上，把Release资产准备从手工复制/替换收敛为确定性物化，并补齐
+`v0.4.3`在已闭合的Phase 4 Product baseline上，把Release资产准备从手工复制/替换收敛为确定性物化，并补齐
 Source/Candidate bootstrap选择与双通道验收的新人边界。它没有重新打开Phase 4、激活Phase 5或改变Product/runtime行为；
-当前列车、C0与Release状态仍只读ROADMAP和活动planning。
+当前列车已从development identity收敛为stable zero-hash C0候选；Source/Candidate、tag与Release状态仍只读ROADMAP、活动planning
+和对应版本acceptance。
 
 后继同系列列车必须继承以下长期边界：
 

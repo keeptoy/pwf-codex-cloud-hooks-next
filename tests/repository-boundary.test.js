@@ -56,7 +56,7 @@ function currentRoleWindow() {
   return { accepted, candidate, developmentTrain, immediateFallback, roadmap };
 }
 
-test("v0.4.3-dev history governance stays in Product Phase 4 while v0.4.2 evidence remains accepted", () => {
+test("v0.4.3 Source/Candidate candidate stays in Product Phase 4 while v0.4.2 remains accepted", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const pathSafetyHistory = read("docs/history/phase-4.13-v0.4.1-path-safety-patch-train.md");
   const acceptedAcceptance = read("docs/acceptance/v0.4.2-cloud-hard-acceptance.md");
@@ -74,8 +74,8 @@ test("v0.4.3-dev history governance stays in Product Phase 4 while v0.4.2 eviden
     roadmap.indexOf("## 4. 当前开发列车"),
     roadmap.indexOf("## 5. Product Phase 路线"),
   );
-  assert.equal(developmentTrain, "v0.4.3-dev");
-  assert.equal(candidate, "v0.4.3-dev");
+  assert.equal(developmentTrain, "v0.4.3");
+  assert.equal(candidate, "v0.4.3");
   assert.equal(accepted, "v0.4.2");
   assert.equal(immediateFallback, "v0.4.1");
   assert.notEqual(candidate, accepted);
@@ -83,10 +83,10 @@ test("v0.4.3-dev history governance stays in Product Phase 4 while v0.4.2 eviden
   assert.match(phase4Closeout,
     /`v0\.4\.2`整理Release\/retirement[\s\S]*文档authority[\s\S]*C2完成后`v0\.4\.2`成为accepted/);
   assert.match(roadmap,
-    /当前 programme 边界[^\n]*`v0\.4\.2`及其前序列车均已关闭[^\n]*`v0\.4\.3-dev`[^\n]*Product Phase 5[^\n]*TBD/);
+    /当前 programme 边界[^\n]*`v0\.4\.2`及其前序列车均已关闭[^\n]*`v0\.4\.3`[^\n]*Source\/Candidate仍为PENDING[^\n]*Product Phase 5[^\n]*TBD/);
   assert.match(currentTrain, /^<a name="v0-4-3-phase-history-governance-train"><\/a>$/m);
   assert.match(currentTrain,
-    /当前exact开发列车是`v0\.4\.3-dev`[\s\S]*继续归属[\s\S]*Product Phase 4 Overview/);
+    /当前exact开发列车是`v0\.4\.3`[\s\S]*stable C0候选状态[\s\S]*继续归属[\s\S]*Product Phase 4 Overview/);
   assert.match(currentTrain,
     /Product Phase 4 Overview[\s\S]*Work Step A[\s\S]*精选过程[\s\S]*Work Step B[\s\S]*长期Product authority/);
   assert.match(currentTrain, /docs\/product-phases\/phase-4\.md#product-phase-4-overview/);
@@ -119,7 +119,7 @@ test("v0.4.3-dev history governance stays in Product Phase 4 while v0.4.2 eviden
   assert.match(roadmap, /\| 6 \| `0\.6\.0-\*`[\s\S]*\| 9 \| `0\.9\.0-\*`/);
   assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.2`[^\n]*programme accepted/);
   assert.match(roadmap,
-    /当前 programme 边界[^\n]*`v0\.4\.2`及其前序列车均已关闭[^\n]*`v0\.4\.3-dev`[^\n]*Product Phase 5[^\n]*TBD/);
+    /当前 programme 边界[^\n]*`v0\.4\.2`及其前序列车均已关闭[^\n]*`v0\.4\.3`[^\n]*Source\/Candidate仍为PENDING[^\n]*Product Phase 5[^\n]*TBD/);
   assert.doesNotMatch(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(pathSafetyHistory, /兼容性安全/);
   assert.match(pathSafetyHistory, /99885b854bd9621c3340e99f031bf83ceb58414d/);

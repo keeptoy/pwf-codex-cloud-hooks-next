@@ -4,12 +4,12 @@
 [`ROADMAP.md`](ROADMAP.md)；当前唯一行动与授权边界见活动 `task_plan.md`；精确 source、资产、大小和
 SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 acceptance。
 
-## v0.4.3-dev
+## v0.4.3
 
 ### Changed
 
-- 开启继续归属Product Phase 4的文档治理开发列车；当前只物化`0.4.3-dev` development identity，不激活仍为TBD的
-  Product Phase 5，也不产生stable tag、Release或Cloud PASS。
+- 将继续归属Product Phase 4的文档治理列车收敛为stable `0.4.3` Source/Candidate候选身份，不激活仍为TBD的
+  Product Phase 5；C0只冻结待Cloud第一通道验收的source，尚不产生tag、Release或Cloud PASS。
 - 明确Phase history是精选历史过程账本：回顾型`RETROSPECTIVE_CAPSULE`记录对象关闭后的证据化总览，探路/决策型
   `FROZEN_DISCOVERY_RECORD`保留正式Discovery当时的判断、条件与停止点。
 - 把长期Product Phase authority从ROADMAP大段正文迁到`docs/product-phases/phase-N.md`；ROADMAP只维护current train指针、
@@ -18,7 +18,9 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   新人直达入口；Cloud task瞬时错误与具体验收步骤仍不进入该长期authority。
 - 新增canonical bootstrap模板与Release资产materializer：C0前可确定性重建tracked zero-hash candidate，Source/Candidate PASS后
   用一条命令复建并核对exact ZIP SHA，同时在ignored `dist/`生成正式ZIP与ZIP外bootstrap；同名异字节、identity/SHA或candidate
-  drift均fail closed。v0.4.3-dev原有中文mojibake bootstrap已从模板重新生成并加入防漂移测试。
+  drift均fail closed。开发期原有中文mojibake bootstrap已从模板重新生成并加入防漂移测试；stable C0继续使用canonical
+  zero-hash bootstrap，双通道状态与后续证据只写
+  [`v0.4.3 acceptance`](docs/acceptance/v0.4.3-cloud-hard-acceptance.md)。
 
 ## v0.4.2
 
