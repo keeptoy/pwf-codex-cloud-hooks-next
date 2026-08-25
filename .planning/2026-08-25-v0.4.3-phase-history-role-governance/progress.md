@@ -2,9 +2,12 @@
 
 ## Latest verification update
 
+- planning消歧修改通过repository boundary 15/15与`git diff --check`；`docs/overview/`仍保持维护者未跟踪状态，未纳入验证或提交范围。
+- 按维护者反馈消除planning/Product Phase同名歧义：内部`Phase 1`改名为`Work Step A: history角色边界`，原`Phase 2`取消；现有history保持精选过程流水账，不再安排重新编排。
+- 工作树出现维护者未跟踪的`docs/overview/`材料；本轮只读分析并保留，不暂存、不改写，等待authority模型确认。
 - 最终入口核对发现根README文档地图仍沿用“Phase历史摘要”旧名；已同步为“Phase历史过程账本”，并在一级入口直接分流到ROADMAP长期摘要，防止新人误认authority。
 - README是Release ZIP输入，因此旧临时候选随该修正失效；重建后的22-entry临时候选为87,415 bytes、SHA-256 `031dcaeebb6df012645a93c643597fe9bc45d88eed57160fb1870aa50dea6484`，build/check与最终15/15文档边界测试均通过。该值仍只是development验证，不是sealed资产身份。
-- Phase 1收口：v0.4.3-dev身份、history两角色边界、ROADMAP长期摘要边界及稳定治理断言已完成；Phase 2保持PENDING，等待下一轮讨论，不顺手扩大治理范围。
+- Work Step A收口：v0.4.3-dev身份、history两角色边界及当时的ROADMAP长期摘要边界断言已完成；原内部Phase 2现已取消，新的overview authority模型另行讨论。
 - 最终静态/构建验证通过：22-entry候选ZIP build/check、Python compile、`install.js` syntax、全部bootstrap `bash -n`及`git diff --check`。
 - 完整 `npm test`：182 tests，156 PASS，26 个 Windows/POSIX 边界 SKIP，0 FAIL。
 - v0.4.3-dev 候选 ZIP 已成功 build/check：22 entries，87,388 bytes；本地临时候选 SHA-256 为 `573eb0f1bc4827857ba9918022ae2705cf9ed8f2a58dbbc9acd409cc1f394724`，不构成已封板资产身份。

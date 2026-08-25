@@ -19,3 +19,15 @@
 - 当前索引开头是否足够新人友好地先讲“过程账本”，再讲两个machine role名称？
 - README文档地图、治理指南与Phase history模板是否已有重复或含混表述需要收敛？
 - 哪些版本身份文件属于`v0.4.3-dev`原子改号面，哪些已发布v0.4.2证据必须保持不变？
+# Overview authority model discussion — 2026-08-25
+
+- 维护者已创建但尚未跟踪的`docs/overview/phase4-release-note.md`与`phase5-release-note.md`目前均为空；它们属于维护者材料，本轮只读保留。
+- 当前重复来源属实：ROADMAP第5节保存Phase路线表和Phase 4长期正文；治理指南8.2又保存一份第4节→第5节轮转事务；history索引与模板也把第5节写成长期authority。
+- 把长期Product Phase摘要迁入`docs/overview/`可以降低ROADMAP体积；ROADMAP仍应独占current programme、版本角色、未来Phase路线和“当前指向哪份overview”的指针事务。
+- `phaseN-release-note.md`必须明确是**Product Phase release overview**，不是某个SemVer版本的GitHub Release notes。版本delta仍归CHANGELOG，exact tag/ZIP/bootstrap与验收仍归provenance/acceptance。
+- 建议第4节只保留exact development train状态、active Product Phase overview链接和授权边界；第5节保留Phase 4～9路线索引，但Phase长期正文迁出。未激活Phase可以只留ROADMAP候选行，避免空overview被误读为已激活authority。
+- 轮转规则适合由ROADMAP单独持有，因为它直接控制ROADMAP指针与programme状态；repository-governance-guide只保留通用的history admission/link-retirement原则，并链接ROADMAP规则，不再复制步骤。
+- 仍需保留稳定canonical anchor：ROADMAP的轮转规则anchor，以及每份Phase overview自己的Phase-level anchor。history current-authority链接在Phase活动和关闭后都可指向同一overview anchor，列车轮转只更新ROADMAP第4节指针，无需批量把history从ROADMAP第4节迁到第5节。
+- 引用盘点显示迁移面不只ROADMAP与治理指南：history模板、history索引、Phase 4.14、Phase 4.1/4.4的`product-phase-4` current links，以及architecture/repository tests都冻结了旧模型；实施时必须原子迁移链接与断言。
+- 多份history尾注链接`ROADMAP#product-phase-5`，它们表达的是programme重编号后的未来Phase 5，而不是已形成的长期Phase 5总结。新模型下应继续指向ROADMAP的Phase 5路线anchor；不能因为存在空`phase5-release-note.md`就把未激活Phase提升为overview authority。
+- 新模型最好把两类链接分开：ROADMAP保留`product-phase-N-route`用于候选/未激活programme路线；`docs/overview/phaseN-release-note.md#product-phase-N-overview`只在Phase实际激活后成为current/long-term Product authority。

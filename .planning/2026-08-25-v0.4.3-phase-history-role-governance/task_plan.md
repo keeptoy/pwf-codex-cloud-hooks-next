@@ -6,15 +6,15 @@
 
 ## Next Step
 
-Phase 1本地提交后，先向维护者汇报history两角色边界与验证结果；后续再讨论Phase 2的history编排、重复摘要和入口盘点，不自动扩大当前批次。
+向维护者汇报history两角色边界已经完成；当前只讨论ROADMAP指针与`docs/overview/` Phase release note的新authority模型，未确认前不修改宏观文档。
 
 ## Current Phase
 
-Phase 1 complete; Phase 2 pending maintainer discussion
+Work Step A complete; overview authority model under discussion
 
-## Phases
+## Work Steps
 
-### Phase 1: Development identity and role-boundary discovery
+### Work Step A: history 角色边界
 
 - [x] 创建本地`0.4.3`分支并把development package identity原子更新为`0.4.3-dev`。
 - [x] 盘点history索引、治理指南、模板、ROADMAP与测试对两种record role的现有表达。
@@ -22,19 +22,14 @@ Phase 1 complete; Phase 2 pending maintainer discussion
 - [x] 实施最小文档与测试修改，运行风险相称验证并独立提交。
 - **Status:** completed
 
-### Phase 2: Follow-up documentation-governance Discovery
-
-- [ ] 在Phase 1通过后盘点剩余history编排、重复摘要与入口边界。
-- [ ] 先向维护者报告建议，再按明确授权进入后续批次。
-- **Status:** pending
-
 ## Decisions Made
 
 | Decision | Rationale |
 |---|---|
 | v0.4.3继续归属Product Phase 4 | 这是v0.4.2之后的文档治理patch train，不自动激活TBD Product Phase 5。 |
 | history只有两种record role | 回顾型capsule与当时形成的Discovery/decision record回答不同历史问题，不能混成第三种长期authority。 |
-| ROADMAP第5节保存长期摘要 | history保存精选过程与时间语义；programme长期结论不能反向沉入历史流水账。 |
+| 现行模型由ROADMAP第5节保存长期摘要（待本次讨论决定是否迁移） | history保存精选过程与时间语义；programme长期结论不能反向沉入历史流水账。 |
+| 不再设置planning Phase 2 | 当前history对象就是有意保留的精选历史流水账，不再启动“重新编排/重复摘要盘点”批次。 |
 
 ## Authorization
 
@@ -61,7 +56,9 @@ Phase 1 complete; Phase 2 pending maintainer discussion
 | Node canonical-hash脚本在沙箱内派生`git show`子进程返回EPERM | 1 | 未写入；改由PowerShell只读Git字节并通过临时环境变量交给Node纯计算。 |
 | Node test runner在Windows沙箱内创建worker时返回`spawn EPERM` | 1 | 三个测试文件未进入断言；在获准的沙箱外用原命令复验，33/33及后续45/45全部通过。 |
 | Git Bash在Windows沙箱内因error 5无法创建signal pipe | 1 | ZIP build/check及Python/Node静态检查已先通过；在获准的沙箱外重跑全部bootstrap `bash -n`并通过。 |
+| planning改名首个组合补丁把原Work Step B状态误写成`completed`上下文，实际文件为`pending`，补丁整体拒绝 | 1 | 没有部分修改；按实际文本重发有界补丁，完成Work Step A改名并删除原内部Phase 2。 |
+| overview引用盘点的第二个`rg`没有找到既有`docs/overview`引用，整组shell因此返回exit 1 | 1 | 第一个引用inventory完整有效；将“当前无overview入链”记录为发现，不重复同一组合搜索。 |
 
 ## Current Status
 
-`V0_4_3_DEV_IDENTITY_ACTIVE / HISTORY_TWO_ROLE_GOVERNANCE_COMPLETE / FOLLOW_UP_DISCOVERY_PENDING / PRODUCT_PHASE_4`
+`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / OVERVIEW_AUTHORITY_MODEL_UNDER_DISCUSSION / PRODUCT_PHASE_4`
