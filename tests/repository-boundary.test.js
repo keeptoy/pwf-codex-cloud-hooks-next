@@ -52,10 +52,10 @@ function currentRoleWindow() {
   return { accepted, candidate, developmentTrain, immediateFallback, roadmap };
 }
 
-test("v0.4.2 C2 evidence stays in closed Product Phase 4 while Phase 5 remains planning", () => {
+test("v0.4.3-dev history governance stays in Product Phase 4 while v0.4.2 evidence remains accepted", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const pathSafetyHistory = read("docs/history/phase-4.13-v0.4.1-path-safety-patch-train.md");
-  const candidateAcceptance = read("docs/acceptance/v0.4.2-cloud-hard-acceptance.md");
+  const acceptedAcceptance = read("docs/acceptance/v0.4.2-cloud-hard-acceptance.md");
   const provenance = read("BASELINE_PROVENANCE.md");
   const phase4Closeout = roadmap.slice(
     roadmap.indexOf('<a name="v0-4-2-release-closeout"></a>'),
@@ -65,17 +65,18 @@ test("v0.4.2 C2 evidence stays in closed Product Phase 4 while Phase 5 remains p
     roadmap.indexOf("## 4. 当前开发列车"),
     roadmap.indexOf("## 5. Product Phase 路线"),
   );
-  assert.equal(developmentTrain, null);
-  assert.equal(candidate, "v0.4.2");
+  assert.equal(developmentTrain, "v0.4.3-dev");
+  assert.equal(candidate, "v0.4.3-dev");
   assert.equal(accepted, "v0.4.2");
   assert.equal(immediateFallback, "v0.4.1");
-  assert.equal(candidate, accepted);
+  assert.notEqual(candidate, accepted);
   assert.match(roadmap, /`v0\.4\.2`[\s\S]*Release closeout/);
   assert.match(roadmap, /package identity[\s\S]*`0\.4\.2`/);
   assert.match(roadmap,
-    /当前 programme 边界[^\n]*`v0\.4\.2`双通道、Latest、第二轮退役与C2均已`PASS`/);
-  assert.match(currentTrain, /当前没有活动开发列车[\s\S]*没有exact train anchor/);
-  assert.match(currentTrain, /尚未冻结内容的Product Phase占位不进入本工作台[\s\S]*不从planning保留状态推断列车激活/);
+    /当前 programme 边界[^\n]*`v0\.4\.2`及其前序列车均已关闭[^\n]*`v0\.4\.3-dev`[^\n]*Product Phase 5[^\n]*TBD/);
+  assert.match(currentTrain, /^<a name="v0-4-3-phase-history-governance-train"><\/a>$/m);
+  assert.match(currentTrain, /当前exact开发列车是`v0\.4\.3-dev`[\s\S]*继续归属Product Phase 4/);
+  assert.match(currentTrain, /history角色边界[\s\S]*Phase history是精选历史[\s\S]*过程账本[\s\S]*ROADMAP第5节才是长期Product Phase摘要/);
   assert.doesNotMatch(currentTrain, /#product-phase-5/);
   assert.doesNotMatch(currentTrain, /v0-4-2-release-closeout|### 4\.1/);
   assert.match(phase4Closeout, /README\.md[\s\S]*Release ZIP输入[\s\S]*旧候选身份[\s\S]*失效/);
@@ -99,13 +100,14 @@ test("v0.4.2 C2 evidence stays in closed Product Phase 4 while Phase 5 remains p
   assert.match(roadmap, /\| 5 \| `0\.5\.0-\*` \| 其他文档治理方向[\s\S]*均TBD[\s\S]*planning placeholder/);
   assert.match(roadmap, /\| 6 \| `0\.6\.0-\*`[\s\S]*\| 9 \| `0\.9\.0-\*`/);
   assert.match(roadmap, /当前已接受版本[^\n]*`v0\.4\.2`[^\n]*programme accepted/);
-  assert.match(roadmap, /当前 programme 边界[^\n]*`v0\.4\.2`双通道、Latest、第二轮退役与C2均已`PASS`/);
+  assert.match(roadmap,
+    /当前 programme 边界[^\n]*`v0\.4\.2`及其前序列车均已关闭[^\n]*`v0\.4\.3-dev`[^\n]*Product Phase 5[^\n]*TBD/);
   assert.doesNotMatch(roadmap, /^<a name="v0-4-1-path-safety-train"><\/a>$/m);
   assert.match(pathSafetyHistory, /兼容性安全/);
   assert.match(pathSafetyHistory, /99885b854bd9621c3340e99f031bf83ceb58414d/);
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.2`/);
-  assert.match(candidateAcceptance, /\.\.\/\.\.\/ROADMAP\.md#release-four-step-flow/);
-  assert.match(candidateAcceptance, /\.\.\/\.\.\/ROADMAP\.md#version-train-two-retirement-reviews/);
+  assert.match(acceptedAcceptance, /\.\.\/\.\.\/ROADMAP\.md#release-four-step-flow/);
+  assert.match(acceptedAcceptance, /\.\.\/\.\.\/ROADMAP\.md#version-train-two-retirement-reviews/);
   for (const fact of [
     "d51f291566b5599cb21a9fc5c3f30fd1a1bbc74a",
     "PWF_SOURCE_CANDIDATE_SETUP=PASS",
@@ -116,22 +118,22 @@ test("v0.4.2 C2 evidence stays in closed Product Phase 4 while Phase 5 remains p
     "https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/v0.4.2/pwf-codex-cloud-hooks-v0.4.2.zip",
     "https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/v0.4.2/init-cloud-sandbox-v0.4.2.bash",
     "4c04b4758bce0f3e9eb22afcba05dcb8788958357c24e31014a55edf850dec64",
-  ]) assert.match(candidateAcceptance, new RegExp(fact.replaceAll(".", "\\.")));
-  assert.match(candidateAcceptance, /latest_tag=v0\.4\.2/);
-  assert.match(candidateAcceptance, /draft=false[\s\S]*prerelease=false/);
-  assert.match(candidateAcceptance,
+  ]) assert.match(acceptedAcceptance, new RegExp(fact.replaceAll(".", "\\.")));
+  assert.match(acceptedAcceptance, /latest_tag=v0\.4\.2/);
+  assert.match(acceptedAcceptance, /draft=false[\s\S]*prerelease=false/);
+  assert.match(acceptedAcceptance,
     /GitHub Release编辑页面[\s\S]*取消Pre-release[\s\S]*设为Latest[\s\S]*Release详情页/);
-  assert.match(candidateAcceptance, /\.\.\/\.\.\/ROADMAP\.md#github-release-latest-promotion-confirmation/);
-  assert.match(candidateAcceptance, /本节只保存本次[\s\S]*真实证据[\s\S]*不重新定义/);
-  assert.doesNotMatch(candidateAcceptance,
+  assert.match(acceptedAcceptance, /\.\.\/\.\.\/ROADMAP\.md#github-release-latest-promotion-confirmation/);
+  assert.match(acceptedAcceptance, /本节只保存本次[\s\S]*真实证据[\s\S]*不重新定义/);
+  assert.doesNotMatch(acceptedAcceptance,
     /它不是Codex Cloud|只有保存结果未知|不再单列重复下载、重算SHA/);
-  assert.match(candidateAcceptance, /ROLE_WINDOW_CLOSEOUT_PASS \/ C2_COMPLETE \/ NEXT_TRAIN_UNAUTHORIZED/);
+  assert.match(acceptedAcceptance, /ROLE_WINDOW_CLOSEOUT_PASS \/ C2_COMPLETE \/ NEXT_TRAIN_UNAUTHORIZED/);
   for (const anchor of [
     "published-release-setup", "blackbox-fresh-startup", "blackbox-canonical-baseline",
     "blackbox-canonical-context", "blackbox-real-resume", "published-release-deep-check",
-  ]) assert.match(candidateAcceptance, new RegExp(`cloud-hard-acceptance-template\\.md#${anchor}`));
-  assert.match(candidateAcceptance, /4\.2[\s\S]*5\.2[\s\S]*第6节[\s\S]*第7节[\s\S]*8\.1[\s\S]*8\.2[\s\S]*9\.2/);
-  assert.doesNotMatch(candidateAcceptance, /set -Eeuo pipefail|readonly BOOTSTRAP_URL=|readonly ZIP_URL=/,
+  ]) assert.match(acceptedAcceptance, new RegExp(`cloud-hard-acceptance-template\\.md#${anchor}`));
+  assert.match(acceptedAcceptance, /4\.2[\s\S]*5\.2[\s\S]*第6节[\s\S]*第7节[\s\S]*8\.1[\s\S]*8\.2[\s\S]*9\.2/);
+  assert.doesNotMatch(acceptedAcceptance, /set -Eeuo pipefail|readonly BOOTSTRAP_URL=|readonly ZIP_URL=/,
     "version guide must not copy the stable Published Release scripts");
   for (const fact of [
     "v0.4.2", "d51f291566b5599cb21a9fc5c3f30fd1a1bbc74a",
@@ -328,12 +330,13 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
     assert.equal(releasePaths.includes(relative), false, relative);
   }
   assert.deepEqual(rootBootstraps, roleVersions.map(version => `init-cloud-sandbox-${version}.bash`));
-  const expectedAcceptanceDocs = accepted === candidate
-    ? [`docs/acceptance/${candidate}-cloud-hard-acceptance.md`]
-    : [`docs/${accepted}-cloud-hard-acceptance.md`, `docs/acceptance/${candidate}-cloud-hard-acceptance.md`];
+  const expectedAcceptanceDocs = [`docs/acceptance/${accepted}-cloud-hard-acceptance.md`];
+  if (candidate !== accepted && !candidate.endsWith("-dev")) {
+    expectedAcceptanceDocs.push(`docs/acceptance/${candidate}-cloud-hard-acceptance.md`);
+  }
   assert.deepEqual(acceptanceDocs, expectedAcceptanceDocs.sort());
   assert.deepEqual(acceptanceDocs.map(relative => path.basename(relative).replace("-cloud-hard-acceptance.md", "")).sort(),
-    roleVersions);
+    expectedAcceptanceDocs.map(relative => path.basename(relative).replace("-cloud-hard-acceptance.md", "")).sort());
   assert.equal(docs.some(item => item.startsWith("docs/templates/")), false,
     "frozen accepted guides still bind the stable docs-root template paths");
   const acceptanceIndex = read("docs/acceptance/README.md");
@@ -505,6 +508,9 @@ test("historical documents have two controlled macro entrances and remain adviso
   const governanceGuide = read("docs/repository-governance-guide.md");
   const agents = read("AGENTS.md");
   assert.match(readme, /\]\(docs\/history\/README\.md\)/);
+  assert.match(readme,
+    /Phase 历史过程账本[\s\S]*长期 Product Phase 摘要与现行 programme 只读 ROADMAP/);
+  assert.doesNotMatch(readme, /Phase 历史摘要/);
   assert.equal((readme.match(/docs\/history\//g) || []).length, 1,
     "README must expose exactly one historical-document entrance");
   for (const anchor of [
@@ -546,6 +552,10 @@ test("historical documents have two controlled macro entrances and remain adviso
   assert.match(historyIndex, /RETROSPECTIVE_CAPSULE[\s\S]*Phase 0～3\.9\.3[\s\S]*14/);
   assert.match(historyIndex, /FROZEN_DISCOVERY_RECORD[\s\S]*Phase 4\.1～4\.11[\s\S]*11/);
   assert.match(historyIndex, /Phase 4\.1～4\.11[\s\S]*不表示[\s\S]*11个独立Product Phase/);
+  assert.match(historyIndex,
+    /精选过的历史过程账本[\s\S]*不保存原始聊天、逐命令日志[\s\S]*长期Product结论与现行programme只读ROADMAP第5节/);
+  assert.match(historyIndex,
+    /过程账本只有两种record role[\s\S]*回顾型`RETROSPECTIVE_CAPSULE`[\s\S]*探路\/决策型`FROZEN_DISCOVERY_RECORD`[\s\S]*不再扩展第三种身份/);
   assert.match(historyIndex,
     /Post-programme reindex status[\s\S]*Phase 5\/6\/7\/8[\s\S]*Phase 6\/7\/8\/9[\s\S]*`0\.9\.0-\*`/);
   assert.match(historyTemplate, /先选择 record role/);
@@ -736,9 +746,9 @@ test("change history, programme, provenance, and current acceptance keep separat
   const artifact = JSON.parse(read(currentArtifactPath));
   const runtimeBundle = JSON.parse(read(currentBundlePath));
   const { accepted, candidate, immediateFallback, roadmap } = currentRoleWindow();
-  const acceptancePath = `docs/acceptance/${candidate}-cloud-hard-acceptance.md`;
+  const acceptancePath = `docs/acceptance/${accepted}-cloud-hard-acceptance.md`;
   const acceptance = read(acceptancePath);
-  const escapedCandidate = candidate.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const escapedAccepted = accepted.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
   const changelogVersions = [...changelog.matchAll(new RegExp(`^## (${versionPattern})$`, "gm"))]
     .map(match => match[1]);
@@ -791,7 +801,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotMatch(changelog, /docs\/history\//);
   assert.doesNotMatch(changelog, /Successor 迁移来源链/);
 
-  assert.match(acceptance, new RegExp(`^# ${escapedCandidate} Cloud hard acceptance$`, "m"));
+  assert.match(acceptance, new RegExp(`^# ${escapedAccepted} Cloud hard acceptance$`, "m"));
 });
 
 test("stable architecture contracts do not freeze version history", () => {

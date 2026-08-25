@@ -2,9 +2,12 @@
 
 # Product Phase、Discovery 与架构谱系历史
 
-这里保存两种不同身份的warm history对象：对象关闭后根据immutable evidence回补的`RETROSPECTIVE_CAPSULE`，以及正式
-Discovery/decision round当时形成、round关闭后封存的`FROZEN_DISCOVERY_RECORD`。前者回答“后来如何总览这段历史”，后者
-保留“当时为什么这样决定、条件和停止点是什么”；两者都不是源码archive、当前programme authority或验收原文。
+大白话：这里是**精选过的历史过程账本**。它保存值得跨阶段回看的探路、决定、条件和后继回补，不保存原始聊天、逐命令日志、
+整段测试输出或current状态，也不是Product Phase的长期摘要；长期Product结论与现行programme只读ROADMAP第5节。
+
+过程账本只有两种record role。回顾型`RETROSPECTIVE_CAPSULE`在对象关闭后依据immutable evidence回补，回答“后来如何总览
+这段历史”；探路/决策型`FROZEN_DISCOVERY_RECORD`在正式Discovery/decision round关闭时封存，回答“当时为什么这样决定、
+有哪些条件和停止点”。两者形成时机不同，但都不是源码archive、当前programme authority或验收原文，不再扩展第三种身份。
 
 每个对象都应独立成文，理解其结论不需要继续打开已清退的旧planning/验收教程。完整历史
 字节仍由 immutable Git commit、tag 与 Release 保存，但只用于来源审计，不解释当前实现。当前现实以根级

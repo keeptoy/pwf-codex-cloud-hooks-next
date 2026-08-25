@@ -343,7 +343,7 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   const compatibilityGovernance = roadmap.slice(compatibilityStart, rollbackStart);
   const developmentTrain = roadmap.match(/^\| 当前开发列车 \| `(NONE|v[^`]+)`/m)?.[1];
   assert.ok(developmentTrain, "ROADMAP lacks a parseable current development train state");
-  assert.equal(developmentTrain, "NONE");
+  assert.equal(developmentTrain, `v${readJson("package.json").version}`);
   assert.match(roadmap, /^<a name="version-train-two-retirement-reviews"><\/a>$/m);
   assert.match(roadmap, /^<a name="product-phase-4"><\/a>$/m);
   assert.match(roadmap, /^<a name="product-phase-5"><\/a>$/m);
@@ -401,8 +401,10 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   ]) assert.match(roadmap, new RegExp("`" + role + "`"));
   assert.match(roadmap, /C0[\s\S]*C1[\s\S]*C2/);
   assert.doesNotMatch(roadmap, /<a name="phase-9-v0-4-0-instance"><\/a>/);
-  assert.match(currentTrain, /当前没有活动开发列车[\s\S]*没有exact train anchor/);
-  assert.match(currentTrain, /尚未冻结内容的Product Phase占位不进入本工作台[\s\S]*不从planning保留状态推断列车激活/);
+  assert.match(currentTrain, /^<a name="v\d+-\d+-\d+(?:-[a-z0-9-]+)?-phase-history-governance-train"><\/a>$/m);
+  assert.match(currentTrain, /当前exact开发列车是`v[^`]+`[\s\S]*继续归属Product Phase 4/);
+  assert.match(currentTrain, /history角色边界[\s\S]*Phase history是精选历史[\s\S]*过程账本[\s\S]*ROADMAP第5节才是长期Product Phase摘要/);
+  assert.match(currentTrain, /不激活仍为TBD的Product Phase 5[\s\S]*不表示stable candidate、Release或Cloud PASS/);
   assert.equal((currentTrain.match(/\]\(#product-phase-[^)]+\)/g) || []).length, 0);
   assert.match(currentTrain, /candidate \+ accepted role window/);
   assert.match(currentTrain, /trusted\/Release zones 继续 exact[\s\S]*docs\/planning zones 按 lifecycle policy/);
@@ -424,7 +426,8 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
     /所修补Product baseline[\s\S]*ROADMAP声明的版本系列[\s\S]*不能唯一判断时先由维护者确认/);
   assert.match(productPhases,
     /repository-governance-guide\.md#product-phase-authority-rotation/);
-  assert.match(productPhases, /\| 4 \| `0\.4\.0-\*`～`0\.4\.2`[\s\S]*Phase归属[\s\S]*complete/);
+  assert.match(productPhases, /\| 4 \| `0\.4\.0-\*`～`[^`]+`[\s\S]*patch\/governance[\s\S]*Product基线complete/);
+  assert.match(productPhases, /本节是“长期摘要”[\s\S]*Phase history是“精选过程账本”[\s\S]*不会因此成为第二份programme authority/);
   assert.match(productPhases, /\| 5 \| `0\.5\.0-\*` \| 其他文档治理方向[\s\S]*均TBD[\s\S]*planning placeholder[\s\S]*未授权实施或Release/);
   assert.match(productPhases, /\| 6 \| `0\.6\.0-\*`[\s\S]*PreCompact\/PostCompact/);
   assert.match(productPhases, /\| 7 \| `0\.7\.0-\*`[\s\S]*噪声[\s\S]*`NO_GO`[\s\S]*不是 Phase 8前置/);

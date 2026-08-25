@@ -4,6 +4,15 @@
 [`ROADMAP.md`](ROADMAP.md)；当前唯一行动与授权边界见活动 `task_plan.md`；精确 source、资产、大小和
 SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 acceptance。
 
+## v0.4.3-dev
+
+### Changed
+
+- 开启继续归属Product Phase 4的文档治理开发列车；当前只物化`0.4.3-dev` development identity，不激活仍为TBD的
+  Product Phase 5，也不产生stable tag、Release或Cloud PASS。
+- 明确Phase history是精选历史过程账本：回顾型`RETROSPECTIVE_CAPSULE`记录对象关闭后的证据化总览，探路/决策型
+  `FROZEN_DISCOVERY_RECORD`保留正式Discovery当时的判断、条件与停止点；长期Product Phase摘要仍只由ROADMAP第5节维护。
+
 ## v0.4.2
 
 ### Changed

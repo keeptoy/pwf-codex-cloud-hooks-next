@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `NONE`；当前没有获批development train，下一Product Phase与下一版本列车均未授权；活动planning继续承担恢复与治理参考，不冒充列车激活 |
+| 当前开发列车 | `v0.4.3-dev`；继续归属Product Phase 4的文档治理patch train，只授权当前history角色边界Discovery，不激活Product Phase 5 |
 | 当前已接受版本 | `v0.4.2`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.1` immediate fallback |
 | 回退证据链 | immutable `v0.4.0` deeper fallback；`v0.3.5`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4、`v0.4.1`发布列车与`v0.4.2`documentation-governance列车均已关闭；Product Phase 5只粗略规划为其他文档治理并预占`0.5.0-*`系列，其scope、预期产物、gate与Release路线均为TBD，尚未激活development train。`v0.4.2`双通道、Latest、第二轮退役与C2均已`PASS`；其他外部状态变更未授权 |
+| 当前 programme 边界 | `v0.4.2`及其前序列车均已关闭；`v0.4.3-dev`作为Product Phase 4上的文档治理patch train已激活，当前只治理history过程账本与ROADMAP长期摘要边界。Product Phase 5仍只预占`0.5.0-*`，其scope、预期产物、gate与Release路线均为TBD；其他外部状态变更未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -64,8 +64,14 @@ provenance和对应版本acceptance，不在本节重建逐P9流水。
 本节是current development train工作台：活动planning、未封存Discovery和需要current状态的验收材料可以引用对应train anchor，
 但这里的临时施工状态不会自动成为长期Product Phase authority。
 
-当前没有活动开发列车，也没有exact train anchor。两个保留的planning scope继续承担相邻Discovery恢复与治理参考；
-尚未冻结内容的Product Phase占位不进入本工作台，也不从planning保留状态推断列车激活、具体范围或实施授权。
+<a name="v0-4-3-phase-history-governance-train"></a>
+
+当前exact开发列车是`v0.4.3-dev`，继续归属Product Phase 4。首个Discovery只治理history角色边界：Phase history是精选历史
+过程账本，包含回顾型capsule与探路/决策型frozen record；ROADMAP第5节才是长期Product Phase摘要。该列车不修改production、
+runtime、Host ABI或trusted graph，也不激活仍为TBD的Product Phase 5。
+
+三个planning scope继续承担相邻Discovery恢复与治理参考；只有`.active_plan`指向当前v0.4.3任务。保留旧scope不扩大本列车范围，
+`0.4.3-dev`也不表示stable candidate、Release或Cloud PASS已经形成。
 
 ## 5. Product Phase 路线
 
@@ -78,9 +84,12 @@ Product Phase closeout时，只把长期Product目标、路线、边界与结论
 ROADMAP声明的版本系列判断归属；patch/governance列车没有新Product Phase时不得虚构条目；不能唯一判断时先由维护者确认。
 版本资产与Release角色也不得整段搬入本节。完整轮转规则只见[仓库治理指南](docs/repository-governance-guide.md#product-phase-authority-rotation)。
 
+大白话：本节是“长期摘要”，只留下跨版本仍有效的Product结论；Phase history是“精选过程账本”，保留当时怎样探路、
+为什么决定以及后来怎样回补。过程账本可以更详细，但不会因此成为第二份programme authority。
+
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 |
 |---|---|---|---|---|
-| 4 | `0.4.0-*`～`0.4.2` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理closeout | F0～F3C功能/rollback闭合；v0.4.1兼容修复与v0.4.2 Release/documentation governance不改变Phase归属 | complete；长期Product结论与v0.4.2 closeout见5.1.1～5.1.4 |
+| 4 | `0.4.0-*`～`0.4.3-dev` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理 | F0～F3C功能/rollback已闭合；后续patch/governance列车不得改变Product行为或激活Phase 5 | Product基线complete；当前v0.4.3-dev文档治理见第4节，长期结论与v0.4.2 closeout见5.1.1～5.1.4 |
 | 5 | `0.5.0-*` | 其他文档治理方向；具体scope与预期产物TBD | Discovery rounds、退出/Cloud gate、Release路线与对象清单均TBD | planning placeholder；不是当前开发列车，未授权实施或Release |
 | 6 | `0.6.0-*` | compaction lifecycle | 复核真实 Cloud payload，比较现有 `SessionStart source=clear\|compact` 与 PreCompact/PostCompact 的时序和恢复能力；现有事件足够时不扩大 managed event set，只有真实 context/时序缺口才新增 Hook | pending |
 | 7 | `0.7.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立 gate；必须分别有 use case、latency/token budget、噪声预算与 Cloud证据 | pending / optional；没有明确收益就逐项或整体 `NO_GO`；不是 Phase 8前置 |

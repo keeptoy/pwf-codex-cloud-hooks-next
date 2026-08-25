@@ -82,12 +82,12 @@ test("Release v2 entries own exact ZIP inventory and mode", () => {
   assert.equal(fs.existsSync(path.join(root, "contracts/release-artifact-v1.json")), false);
 });
 
-test("installed transition admits exactly one accepted v0.4.1 state shape", () => {
+test("installed transition admits exactly one accepted v0.4.2 state shape", () => {
   const transition = readJson("contracts/installed-state-transition-v1.json");
   assert.deepEqual(Object.keys(transition).sort(), ["contract_id", "predecessor", "schema_version"]);
   assert.equal(transition.schema_version, 1);
   assert.equal(transition.contract_id, "PWF_INSTALLED_STATE_TRANSITION_V1");
-  assert.equal(transition.predecessor.package_version, "0.4.1");
+  assert.equal(transition.predecessor.package_version, "0.4.2");
   assert.equal(transition.predecessor.installed_manifest_schema, 3);
   assert.equal(transition.predecessor.owner, "pwf-codex-cloud-hooks");
   assert.equal(transition.predecessor.runtime_files.length, 12);
