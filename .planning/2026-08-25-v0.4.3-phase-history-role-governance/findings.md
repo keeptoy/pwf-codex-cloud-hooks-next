@@ -151,3 +151,9 @@ Fail-closed条件：version必须同时匹配package、Release contract和extern
 
 - README负责维护者构建入口和新人展开说明；Cloud hard acceptance template第1节负责两个Release验收通道的稳定证明范围。把“C0 + contract bootstrap + source-built ZIP”与“正式bootstrap默认公开下载链”提升到该节，可以让后续版本operator guide只引用模板，不重复解释或产生第二份authority。
 - Source/Candidate的`HOOKS_URL`/`HOOKS_SHA256`是本地candidate ZIP接线，不是公开URL验收；Published Release必须不带这两个override，才能证明用户实际获得的默认公开资产链。
+
+### Work Step H override semantics
+
+- `${VAR:-default}`先读取调用者传入的非空环境变量，再使用内嵌default；外层`readonly`只冻结展开后的结果。因此zero或non-zero默认SHA在Shell层都能被4.1的`HOOKS_SHA256`覆盖，默认GitHub URL也能被`file://`覆盖。
+- Source/Candidate身份不能只靠“override可执行”判断。4.1不传`HOOKS_VERSION`，而前置suite绑定package version、contract external asset、脚本内嵌version及canonical zero-hash render；这组准入负责拒绝旧版或已seal正式bootstrap。
+- 三层职责应分别表达：zero hash使candidate脱离有界验收override时fail closed；URL/SHA override连接本轮本地候选ZIP；version/contract/zero-hash测试保证所执行的确是当前candidate。

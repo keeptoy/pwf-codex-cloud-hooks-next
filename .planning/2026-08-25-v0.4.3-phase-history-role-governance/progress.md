@@ -2,6 +2,9 @@
 
 ## Latest verification update
 
+- Work Step H验证完成：README/contract/bootstrap聚焦回归27/27 PASS；完整`npm test`为186 tests、160 PASS、26个Windows/POSIX预期SKIP、0 FAIL；candidate bootstrap exact check为`state=unchanged`，`git diff --check`PASS。
+- README变化后的22-entry候选ZIP build/check PASS（90,369 bytes，development SHA `39266b40778c0458017299a0af56d14ba28ef6620fa0b3c26a0874487a73db7e`）。该SHA仅为本地开发快照，不是Source/Candidate证据。
+- Work Step H开始：README已在双版本选择说明后新增“4.1的override与脚本默认值如何配合”，区分Shell覆盖能力、`readonly`语义与candidate身份准入；repository boundary语义断言已同步，等待回归。
 - Work Step G验证完成：repository boundary 15/15 PASS；完整`npm test`为186 tests、160 PASS、26个Windows/POSIX预期SKIP、0 FAIL。模板属于Release-excluded docs，没有改变22-entry ZIP输入或production/runtime行为。
 - Cloud hard acceptance template第1节现在直接冻结两条通道的证明对象，并明确Source/Candidate本地override不得被Published Release沿用；后续版本guide可引用模板，不必重写该合同。
 - Work Step G开始：维护者授权把双通道大白话定位提升到Cloud hard acceptance template第1节；正文与repository boundary直接语义断言已写入，等待回归。

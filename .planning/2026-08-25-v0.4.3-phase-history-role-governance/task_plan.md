@@ -6,11 +6,11 @@
 
 ## Next Step
 
-等待维护者push本轮双通道合同说明commit；后续继续v0.4.3治理或进入C0前核对。
+等待维护者push本轮4.1 override语义说明commit；后续继续v0.4.3治理或进入C0前核对。
 
 ## Current Phase
 
-Work Step G: dual-channel contract clarification — completed
+Work Step H: Source/Candidate override semantics — completed
 
 ## Work Steps
 
@@ -73,6 +73,14 @@ Work Step G: dual-channel contract clarification — completed
 - [x] 运行相称回归并创建独立本地commit。
 - **Status:** completed
 
+### Work Step H: Source/Candidate override语义
+
+- [x] 在README双版本说明后新增“4.1的override与脚本默认值如何配合”小节。
+- [x] 区分Shell环境变量优先级、`readonly`、zero/non-zero默认值与候选身份准入。
+- [x] 明确4.1不override version，以及contract/package/bootstrap/zero-hash测试如何阻止错用旧或正式脚本。
+- [x] 补稳定语义断言、运行相称回归并创建独立本地commit。
+- **Status:** completed
+
 ## Decisions Made
 
 | Decision | Rationale |
@@ -86,6 +94,7 @@ Work Step G: dual-channel contract clarification — completed
 | 环境档案同时覆盖本地与远程执行面 | 只要限制会跨任务反复改变执行/验收路线，就应与默认对策一起持久化；单次错误仍留planning。 |
 | Release资产模板先做只读Discovery | bootstrap和README都可能成为Release输入；先冻结单一生成authority、seal顺序与dist生命周期，避免引入第二份易漂移脚本。 |
 | Source/Candidate bootstrap由当前checkout的Release contract唯一点名 | 双版本脚本可以共存；验收不能靠扫描目录、比较SemVer或猜测Latest选择输入。 |
+| Shell override能力与candidate身份准入分层 | zero/non-zero默认URL/SHA都可被调用环境覆盖；version/contract/zero-hash测试另行决定脚本是否有资格作为当前candidate。 |
 
 ## Authorization
 
@@ -132,4 +141,4 @@ Work Step G: dual-channel contract clarification — completed
 
 ## Current Status
 
-`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / WORK_STEP_C_COMPLETE / WORK_STEP_D_COMPLETE / WORK_STEP_E_COMPLETE / WORK_STEP_F_COMPLETE / WORK_STEP_G_COMPLETE / PRODUCT_PHASE_4`
+`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / WORK_STEP_C_COMPLETE / WORK_STEP_D_COMPLETE / WORK_STEP_E_COMPLETE / WORK_STEP_F_COMPLETE / WORK_STEP_G_COMPLETE / WORK_STEP_H_COMPLETE / PRODUCT_PHASE_4`

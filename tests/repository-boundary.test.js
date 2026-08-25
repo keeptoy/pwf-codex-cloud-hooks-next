@@ -541,6 +541,17 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
     /HOOKS_URL=file:\/\/本轮新构建的候选ZIP[\s\S]{0,120}HOOKS_SHA256=该候选ZIP的实际SHA-256/);
   assert.match(stableReadme,
     /Source\/Candidate证明的是[\s\S]{0,240}不证明公开下载链[\s\S]{0,240}Published Release[\s\S]{0,160}不带这两个本地override/);
+  assert.match(stableReadme, /4\.1的override与脚本默认值如何配合/);
+  assert.match(stableReadme,
+    /readonly HOOKS_URL="\$\{HOOKS_URL:-默认GitHub URL\}"[\s\S]{0,120}readonly HOOKS_SHA256="\$\{HOOKS_SHA256:-脚本内嵌SHA\}"/);
+  assert.match(stableReadme,
+    /`readonly`不是“禁止外部override”[\s\S]{0,300}环境值[\s\S]{0,280}内嵌非零hash[\s\S]{0,180}覆盖其默认值/);
+  assert.match(stableReadme,
+    /技术上“能够覆盖”不等于验收合同“允许拿正式脚本或旧脚本当candidate”[\s\S]{0,180}不override[\s\S]{0,60}`HOOKS_VERSION`/);
+  assert.match(stableReadme,
+    /contract asset文件名与当前package version[\s\S]{0,100}脚本内嵌[\s\S]{0,80}version[\s\S]{0,160}zero-hash字节/);
+  assert.match(stableReadme,
+    /zero hash：保证候选脚本[\s\S]{0,120}URL\/SHA override[\s\S]{0,140}version\/contract\/zero-hash测试/);
   assert.match(stableReadme,
     /materialize_release_assets\.py release[\s\S]{0,160}--version vX\.Y\.Z[\s\S]{0,160}--expected-zip-sha/);
   assert.match(stableReadme,

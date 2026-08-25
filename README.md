@@ -358,6 +358,35 @@ bash 当前contract点名的candidate bootstrap all
 bootstrap和由当前源码构建的ZIP能一起工作”。它不证明公开下载链；发布后另一个Published Release通道会使用公开的exact-hash
 bootstrap及其默认GitHub URL重新验收，不带这两个本地override。
 
+#### 4.1的override与脚本默认值如何配合
+
+bootstrap中的相关变量采用“调用者传值优先，脚本内嵌值兜底”的Shell写法：
+
+```bash
+readonly HOOKS_URL="${HOOKS_URL:-默认GitHub URL}"
+readonly HOOKS_SHA256="${HOOKS_SHA256:-脚本内嵌SHA}"
+```
+
+这里的`readonly`不是“禁止外部override”，而是变量完成初始化后不允许脚本内部再次修改。启动`bash`时若环境里已经有非空
+`HOOKS_URL`或`HOOKS_SHA256`，右侧展开会先采用环境值，然后才把结果设为只读。因此4.1无论面对内嵌zero hash的candidate
+bootstrap，还是技术上面对内嵌非零hash的正式bootstrap，都能用本轮`file://`URL和候选ZIP实际SHA覆盖其默认值。
+
+| 脚本内嵌默认值 | 不传override | 4.1传入本地override |
+|---|---|---|
+| zero SHA candidate | checksum准入fail closed，不会误下载未发布包 | 使用本轮候选ZIP的实际SHA，允许Source/Candidate安装验证 |
+| non-zero SHA正式脚本 | 使用脚本默认GitHub URL与正式SHA | Shell层仍会改用本地ZIP与本轮SHA，但这不自动取得candidate身份 |
+
+最后一行很重要：技术上“能够覆盖”不等于验收合同“允许拿正式脚本或旧脚本当candidate”。4.1只override URL和SHA，故意不override
+`HOOKS_VERSION`；版本仍来自contract点名的脚本。安装前的完整suite还会核对contract asset文件名与当前package version、脚本内嵌
+version，以及tracked candidate是否等于canonical模板生成的zero-hash字节。任一不一致都会先停止，所以旧版或已经seal为non-zero
+SHA的正式bootstrap不能仅凭两个override冒充当前candidate。
+
+```text
+zero hash：保证候选脚本脱离验收override时fail closed
+URL/SHA override：让候选脚本安全连接本轮本地ZIP
+version/contract/zero-hash测试：保证没有拿错旧版或正式bootstrap
+```
+
 ### Source/Candidate PASS后：生成待上传双资产
 
 只有以下前提全部成立，才运行正式生成命令：
