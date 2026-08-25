@@ -616,7 +616,7 @@ test("historical documents have two controlled macro entrances and remain adviso
     /ROADMAP\.md#product-phase-overview-rotation[\s\S]*通用history冻结[\s\S]*不复制[\s\S]*仓库专用状态机/);
   assert.match(governanceGuide,
     /programme在record冻结后插入、拆分或重编号Product Phase时[\s\S]*不得搜索替换历史正文[\s\S]*Post-programme reindex status/);
-  assert.match(historyIndex, /RETROSPECTIVE_CAPSULE[\s\S]*Phase 0～3\.9\.3[\s\S]*14/);
+  assert.match(historyIndex, /RETROSPECTIVE_CAPSULE[\s\S]*Phase 0～3\.9\.3[\s\S]*Phase 4\.12～4\.15[\s\S]*15/);
   assert.match(historyIndex, /FROZEN_DISCOVERY_RECORD[\s\S]*Phase 4\.1～4\.11[\s\S]*11/);
   assert.match(historyIndex, /Phase 4\.1～4\.11[\s\S]*不表示[\s\S]*11个独立Product Phase/);
   assert.match(historyIndex,
@@ -763,7 +763,39 @@ test("Phase 4.14 keeps stable Release closeout governance interfaces", () => {
 
   assert.match(historyIndex,
     /phase-4\.14-release-closeout-governance\.md#phase-4-14-historical-position/);
+  assert.doesNotMatch(history,
+    /phase-4-14-post-governance-status-release-asset-materialization|Post-governance status — Release asset materialization/);
   assert.doesNotMatch(historyIndex, /standing Phase 9 是例外的重复 Release gate/);
+  assert.equal(artifact.entries.some(entry => entry.path === relative), false);
+  assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
+});
+
+test("Phase 4.15 preserves v0.4.3 Release asset materialization governance", () => {
+  const relative = "docs/history/phase-4.15-v0.4.3-release-asset-materialization.md";
+  const historyIndex = read("docs/history/README.md");
+  const artifact = JSON.parse(read(currentArtifactPath));
+  assert.equal(fs.existsSync(path.join(root, relative)), true, relative);
+  const history = read(relative);
+
+  for (const anchor of [
+    "phase-4-15-historical-position", "phase-4-15-problem-before",
+    "phase-4-15-core-decisions", "phase-4-15-completed-delivery",
+    "phase-4-15-acceptance-conclusion", "phase-4-15-explicit-non-goals",
+    "phase-4-15-successor-inheritance", "phase-4-15-immutable-evidence",
+  ]) assert.match(history, new RegExp('<a name="' + anchor + '"></a>'));
+
+  assert.match(history, /^# Phase 4\.15：v0\.4\.3 Release asset materialization 与验收入口治理$/m);
+  assert.match(history, /Record role: `RETROSPECTIVE_CAPSULE`/);
+  assert.match(history, /Phase 4\.14继续只解释Release closeout[\s\S]{0,180}本文解释维护者如何/);
+  assert.match(history, /单一bootstrap source[\s\S]{0,160}tools\/templates\/init-cloud-sandbox\.bash\.in/);
+  assert.match(history, /薄materializer[\s\S]{0,240}tools\/materialize_release_assets\.py/);
+  assert.match(history, /三个本地对象分角色[\s\S]*candidate\.zip[\s\S]*zero-hash bootstrap[\s\S]*正式双资产/);
+  assert.match(history, /manifest→Release contract→唯一external asset[\s\S]*不扫描根目录[\s\S]*不比较SemVer/);
+  assert.match(history, /zero或non-zero默认值[\s\S]*不override `HOOKS_VERSION`[\s\S]*canonical zero-hash字节/);
+  assert.match(history, /Source\/Candidate证明当前C0[\s\S]*Published[\s\S]*不带本地override/);
+  assert.match(history, /add5f8c98b81c3019f4f095f566a80913d02df95/);
+  assert.match(historyIndex,
+    /phase-4\.15-v0\.4\.3-release-asset-materialization\.md#phase-4-15-historical-position/);
   assert.equal(artifact.entries.some(entry => entry.path === relative), false);
   assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
 });

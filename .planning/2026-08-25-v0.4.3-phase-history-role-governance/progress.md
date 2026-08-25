@@ -2,6 +2,13 @@
 
 ## Latest verification update
 
+- Work Step I验证完成：第三轮repository boundary 16/16 PASS；完整`npm test`为187 tests、161 PASS、26个Windows/POSIX预期SKIP、0 FAIL。新history与索引均为Release-excluded，未改变22-entry ZIP、production/runtime或Host ABI。
+- Phase 4.14 materialization尾注已迁出且无旧anchor残留；Phase 4.15稳定anchors、history入口、cold snapshot、current authority链接与Release exclusion均由测试保护。
+- Phase 4.15第二轮repository boundary仍为15/16；剩余失败来自选择链正文与测试的同义措辞差异，正文已收敛成更直观的`manifest→Release contract→唯一external asset`，等待第三轮复验。
+- Phase 4.15首轮repository boundary为15/16；唯一失败是新测试把正文中template与materializer的出现顺序写反，已拆为两条直接职责断言，正文和产品边界不变，等待复验。
+- Phase 4.15正文已建立：Phase 4.14点名的materialization尾节已移出，4.14 Cold evidence保留；新capsule以`add5f8c`为cold snapshot并补齐Work Step E～H的三对象、bootstrap contract选择、双通道和override/identity分层。
+- history索引已增加Phase 4.15、回补型范围更新为4.12～4.15且capsule计数更新；repository boundary新增4.14迁出断言与4.15稳定anchor/职责/Release exclusion断言，等待验证。
+- Work Step I开始：已确认Phase 4.14真实路径、待迁移anchor边界、history索引计数和现有Phase测试结构；迁移只移动Release asset materialization正文，4.14 Cold evidence保留，新4.15承接Work Step D～H。
 - Work Step H验证完成：README/contract/bootstrap聚焦回归27/27 PASS；完整`npm test`为186 tests、160 PASS、26个Windows/POSIX预期SKIP、0 FAIL；candidate bootstrap exact check为`state=unchanged`，`git diff --check`PASS。
 - README变化后的22-entry候选ZIP build/check PASS（90,369 bytes，development SHA `39266b40778c0458017299a0af56d14ba28ef6620fa0b3c26a0874487a73db7e`）。该SHA仅为本地开发快照，不是Source/Candidate证据。
 - Work Step H开始：README已在双版本选择说明后新增“4.1的override与脚本默认值如何配合”，区分Shell覆盖能力、`readonly`语义与candidate身份准入；repository boundary语义断言已同步，等待回归。

@@ -157,3 +157,12 @@ Fail-closed条件：version必须同时匹配package、Release contract和extern
 - `${VAR:-default}`先读取调用者传入的非空环境变量，再使用内嵌default；外层`readonly`只冻结展开后的结果。因此zero或non-zero默认SHA在Shell层都能被4.1的`HOOKS_SHA256`覆盖，默认GitHub URL也能被`file://`覆盖。
 - Source/Candidate身份不能只靠“override可执行”判断。4.1不传`HOOKS_VERSION`，而前置suite绑定package version、contract external asset、脚本内嵌version及canonical zero-hash render；这组准入负责拒绝旧版或已seal正式bootstrap。
 - 三层职责应分别表达：zero hash使candidate脱离有界验收override时fail closed；URL/SHA override连接本轮本地候选ZIP；version/contract/zero-hash测试保证所执行的确是当前candidate。
+
+### Work Step I Phase 4.15 split inventory
+
+- Phase 4.14真实文件是`phase-4.14-release-closeout-governance.md`；其Release asset materialization尾注从anchor行354开始，后面只有Phase 4.14自己的Cold evidence。迁移应只移动被维护者点名的status正文，保留4.14 Cold evidence与原Release closeout边界。
+- 新Phase 4.15应是`RETROSPECTIVE_CAPSULE`，不是新增Discovery Round或Product Phase：它回补已经完成的v0.4.3-dev Work Step D～H，承接canonical bootstrap template/materializer、新人三对象说明、contract bootstrap选择、双通道合同与override/identity分层。
+- Phase 4.15的current执行authority仍应链接README、Cloud hard acceptance template与ROADMAP，而不复制脚本全文或machine规则；Cold evidence可绑定迁移前已完整包含D～H交付的exact commit `add5f8c`。
+- history索引当前把回补型Phase 4.12～4.14计入14个capsule；新增4.15后必须更新为Phase 4.12～4.15与15个，并新增独立表项。Phase 4.14测试不再拥有materialization尾注，新测试应保护4.15稳定anchors、职责边界和Release exclusion。
+- 最终拆分没有保留旧materialization anchor：仓库迁移前无任何入链，pre-1.0无需制造兼容别名。Phase 4.14保留自己的Cold evidence；Phase 4.15以D～H交付完整的`add5f8c`作为独立cold snapshot。
+- Phase 4.15只保存形成原因、决策、交付和继承边界；current命令/合同分别回到README、Cloud hard acceptance template与ROADMAP，因此新history对象不会成为第二份执行authority。

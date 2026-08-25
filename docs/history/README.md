@@ -43,7 +43,7 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 
 | Record role | 当前索引对象 | 数量 |
 |---|---|---:|
-| `RETROSPECTIVE_CAPSULE` | Phase 0～3.9.3，以及回补型Phase 4.12～4.14 | 14 |
+| `RETROSPECTIVE_CAPSULE` | Phase 0～3.9.3，以及回补型Phase 4.12～4.15 | 15 |
 | `FROZEN_DISCOVERY_RECORD` | Phase 4.1～4.11的正式Discovery、route review、implementation planning与closure decision records | 11 |
 
 这里的Phase编号和文件名保留历史语义，不表示Phase 4.1～4.11是11个独立Product Phase。未来新增对象必须在索引说明中明确
@@ -82,6 +82,7 @@ Phase 5/6/7/8现分别对应Phase 6/7/8/9与`0.6.0-*`/`0.7.0-*`/`0.8.0-*`/`0.9.0
 | Phase 4.12 | 回顾性`v0.4.0`Release discovery标签：原standing Phase 9实例冻结pre-seal输入、stable identity/hash传播、Source/Candidate→publication→Published Release→promotion顺序、混合v2/v1 rollback oracle与第二轮对象生命周期；P9-A～P9-F、stable publication/Cloud/promotion与第二轮retirement均已闭合 | [`phase-4.12-v0.4.0-release-discovery.md`](phase-4.12-v0.4.0-release-discovery.md#phase-4-12-v0-4-0-release-discovery) |
 | Phase 4.13 | 回顾性`v0.4.1`path-safety patch-train标签：修复linked `hooks` parent导致clean install越界写入和uninstall穿透删除，冻结topology/inventory分层与unknown regular backup-and-cleanup不变量；不是新Product Phase | [`phase-4.13-v0.4.1-path-safety-patch-train.md`](phase-4.13-v0.4.1-path-safety-patch-train.md#phase-4-13-historical-position) |
 | Phase 4.14 | 回顾性Release/acceptance文档治理里程碑：拆分Discovery验收、Release双通道与retirement review，取消未来列车强制Phase 9，把两轮退役嵌入Release进入/退出检查点，并冻结C0候选/tag、C1第一状态写回与C2最终closeout身份流；不是新的Product Phase或Release授权 | [`phase-4.14-release-closeout-governance.md`](phase-4.14-release-closeout-governance.md#phase-4-14-historical-position) |
+| Phase 4.15 | 回顾性`v0.4.3-dev`Release asset materialization与验收入口治理里程碑：建立canonical bootstrap template和薄materializer，区分candidate/正式双资产、contract选择链、Shell override能力与candidate身份准入，并冻结Source/Candidate和Published Release各自证明范围；不是新的Product Phase、Cloud PASS或Release授权 | [`phase-4.15-v0.4.3-release-asset-materialization.md`](phase-4.15-v0.4.3-release-asset-materialization.md#phase-4-15-historical-position) |
 
 ## 阅读方式
 

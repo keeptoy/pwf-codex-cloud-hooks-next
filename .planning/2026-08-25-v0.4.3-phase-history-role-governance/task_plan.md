@@ -6,11 +6,11 @@
 
 ## Next Step
 
-等待维护者push本轮4.1 override语义说明commit；后续继续v0.4.3治理或进入C0前核对。
+等待维护者push本轮Phase 4.15历史账本拆分commit；后续继续v0.4.3治理或进入C0前核对。
 
 ## Current Phase
 
-Work Step H: Source/Candidate override semantics — completed
+Work Step I: Phase 4.15 history split — completed
 
 ## Work Steps
 
@@ -81,6 +81,14 @@ Work Step H: Source/Candidate override semantics — completed
 - [x] 补稳定语义断言、运行相称回归并创建独立本地commit。
 - **Status:** completed
 
+### Work Step I: Phase 4.15历史账本拆分
+
+- [x] 从Phase 4.14移出最后的Release asset materialization尾节，保持4.14原有Release closeout治理边界。
+- [x] 新建Phase 4.15 retrospective capsule，承接物化实现并补充Work Step E～H的新人说明、bootstrap选择、双通道与override结论。
+- [x] 同步history索引、稳定anchors和治理语义测试，确认无断链或重复authority。
+- [x] 运行相称回归并创建独立本地commit。
+- **Status:** completed
+
 ## Decisions Made
 
 | Decision | Rationale |
@@ -95,6 +103,7 @@ Work Step H: Source/Candidate override semantics — completed
 | Release资产模板先做只读Discovery | bootstrap和README都可能成为Release输入；先冻结单一生成authority、seal顺序与dist生命周期，避免引入第二份易漂移脚本。 |
 | Source/Candidate bootstrap由当前checkout的Release contract唯一点名 | 双版本脚本可以共存；验收不能靠扫描目录、比较SemVer或猜测Latest选择输入。 |
 | Shell override能力与candidate身份准入分层 | zero/non-zero默认URL/SHA都可被调用环境覆盖；version/contract/zero-hash测试另行决定脚本是否有资格作为当前candidate。 |
+| Phase 4.15独立承接Release asset materialization后续治理 | Phase 4.14继续聚焦Release closeout；D～H已经形成可独立恢复的v0.4.3-dev维护者工具与验收入口治理对象。 |
 
 ## Authorization
 
@@ -138,7 +147,11 @@ Work Step H: Source/Candidate override semantics — completed
 | 首轮聚焦回归38/40，新增test module未进入DESIGN反向索引，source-only trusted generator/template未进入exact inventory | 1 | 产品与生成器断言均通过；补登记DESIGN测试职责，并把两项源码维护输入显式加入source-only trusted清单且继续断言不进ZIP。 |
 | 沙箱内`git add`无法创建`.git/index.lock`并返回permission denied | 1 | 文件未被部分暂存；使用沙箱外同一显式路径清单暂存，cached diff/check与mode检查通过。 |
 | Work Step E首轮聚焦回归30/31，README新人例子硬编码当前`v0.4.3-dev` | 1 | 保留解释但把例子改成version-neutral `vX.Y.Z-dev`，不放宽稳定README的版本中立断言。 |
+| Phase 4.15首轮读取使用了不存在的Phase 4.14旧候选文件名 | 1 | `rg --files docs/history`已显示真实文件为`phase-4.14-release-closeout-governance.md`；未产生业务修改，后续只使用枚举得到的真实路径。 |
+| Phase 4.15首个planning组合补丁把新错误行误作既有上下文 | 1 | 补丁整体拒绝且未产生部分修改；改为分别插入Work Step与错误日志的小补丁。 |
+| Phase 4.15首轮聚焦测试15/16，template/materializer断言错误要求两者按相反正文顺序出现 | 1 | 正文职责正确；把一条顺序耦合正则拆成template与materializer两条直接语义断言，不改弱产品边界。 |
+| Phase 4.15第二轮聚焦仍为15/16，bootstrap选择链正文使用“manifest路由到artifact”而测试保护精确箭头心智模型 | 2 | 将正文收敛为更清楚的`manifest→Release contract→唯一external asset`选择链，保留恰好一项与不扫描/SemVer边界。 |
 
 ## Current Status
 
-`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / WORK_STEP_C_COMPLETE / WORK_STEP_D_COMPLETE / WORK_STEP_E_COMPLETE / WORK_STEP_F_COMPLETE / WORK_STEP_G_COMPLETE / WORK_STEP_H_COMPLETE / PRODUCT_PHASE_4`
+`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / WORK_STEP_C_COMPLETE / WORK_STEP_D_COMPLETE / WORK_STEP_E_COMPLETE / WORK_STEP_F_COMPLETE / WORK_STEP_G_COMPLETE / WORK_STEP_H_COMPLETE / WORK_STEP_I_COMPLETE / PRODUCT_PHASE_4`
