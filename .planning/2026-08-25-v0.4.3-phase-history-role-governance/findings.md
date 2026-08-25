@@ -138,3 +138,11 @@ Fail-closed条件：version必须同时匹配package、Release contract和extern
 - `candidate-bootstrap --write`是显式mutation，用于C0前从canonical template真正创建/重写tracked candidate；无`--write`是read-only exact-byte admission。两条连续执行表达“先生成、再独立核对”，不是重复做同一件事。
 - `release`不消费早期candidate文件。它从当前checkout重新构建临时ZIP，再把实际SHA与Cloud evidence比较；只有相等才向`dist/`写versioned ZIP并渲染exact-hash bootstrap。该设计用确定性重建发现PASS后的Release-input drift，而不是让陈旧本地文件绕过证据。
 - 正式命令的SHA authority是Source/Candidate原始输出；本地candidate hash只能preflight。正式version identity、Cloud PASS、Release输入未变、tracked candidate等于zero-hash template render是共同前提。
+
+### Work Step F Source/Candidate bootstrap selection
+
+- `docs/cloud-hard-acceptance-template.md`第4.1节不会枚举根目录bootstrap或比较版本号。它从当前checkout的`upstream-manifest.json`取得Release artifact contract路径，再要求`external_release_assets`恰好一项并执行该项点名的文件。
+- 因此accepted旧脚本与candidate新脚本可以共存：当前candidate checkout执行当前contract点名的新脚本；切回immutable旧checkout时，旧checkout自己的contract点名旧脚本。选择权来自exact checkout的machine contract，不来自文件名、ROADMAP角色或GitHub Latest。
+- 第4.1节把当前源码双构建出的临时ZIP通过`HOOKS_URL=file://...`交给candidate bootstrap，并用`HOOKS_SHA256=<actual candidate SHA>`替换zero-hash默认值。该override验证candidate脚本、C0源码与本地候选ZIP的组合，不验证公开GitHub默认下载链。
+- Published Release是独立证据通道：它使用已发布的exact-hash bootstrap及默认公开URL重新下载资产，不带Source/Candidate的本地override。两条通道分别证明source bytes与public bytes，不能互相冒充。
+- PASS后只有tracked candidate或canonical template实际发生字节变化才使C0证据失效；`candidate-bootstrap --write`返回`state=unchanged`没有变化，正常`release`命令只写ignored `dist/`也不改变C0。

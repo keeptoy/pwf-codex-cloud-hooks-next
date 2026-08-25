@@ -294,13 +294,13 @@ sha256sum "$ZIP"
 | 对象 | 什么时候产生 | 大白话用途 | 是否作为正式资产上传 |
 |---|---|---|---|
 | `dist/pwf-codex-cloud-hooks-candidate.zip` | C0前的本地开发预检 | 方便本地提前build/check/hash；可以随时重建，不是Cloud证据 | 否；不要把`candidate.zip`改名上传 |
-| 根目录`init-cloud-sandbox-vX.Y.Z[-dev].bash` | 版本改号或bootstrap模板变化后、C0前 | tracked候选源码输入；默认ZIP SHA是64位zero，故会fail closed，不能冒充正式下载脚本 | 否；它随源码进入Source/Candidate验证 |
+| 根目录`init-cloud-sandbox-vX.Y.Z[-dev].bash` | 版本改号或bootstrap模板变化后、C0前 | 当前checkout的Release contract唯一点名的tracked候选源码输入；默认ZIP SHA是64位zero，故会fail closed，不能冒充正式下载脚本 | 否；它随源码进入Source/Candidate验证 |
 | `dist/pwf-codex-cloud-hooks-vX.Y.Z.zip`与`dist/init-cloud-sandbox-vX.Y.Z.bash` | Source/Candidate实际PASS后 | 重新构建、核对Cloud SHA并生成的正式双资产 | 是；这两项才上传同一GitHub Release |
 
 本地`candidate.zip`只是可选的早期预检产物。后面的Release生成器不读取它，也不会把它重命名成正式ZIP；即使本地从未生成过
 `candidate.zip`，只要Source/Candidate已经给出exact SHA，仍可正常生成正式双资产。
 
-### C0前：生成并核对development bootstrap
+### C0前：生成并核对当前checkout的candidate bootstrap
 
 版本列车在C0前若修改了bootstrap正文、canonical模板或version identity，先运行：
 
@@ -321,8 +321,42 @@ python tools/materialize_release_assets.py candidate-bootstrap
 第二条：用只读模式确认刚生成的完整字节没有漂移
 ```
 
-根目录development bootstrap属于C0受测输入，生成后必须正常提交并进入Source/Candidate。若第一通道已经PASS，再运行`--write`
-造成字节变化，就必须作废旧证据、形成新C0并重跑，而不是把它当成无影响的本地整理。
+当前checkout根目录中由Release contract唯一指定的candidate bootstrap属于C0受测输入，生成后必须正常提交并进入
+Source/Candidate。开发阶段的文件名通常带`-dev`；稳定候选可能不带`-dev`，但只要它仍是tracked zero-hash候选，就继续承担
+candidate角色。若第一通道已经PASS，再运行`--write`并造成该脚本字节变化，就必须作废旧证据、形成新C0并重跑，而不是把它
+当成无影响的本地整理。若命令返回`state=unchanged`，就没有产生新字节；正常的`release`命令也只在ignored `dist/`生成
+exact-hash正式资产，不修改C0。
+
+#### 模板4.1如何在双版本并存时选中正确bootstrap
+
+这里的“模板4.1”是[`Cloud hard acceptance template`](docs/cloud-hard-acceptance-template.md)的Source/Candidate setup。
+它不会扫描根目录、比较SemVer或猜测哪个文件“看起来更新”，而是按当前Cloud checkout中的machine authority走一条精确选择链：
+
+```text
+当前Cloud checkout
+  → upstream-manifest.json
+  → manifest点名的Release artifact contract
+  → external_release_assets（必须恰好一项）
+  → 该项写明的根目录candidate bootstrap
+```
+
+大白话：旧accepted bootstrap和新candidate bootstrap可以同时留在根目录，但4.1只执行当前contract点名的那一个。比如当前
+checkout的contract点名`init-cloud-sandbox-vX.Y.Z-dev.bash`，旧版本脚本即使仍存在也不会被选中；若切回旧版本的immutable
+checkout，则按那个checkout自己的contract选择旧脚本。`external_release_assets`不是恰好一项、目标不存在或Bash语法不通过时，
+4.1都会停止，不会自行挑另一个文件兜底。
+
+选中脚本后，4.1会先从同一checkout双构建候选ZIP、核对两份字节一致并取得实际SHA，再这样执行安装：
+
+```text
+HOOKS_URL=file://本轮新构建的候选ZIP
+HOOKS_SHA256=该候选ZIP的实际SHA-256
+bash 当前contract点名的candidate bootstrap all
+```
+
+这两个override不是用来“伪装版本”，而是把zero-hash candidate bootstrap临时接到本轮本地候选ZIP：`HOOKS_URL`阻止它去下载
+默认GitHub URL，`HOOKS_SHA256`让它仍按本轮实际hash校验字节。于是Source/Candidate证明的是“当前C0源码、当前contract点名的
+bootstrap和由当前源码构建的ZIP能一起工作”。它不证明公开下载链；发布后另一个Published Release通道会使用公开的exact-hash
+bootstrap及其默认GitHub URL重新验收，不带这两个本地override。
 
 ### Source/Candidate PASS后：生成待上传双资产
 

@@ -523,6 +523,19 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(stableReadme,
     /第一条：按唯一模板真正生成候选bootstrap[\s\S]{0,120}第二条：用只读模式确认/);
   assert.match(stableReadme,
+    /当前checkout根目录中由Release contract唯一指定的candidate bootstrap[\s\S]{0,520}state=unchanged[\s\S]{0,240}不修改C0/);
+  assert.doesNotMatch(stableReadme, /根目录development bootstrap属于C0受测输入/);
+  assert.match(stableReadme,
+    /模板4\.1[\s\S]{0,240}Source\/Candidate setup[\s\S]{0,280}不会扫描根目录、比较SemVer或猜测/);
+  assert.match(stableReadme,
+    /当前Cloud checkout[\s\S]{0,100}upstream-manifest\.json[\s\S]{0,160}Release artifact contract[\s\S]{0,160}external_release_assets（必须恰好一项）/);
+  assert.match(stableReadme,
+    /旧accepted bootstrap和新candidate bootstrap可以同时留在根目录[\s\S]{0,180}只执行当前contract点名的那一个/);
+  assert.match(stableReadme,
+    /HOOKS_URL=file:\/\/本轮新构建的候选ZIP[\s\S]{0,120}HOOKS_SHA256=该候选ZIP的实际SHA-256/);
+  assert.match(stableReadme,
+    /Source\/Candidate证明的是[\s\S]{0,240}不证明公开下载链[\s\S]{0,240}Published Release[\s\S]{0,160}不带这两个本地override/);
+  assert.match(stableReadme,
     /materialize_release_assets\.py release[\s\S]{0,160}--version vX\.Y\.Z[\s\S]{0,160}--expected-zip-sha/);
   assert.match(stableReadme,
     /exact ZIP SHA-256[\s\S]{0,160}来自Cloud evidence[\s\S]{0,160}不由早期本地`candidate\.zip`代替/);

@@ -2,6 +2,10 @@
 
 ## Latest verification update
 
+- Work Step F验证完成：README明确当前checkout contract的唯一bootstrap选择链、双版本共存语义、两个本地override与Published Release默认下载链的证据边界；repository boundary增加直接语义断言。
+- 聚焦README/Release/architecture回归31/31 PASS；完整`npm test`为186 tests、160 PASS、26个Windows/POSIX预期SKIP、0 FAIL；candidate bootstrap exact check返回`state=unchanged`，`git diff --check`PASS。
+- README变化后的22-entry候选ZIP build/check PASS（89,623 bytes，development SHA `44c6d67a522c53dfcd79a757ffdf2239113bc81623ac9f09c054ec3a3373d894`）。该SHA只是当前本地开发快照，不是Source/Candidate证据。
+- Work Step F开始：已确认Cloud hard acceptance template第4.1节按当前checkout的manifest→Release contract→唯一`external_release_assets`选择candidate bootstrap，不扫描双版本文件或比较SemVer；README与稳定语义测试正在同步。
 - Work Step E验证完成：聚焦README/Release/architecture 31/31 PASS；完整`npm test`仍为186 tests、160 PASS、26个Windows/POSIX预期SKIP、0 FAIL。
 - README变化后的22-entry候选ZIP build/check PASS（88,721 bytes，development SHA `49909e9758c1303acf6160ada0d4d04c3ad7c251450065c7c248493ce59b4e55`）；candidate bootstrap exact check与`git diff --check`PASS。该SHA仅为本地开发快照，不是Source/Candidate证据。
 - README新人说明已扩展：新增三对象职责表、`--write`与check-only逐条解释、C0后变更作废边界、正式命令五项使用前提、Cloud SHA来源和“临时重建→SHA比较→dist双资产”的完整流程；原大白话内容已全部持久化。

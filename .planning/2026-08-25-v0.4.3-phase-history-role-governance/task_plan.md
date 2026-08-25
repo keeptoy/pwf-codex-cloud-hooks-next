@@ -6,11 +6,11 @@
 
 ## Next Step
 
-等待维护者push本轮README新人说明commit；后续继续v0.4.3治理或进入C0前，按扩展后的三对象/双阶段说明核对Release输入。
+等待维护者push本轮Source/Candidate bootstrap选择链说明commit；后续继续v0.4.3治理或进入C0前核对。
 
 ## Current Phase
 
-Work Step E: Release materialization newcomer documentation — completed
+Work Step F: Source/Candidate bootstrap selection clarification — completed
 
 ## Work Steps
 
@@ -58,6 +58,14 @@ Work Step E: Release materialization newcomer documentation — completed
 - [x] 同步稳定语义断言，运行相称回归并创建独立本地commit。
 - **Status:** completed
 
+### Work Step F: Source/Candidate bootstrap选择链说明
+
+- [x] 明确模板4.1按当前checkout的Release contract点名唯一candidate bootstrap，不扫描根目录或比较版本号。
+- [x] 大白话解释`HOOKS_URL`与`HOOKS_SHA256`本地override验证什么，以及它与Published Release默认下载链的区别。
+- [x] 收窄candidate bootstrap的C0/PASS后字节变化边界，并补稳定语义断言。
+- [x] 运行相称回归、ZIP build/check与静态检查，创建独立本地commit。
+- **Status:** completed
+
 ## Decisions Made
 
 | Decision | Rationale |
@@ -70,6 +78,7 @@ Work Step E: Release materialization newcomer documentation — completed
 | ROADMAP独占overview指针轮转规则 | 指针与programme状态由同一authority维护；治理指南不再冻结第二份仓库专用步骤。 |
 | 环境档案同时覆盖本地与远程执行面 | 只要限制会跨任务反复改变执行/验收路线，就应与默认对策一起持久化；单次错误仍留planning。 |
 | Release资产模板先做只读Discovery | bootstrap和README都可能成为Release输入；先冻结单一生成authority、seal顺序与dist生命周期，避免引入第二份易漂移脚本。 |
+| Source/Candidate bootstrap由当前checkout的Release contract唯一点名 | 双版本脚本可以共存；验收不能靠扫描目录、比较SemVer或猜测Latest选择输入。 |
 
 ## Authorization
 
@@ -116,4 +125,4 @@ Work Step E: Release materialization newcomer documentation — completed
 
 ## Current Status
 
-`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / WORK_STEP_C_COMPLETE / WORK_STEP_D_COMPLETE / WORK_STEP_E_COMPLETE / PRODUCT_PHASE_4`
+`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / WORK_STEP_C_COMPLETE / WORK_STEP_D_COMPLETE / WORK_STEP_E_COMPLETE / WORK_STEP_F_COMPLETE / PRODUCT_PHASE_4`
