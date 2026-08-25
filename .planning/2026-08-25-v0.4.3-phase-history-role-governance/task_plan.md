@@ -6,11 +6,11 @@
 
 ## Next Step
 
-等待维护者push本轮Phase 4.15历史账本拆分commit；后续继续v0.4.3治理或进入C0前核对。
+等待维护者push本轮Product Phase 4长期边界提升commit；后续继续v0.4.3治理或进入C0前核对。
 
 ## Current Phase
 
-Work Step I: Phase 4.15 history split — completed
+Work Step J: Product Phase 4 long-term governance promotion — completed
 
 ## Work Steps
 
@@ -89,6 +89,14 @@ Work Step I: Phase 4.15 history split — completed
 - [x] 运行相称回归并创建独立本地commit。
 - **Status:** completed
 
+### Work Step J: Product Phase 4长期边界提升
+
+- [x] 在Phase 4 Overview增加稳定的v0.4.3 Release资产物化与验收边界小节。
+- [x] 只提升template/materializer、三对象、contract选择、override/identity和双通道长期结论，不复制history/planning流水。
+- [x] 保持Phase 4 closed、Phase 5未激活，并把current命令/状态路由回README、Cloud template、ROADMAP/planning。
+- [x] 补overview直接语义断言、运行相称回归并创建独立本地commit。
+- **Status:** completed
+
 ## Decisions Made
 
 | Decision | Rationale |
@@ -104,6 +112,7 @@ Work Step I: Phase 4.15 history split — completed
 | Source/Candidate bootstrap由当前checkout的Release contract唯一点名 | 双版本脚本可以共存；验收不能靠扫描目录、比较SemVer或猜测Latest选择输入。 |
 | Shell override能力与candidate身份准入分层 | zero/non-zero默认URL/SHA都可被调用环境覆盖；version/contract/zero-hash测试另行决定脚本是否有资格作为当前candidate。 |
 | Phase 4.15独立承接Release asset materialization后续治理 | Phase 4.14继续聚焦Release closeout；D～H已经形成可独立恢复的v0.4.3-dev维护者工具与验收入口治理对象。 |
+| v0.4.3稳定Release资产/验收边界提升到Phase 4 Overview | 后继同系列列车需要继承这些规则；形成原因仍留history，current命令与状态仍由各自authority管理。 |
 
 ## Authorization
 
@@ -154,4 +163,4 @@ Work Step I: Phase 4.15 history split — completed
 
 ## Current Status
 
-`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / WORK_STEP_C_COMPLETE / WORK_STEP_D_COMPLETE / WORK_STEP_E_COMPLETE / WORK_STEP_F_COMPLETE / WORK_STEP_G_COMPLETE / WORK_STEP_H_COMPLETE / WORK_STEP_I_COMPLETE / PRODUCT_PHASE_4`
+`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / WORK_STEP_C_COMPLETE / WORK_STEP_D_COMPLETE / WORK_STEP_E_COMPLETE / WORK_STEP_F_COMPLETE / WORK_STEP_G_COMPLETE / WORK_STEP_H_COMPLETE / WORK_STEP_I_COMPLETE / WORK_STEP_J_COMPLETE / PRODUCT_PHASE_4`

@@ -449,6 +449,12 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(phaseOverviewTemplate, /tag\/source\/ZIP\/bootstrap\/SHA/);
   assert.match(phase4Overview, /Why this Phase existed[\s\S]*F0 → F1A → F1B → F2A → F2B → F3A → F3B → F3C/);
   assert.match(phase4Overview, /^<a name="v0-4-2-release-closeout"><\/a>$/m);
+  assert.match(phase4Overview, /^<a name="v0-4-3-release-asset-governance"><\/a>$/m);
+  assert.match(phase4Overview,
+    /v0\.4\.3 Release资产物化与验收边界[\s\S]*canonical `\.bash\.in`模板[\s\S]*三个不同生命周期对象/);
+  assert.match(phase4Overview,
+    /manifest→Release contract→唯一external asset[\s\S]*Source\/Candidate证明当前C0源码[\s\S]*Published Release不带本地override/);
+  assert.match(phase4Overview, /没有重新打开Phase 4、激活Phase 5或改变Product\/runtime行为/);
   assert.match(phase4Overview, /RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
   assert.equal(fs.existsSync(path.join(root, "docs/product-phases/phase-5.md")), false);
   assert.match(phase41, /\]\(\.\.\/product-phases\/phase-4\.md#product-phase-4-overview\)/);

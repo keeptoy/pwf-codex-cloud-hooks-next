@@ -166,3 +166,10 @@ Fail-closed条件：version必须同时匹配package、Release contract和extern
 - history索引当前把回补型Phase 4.12～4.14计入14个capsule；新增4.15后必须更新为Phase 4.12～4.15与15个，并新增独立表项。Phase 4.14测试不再拥有materialization尾注，新测试应保护4.15稳定anchors、职责边界和Release exclusion。
 - 最终拆分没有保留旧materialization anchor：仓库迁移前无任何入链，pre-1.0无需制造兼容别名。Phase 4.14保留自己的Cold evidence；Phase 4.15以D～H交付完整的`add5f8c`作为独立cold snapshot。
 - Phase 4.15只保存形成原因、决策、交付和继承边界；current命令/合同分别回到README、Cloud hard acceptance template与ROADMAP，因此新history对象不会成为第二份执行authority。
+
+### Work Step J Product Phase overview promotion
+
+- Phase 4 Overview的version-train段虽已声明v0.4.3-dev继续归属Phase 4，但长期交付正文只到v0.4.2；D～H形成的Release资产/验收边界缺少Product-level继承摘要。
+- 合适提升面是新稳定anchor `v0-4-3-release-asset-governance`：只保存canonical template/materializer职责、三对象生命周期、contract bootstrap选择、override/identity分层、双通道证明范围及Release-input变化需新C0。
+- Phase 4.15继续解释形成原因；overview不直接复制命令、测试数字、SHA、Work Step流水或当前PASS/PENDING。current命令与执行状态分别回到README、Cloud hard acceptance template、ROADMAP和活动planning。
+- 这次提升属于closed Product Phase上的patch/governance train继承说明，不重新打开Phase 4、不激活TBD Phase 5，也不宣称v0.4.3已经Cloud验收或发布。

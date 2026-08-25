@@ -116,6 +116,29 @@ immutable publication、Published Release Cloud、GitHub Release Latest promotio
 - post-v0.4.2 residue Batch A/B清退不可达候选/P9断言与无入链兼容anchors，同时保留真实acceptance/history、immutable P9-F、
   predecessor contract和publication/fallback oracles；这些路径与22-entry Release allowlist交集为零。
 
+<a name="v0-4-3-release-asset-governance"></a>
+
+### v0.4.3 Release资产物化与验收边界
+
+`v0.4.3-dev`在已闭合的Phase 4 Product baseline上，把Release资产准备从手工复制/替换收敛为确定性物化，并补齐
+Source/Candidate bootstrap选择与双通道验收的新人边界。它没有重新打开Phase 4、激活Phase 5或改变Product/runtime行为；
+当前列车、C0与Release状态仍只读ROADMAP和活动planning。
+
+后继同系列列车必须继承以下长期边界：
+
+- bootstrap完整正文只由canonical `.bash.in`模板维护；薄materializer编排candidate render/check与正式双资产生成，
+  `tools/build_release.py`继续只负责contract-driven ZIP。模板与materializer是source-only维护输入，不进入Release ZIP。
+- 本地预检`candidate.zip`、根tracked zero-hash candidate bootstrap与ignored `dist/`正式versioned ZIP/exact-hash bootstrap
+  是三个不同生命周期对象；正式生成器不读取或重命名旧`candidate.zip`。
+- Source/Candidate按当前checkout的manifest→Release contract→唯一external asset选择bootstrap，不扫描目录、比较SemVer或
+  根据GitHub Latest猜版本。`HOOKS_URL`/`HOOKS_SHA256`可以覆盖zero或non-zero默认值，但4.1不override `HOOKS_VERSION`；
+  package、contract、内嵌version与canonical zero-hash一致性共同决定candidate资格。
+- Source/Candidate证明当前C0源码、contract指定bootstrap与当前源码构建ZIP能共同工作；Published Release不带本地override，
+  证明正式bootstrap默认GitHub URL、内嵌exact SHA与公开ZIP。两个通道不能互相替代。
+- 根[`README`](../../README.md)是当前构建/物化命令入口并属于Release ZIP输入；稳定双通道协议只读
+  [`Cloud hard acceptance template`](../cloud-hard-acceptance-template.md#cloud-hard-acceptance-template)。任一README、template、
+  materializer、contract或其他Release输入在Source/Candidate PASS后变化，都必须形成新C0并重新运行第一通道。
+
 ## Closeout and successor inheritance
 
 Phase 4的长期Product baseline已经闭合。后继Phase必须继续保持：legacy默认、plan-local exact opt-in、activation-last、

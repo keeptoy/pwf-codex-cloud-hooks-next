@@ -2,6 +2,9 @@
 
 ## Latest verification update
 
+- Work Step J验证完成：architecture/repository聚焦25/25 PASS；完整`npm test`为187 tests、161 PASS、26个Windows/POSIX预期SKIP、0 FAIL。Phase overview和tests均为Release-excluded，没有改变22-entry ZIP、production/runtime或Host ABI。
+- Phase 4 Overview现在以稳定anchor承接v0.4.3的长期Release资产/验收边界；正文未复制命令、SHA、测试数字、planning流水或当前Cloud状态，并明确Phase 4保持closed、Phase 5未激活。
+- Work Step J开始：Phase 4 Overview已新增`v0-4-3-release-asset-governance`稳定小节，只提升D～H的长期资产/验收边界并保持Phase 4 closed、Phase 5未激活；architecture/repository直接语义断言已同步，等待回归。
 - Work Step I验证完成：第三轮repository boundary 16/16 PASS；完整`npm test`为187 tests、161 PASS、26个Windows/POSIX预期SKIP、0 FAIL。新history与索引均为Release-excluded，未改变22-entry ZIP、production/runtime或Host ABI。
 - Phase 4.14 materialization尾注已迁出且无旧anchor残留；Phase 4.15稳定anchors、history入口、cold snapshot、current authority链接与Release exclusion均由测试保护。
 - Phase 4.15第二轮repository boundary仍为15/16；剩余失败来自选择链正文与测试的同义措辞差异，正文已收敛成更直观的`manifest→Release contract→唯一external asset`，等待第三轮复验。

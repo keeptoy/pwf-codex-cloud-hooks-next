@@ -64,6 +64,10 @@ test("v0.4.3-dev history governance stays in Product Phase 4 while v0.4.2 eviden
   const phase4Overview = read("docs/product-phases/phase-4.md");
   const phase4Closeout = phase4Overview.slice(
     phase4Overview.indexOf('<a name="v0-4-2-release-closeout"></a>'),
+    phase4Overview.indexOf('<a name="v0-4-3-release-asset-governance"></a>'),
+  );
+  const phase4V043Governance = phase4Overview.slice(
+    phase4Overview.indexOf('<a name="v0-4-3-release-asset-governance"></a>'),
     phase4Overview.indexOf("## Closeout and successor inheritance"),
   );
   const currentTrain = roadmap.slice(
@@ -99,6 +103,17 @@ test("v0.4.3-dev history governance stays in Product Phase 4 while v0.4.2 eviden
   assert.match(phase4Closeout, /#github-release-latest-promotion-confirmation/);
   assert.match(phase4Closeout,
     /post-v0\.4\.2 residue Batch A\/B[\s\S]*22-entry Release allowlist交集为零/);
+  assert.match(phase4V043Governance, /没有重新打开Phase 4、激活Phase 5或改变Product\/runtime行为/);
+  assert.match(phase4V043Governance,
+    /canonical `\.bash\.in`模板[\s\S]*薄materializer[\s\S]*build_release\.py[\s\S]*source-only[\s\S]*不进入Release ZIP/);
+  assert.match(phase4V043Governance,
+    /三个不同生命周期对象[\s\S]*不读取或重命名旧`candidate\.zip`/);
+  assert.match(phase4V043Governance,
+    /manifest→Release contract→唯一external asset[\s\S]*不扫描目录、比较SemVer[\s\S]*不override `HOOKS_VERSION`/);
+  assert.match(phase4V043Governance,
+    /Source\/Candidate证明当前C0源码[\s\S]*Published Release不带本地override[\s\S]*两个通道不能互相替代/);
+  assert.match(phase4V043Governance,
+    /README[\s\S]*Release ZIP输入[\s\S]*Cloud hard acceptance template[\s\S]*形成新C0并重新运行第一通道/);
   assert.doesNotMatch(roadmap, /^### 5\.2 Phase 5/m);
   assert.match(roadmap, /\| 5 \| `0\.5\.0-\*` \| 其他文档治理方向[\s\S]*均TBD[\s\S]*route placeholder[\s\S]*不创建overview/);
   assert.match(roadmap, /\| 6 \| `0\.6\.0-\*`[\s\S]*\| 9 \| `0\.9\.0-\*`/);
