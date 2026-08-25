@@ -290,43 +290,45 @@ sha256sum "$ZIP"
 ```
 
 `pwf-codex-cloud-hooks-candidate.zip`是本地中间产物；不要用这个名字上传。标准GitHub Release的正式资产名是
-`pwf-codex-cloud-hooks-vX.Y.Z.zip`，同版本ZIP外资产名是`init-cloud-sandbox-vX.Y.Z.bash`。维护者准备正式文件时可复制下面的
-PowerShell块，只把`vX.Y.Z`和Source/Candidate实际输出的ZIP SHA替换为本次值：
+`pwf-codex-cloud-hooks-vX.Y.Z.zip`，同版本ZIP外资产名是`init-cloud-sandbox-vX.Y.Z.bash`。
+
+版本列车在C0前若修改了bootstrap正文或版本identity，先从唯一模板重新生成并核对根目录的development zero-hash bootstrap；
+该文件属于C0受测输入，生成后仍需正常提交并进入Source/Candidate：
 
 ```powershell
-$version = 'vX.Y.Z'
-$expectedSourceCandidateSha = '<Source/Candidate ZIP SHA-256，64位小写十六进制>'
-$releaseZip = "./dist/pwf-codex-cloud-hooks-$version.zip"
-$bootstrap = "./init-cloud-sandbox-$version.bash"
-
-python tools/build_release.py build --output $releaseZip
-python tools/build_release.py check --archive $releaseZip
-$zipSha256 = (Get-FileHash -Algorithm SHA256 $releaseZip).Hash.ToLowerInvariant()
-if ($zipSha256 -ne $expectedSourceCandidateSha) { throw "ZIP SHA mismatch: expected=$expectedSourceCandidateSha actual=$zipSha256" }
-"RELEASE_ZIP=$releaseZip"
-"RELEASE_ZIP_SHA256=$zipSha256"
-"EXTERNAL_BOOTSTRAP=$bootstrap"
+python tools/materialize_release_assets.py candidate-bootstrap --write
+python tools/materialize_release_assets.py candidate-bootstrap
 ```
 
 只有package、contract、bootstrap文件名和version identity已经在C0冻结，且Source/Candidate实际PASS、Release输入没有变化，
-才进入bootstrap seal。使用标准tag、正式资产名、GitHub仓库地址和archive root时，bootstrap内只修改以下两个默认值：
-
-```bash
-readonly HOOKS_VERSION="${HOOKS_VERSION:-vX.Y.Z}"
-readonly HOOKS_SHA256="${HOOKS_SHA256:-<上一步的exact ZIP SHA-256>}"
-```
-
-`HOOKS_PACKAGE`从`HOOKS_VERSION`得到正式ZIP文件名；`HOOKS_URL`再从GitHub仓库、`HOOKS_VERSION`和`HOOKS_PACKAGE`得到默认
-下载地址，二者均为派生值，不需要手工替换。若候选bootstrap已经写着正确版本，实际seal通常只需把64位zero hash换成exact
-`HOOKS_SHA256`。不要顺手修改`HOOKS_ARCHIVE_ROOT`、PWF Skill pins、PowerShell pins或其他固定安全字段；非标准仓库/文件名属于
-另一条显式设计与验收路线，不能临时改URL后沿用当前证据。
-
-替换后先复核四个Hooks字段、Bash语法和bootstrap自身SHA，再把versioned ZIP与bootstrap作为两项独立资产上传：
+才生成待上传资产。维护者只替换下面命令中的`vX.Y.Z`和第一通道实际输出的ZIP SHA；脚本会重新build/check ZIP、核对exact SHA，
+并从同一模板同时生成ZIP外bootstrap：
 
 ```powershell
-Select-String -Path $bootstrap -Pattern 'readonly HOOKS_(VERSION|PACKAGE|URL|SHA256)'
-bash -n $bootstrap
-(Get-FileHash -Algorithm SHA256 $bootstrap).Hash.ToLowerInvariant()
+python tools/materialize_release_assets.py release `
+  --version vX.Y.Z `
+  --expected-zip-sha <SOURCE_CANDIDATE_ZIP_SHA256> `
+  --output-dir ./dist
+```
+
+成功后`dist/`中会同时得到：
+
+```text
+dist/pwf-codex-cloud-hooks-vX.Y.Z.zip
+dist/init-cloud-sandbox-vX.Y.Z.bash
+```
+
+命令输出一行JSON，包含两项资产的路径、大小、SHA和ZIP entry数，直接用于publication/acceptance回填。`HOOKS_PACKAGE`与
+`HOOKS_URL`继续由版本派生；生成器不会改动`HOOKS_ARCHIVE_ROOT`、PWF Skill pins、PowerShell pins或其他固定安全字段。
+如果Source/Candidate SHA不匹配、根candidate偏离模板，或`dist/`已有同名但不同字节的文件，命令会停止且不覆盖旧资产；相同字节则
+允许幂等重跑。模板和生成器是C0前必须冻结、测试的源码维护输入，但它们本身不进入Release ZIP，也不是待上传资产。
+
+生成后可按需再次复核ZIP、Bash语法和bootstrap自身SHA，再把两项文件上传：
+
+```powershell
+python tools/build_release.py check --archive ./dist/pwf-codex-cloud-hooks-vX.Y.Z.zip
+bash -n ./dist/init-cloud-sandbox-vX.Y.Z.bash
+Get-FileHash -Algorithm SHA256 ./dist/init-cloud-sandbox-vX.Y.Z.bash
 ```
 
 正式tag必须继续精确指向Source/Candidate实际PASS的C0。ZIP/bootstrap一经上传即视为immutable；不得通过移动tag、重传同名资产

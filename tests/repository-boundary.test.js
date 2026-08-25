@@ -16,6 +16,10 @@ const readGit = (ref, relative) => {
 };
 const trustedPrefixes = ["contracts/", "hooks/", "patches/", "runtime/", "tools/"];
 const trustedRootPaths = new Set(["install.js", "package.json", "upstream-manifest.json"]);
+const sourceOnlyTrustedPaths = new Set([
+  "tools/materialize_release_assets.py",
+  "tools/templates/init-cloud-sandbox.bash.in",
+]);
 const versionPattern = "v\\d+\\.\\d+\\.\\d+(?:-[A-Za-z0-9.]+)?";
 const currentManifest = JSON.parse(read("upstream-manifest.json"));
 const currentArtifactPath = currentManifest.managed_runtime.contracts.release_artifact.path;
@@ -201,10 +205,17 @@ test("trusted source zones are exact while repository governance paths remain li
   const actual = repositoryPaths();
   const artifact = JSON.parse(read(currentArtifactPath));
   const releasePaths = artifact.entries.map(item => item.path);
-  const expectedTrusted = releasePaths.filter(isTrustedSource).sort();
+  const expectedTrusted = [...new Set([
+    ...releasePaths.filter(isTrustedSource),
+    ...sourceOnlyTrustedPaths,
+  ])].sort();
   const actualTrusted = actual.filter(isTrustedSource).sort();
 
   assert.deepEqual(actualTrusted, expectedTrusted);
+  for (const relative of sourceOnlyTrustedPaths) {
+    assert.equal(actual.includes(relative), true, relative);
+    assert.equal(releasePaths.includes(relative), false, `${relative} must remain source-only`);
+  }
   for (const relative of [...releasePaths, ...artifact.external_release_assets]) {
     assert.equal(actual.includes(relative), true, relative);
     assert.equal(fs.existsSync(path.join(root, relative)), true, `${relative} must exist in the working tree`);
@@ -500,9 +511,16 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(stableReadme,
     /python tools\/build_release\.py check --archive \.\/dist\/pwf-codex-cloud-hooks-candidate\.zip/);
   assert.match(stableReadme, /candidate\.zip[\s\S]{0,240}本地中间产物[\s\S]{0,240}正式资产名/);
-  assert.match(stableReadme, /HOOKS_VERSION[\s\S]{0,320}HOOKS_SHA256/);
+  assert.match(stableReadme, /materialize_release_assets\.py candidate-bootstrap --write/);
+  assert.match(stableReadme,
+    /materialize_release_assets\.py release[\s\S]{0,160}--version vX\.Y\.Z[\s\S]{0,160}--expected-zip-sha/);
+  assert.match(stableReadme,
+    /dist\/pwf-codex-cloud-hooks-vX\.Y\.Z\.zip[\s\S]{0,160}dist\/init-cloud-sandbox-vX\.Y\.Z\.bash/);
   assert.match(stableReadme, /HOOKS_PACKAGE[\s\S]{0,240}HOOKS_URL[\s\S]{0,240}派生/);
-  assert.match(stableReadme, /package、contract[\s\S]{0,240}Source\/Candidate[\s\S]{0,240}只(?:修改|替换)[\s\S]{0,160}HOOKS_VERSION[\s\S]{0,160}HOOKS_SHA256/);
+  assert.match(stableReadme,
+    /package、contract[\s\S]{0,240}Source\/Candidate[\s\S]{0,320}重新build\/check ZIP[\s\S]{0,160}核对exact SHA/);
+  assert.match(stableReadme, /同名但不同字节[\s\S]{0,120}停止[\s\S]{0,120}不覆盖/);
+  assert.doesNotMatch(stableReadme, /readonly HOOKS_VERSION="\$\{HOOKS_VERSION:-vX\.Y\.Z\}"/);
   assert.match(stableReadme, /README\.md[\s\S]{0,200}Release ZIP输入[\s\S]{0,240}Source\/Candidate[\s\S]{0,200}新C0/);
   assert.doesNotMatch(stableReadme, /尚需 F3 live gate|不得描述成 Cloud lifecycle PASS/);
   assert.match(stableReadme, /版本专项 acceptance/);

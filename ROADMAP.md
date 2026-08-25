@@ -26,7 +26,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 当前已接受版本 | `v0.4.2`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.1` immediate fallback |
 | 回退证据链 | immutable `v0.4.0` deeper fallback；`v0.3.5`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | `v0.4.2`及其前序列车均已关闭；`v0.4.3-dev`作为Product Phase 4上的文档治理patch train已激活，已把长期Product authority迁入`docs/product-phases/`并收敛ROADMAP指针。Product Phase 5仍只预占`0.5.0-*`，其scope、预期产物、gate与Release路线均为TBD；其他外部状态变更未授权 |
+| 当前 programme 边界 | `v0.4.2`及其前序列车均已关闭；`v0.4.3-dev`作为Product Phase 4上的治理patch train已激活，已把长期Product authority迁入`docs/product-phases/`、收敛ROADMAP指针，并正在把手工Release双资产准备改为可复现materialization。Product Phase 5仍只预占`0.5.0-*`，其scope、预期产物、gate与Release路线均为TBD；其他外部状态变更未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -70,8 +70,9 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 [`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)。Work Step A已把Phase history冻结为精选过程
 账本；Work Step B已把长期Product authority从ROADMAP正文迁入overview，并由本节持有current指针；当前Work Step C把
 local/remote执行限制与默认对策
-收敛到README可发现的长期档案。该列车不修改production、
-runtime、Host ABI或trusted graph，也不激活仍为TBD的Product Phase 5。
+收敛到README可发现的长期档案；Work Step D建立canonical bootstrap模板和post-PASS Release资产materializer，消除手工复制、
+中文编码漂移与ZIP SHA误配。该列车不修改production、runtime、Host ABI或trusted graph；README/bootstrap变化仍属于新C0前必须
+重新验证的Release输入，也不激活仍为TBD的Product Phase 5。
 
 三个planning scope继续承担相邻Discovery恢复与治理参考；只有`.active_plan`指向当前v0.4.3任务。保留旧scope不扩大本列车范围，
 `0.4.3-dev`也不表示stable candidate、Release或Cloud PASS已经形成。

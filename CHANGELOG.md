@@ -16,6 +16,9 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   未来Phase路线索引与唯一overview轮转规则，未激活的Phase不提前创建空overview。
 - 把maintenance environment profile从单一本机事实表扩展为local/remote执行限制与默认对策档案，并在README文档地图增加
   新人直达入口；Cloud task瞬时错误与具体验收步骤仍不进入该长期authority。
+- 新增canonical bootstrap模板与Release资产materializer：C0前可确定性重建tracked zero-hash candidate，Source/Candidate PASS后
+  用一条命令复建并核对exact ZIP SHA，同时在ignored `dist/`生成正式ZIP与ZIP外bootstrap；同名异字节、identity/SHA或candidate
+  drift均fail closed。v0.4.3-dev原有中文mojibake bootstrap已从模板重新生成并加入防漂移测试。
 
 ## v0.4.2
 

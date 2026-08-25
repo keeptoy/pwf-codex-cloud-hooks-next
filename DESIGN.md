@@ -34,6 +34,7 @@ DESIGN 只提供实现层导航。函数、schema 字段、hash、allowlist 和�
 | [`contracts/`](contracts/) | Host ABI、result schema、runtime/Release machine contracts |
 | [`tools/import_upstream_runtime.py`](tools/import_upstream_runtime.py) | 固定 archive 的确定性 import/check |
 | [`tools/build_release.py`](tools/build_release.py) | contract-driven deterministic ZIP build/check |
+| [`tools/materialize_release_assets.py`](tools/materialize_release_assets.py) | Source/Candidate PASS后核对exact ZIP SHA，并从canonical模板一次生成`dist/` ZIP/bootstrap发布资产 |
 | [`tests/`](tests/) | production、安全、供应链、安装和仓库边界回归 |
 | [`docs/cloud-hard-acceptance-template.md`](docs/cloud-hard-acceptance-template.md) | 版本中立的Source/Candidate与Published Release双通道、验收前非破坏性candidate admission preflight、两个post-PASS retirement checkpoint、B～E、deep-check、停止条件和evidence schema；不承担具体Round教程或结果 |
 | [`docs/cloud-acceptance-operator-guide-template.md`](docs/cloud-acceptance-operator-guide-template.md) | 一份Discovery Round/Release教程的固定结构与Pre-run→channel checkpoint→final Post-run→freeze生命周期；Release closeout在同一guide中加入candidate admission preflight、source-candidate closeout与role-window closeout，single-Discovery acceptance与multi-Discovery operator guide共享该骨架 |
@@ -58,7 +59,7 @@ pinned upstream + provenance
 
 | 布局 | 由谁产生 | 放什么 | 不承担什么 |
 |---|---|---|---|
-| repository source | Git checkout | 源码、contracts、importer/builder、tests 和文档 | 不因本地存在就成为 Release 或 installed runtime |
+| repository source | Git checkout | 源码、contracts、importer/builder、Release资产materializer/template、tests 和文档 | 不因本地存在就成为 Release 或 installed runtime |
 | Release ZIP | [`tools/build_release.py`](tools/build_release.py) 按 manifest 指定的 [`release-artifact-v2.json`](contracts/release-artifact-v2.json) 构建 | 可安装 runtime、installer 及 allowlist 明确要求的维护输入；entry 自带 ZIP mode | 不包含 bootstrap，也不自动表示已发布或验收 |
 | installed managed runtime | [`install.js`](install.js) 校验后复制 | adapter、两个 owned runtime、四个 pristine upstream runtime、四个 runtime ABI contracts、notice 和 installed manifest | 不带 builder、importer、测试、维护文档或其余 repository contracts |
 | Managed policy | installer 合并到共享 requirements | 指向 installed adapter 的绝对命令 | 不直接注册 plan、catch-up 或 upstream child |
@@ -83,6 +84,7 @@ contract 为准。
 | Upstream owned copy | [`runtime/upstream/`](runtime/upstream/)：四个固定上游脚本的 repository-owned pristine 成品 | 由 importer 从 pinned archive 逐字重建；只被两个 owned runtime 调用 | 上游等价性、helper entrypoints、mode、source provenance | [`tests/import-runtime.test.js`](tests/import-runtime.test.js)、[`tests/pristine-catchup-boundary.test.js`](tests/pristine-catchup-boundary.test.js) |
 | Import plane | [`tools/import_upstream_runtime.py`](tools/import_upstream_runtime.py)：确定性重建并检查 owned copy | 从 upstream manifest 校验 runtime bundle 原始 SHA，再读取 pinned archive；写/核验 `runtime/upstream/*` | manifest/bundle integrity、archive/source drift、pristine hash、mode、inventory、可复现性 | import-runtime、contracts 与 pristine-catchup boundary tests |
 | Package plane | [`tools/build_release.py`](tools/build_release.py)：按 contract 构建/检查 deterministic ZIP | 读取 package identity、Release contract 与 allowlisted source bytes；输出 ZIP | package identity、entry/mode/metadata、bootstrap boundary、历史 asset oracle | [`tests/release-package.test.js`](tests/release-package.test.js)、[`tests/published-release-oracles.test.js`](tests/published-release-oracles.test.js)、contracts 与 [`tests/repository-boundary.test.js`](tests/repository-boundary.test.js) |
+| Release materialization plane | [`tools/materialize_release_assets.py`](tools/materialize_release_assets.py)：核对Source/Candidate ZIP SHA，从[`init-cloud-sandbox.bash.in`](tools/templates/init-cloud-sandbox.bash.in)派生bootstrap，并把正式双资产写入ignored `dist/` | 复用Package plane的build/check逻辑；读取current package/contract/external-asset identity和tracked zero-hash candidate；输出versioned ZIP、exact-hash bootstrap及JSON摘要 | 不改变ZIP allowlist，不把template/materializer装入Release ZIP；SHA、candidate drift或同名异字节冲突时fail closed | [`tests/release-assets.test.js`](tests/release-assets.test.js)、release-package与repository-boundary tests |
 
 Catch-up runtime seam：`owned-catchup.py` 负责 transcript selection、containment/identity revalidation、
 immutable byte capture、record decoding/validation、Cloud event normalization/dedup、output budget 和
@@ -160,6 +162,7 @@ trusted surface；allowed helper roots、传递闭包和 pristine/managed 等价
 | [`owned-plan-runtime.test.js`](tests/owned-plan-runtime.test.js) | plan 选择、attachment、安全读取、private snapshot、timeout 与 cleanup | `owned-plan.py`、resolver/injector、plan contracts | 基础 schema 跨平台；文件/进程安全 case 需要 Linux |
 | [`owned-runtime.test.js`](tests/owned-runtime.test.js) | transcript 选择、identity、fallback、损坏输入与 diagnostic | `owned-catchup.py`、runtime contracts、Host data | 主体跨平台；linked-file case 需要 POSIX |
 | [`published-release-oracles.test.js`](tests/published-release-oracles.test.js) | accepted + immediate-fallback 两席的已发布 tag/source、ZIP 与 external bootstrap immutable oracle | 本地 Git tag/history、sealed source、当前 rollback 角色窗口 | 需要具备对应 refs/objects 的 publication 审计 checkout；不得放入 tagless Source/Candidate Cloud suite |
+| [`release-assets.test.js`](tests/release-assets.test.js) | canonical bootstrap完整字节、UTF-8防漂移、Source/Candidate SHA准入与ZIP/bootstrap双资产幂等物化 | source-only materializer/template、tracked zero-hash candidate、ignored `dist/` publication handoff | 跨平台临时目录；证明本地物化合同，不替代Source/Candidate或Published Release Cloud |
 | [`release-package.test.js`](tests/release-package.test.js) | 当前 candidate ZIP 确定性、自包含边界与 package/contract identity drift | Release builder、artifact contract、external bootstrap boundary | tagless checkout 可执行；本地结果不构成 publication |
 | [`repository-boundary.test.js`](tests/repository-boundary.test.js) | trusted source exact inventory、planning/docs 生命周期、历史归档单入口、动态角色窗口、版本无关稳定文档与 retirement DoD | Git repository、Release allowlist、当前 acceptance、runtime dispatch | 跨平台静态边界；不冻结历史摘要写作格式 |
 | [`runtime-supervisor.test.js`](tests/runtime-supervisor.test.js) | child result 校验、process supervision、sibling identity 与 producer/consumer seam | adapter supervisor、plan contracts、installed siblings | 主体跨平台；process-group timeout 需要 Linux |

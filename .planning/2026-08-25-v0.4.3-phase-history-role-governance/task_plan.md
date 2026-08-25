@@ -2,15 +2,15 @@
 
 ## Goal
 
-在继续归属Product Phase 4的前提下推进`v0.4.3-dev`文档治理：明确history与Product Phase overview职责，并把会跨任务影响执行路由的本地/远程环境限制及其默认对策固化为新人可发现的长期档案。
+在继续归属Product Phase 4的前提下推进`v0.4.3-dev`文档与Release手工操作治理：明确history、Product Phase overview与环境记忆职责，并探索安全、可复制地生成版本ZIP和ZIP外bootstrap资产的维护者入口。
 
 ## Next Step
 
-维护者push本轮环境档案治理commit；后续环境事实只有出现档案定义的重验触发器时才更新。
+等待维护者push本轮本地commit；后续继续v0.4.3治理或进入C0前，先按README核对candidate bootstrap与Release输入。
 
 ## Current Phase
 
-Work Step C: maintenance environment constraints and remedies profile — completed
+Work Step D: Release asset materialization implementation — completed
 
 ## Work Steps
 
@@ -39,6 +39,17 @@ Work Step C: maintenance environment constraints and remedies profile — comple
 - [x] 运行链接、authority、Release边界与完整回归，创建独立本地commit。
 - **Status:** completed
 
+### Work Step D: Release资产物化设计Discovery
+
+- [x] 盘点README当前候选构建步骤、Release builder能力、bootstrap变量/自校验和`dist/`生命周期。
+- [x] 比较“直接复制模板”“模板+生成器”“扩展现有builder”三种路线的单一权威、误发布与跨平台风险。
+- [x] 冻结建议的命令、输出命名、Source/Candidate PASS后时序、校验与停止条件。
+- [x] 先向维护者提交方案；未确认前不创建模板/生成器、改README或生成`dist/`资产。
+- [x] 建立canonical bootstrap模板和双资产materializer，从模板重新生成无乱码的v0.4.3-dev bootstrap。
+- [x] 补齐渲染一致性、乱码哨兵、SHA/version准入、输出冲突和端到端生成测试。
+- [x] 把一条post-PASS命令及输出身份说明写入README，运行相称回归并创建独立本地commit。
+- **Status:** completed
+
 ## Decisions Made
 
 | Decision | Rationale |
@@ -50,6 +61,7 @@ Work Step C: maintenance environment constraints and remedies profile — comple
 | 使用`docs/product-phases/phase-N.md`而不是release-note命名 | Product Phase可能覆盖多个SemVer Release；避免与GitHub Release note、CHANGELOG和acceptance混淆。 |
 | ROADMAP独占overview指针轮转规则 | 指针与programme状态由同一authority维护；治理指南不再冻结第二份仓库专用步骤。 |
 | 环境档案同时覆盖本地与远程执行面 | 只要限制会跨任务反复改变执行/验收路线，就应与默认对策一起持久化；单次错误仍留planning。 |
+| Release资产模板先做只读Discovery | bootstrap和README都可能成为Release输入；先冻结单一生成authority、seal顺序与dist生命周期，避免引入第二份易漂移脚本。 |
 
 ## Authorization
 
@@ -57,6 +69,7 @@ Work Step C: maintenance environment constraints and remedies profile — comple
 - 已授权：明确history两种角色及“过程流水账”定位，并同步ROADMAP长期摘要边界和测试。
 - 已授权：按确认模型建立Product Phase overview目录/模板，迁移Phase 4长期摘要与current links，删除ROADMAP Phase 5占位正文并收敛轮转规则。
 - 已授权：盘点并完善maintenance environment profile，使其覆盖本地/远程限制与对策，并在README提供新人入口。
+- 已授权：建立脚本化ZIP/bootstrap双资产生成路线，修复v0.4.3-dev bootstrap乱码，修改README/tests并创建相应本地commit。
 - 未授权：删除任何planning/history/acceptance，修改production/runtime/contract行为，push或远端branch/tag/Release/Cloud动作。
 
 ## Stop Conditions
@@ -86,7 +99,12 @@ Work Step C: maintenance environment constraints and remedies profile — comple
 | overview迁移后首次聚焦测试为19/24，后续两轮为20/24、22/24 | 3 | 失败均为旧authority位置、措辞顺序或有意双入口的测试断言漂移；未弱化产品边界，逐项改成新唯一authority的直接语义断言后24/24通过。 |
 | 首次staged diff检查发现新overview/template的4处Markdown行尾空格 | 1 | commit未创建；移除非必要hard-break空格，记录后重新暂存并复跑`git diff --cached --check`。 |
 | Work Step C首次完整回归为155 PASS / 1 FAIL / 26 SKIP | 1 | 唯一失败是ROADMAP插入Work Step C时丢失“第4节持有current指针”稳定语义；恢复正文，不放宽断言，然后重跑聚焦与完整suite。 |
+| 恢复命令未先对`.active_plan`做`Trim()`，PowerShell把末尾换行带入路径 | 1 | 仓库未受影响；改用`(Get-Content -Raw ...).Trim()`后成功读取账本。 |
+| 首次candidate render equivalence检查发现模板比生成目标多一个EOF空行 | 1 | fail closed未写文件；删除模板派生时引入的额外空行后重新核对。 |
+| 新增Node测试在Windows沙箱内由test runner创建worker时返回`spawn EPERM` | 1 | 测试未进入断言；按已登记环境限制在沙箱外用原命令复验，4/4 PASS。 |
+| 首轮聚焦回归38/40，新增test module未进入DESIGN反向索引，source-only trusted generator/template未进入exact inventory | 1 | 产品与生成器断言均通过；补登记DESIGN测试职责，并把两项源码维护输入显式加入source-only trusted清单且继续断言不进ZIP。 |
+| 沙箱内`git add`无法创建`.git/index.lock`并返回permission denied | 1 | 文件未被部分暂存；使用沙箱外同一显式路径清单暂存，cached diff/check与mode检查通过。 |
 
 ## Current Status
 
-`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / WORK_STEP_C_COMPLETE / PRODUCT_PHASE_4`
+`V0_4_3_DEV_IDENTITY_ACTIVE / WORK_STEP_A_COMPLETE / WORK_STEP_B_COMPLETE / WORK_STEP_C_COMPLETE / WORK_STEP_D_COMPLETE / PRODUCT_PHASE_4`

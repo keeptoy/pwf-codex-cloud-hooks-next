@@ -351,6 +351,23 @@ Release-excluded边界；ROADMAP 4.1只投影C步骤的稳定工具能力结论�
 bootstrap、package identity或任何公开资产输入。聚焦治理测试和完整Windows suite均PASS，Linux/POSIX-only case保持诚实skip。
 因此本轮归入v0.4.2 post-C2文档治理扫尾，但不进入已经冻结的v0.4.2 tag/ZIP字节，不产生新C0、重新验收或重新发布义务。
 
+<a name="phase-4-14-post-governance-status-release-asset-materialization"></a>
+
+## Post-governance status — Release asset materialization
+
+`v0.4.3-dev`后续治理发现，根README虽然已经说明手工build/check/hash与bootstrap改号，但仍要求维护者复制命令、手工替换
+version/SHA并自行保证脚本正文不漂移。实际盘点进一步确认当前v0.4.3-dev bootstrap中的中文lifecycle黑盒提示已经发生mojibake，
+而既有测试只检查version、hash与安全字段，没有证明完整脚本等于可信来源。
+
+后继实现把已验证的bootstrap正文提升为canonical `.bash.in`模板：C0前由materializer重建并核对tracked development zero-hash
+bootstrap；Source/Candidate PASS后，同一工具重新构建/check ZIP、要求实际SHA等于Cloud证据，再从同一模板把exact SHA写入ZIP外
+bootstrap，并把两项正式文件同时物化到ignored `dist/`。同名相同字节允许幂等重跑，同名不同字节、candidate/template drift、
+version或SHA不匹配全部停止。模板和materializer不进入Release ZIP；README属于ZIP输入，因此这次流程改动必须进入新的C0和
+Source/Candidate，不能沿用此前任何候选SHA。
+
+本尾注只保存为什么从手工替换迁移到双资产生成器，以及乱码缺陷如何暴露测试缺口；当前命令和Release顺序只读根README与
+[`ROADMAP` Release流程](../../ROADMAP.md#release-four-step-flow)。该变化没有修改installed runtime、Host ABI或trusted graph。
+
 <a name="phase-4-14-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

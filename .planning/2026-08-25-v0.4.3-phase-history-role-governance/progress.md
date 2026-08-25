@@ -2,6 +2,21 @@
 
 ## Latest verification update
 
+- Work Step D最终验证完成：完整`npm test`为186 tests、160 PASS、26个Windows/POSIX预期SKIP、0 FAIL；最后的write-state小修后`release-assets`再验4/4 PASS。
+- importer check、Python production/materializer compile、`install.js` syntax、22-entry ZIP build/check、candidate write/check幂等、全部bootstrap/template `bash -n`、LF attributes与`git diff --check`均PASS；未在真实`dist/`生成未经Cloud PASS的正式资产。
+- 修正治理登记后Release/architecture聚焦回归40/40 PASS；新增generator/template明确属于source-only trusted inventory，但继续不进入22-entry ZIP。
+- README“构建开发ZIP”已改为新人可复制的双模式入口：C0前重建/核对tracked candidate，Source/Candidate PASS后只填version和Cloud ZIP SHA，一次生成`dist/`两项正式资产及JSON证据；手工改`HOOKS_*`步骤已删除。
+- DESIGN/ARCHITECTURE、CHANGELOG、ROADMAP当前列车、Phase 4.14 append-only尾注与repository boundary断言已同步materialization职责、Release exclusion和新C0边界；未改变22-entry allowlist或production/runtime/Host ABI。
+- 新增`tests/release-assets.test.js`覆盖template token/UTF-8、candidate equivalence、双资产exact/idempotent生成、version/SHA/Cloud hash/output conflict fail-closed及Release exclusion；沙箱外原命令4/4 PASS。
+- Work Step D核心实现已落盘：新增canonical `tools/templates/init-cloud-sandbox.bash.in`与`tools/materialize_release_assets.py`；后者提供candidate bootstrap重建/核对及post-PASS ZIP+bootstrap双资产物化，正式`dist/`同名异字节时fail closed。
+- `init-cloud-sandbox-v0.4.3-dev.bash`已按v0.4.2已验证正文加当前version/zero-hash身份重新派生，原19行中文mojibake恢复为正确UTF-8；下一步用materializer equivalence测试证明它确实等于模板render结果。
+- 维护者已授权Work Step D实施：一条生成命令同时产出ZIP与bootstrap；v0.4.3-dev乱码脚本必须从canonical模板重新生成，不作为模板源。
+- Work Step D只读Discovery开始：维护者希望Source/Candidate PASS后用模板生成对应版本ZIP与ZIP外bootstrap并输出到`dist/`；实施尚未授权。
+- README/ARCHITECTURE首轮盘点完成：现有builder只物化ZIP，README假定versioned bootstrap已存在；新设计必须避免模板与versioned脚本成为两份可漂移authority，并把生成规则冻结在Source/Candidate前。
+- DESIGN/ROADMAP盘点完成：package builder职责宜保持ZIP-only；C1 publication前可用薄materializer重建并核对Cloud SHA，再从冻结template生成ZIP外bootstrap，任何不匹配必须停止。
+- dist/bootstrap/tests盘点完成：`dist/`已ignore且有旧产物；current root versioned bootstrap已是C0受测输入。直接新增完整template会重复约700行authority，优先评估“root candidate bootstrap→dist sealed copy”的薄materializer。
+- normalized bootstrap byte review发现v0.4.3-dev内嵌中文prompt相对v0.4.2发生mojibake；这不是version/SHA差异，已记录为待授权candidate修复与新增防漂移测试，未修改源码。
+- Work Step D proposal ready：推荐`tools/templates/*.bash.in`单一模板、Python materializer的candidate/release双模式、`dist/`幂等冲突准入和一条post-PASS命令；未创建实现文件或产物。
 - Work Step C最终完整回归：182 tests、156 PASS、26个Windows/POSIX预期SKIP、0 FAIL；聚焦architecture 9/9与repository boundary 15/15均PASS。
 - importer、Python production compile、`install.js` syntax、两个bootstrap `bash -n`、Markdown links与`git diff --check`全部PASS。
 - README是Release输入，因此开发候选已重建为22 entries、87,574 bytes、SHA-256 `a0bd5833df666d9db87da006c70d87466f78cb3253385cb93f4b610b4c98ca9e`；只作development验证，不构成sealed身份。profile正文仍由`docs/` exclusion排除。
@@ -67,6 +82,11 @@
 | 2026-08-25 | v0.4.3-dev首次focused 37/45 PASS，8项身份/治理断言失败 | 1 | 分类为旧列车快照、CHANGELOG第三入口、predecessor canonical hash drift及两项待定边界；逐类修正后重跑。 |
 | 2026-08-25 | Node计算v0.4.2 canonical upstream hash时派生Git子进程EPERM | 1 | 无写入；PowerShell先读取immutable JSON，再交给Node纯计算。 |
 | 2026-08-25 | 首次staged diff检查发现4处新Markdown行尾空格 | 1 | commit未创建；移除非必要hard-break空格后重新暂存并检查。 |
+| 2026-08-25 | 首次恢复命令未`Trim()` active-plan pointer，PowerShell报告路径包含非法字符 | 1 | 未写仓库业务文件；清理指针换行后成功恢复。 |
+| 2026-08-25 | 首次candidate equivalence检查拒绝当前文件，最小diff显示template在EOF多一个空行 | 1 | 保护逻辑正常；删除额外空行后复验，不放宽字节一致性。 |
+| 2026-08-25 | 新增Node测试在Windows沙箱内由test runner返回`spawn EPERM` | 1 | 测试未进入断言；沙箱外用原命令复验4/4 PASS。 |
+| 2026-08-25 | 首轮Release/architecture聚焦回归38/40 | 1 | 两项均为新增文件的治理登记缺口；补DESIGN反向索引和source-only trusted inventory，不把工具/template加入22-entry ZIP。 |
+| 2026-08-25 | 沙箱内`git add`因`.git/index.lock`只读失败 | 1 | 无部分暂存；沙箱外按显式文件清单暂存成功，cached diff/check与三项新/改脚本mode均为100644。 |
 
 ## 5-Question Reboot Check
 

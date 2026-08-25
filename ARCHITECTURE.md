@@ -106,6 +106,9 @@ repository-owned pristine upstream runtime
         v
 candidate Release ZIP  <--- external checksum-pinning bootstrap stays outside
         |
+        | Source/Candidate PASS后，materializer复建ZIP、核对Cloud SHA，
+        | 并从canonical template在ignored dist/生成exact ZIP/bootstrap双资产
+        |
         | install.js (lock, hash, mode, backup, policy merge)
         v
 $CODEX_HOME/hooks/planning-with-files/
