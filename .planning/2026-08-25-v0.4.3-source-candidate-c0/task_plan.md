@@ -1,22 +1,22 @@
-# Task Plan: v0.4.3 Source/Candidate C0 → C1
+# Task Plan: v0.4.3 Release C0 → C2
 
 ## Goal
 
-将当前 `v0.4.3-dev` 收敛为正式候选身份 `v0.4.3`，冻结精确C0；在维护者回传真实Source/Candidate PASS后，完成第一轮退役检查和C1状态写回，同时保持Published Release为`PENDING`。
+将当前 `v0.4.3-dev` 收敛为正式身份 `v0.4.3`，冻结精确C0并闭合双通道Cloud；在维护者明确第二轮对象决定后形成C2并轮转programme角色。
 
 ## Authorization
 
 - 已授权：本地身份切换、candidate bootstrap 物化、版本 acceptance/programme 状态写回、本地验证与本地 commit。
 - 维护者已于2026-08-26明确报告第一通道全部PASS，并提供绑定C0的9.1原始摘要；按交互纪律直接写回，不扩展或要求重跑。
+- 维护者已于2026-08-26明确报告Published Release整条通道全部PASS，并提供9.2 exit 0原始摘要。
 - 未授权：push、Cloud task、tag、GitHub Release、资产上传、Latest promotion 或任何远端写操作。
-- 当前授权扩展到C1证据与第一退役检查的本地commit；后续远端和publication动作仍由维护者负责。
+- 当前授权覆盖Published Release与Latest状态写回；第二轮涉及删除current guide/bootstrap时仍等待维护者明确决定。
 
 ## Stop Conditions
 
-- 不生成带正式 non-zero ZIP SHA 的发布资产；该动作必须等待 Source/Candidate Cloud PASS。
-- 任一Release输入、identity、contract hash、bootstrap canonical bytes或完整回归无法闭合时停止，不创建C0 commit。
-- 不进入push、Cloud、tag、publication或Latest；这些动作留给维护者及后续明确授权。
-- 不猜测本次回传未包含的4.1 ZIP SHA、测试数字或B～E逐步输出；正式资产materialization必须使用实际Cloud 4.1 SHA。
+- 不执行push、Cloud、tag、publication、Latest或其他远端写操作。
+- 不改写immutable tag、ZIP、bootstrap、URL或SHA；本次只保存已形成的公开证据。
+- 不自动删除planning；任何current guide/bootstrap退役也先等待维护者明确决定。
 
 ## Work steps
 
@@ -47,6 +47,13 @@
 - [x] 把第一通道PASS、retirement结论和下一停止点写入acceptance、ROADMAP与planning。
 - [x] 运行相称的文档/仓库边界验证，创建`SOURCE_CANDIDATE_CHECKPOINT_HEAD`本地commit。
 
+### Work Step E: record Published Release and Latest
+
+- [x] 按维护者最终结论记录固定版本`0.4.3`模板的Published Release整通道PASS与9.2 exit 0。
+- [x] 核对公开ZIP/bootstrap identity、tag source与GitHub Latest状态。
+- [x] 把Published Release和Latest真实证据写入acceptance、ROADMAP与planning，不创建产品补丁。
+- [ ] 在维护者明确具体对象决定后执行role-window closeout并形成C2。
+
 ## Next Step
 
-C1本地状态写回已闭合。停止在维护者push、tag、资产materialization和Published Release之前；正式资产仍等待实际4.1 Cloud ZIP SHA。
+等待维护者明确第二轮role-window的具体`RETIRE/MIGRATE/KEEP`决定；停止在删除current guide/bootstrap、轮转programme角色或创建C2之前。

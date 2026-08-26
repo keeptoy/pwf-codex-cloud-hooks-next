@@ -22,3 +22,11 @@
 - Doctor为`healthy=true`、`repairable=false`、`managed=true`，events精确为SessionStart/UserPromptSubmit，`errors=[]`、`blockers=[]`；workspace只有验收允许的planning fixture，snapshot residue为0。
 - 回传没有包含4.1候选ZIP SHA和测试runner数字；不得用本地SHA代替或猜测。C1可以真实保存通道PASS和已提供的deep-check证据，正式资产materialization仍等待维护者提供实际Cloud 4.1 SHA。
 - 第一退役检查不删除任何对象：四个planning scope按用户既有决定继续KEEP；v0.4.2 accepted guide/bootstrap保留到第二轮；v0.4.3 guide、templates、C0输入和治理材料继续承担publication/Published Release/C2职责。
+
+## Published Release and Latest result — 2026-08-26
+
+- 维护者最终确认：固定版本`0.4.3`的验收模板已完成Published Release整条通道，9.2最终exit code为0。
+- 9.2证明公开ZIP SHA `cfcabcc93c819e2d512a1b9cf0b3f13a451ffea8c82631012b74a64813150231`、22项Release artifact、12项installed runtime、4项pristine upstream、manifest-routed v2 contracts、authoritative bundle inventory、adapter-only policy与零snapshot residue全部闭合。
+- Doctor为`healthy=true`、`repairable=false`、`managed=true`，且`errors=[]`、`blockers=[]`；最终marker为`PWF_PUBLIC_POST_RESUME=PASS`。
+- 公开Release只读核对：tag source精确为C0 `6204de36cd8b2cbc614a4bb53b8481a5a1ba234d`；ZIP为90,364 bytes；bootstrap为21,565 bytes、SHA-256 `f738d61551aee20d924e565fe59f5a360a6c13fa2e40dc7e63e7e63e06485c37`。
+- GitHub `/releases/latest`返回`v0.4.3`，且`draft=false`、`prerelease=false`，Latest promotion confirmation成立。下一步是第二轮role-window对象决定；在维护者明确前不得删除planning或current guide/bootstrap，也不得提前轮转programme角色或声明C2。

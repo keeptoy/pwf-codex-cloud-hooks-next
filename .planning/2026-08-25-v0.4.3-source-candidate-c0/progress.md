@@ -47,3 +47,26 @@
 - Repository boundary：`16/16 PASS`，包括Markdown显式anchors、candidate+accepted guide窗口、planning schema与exact C0 lifecycle断言。
 - `git diff --check`：PASS。
 - C1改动仅覆盖acceptance、ROADMAP、planning和相应静态断言，全部为Release-excluded；未修改package、contract、manifest、runtime、bootstrap、README或22项ZIP输入。
+
+## 2026-08-26 Published Release and Latest writeback
+
+- 维护者明确确认：固定版本`0.4.3`模板的Published Release整条通道全部PASS，9.2 exit 0。
+- 核对并写入公开identity：C0 tag source、90,364-byte ZIP及SHA、21,565-byte bootstrap及SHA、22/12/4 inventory、healthy doctor、adapter-only policy、零residue和`PWF_PUBLIC_POST_RESUME=PASS`。
+- GitHub `/releases/latest`只读查询返回`v0.4.3`，Release为non-draft、non-prerelease；Latest confirmation成立。
+- acceptance、ROADMAP和planning推进到`STOP_BEFORE_ROLE_WINDOW_CLOSEOUT`；未删除planning、v0.4.2 guide/bootstrap，未轮转accepted/fallback，未创建C2。
+
+### Published writeback error ledger
+
+| Error | Attempt | Classification / resolution |
+|---|---:|---|
+| sandbox内`curl.exe`因Windows Schannel缺少credential而未下载bootstrap | 1 | 本地执行面限制；改用获批的只读网络调用并加`--ssl-no-revoke`，成功取得公开bootstrap与Release metadata。 |
+| sandbox内`node --test tests/repository-boundary.test.js`启动runner时返回`spawn EPERM` | 1 | Windows沙箱进程限制；按环境规则在获批的沙箱外重跑，同一suite `16/16 PASS`。 |
+| architecture contract仍冻结Source/Candidate尚未形成tag/publication的C1状态 | 1 | 合法lifecycle推进使旧阶段断言失效；更新为双通道与Latest PASS仍不授权删除planning或提前声明C2。 |
+| 沙箱内`git add`无法创建`.git/index.lock` | 1 | workspace可写但`.git`为只读边界；改用获批的本地Git写操作创建单一范围commit。 |
+
+### Published writeback local validation
+
+- Architecture contracts：`9/9 PASS`。
+- Repository boundary：`16/16 PASS`，包括exact public identity、Latest状态、accepted暂不轮转、planning不自动删除与C2停止点。
+- `git diff --check`：PASS。
+- 本次只修改Release-excluded acceptance、ROADMAP、planning与静态治理断言；没有修改package、contract、runtime、installer、README或22项ZIP输入。

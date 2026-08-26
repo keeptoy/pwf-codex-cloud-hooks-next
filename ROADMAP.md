@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.3`；继续归属Product Phase 4的文档治理patch train，exact C0 Source/Candidate Cloud与第一轮退役检查已PASS，C1状态写回已形成；Published Release尚未运行，不激活Product Phase 5 |
+| 当前开发列车 | `v0.4.3`；继续归属Product Phase 4的文档治理patch train，Source/Candidate与Published Release均已PASS，GitHub Release已确认Latest；等待第二轮role-window closeout与C2，不激活Product Phase 5 |
 | 当前已接受版本 | `v0.4.2`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.1` immediate fallback |
 | 回退证据链 | immutable `v0.4.0` deeper fallback；`v0.3.5`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | `v0.4.2`及其前序列车均已关闭；`v0.4.3`的exact C0 `6204de36cd8b2cbc614a4bb53b8481a5a1ba234d`已完成Source/Candidate Cloud与source-candidate closeout retirement checkpoint；C1只写Release-excluded状态，未改变C0输入。Product Phase 5仍只预占`0.5.0-*`且全部TBD；维护者push C1、tag指向C0、正式资产materialization/publication及Published Release尚待后续动作 |
+| 当前 programme 边界 | `v0.4.2`及其前序列车均已关闭；`v0.4.3`的exact C0 `6204de36cd8b2cbc614a4bb53b8481a5a1ba234d`已完成双通道Cloud，tag/public双资产保持immutable，GitHub `/releases/latest`已返回`v0.4.3`。Product Phase 5仍只预占`0.5.0-*`且全部TBD；当前只等待维护者明确第二轮RETIRE/MIGRATE/KEEP决定，再由C2原子轮转accepted/fallback角色 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -66,20 +66,20 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 
 <a name="v0-4-3-phase-history-governance-train"></a>
 
-当前exact开发列车是`v0.4.3`，当前处于stable C0候选状态，继续归属
+当前exact开发列车是`v0.4.3`，当前处于Published Release与Latest均已通过、等待role-window closeout的状态，继续归属
 [`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)。Work Step A已把Phase history冻结为精选过程
 账本；Work Step B已把长期Product authority从ROADMAP正文迁入overview，并由本节持有current指针；当前Work Step C把
 local/remote执行限制与默认对策
 收敛到README可发现的长期档案；Work Step D建立canonical bootstrap模板和post-PASS Release资产materializer，消除手工复制、
-中文编码漂移与ZIP SHA误配。当前Release gate已把development identity收敛为stable zero-hash候选，candidate admission preflight
-只做inventory与风险分类并保留全部planning；本地C0验证和Source/Candidate Cloud已经完成，exact
-`SOURCE_CANDIDATE_HEAD=6204de36cd8b2cbc614a4bb53b8481a5a1ba234d`。第一轮retirement checkpoint全部KEEP，C1只写
-Release-excluded证据；下一步由维护者push C1，并在取得实际4.1 ZIP SHA后把正式tag固定到C0、物化和发布双资产。该列车不修改
-production、runtime、Host ABI或trusted graph，也不激活仍为TBD的Product Phase 5。
+中文编码漂移与ZIP SHA误配。Release gate把development identity收敛为stable C0，exact
+`SOURCE_CANDIDATE_HEAD=6204de36cd8b2cbc614a4bb53b8481a5a1ba234d`；Source/Candidate、第一轮retirement、immutable
+publication、Published Release 9.2与GitHub Latest confirmation均已闭合。公开ZIP为90,364 bytes、22 entries、SHA-256
+`cfcabcc93c819e2d512a1b9cf0b3f13a451ffea8c82631012b74a64813150231`；下一步只做第二轮对象决定与C2 programme轮转。该列车
+不修改production、runtime、Host ABI或trusted graph，也不激活仍为TBD的Product Phase 5。
 
 四个planning scope继续承担相邻Discovery恢复、治理参考与当前C0账本；只有`.active_plan`指向本轮Source/Candidate任务。保留旧scope
-不扩大本列车范围；stable source identity或Source/Candidate PASS都不自动表示tag、public assets或Published Release已经形成。具体教程与真实
-状态只读[`v0.4.3 acceptance`](docs/acceptance/v0.4.3-cloud-hard-acceptance.md#v0-4-3-release-operator-guide)。
+不扩大本列车范围；双通道与Latest PASS也不自动授权删除planning或提前声明C2。具体教程、exact资产与真实状态只读
+[`v0.4.3 acceptance`](docs/acceptance/v0.4.3-cloud-hard-acceptance.md#v0-4-3-release-operator-guide)。
 
 <a name="product-phase-route-index"></a>
 

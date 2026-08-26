@@ -418,7 +418,7 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(currentTrain,
     /Product Phase 4 Overview[\s\S]*Work Step A[\s\S]*精选过程[\s\S]*Work Step B[\s\S]*长期Product authority[\s\S]*current指针/);
   assert.match(currentTrain,
-    /不激活仍为TBD的Product Phase 5[\s\S]*stable source identity或Source\/Candidate PASS[^\n]*不自动表示tag、public assets或Published Release/);
+    /不激活仍为TBD的Product Phase 5[\s\S]*双通道与Latest PASS[^\n]*不自动授权删除planning或提前声明C2/);
   assert.match(currentTrain, /docs\/product-phases\/phase-4\.md#product-phase-4-overview/);
   assert.match(currentTrain, /candidate \+ accepted role window/);
   assert.match(currentTrain, /trusted\/Release zones 继续 exact[\s\S]*docs\/planning zones 按 lifecycle policy/);
