@@ -12,6 +12,9 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   进入新的exact C0，不改写已发布v0.4.3的tag、ZIP、bootstrap或acceptance，也不激活仍为TBD的Product Phase 5。
 - 补齐Source/Candidate PASS后的tag操作：C1证据分支push后，维护者必须用显式`SOURCE_CANDIDATE_HEAD`创建annotated tag、
   单独push exact tag ref，并按peeled commit核对远端tag仍指向C0；同名tag存在或身份不符时fail closed，禁止force/move/delete-recreate。
+- 双通道Cloud与Latest完成后闭合第二轮role-window review和C2：v0.4.4轮转为accepted，v0.4.3成为immediate fallback；
+  current v0.4.3 guide/bootstrap迁入immutable恢复链，六个planning scope继续保留；最终证据见
+  [`v0.4.4 acceptance`](docs/acceptance/v0.4.4-cloud-hard-acceptance.md#v0-4-4-role-window-closeout)。
 
 ## v0.4.3
 
@@ -29,7 +32,7 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   用一条命令复建并核对exact ZIP SHA，同时在ignored `dist/`生成正式ZIP与ZIP外bootstrap；同名异字节、identity/SHA或candidate
   drift均fail closed。开发期原有中文mojibake bootstrap已从模板重新生成并加入防漂移测试；stable C0继续使用canonical
   zero-hash bootstrap，双通道状态与后续证据只写
-  [`v0.4.3 acceptance`](docs/acceptance/v0.4.3-cloud-hard-acceptance.md)。
+  [`v0.4.3 acceptance`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/d7b5345b165e94c18ceab9b591d9a6b6dd251110/docs/acceptance/v0.4.3-cloud-hard-acceptance.md)。
 
 ## v0.4.2
 

@@ -1,14 +1,15 @@
-# Task Plan: v0.4.4 C0 → C1 → Published Release
+# Task Plan: v0.4.4 C0 → C1 → Published Release → C2
 
 ## Goal
 
-将`v0.4.4-dev`收敛为正式`v0.4.4` C0，闭合Source/Candidate、第一轮退役检查和C1；在维护者完成immutable publication并回传第二通道PASS后，记录公开身份和真实Published Release结果，同时保持Latest、第二轮退役检查与C2为`PENDING`。
+将`v0.4.4-dev`收敛为正式`v0.4.4` C0，闭合Source/Candidate、第一轮退役检查和C1；在维护者完成immutable publication、Published Release PASS与Latest promotion后，完成第二轮role-window退役检查、programme角色轮转和C2最终治理写回。
 
 ## Authorization
 
 - 已授权：本地正式身份切换、zero-hash candidate bootstrap物化、版本acceptance/programme状态写回、本地验证与本地commit。
 - 维护者已明确报告正式C0 Cloud PASS并提供exact ZIP SHA；按交互纪律直接写回和物化，不要求重跑或扩展验收。
 - 维护者已明确报告tag创建/push、Release publication和第二通道全部PASS；按提供的实际结论写回，不额外联网诊断或要求重跑。
+- 维护者已明确报告远端已push且`v0.4.4`早已设为Latest；按ROADMAP正常路径直接执行第二轮retirement与C2，不另设只读postflight。
 - 未授权：push、Cloud task、tag、GitHub Release、资产上传、Latest promotion或任何远端写操作。
 - 维护者报告的上一轮Cloud PASS真实对应`v0.4.4-dev` checkout；正式改号会改变Release输入，因此只保留为前序发现证据，不提升为正式`v0.4.4` PASS。
 
@@ -17,7 +18,7 @@
 - 正式双资产只使用维护者提供的Cloud exact ZIP SHA，并写入ignored `dist/`；不得修改C0 Release输入或用C1替代C0 tag目标。
 - 任一identity、contract hash、candidate bootstrap、deterministic ZIP或完整回归无法闭合时停止，不创建C0 commit。
 - 不进入push、Cloud、tag、publication或Latest；这些动作留给维护者及后续明确授权。
-- 未收到GitHub Release Latest promotion confirmation前，不旋转accepted/fallback，不执行第二轮retirement或形成C2。
+- C2只允许旋转programme文档/oracle和清退退出role window的本地版本化材料；不得改写immutable tag、Release、公开ZIP/bootstrap或C0。
 
 ## Work Steps
 
@@ -55,9 +56,17 @@
 - [x] 同步ROADMAP、acceptance、planning与直接边界断言；保持Latest/第二轮retirement/C2为PENDING。
 - [x] 运行相称验证并创建Published Release checkpoint本地commit。
 
+### Work Step F: role-window closeout and C2
+
+- [x] 记录维护者确认的Latest正常成功状态，不重复下载资产或重算公开SHA。
+- [x] 对accepted/candidate/fallback窗口对象逐项完成`RETIRE/MIGRATE/KEEP`决定；六个planning scope继续`KEEP`。
+- [x] 冻结当前v0.4.4 tracked bootstrap为exact public SHA，迁移publication oracle并清退退出窗口的v0.4.3 current guide/bootstrap。
+- [x] 同步ROADMAP、provenance、v0.4.4 acceptance、Phase 4 overview、CHANGELOG引用和直接测试断言。
+- [x] 运行相称focused/full验证，创建`PUBLISHED_RELEASE_CLOSEOUT_HEAD`本地commit后停止。
+
 ## Next Step
 
-Published Release checkpoint本地写回已闭合。下一步等待维护者在GitHub Release详情页完成Latest promotion confirmation；确认后再执行第二轮role-window closeout与C2。当前不得提前旋转accepted/fallback。
+v0.4.4第二轮role-window closeout与C2已经完成；创建本地`PUBLISHED_RELEASE_CLOSEOUT_HEAD`后停止。下一开发列车与Product Phase 5均未授权。
 
 ## Errors Encountered
 
@@ -71,3 +80,10 @@ Published Release checkpoint本地写回已闭合。下一步等待维护者在G
 | 默认沙箱创建materializer系统临时目录时返回WinError 5 | 1 | 在获批执行面重跑相同canonical命令；首次失败未生成v0.4.4半成品。 |
 | 首次辅助复验用“全文不得出现64个零”判断sealed bootstrap，误命中脚本合法的placeholder拒绝常量 | 1 | 改为精确核对`HOOKS_VERSION`与`HOOKS_SHA256`默认赋值行；不修改生成资产。 |
 | Published Release C步骤首次报告`BASELINE_CONFLICT reason=.planning_and_active_plan_missing` | 1 | 维护者澄清空仓库允许首次创建后整条通道PASS；模板补充合法空状态与真正冲突矩阵。 |
+| C2首次组合补丁因provenance表头上下文不完全匹配而整体拒绝 | 1 | 拆成按文件的小补丁并使用当前精确行；没有产生部分写入。 |
+| provenance两行替换补丁漏给第二行增加标记，patch parser拒绝 | 1 | 改为独立“插入v0.4.4行”和“替换v0.4.3链接”hunk，成功应用。 |
+| phase/changelog/bootstrap组合补丁因bootstrap实际含`readonly`而拒绝 | 1 | 文档与bootstrap拆开；按精确赋值行修改，没有部分写入。 |
+| C2只读复扫命令中的PowerShell反引号造成字符串终止错误 | 1 | 将status、diff、rg、tag/hash拆成独立命令并使用安全单引号模式。 |
+| C2首轮focused为36/39，三项治理断言漂移 | 1 | 分别拆分ROADMAP同anchor重复入口、放宽跨行授权摘要正则、给CHANGELOG补当前acceptance链接；未改生产或Release输入。 |
+| C2首轮完整回归161/188、1 fail、26 skip：transition测试仍比较accepted角色 | 1 | C2后transition predecessor应等于immediate fallback；只修测试角色解析和标题，合同字节不变。 |
+| C2后运行C0专用`candidate-bootstrap`只读检查，拒绝覆盖sealed tracked bootstrap | 1 | 分类为正确lifecycle refusal；C2只用`release`命令幂等复验正式双资产，不再运行zero-hash candidate命令。 |

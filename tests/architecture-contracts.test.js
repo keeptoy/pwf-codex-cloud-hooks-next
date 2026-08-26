@@ -353,7 +353,8 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   const developmentTrain = roadmap.match(/^\| 当前开发列车 \| `(NONE|v[^`]+)`/m)?.[1];
   assert.ok(developmentTrain, "ROADMAP lacks a parseable current development train state");
   const packageVersion = JSON.parse(readText("package.json")).version;
-  assert.equal(developmentTrain, `v${packageVersion}`);
+  assert.equal(packageVersion, "0.4.4");
+  assert.equal(developmentTrain, "NONE");
   assert.match(roadmap, /^<a name="version-train-two-retirement-reviews"><\/a>$/m);
   assert.match(roadmap, /^<a name="product-phase-route-index"><\/a>$/m);
   assert.match(roadmap, /^<a name="product-phase-overview-rotation"><\/a>$/m);
@@ -414,13 +415,13 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(roadmap, /C0[\s\S]*C1[\s\S]*C2/);
   assert.doesNotMatch(roadmap, /<a name="phase-9-v0-4-0-instance"><\/a>/);
   assert.doesNotMatch(currentTrain, /^<a name="v\d+-\d+-\d+(?:-[a-z0-9-]+)?-phase-history-governance-train"><\/a>$/m);
-  assert.match(currentTrain, /当前exact开发列车是`v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?`/);
-  assert.match(currentTrain, /^<a name="v\d+-\d+-\d+(?:-[a-z0-9-]+)?-release-tag-guide-train"><\/a>$/m);
+  assert.match(currentTrain, /当前开发列车为`NONE`/);
+  assert.doesNotMatch(currentTrain, /^<a name="v\d+-\d+-\d+(?:-[a-z0-9-]+)?-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain,
-    /Product Phase 4 Overview[\s\S]*BASELINE_PROVENANCE[\s\S]*v0\.4\.3 acceptance/);
+    /Product Phase 4 Overview[\s\S]*BASELINE_PROVENANCE[\s\S]*v0\.4\.4 acceptance/);
   assert.match(currentTrain,
-    /SOURCE_CANDIDATE_HEAD=[0-9a-f]{40}[\s\S]*Source\/Candidate Cloud[\s\S]*Published Release通道也已PASS[\s\S]*Latest promotion confirmation/);
-  assert.match(currentTrain, /六个planning scope[\s\S]*只有`\.active_plan`指向/);
+    /v0\.4\.4[\s\S]*双通道Cloud[\s\S]*Latest promotion[\s\S]*C2[\s\S]*下一列车[\s\S]*未授权/);
+  assert.match(currentTrain, /六个planning scope[\s\S]*`\.active_plan`继续指向/);
   assert.match(currentTrain, /docs\/product-phases\/phase-4\.md#product-phase-4-overview/);
   assert.match(currentTrain, /candidate \+ accepted role window/);
   assert.match(currentTrain, /trusted\/Release zones 继续 exact[\s\S]*docs\/planning zones 按 lifecycle policy/);

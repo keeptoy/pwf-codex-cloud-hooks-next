@@ -124,7 +124,7 @@ immutable publication、Published Release Cloud、GitHub Release Latest promotio
 Source/Candidate bootstrap选择与双通道验收的新人边界。它没有重新打开Phase 4、激活Phase 5或改变Product/runtime行为；
 exact C0、双通道Cloud、immutable publication、GitHub Latest、第二轮role-window closeout与C2现已全部闭合，`v0.4.3`成为
 programme accepted，`v0.4.2`成为immediate fallback。逐资产与运行证据只读
-[`v0.4.3 acceptance`](../acceptance/v0.4.3-cloud-hard-acceptance.md#v0-4-3-role-window-closeout)。
+[`v0.4.3 acceptance`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/d7b5345b165e94c18ceab9b591d9a6b6dd251110/docs/acceptance/v0.4.3-cloud-hard-acceptance.md#v0-4-3-role-window-closeout)。
 
 后继同系列列车必须继承以下长期边界：
 
@@ -150,7 +150,9 @@ programme accepted，`v0.4.2`成为immediate fallback。逐资产与运行证据
 
 `v0.4.4`继续归属同一Phase 4 Product baseline，只把上述C0 annotated tag规则转成根README可复制的维护者命令，并以新的
 stable package/contract/zero-hash bootstrap身份承载这项Release输入变化。它不改变runtime、Host ABI、managed events、trusted
-graph或Product行为；exact C0、Cloud PASS、publication与版本角色仍分别只读ROADMAP、活动planning和版本acceptance。
+graph或Product行为；exact C0、双通道Cloud、immutable publication、GitHub Latest、第二轮role-window closeout与C2现已全部闭合。
+`v0.4.4`成为programme accepted，`v0.4.3`成为immediate fallback；最终证据只读
+[`v0.4.4 acceptance`](../acceptance/v0.4.4-cloud-hard-acceptance.md#v0-4-4-role-window-closeout)。
 
 ## Closeout and successor inheritance
 
@@ -167,4 +169,4 @@ current pointer与轮转只按[`ROADMAP规则`](../../ROADMAP.md#product-phase-o
 - 逐版本delta：[`CHANGELOG`](../../CHANGELOG.md)
 - 历史Discovery与closeout过程：[`Phase history`](../history/README.md)
 - 已发布身份和迁移来源：[`BASELINE_PROVENANCE`](../../BASELINE_PROVENANCE.md)
-- Phase 4最终已接受公开包证据：[`v0.4.3 Cloud hard acceptance`](../acceptance/v0.4.3-cloud-hard-acceptance.md#v0-4-3-role-window-closeout)
+- Phase 4最终已接受公开包证据：[`v0.4.4 Cloud hard acceptance`](../acceptance/v0.4.4-cloud-hard-acceptance.md#v0-4-4-role-window-closeout)

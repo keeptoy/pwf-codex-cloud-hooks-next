@@ -56,3 +56,21 @@
 - 稳定模板第6节现明确：empty repository是合法首次创建状态；apply_patch负责创建父目录/三文件/pointer。真正冲突仅限已有目标、symlink/错误类型、不安全component或无法安全读取/更新的pointer；禁止Shell预创建或`rm -rf .planning`。
 - 本轮只修改Release-excluded template、acceptance、ROADMAP、planning和静态断言，不改写C0、tag、公开ZIP或bootstrap。Latest confirmation、第二轮retirement和C2保持PENDING。
 - Published Release checkpoint边界复验：repository `17/17 PASS`、architecture `9/9 PASS`、`git diff --check` PASS。
+
+## C2 closeout — 2026-08-26
+
+- 维护者确认远端已push且`v0.4.4`早已Latest；按ROADMAP正常路径直接进入第二轮role-window closeout，不另做postflight。
+- 冻结对象决定：v0.4.4 guide/bootstrap `KEEP/FREEZE`；v0.4.3 current guide/bootstrap `RETIRE`并由immutable `d7b5345...`与Release恢复；publication oracle `MIGRATE`；六个planning scope及稳定contracts/runtime/templates/history/tests `KEEP`。
+- 首次组合补丁因`BASELINE_PROVENANCE.md`表头上下文不完全匹配被apply_patch整体拒绝；确认没有部分写入，后续改用当前精确行分文件应用。
+- ROADMAP已轮转为development `NONE`、accepted v0.4.4、fallback v0.4.3、deeper v0.4.2；provenance新增v0.4.4并把v0.4.3链接迁到immutable `d7b5345...`。
+- v0.4.4 acceptance追加Latest/第二轮retirement/final Post-run与C2 token；Phase 4 overview和CHANGELOG同步最终角色。
+- tracked v0.4.4 bootstrap已冻结为公开ZIP exact SHA，文件SHA与ignored `dist/`正式bootstrap相同：`972af180...d701`。
+- current v0.4.3 guide/bootstrap已按第二轮决定清退；当前树所有长期引用均迁到immutable恢复点，测试中的剩余路径只用于`readGit`和“不应存在”断言。
+- 本地annotated tag `v0.4.4^{}`精确解析到C0 `f7032fd0efad3df9e4b6052e8cd766d27cd2a844`；`git diff --check` PASS。
+- 首轮C2 focused测试36/39；三个失败均为治理投影：ROADMAP重复同anchor、测试误把跨行授权摘要写成单行、CHANGELOG缺当前acceptance链接。已做最小修正，production与Release输入不变。
+- 首轮完整Windows suite：188 tests / 161 pass / 1 fail / 26 skip。唯一失败是transition测试仍把predecessor与accepted比较；C2后正确角色是immediate fallback，已只修测试语义，machine contract不变。
+- contracts专项5/5 PASS；完整Windows suite复验188 tests / 162 pass / 0 fail / 26 Linux/POSIX skip。
+- C2后误调用C0专用`candidate-bootstrap`检查，canonical工具正确拒绝用zero-hash render覆盖sealed accepted脚本；后续只使用`release`路径复验正式双资产。
+- C2正式双资产幂等复验：ZIP `unchanged`，22 entries、91,369 bytes、SHA `4a179aad...71e4`；bootstrap `unchanged`，21,565 bytes、SHA `972af180...d701`。
+- 最终静态边界：importer healthy；Python compile、`node --check`、v0.4.4 `bash -n`、四个upstream `100755`、`git diff --check`全部PASS。
+- C2范围确认：runtime、installer、machine contracts、Host ABI与22-entry ZIP输入均未修改；current v0.4.3 guide/bootstrap可由immutable Git/Release恢复，六个planning scope全部保留。

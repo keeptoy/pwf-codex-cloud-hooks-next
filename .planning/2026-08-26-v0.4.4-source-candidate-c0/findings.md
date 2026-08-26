@@ -29,3 +29,12 @@
 - 冲突语义必须绑定具体危险状态：existing target、symlink/错误类型、不安全path component或无法安全读写的普通pointer。仅以“两个路径missing”报冲突属于过度防范，会制造无意义的人工授权往返。
 - 模板应同时禁止为满足preflight而先用Shell预创建或删除`.planning`；只读Shell负责exact-path存在性/类型检查，正文唯一写入者仍是apply_patch。
 - Published Release PASS不等于Latest或C2。accepted仍为v0.4.3、fallback仍为v0.4.2，直到维护者确认GitHub Release详情页显示v0.4.4为Latest且不再是Pre-release。
+
+## C2 role-window decisions
+
+- 维护者已明确确认`v0.4.4`早已完成Latest promotion；正常UI成功按ROADMAP即为confirmation，不重复下载资产、重算SHA或增设postflight。
+- 角色轮转应为：development train=`NONE`，accepted=`v0.4.4`，immediate fallback=`v0.4.3`，deeper fallback=`v0.4.2`；Product Phase 5与下一版本列车仍未授权。
+- `v0.4.4`当前guide与tracked bootstrap判定`KEEP/FREEZE`；tracked bootstrap只把默认ZIP SHA冻结为已验收公开SHA，不改变ZIP内22项Release输入。
+- `v0.4.3`current guide/bootstrap判定`RETIRE`：其guide和sealed bootstrap都已有immutable C2 commit `d7b5345b165e94c18ceab9b591d9a6b6dd251110`恢复点，公开双资产继续由GitHub Release保留。
+- publication oracle判定`MIGRATE`到accepted v0.4.4 + fallback v0.4.3；provenance新增v0.4.4行，并把v0.4.3 acceptance链接迁到immutable `d7b5345...`。
+- 六个planning scope判定`KEEP`：维护者没有授权删除，且它们继续承担相邻Discovery恢复与治理参考。稳定contracts/tests/history/production代码同样`KEEP`。
