@@ -18,6 +18,9 @@ const version = `v${packageVersion}`;
 const bootstrapName = `init-cloud-sandbox-${version}.bash`;
 const zipName = `pwf-codex-cloud-hooks-${version}.zip`;
 const zeroSha256 = "0".repeat(64);
+const roadmap = fs.readFileSync(path.join(root, "ROADMAP.md"), "utf8");
+const developmentTrain = roadmap.match(/^\| 当前开发列车 \| `(NONE|v[^`]+)`/m)?.[1];
+const acceptedVersion = roadmap.match(/^\| 当前已接受版本 \| `(v[^`]+)`/m)?.[1];
 const sha256 = value => crypto.createHash("sha256").update(value).digest("hex");
 
 function runMaterializer(args) {
@@ -33,7 +36,7 @@ function buildExpectedZip(output) {
   return JSON.parse(result.stdout);
 }
 
-test("canonical bootstrap template renders the tracked candidate without mojibake", () => {
+test("canonical bootstrap template renders the tracked lifecycle role without mojibake", () => {
   const source = fs.readFileSync(template, "utf8");
   assert.equal(source.match(/@HOOKS_VERSION@/g)?.length, 1);
   assert.equal(source.match(/@HOOKS_SHA256@/g)?.length, 1);
@@ -41,18 +44,32 @@ test("canonical bootstrap template renders the tracked candidate without mojibak
   assert.match(source, /这是一次 planning-with-files lifecycle Hook 黑盒验证。/);
   assert.doesNotMatch(source, /è¿|ã|ä¸¥æ/);
 
+  const tracked = fs.readFileSync(path.join(root, bootstrapName), "utf8");
+  const embedded = tracked.match(/HOOKS_SHA256="\$\{HOOKS_SHA256:-([a-f0-9]{64})\}"/);
+  assert.ok(embedded, "tracked bootstrap lacks a pinned ZIP SHA-256");
+  const isCandidate = developmentTrain === version;
+  if (isCandidate) {
+    assert.equal(embedded[1], zeroSha256);
+  } else {
+    assert.equal(developmentTrain, "NONE");
+    assert.equal(acceptedVersion, version);
+    assert.notEqual(embedded[1], zeroSha256, "accepted bootstrap must pin the public ZIP SHA-256");
+  }
+
   const expected = source
     .replace("@HOOKS_VERSION@", version)
-    .replace("@HOOKS_SHA256@", zeroSha256);
-  assert.equal(fs.readFileSync(path.join(root, bootstrapName), "utf8"), expected);
+    .replace("@HOOKS_SHA256@", embedded[1]);
+  assert.equal(tracked, expected);
 
-  const check = runMaterializer(["candidate-bootstrap"]);
-  assert.equal(check.status, 0, check.stderr);
-  const result = JSON.parse(check.stdout);
-  assert.equal(result.action, "candidate-bootstrap");
-  assert.equal(result.state, "unchanged");
-  assert.equal(result.version, version);
-  assert.equal(result.zip_sha256, zeroSha256);
+  if (isCandidate) {
+    const check = runMaterializer(["candidate-bootstrap"]);
+    assert.equal(check.status, 0, check.stderr);
+    const result = JSON.parse(check.stdout);
+    assert.equal(result.action, "candidate-bootstrap");
+    assert.equal(result.state, "unchanged");
+    assert.equal(result.version, version);
+    assert.equal(result.zip_sha256, zeroSha256);
+  }
 });
 
 test("release materializer creates an exact and idempotent ZIP/bootstrap pair", () => {

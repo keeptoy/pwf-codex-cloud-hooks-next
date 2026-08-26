@@ -35,7 +35,7 @@ function publishedRole(role, version) {
     role,
     version,
     commit: commit[1],
-    bootstrapCommit: bootstrapSource ? bootstrapSource[1] : commit[1],
+    bootstrapCommit: bootstrapSource ? bootstrapSource[1] : null,
     entryCount: Number(entryCount[1]),
     zipSha256: hashes[0],
     bootstrapSha256: hashes[1],
@@ -224,8 +224,8 @@ for (const release of publicationRoles) {
       );
       assert.equal(result.status, 0, result.stderr);
       assert.equal(sha256(releaseZip), release.zipSha256);
-      let bootstrapPath = path.join(releaseRoot, bootstrapName);
-      if (release.bootstrapCommit !== release.commit) {
+      let bootstrapPath;
+      if (release.bootstrapCommit) {
         result = spawnSync("git", ["show", `${release.bootstrapCommit}:${bootstrapName}`], {
           cwd: root,
           encoding: null,
@@ -234,6 +234,17 @@ for (const release of publicationRoles) {
         assert.equal(result.status, 0, result.stderr?.toString("utf8"));
         bootstrapPath = path.join(workspace, bootstrapName);
         fs.writeFileSync(bootstrapPath, result.stdout);
+      } else {
+        const currentPackage = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
+        assert.equal(release.role, "accepted",
+          `${release.version} needs an explicit sealed bootstrap source after leaving the accepted role`);
+        assert.equal(`v${currentPackage.version}`, release.version,
+          `${release.version} accepted bootstrap is not available from the current checkout`);
+        const candidateBootstrap = fs.readFileSync(path.join(releaseRoot, bootstrapName), "utf8");
+        assert.match(candidateBootstrap,
+          /HOOKS_SHA256="\$\{HOOKS_SHA256:-0{64}\}"/,
+          `${release.version} C0 tag must retain its zero-hash candidate bootstrap`);
+        bootstrapPath = path.join(root, bootstrapName);
       }
       assert.equal(sha256(bootstrapPath), release.bootstrapSha256);
     } finally {

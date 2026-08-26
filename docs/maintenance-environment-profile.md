@@ -31,7 +31,7 @@ template管理。
 ## 3. 当前已确认的远程 / Cloud执行面事实
 
 远程事实最近复核日期：**2026-08-25**。下表以真实
-[`v0.4.2 Source/Candidate`](acceptance/v0.4.2-cloud-hard-acceptance.md#v0-4-2-source-candidate-channel-checkpoint)
+[`v0.4.2 Source/Candidate`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/33deb5870015c94df329fe233e306363ba43232b/docs/acceptance/v0.4.2-cloud-hard-acceptance.md#v0-4-2-source-candidate-channel-checkpoint)
 和维护者回传为依据；它们是带适用范围的执行事实，不把一次Cloud task冻结成永久平台合同。
 
 | 环境面 | 状态 | 已确认事实 | 对验收的影响 | 默认对策 |

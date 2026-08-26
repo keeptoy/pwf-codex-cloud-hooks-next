@@ -352,7 +352,7 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   const compatibilityGovernance = roadmap.slice(compatibilityStart, rollbackStart);
   const developmentTrain = roadmap.match(/^\| 当前开发列车 \| `(NONE|v[^`]+)`/m)?.[1];
   assert.ok(developmentTrain, "ROADMAP lacks a parseable current development train state");
-  assert.equal(developmentTrain, `v${readJson("package.json").version}`);
+  assert.equal(developmentTrain, "NONE");
   assert.match(roadmap, /^<a name="version-train-two-retirement-reviews"><\/a>$/m);
   assert.match(roadmap, /^<a name="product-phase-route-index"><\/a>$/m);
   assert.match(roadmap, /^<a name="product-phase-overview-rotation"><\/a>$/m);
@@ -412,13 +412,12 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   ]) assert.match(roadmap, new RegExp("`" + role + "`"));
   assert.match(roadmap, /C0[\s\S]*C1[\s\S]*C2/);
   assert.doesNotMatch(roadmap, /<a name="phase-9-v0-4-0-instance"><\/a>/);
-  assert.match(currentTrain, /^<a name="v\d+-\d+-\d+(?:-[a-z0-9-]+)?-phase-history-governance-train"><\/a>$/m);
+  assert.doesNotMatch(currentTrain, /^<a name="v\d+-\d+-\d+(?:-[a-z0-9-]+)?-phase-history-governance-train"><\/a>$/m);
+  assert.match(currentTrain, /当前开发列车为`NONE`/);
   assert.match(currentTrain,
-    /当前exact开发列车是`v[^`]+`[\s\S]*继续归属[\s\S]*Product Phase 4 Overview/);
+    /Product Phase 4 Overview[\s\S]*BASELINE_PROVENANCE[\s\S]*v0\.4\.3 acceptance/);
   assert.match(currentTrain,
-    /Product Phase 4 Overview[\s\S]*Work Step A[\s\S]*精选过程[\s\S]*Work Step B[\s\S]*长期Product authority[\s\S]*current指针/);
-  assert.match(currentTrain,
-    /不激活仍为TBD的Product Phase 5[\s\S]*双通道与Latest PASS[^\n]*不自动授权删除planning或提前声明C2/);
+    /四个planning scope[\s\S]*不产生current development train或Product Phase 5授权/);
   assert.match(currentTrain, /docs\/product-phases\/phase-4\.md#product-phase-4-overview/);
   assert.match(currentTrain, /candidate \+ accepted role window/);
   assert.match(currentTrain, /trusted\/Release zones 继续 exact[\s\S]*docs\/planning zones 按 lifecycle policy/);

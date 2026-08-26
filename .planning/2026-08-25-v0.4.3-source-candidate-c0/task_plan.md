@@ -52,8 +52,16 @@
 - [x] 按维护者最终结论记录固定版本`0.4.3`模板的Published Release整通道PASS与9.2 exit 0。
 - [x] 核对公开ZIP/bootstrap identity、tag source与GitHub Latest状态。
 - [x] 把Published Release和Latest真实证据写入acceptance、ROADMAP与planning，不创建产品补丁。
-- [ ] 在维护者明确具体对象决定后执行role-window closeout并形成C2。
+- [x] 在维护者明确具体对象决定后进入role-window closeout。
+
+### Work Step F: role-window closeout and C2
+
+- [x] 把v0.4.2长期入链迁到包含完整C2的immutable Git ref，再清退current guide/bootstrap。
+- [x] 把v0.4.3 tracked bootstrap冻结为公开资产exact bytes；核对tag、ZIP/bootstrap与provenance identity。
+- [x] 保留四个planning，轮转accepted/fallback/deeper-fallback，关闭当前开发列车但不激活Product Phase 5。
+- [x] 追加acceptance final Post-run，更新Phase 4 overview、ROADMAP、provenance与动态oracles/治理断言。
+- [x] 运行完整本地回归和Release边界验证，创建`PUBLISHED_RELEASE_CLOSEOUT_HEAD`本地commit。
 
 ## Next Step
 
-等待维护者明确第二轮role-window的具体`RETIRE/MIGRATE/KEEP`决定；停止在删除current guide/bootstrap、轮转programme角色或创建C2之前。
+C2内容与验证已经闭合；创建单一范围的`PUBLISHED_RELEASE_CLOSEOUT_HEAD`本地commit，然后停止在任何远端写操作或Product Phase 5激活之前。

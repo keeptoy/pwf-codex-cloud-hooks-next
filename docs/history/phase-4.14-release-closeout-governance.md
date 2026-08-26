@@ -326,7 +326,7 @@ contracts、runtime、templates、history、v0.4.2 current guide/bootstrap及所
 
 C2据此把programme角色原子轮转为`v0.4.2` accepted、`v0.4.1` immediate fallback、`v0.4.0` deeper fallback，并关闭
 documentation-governance列车；下一Product Phase和下一版本列车仍未授权。通道、资产、Latest和逐项RETIRE/MIGRATE/KEEP的
-exact final Post-run见[v0.4.2 acceptance](../acceptance/v0.4.2-cloud-hard-acceptance.md#v0-4-2-role-window-closeout)，当前角色只读ROADMAP。
+exact final Post-run见[immutable v0.4.2 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/33deb5870015c94df329fe233e306363ba43232b/docs/acceptance/v0.4.2-cloud-hard-acceptance.md#v0-4-2-role-window-closeout)，当前角色只读ROADMAP。
 
 <a name="phase-4-14-post-governance-status-post-v0-4-2-residue-sweep"></a>
 

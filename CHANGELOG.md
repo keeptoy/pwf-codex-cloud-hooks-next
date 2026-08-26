@@ -38,7 +38,7 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   seal为exact ZIP SHA。immutable publication与Source/Candidate/Published Release双通道已闭合，Latest晋级另由ROADMAP记录。
 - 修正Cloud canonical baseline步骤的工具能力闭环：没有独立只读文件工具时，允许exact-path只读Shell preflight；fixture正文仍
   只能由`apply_patch`创建，继续禁止Shell写入、覆盖与远端动作。
-  本版本双通道教程见[`docs/acceptance/v0.4.2-cloud-hard-acceptance.md`](docs/acceptance/v0.4.2-cloud-hard-acceptance.md)；已发布身份仍只由
+  本版本双通道教程见[immutable v0.4.2 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/33deb5870015c94df329fe233e306363ba43232b/docs/acceptance/v0.4.2-cloud-hard-acceptance.md#v0-4-2-role-window-closeout)；已发布身份仍只由
   [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)记录。
 
 ## v0.4.1

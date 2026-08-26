@@ -97,7 +97,7 @@ trusted graph、managed events或Release allowlist的前提下发布。C2完成�
 
 该列车没有创建standing Phase 9。candidate admission preflight、Source/Candidate、第一轮retirement checkpoint、tag(C0)、
 immutable publication、Published Release Cloud、GitHub Release Latest promotion confirmation、第二轮role-window closeout与C2均已闭合。
-逐步骤和exact证据只见[`v0.4.2 acceptance`](../acceptance/v0.4.2-cloud-hard-acceptance.md)。
+逐步骤和exact证据只见[immutable `v0.4.2 acceptance`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/33deb5870015c94df329fe233e306363ba43232b/docs/acceptance/v0.4.2-cloud-hard-acceptance.md#v0-4-2-role-window-closeout)。
 
 长期治理交付包括：
 
@@ -105,8 +105,8 @@ immutable publication、Published Release Cloud、GitHub Release Latest promotio
   Release ZIP输入，变更会使旧候选身份失效。
 - 维护机限制提升到[`维护执行环境限制与对策档案`](../maintenance-environment-profile.md#maintenance-environment-profile)，保存带日期的
   事实状态、影响、默认本地/Cloud解法与重验触发器。
-- 文档拓扑把全局入口、专项authority和Release输入拆开治理；版本guide位于
-  [`docs/acceptance`](../acceptance/v0.4.2-cloud-hard-acceptance.md)，稳定templates继续`KEEP`。
+- 文档拓扑把全局入口、专项authority和Release输入拆开治理；退出current窗口的版本guide由
+  [exact immutable ref](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/33deb5870015c94df329fe233e306363ba43232b/docs/acceptance/v0.4.2-cloud-hard-acceptance.md#v0-4-2-role-window-closeout)恢复，稳定templates继续`KEEP`。
 - Source/Candidate暴露的C步骤工具能力缺口被稳定template收敛为：优先独立只读文件工具；缺少该能力时允许exact-path只读Shell
   preflight，正文仍只能用apply_patch写入。
 - sealed bootstrap与22-entry ZIP通过Published Release Fresh/Resume/9.2默认下载链验收；GitHub Release详情页确认Latest后，
@@ -122,8 +122,9 @@ immutable publication、Published Release Cloud、GitHub Release Latest promotio
 
 `v0.4.3`在已闭合的Phase 4 Product baseline上，把Release资产准备从手工复制/替换收敛为确定性物化，并补齐
 Source/Candidate bootstrap选择与双通道验收的新人边界。它没有重新打开Phase 4、激活Phase 5或改变Product/runtime行为；
-当前列车已从development identity收敛为stable zero-hash C0候选；Source/Candidate、tag与Release状态仍只读ROADMAP、活动planning
-和对应版本acceptance。
+exact C0、双通道Cloud、immutable publication、GitHub Latest、第二轮role-window closeout与C2现已全部闭合，`v0.4.3`成为
+programme accepted，`v0.4.2`成为immediate fallback。逐资产与运行证据只读
+[`v0.4.3 acceptance`](../acceptance/v0.4.3-cloud-hard-acceptance.md#v0-4-3-role-window-closeout)。
 
 后继同系列列车必须继承以下长期边界：
 
@@ -155,4 +156,4 @@ current pointer与轮转只按[`ROADMAP规则`](../../ROADMAP.md#product-phase-o
 - 逐版本delta：[`CHANGELOG`](../../CHANGELOG.md)
 - 历史Discovery与closeout过程：[`Phase history`](../history/README.md)
 - 已发布身份和迁移来源：[`BASELINE_PROVENANCE`](../../BASELINE_PROVENANCE.md)
-- Phase 4最终已接受公开包证据：[`v0.4.2 Cloud hard acceptance`](../acceptance/v0.4.2-cloud-hard-acceptance.md)
+- Phase 4最终已接受公开包证据：[`v0.4.3 Cloud hard acceptance`](../acceptance/v0.4.3-cloud-hard-acceptance.md#v0-4-3-role-window-closeout)

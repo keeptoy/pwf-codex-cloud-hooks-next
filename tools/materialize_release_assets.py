@@ -149,14 +149,9 @@ def release_assets(version: str, expected_zip_sha256: str, output_directory: Pat
     if version != current_version:
         raise ValueError(f"release version mismatch: requested={version!r} current={current_version!r}")
     candidate_path = ROOT / bootstrap_name
-    expected_candidate = render_bootstrap(version, ZERO_SHA256)
     if candidate_path.is_symlink() or not candidate_path.is_file():
         raise ValueError(f"tracked candidate bootstrap is missing or unsafe: {candidate_path}")
-    if candidate_path.read_bytes() != expected_candidate:
-        raise ValueError(
-            "tracked candidate bootstrap differs from the canonical zero-hash render; "
-            "regenerate it before C0 and rerun Source/Candidate"
-        )
+    tracked_bootstrap = candidate_path.read_bytes()
     output_directory = prepare_output_directory(output_directory)
     zip_name = f"pwf-codex-cloud-hooks-{version}.zip"
     zip_target = output_directory / zip_name
@@ -174,6 +169,12 @@ def release_assets(version: str, expected_zip_sha256: str, output_directory: Pat
         zip_bytes = staged_zip.read_bytes()
 
     bootstrap_bytes = render_bootstrap(version, expected_zip_sha256)
+    expected_candidate = render_bootstrap(version, ZERO_SHA256)
+    if tracked_bootstrap not in (expected_candidate, bootstrap_bytes):
+        raise ValueError(
+            "tracked bootstrap differs from both the canonical zero-hash candidate and "
+            "the canonical sealed render for the expected ZIP SHA-256"
+        )
     zip_state = target_state(zip_target, zip_bytes)
     bootstrap_state = target_state(bootstrap_target, bootstrap_bytes)
     if zip_state == "created":

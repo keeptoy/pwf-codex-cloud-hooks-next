@@ -22,24 +22,24 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.3`；继续归属Product Phase 4的文档治理patch train，Source/Candidate与Published Release均已PASS，GitHub Release已确认Latest；等待第二轮role-window closeout与C2，不激活Product Phase 5 |
-| 当前已接受版本 | `v0.4.2`；programme accepted |
-| 当前直接回退版本 | immutable `v0.4.1` immediate fallback |
-| 回退证据链 | immutable `v0.4.0` deeper fallback；`v0.3.5`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | `v0.4.2`及其前序列车均已关闭；`v0.4.3`的exact C0 `6204de36cd8b2cbc614a4bb53b8481a5a1ba234d`已完成双通道Cloud，tag/public双资产保持immutable，GitHub `/releases/latest`已返回`v0.4.3`。Product Phase 5仍只预占`0.5.0-*`且全部TBD；当前只等待维护者明确第二轮RETIRE/MIGRATE/KEEP决定，再由C2原子轮转accepted/fallback角色 |
+| 当前开发列车 | `NONE`；v0.4.3已完成C2，后继列车尚未授权 |
+| 当前已接受版本 | `v0.4.3`；programme accepted |
+| 当前直接回退版本 | immutable `v0.4.2` immediate fallback |
+| 回退证据链 | immutable `v0.4.1` deeper fallback；`v0.4.0`、`v0.3.5`与更早发布里程碑见 provenance museum |
+| 当前 programme 边界 | Product Phase 4及其v0.4.0～v0.4.3功能、patch与治理列车均已关闭；v0.4.3 exact C0、双通道Cloud、immutable publication、Latest、第二轮retirement与C2均已闭合。Product Phase 5仍只预占`0.5.0-*`且scope、Discovery、实现、Cloud和Release全部TBD；不得把空列车状态解释为激活授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
-非 draft、非 prerelease 的 Latest，且v0.4.0/v0.3.5 tag、source与双资产均未改写。当前它已随`v0.4.2`晋级轮转为
-deeper fallback。版本 delta见
+非 draft、非 prerelease 的 Latest，且v0.4.0/v0.3.5 tag、source与双资产均未改写。它曾在`v0.4.2`晋级时轮转为
+deeper fallback，现已退出accepted + immediate-fallback窗口并进入provenance museum。版本 delta见
 [`CHANGELOG.md`](CHANGELOG.md)，精确source/资产/SHA见[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，完整Cloud、
 晋级与第二轮退役证据见[immutable v0.4.0 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/6b388518855da9053713a58e5c918c8b727b6dc6/docs/v0.4.0-cloud-hard-acceptance.md#v0-4-0-p9-f-second-retirement-closeout)。
 
-## 3. 已接受基线 `v0.4.2`
+## 3. 已接受基线 `v0.4.3`
 
-`v0.4.2` 是当前已接受的documentation-governance基线。它完整继承`v0.4.1`的兼容性路径安全修复与`v0.4.0`
-已经闭合的Product Phase 4功能和Release合同；本版只整理Release/retirement、Phase history、acceptance与环境记忆的
-文档治理，不改变Host ABI、adapter-only policy、pristine upstream、owned runtime信任边界或legacy默认行为。
+`v0.4.3`是当前已接受的Release-asset/documentation-governance基线。它完整继承`v0.4.2`的文档治理、`v0.4.1`的
+路径安全修复与`v0.4.0`已经闭合的Product Phase 4功能和Release合同；本版把bootstrap模板、candidate检查与正式双资产物化
+收敛为确定性流程，不改变Host ABI、adapter-only policy、pristine upstream、owned runtime信任边界或legacy默认行为。
 精确delta见CHANGELOG，底层功能收口仍由下表概括：
 
 | 问题域 | 已完成结果 |
@@ -53,7 +53,7 @@ deeper fallback。版本 delta见
 
 该基线的实际版本delta见[`CHANGELOG.md`](CHANGELOG.md)，精确source/资产身份与predecessor迁移链见
 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，完整双通道、晋级、第二轮退役与C2证据见
-[`docs/acceptance/v0.4.2-cloud-hard-acceptance.md`](docs/acceptance/v0.4.2-cloud-hard-acceptance.md#v0-4-2-role-window-closeout)。
+[`docs/acceptance/v0.4.3-cloud-hard-acceptance.md`](docs/acceptance/v0.4.3-cloud-hard-acceptance.md#v0-4-3-role-window-closeout)。
 
 ## 4. 当前开发列车
 
@@ -64,22 +64,14 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 本节是current development train指针：只保留exact列车身份、当前授权边界与对应Product Phase overview链接。活动planning、
 未封存Discovery和需要current状态的验收材料可以引用train anchor，但本节不再承载长期Product摘要。
 
-<a name="v0-4-3-phase-history-governance-train"></a>
+当前开发列车为`NONE`。上一条`v0.4.3`列车的长期Product与治理结论已沉淀到
+[`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)，exact发布身份与Cloud证据分别由
+[`BASELINE_PROVENANCE`](BASELINE_PROVENANCE.md)和
+[`v0.4.3 acceptance`](docs/acceptance/v0.4.3-cloud-hard-acceptance.md#v0-4-3-release-operator-guide)保存；本节不保留旧exact train anchor。
 
-当前exact开发列车是`v0.4.3`，当前处于Published Release与Latest均已通过、等待role-window closeout的状态，继续归属
-[`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)。Work Step A已把Phase history冻结为精选过程
-账本；Work Step B已把长期Product authority从ROADMAP正文迁入overview，并由本节持有current指针；当前Work Step C把
-local/remote执行限制与默认对策
-收敛到README可发现的长期档案；Work Step D建立canonical bootstrap模板和post-PASS Release资产materializer，消除手工复制、
-中文编码漂移与ZIP SHA误配。Release gate把development identity收敛为stable C0，exact
-`SOURCE_CANDIDATE_HEAD=6204de36cd8b2cbc614a4bb53b8481a5a1ba234d`；Source/Candidate、第一轮retirement、immutable
-publication、Published Release 9.2与GitHub Latest confirmation均已闭合。公开ZIP为90,364 bytes、22 entries、SHA-256
-`cfcabcc93c819e2d512a1b9cf0b3f13a451ffea8c82631012b74a64813150231`；下一步只做第二轮对象决定与C2 programme轮转。该列车
-不修改production、runtime、Host ABI或trusted graph，也不激活仍为TBD的Product Phase 5。
-
-四个planning scope继续承担相邻Discovery恢复、治理参考与当前C0账本；只有`.active_plan`指向本轮Source/Candidate任务。保留旧scope
-不扩大本列车范围；双通道与Latest PASS也不自动授权删除planning或提前声明C2。具体教程、exact资产与真实状态只读
-[`v0.4.3 acceptance`](docs/acceptance/v0.4.3-cloud-hard-acceptance.md#v0-4-3-release-operator-guide)。
+四个planning scope按维护者决定继续承担相邻Discovery恢复、治理参考与C2账本，`.active_plan`仍可指向刚关闭的Release任务，直到
+后继任务由planning工具切换；这不产生current development train或Product Phase 5授权。下一条列车只能在维护者明确scope、版本身份、
+活动task plan与Discovery退出条件后建立。
 
 <a name="product-phase-route-index"></a>
 

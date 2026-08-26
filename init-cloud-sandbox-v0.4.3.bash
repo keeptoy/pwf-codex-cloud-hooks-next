@@ -36,7 +36,7 @@ readonly HOOKS_VERSION="${HOOKS_VERSION:-v0.4.3}"
 readonly HOOKS_PACKAGE="${HOOKS_PACKAGE:-pwf-codex-cloud-hooks-${HOOKS_VERSION}.zip}"
 readonly HOOKS_ARCHIVE_ROOT="${HOOKS_ARCHIVE_ROOT:-pwf-codex-cloud-hooks}"
 readonly HOOKS_URL="${HOOKS_URL:-https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/${HOOKS_VERSION}/${HOOKS_PACKAGE}}"
-readonly HOOKS_SHA256="${HOOKS_SHA256:-0000000000000000000000000000000000000000000000000000000000000000}"
+readonly HOOKS_SHA256="${HOOKS_SHA256:-cfcabcc93c819e2d512a1b9cf0b3f13a451ffea8c82631012b74a64813150231}"
 
 # Mutable state is limited to disposable workspace and the bounded Skill replacement transaction.
 WORK_DIR=""
