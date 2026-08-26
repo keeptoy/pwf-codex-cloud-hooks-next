@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.4`；继续归属Product Phase 4的Release文档patch train，exact C0 Source/Candidate Cloud与第一轮退役检查已PASS，正式双资产已在本地物化；Published Release尚未运行 |
+| 当前开发列车 | `v0.4.4`；继续归属Product Phase 4的Release文档patch train，Source/Candidate、immutable publication与Published Release均已PASS；等待GitHub Release Latest promotion confirmation、第二轮退役检查和C2 |
 | 当前已接受版本 | `v0.4.3`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.2` immediate fallback |
 | 回退证据链 | immutable `v0.4.1` deeper fallback；`v0.4.0`、`v0.3.5`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | v0.4.3及其前序功能、patch与治理列车均已关闭；v0.4.4 exact C0 `f7032fd0efad3df9e4b6052e8cd766d27cd2a844`已完成Source/Candidate Cloud，Cloud ZIP SHA与本地确定性构建一致，第一轮retirement全部KEEP且未改变C0输入。正式双资产已本地物化；维护者push C1、tag精确指向C0、Pre-release上传与Published Release仍待后续动作。Product Phase 5仍只预占`0.5.0-*`且全部TBD；本patch train不产生Phase 5授权 |
+| 当前 programme 边界 | v0.4.3及其前序功能、patch与治理列车均已关闭；v0.4.4 exact C0 `f7032fd0efad3df9e4b6052e8cd766d27cd2a844`已完成Source/Candidate，tag精确指向C0，immutable Release双资产已发布且Published Release第二通道PASS。当前仍由v0.4.3/v0.4.2承担accepted/fallback；只有维护者确认Latest后才能执行第二轮retirement与C2角色轮转。Product Phase 5仍只预占`0.5.0-*`且全部TBD；本patch train不产生Phase 5授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -70,8 +70,9 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 Source/Candidate PASS后“C1证据push → annotated tag精确指向C0 → 单独push tag → 核对remote peeled commit”的维护者命令补入
 README，并同步正式package/contract/bootstrap身份。exact `SOURCE_CANDIDATE_HEAD=f7032fd0efad3df9e4b6052e8cd766d27cd2a844`
 已经完成正式Source/Candidate Cloud；第一轮retirement全部KEEP，C1只写Release-excluded证据。Cloud ZIP SHA
-`4a179aad3ca0ce17270ee7a63c2644e8db2aa321cc48ed6056dbe6b4e70571e4`与本地双构建一致，正式ZIP和non-zero bootstrap已物化到ignored
-`dist/`。下一步由维护者push C1，再把正式tag精确固定到C0、创建Pre-release并上传两项资产；Published Release仍为PENDING。
+`4a179aad3ca0ce17270ee7a63c2644e8db2aa321cc48ed6056dbe6b4e70571e4`与本地双构建一致。正式tag已经精确固定到C0，ZIP与non-zero
+bootstrap已经作为immutable GitHub Release资产发布，独立Published Release通道也已PASS。下一步只等待维护者完成
+GitHub Release Latest promotion confirmation；之后才进入第二轮role-window closeout和C2，当前accepted/fallback角色尚未旋转。
 
 六个planning scope继续承担相邻Discovery恢复、治理参考与当前任务账本；只有`.active_plan`指向v0.4.4 Source/Candidate C0任务。长期规则同步到
 [`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)，但该patch不重新打开Product行为。accepted/fallback

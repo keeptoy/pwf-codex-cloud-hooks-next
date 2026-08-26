@@ -469,8 +469,15 @@ SessionStart 与 UserPromptSubmit 必须被观察到，SessionStart source 必�
 不得读取其他仓库文件。
 
 Shell不得创建、修改、删除、移动或重命名任何文件/目录，不得使用输出重定向、`tee`、Git、网络、package manager、
-脚本或解释器执行写入；若 `.planning` 拓扑异常，或新目录/任一目标文件已经存在，立即停止并报告冲突。preflight完成后，
-正文写入只允许使用 apply_patch：创建规定的三个文件并更新 `.planning/.active_plan`，不得进行清单之外的写入。
+脚本或解释器执行写入。空仓库中`.planning`与`.planning/.active_plan`同时不存在是**正常的首次创建状态**，不是拓扑异常；只要
+本轮新PLAN_ID目录和三个目标文件也都不存在，就应继续由apply_patch创建所需父目录、三个文件和active pointer，不得报告
+`BASELINE_CONFLICT`，也不得先用Shell预创建或`rm -rf .planning`“整理”现场。
+
+真正的冲突只包括：`.planning`或`.planning/.active_plan`是symlink/错误文件类型；本轮PLAN_ID目录或任一目标文件已经存在；
+路径component无法安全作为普通目录使用；或已有active pointer无法作为普通文件安全读取/更新。遇到这些情况立即停止并报告
+exact path与类型。一个普通`.planning`目录但缺少`.active_plan`也可以首次创建pointer；已有普通`.active_plan`则只读取其当前值，
+并在正文阶段通过apply_patch更新。preflight完成后，正文写入只允许使用 apply_patch：创建规定的三个文件并创建或更新
+`.planning/.active_plan`，不得进行清单之外的写入。
 
 请使用 apply_patch：
 1. 为本轮生成一个新的 plan ID，格式必须是 YYYY-MM-DD-pwf-cloud-acceptance-v1-xxxxxxxx，其中日期使用当前 UTC 日期，xxxxxxxx 是本轮新生成的 8 位小写十六进制 run ID。以下用 PLAN_ID 表示这个具体值。只能用 apply_patch 的 Add File 创建新文件；如果目标目录或任一目标文件已经存在，立即停止并报告冲突，不得覆盖、删除或改用 Update File。
@@ -488,7 +495,7 @@ Shell不得创建、修改、删除、移动或重命名任何文件/目录，�
 4. 创建同目录 findings.md，内容必须包含：
    planning-with-files Cloud acceptance fixture.
 5. 不要创建或修改任何 .pwf-codex-managed、.mode 或其他 activation/profile 文件。
-6. 只允许更新 .planning/.active_plan，使其内容为本轮具体 PLAN_ID。不要修改任何其他仓库文件，不要 commit、push 或创建 PR。
+6. 只允许创建或更新 .planning/.active_plan，使其内容为本轮具体 PLAN_ID。不要修改任何其他仓库文件，不要 commit、push 或创建 PR。
 7. 完成后只回复一行，并把占位符替换为本轮具体值：
    PWF_CLOUD_ACCEPTANCE_BASELINE_CREATED plan_id=PLAN_ID
 ~~~

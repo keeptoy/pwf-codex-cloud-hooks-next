@@ -56,7 +56,7 @@ function currentRoleWindow() {
   return { accepted, candidate, developmentTrain, immediateFallback, roadmap };
 }
 
-test("v0.4.4 stable C0 is active while v0.4.3 remains accepted and v0.4.2 remains fallback", () => {
+test("v0.4.4 public channels pass while v0.4.3 remains accepted and v0.4.2 remains fallback", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const acceptedAcceptance = read("docs/acceptance/v0.4.3-cloud-hard-acceptance.md");
   const candidateAcceptance = read("docs/acceptance/v0.4.4-cloud-hard-acceptance.md");
@@ -75,7 +75,7 @@ test("v0.4.4 stable C0 is active while v0.4.3 remains accepted and v0.4.2 remain
   assert.equal(immediateFallback, "v0.4.2");
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.3`/);
   assert.match(roadmap,
-    /当前 programme 边界[^\n]*v0\.4\.3[^\n]*均已关闭[^\n]*v0\.4\.4 exact C0[^\n]*Source\/Candidate Cloud[^\n]*第一轮retirement全部KEEP[^\n]*Published Release[^\n]*Product Phase 5[^\n]*不产生Phase 5授权/);
+    /当前 programme 边界[^\n]*v0\.4\.3[^\n]*均已关闭[^\n]*v0\.4\.4 exact C0[^\n]*Source\/Candidate[^\n]*tag精确指向C0[^\n]*Published Release第二通道PASS[^\n]*Latest[^\n]*第二轮retirement[^\n]*Product Phase 5[^\n]*不产生Phase 5授权/);
   assert.match(currentTrain, /当前exact开发列车是`v0\.4\.4`/);
   assert.match(currentTrain, /^<a name="v0-4-4-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain, /Product Phase 4 Overview/);
@@ -88,7 +88,10 @@ test("v0.4.4 stable C0 is active while v0.4.3 remains accepted and v0.4.2 remain
   assert.match(candidateAcceptance, /SOURCE_CANDIDATE_PASS/);
   assert.match(candidateAcceptance, /SOURCE_CANDIDATE_ZIP_SHA256=4a179aad3ca0ce17270ee7a63c2644e8db2aa321cc48ed6056dbe6b4e70571e4/);
   assert.match(candidateAcceptance, /RELEASE_ASSETS_MATERIALIZED/);
-  assert.match(candidateAcceptance, /PUBLISHED_RELEASE_NOT_RUN/);
+  assert.match(candidateAcceptance, /PUBLISHED_RELEASE_PASS/);
+  assert.match(candidateAcceptance, /LATEST_PROMOTION_PENDING/);
+  assert.match(candidateAcceptance, /PWF_CLOUD_ACCEPTANCE_BASELINE_CONFLICT reason=\.planning_and_active_plan_missing/);
+  assert.match(candidateAcceptance, /空仓库中`\.planning`与active pointer同时缺失属于正常首次创建/);
 
   assert.match(phase4Overview, /v0\.4\.3 Release资产物化与验收边界/);
   assert.match(phase4Overview,
@@ -405,6 +408,13 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(canonicalBaseline, /没有独立的只读文件工具[\s\S]*只读 Shell preflight/);
   assert.match(canonicalBaseline, /Shell[\s\S]*只允许[\s\S]*存在性[\s\S]*类型[\s\S]*读取 `[.]planning\/[.]active_plan`/);
   assert.match(canonicalBaseline, /Shell不得创建、修改、删除、移动[\s\S]*重定向/);
+  assert.match(canonicalBaseline,
+    /空仓库中`\.planning`与`\.planning\/\.active_plan`同时不存在[^\n]*正常的首次创建状态[^\n]*不是拓扑异常/);
+  assert.match(canonicalBaseline,
+    /本轮新PLAN_ID目录和三个目标文件也都不存在[\s\S]*apply_patch创建所需父目录[\s\S]*不得报告[\s\S]*BASELINE_CONFLICT/);
+  assert.match(canonicalBaseline,
+    /真正的冲突只包括[\s\S]*symlink\/错误文件类型[\s\S]*目标文件已经存在[\s\S]*active pointer无法作为普通文件安全读取\/更新/);
+  assert.match(canonicalBaseline, /不得先用Shell预创建或`rm -rf \.planning`/);
   assert.match(canonicalBaseline, /正文写入[\s\S]*只允许使用 apply_patch/);
   assert.match(acceptanceTemplate,
     /PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_COMPLETED_V1[\s\S]*PWF_CLOUD_ACCEPTANCE_MARKERLESS_LEGACY_ACTIVE_V1/);

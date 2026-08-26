@@ -21,3 +21,11 @@
 - 第一轮retirement review没有适合立即清退的对象：planning继续承担恢复记忆，accepted窗口材料仍需rollback，C0输入已经sealed，当前guide与稳定templates还要服务publication和Published Release；全部判定KEEP。
 - 正式双资产可以在C1本地物化，但不进入Git：它们是待维护者上传的ignored输出。C1治理commit不会改变tag目标；annotated tag必须继续指向C0而不是C1。
 - Sealed bootstrap正文仍合法保留64位zero placeholder拒绝常量；判断正式seal应核对`HOOKS_SHA256`默认赋值是否为Cloud exact SHA，不能用全文“无64个零”作为条件。
+
+## Published Release and canonical baseline interpretation
+
+- 维护者明确报告tag/push/publication与第二通道PASS，公开资产identity与C1本地物化完全一致；这足以直接写回Published Release，不需要正常路径的额外联网postflight。
+- Release测试仓库为空时，`.planning`和`.planning/.active_plan`都不存在不是异常拓扑，而是canonical fixture尚未首次创建。只要本轮PLAN_ID目录和三个目标文件不存在，apply_patch应直接创建父目录、文件与pointer。
+- 冲突语义必须绑定具体危险状态：existing target、symlink/错误类型、不安全path component或无法安全读写的普通pointer。仅以“两个路径missing”报冲突属于过度防范，会制造无意义的人工授权往返。
+- 模板应同时禁止为满足preflight而先用Shell预创建或删除`.planning`；只读Shell负责exact-path存在性/类型检查，正文唯一写入者仍是apply_patch。
+- Published Release PASS不等于Latest或C2。accepted仍为v0.4.3、fallback仍为v0.4.2，直到维护者确认GitHub Release详情页显示v0.4.4为Latest且不再是Pre-release。

@@ -47,3 +47,12 @@
 |---|---:|---|
 | 默认沙箱无法创建`pwf-release-materialize-*`临时目录，WinError 5 | 1 | 维护机执行面限制；获批执行面使用同一命令成功，首次失败未产生v0.4.4输出。 |
 | 辅助检查误把bootstrap内用于fail-closed的64位zero常量当成未seal状态 | 1 | 测试断言过宽；改为核对实际`HOOKS_VERSION`/`HOOKS_SHA256`默认赋值，资产无需重建。 |
+
+## Published Release checkpoint — 2026-08-26
+
+- 维护者确认正式`v0.4.4` annotated tag已创建并push，tag精确指向C0；GitHub Release和ZIP/bootstrap双资产已经发布。
+- 维护者确认独立Published Release通道全部PASS。公开ZIP为91,369 bytes、SHA `4a179aad...71e4`；bootstrap为21,565 bytes、SHA `972af180...d701`，与C1本地物化身份一致。
+- Release测试仓库初始没有任何`.planning`文件。Cloud模型先前清理临时planning后，把`.planning`与active pointer同时缺失误判成`BASELINE_CONFLICT`；维护者明确授权首次创建后，apply_patch成功建立canonical fixture，后续planning injection、recent progress和整条通道全部PASS。
+- 稳定模板第6节现明确：empty repository是合法首次创建状态；apply_patch负责创建父目录/三文件/pointer。真正冲突仅限已有目标、symlink/错误类型、不安全component或无法安全读取/更新的pointer；禁止Shell预创建或`rm -rf .planning`。
+- 本轮只修改Release-excluded template、acceptance、ROADMAP、planning和静态断言，不改写C0、tag、公开ZIP或bootstrap。Latest confirmation、第二轮retirement和C2保持PENDING。
+- Published Release checkpoint边界复验：repository `17/17 PASS`、architecture `9/9 PASS`、`git diff --check` PASS。
