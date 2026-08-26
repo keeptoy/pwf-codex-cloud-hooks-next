@@ -31,3 +31,19 @@
 | 并行/逐项focused中`release-assets`、`release-package`及repository需要spawn Python/Git的case均返回`status=null` | 1 | 与已登记的Windows受限子进程执行面一致；不算产品失败，在获批执行面重跑同一命令。contracts、architecture、importer和diff check已经真实PASS。 |
 | 获批focused中release-assets 4/4、release-package 3/3 PASS；repository 16/17因新acceptance链接README自动中文slug失败 | 1 | 新增`source-candidate-c0-tag-push`显式anchor并更新链接；不放宽跨文档anchor合同。 |
 | 组合静态检查在Python compile和`node --check`通过后，Git Bash因Win32 error 5无法创建signal pipe | 1 | 维护机执行面限制；单独在获批执行面复验v0.4.3/v0.4.4两个bootstrap的`bash -n`，其余检查不受影响。 |
+
+## Source/Candidate C1 — 2026-08-26
+
+- 维护者明确报告正式C0 Source/Candidate Cloud PASS，并提供ZIP SHA `4a179aad3ca0ce17270ee7a63c2644e8db2aa321cc48ed6056dbe6b4e70571e4`；它与本地C0双构建完全一致。
+- 第一轮retirement checkpoint完成：当前C0/C1 planning、五个前序planning、accepted v0.4.3窗口材料、全部C0 sealed inputs、当前guide/templates/ROADMAP/tests均`KEEP`；没有RETIRE、MIGRATE或删除。
+- canonical materializer生成`dist/pwf-codex-cloud-hooks-v0.4.4.zip`（22 entries、91,369 bytes、Cloud exact SHA）与`dist/init-cloud-sandbox-v0.4.4.bash`（21,565 bytes、SHA `972af180babd9235788ca2d31e83a9630220b3d5cdfdef1f8d3938858ec0d701`）。
+- 第二次物化两项均为`unchanged`；builder check `healthy=true`、`bash -n`和精确version/SHA赋值核对PASS。
+- C1只修改Release-excluded acceptance、ROADMAP、planning与测试断言；ignored `dist/`资产不提交，C0 source字节保持不变。
+- C1边界复验：repository `17/17 PASS`、architecture `9/9 PASS`、`git diff --check` PASS；待提交路径与`dist/`资产严格分离。
+
+### C1 Error Log
+
+| Error | Attempt | Classification / Resolution |
+|---|---:|---|
+| 默认沙箱无法创建`pwf-release-materialize-*`临时目录，WinError 5 | 1 | 维护机执行面限制；获批执行面使用同一命令成功，首次失败未产生v0.4.4输出。 |
+| 辅助检查误把bootstrap内用于fail-closed的64位zero常量当成未seal状态 | 1 | 测试断言过宽；改为核对实际`HOOKS_VERSION`/`HOOKS_SHA256`默认赋值，资产无需重建。 |

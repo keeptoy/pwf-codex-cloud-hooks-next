@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.4`；继续归属Product Phase 4的Release文档patch train，stable zero-hash C0本地准备已完成，Source/Candidate Cloud仍需对正式身份重新验收 |
+| 当前开发列车 | `v0.4.4`；继续归属Product Phase 4的Release文档patch train，exact C0 Source/Candidate Cloud与第一轮退役检查已PASS，正式双资产已在本地物化；Published Release尚未运行 |
 | 当前已接受版本 | `v0.4.3`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.2` immediate fallback |
 | 回退证据链 | immutable `v0.4.1` deeper fallback；`v0.4.0`、`v0.3.5`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | v0.4.3及其前序功能、patch与治理列车均已关闭；v0.4.4只修补Source/Candidate PASS后的exact C0 tag教程并保持v0.4.3 accepted、v0.4.2 immediate fallback。正式stable C0已完成本地冻结，Source/Candidate仍为PENDING；此前dev checkout的PASS不覆盖改号后的Release字节。Product Phase 5仍只预占`0.5.0-*`且scope、Discovery、实现、Cloud和Release全部TBD；本patch train不产生Phase 5授权 |
+| 当前 programme 边界 | v0.4.3及其前序功能、patch与治理列车均已关闭；v0.4.4 exact C0 `f7032fd0efad3df9e4b6052e8cd766d27cd2a844`已完成Source/Candidate Cloud，Cloud ZIP SHA与本地确定性构建一致，第一轮retirement全部KEEP且未改变C0输入。正式双资产已本地物化；维护者push C1、tag精确指向C0、Pre-release上传与Published Release仍待后续动作。Product Phase 5仍只预占`0.5.0-*`且全部TBD；本patch train不产生Phase 5授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -66,10 +66,12 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 
 <a name="v0-4-4-release-tag-guide-train"></a>
 
-当前exact开发列车是`v0.4.4`，处于stable zero-hash C0候选状态，继续归属已闭合Product Phase 4 baseline上的小型Release文档patch train。它只把
+当前exact开发列车是`v0.4.4`，继续归属已闭合Product Phase 4 baseline上的小型Release文档patch train。它只把
 Source/Candidate PASS后“C1证据push → annotated tag精确指向C0 → 单独push tag → 核对remote peeled commit”的维护者命令补入
-README，并同步正式package/contract/bootstrap身份。本地candidate admission、回归与单一C0 commit完成后，由维护者push并对该exact
-stable C0重新运行Source/Candidate；此前`v0.4.4-dev` checkout的PASS只作前序发现，不提升为正式版本PASS。
+README，并同步正式package/contract/bootstrap身份。exact `SOURCE_CANDIDATE_HEAD=f7032fd0efad3df9e4b6052e8cd766d27cd2a844`
+已经完成正式Source/Candidate Cloud；第一轮retirement全部KEEP，C1只写Release-excluded证据。Cloud ZIP SHA
+`4a179aad3ca0ce17270ee7a63c2644e8db2aa321cc48ed6056dbe6b4e70571e4`与本地双构建一致，正式ZIP和non-zero bootstrap已物化到ignored
+`dist/`。下一步由维护者push C1，再把正式tag精确固定到C0、创建Pre-release并上传两项资产；Published Release仍为PENDING。
 
 六个planning scope继续承担相邻Discovery恢复、治理参考与当前任务账本；只有`.active_plan`指向v0.4.4 Source/Candidate C0任务。长期规则同步到
 [`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)，但该patch不重新打开Product行为。accepted/fallback

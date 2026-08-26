@@ -14,3 +14,10 @@
 - Release输入改号面：package identity、Release artifact package/external asset、manifest中的Release contract SHA、stable zero-hash bootstrap。
 - Release-excluded同步面：ROADMAP、CHANGELOG、Phase 4 overview、版本acceptance、tests和本planning。
 - 明确不变：runtime 12-file inventory、四个pristine upstream文件、installer/adapter行为、Host ABI、managed events与v0.4.3 immutable publication。
+
+## Source/Candidate result and C1 decisions
+
+- 正式C0 `f7032fd0efad3df9e4b6052e8cd766d27cd2a844`已经由维护者确认Cloud PASS；Cloud ZIP SHA与本地确定性SHA完全一致，前序dev PASS不再承担正式证据角色。
+- 第一轮retirement review没有适合立即清退的对象：planning继续承担恢复记忆，accepted窗口材料仍需rollback，C0输入已经sealed，当前guide与稳定templates还要服务publication和Published Release；全部判定KEEP。
+- 正式双资产可以在C1本地物化，但不进入Git：它们是待维护者上传的ignored输出。C1治理commit不会改变tag目标；annotated tag必须继续指向C0而不是C1。
+- Sealed bootstrap正文仍合法保留64位zero placeholder拒绝常量；判断正式seal应核对`HOOKS_SHA256`默认赋值是否为Cloud exact SHA，不能用全文“无64个零”作为条件。
