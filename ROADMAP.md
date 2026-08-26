@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.4.3`；继续归属Product Phase 4的文档治理patch train，stable zero-hash C0本地准备已完成，Source/Candidate Cloud尚未运行，不激活Product Phase 5 |
+| 当前开发列车 | `v0.4.3`；继续归属Product Phase 4的文档治理patch train，exact C0 Source/Candidate Cloud与第一轮退役检查已PASS，C1状态写回已形成；Published Release尚未运行，不激活Product Phase 5 |
 | 当前已接受版本 | `v0.4.2`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.1` immediate fallback |
 | 回退证据链 | immutable `v0.4.0` deeper fallback；`v0.3.5`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | `v0.4.2`及其前序列车均已关闭；`v0.4.3`作为Product Phase 4上的治理patch candidate进入C0，本地身份、candidate bootstrap、验收入口与回归已经闭合，Source/Candidate仍为PENDING。Product Phase 5仍只预占`0.5.0-*`，其scope、预期产物、gate与Release路线均为TBD；push、Cloud、tag、publication与其他外部状态变更未授权 |
+| 当前 programme 边界 | `v0.4.2`及其前序列车均已关闭；`v0.4.3`的exact C0 `6204de36cd8b2cbc614a4bb53b8481a5a1ba234d`已完成Source/Candidate Cloud与source-candidate closeout retirement checkpoint；C1只写Release-excluded状态，未改变C0输入。Product Phase 5仍只预占`0.5.0-*`且全部TBD；维护者push C1、tag指向C0、正式资产materialization/publication及Published Release尚待后续动作 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -72,12 +72,13 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 local/remote执行限制与默认对策
 收敛到README可发现的长期档案；Work Step D建立canonical bootstrap模板和post-PASS Release资产materializer，消除手工复制、
 中文编码漂移与ZIP SHA误配。当前Release gate已把development identity收敛为stable zero-hash候选，candidate admission preflight
-只做inventory与风险分类并保留全部planning；本地C0验证已经完成，本次单一candidate commit形成精确
-`SOURCE_CANDIDATE_HEAD`，随后由维护者push并启动Source/Candidate Cloud。该列车不修改production、runtime、Host ABI或
-trusted graph，也不激活仍为TBD的Product Phase 5。
+只做inventory与风险分类并保留全部planning；本地C0验证和Source/Candidate Cloud已经完成，exact
+`SOURCE_CANDIDATE_HEAD=6204de36cd8b2cbc614a4bb53b8481a5a1ba234d`。第一轮retirement checkpoint全部KEEP，C1只写
+Release-excluded证据；下一步由维护者push C1，并在取得实际4.1 ZIP SHA后把正式tag固定到C0、物化和发布双资产。该列车不修改
+production、runtime、Host ABI或trusted graph，也不激活仍为TBD的Product Phase 5。
 
 四个planning scope继续承担相邻Discovery恢复、治理参考与当前C0账本；只有`.active_plan`指向本轮Source/Candidate任务。保留旧scope
-不扩大本列车范围；stable `0.4.3` source identity只表示C0候选已形成，不表示Cloud PASS、tag或Release已经形成。具体教程与真实
+不扩大本列车范围；stable source identity或Source/Candidate PASS都不自动表示tag、public assets或Published Release已经形成。具体教程与真实
 状态只读[`v0.4.3 acceptance`](docs/acceptance/v0.4.3-cloud-hard-acceptance.md#v0-4-3-release-operator-guide)。
 
 <a name="product-phase-route-index"></a>
