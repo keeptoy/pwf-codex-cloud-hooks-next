@@ -4,12 +4,12 @@
 [`ROADMAP.md`](ROADMAP.md)；当前唯一行动与授权边界见活动 `task_plan.md`；精确 source、资产、大小和
 SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 acceptance。
 
-## v0.4.4-dev
+## v0.4.4
 
 ### Changed
 
-- 开启继续归属Product Phase 4的Release文档补丁列车；README作为Release ZIP输入进入新的`0.4.4-dev` development identity，
-  不改写已发布v0.4.3的tag、ZIP、bootstrap或acceptance，也不激活仍为TBD的Product Phase 5。
+- 将继续归属Product Phase 4的Release文档补丁列车收敛为stable `0.4.4` Source/Candidate候选身份；README作为Release ZIP输入
+  进入新的exact C0，不改写已发布v0.4.3的tag、ZIP、bootstrap或acceptance，也不激活仍为TBD的Product Phase 5。
 - 补齐Source/Candidate PASS后的tag操作：C1证据分支push后，维护者必须用显式`SOURCE_CANDIDATE_HEAD`创建annotated tag、
   单独push exact tag ref，并按peeled commit核对远端tag仍指向C0；同名tag存在或身份不符时fail closed，禁止force/move/delete-recreate。
 

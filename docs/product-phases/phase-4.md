@@ -84,7 +84,7 @@ exact user、repository、commit、plan与容器state的consent callback；未�
 
 ## Version-train mapping and governance closeout
 
-Phase 4的Product能力由`0.4.0-*`功能/迁移列车形成，后续`v0.4.1`path-safety patch与`v0.4.2`、`v0.4.3`文档治理
+Phase 4的Product能力由`0.4.0-*`功能/迁移列车形成，后续`v0.4.1`path-safety patch与`v0.4.2`、`v0.4.3`、`v0.4.4`文档治理
 继续归属同一Product baseline；patch/governance列车不因版本号变化自动创建新Product Phase。具体版本delta只见CHANGELOG。
 
 <a name="v0-4-2-release-closeout"></a>
@@ -143,6 +143,14 @@ programme accepted，`v0.4.2`成为immediate fallback。逐资产与运行证据
 - Source/Candidate PASS后先把C1证据写回并push治理分支，再由维护者用显式`SOURCE_CANDIDATE_HEAD`创建annotated tag；tag不得
   默认落到当前HEAD、C1或C2。远端只push该exact tag ref，并以annotated tag的`^{}` peeled commit等于C0作为身份确认；任何同名
   tag存在或身份不符都fail closed，禁止force、移动或删除重建。
+
+<a name="v0-4-4-release-tag-governance"></a>
+
+### v0.4.4 Release tag操作教程治理
+
+`v0.4.4`继续归属同一Phase 4 Product baseline，只把上述C0 annotated tag规则转成根README可复制的维护者命令，并以新的
+stable package/contract/zero-hash bootstrap身份承载这项Release输入变化。它不改变runtime、Host ABI、managed events、trusted
+graph或Product行为；exact C0、Cloud PASS、publication与版本角色仍分别只读ROADMAP、活动planning和版本acceptance。
 
 ## Closeout and successor inheritance
 

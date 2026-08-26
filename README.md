@@ -397,6 +397,8 @@ version/contract/zero-hash测试：保证没有拿错旧版或正式bootstrap
 - PASS后没有修改README、package、contract、runtime、builder或其他ZIP输入；允许的C1写回只能是Release-excluded治理/证据文件；
 - 根目录zero-hash candidate仍与canonical模板逐字节一致。
 
+<a name="source-candidate-c0-tag-push"></a>
+
 #### 先给已通过的C0创建并推送正式tag
 
 第一通道通过后，先把Source/Candidate证据和第一轮退役结果写入C1并push治理分支；然后创建正式annotated tag。这里最容易犯的错是

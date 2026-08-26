@@ -418,8 +418,8 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(currentTrain, /^<a name="v\d+-\d+-\d+(?:-[a-z0-9-]+)?-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain,
     /Product Phase 4 Overview[\s\S]*BASELINE_PROVENANCE[\s\S]*v0\.4\.3 acceptance/);
-  assert.match(currentTrain, /不是C0、Cloud PASS、tag、Release或Phase 5激活/);
-  assert.match(currentTrain, /五个planning scope[\s\S]*只有`\.active_plan`指向/);
+  assert.match(currentTrain, /stable zero-hash C0候选状态[\s\S]*Source\/Candidate/);
+  assert.match(currentTrain, /六个planning scope[\s\S]*只有`\.active_plan`指向/);
   assert.match(currentTrain, /docs\/product-phases\/phase-4\.md#product-phase-4-overview/);
   assert.match(currentTrain, /candidate \+ accepted role window/);
   assert.match(currentTrain, /trusted\/Release zones 继续 exact[\s\S]*docs\/planning zones 按 lifecycle policy/);

@@ -56,9 +56,10 @@ function currentRoleWindow() {
   return { accepted, candidate, developmentTrain, immediateFallback, roadmap };
 }
 
-test("v0.4.4-dev is active while v0.4.3 remains accepted and v0.4.2 remains fallback", () => {
+test("v0.4.4 stable C0 is active while v0.4.3 remains accepted and v0.4.2 remains fallback", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const acceptedAcceptance = read("docs/acceptance/v0.4.3-cloud-hard-acceptance.md");
+  const candidateAcceptance = read("docs/acceptance/v0.4.4-cloud-hard-acceptance.md");
   const retiredV042Acceptance = readGit("33deb5870015c94df329fe233e306363ba43232b",
     "docs/acceptance/v0.4.2-cloud-hard-acceptance.md");
   const provenance = read("BASELINE_PROVENANCE.md");
@@ -68,20 +69,24 @@ test("v0.4.4-dev is active while v0.4.3 remains accepted and v0.4.2 remains fall
     roadmap.indexOf("## 5. Product Phase 路线"),
   );
 
-  assert.equal(developmentTrain, "v0.4.4-dev");
-  assert.equal(candidate, "v0.4.4-dev");
+  assert.equal(developmentTrain, "v0.4.4");
+  assert.equal(candidate, "v0.4.4");
   assert.equal(accepted, "v0.4.3");
   assert.equal(immediateFallback, "v0.4.2");
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.3`/);
   assert.match(roadmap,
-    /当前 programme 边界[^\n]*v0\.4\.3[^\n]*均已关闭[^\n]*v0\.4\.4-dev[^\n]*尚未形成C0或Cloud PASS[^\n]*Product Phase 5[^\n]*不产生Phase 5授权/);
-  assert.match(currentTrain, /当前exact开发列车是`v0\.4\.4-dev`/);
+    /当前 programme 边界[^\n]*v0\.4\.3[^\n]*均已关闭[^\n]*v0\.4\.4[^\n]*Source\/Candidate仍为PENDING[^\n]*dev checkout的PASS不覆盖[^\n]*Product Phase 5[^\n]*不产生Phase 5授权/);
+  assert.match(currentTrain, /当前exact开发列车是`v0\.4\.4`[^\n]*stable zero-hash C0候选状态/);
   assert.match(currentTrain, /^<a name="v0-4-4-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain, /Product Phase 4 Overview/);
   assert.match(currentTrain, /BASELINE_PROVENANCE/);
   assert.match(currentTrain, /v0\.4\.3 acceptance/);
-  assert.match(currentTrain, /五个planning scope[^\n]*继续/);
-  assert.match(currentTrain, /不是C0、Cloud PASS、tag、Release或Phase 5激活/);
+  assert.match(currentTrain, /六个planning scope[^\n]*继续/);
+  assert.match(currentTrain, /v0\.4\.4 acceptance/);
+  assert.match(currentTrain, /v0\.4\.4-dev[^\n]*PASS只作前序发现[^\n]*不提升为正式版本PASS/);
+  assert.match(candidateAcceptance, /^<a name="v0-4-4-release-operator-guide"><\/a>$/m);
+  assert.match(candidateAcceptance, /SOURCE_CANDIDATE_NOT_RUN/);
+  assert.match(candidateAcceptance, /PUBLISHED_RELEASE_NOT_RUN/);
 
   assert.match(phase4Overview, /v0\.4\.3 Release资产物化与验收边界/);
   assert.match(phase4Overview,
