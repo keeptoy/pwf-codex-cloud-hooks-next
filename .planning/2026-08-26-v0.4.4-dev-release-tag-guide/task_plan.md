@@ -28,17 +28,17 @@
 
 - [x] 更新package、Release contract、manifest和zero-hash development bootstrap身份。
 - [x] 在README双资产小节补充C1 push后创建并单独推送exact C0 annotated tag的教程。
-- [ ] 同步ROADMAP、CHANGELOG、Phase 4 overview并新建Phase 4.16历史记录。
+- [x] 同步ROADMAP、CHANGELOG、Phase 4 overview并新建Phase 4.16历史记录。
 
 ### Work Step C: verify and commit
 
 - [x] 更新相应静态与Release边界测试。
 - [x] 运行完整本地回归、deterministic ZIP/bootstrap、importer与语法检查。
-- [ ] 审计diff并创建单一范围本地commit；停止在任何远端写操作前。
+- [x] 审计diff并创建单一范围本地commit；停止在任何远端写操作前。
 
 ## Next Step
 
-审计并创建v0.4.4-dev身份/README/overview交付commit A；随后以其exact hash建立Phase 4.16 cold evidence。
+创建Phase 4.16/history/planning closeout commit B，然后停止；等待维护者push本地`0.4.4`分支，不执行真实tag或其他远端动作。
 
 ## Errors Encountered
 
@@ -51,3 +51,5 @@
 | 首轮完整suite 157 pass / 4 fail / 26 skip | 1 | 补v0.4.3 sealed bootstrap source，并把candidate predecessor轮转到current accepted v0.4.3后重跑。 |
 | predecessor专项复验仍因v0.4.2 canonical upstream值失败 | 2 | 从immutable v0.4.3 tag计算并更新exact canonical upstream SHA。 |
 | 一次混合补丁因planning上下文未匹配被拒绝 | 1 | 拆分production与planning补丁；apply_patch原子拒绝，未形成部分状态。 |
+| commit B首次暂存区检查报告Phase 4.16文件末尾有多余空行 | 1 | 用apply_patch删除单个末尾空行，重新暂存并复验；没有创建失败或空commit。 |
+| 首次尝试补记上述错误时，跨文件补丁因task plan上下文多带一条不存在的suite行而被拒绝 | 1 | 按当前文件拆成独立小补丁；apply_patch原子拒绝，未形成部分修改。 |

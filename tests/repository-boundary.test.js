@@ -597,7 +597,7 @@ test("historical documents have two controlled macro entrances and remain adviso
     /ROADMAP\.md#product-phase-overview-rotation[\s\S]*通用history冻结[\s\S]*不复制[\s\S]*仓库专用状态机/);
   assert.match(governanceGuide,
     /programme在record冻结后插入、拆分或重编号Product Phase时[\s\S]*不得搜索替换历史正文[\s\S]*Post-programme reindex status/);
-  assert.match(historyIndex, /RETROSPECTIVE_CAPSULE[\s\S]*Phase 0～3\.9\.3[\s\S]*Phase 4\.12～4\.15[\s\S]*15/);
+  assert.match(historyIndex, /RETROSPECTIVE_CAPSULE[\s\S]*Phase 0～3\.9\.3[\s\S]*Phase 4\.12～4\.16[\s\S]*16/);
   assert.match(historyIndex, /FROZEN_DISCOVERY_RECORD[\s\S]*Phase 4\.1～4\.11[\s\S]*11/);
   assert.match(historyIndex, /Phase 4\.1～4\.11[\s\S]*不表示[\s\S]*11个独立Product Phase/);
   assert.match(historyIndex,
@@ -777,6 +777,35 @@ test("Phase 4.15 preserves v0.4.3 Release asset materialization governance", () 
   assert.match(history, /add5f8c98b81c3019f4f095f566a80913d02df95/);
   assert.match(historyIndex,
     /phase-4\.15-v0\.4\.3-release-asset-materialization\.md#phase-4-15-historical-position/);
+  assert.equal(artifact.entries.some(entry => entry.path === relative), false);
+  assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
+});
+
+test("Phase 4.16 preserves v0.4.4 exact C0 tag guide governance", () => {
+  const relative = "docs/history/phase-4.16-v0.4.4-release-tag-guide.md";
+  const historyIndex = read("docs/history/README.md");
+  const artifact = JSON.parse(read(currentArtifactPath));
+  assert.equal(fs.existsSync(path.join(root, relative)), true, relative);
+  const history = read(relative);
+
+  for (const anchor of [
+    "phase-4-16-historical-position", "phase-4-16-problem-before",
+    "phase-4-16-core-decisions", "phase-4-16-completed-delivery",
+    "phase-4-16-acceptance-conclusion", "phase-4-16-explicit-non-goals",
+    "phase-4-16-successor-inheritance", "phase-4-16-immutable-evidence",
+  ]) assert.match(history, new RegExp('<a name="' + anchor + '"></a>'));
+
+  assert.match(history, /^# Phase 4\.16：v0\.4\.4 Release tag 操作教程治理$/m);
+  assert.match(history, /Record role: `RETROSPECTIVE_CAPSULE`/);
+  assert.match(history, /README本身是Release ZIP输入[\s\S]*新的`v0\.4\.4-dev` development identity/);
+  assert.match(history, /`SOURCE_CANDIDATE_HEAD`[\s\S]*`git tag -a`的commit参数[\s\S]*禁止依赖当前HEAD/);
+  assert.match(history, /同名tag fail closed[\s\S]*不使用[\s\S]*force、移动、删除重建或覆盖/);
+  assert.match(history, /只push exact tag ref[\s\S]*完整tag refspec/);
+  assert.match(history, /annotated tag按peeled commit核对[\s\S]*`\^\{\}` peeled commit[\s\S]*精确等于`SOURCE_CANDIDATE_HEAD`/);
+  assert.match(history, /accepted v0\.4\.3作为exact installed predecessor/);
+  assert.match(history, /aea21aea851e17ee9cc9cbc462a031afa5cad8c8/);
+  assert.match(historyIndex,
+    /phase-4\.16-v0\.4\.4-release-tag-guide\.md#phase-4-16-historical-position/);
   assert.equal(artifact.entries.some(entry => entry.path === relative), false);
   assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
 });

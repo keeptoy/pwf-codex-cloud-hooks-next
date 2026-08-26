@@ -14,6 +14,8 @@
 - v0.4.3 oracle修正与accepted predecessor轮转后，完整Windows suite为`tests=187 / pass=161 / fail=0 / skipped=26`；skip均为明确Linux/POSIX cases。
 - Final transition SHA为`1b68634830da24bea366c9f9be47e3b98bcad543f39d83ba32d36e07c30045f1`；v0.4.4-dev deterministic ZIP为22 entries、91,354 bytes、SHA-256 `20bb693c2ca1acd34ce90b870efc63a492e0edcdcfc1cccbf392171d570c0722`。
 - Importer、candidate-bootstrap check、README tag PowerShell parser、Python compile、`node --check install.js`、v0.4.3/v0.4.4-dev `bash -n`与`git diff --check`均PASS。
+- 创建交付commit A `aea21aea851e17ee9cc9cbc462a031afa5cad8c8`，随后新建Phase 4.16 `RETROSPECTIVE_CAPSULE`并用该exact commit作cold evidence；history索引与直接边界测试同步。
+- Phase 4.16/文档边界专项`26/26 PASS`；最终完整suite增加一条history测试后为`tests=188 / pass=162 / fail=0 / skipped=26`。
 
 ## Validation
 
@@ -26,6 +28,9 @@
 | Full Windows suite | 187 tests / 161 pass / 0 fail / 26 skip |
 | Candidate ZIP | 22 entries / 91,354 bytes / SHA-256 `20bb693c2ca1acd34ce90b870efc63a492e0edcdcfc1cccbf392171d570c0722` |
 | Static / importer / bootstrap checks | PASS |
+| Delivery commit A | `aea21aea851e17ee9cc9cbc462a031afa5cad8c8` |
+| Final Phase 4.16 docs boundary | 26/26 PASS |
+| Final full Windows suite | 188 tests / 162 pass / 0 fail / 26 skip |
 
 ## Error Log
 
@@ -43,3 +48,5 @@
 | 受限执行面内Node无法spawn只读git子进程（`EPERM`） | 1 | 按环境分工在获批执行面重跑同一只读计算并成功；未修改仓库或远端。 |
 | 一次跨production/planning补丁因planning上下文顺序不匹配而整批拒绝 | 1 | 拆分为production合同补丁和精确planning更新；首次拒绝无部分写入。 |
 | 一次`rg`命令的PowerShell引号转义使末尾pattern被解释为路径 | 1 | 所需匹配已由同次`Get-Content`取得；后续不复用该组合命令，使用独立pattern或单引号。 |
+| commit B首次`git diff --cached --check`报告Phase 4.16文件末尾存在多余空行 | 1 | 用apply_patch删除单个末尾空行，重新暂存后复验；commit尚未创建，无历史污染。 |
+| 补记该错误的首次跨文件apply_patch因task plan上下文多带一条不存在的suite行而被拒绝 | 1 | 读取实际尾部后拆成三个独立补丁；原子拒绝未产生部分写入。 |
