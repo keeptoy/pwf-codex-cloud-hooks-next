@@ -43,7 +43,7 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 
 | Record role | 当前索引对象 | 数量 |
 |---|---|---:|
-| `RETROSPECTIVE_CAPSULE` | Phase 0～3.9.3，以及回补型Phase 4.12～4.16 | 16 |
+| `RETROSPECTIVE_CAPSULE` | Phase 0～3.9.3，以及回补型Phase 4.12～4.17 | 17 |
 | `FROZEN_DISCOVERY_RECORD` | Phase 4.1～4.11的正式Discovery、route review、implementation planning与closure decision records | 11 |
 
 这里的Phase编号和文件名保留历史语义，不表示Phase 4.1～4.11是11个独立Product Phase。未来新增对象必须在索引说明中明确
@@ -84,6 +84,7 @@ Phase 5/6/7/8现分别对应Phase 6/7/8/9与`0.6.0-*`/`0.7.0-*`/`0.8.0-*`/`0.9.0
 | Phase 4.14 | 回顾性Release/acceptance文档治理里程碑：拆分Discovery验收、Release双通道与retirement review，取消未来列车强制Phase 9，把两轮退役嵌入Release进入/退出检查点，并冻结C0候选/tag、C1第一状态写回与C2最终closeout身份流；不是新的Product Phase或Release授权 | [`phase-4.14-release-closeout-governance.md`](phase-4.14-release-closeout-governance.md#phase-4-14-historical-position) |
 | Phase 4.15 | 回顾性`v0.4.3-dev`Release asset materialization与验收入口治理里程碑：建立canonical bootstrap template和薄materializer，区分candidate/正式双资产、contract选择链、Shell override能力与candidate身份准入，并冻结Source/Candidate和Published Release各自证明范围；不是新的Product Phase、Cloud PASS或Release授权 | [`phase-4.15-v0.4.3-release-asset-materialization.md`](phase-4.15-v0.4.3-release-asset-materialization.md#phase-4-15-historical-position) |
 | Phase 4.16 | 回顾性`v0.4.4-dev`Release tag教程治理里程碑：确认README属于Release ZIP输入，补齐C1后以显式C0创建annotated tag、exact ref push与remote peeled commit核对，并同步accepted predecessor/sealed bootstrap oracle；不是新的Product Phase、Cloud PASS、真实tag或Release授权 | [`phase-4.16-v0.4.4-release-tag-guide.md`](phase-4.16-v0.4.4-release-tag-guide.md#phase-4-16-historical-position) |
+| Phase 4.17 | 回顾性Phase 4 harness收官interlude：区分不可变Release identity的必要成本与guide/状态投影/prose测试/完整lifecycle重复成本，提出machine-admitted风险lane、critical fingerprint、operator文档出包与薄harness方向；只是Product Phase 5 Discovery输入，不修改现行Release流程或产生实施授权 | [`phase-4.17-phase-4-harness-retrospective.md`](phase-4.17-phase-4-harness-retrospective.md#phase-4-17-historical-position) |
 
 ## 阅读方式
 

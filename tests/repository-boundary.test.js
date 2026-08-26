@@ -607,7 +607,7 @@ test("historical documents have two controlled macro entrances and remain adviso
     /ROADMAP\.md#product-phase-overview-rotation[\s\S]*通用history冻结[\s\S]*不复制[\s\S]*仓库专用状态机/);
   assert.match(governanceGuide,
     /programme在record冻结后插入、拆分或重编号Product Phase时[\s\S]*不得搜索替换历史正文[\s\S]*Post-programme reindex status/);
-  assert.match(historyIndex, /RETROSPECTIVE_CAPSULE[\s\S]*Phase 0～3\.9\.3[\s\S]*Phase 4\.12～4\.16[\s\S]*16/);
+  assert.match(historyIndex, /RETROSPECTIVE_CAPSULE[\s\S]*Phase 0～3\.9\.3[\s\S]*Phase 4\.12～4\.17[\s\S]*17/);
   assert.match(historyIndex, /FROZEN_DISCOVERY_RECORD[\s\S]*Phase 4\.1～4\.11[\s\S]*11/);
   assert.match(historyIndex, /Phase 4\.1～4\.11[\s\S]*不表示[\s\S]*11个独立Product Phase/);
   assert.match(historyIndex,
@@ -816,6 +816,45 @@ test("Phase 4.16 preserves v0.4.4 exact C0 tag guide governance", () => {
   assert.match(history, /aea21aea851e17ee9cc9cbc462a031afa5cad8c8/);
   assert.match(historyIndex,
     /phase-4\.16-v0\.4\.4-release-tag-guide\.md#phase-4-16-historical-position/);
+  assert.equal(artifact.entries.some(entry => entry.path === relative), false);
+  assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
+});
+
+test("Phase 4.17 separates immutable Release identity from reducible harness ceremony", () => {
+  const relative = "docs/history/phase-4.17-phase-4-harness-retrospective.md";
+  const historyIndex = read("docs/history/README.md");
+  const phase4Overview = read("docs/product-phases/phase-4.md");
+  const artifact = JSON.parse(read(currentArtifactPath));
+  assert.equal(fs.existsSync(path.join(root, relative)), true, relative);
+  const history = read(relative);
+
+  for (const anchor of [
+    "phase-4-17-historical-position", "phase-4-17-problem-before",
+    "phase-4-17-core-decisions", "phase-4-17-harness-cost-model",
+    "phase-4-17-successor-options", "phase-4-17-completed-delivery",
+    "phase-4-17-acceptance-conclusion", "phase-4-17-explicit-non-goals",
+    "phase-4-17-successor-inheritance", "phase-4-17-immutable-evidence",
+  ]) assert.match(history, new RegExp('<a name="' + anchor + '"></a>'));
+
+  assert.match(history, /^# Phase 4\.17：Phase 4 harness 重量与后继精简回顾$/m);
+  assert.match(history, /Record role: `RETROSPECTIVE_CAPSULE`/);
+  assert.match(history, /窄Product[\s\S]{0,120}trusted supply chain[\s\S]{0,120}harness/);
+  assert.match(history, /README属于Release ZIP allowlist[\s\S]*新字节必须有新身份/);
+  assert.match(history, /identity与behavior证据/);
+  assert.match(history, /快车道必须machine-admitted/);
+  for (const lane of [
+    "SOURCE_ONLY_GOVERNANCE", "PACKAGE_DOC_ONLY", "RELEASE_MECHANICS", "PRODUCT_OR_SECURITY",
+  ]) assert.match(history, new RegExp(lane));
+  assert.match(history, /未知路径[\s\S]*回退更严格lane/);
+  assert.match(history, /不激活Product Phase 5/);
+  assert.match(history, /053f66e994ca095e974f69a7fbe8f2bb54697fc3/);
+
+  assert.match(phase4Overview, /^<a name="phase-4-harness-closeout-lessons"><\/a>$/m);
+  assert.match(phase4Overview, /machine classifier[\s\S]*critical fingerprints[\s\S]*`FULL`/);
+  assert.match(phase4Overview, /Product Phase 5[\s\S]*Discovery输入[\s\S]*不是现行流程变更/);
+  assert.match(historyIndex,
+    /phase-4\.17-phase-4-harness-retrospective\.md#phase-4-17-historical-position/);
+  assert.match(historyIndex, /Phase 4\.12～4\.17[\s\S]*\| 17 \|/);
   assert.equal(artifact.entries.some(entry => entry.path === relative), false);
   assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
 });

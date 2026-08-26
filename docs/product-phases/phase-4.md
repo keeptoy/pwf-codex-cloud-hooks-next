@@ -154,6 +154,27 @@ graph或Product行为；exact C0、双通道Cloud、immutable publication、GitH
 `v0.4.4`成为programme accepted，`v0.4.3`成为immediate fallback；最终证据只读
 [`v0.4.4 acceptance`](../acceptance/v0.4.4-cloud-hard-acceptance.md#v0-4-4-role-window-closeout)。
 
+<a name="phase-4-harness-closeout-lessons"></a>
+
+## Harness closeout lessons for successor Discovery
+
+Phase 4收官后的工程形态不是“只有几个Hook脚本”，而是**窄Product + trusted supply chain + Release/Cloud/governance harness**。
+这个harness把explicit opt-in、未知状态拒绝、deterministic package、公开下载与rollback证据连成了可靠闭环；但v0.4.4也证明，
+若不区分风险层，维护者教程的一小段文字变化也会带动version identity、长篇guide、跨文档状态和完整lifecycle线性重跑。
+
+后继必须保留的底线是：公开package任一字节变化都产生新C0/ZIP/checksum/tag identity；runtime、installer、contract、Host ABI、
+trusted graph或安全边界变化必须执行相称Linux/Cloud与负向证据；Published Release继续证明公开默认下载链。可以优化的是人工编排：
+维护者专用教程可评估迁出Release ZIP，版本guide只保存增量evidence，C0/C1/C2与retirement inventory由薄harness生成，测试优先绑定
+schema/owner/anchor/关系而不是版本号与自然语言句式。
+
+未来若建立风险lane，必须由machine classifier根据Release inclusion、owner与critical fingerprints准入：source-only治理可以不发版；
+package-doc变化仍有新公开身份但可研究缩小行为复验；Release mechanics保留双通道资产边界；Product/security变化继续完整流程。
+任何未知路径、fingerprint变化、Host profile不匹配或证据链断裂都自动升级到`FULL`，不得用人工“只改文档”作为跳gate凭据。
+
+这些只是Product Phase 5可选择的Discovery输入，不是现行流程变更，也不自动创建`0.5.0-*`列车。优化的成功标准不是少几个步骤，
+而是在保持错误分类fail closed的前提下，减少重复Cloud执行、人工状态同步和prose-bound测试；若为此新增的框架比现有流程更重，
+则应`NO_GO`。
+
 ## Closeout and successor inheritance
 
 Phase 4的长期Product baseline已经闭合。后继Phase必须继续保持：legacy默认、plan-local exact opt-in、activation-last、
