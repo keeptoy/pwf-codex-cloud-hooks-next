@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `NONE`；v0.4.3已完成C2，后继列车尚未授权 |
+| 当前开发列车 | `v0.4.4-dev`；继续归属Product Phase 4的Release文档patch train，只授权tag教程、版本身份同步与对应治理验证 |
 | 当前已接受版本 | `v0.4.3`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.2` immediate fallback |
 | 回退证据链 | immutable `v0.4.1` deeper fallback；`v0.4.0`、`v0.3.5`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | Product Phase 4及其v0.4.0～v0.4.3功能、patch与治理列车均已关闭；v0.4.3 exact C0、双通道Cloud、immutable publication、Latest、第二轮retirement与C2均已闭合。Product Phase 5仍只预占`0.5.0-*`且scope、Discovery、实现、Cloud和Release全部TBD；不得把空列车状态解释为激活授权 |
+| 当前 programme 边界 | v0.4.3及其前序功能、patch与治理列车均已关闭；v0.4.4-dev只修补Source/Candidate PASS后的exact C0 tag教程并保持v0.4.3 accepted、v0.4.2 immediate fallback。它尚未形成C0或Cloud PASS。Product Phase 5仍只预占`0.5.0-*`且scope、Discovery、实现、Cloud和Release全部TBD；本patch train不产生Phase 5授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -64,14 +64,16 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 本节是current development train指针：只保留exact列车身份、当前授权边界与对应Product Phase overview链接。活动planning、
 未封存Discovery和需要current状态的验收材料可以引用train anchor，但本节不再承载长期Product摘要。
 
-当前开发列车为`NONE`。上一条`v0.4.3`列车的长期Product与治理结论已沉淀到
-[`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)，exact发布身份与Cloud证据分别由
-[`BASELINE_PROVENANCE`](BASELINE_PROVENANCE.md)和
-[`v0.4.3 acceptance`](docs/acceptance/v0.4.3-cloud-hard-acceptance.md#v0-4-3-release-operator-guide)保存；本节不保留旧exact train anchor。
+<a name="v0-4-4-release-tag-guide-train"></a>
 
-四个planning scope按维护者决定继续承担相邻Discovery恢复、治理参考与C2账本，`.active_plan`仍可指向刚关闭的Release任务，直到
-后继任务由planning工具切换；这不产生current development train或Product Phase 5授权。下一条列车只能在维护者明确scope、版本身份、
-活动task plan与Discovery退出条件后建立。
+当前exact开发列车是`v0.4.4-dev`，继续归属已闭合Product Phase 4 baseline上的小型Release文档patch train。它只把
+Source/Candidate PASS后“C1证据push → annotated tag精确指向C0 → 单独push tag → 核对remote peeled commit”的维护者命令补入
+README，并同步诚实的development package/contract/bootstrap身份。当前仍不是C0、Cloud PASS、tag、Release或Phase 5激活。
+
+五个planning scope继续承担相邻Discovery恢复、治理参考与当前任务账本；只有`.active_plan`指向v0.4.4-dev任务。长期规则同步到
+[`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)，但该patch不重新打开Product行为。accepted/fallback
+继续由v0.4.3/v0.4.2承担，exact已发布身份仍只读[`BASELINE_PROVENANCE`](BASELINE_PROVENANCE.md)与
+[`v0.4.3 acceptance`](docs/acceptance/v0.4.3-cloud-hard-acceptance.md#v0-4-3-release-operator-guide)。
 
 <a name="product-phase-route-index"></a>
 
@@ -88,7 +90,7 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 / overview |
 |---|---|---|---|---|
-| 4 | `0.4.0-*`～`0.4.3` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理 | F0～F3C功能/rollback已闭合；后续patch/governance列车不得改变Product行为或激活Phase 5 | Product baseline complete；[`Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview) |
+| 4 | `0.4.0-*`～`0.4.4-dev` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理 | F0～F3C功能/rollback已闭合；后续patch/governance列车不得改变Product行为或激活Phase 5 | Product baseline complete；当前v0.4.4-dev只做Release tag教程patch；[`Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview) |
 | 5 | `0.5.0-*` | 其他文档治理方向；具体scope与预期产物TBD | Discovery rounds、退出/Cloud gate、Release路线与对象清单均TBD | route placeholder；不是当前开发列车，未授权实施或Release，不创建overview |
 | 6 | `0.6.0-*` | compaction lifecycle | 复核真实Cloud payload，比较现有`SessionStart source=clear\|compact`与PreCompact/PostCompact的时序和恢复能力；现有事件足够时不扩大managed event set，只有真实context/时序缺口才新增Hook | pending |
 | 7 | `0.7.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立gate；必须分别有use case、latency/token budget、噪声预算与Cloud证据 | pending / optional；没有明确收益就逐项或整体`NO_GO`；不是Phase 8前置 |

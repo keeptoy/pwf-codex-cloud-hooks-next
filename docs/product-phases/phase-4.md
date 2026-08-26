@@ -140,6 +140,9 @@ programme accepted，`v0.4.2`成为immediate fallback。逐资产与运行证据
 - 根[`README`](../../README.md)是当前构建/物化命令入口并属于Release ZIP输入；稳定双通道协议只读
   [`Cloud hard acceptance template`](../cloud-hard-acceptance-template.md#cloud-hard-acceptance-template)。任一README、template、
   materializer、contract或其他Release输入在Source/Candidate PASS后变化，都必须形成新C0并重新运行第一通道。
+- Source/Candidate PASS后先把C1证据写回并push治理分支，再由维护者用显式`SOURCE_CANDIDATE_HEAD`创建annotated tag；tag不得
+  默认落到当前HEAD、C1或C2。远端只push该exact tag ref，并以annotated tag的`^{}` peeled commit等于C0作为身份确认；任何同名
+  tag存在或身份不符都fail closed，禁止force、移动或删除重建。
 
 ## Closeout and successor inheritance
 

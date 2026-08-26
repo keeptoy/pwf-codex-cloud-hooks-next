@@ -2,11 +2,11 @@
   "schema_version": 1,
   "contract_id": "PWF_INSTALLED_STATE_TRANSITION_V1",
   "predecessor": {
-    "package_version": "0.4.2",
+    "package_version": "0.4.3",
     "installed_manifest_schema": 3,
     "owner": "pwf-codex-cloud-hooks",
     "manifest_keys": ["adapter_sha256", "events", "installer_version", "owner", "requirements_file", "requirements_sha256", "runtime_files", "schema_version", "skill_root", "unowned_requirements_sha256", "upstream"],
-    "upstream_canonical_sha256": "67bd9c32ae8964fe5ee5ef4290aa9caa564d8e9b8161d153cd8eebcb9ef75b40",
+    "upstream_canonical_sha256": "7c6f3a9e41c16431f0d383b684fc5a1505005d6303ae27a70c3423af7a44d38d",
     "adapter_sha256": "173a82cf5d39c789f09ff0f860badecf3bbb6b8c6537d7f168781e0e884a8966",
     "events": ["SessionStart", "UserPromptSubmit"],
     "runtime_files": [

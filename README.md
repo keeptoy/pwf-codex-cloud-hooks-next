@@ -397,6 +397,57 @@ version/contract/zero-hash测试：保证没有拿错旧版或正式bootstrap
 - PASS后没有修改README、package、contract、runtime、builder或其他ZIP输入；允许的C1写回只能是Release-excluded治理/证据文件；
 - 根目录zero-hash candidate仍与canonical模板逐字节一致。
 
+#### 先给已通过的C0创建并推送正式tag
+
+第一通道通过后，先把Source/Candidate证据和第一轮退役结果写入C1并push治理分支；然后创建正式annotated tag。这里最容易犯的错是
+在C1 checkout直接运行不带commit参数的`git tag -a`：Git会默认给当前HEAD打tag，但正式tag必须精确指向Cloud实际验收通过的
+`SOURCE_CANDIDATE_HEAD`（C0），不能指向C1、C2或碰巧存在的当前HEAD。
+
+下面是维护者在本地PowerShell执行的完整示例。只替换正式版本和40位C0 commit；tag message可以调整，但不要删除命令中的
+`$SOURCE_CANDIDATE_HEAD`参数：
+
+```powershell
+$RELEASE_VERSION = "vX.Y.Z"
+$SOURCE_CANDIDATE_HEAD = "<40位SOURCE_CANDIDATE_HEAD>"
+
+$resolvedCandidate = (git rev-parse --verify "$SOURCE_CANDIDATE_HEAD^{commit}").Trim()
+if ($LASTEXITCODE -ne 0 -or $resolvedCandidate -ne $SOURCE_CANDIDATE_HEAD) {
+  throw "SOURCE_CANDIDATE_HEAD不是当前仓库中的exact commit"
+}
+
+git show-ref --verify --quiet "refs/tags/$RELEASE_VERSION"
+if ($LASTEXITCODE -eq 0) { throw "本地tag已存在；停止并核对，禁止移动或覆盖" }
+if ($LASTEXITCODE -ne 1) { throw "无法检查本地tag状态" }
+
+$remoteTag = git ls-remote --exit-code --tags origin "refs/tags/$RELEASE_VERSION"
+if ($LASTEXITCODE -eq 0) { throw "远端tag已存在；停止并核对，禁止删除重建" }
+if ($LASTEXITCODE -ne 2) { throw "无法确认远端tag是否存在" }
+
+git tag -a $RELEASE_VERSION $SOURCE_CANDIDATE_HEAD `
+  -m "$RELEASE_VERSION Source/Candidate PASS"
+
+$localTagCommit = (git rev-parse --verify "$RELEASE_VERSION^{commit}").Trim()
+if ($LASTEXITCODE -ne 0 -or $localTagCommit -ne $SOURCE_CANDIDATE_HEAD) {
+  throw "本地annotated tag没有精确指向SOURCE_CANDIDATE_HEAD"
+}
+
+git push origin "refs/tags/${RELEASE_VERSION}:refs/tags/${RELEASE_VERSION}"
+
+$remoteRefs = @(git ls-remote --tags origin `
+  "refs/tags/$RELEASE_VERSION" `
+  "refs/tags/$RELEASE_VERSION^{}")
+$peeledLine = @($remoteRefs | Where-Object { $_ -match '\^\{\}$' })
+if ($peeledLine.Count -ne 1) { throw "远端annotated tag缺少唯一peeled commit" }
+$remoteTagCommit = ($peeledLine[0] -split '\s+')[0]
+if ($remoteTagCommit -ne $SOURCE_CANDIDATE_HEAD) {
+  throw "远端tag没有精确指向SOURCE_CANDIDATE_HEAD"
+}
+```
+
+大白话：`git tag -a <版本> <C0> ...`只在本地创建tag；`git push origin refs/tags/<版本>:refs/tags/<版本>`只推这一条tag，
+不会顺手push其他branch。annotated tag自身有一个tag-object SHA，所以远端核对要看带`^{}`的peeled commit；该值必须等于C0。
+任何local/remote同名tag已存在、C0无法解析或peeled commit不一致都必须停止，不能用`-f`、删除重建或移动tag修补。
+
 维护者只替换下面命令中的`vX.Y.Z`和Source/Candidate实际输出的64位小写ZIP SHA：
 
 ```powershell

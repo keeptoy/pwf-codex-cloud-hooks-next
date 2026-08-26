@@ -56,7 +56,7 @@ function currentRoleWindow() {
   return { accepted, candidate, developmentTrain, immediateFallback, roadmap };
 }
 
-test("v0.4.3 is accepted, v0.4.2 is immutable fallback, and no next train is active", () => {
+test("v0.4.4-dev is active while v0.4.3 remains accepted and v0.4.2 remains fallback", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const acceptedAcceptance = read("docs/acceptance/v0.4.3-cloud-hard-acceptance.md");
   const retiredV042Acceptance = readGit("33deb5870015c94df329fe233e306363ba43232b",
@@ -68,26 +68,28 @@ test("v0.4.3 is accepted, v0.4.2 is immutable fallback, and no next train is act
     roadmap.indexOf("## 5. Product Phase 路线"),
   );
 
-  assert.equal(developmentTrain, null);
-  assert.equal(candidate, "v0.4.3");
+  assert.equal(developmentTrain, "v0.4.4-dev");
+  assert.equal(candidate, "v0.4.4-dev");
   assert.equal(accepted, "v0.4.3");
   assert.equal(immediateFallback, "v0.4.2");
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.3`/);
   assert.match(roadmap,
-    /当前 programme 边界[^\n]*Product Phase 4[^\n]*v0\.4\.0～v0\.4\.3[^\n]*均已关闭[^\n]*Product Phase 5[^\n]*TBD[^\n]*不得把空列车状态解释为激活授权/);
-  assert.match(currentTrain, /当前开发列车为`NONE`/);
-  assert.doesNotMatch(currentTrain, /^<a name="v0-4-3-phase-history-governance-train"><\/a>$/m);
+    /当前 programme 边界[^\n]*v0\.4\.3[^\n]*均已关闭[^\n]*v0\.4\.4-dev[^\n]*尚未形成C0或Cloud PASS[^\n]*Product Phase 5[^\n]*不产生Phase 5授权/);
+  assert.match(currentTrain, /当前exact开发列车是`v0\.4\.4-dev`/);
+  assert.match(currentTrain, /^<a name="v0-4-4-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain, /Product Phase 4 Overview/);
   assert.match(currentTrain, /BASELINE_PROVENANCE/);
   assert.match(currentTrain, /v0\.4\.3 acceptance/);
-  assert.match(currentTrain, /四个planning scope[^\n]*继续/);
-  assert.match(currentTrain, /Product Phase 5授权/);
+  assert.match(currentTrain, /五个planning scope[^\n]*继续/);
+  assert.match(currentTrain, /不是C0、Cloud PASS、tag、Release或Phase 5激活/);
 
   assert.match(phase4Overview, /v0\.4\.3 Release资产物化与验收边界/);
   assert.match(phase4Overview,
     /exact C0、双通道Cloud、immutable publication、GitHub Latest、第二轮role-window closeout与C2现已全部闭合/);
   assert.match(phase4Overview, /`v0\.4\.3`成为[\s\S]{0,80}programme accepted/);
   assert.match(phase4Overview, /v0\.4\.2`成为immediate fallback/);
+  assert.match(phase4Overview,
+    /显式`SOURCE_CANDIDATE_HEAD`创建annotated tag[\s\S]{0,220}`\^\{\}` peeled commit等于C0/);
 
   for (const fact of [
     "6204de36cd8b2cbc614a4bb53b8481a5a1ba234d",
@@ -523,6 +525,18 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
     /materialize_release_assets\.py release[\s\S]{0,160}--version vX\.Y\.Z[\s\S]{0,160}--expected-zip-sha/);
   assert.match(stableReadme,
     /exact ZIP SHA-256[\s\S]{0,160}来自Cloud evidence[\s\S]{0,160}不由早期本地`candidate\.zip`代替/);
+  const tagGuideStart = stableReadme.indexOf("#### 先给已通过的C0创建并推送正式tag");
+  const releaseMaterializeStart = stableReadme.indexOf("维护者只替换下面命令中的`vX.Y.Z`");
+  assert.ok(tagGuideStart !== -1 && tagGuideStart < releaseMaterializeStart,
+    "exact C0 tag guide must precede formal asset materialization");
+  assert.match(stableReadme,
+    /C1 checkout直接运行不带commit参数的`git tag -a`[\s\S]{0,240}不能指向C1、C2或碰巧存在的当前HEAD/);
+  assert.match(stableReadme, /git tag -a \$RELEASE_VERSION \$SOURCE_CANDIDATE_HEAD/);
+  assert.match(stableReadme,
+    /git push origin "refs\/tags\/\$\{RELEASE_VERSION\}:refs\/tags\/\$\{RELEASE_VERSION\}"/);
+  assert.match(stableReadme,
+    /annotated tag自身有一个tag-object SHA[\s\S]{0,160}带`\^\{\}`的peeled commit[\s\S]{0,100}必须等于C0/);
+  assert.match(stableReadme, /不能用`-f`、删除重建或移动tag修补/);
   assert.match(stableReadme,
     /不是“复制旧ZIP并改名”[\s\S]{0,500}重新build\/check[\s\S]{0,240}Source\/Candidate Cloud SHA/);
   assert.match(stableReadme,
