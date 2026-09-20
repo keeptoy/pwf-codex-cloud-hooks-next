@@ -4,6 +4,17 @@
 doctor/repair 仍见 [`README.md`](README.md)；programme、版本角色和 Release gate 仍以
 [`ROADMAP.md`](ROADMAP.md) 为准。
 
+## 快速入口
+
+- [本地开发与常用检查](#local-development)
+- [构建开发 ZIP](#build-development-zip)
+- [生成并核对 candidate bootstrap](#candidate-bootstrap)
+- [Source/Candidate PASS 后生成正式资产](#materialize-release-assets)
+- [将正式 tag 精确固定到 C0](#source-candidate-c0-tag-push)
+
+> 权限边界：读取、检查、构建和本地提交是否执行，仍以活动 task plan 的授权为准；push、tag、PR、Release、资产上传、
+> Latest 切换和部署始终由维护者执行。本文中的远端命令只是维护者操作教程，不会向智能体授予远端写权限。
+
 <a name="local-development"></a>
 
 ## 本地开发
@@ -15,7 +26,7 @@ doctor/repair 仍见 [`README.md`](README.md)；programme、版本角色和 Rele
 3. [`ARCHITECTURE.md`](ARCHITECTURE.md)
 4. [`DESIGN.md`](DESIGN.md)
 5. [`ROADMAP.md`](ROADMAP.md)
-6. 若存在 `.planning/.active_plan`，再读取它指向的 `task_plan.md`、`findings.md`、`progress.md`
+6. 读取 `.planning/.active_plan`，再读取它指向的 `task_plan.md`、`findings.md`、`progress.md`
 7. 当前任务直接相关的 contracts、源码和测试
 
 常用检查：
@@ -106,6 +117,8 @@ sha256sum "$ZIP"
 本地`candidate.zip`只是可选的早期预检产物。后面的Release生成器不读取它，也不会把它重命名成正式ZIP；即使本地从未生成过
 `candidate.zip`，只要Source/Candidate已经给出exact SHA，仍可正常生成正式双资产。
 
+<a name="candidate-bootstrap"></a>
+
 ### C0前：生成并核对当前checkout的candidate bootstrap
 
 版本列车在C0前若修改了bootstrap正文、canonical模板或version identity，先运行：
@@ -192,6 +205,8 @@ zero hash：保证候选脚本脱离验收override时fail closed
 URL/SHA override：让候选脚本安全连接本轮本地ZIP
 version/contract/zero-hash测试：保证没有拿错旧版或正式bootstrap
 ```
+
+<a name="materialize-release-assets"></a>
 
 ### Source/Candidate PASS后：生成待上传双资产
 

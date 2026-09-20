@@ -16,6 +16,7 @@ test("cross-document fragments use stable explicit anchors", () => {
   const authorityDocs = [
     "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md",
     "DESIGN.md", "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md",
+    "Wiki.md",
   ];
   const discovered = [];
 

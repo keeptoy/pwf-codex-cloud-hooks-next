@@ -487,9 +487,27 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   }
   const releaseReadme = read("README.md");
   const stableReadme = read("Wiki.md");
+  const roadmap = read("ROADMAP.md");
   assert.equal(releasePaths.includes("README.md"), true, "README is a Release ZIP input");
   assert.equal(releasePaths.includes("Wiki.md"), false, "Wiki is a Release-excluded maintainer guide");
   assert.match(releaseReadme, /\[`Wiki\.md`\]\(Wiki\.md\)/);
+  assert.match(releaseReadme, /\[`Wiki` 本地开发\]\(Wiki\.md#local-development\)/);
+  assert.match(releaseReadme, /\[`Wiki` 构建与 Release\]\(Wiki\.md#build-development-zip\)/);
+  assert.match(stableReadme, /^## 快速入口$/m);
+  for (const fragment of [
+    "local-development", "build-development-zip", "candidate-bootstrap",
+    "materialize-release-assets", "source-candidate-c0-tag-push",
+  ]) {
+    assert.match(stableReadme, new RegExp(`\\]\\(#${fragment}\\)`), `Wiki navigation lacks #${fragment}`);
+    assert.match(stableReadme, new RegExp(`<a name="${fragment}"></a>`), `Wiki lacks explicit #${fragment}`);
+  }
+  assert.match(stableReadme,
+    /权限边界[\s\S]{0,180}活动 task plan[\s\S]{0,180}push、tag、PR、Release、资产上传[\s\S]{0,180}维护者执行/);
+  assert.match(stableReadme,
+    /6\. 读取 `\.planning\/\.active_plan`，再读取它指向的 `task_plan\.md`、`findings\.md`、`progress\.md`/);
+  assert.doesNotMatch(stableReadme, /若存在 `\.planning\/\.active_plan`/);
+  assert.match(roadmap, /稳定构建\/验证命令由 \[`Wiki\.md`\]\(Wiki\.md\) 管理/);
+  assert.doesNotMatch(roadmap, /稳定构建\/验证命令由 \[`README\.md`\]/);
   const newcomerTerms = stableReadme.indexOf("如果你第一次接触本仓库的Release流程");
   const readmeInputWarning = stableReadme.indexOf("`README.md`仍属于");
   assert.ok(newcomerTerms >= 0 && newcomerTerms < readmeInputWarning,

@@ -275,7 +275,7 @@ Release通道。只有偏差本身具有长期解释价值时，才按Phase历�
 ## 9. Release 授权与封板顺序
 
 只有 ROADMAP 把目标版本标为获批 Release candidate，且活动 task plan 明确授权具体 Release gate，
-才允许封板。稳定构建/验证命令由 [`README.md`](README.md) 管理，精确版本步骤和资产证据由相应版本
+才允许封板。稳定构建/验证命令由 [`Wiki.md`](Wiki.md) 管理，精确版本步骤和资产证据由相应版本
 Release operator guide管理；single-Discovery版本可以继续使用`vX.Y.Z-cloud-hard-acceptance.md`简写命名。
 [`MAINTAINER_HANDOFF.md`](MAINTAINER_HANDOFF.md)只提供维护者接手和结果分流入口。
 模板、活动Release task plan、operator guide与ROADMAP的详细分工只由

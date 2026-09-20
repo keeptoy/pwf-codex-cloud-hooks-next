@@ -49,6 +49,17 @@
 - Kept the branch local with no upstream; no remote write occurred.
 - Architecture and repository-boundary regression passed 27/27; `git diff --check` passed.
 
+### Phase 6: Refine README/Wiki governance
+
+- **Status:** complete
+- Maintainer authorized the recommended follow-up: fix stale authority routes, add compact Wiki navigation and remote-action ownership guidance, and improve README anchors without another file split.
+- Added the Wiki quick navigation, explicit candidate/materialization anchors, maintainer-only remote-action warning, mandatory active-plan reading, and direct README links.
+- Corrected ROADMAP so stable build/validation commands have one authority (`Wiki.md`) while version-specific evidence remains in the operator guide.
+- Extended documentation boundary tests to cover Wiki as a root authority, its quick-navigation anchors, planning requirement, remote-action ownership, README deep links, and the corrected ROADMAP route.
+- The first targeted run passed 30/31 tests and kept the candidate bootstrap unchanged; the one failure correctly identified duplicate README deep-link authority, which was narrowed to one document-map entry.
+- The corrected architecture, repository-boundary, and Release-asset suite passed 31/31; candidate-bootstrap verification returned `state=unchanged`, and `git diff --check` passed.
+- Final full regression passed 163 runnable tests with 0 failures and 26 honest Windows/POSIX skips.
+
 ## Test Results
 
 | Test | Expected | Actual | Status |
@@ -60,6 +71,8 @@
 | Full `npm test` after oracle migration | No product/test failures; Windows-only cases remain honest skips | 163 pass, 0 fail, 26 skip | pass |
 | Final full `npm test` after planning-policy restoration | No product/test failures; Windows-only cases remain honest skips | 163 pass, 0 fail, 26 skip | pass |
 | Branch-name architecture/repository regression | Current docs, tests, links, and planning remain coherent | 27 pass, 0 fail | pass |
+| README/Wiki targeted architecture, boundary, and Release suite | Navigation, authority routes, links, packaging, and bootstrap remain coherent | 31 pass, 0 fail | pass |
+| Final full `npm test` after Wiki refinement | No product or governance regressions | 163 pass, 0 fail, 26 skip | pass |
 
 ## Error Log
 
@@ -79,13 +92,15 @@
 | 2026-09-20 | Sandboxed Git Bash `bash -n` launch failed with Win32 error 5 | 1 | Importer, Python compile, Node syntax, diff check, modes, and candidate bootstrap check passed; retry Bash syntax outside the sandbox. |
 | 2026-09-20 | Branch-rename targeted tests could not spawn inside the Windows sandbox | 1 | Re-ran outside the sandbox; tests executed and exposed one stale branch-name assertion. |
 | 2026-09-20 | Repository boundary still asserted local branch `0.5.0` | 1 | Updated the assertion to `0.5.0-dev`; the 27-test targeted suite then passed. |
+| 2026-09-20 | ROADMAP edit briefly left README and Wiki as simultaneous build/validation authorities | 1 | Replaced the duplicated clauses with one Wiki route and retained operator guides for version-specific evidence. |
+| 2026-09-20 | Targeted suite found duplicate README deep-link authority | 1 | Kept the summary link at Wiki root and the two precise anchors only in README's document map; rerun passed 31/31. |
 
 ## 5-Question Reboot Check
 
 | Question | Answer |
 |---|---|
-| Where am I? | Phase 5, branch-name alignment complete. |
+| Where am I? | Phase 6, README/Wiki governance refinement complete. |
 | Where am I going? | Local commit and maintainer-owned remote handoff. |
 | What is the goal? | A coherent `0.5.0-dev` candidate on branch `0.5.0-dev` with one active planning scope and README/Wiki split. |
 | What have I learned? | README is a ZIP input; the accepted `v0.4.4` bootstrap cannot represent changed source bytes. |
-| What have I done? | Initialized the candidate, completed validation, and aligned the local branch name to `0.5.0-dev`. |
+| What have I done? | Initialized the candidate, aligned the branch, and completed the README/Wiki governance refinement with full regression. |

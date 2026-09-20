@@ -10,6 +10,9 @@
 
 ## Research Findings
 
+- The README/Wiki audience split is sound: README remains a Release input for stable product/install guidance, while Wiki is Release-excluded maintainer workflow.
+- Two stale routes remain after migration: Wiki makes `.planning/.active_plan` conditional even though repository governance requires one active scope, and ROADMAP still names README as the build/validation command authority.
+- Wiki is long enough to benefit from compact top navigation and an explicit warning that push/tag/Release operations remain maintainer-owned, but it does not yet justify another file split.
 - The original branch was local `0.4.4`, tracking `origin/0.4.4`; it was first renamed to `0.5.0`, then aligned by maintainer instruction to local `0.5.0-dev` with no upstream.
 - Seven completed scopes comprised 21 tracked planning files. They were removed; `.planning/.active_plan` was retained and redirected to the fresh scope.
 - `README.md` is an entry in `contracts/release-artifact-v2.json`, so slimming it changes the deterministic ZIP hash.

@@ -203,8 +203,8 @@ install、repair 与 uninstall 都会在备份或写删前检查 installer-owned
 
 ## 开发与 Release 维护
 
-本地开发、Git mode/LF 检查、候选 ZIP 构建和 Release 资产准备流程已迁移到
-[`Wiki.md`](Wiki.md)。稳定产品行为与安装运维继续由本 README 维护。
+本地开发、Git mode/LF 检查、候选 ZIP 构建和 Release 资产准备已迁移到 [`Wiki.md`](Wiki.md)。
+稳定产品行为与安装运维继续由本 README 维护。
 
 ## 安全与 Release 不变量
 
@@ -228,7 +228,7 @@ README 只维护稳定支持行为和安装运维入口，不复制频繁变化�
 | 要回答的问题 | 唯一权威 |
 |---|---|
 | 支持什么，以及如何安装、doctor/repair | 本 README |
-| 如何进行本地开发、运行检查、构建候选 ZIP 和准备 Release 资产 | [`Wiki.md`](Wiki.md#local-development) |
+| 如何进行本地开发、运行检查、构建候选 ZIP 和准备 Release 资产 | [`Wiki` 本地开发](Wiki.md#local-development)；[`Wiki` 构建与 Release](Wiki.md#build-development-zip) |
 | 为什么这样设计，跨组件数据流、信任边界和失败语义是什么 | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | 实现落在哪些仓库模块，源码/build/install/runtime 如何对应 | [`DESIGN.md`](DESIGN.md) |
 | 各已发布版本和 Unreleased 已经改变了什么 | [`CHANGELOG.md`](CHANGELOG.md) |

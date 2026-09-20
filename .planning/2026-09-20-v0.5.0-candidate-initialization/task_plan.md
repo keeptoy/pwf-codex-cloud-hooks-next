@@ -8,16 +8,17 @@ Move the repository onto a coherent `0.5.0-dev` candidate identity on branch `0.
 
 - The maintainer explicitly authorized formal initialization of the `0.5.0` development candidate.
 - The maintainer explicitly instructed that the local branch name also align to `0.5.0-dev`.
+- The maintainer authorized the recommended README/Wiki governance refinements after reviewing the split.
 - The maintainer authorized deletion only of completed obsolete plans and requires `.planning/` to remain available for planning-with-files.
 - Local implementation, validation, and a local commit are authorized; remote writes, push, tags, PRs, Releases, and deployment remain forbidden.
 
 ## Next Step
 
-Hand off the unpushed `0.5.0-dev` branch to the maintainer.
+Hand off the locally committed, unpushed `0.5.0-dev` branch to the maintainer.
 
 ## Current Phase
 
-Phase 5 — branch-name alignment complete
+Phase 6 — README/Wiki governance refinement complete
 
 ## Phases
 
@@ -59,6 +60,14 @@ Phase 5 — branch-name alignment complete
 - [x] Validate and commit the branch-name correction locally without configuring an upstream or writing to the remote.
 - **Status:** complete
 
+### Phase 6: Refine README/Wiki governance
+
+- [x] Make active planning mandatory in the Wiki reading order and route ROADMAP build/validation commands to Wiki.
+- [x] Add compact Wiki navigation and distinguish plan-authorized local work from maintainer-only remote actions.
+- [x] Improve README's direct anchors without splitting or renaming Wiki.
+- [x] Add/update boundary tests, validate the documentation graph, and create one scoped local commit.
+- **Status:** complete
+
 ## Key Questions
 
 1. Can `0.5.0-dev` become a valid zero-hash candidate without modifying published `v0.4.4` bytes? Expected: yes, by rotating current package/contract/bootstrap identity while retaining immutable historical evidence.
@@ -72,6 +81,7 @@ Phase 5 — branch-name alignment complete
 | Keep `v0.4.4` accepted and `v0.4.3` immediate fallback | Initializing a candidate does not rotate accepted or rollback roles. |
 | Create one new planning scope | The user requires `.planning/` for planning-with-files; only completed obsolete scopes were authorized for deletion. |
 | Keep `Wiki.md` Release-excluded | The new guide is maintainer workflow documentation and is intentionally outside the current ZIP allowlist. |
+| Keep Wiki as one file for now, with compact navigation | The local-development-to-Release flow is still cohesive; navigation and explicit anchors solve current discoverability without premature file proliferation. |
 
 ## Errors Encountered
 
@@ -89,6 +99,8 @@ Phase 5 — branch-name alignment complete
 | Phase 5 assertion patch expected a two-line hunk but source was one line | 1 | Read exact source lines and applied the correct one-line replacement. |
 | Full suite had one published-oracle failure after candidate rotation | 1 | The accepted bootstrap still exists, but the oracle incorrectly selected it through the now-candidate Release contract; update the oracle to resolve the accepted version explicitly. |
 | Sandboxed Git Bash could not create its Win32 signal pipe for `bash -n` | 1 | Treat as a sandbox/platform launch failure and retry the syntax-only check with approved elevated execution. |
+| ROADMAP authority patch initially left old README and new Wiki routes side by side | 1 | Inspected the exact paragraph and replaced both clauses with one Wiki/operator-guide authority sentence. |
+| Anchor test found README repeated both Wiki deep links in its summary and document map | 1 | Kept the summary linked to the Wiki root and reserved the two exact anchors for the unique document-map entry. |
 
 ## Stop Conditions
 
