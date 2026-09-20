@@ -41,6 +41,14 @@
 - Final planning evidence is current; the scoped local commit and maintainer-owned push handoff are the atomic closeout action for this record.
 - The final diff audit removed accidental command-output metadata from the README header, then re-ran the entire validation baseline successfully.
 
+### Phase 5: Align the local branch name
+
+- **Status:** complete
+- Renamed the local branch from `0.5.0` to `0.5.0-dev` on explicit maintainer instruction.
+- Updated current branch-name references without changing package, contract, bootstrap, accepted/fallback, Product Phase, or Release state.
+- Kept the branch local with no upstream; no remote write occurred.
+- Architecture and repository-boundary regression passed 27/27; `git diff --check` passed.
+
 ## Test Results
 
 | Test | Expected | Actual | Status |
@@ -51,6 +59,7 @@
 | Published Release oracle | accepted `v0.4.4` and fallback `v0.4.3` remain exactly recoverable | 9 pass, 0 fail | pass |
 | Full `npm test` after oracle migration | No product/test failures; Windows-only cases remain honest skips | 163 pass, 0 fail, 26 skip | pass |
 | Final full `npm test` after planning-policy restoration | No product/test failures; Windows-only cases remain honest skips | 163 pass, 0 fail, 26 skip | pass |
+| Branch-name architecture/repository regression | Current docs, tests, links, and planning remain coherent | 27 pass, 0 fail | pass |
 
 ## Error Log
 
@@ -68,13 +77,15 @@
 | 2026-09-20 | Patch context mismatch on the Phase 5 assertion | 1 | Inspected the exact one-line assertion and applied an exact targeted hunk. |
 | 2026-09-20 | Full suite: 162 pass, 1 fail, 26 skip | 1 | All candidate and migration behavior passed; the v0.4.4 oracle still asked the current candidate contract for the accepted bootstrap filename. Inspect and make the published oracle role-aware. |
 | 2026-09-20 | Sandboxed Git Bash `bash -n` launch failed with Win32 error 5 | 1 | Importer, Python compile, Node syntax, diff check, modes, and candidate bootstrap check passed; retry Bash syntax outside the sandbox. |
+| 2026-09-20 | Branch-rename targeted tests could not spawn inside the Windows sandbox | 1 | Re-ran outside the sandbox; tests executed and exposed one stale branch-name assertion. |
+| 2026-09-20 | Repository boundary still asserted local branch `0.5.0` | 1 | Updated the assertion to `0.5.0-dev`; the 27-test targeted suite then passed. |
 
 ## 5-Question Reboot Check
 
 | Question | Answer |
 |---|---|
-| Where am I? | Phase 3, complete local validation. |
-| Where am I going? | Final diff review, local commit, and handoff. |
-| What is the goal? | A coherent `0.5.0-dev` candidate on branch `0.5.0` with one active planning scope and README/Wiki split. |
+| Where am I? | Phase 5, branch-name alignment complete. |
+| Where am I going? | Local commit and maintainer-owned remote handoff. |
+| What is the goal? | A coherent `0.5.0-dev` candidate on branch `0.5.0-dev` with one active planning scope and README/Wiki split. |
 | What have I learned? | README is a ZIP input; the accepted `v0.4.4` bootstrap cannot represent changed source bytes. |
-| What have I done? | See Phase 1 and Phase 2 above. |
+| What have I done? | Initialized the candidate, completed validation, and aligned the local branch name to `0.5.0-dev`. |

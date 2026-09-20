@@ -10,8 +10,8 @@
 
 ## Research Findings
 
-- The original branch was local `0.4.4`, tracking `origin/0.4.4`; it is now local `0.5.0` with no upstream.
-- Seven completed scopes plus `.planning/.active_plan` comprised 22 tracked planning files. They were removed; a fresh scope is now required.
+- The original branch was local `0.4.4`, tracking `origin/0.4.4`; it was first renamed to `0.5.0`, then aligned by maintainer instruction to local `0.5.0-dev` with no upstream.
+- Seven completed scopes comprised 21 tracked planning files. They were removed; `.planning/.active_plan` was retained and redirected to the fresh scope.
 - `README.md` is an entry in `contracts/release-artifact-v2.json`, so slimming it changes the deterministic ZIP hash.
 - The tracked `init-cloud-sandbox-v0.4.4.bash` is a sealed accepted bootstrap with the published `v0.4.4` ZIP SHA. It must not be rewritten for changed source bytes.
 - The Release contract owns `package_version` and the exact external bootstrap filename. `upstream-manifest.json` pins the raw SHA-256 of that contract.
@@ -19,7 +19,7 @@
 - `Wiki.md` is not in the Release allowlist; this keeps detailed maintainer workflow outside future ZIP bytes while README remains a stable user-facing ZIP input.
 - Current HEAD is `777b0de`; published `v0.4.4` remains tag `f7032fd`, so candidate edits can leave the immutable tag and its bootstrap untouched.
 - Current identity literals requiring rotation are concentrated in `package.json`, `contracts/release-artifact-v2.json`, the contract integrity reference in `upstream-manifest.json`, candidate-role tests, and a new external bootstrap. Historical acceptance, Phase history, and accepted-role ROADMAP facts must retain `v0.4.4`.
-- Repository precedent opens an unsealed development candidate with a `-dev` package identity and zero-hash bootstrap (for example, `0.4.4-dev` / `init-cloud-sandbox-v0.4.4-dev.bash`) before later stable C0 sealing. Therefore this train should use package identity `0.5.0-dev` on local branch `0.5.0`, not reuse the sealed stable identity early.
+- Repository precedent opens an unsealed development candidate with a `-dev` package identity and zero-hash bootstrap (for example, `0.4.4-dev` / `init-cloud-sandbox-v0.4.4-dev.bash`) before later stable C0 sealing. Therefore this train uses package identity `0.5.0-dev` on local branch `0.5.0-dev`, not the sealed stable identity early.
 - Candidate initialization alone does not authorize Product Phase 5 implementation. The current gate remains documentation/planning governance unless the maintainer separately activates Product Phase 5 through its required Discovery boundary.
 - Opening the previous `0.4.4-dev` train also rotated `contracts/installed-state-transition-v1.json` from the old immediate fallback to the then-accepted predecessor. For `0.5.0-dev`, the exact admitted predecessor must therefore become accepted `0.4.4`, and the manifest integrity hash for this contract must rotate too.
 - The current contracts test intentionally checks the stable accepted package's predecessor against the immediate fallback. Candidate state must change that assertion back to the accepted baseline, matching prior train-opening semantics.
@@ -40,7 +40,7 @@
 | Retain the accepted `v0.4.4` bootstrap unchanged | Published assets and accepted identities are immutable. |
 | Keep ROADMAP accepted/fallback roles at `v0.4.4`/`v0.4.3` | Candidate initialization is not Release promotion. |
 | Replace “planning absent” tests with “one active current scope, no obsolete scopes” | This reflects the maintainer’s corrected planning lifecycle requirement. |
-| Use `0.5.0-dev` package/contract identity on branch `0.5.0` | This follows the repository's prior pre-C0 lifecycle and keeps stable `0.5.0` available for a later seal. |
+| Use `0.5.0-dev` package/contract identity on branch `0.5.0-dev` | This follows the repository's prior pre-C0 lifecycle and keeps stable `0.5.0` available for a later seal. |
 
 ## Issues Encountered
 

@@ -2,21 +2,22 @@
 
 ## Goal
 
-Move the repository onto a coherent `0.5.0-dev` candidate identity on branch `0.5.0`, retain one current planning scope, complete the README-to-Wiki split, and leave all published `v0.4.4` identities unchanged.
+Move the repository onto a coherent `0.5.0-dev` candidate identity on branch `0.5.0-dev`, retain one current planning scope, complete the README-to-Wiki split, and leave all published `v0.4.4` identities unchanged.
 
 ## Authorization
 
 - The maintainer explicitly authorized formal initialization of the `0.5.0` development candidate.
+- The maintainer explicitly instructed that the local branch name also align to `0.5.0-dev`.
 - The maintainer authorized deletion only of completed obsolete plans and requires `.planning/` to remain available for planning-with-files.
 - Local implementation, validation, and a local commit are authorized; remote writes, push, tags, PRs, Releases, and deployment remain forbidden.
 
 ## Next Step
 
-Create one scoped local commit and hand off the unpushed `0.5.0` branch to the maintainer.
+Hand off the unpushed `0.5.0-dev` branch to the maintainer.
 
 ## Current Phase
 
-Phase 4 — commit and handoff
+Phase 5 — branch-name alignment complete
 
 ## Phases
 
@@ -51,6 +52,13 @@ Phase 4 — commit and handoff
 - [x] Report the commit, validation, and maintainer-owned remote action.
 - **Status:** complete
 
+### Phase 5: Align the local branch name
+
+- [x] Rename the local branch from `0.5.0` to `0.5.0-dev` after the maintainer's follow-up instruction.
+- [x] Synchronize current ROADMAP, CHANGELOG, findings, and progress references.
+- [x] Validate and commit the branch-name correction locally without configuring an upstream or writing to the remote.
+- **Status:** complete
+
 ## Key Questions
 
 1. Can `0.5.0-dev` become a valid zero-hash candidate without modifying published `v0.4.4` bytes? Expected: yes, by rotating current package/contract/bootstrap identity while retaining immutable historical evidence.
@@ -60,7 +68,7 @@ Phase 4 — commit and handoff
 
 | Decision | Rationale |
 |---|---|
-| Use `0.5.0-dev` as package/contract candidate identity on branch `0.5.0` | README is a Release ZIP input, and repository precedent uses a zero-hash `-dev` identity before stable C0 sealing. |
+| Use `0.5.0-dev` as package/contract candidate identity on branch `0.5.0-dev` | README is a Release ZIP input, and repository precedent uses a zero-hash `-dev` identity before stable C0 sealing; the follow-up branch rename keeps the local branch aligned with that identity. |
 | Keep `v0.4.4` accepted and `v0.4.3` immediate fallback | Initializing a candidate does not rotate accepted or rollback roles. |
 | Create one new planning scope | The user requires `.planning/` for planning-with-files; only completed obsolete scopes were authorized for deletion. |
 | Keep `Wiki.md` Release-excluded | The new guide is maintainer workflow documentation and is intentionally outside the current ZIP allowlist. |

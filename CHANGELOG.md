@@ -8,7 +8,7 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 
 ### Changed
 
-- 本地 development branch 切换为`0.5.0`，package、Release contract、accepted-predecessor contract和zero-hash bootstrap共同
+- 本地 development branch 切换为`0.5.0-dev`，package、Release contract、accepted-predecessor contract和zero-hash bootstrap共同
   初始化为pre-C0 `v0.5.0-dev` candidate；accepted/fallback仍为v0.4.4/v0.4.3，也不自动激活Product Phase 5。
 - 将README中的“本地开发”和“构建开发 ZIP”迁移到Release-excluded根级[`Wiki.md`](Wiki.md)，README继续只保留稳定产品行为、
   安装运维、安全不变量和文档地图。

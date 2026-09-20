@@ -75,7 +75,7 @@ test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", ()
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.4`/);
   assert.match(roadmap,
     /当前 programme 边界[^\n]*v0\.4\.4[^\n]*均已关闭[^\n]*exact C0[^\n]*Source\/Candidate[^\n]*tag精确指向C0[^\n]*Published Release第二通道PASS[^\n]*Latest[^\n]*第二轮retirement[^\n]*C2[^\n]*`v0\.5\.0-dev`[^\n]*文档分层、planning退役和candidate身份初始化[^\n]*Product Phase 5[^\n]*仍未授权/);
-  assert.match(currentTrain, /当前exact development candidate为`v0\.5\.0-dev`[^\n]*branch `0\.5\.0`/);
+  assert.match(currentTrain, /当前exact development candidate为`v0\.5\.0-dev`[^\n]*branch `0\.5\.0-dev`/);
   assert.doesNotMatch(currentTrain, /^<a name="v0-4-4-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain, /Product Phase 4 Overview/);
   assert.match(currentTrain, /BASELINE_PROVENANCE/);

@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.5.0-dev`；本地 development branch 为`0.5.0`，candidate用于README/Wiki文档分层与已完成planning退役；尚未形成C0、Cloud PASS、tag或Release，也不自动授权Product Phase 5实现 |
+| 当前开发列车 | `v0.5.0-dev`；本地 development branch 为`0.5.0-dev`，candidate用于README/Wiki文档分层与已完成planning退役；尚未形成C0、Cloud PASS、tag或Release，也不自动授权Product Phase 5实现 |
 | 当前已接受版本 | `v0.4.4`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.3` immediate fallback |
 | 回退证据链 | immutable `v0.4.2` deeper fallback；`v0.4.1`、`v0.4.0`、`v0.3.5`与更早发布里程碑见 provenance museum |
@@ -65,7 +65,7 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 本节是current development train指针：只保留exact列车身份、当前授权边界与对应Product Phase overview链接。活动planning、
 未封存Discovery和需要current状态的验收材料可以引用train anchor，但本节不再承载长期Product摘要。
 
-当前exact development candidate为`v0.5.0-dev`，位于本地branch `0.5.0`。本轮授权把README中的维护者开发/打包内容迁到
+当前exact development candidate为`v0.5.0-dev`，位于本地branch `0.5.0-dev`。本轮授权把README中的维护者开发/打包内容迁到
 Release-excluded `Wiki.md`，退役旧的已完成`.planning`记录，并把package、Release contract、accepted-predecessor contract与
 zero-hash bootstrap轮转到新的pre-C0身份；runtime、Host ABI、Release allowlist、Cloud与公开资产均不变。
 accepted/fallback角色仍为v0.4.4/v0.4.3；该candidate不是C0、Cloud PASS、tag或Release，也不授权Product Phase 5的Product scope、
