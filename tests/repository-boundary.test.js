@@ -260,23 +260,28 @@ test("maintenance environment constraints survive planning retirement", () => {
   assert.equal(artifact.excluded_prefixes.includes("docs/"), true);
 });
 
-test("planning lifecycle retains one new active scope after obsolete scopes retire", () => {
+test("planning lifecycle selects one active scope without forcing completed-scope deletion", () => {
   const actual = repositoryPaths();
   const roadmap = read("ROADMAP.md");
   const governance = read("docs/repository-governance-guide.md");
   const activePlan = read(".planning/.active_plan").trim();
+  const retainedCompletedScope = "2000-01-01-completed-scope-fixture";
+  const withRetainedCompletedScope = [
+    ...actual,
+    ...["findings.md", "progress.md", "task_plan.md"]
+      .map(file => `.planning/${retainedCompletedScope}/${file}`),
+  ];
 
   assert.match(activePlan, /^\d{4}-\d{2}-\d{2}-[a-z0-9][a-z0-9.-]*$/);
   assert.equal(validatePlanningScopes(root, activePlan, actual), "legacy");
-  assert.deepEqual(actual.filter(relative => relative.startsWith(".planning/")), [
-    ".planning/.active_plan",
-    `.planning/${activePlan}/findings.md`,
-    `.planning/${activePlan}/progress.md`,
-    `.planning/${activePlan}/task_plan.md`,
-  ]);
+  assert.equal(validatePlanningScopes(root, activePlan, withRetainedCompletedScope), "legacy");
   assert.match(roadmap, /七个已完成planning scope[^\n]*维护者[^\n]*授权[^\n]*current tree删除/);
   assert.match(roadmap, /新的candidate初始化scope[^\n]*`\.planning\/\.active_plan`选择/);
-  assert.match(governance, /`\.planning\/\.active_plan` 只选择当前唯一活动 scope/);
+  assert.match(governance,
+    /`\.planning\/\.active_plan` 只选择当前唯一活动 scope，不负责自动删除其他目录/);
+  assert.match(governance,
+    /completed scope 何时从 current tree 移除，由维护者在单独评审中\s*明确决定，不从指针切换自动推导删除授权/);
+  assert.match(roadmap, /切换`\.active_plan`[^\n]*不得自动删除planning/);
 });
 
 test("tracked Markdown local links resolve to existing paths and explicit anchors", () => {

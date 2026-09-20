@@ -65,6 +65,14 @@
 
 No production dataflow, Host ABI, trusted-graph, installer ownership, Release allowlist, module responsibility, dependency edge, or test-index contradiction was found beyond the items above.
 
+## Planning lifecycle test correction
+
+- Governance is explicit: `.planning/.active_plan` selects one active scope but does not delete other directories; complete inactive scopes may remain until a separate maintainer review authorizes removal.
+- `validatePlanningScopes` already implements this correctly: every inactive scope must contain exactly `task_plan.md`, `findings.md`, and `progress.md`, while only the selected scope may carry lifecycle state.
+- `repository-boundary.test.js` then added a redundant exact-inventory assertion requiring `.planning/` to contain only the pointer and active scope. That assertion contradicts the helper and governance and caused the audit run to treat retention as a failure.
+- The correction should delete the exact-current-tree inventory assertion, add a synthetic complete inactive-scope case, and assert the governance language that switching `.active_plan` never grants deletion authority.
+- Implemented correction: the test now validates both the actual repository paths and a synthetic complete inactive scope through the existing helper, while freezing the governance and ROADMAP prohibition on automatic deletion.
+
 ## Issues Encountered
 
 | Issue | Resolution |

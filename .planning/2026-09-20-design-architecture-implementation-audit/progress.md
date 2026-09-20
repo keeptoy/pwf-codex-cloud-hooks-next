@@ -43,6 +43,15 @@
 - Classified four follow-ups: one medium ARCHITECTURE omission, one medium related exact-state inconsistency, and two low-risk maintenance drifts. No stable docs or production code were changed in this read-only audit.
 - Final architecture/repository governance rerun passed 27/27 after the audit record was finalized.
 
+### Phase 5: Planning lifecycle test correction
+
+- **Status:** complete
+- Maintainer confirmed that completed planning deletion always requires an explicit decision and authorized correction of the contradictory test.
+- Re-read the governance authority and test helper. The helper already accepts complete inactive scopes; only the repository-boundary test's exact path-list assertion incorrectly required their absence.
+- Replaced the exact `.planning/` inventory assertion with a positive retained-completed-scope regression and explicit maintainer-decision/no-auto-delete assertions.
+- Focused architecture/repository governance tests passed 27/27.
+- Full regression passed 163 runnable tests with 0 failures and 26 honest Windows/POSIX skips; retained-completed-scope policy remained green alongside all planning, runtime, installer, and Release boundaries.
+
 ## Test Results
 
 | Test | Expected | Actual | Status |
@@ -53,6 +62,8 @@
 | Candidate bootstrap check | Current `v0.5.0-dev` zero-hash candidate unchanged | state=`unchanged`, zero ZIP hash | pass |
 | Python compile / `node --check` / `git diff --check` | No syntax or whitespace errors | no errors | pass |
 | Final architecture/repository governance rerun | Final active planning and documentation boundaries pass | 27 pass, 0 fail | pass |
+| Planning deletion-policy correction | Active scope remains unique while a complete inactive scope is permitted | 27 pass, 0 fail | pass |
+| Full regression after planning-policy test correction | No product/governance regressions; platform-only cases skip honestly | 163 pass, 0 fail, 26 skip | pass |
 
 ## Error Log
 
@@ -69,8 +80,8 @@
 
 | Question | Answer |
 |---|---|
-| Where am I? | Phase 4, validated audit and report complete. |
-| Where am I going? | Await maintainer decision on the four proposed follow-ups. |
+| Where am I? | Phase 5, planning lifecycle test correction complete. |
+| Where am I going? | Commit the scoped correction, then await maintainer direction on the remaining audit findings. |
 | What is the goal? | Determine whether the two documents match current implementation and identify any drift. |
-| What have I learned? | Main architecture matches implementation; remaining drift is one installed-tree omission, one EOL exactness decision, and two low-risk wording/routes. |
-| What have I done? | Completed source/contract/test tracing, full regression, static checks, and evidence classification without modifying stable docs or production code. |
+| What have I learned? | One active pointer does not imply one retained scope; the existing helper already encoded the right distinction. |
+| What have I done? | Corrected the over-strong test, added a retained-completed-scope regression, and passed focused plus full validation. |
