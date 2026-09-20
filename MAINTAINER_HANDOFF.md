@@ -18,7 +18,7 @@
    [DESIGN 的模块职责与依赖](DESIGN.md#module-responsibilities)找到源码落点和验证路由，再用
    [ARCHITECTURE](ARCHITECTURE.md)复核系统职责、Host contract、trusted graph 与失败语义。
 5. **先检测，再解释。** 从
-   [README 的本地开发入口](README.md#local-development)选择相称检查；结果必须按本文第 4 节分类，
+   [Wiki 的本地开发入口](Wiki.md#local-development)选择相称检查；结果必须按本文第 4 节分类，
    绿色结果只是证据，不会自动扩大授权。
 
 ## 2. 高频情形导诊

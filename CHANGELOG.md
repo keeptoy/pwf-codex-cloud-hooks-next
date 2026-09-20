@@ -4,6 +4,17 @@
 [`ROADMAP.md`](ROADMAP.md)；当前唯一行动与授权边界见活动 `task_plan.md`；精确 source、资产、大小和
 SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 acceptance。
 
+## v0.5.0-dev
+
+### Changed
+
+- 本地 development branch 切换为`0.5.0`，package、Release contract、accepted-predecessor contract和zero-hash bootstrap共同
+  初始化为pre-C0 `v0.5.0-dev` candidate；accepted/fallback仍为v0.4.4/v0.4.3，也不自动激活Product Phase 5。
+- 将README中的“本地开发”和“构建开发 ZIP”迁移到Release-excluded根级[`Wiki.md`](Wiki.md)，README继续只保留稳定产品行为、
+  安装运维、安全不变量和文档地图。
+- 维护者明确退役current tree中的七个已完成`.planning`记录，同时保留`.planning/`并创建新的candidate初始化scope；旧计划的
+  历史恢复继续由Git、Phase history、acceptance与provenance承担。
+
 ## v0.4.4
 
 ### Changed

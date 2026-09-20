@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `NONE`；`v0.4.4` Release文档patch train已完成双通道Cloud、Latest、第二轮退役检查与C2，下一列车未授权 |
+| 当前开发列车 | `v0.5.0-dev`；本地 development branch 为`0.5.0`，candidate用于README/Wiki文档分层与已完成planning退役；尚未形成C0、Cloud PASS、tag或Release，也不自动授权Product Phase 5实现 |
 | 当前已接受版本 | `v0.4.4`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.3` immediate fallback |
 | 回退证据链 | immutable `v0.4.2` deeper fallback；`v0.4.1`、`v0.4.0`、`v0.3.5`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | v0.4.4及其前序功能、patch与治理列车均已关闭；v0.4.4 exact C0 `f7032fd0efad3df9e4b6052e8cd766d27cd2a844`完成Source/Candidate，tag精确指向C0，immutable Release双资产与Published Release第二通道PASS，维护者确认Latest后完成第二轮retirement与C2角色轮转。Product Phase 5仍只预占`0.5.0-*`且全部TBD；当前没有新开发列车或Phase 5实施授权 |
+| 当前 programme 边界 | v0.4.4及其前序功能、patch与治理列车均已关闭；v0.4.4 exact C0 `f7032fd0efad3df9e4b6052e8cd766d27cd2a844`完成Source/Candidate，tag精确指向C0，immutable Release双资产与Published Release第二通道PASS，维护者确认Latest后完成第二轮retirement与C2角色轮转。`v0.5.0-dev`当前只承载已授权的文档分层、planning退役和candidate身份初始化；Product Phase 5的Product scope、实现、Cloud和Release仍未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -65,12 +65,15 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 本节是current development train指针：只保留exact列车身份、当前授权边界与对应Product Phase overview链接。活动planning、
 未封存Discovery和需要current状态的验收材料可以引用train anchor，但本节不再承载长期Product摘要。
 
-当前开发列车为`NONE`。`v0.4.4`已经完成exact C0、双通道Cloud、immutable publication、GitHub Release Latest promotion
-confirmation、第二轮role-window closeout与C2；accepted/fallback角色现为v0.4.4/v0.4.3。下一列车、Product Phase 5 scope、
-Discovery、实现、Cloud与Release均未授权。
+当前exact development candidate为`v0.5.0-dev`，位于本地branch `0.5.0`。本轮授权把README中的维护者开发/打包内容迁到
+Release-excluded `Wiki.md`，退役旧的已完成`.planning`记录，并把package、Release contract、accepted-predecessor contract与
+zero-hash bootstrap轮转到新的pre-C0身份；runtime、Host ABI、Release allowlist、Cloud与公开资产均不变。
+accepted/fallback角色仍为v0.4.4/v0.4.3；该candidate不是C0、Cloud PASS、tag或Release，也不授权Product Phase 5的Product scope、
+Discovery、实现、Cloud或Release。
 
-六个planning scope继续承担相邻Discovery恢复、治理参考与C2账本；`.active_plan`继续指向v0.4.4 C0/C2账本只表示当前恢复入口，
-不重新激活已经关闭的开发列车。长期Product规则只读[`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)，
+七个已完成planning scope已由维护者明确授权从current tree删除；新的candidate初始化scope由`.planning/.active_plan`选择，
+旧scope恢复入口改由Git历史、Phase history、acceptance与provenance承担。
+本次退役不重新激活已经关闭的v0.4.4列车，也不删除产品运行时对用户workspace planning的支持。长期Product规则只读[`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)，
 exact已发布身份只读[`BASELINE_PROVENANCE`](BASELINE_PROVENANCE.md)，最终双通道、Latest与C2证据只读
 [`v0.4.4 acceptance`](docs/acceptance/v0.4.4-cloud-hard-acceptance.md#v0-4-4-release-operator-guide)。
 
@@ -90,7 +93,7 @@ exact已发布身份只读[`BASELINE_PROVENANCE`](BASELINE_PROVENANCE.md)，最�
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 / overview |
 |---|---|---|---|---|
 | 4 | `0.4.0-*`～`0.4.4` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理 | F0～F3C功能/rollback已闭合；后续patch/governance列车不得改变Product行为或激活Phase 5 | Product baseline complete；当前v0.4.4为Release tag教程stable C0 candidate；[`Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview) |
-| 5 | `0.5.0-*` | 其他文档治理方向；具体scope与预期产物TBD | Discovery rounds、退出/Cloud gate、Release路线与对象清单均TBD | route placeholder；不是当前开发列车，未授权实施或Release，不创建overview |
+| 5 | `0.5.0-*` | 其他文档治理方向；当前仅初始化文档分层与planning退役candidate，Product scope仍TBD | Product实现前仍需Discovery rounds；退出/Cloud gate、Release路线与对象清单均TBD | `v0.5.0-dev` candidate identity active；Product Phase 5仍未激活，未授权Product实现、Cloud或Release，不创建overview |
 | 6 | `0.6.0-*` | compaction lifecycle | 复核真实Cloud payload，比较现有`SessionStart source=clear\|compact`与PreCompact/PostCompact的时序和恢复能力；现有事件足够时不扩大managed event set，只有真实context/时序缺口才新增Hook | pending |
 | 7 | `0.7.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立gate；必须分别有use case、latency/token budget、噪声预算与Cloud证据 | pending / optional；没有明确收益就逐项或整体`NO_GO`；不是Phase 8前置 |
 | 8 | `0.8.0-*` | 唯一的read-only advisory completion evaluator | bounded、non-recursive、无plan时安静；只advisory，不阻断、不写counter/ledger或其他mutable gate state | pending；可独立于Phase 7进入Discovery |

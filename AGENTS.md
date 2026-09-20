@@ -5,13 +5,14 @@
 
 ## 必读顺序
 
-1. 读 `README.md`：支持的稳定行为、安装、doctor/repair 和开发入口。
+1. 读 `README.md`：支持的稳定行为、安装和 doctor/repair 入口。
 2. 读 `ARCHITECTURE.md`：组件职责、Host contract、trusted graph 和失败语义。
 3. 读 `DESIGN.md`：仓库模块、实现层次、改动落点和验证路由。
 4. 读 `ROADMAP.md`：当前 migration/Product Phase、Cloud gate 和 Release 路线。
-5. 读 `.planning/.active_plan`，再读活动计划的 `task_plan.md`、`findings.md`、`progress.md`。
-6. 只读当前任务直接相关的 contracts、源码、tests 和专项文档。
-7. 修改前运行 `git status --short --branch`，保留用户已有改动。
+5. 读 `Wiki.md`：本地开发、验证、候选 ZIP 和 Release 资产维护入口。
+6. 读 `.planning/.active_plan`，再读活动计划的 `task_plan.md`、`findings.md`、`progress.md`。
+7. 只读当前任务直接相关的 contracts、源码、tests 和专项文档。
+8. 修改前运行 `git status --short --branch`，保留用户已有改动。
 
 恢复、resume、`/clear` 或 context compaction 后重复以上流程，不凭历史对话猜授权范围。
 

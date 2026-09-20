@@ -56,7 +56,7 @@ function currentRoleWindow() {
   return { accepted, candidate, developmentTrain, immediateFallback, roadmap };
 }
 
-test("v0.4.4 is accepted, v0.4.3 is immutable fallback, and no next train is active", () => {
+test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const acceptedAcceptance = read("docs/acceptance/v0.4.4-cloud-hard-acceptance.md");
   const retiredV043Acceptance = readGit("d7b5345b165e94c18ceab9b591d9a6b6dd251110",
@@ -68,20 +68,20 @@ test("v0.4.4 is accepted, v0.4.3 is immutable fallback, and no next train is act
     roadmap.indexOf("## 5. Product Phase 路线"),
   );
 
-  assert.equal(developmentTrain, null);
-  assert.equal(candidate, "v0.4.4");
+  assert.equal(developmentTrain, "v0.5.0-dev");
+  assert.equal(candidate, "v0.5.0-dev");
   assert.equal(accepted, "v0.4.4");
   assert.equal(immediateFallback, "v0.4.3");
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.4`/);
   assert.match(roadmap,
-    /当前 programme 边界[^\n]*v0\.4\.4[^\n]*均已关闭[^\n]*exact C0[^\n]*Source\/Candidate[^\n]*tag精确指向C0[^\n]*Published Release第二通道PASS[^\n]*Latest[^\n]*第二轮retirement[^\n]*C2[^\n]*Product Phase 5[^\n]*没有新开发列车/);
-  assert.match(currentTrain, /当前开发列车为`NONE`/);
+    /当前 programme 边界[^\n]*v0\.4\.4[^\n]*均已关闭[^\n]*exact C0[^\n]*Source\/Candidate[^\n]*tag精确指向C0[^\n]*Published Release第二通道PASS[^\n]*Latest[^\n]*第二轮retirement[^\n]*C2[^\n]*`v0\.5\.0-dev`[^\n]*文档分层、planning退役和candidate身份初始化[^\n]*Product Phase 5[^\n]*仍未授权/);
+  assert.match(currentTrain, /当前exact development candidate为`v0\.5\.0-dev`[^\n]*branch `0\.5\.0`/);
   assert.doesNotMatch(currentTrain, /^<a name="v0-4-4-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain, /Product Phase 4 Overview/);
   assert.match(currentTrain, /BASELINE_PROVENANCE/);
-  assert.match(currentTrain, /六个planning scope[^\n]*继续/);
+  assert.match(currentTrain, /七个已完成planning scope[^\n]*明确授权[^\n]*current tree删除/);
   assert.match(currentTrain, /v0\.4\.4 acceptance/);
-  assert.match(currentTrain, /下一列车[\s\S]{0,80}Product Phase 5[\s\S]{0,120}未授权/);
+  assert.match(currentTrain, /Product Phase 5[\s\S]{0,100}Product scope[\s\S]{0,100}Discovery、实现、Cloud或Release/);
   assert.match(acceptedAcceptance, /^<a name="v0-4-4-release-operator-guide"><\/a>$/m);
   assert.match(acceptedAcceptance, /^<a name="v0-4-4-role-window-closeout"><\/a>$/m);
   assert.match(acceptedAcceptance, /PWF_CLOUD_ACCEPTANCE_BASELINE_CONFLICT reason=\.planning_and_active_plan_missing/);
@@ -194,7 +194,7 @@ test("trusted source zones are exact while repository governance paths remain li
   }
   for (const required of [
     "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
-    "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "docs/cloud-hard-acceptance-template.md",
+    "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "Wiki.md", "docs/cloud-hard-acceptance-template.md",
     "docs/cloud-acceptance-operator-guide-template.md",
     "docs/acceptance/README.md",
     "docs/acceptance/v0.4.4-cloud-hard-acceptance.md",
@@ -208,6 +208,7 @@ test("trusted source zones are exact while repository governance paths remain li
     assert.equal(artifact.excluded_prefixes.includes(prefix), true, prefix);
     assert.equal(releasePaths.some(item => item.startsWith(prefix)), false, prefix);
   }
+  assert.equal(releasePaths.includes("Wiki.md"), false, "Wiki.md must remain Release-excluded");
   for (const forbidden of [
     "PROJECT_UNDERSTANDING.md", "work_plan.md", "黑盒验证.md", "snapshot-prototype/",
     "tests/phase3-contracts.test.js", "tests/snapshot-prototype-handoff.test.js",
@@ -259,18 +260,23 @@ test("maintenance environment constraints survive planning retirement", () => {
   assert.equal(artifact.excluded_prefixes.includes("docs/"), true);
 });
 
-test("planning lifecycle has one valid active pointer and complete scoped records", () => {
+test("planning lifecycle retains one new active scope after obsolete scopes retire", () => {
   const actual = repositoryPaths();
+  const roadmap = read("ROADMAP.md");
+  const governance = read("docs/repository-governance-guide.md");
   const activePlan = read(".planning/.active_plan").trim();
 
   assert.match(activePlan, /^\d{4}-\d{2}-\d{2}-[a-z0-9][a-z0-9.-]*$/);
-  assert.equal(validatePlanningScopes(root, activePlan, actual), "legacy",
-    "the development candidate's real active planning scope must remain markerless before F3B live");
-
-  const activeTask = read(`.planning/${activePlan}/task_plan.md`);
-  for (const heading of ["Authorization", "Next Step", "Stop Conditions"]) {
-    assert.match(activeTask, new RegExp(`^## ${heading}$`, "m"), `active task plan lacks ${heading}`);
-  }
+  assert.equal(validatePlanningScopes(root, activePlan, actual), "legacy");
+  assert.deepEqual(actual.filter(relative => relative.startsWith(".planning/")), [
+    ".planning/.active_plan",
+    `.planning/${activePlan}/findings.md`,
+    `.planning/${activePlan}/progress.md`,
+    `.planning/${activePlan}/task_plan.md`,
+  ]);
+  assert.match(roadmap, /七个已完成planning scope[^\n]*维护者[^\n]*授权[^\n]*current tree删除/);
+  assert.match(roadmap, /新的candidate初始化scope[^\n]*`\.planning\/\.active_plan`选择/);
+  assert.match(governance, /`\.planning\/\.active_plan` 只选择当前唯一活动 scope/);
 });
 
 test("tracked Markdown local links resolve to existing paths and explicit anchors", () => {
@@ -479,12 +485,15 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   ]) {
     assert.doesNotMatch(read(stableDoc), fixedBootstrapName, `${stableDoc} must use a version-neutral bootstrap command`);
   }
-  const stableReadme = read("README.md");
+  const releaseReadme = read("README.md");
+  const stableReadme = read("Wiki.md");
   assert.equal(releasePaths.includes("README.md"), true, "README is a Release ZIP input");
+  assert.equal(releasePaths.includes("Wiki.md"), false, "Wiki is a Release-excluded maintainer guide");
+  assert.match(releaseReadme, /\[`Wiki\.md`\]\(Wiki\.md\)/);
   const newcomerTerms = stableReadme.indexOf("如果你第一次接触本仓库的Release流程");
-  const readmeInputWarning = stableReadme.indexOf("它本身也是Release ZIP输入");
+  const readmeInputWarning = stableReadme.indexOf("`README.md`仍属于");
   assert.ok(newcomerTerms >= 0 && newcomerTerms < readmeInputWarning,
-    "README must explain Release terms before warning that it changes candidate bytes");
+    "Wiki must explain Release terms before warning that README changes candidate bytes");
   const newcomerIntro = stableReadme.slice(newcomerTerms, readmeInputWarning);
   assert.match(newcomerIntro, /`C0`[\s\S]*exact source commit/);
   assert.match(newcomerIntro, /`Source\/Candidate`[\s\S]*第一条Cloud验收通道/);

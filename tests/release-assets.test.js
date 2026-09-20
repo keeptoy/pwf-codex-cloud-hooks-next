@@ -19,7 +19,7 @@ const bootstrapName = `init-cloud-sandbox-${version}.bash`;
 const zipName = `pwf-codex-cloud-hooks-${version}.zip`;
 const zeroSha256 = "0".repeat(64);
 const roadmap = fs.readFileSync(path.join(root, "ROADMAP.md"), "utf8");
-const developmentTrain = roadmap.match(/^\| 当前开发列车 \| `(NONE|v[^`]+)`/m)?.[1];
+const developmentTrain = roadmap.match(/^\| 当前开发列车 \| `(NONE|v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?)`/m)?.[1];
 const acceptedVersion = roadmap.match(/^\| 当前已接受版本 \| `(v[^`]+)`/m)?.[1];
 const sha256 = value => crypto.createHash("sha256").update(value).digest("hex");
 

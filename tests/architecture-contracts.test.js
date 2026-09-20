@@ -68,7 +68,7 @@ test("MAINTAINER_HANDOFF is a triage desk, not another mutable runbook", () => {
   ]) assert.match(handoff, new RegExp(`^${heading.replaceAll(".", "\\.")}$`, "m"));
 
   for (const target of [
-    "README.md#documentation-map", "README.md#local-development",
+    "README.md#documentation-map", "Wiki.md#local-development",
     "DESIGN.md#module-responsibilities", "ARCHITECTURE.md", "ROADMAP.md", "CHANGELOG.md",
     "BASELINE_PROVENANCE.md", ".planning/.active_plan",
     "docs/maintenance-environment-profile.md#maintenance-environment-profile", "docs/",
@@ -350,11 +350,10 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   const productPhases = roadmap.slice(productPhaseStart, versioningStart);
   const migrationGovernance = roadmap.slice(migrationStart, releaseStart);
   const compatibilityGovernance = roadmap.slice(compatibilityStart, rollbackStart);
-  const developmentTrain = roadmap.match(/^\| 当前开发列车 \| `(NONE|v[^`]+)`/m)?.[1];
+  const developmentTrain = roadmap.match(/^\| 当前开发列车 \| `(NONE|v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?)`/m)?.[1];
   assert.ok(developmentTrain, "ROADMAP lacks a parseable current development train state");
   const packageVersion = JSON.parse(readText("package.json")).version;
-  assert.equal(packageVersion, "0.4.4");
-  assert.equal(developmentTrain, "NONE");
+  assert.equal(developmentTrain, `v${packageVersion}`);
   assert.match(roadmap, /^<a name="version-train-two-retirement-reviews"><\/a>$/m);
   assert.match(roadmap, /^<a name="product-phase-route-index"><\/a>$/m);
   assert.match(roadmap, /^<a name="product-phase-overview-rotation"><\/a>$/m);
@@ -415,13 +414,14 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(roadmap, /C0[\s\S]*C1[\s\S]*C2/);
   assert.doesNotMatch(roadmap, /<a name="phase-9-v0-4-0-instance"><\/a>/);
   assert.doesNotMatch(currentTrain, /^<a name="v\d+-\d+-\d+(?:-[a-z0-9-]+)?-phase-history-governance-train"><\/a>$/m);
-  assert.match(currentTrain, /当前开发列车为`NONE`/);
+  assert.match(currentTrain,
+    /当前exact development candidate为`v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?`[^\n]*branch `\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?`/);
   assert.doesNotMatch(currentTrain, /^<a name="v\d+-\d+-\d+(?:-[a-z0-9-]+)?-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain,
     /Product Phase 4 Overview[\s\S]*BASELINE_PROVENANCE[\s\S]*v0\.4\.4 acceptance/);
   assert.match(currentTrain,
-    /v0\.4\.4[\s\S]*双通道Cloud[\s\S]*Latest promotion[\s\S]*C2[\s\S]*下一列车[\s\S]*未授权/);
-  assert.match(currentTrain, /六个planning scope[\s\S]*`\.active_plan`继续指向/);
+    /development candidate[\s\S]*README[\s\S]*Wiki\.md[\s\S]*不授权Product Phase 5/);
+  assert.match(currentTrain, /七个已完成planning scope[\s\S]*current tree删除[\s\S]*新的candidate初始化scope[\s\S]*Git历史/);
   assert.match(currentTrain, /docs\/product-phases\/phase-4\.md#product-phase-4-overview/);
   assert.match(currentTrain, /candidate \+ accepted role window/);
   assert.match(currentTrain, /trusted\/Release zones 继续 exact[\s\S]*docs\/planning zones 按 lifecycle policy/);
@@ -440,7 +440,8 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(productPhases,
     /所修补Product baseline[\s\S]*ROADMAP声明的版本系列[\s\S]*不能唯一判断时先由维护者确认/);
   assert.match(productPhases, /\| 4 \| `0\.4\.0-\*`～`[^`]+`[\s\S]*patch\/governance[\s\S]*Phase 4 Overview/);
-  assert.match(productPhases, /\| 5 \| `0\.5\.0-\*` \| 其他文档治理方向[\s\S]*均TBD[\s\S]*route placeholder[\s\S]*不创建overview/);
+  assert.match(productPhases,
+    /\| 5 \| `\d+\.\d+\.\d+-\*` \| 其他文档治理方向[\s\S]*Product scope仍TBD[\s\S]*candidate identity active[\s\S]*Product Phase 5仍未激活[\s\S]*不创建overview/);
   assert.match(productPhases, /\| 6 \| `0\.6\.0-\*`[\s\S]*PreCompact\/PostCompact/);
   assert.match(productPhases, /\| 7 \| `0\.7\.0-\*`[\s\S]*噪声[\s\S]*`NO_GO`[\s\S]*不是Phase 8前置/);
   assert.match(productPhases, /\| 8 \| `0\.8\.0-\*`[\s\S]*唯一[\s\S]*read-only[\s\S]*Phase 7/);

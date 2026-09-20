@@ -33,7 +33,8 @@ Hot 层追求单一权威和快速理解；Cold 层追求精确恢复。不要�
 
 | 问题 | 推荐 authority |
 |---|---|
-| 稳定用户行为、安装和常用命令 | README |
+| 稳定用户行为、安装和doctor/repair | README |
+| 本地开发、验证与打包命令 | 根级 Wiki |
 | 架构理由、数据流、信任边界和失败语义 | ARCHITECTURE |
 | 模块布局、依赖、改动入口和验证路由 | DESIGN |
 | 已经发生的版本变化 | CHANGELOG |
