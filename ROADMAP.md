@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.5.0-dev`；本地 development branch 为`0.5.0-dev`，candidate用于README/Wiki文档分层与已完成planning退役；尚未形成C0、Cloud PASS、tag或Release，也不自动授权Product Phase 5实现 |
+| 当前开发列车 | `v0.5.0-dev`；本地 development branch 为`0.5.0-dev`，Product Phase 5文档治理已显式激活；尚未形成C0、Cloud PASS、tag或Release，也不授权新的Product实现 |
 | 当前已接受版本 | `v0.4.4`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.3` immediate fallback |
 | 回退证据链 | immutable `v0.4.2` deeper fallback；`v0.4.1`、`v0.4.0`、`v0.3.5`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | v0.4.4及其前序功能、patch与治理列车均已关闭；v0.4.4 exact C0 `f7032fd0efad3df9e4b6052e8cd766d27cd2a844`完成Source/Candidate，tag精确指向C0，immutable Release双资产与Published Release第二通道PASS，维护者确认Latest后完成第二轮retirement与C2角色轮转。`v0.5.0-dev`当前只承载已授权的文档分层、planning退役和candidate身份初始化；Product Phase 5的Product scope、实现、Cloud和Release仍未授权 |
+| 当前 programme 边界 | v0.4.4及其前序功能、patch与治理列车均已关闭；v0.4.4 exact C0 `f7032fd0efad3df9e4b6052e8cd766d27cd2a844`完成Source/Candidate，tag精确指向C0，immutable Release双资产与Published Release第二通道PASS，维护者确认Latest后完成第二轮retirement与C2角色轮转。`v0.5.0-dev`现已显式激活Product Phase 5文档治理；新的Product实现、Cloud和Release仍未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -65,15 +65,18 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 本节是current development train指针：只保留exact列车身份、当前授权边界与对应Product Phase overview链接。活动planning、
 未封存Discovery和需要current状态的验收材料可以引用train anchor，但本节不再承载长期Product摘要。
 
-当前exact development candidate为`v0.5.0-dev`，位于本地branch `0.5.0-dev`。本轮授权把README中的维护者开发/打包内容迁到
-Release-excluded `Wiki.md`，退役旧的已完成`.planning`记录，并把package、Release contract、accepted-predecessor contract与
-zero-hash bootstrap轮转到新的pre-C0身份；runtime、Host ABI、Release allowlist、Cloud与公开资产均不变。
-accepted/fallback角色仍为v0.4.4/v0.4.3；该candidate不是C0、Cloud PASS、tag或Release，也不授权Product Phase 5的Product scope、
-Discovery、实现、Cloud或Release。
+当前exact development candidate为`v0.5.0-dev`，位于本地branch `0.5.0-dev`。该development candidate先完成README中的维护者
+开发/打包内容向Release-excluded `Wiki.md`迁移、旧planning退役与pre-C0身份初始化，随后完成architecture/design/code对账、
+completed planning保留规则修正和autonomous exact LF状态收敛。逐项实际delta只读CHANGELOG。
+
+Product Phase 5现已由维护者显式激活，但当前只授权文档治理：建立Phase overview、维护重要工作账、持续核对文档与代码，并在
+内容成熟后提炼到history。该授权不授权Product实现、Cloud或Release；candidate仍不是C0、Cloud PASS、tag或Release，
+accepted/fallback角色仍为v0.4.4/v0.4.3。当前Product authority只读
+[`Product Phase 5 Overview`](docs/product-phases/phase-5.md#product-phase-5-overview)。
 
 七个已完成planning scope已由维护者明确授权从current tree删除；新的candidate初始化scope由`.planning/.active_plan`选择，
 旧scope恢复入口改由Git历史、Phase history、acceptance与provenance承担。
-本次退役不重新激活已经关闭的v0.4.4列车，也不删除产品运行时对用户workspace planning的支持。长期Product规则只读[`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)，
+本次退役不重新激活已经关闭的v0.4.4列车，也不删除产品运行时对用户workspace planning的支持。继承的稳定Product baseline只读[`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)，
 exact已发布身份只读[`BASELINE_PROVENANCE`](BASELINE_PROVENANCE.md)，最终双通道、Latest与C2证据只读
 [`v0.4.4 acceptance`](docs/acceptance/v0.4.4-cloud-hard-acceptance.md#v0-4-4-release-operator-guide)。
 
@@ -93,7 +96,7 @@ exact已发布身份只读[`BASELINE_PROVENANCE`](BASELINE_PROVENANCE.md)，最�
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 / overview |
 |---|---|---|---|---|
 | 4 | `0.4.0-*`～`0.4.4` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理 | F0～F3C功能/rollback已闭合；后续patch/governance列车不得改变Product行为或激活Phase 5 | Product baseline complete；当前v0.4.4为Release tag教程stable C0 candidate；[`Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview) |
-| 5 | `0.5.0-*` | 其他文档治理方向；当前仅初始化文档分层与planning退役candidate，Product scope仍TBD | Product实现前仍需Discovery rounds；退出/Cloud gate、Release路线与对象清单均TBD | `v0.5.0-dev` candidate identity active；Product Phase 5仍未激活，未授权Product实现、Cloud或Release，不创建overview |
+| 5 | `0.5.0-*` | 文档治理：authority分层、文档/代码对账、planning生命周期与overview→history提炼；其他Product实现仍TBD | 新Product实现仍需Discovery；退出/Cloud gate、Release路线与对象清单均TBD | Phase 5 active；当前限文档治理，未授权Product实现、Cloud或Release；[`Phase 5 Overview`](docs/product-phases/phase-5.md#product-phase-5-overview) |
 | 6 | `0.6.0-*` | compaction lifecycle | 复核真实Cloud payload，比较现有`SessionStart source=clear\|compact`与PreCompact/PostCompact的时序和恢复能力；现有事件足够时不扩大managed event set，只有真实context/时序缺口才新增Hook | pending |
 | 7 | `0.7.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立gate；必须分别有use case、latency/token budget、噪声预算与Cloud证据 | pending / optional；没有明确收益就逐项或整体`NO_GO`；不是Phase 8前置 |
 | 8 | `0.8.0-*` | 唯一的read-only advisory completion evaluator | bounded、non-recursive、无plan时安静；只advisory，不阻断、不写counter/ledger或其他mutable gate state | pending；可独立于Phase 7进入Discovery |
@@ -120,6 +123,10 @@ Discovery/Release hardening gate。历史standing Phase 9 Release instances保�
    不保留旧exact train anchor。overview本身保持长期canonical，不随列车指针移动。
 5. **patch/governance归属：** 先按活动task plan、所修补Product baseline与ROADMAP声明的版本系列判断；没有新Product Phase时
    不创建overview。不能唯一判断时先由维护者确认。
+
+活动Phase可以在唯一overview中暂存经过筛选的重要工作账，直到一个主题真正形成可冻结的Discovery record或已关闭对象的
+retrospective capsule；届时再提炼到history并把overview收敛为摘要提纲。未形成合法history role时不得为整理方便提前创建
+`phase-N.x`文件，也不得把原始聊天、测试输出或当前Next Step塞进overview。
 
 ```text
 Product Phase激活

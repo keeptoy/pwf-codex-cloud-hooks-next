@@ -63,6 +63,7 @@ test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", ()
     "docs/acceptance/v0.4.3-cloud-hard-acceptance.md");
   const provenance = read("BASELINE_PROVENANCE.md");
   const phase4Overview = read("docs/product-phases/phase-4.md");
+  const phase5Overview = read("docs/product-phases/phase-5.md");
   const currentTrain = roadmap.slice(
     roadmap.indexOf("## 4. 当前开发列车"),
     roadmap.indexOf("## 5. Product Phase 路线"),
@@ -74,14 +75,17 @@ test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", ()
   assert.equal(immediateFallback, "v0.4.3");
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.4`/);
   assert.match(roadmap,
-    /当前 programme 边界[^\n]*v0\.4\.4[^\n]*均已关闭[^\n]*exact C0[^\n]*Source\/Candidate[^\n]*tag精确指向C0[^\n]*Published Release第二通道PASS[^\n]*Latest[^\n]*第二轮retirement[^\n]*C2[^\n]*`v0\.5\.0-dev`[^\n]*文档分层、planning退役和candidate身份初始化[^\n]*Product Phase 5[^\n]*仍未授权/);
+    /当前 programme 边界[^\n]*v0\.4\.4[^\n]*均已关闭[^\n]*exact C0[^\n]*Source\/Candidate[^\n]*tag精确指向C0[^\n]*Published Release第二通道PASS[^\n]*Latest[^\n]*第二轮retirement[^\n]*C2[^\n]*`v0\.5\.0-dev`[^\n]*Product Phase 5[^\n]*文档治理[^\n]*Product实现[^\n]*仍未授权/);
   assert.match(currentTrain, /当前exact development candidate为`v0\.5\.0-dev`[^\n]*branch `0\.5\.0-dev`/);
   assert.doesNotMatch(currentTrain, /^<a name="v0-4-4-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain, /Product Phase 4 Overview/);
+  assert.match(currentTrain, /Product Phase 5 Overview/);
   assert.match(currentTrain, /BASELINE_PROVENANCE/);
   assert.match(currentTrain, /七个已完成planning scope[^\n]*明确授权[^\n]*current tree删除/);
   assert.match(currentTrain, /v0\.4\.4 acceptance/);
-  assert.match(currentTrain, /Product Phase 5[\s\S]{0,100}Product scope[\s\S]{0,100}Discovery、实现、Cloud或Release/);
+  assert.match(currentTrain, /Product Phase 5[\s\S]{0,160}文档治理[\s\S]{0,180}Product实现、Cloud或Release/);
+  assert.match(phase5Overview, /^<a name="product-phase-5-overview"><\/a>$/m);
+  assert.match(phase5Overview, /Active working ledger[\s\S]*Ledger distillation/);
   assert.match(acceptedAcceptance, /^<a name="v0-4-4-release-operator-guide"><\/a>$/m);
   assert.match(acceptedAcceptance, /^<a name="v0-4-4-role-window-closeout"><\/a>$/m);
   assert.match(acceptedAcceptance, /PWF_CLOUD_ACCEPTANCE_BASELINE_CONFLICT reason=\.planning_and_active_plan_missing/);
@@ -342,7 +346,10 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.deepEqual(acceptanceDocs, expectedAcceptanceDocs.sort());
   assert.deepEqual(acceptanceDocs.map(relative => path.basename(relative).replace("-cloud-hard-acceptance.md", "")).sort(),
     expectedAcceptanceDocs.map(relative => path.basename(relative).replace("-cloud-hard-acceptance.md", "")).sort());
-  assert.deepEqual(phaseOverviewDocs, ["docs/product-phases/phase-4.md"]);
+  assert.deepEqual(phaseOverviewDocs, [
+    "docs/product-phases/phase-4.md",
+    "docs/product-phases/phase-5.md",
+  ]);
   assert.equal(docs.includes("docs/product-phase-overview-template.md"), true);
   assert.equal(docs.includes("docs/product-phases/README.md"), true);
   assert.equal(docs.some(item => item.startsWith("docs/templates/")), false,
@@ -606,6 +613,7 @@ test("historical documents have two controlled macro entrances and remain adviso
   const phaseOverviewIndex = read("docs/product-phases/README.md");
   const phaseOverviewTemplate = read("docs/product-phase-overview-template.md");
   const phase4Overview = read("docs/product-phases/phase-4.md");
+  const phase5Overview = read("docs/product-phases/phase-5.md");
   const agents = read("AGENTS.md");
   assert.match(readme, /\]\(docs\/history\/README\.md\)/);
   assert.match(readme,
@@ -660,7 +668,11 @@ test("historical documents have two controlled macro entrances and remain adviso
   assert.match(phaseOverviewTemplate, /^<a name="product-phase-overview-template"><\/a>$/m);
   assert.match(phaseOverviewTemplate, /未激活[\s\S]*不得先建空overview/);
   assert.match(phase4Overview, /^<a name="product-phase-4-overview"><\/a>$/m);
-  assert.equal(fs.existsSync(path.join(root, "docs/product-phases/phase-5.md")), false);
+  assert.match(phase5Overview, /^<a name="product-phase-5-overview"><\/a>$/m);
+  assert.match(phase5Overview,
+    /活动期[\s\S]*重要过程[\s\S]*docs\/history\/phase-5\.x-[^`]+\.md[\s\S]*current Product authority/);
+  assert.equal(repositoryPaths().some(relative => /^docs\/history\/phase-5\./.test(relative)), false,
+    "Phase 5 history must not be materialized before a coherent record qualifies");
   assert.match(historyTemplate, /FROZEN_DISCOVERY_RECORD不得暗示整个Product Phase已经关闭/);
   assert.match(historyTemplate, /Discovery证据不得冒充implementation\/live验收/);
   assert.match(historyTemplate, /> Record role: `<RETROSPECTIVE_CAPSULE \| FROZEN_DISCOVERY_RECORD>`/);

@@ -16,6 +16,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   历史恢复继续由Git、Phase history、acceptance与provenance承担。
 - 收紧autonomous状态准入：nonce与attestation必须以exact单个LF结尾；缺失LF、CRLF、多余LF和尾随空白统一以
   `state_unsafe`拒绝，并新增跨平台字节级回归测试。
+- 维护者显式激活Product Phase 5文档治理，新增[`Phase 5 Overview`](docs/product-phases/phase-5.md#product-phase-5-overview)作为
+  活动期精选工作账和长期Product authority；成熟过程以后再提炼到`phase-5.x` history，overview随之收敛为摘要提纲。
 
 ## v0.4.4
 

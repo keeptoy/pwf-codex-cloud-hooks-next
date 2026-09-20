@@ -50,8 +50,11 @@ test("cross-document fragments use stable explicit anchors", () => {
   for (const link of discovered) counts.set(link, (counts.get(link) || 0) + 1);
   assert.deepEqual(
     [...counts.entries()].filter(([, count]) => count > 1),
-    [["ROADMAP.md->phase-4.md#product-phase-4-overview", 2]],
-    "only the current-train pointer and Product Phase route index may share one authority target",
+    [
+      ["ROADMAP.md->phase-5.md#product-phase-5-overview", 2],
+      ["ROADMAP.md->phase-4.md#product-phase-4-overview", 2],
+    ],
+    "only current-train pointers and the Product Phase route index may share authority targets",
   );
 });
 
@@ -338,6 +341,7 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   const phaseOverviewIndex = readText("docs/product-phases/README.md");
   const phaseOverviewTemplate = readText("docs/product-phase-overview-template.md");
   const phase4Overview = readText("docs/product-phases/phase-4.md");
+  const phase5Overview = readText("docs/product-phases/phase-5.md");
   const phase41 = readText("docs/history/phase-4.1-managed-v3-discovery.md");
   const phase44 = readText("docs/history/phase-4.4-f2a-smart-activation-discovery.md");
   const currentTrainStart = roadmap.indexOf("## 4. 当前开发列车");
@@ -371,6 +375,7 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(roadmap, /^<a name="product-phase-route-index"><\/a>$/m);
   assert.match(roadmap, /^<a name="product-phase-overview-rotation"><\/a>$/m);
   assert.match(phase4Overview, /^<a name="product-phase-4-overview"><\/a>$/m);
+  assert.match(phase5Overview, /^<a name="product-phase-5-overview"><\/a>$/m);
   assert.match(roadmap, /^<a name="discovery-gate-governance"><\/a>$/m);
   assert.match(roadmap, /^<a name="migration-transaction-lifecycle-governance"><\/a>$/m);
   assert.match(roadmap, /^<a name="release-four-step-flow"><\/a>$/m);
@@ -433,9 +438,10 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(currentTrain,
     /Product Phase 4 Overview[\s\S]*BASELINE_PROVENANCE[\s\S]*v0\.4\.4 acceptance/);
   assert.match(currentTrain,
-    /development candidate[\s\S]*README[\s\S]*Wiki\.md[\s\S]*不授权Product Phase 5/);
+    /development candidate[\s\S]*README[\s\S]*Wiki\.md[\s\S]*Product Phase 5[\s\S]*文档治理[\s\S]*不授权Product实现/);
   assert.match(currentTrain, /七个已完成planning scope[\s\S]*current tree删除[\s\S]*新的candidate初始化scope[\s\S]*Git历史/);
   assert.match(currentTrain, /docs\/product-phases\/phase-4\.md#product-phase-4-overview/);
+  assert.match(currentTrain, /docs\/product-phases\/phase-5\.md#product-phase-5-overview/);
   assert.match(currentTrain, /candidate \+ accepted role window/);
   assert.match(currentTrain, /trusted\/Release zones 继续 exact[\s\S]*docs\/planning zones 按 lifecycle policy/);
   assert.match(currentTrain,
@@ -454,7 +460,7 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
     /所修补Product baseline[\s\S]*ROADMAP声明的版本系列[\s\S]*不能唯一判断时先由维护者确认/);
   assert.match(productPhases, /\| 4 \| `0\.4\.0-\*`～`[^`]+`[\s\S]*patch\/governance[\s\S]*Phase 4 Overview/);
   assert.match(productPhases,
-    /\| 5 \| `\d+\.\d+\.\d+-\*` \| 其他文档治理方向[\s\S]*Product scope仍TBD[\s\S]*candidate identity active[\s\S]*Product Phase 5仍未激活[\s\S]*不创建overview/);
+    /\| 5 \| `0\.5\.0-\*` \| 文档治理[\s\S]*Product实现[\s\S]*仍需Discovery[\s\S]*Phase 5 active[\s\S]*Phase 5 Overview/);
   assert.match(productPhases, /\| 6 \| `0\.6\.0-\*`[\s\S]*PreCompact\/PostCompact/);
   assert.match(productPhases, /\| 7 \| `0\.7\.0-\*`[\s\S]*噪声[\s\S]*`NO_GO`[\s\S]*不是Phase 8前置/);
   assert.match(productPhases, /\| 8 \| `0\.8\.0-\*`[\s\S]*唯一[\s\S]*read-only[\s\S]*Phase 7/);
@@ -462,9 +468,12 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.doesNotMatch(productPhases, /5\.1\.1|5\.1\.2|5\.1\.3|5\.1\.4|### 5\.2/);
   assert.match(phaseOverviewIndex, /^<a name="product-phase-overview-index"><\/a>$/m);
   assert.match(phaseOverviewIndex, /真实激活过的 Product Phase 的长期说明书[\s\S]*未激活[\s\S]*不提前创建空文件/);
+  assert.match(phaseOverviewIndex,
+    /活动期[\s\S]*curated working ledger[\s\S]*phase-5\.x[\s\S]*history[\s\S]*收敛为摘要提纲/);
   assert.match(phaseOverviewTemplate, /^<a name="product-phase-overview-template"><\/a>$/m);
   assert.match(phaseOverviewTemplate, /不复制当前Next Step[\s\S]*C0\/C1\/C2/);
   assert.match(phaseOverviewTemplate, /tag\/source\/ZIP\/bootstrap\/SHA/);
+  assert.match(phaseOverviewTemplate, /Active working ledger[\s\S]*history[\s\S]*摘要提纲/);
   assert.match(phase4Overview, /Why this Phase existed[\s\S]*F0 → F1A → F1B → F2A → F2B → F3A → F3B → F3C/);
   assert.match(phase4Overview, /^<a name="v0-4-2-release-closeout"><\/a>$/m);
   assert.match(phase4Overview, /^<a name="v0-4-3-release-asset-governance"><\/a>$/m);
@@ -474,7 +483,13 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
     /manifest→Release contract→唯一external asset[\s\S]*Source\/Candidate证明当前C0源码[\s\S]*Published Release不带本地override/);
   assert.match(phase4Overview, /没有重新打开Phase 4、激活Phase 5或改变Product\/runtime行为/);
   assert.match(phase4Overview, /RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
-  assert.equal(fs.existsSync(path.join(root, "docs/product-phases/phase-5.md")), false);
+  assert.match(phase5Overview,
+    /Authority role: `PRODUCT_PHASE_OVERVIEW`[\s\S]*Version series: `0\.5\.0-\*`/);
+  assert.match(phase5Overview, /^## Active working ledger$/m);
+  assert.match(phase5Overview, /^### Activation baseline — `0\.5\.0-dev`$/m);
+  assert.match(phase5Overview, /\| autonomous exact state \|[^\n]*nonce\/attestation为exact单个LF/);
+  assert.match(phase5Overview,
+    /Ledger distillation[\s\S]*docs\/history\/phase-5\.x-[^`]+\.md[\s\S]*摘要提纲/);
   assert.match(phase41, /\]\(\.\.\/product-phases\/phase-4\.md#product-phase-4-overview\)/);
   assert.match(phase44, /\]\(\.\.\/product-phases\/phase-4\.md#product-phase-4-overview\)/);
   assert.doesNotMatch(roadmap, /### 5\.4 迁移 transaction 与对象生命周期治理/);

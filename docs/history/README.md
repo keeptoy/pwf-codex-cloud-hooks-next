@@ -21,6 +21,8 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
   interlude必须明确声明不是原programme的正式Phase，也不产生新授权。
 - `FROZEN_DISCOVERY_RECORD`只在正式Discovery/decision round关闭并有exact source证据后进入；Product Phase可以仍活动，
   但讨论中、施工中、聊天切片或只有临时原型结论的材料不进入这里。
+- 活动Product Phase的重要过程可以先留在对应overview的curated working ledger；只有达到上述两种role的准入条件后才创建
+  `phase-N.x` history object，并把overview收敛为摘要提纲。账本变长不等于自动获得history身份。
 - 跨多个已关闭阶段的回顾性 overview 只负责组织已经证实的历史关系，必须明确不是正式 Phase，并链接而不
   取代各段history objects；不能借 overview 把原型推断成验收、把功能模型推断成当前架构。
 - 同一闭合对象最多一份retrospective capsule；同一Product Phase可以有多份frozen Discovery records，但每份必须对应真实
@@ -50,8 +52,8 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 role；若分类需要变化，必须基于原始形成方式和immutable evidence纠错，不能按当前叙述方便随意改身份。
 
 后继programme插入新Phase导致旧路线重编号时，冻结record正文仍按当时编号阅读，不做机械替换；受影响record只在末尾追加
-`Post-programme reindex status`，列出旧→现映射并链接当前ROADMAP。当前Phase 5预占`0.5.0-*`但其余内容TBD，因此旧路线中的
-Phase 5/6/7/8现分别对应Phase 6/7/8/9与`0.6.0-*`/`0.7.0-*`/`0.8.0-*`/`0.9.0-*`；该后置说明不产生实施或Release授权。
+`Post-programme reindex status`，列出旧→现映射并链接当前ROADMAP。Phase 5现已在`0.5.0-*`激活为文档治理，但旧路线中的
+Phase 5/6/7/8仍分别对应Phase 6/7/8/9与`0.6.0-*`/`0.7.0-*`/`0.8.0-*`/`0.9.0-*`；该后置说明不产生实施或Release授权。
 
 ## 已收录 history objects
 
