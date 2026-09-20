@@ -69,8 +69,8 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 开发/打包内容向Release-excluded `Wiki.md`迁移、旧planning退役与pre-C0身份初始化，随后完成architecture/design/code对账、
 completed planning保留规则修正和autonomous exact LF状态收敛。逐项实际delta只读CHANGELOG。
 
-Product Phase 5现已由维护者显式激活，但当前只授权文档治理：建立Phase overview、维护重要工作账、持续核对文档与代码，并在
-内容成熟后提炼到history。该授权不授权Product实现、Cloud或Release；candidate仍不是C0、Cloud PASS、tag或Release，
+Product Phase 5现已由维护者显式激活，但当前只授权文档治理：Phase overview维护摘要提纲，详细流水保存在planning，是否在
+planning删除前提炼为history由维护者决定。该授权不授权Product实现、Cloud或Release；candidate仍不是C0、Cloud PASS、tag或Release，
 accepted/fallback角色仍为v0.4.4/v0.4.3。当前Product authority只读
 [`Product Phase 5 Overview`](docs/product-phases/phase-5.md#product-phase-5-overview)。
 
@@ -96,7 +96,7 @@ exact已发布身份只读[`BASELINE_PROVENANCE`](BASELINE_PROVENANCE.md)，最�
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 / overview |
 |---|---|---|---|---|
 | 4 | `0.4.0-*`～`0.4.4` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理 | F0～F3C功能/rollback已闭合；后续patch/governance列车不得改变Product行为或激活Phase 5 | Product baseline complete；当前v0.4.4为Release tag教程stable C0 candidate；[`Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview) |
-| 5 | `0.5.0-*` | 文档治理：authority分层、文档/代码对账、planning生命周期与overview→history提炼；其他Product实现仍TBD | 新Product实现仍需Discovery；退出/Cloud gate、Release路线与对象清单均TBD | Phase 5 active；当前限文档治理，未授权Product实现、Cloud或Release；[`Phase 5 Overview`](docs/product-phases/phase-5.md#product-phase-5-overview) |
+| 5 | `0.5.0-*` | 文档治理：authority分层、文档/代码对账、planning生命周期与overview/history分工；其他Product实现仍TBD | 新Product实现仍需Discovery；退出/Cloud gate、Release路线与对象清单均TBD | Phase 5 active；当前限文档治理，未授权Product实现、Cloud或Release；[`Phase 5 Overview`](docs/product-phases/phase-5.md#product-phase-5-overview) |
 | 6 | `0.6.0-*` | compaction lifecycle | 复核真实Cloud payload，比较现有`SessionStart source=clear\|compact`与PreCompact/PostCompact的时序和恢复能力；现有事件足够时不扩大managed event set，只有真实context/时序缺口才新增Hook | pending |
 | 7 | `0.7.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立gate；必须分别有use case、latency/token budget、噪声预算与Cloud证据 | pending / optional；没有明确收益就逐项或整体`NO_GO`；不是Phase 8前置 |
 | 8 | `0.8.0-*` | 唯一的read-only advisory completion evaluator | bounded、non-recursive、无plan时安静；只advisory，不阻断、不写counter/ledger或其他mutable gate state | pending；可独立于Phase 7进入Discovery |
@@ -124,9 +124,9 @@ Discovery/Release hardening gate。历史standing Phase 9 Release instances保�
 5. **patch/governance归属：** 先按活动task plan、所修补Product baseline与ROADMAP声明的版本系列判断；没有新Product Phase时
    不创建overview。不能唯一判断时先由维护者确认。
 
-活动Phase可以在唯一overview中暂存经过筛选的重要工作账，直到一个主题真正形成可冻结的Discovery record或已关闭对象的
-retrospective capsule；届时再提炼到history并把overview收敛为摘要提纲。未形成合法history role时不得为整理方便提前创建
-`phase-N.x`文件，也不得把原始聊天、测试输出或当前Next Step塞进overview。
+Product Phase overview始终只保存摘要提纲，详细过程只写planning。维护者决定定期删除planning时，必须先判断是否有已关闭、
+值得长期保留且符合合法history role的材料；只有维护者明确决定后才创建或更新`phase-N.x` history。overview、planning或history
+都不得自动触发彼此的创建、迁移或删除。
 
 ```text
 Product Phase激活

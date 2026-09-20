@@ -7,12 +7,12 @@ Phase时才创建实例；未激活的候选/TBD Phase不得先建空overview。
 
 ## 写作边界
 
-1. 只写跨版本仍有解释价值的Product目标、已采纳路线、稳定边界、最终交付和后继继承；活动期可以增加精选工作账。
+1. 只写跨版本仍有解释价值的Product目标、已采纳路线、稳定边界、最终交付和后继继承。
 2. current train、accepted/fallback与未来路线只链接ROADMAP；逐版本delta只链接CHANGELOG。
 3. Discovery过程只链接history；tag/source/ZIP/bootstrap/SHA与Cloud验收只链接provenance/acceptance。
-4. 不复制当前Next Step、临时施工状态、原始测试输出、测试数量、C0/C1/C2步骤、源码或验收教程；重要过程只在活动账本中
-   暂存，成熟后提炼到history。
+4. 不复制当前Next Step、临时施工状态、逐Round流水、原始测试输出、测试数量、C0/C1/C2步骤、源码或验收教程；详细过程写planning。
 5. 使用稳定英文显式anchor。活动期允许维护已采纳的长期内容；closeout后只做事实纠错、链接维护或有证据的状态尾注。
+6. overview始终是outline；planning删除前是否把精选材料提升为history，只由维护者明确决定。
 
 ---
 
@@ -27,11 +27,6 @@ Phase时才创建实例；未激活的候选/TBD Phase不得先建空overview。
 ## Long-term position
 
 <!-- 一句话说明这个Product Phase最终解决什么，以及它不是什么。 -->
-
-## Active working ledger
-
-<!-- 活动期可选：记录重要问题、决定和交付，不写逐命令/测试流水。主题符合history准入后，提炼到phase-N.x record并删除
-已被承接的过程细节；closeout时本节必须删除或收敛为摘要提纲。 -->
 
 ## Why this Phase existed
 

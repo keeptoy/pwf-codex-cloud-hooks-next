@@ -14,8 +14,8 @@ Product Phase 5当前以**文档治理与authority收敛**为正式范围：让�
 和历史证据各自只回答自己的问题，并持续核对文档声明与代码级实现。它不是对Phase 4 Product baseline的重新实现，也不因整理
 文档而自动授权新的runtime行为、Host ABI、trusted graph、Cloud gate或Release。
 
-本文件是Phase 5的current Product authority。活动期允许在下方维护经过筛选的工作账本；它只记录值得进入Phase长期叙述的重要
-问题、决定和交付，不复制当前Next Step、逐命令日志、原始测试输出、测试计数、C0/C1/C2步骤或临时PASS/PENDING状态。
+本文件是Phase 5的current Product authority，只维护阶段目的、已采纳路线、稳定边界和里程碑摘要提纲。详细问题、决策过程、
+实施顺序、错误和验证结果写入活动或已完成planning，不在overview复制第二份流水。
 
 <a name="phase-5-why-this-phase-existed"></a>
 
@@ -25,7 +25,8 @@ Phase 4完成后，仓库已经具备稳定runtime、供应链、Cloud与Release
 
 1. README同时承担产品入口、开发教程与Release操作时过重，而且其中任一字节变化都会改变Release ZIP候选身份；
 2. architecture、design、contracts、源码和测试会随演进出现小幅漂移，需要一种明确的代码级对账与修正入口；
-3. 活动planning、长期Product authority和精选history若没有清晰转化规则，容易把临时流水、当前状态和历史摘要复制到多个位置。
+3. planning会保存详细施工证据，也可能由维护者定期删除；需要在删除前由维护者判断哪些内容值得进入精选history，避免证据丢失，
+   同时不把全部planning永久化。
 
 大白话：Phase 5先把“什么应该写在哪里、什么时候从施工记录提炼成长期说明或历史记录”治理清楚，再决定是否值得实施其他
 Product方向。文档治理本身已经激活；新的Product能力仍必须另行Discovery和授权。
@@ -38,54 +39,43 @@ Product方向。文档治理本身已经激活；新的Product能力仍必须另
 
 - 根README保持轻量，只承载稳定行为、安装运维、安全不变量和唯一文档地图；本地开发与构建/Release教程由Release-excluded
   [`Wiki`](../../Wiki.md)维护。
-- ROADMAP独占current train、版本角色、programme路线和Phase overview指针；本文件独占Phase 5长期目标、已采纳边界和活动期
-  的精选工作账。
-- `.planning/.active_plan`继续选择唯一活动scope；completed scope是否保留或退役由维护者决定，不以测试强制“只能存在一个目录”。
+- ROADMAP独占current train、版本角色、programme路线和Phase overview指针；本文件独占Phase 5长期目标、已采纳边界和里程碑提纲。
+- `.planning/.active_plan`继续选择唯一活动scope；详细流水保存在对应planning中，completed scope是否保留或退役由维护者决定，
+  不以测试强制“只能存在一个目录”。
 - 文档与实现对账以contracts、源码和测试为证据。发现偏差时修正文档或实现，但不得借“对齐”扩大ABI、trusted graph、Release
   或远端权限。
-- history仍只接收符合`FROZEN_DISCOVERY_RECORD`或`RETROSPECTIVE_CAPSULE`准入条件的成熟对象；不为会话、测试批次或普通提交
-  虚增`phase-5.x`编号。
+- history仍只接收符合`FROZEN_DISCOVERY_RECORD`或`RETROSPECTIVE_CAPSULE`准入条件的成熟对象；只有维护者在planning退役前
+  明确决定时才创建或维护`phase-5.x`记录，不为会话、测试批次或普通提交虚增编号。
 
 Phase 4的legacy默认、explicit plan-local opt-in、managed runtime只读workspace、unknown state fail closed、trusted source exact、
 deterministic package与disarm-first rollback继续是继承边界。当前Phase 5治理不能弱化这些Product与安全不变量。
 
-<a name="phase-5-active-working-ledger"></a>
+<a name="phase-5-outline"></a>
 
-## Active working ledger
+## Phase outline
 
-本节是Phase 5活动期的curated working ledger。它先承载重要过程和阶段结论；只有形成可独立理解、已有证据且符合history role的
-对象时，才提炼到`docs/history/phase-5.x-*.md`。在此之前不创建空history文件，也不把普通planning流水冒充正式Round。
+本节只列出当前阶段级主题和已形成的结论，不维护时间线或逐任务证据。详细依据由对应planning保存。
 
-### Activation baseline — `0.5.0-dev`
+| 主题 | 摘要 |
+|---|---|
+| development identity | `v0.5.0-dev`已建立统一package/candidate身份，本地branch同步为`0.5.0-dev`；candidate身份本身不产生Release或Product实现授权 |
+| README / Wiki分层 | README保持稳定产品入口，本地开发与构建/Release教程由Release-excluded `Wiki.md`维护 |
+| planning lifecycle | `.active_plan`只选择一个活动scope；completed scope的保留、历史提炼和删除均由维护者决定 |
+| implementation audit | architecture、design、contracts、源码和测试已完成一次代码级对账，已知文档漂移得到修正 |
+| autonomous exact state | nonce/attestation现与README合同一致，严格要求exact单个LF，其他换行或尾随形式拒绝 |
+| Phase authority activation | Phase 5已显式激活为文档治理阶段，但新的Product实现、Cloud和Release仍未授权 |
 
-| 主题 | 已发生的重要事实 | Phase 5含义 |
-|---|---|---|
-| development identity | package、Release contract、predecessor contract与zero-hash bootstrap已轮转到`v0.5.0-dev`，本地branch同步为`0.5.0-dev` | 建立Phase 5版本系列，但candidate初始化本身不等于programme授权 |
-| README / Wiki分层 | 本地开发与构建/Release教程迁入Release-excluded `Wiki.md`，README收敛为稳定产品入口与文档地图 | 降低README和Release ZIP输入的治理重量，同时保留唯一导航入口 |
-| planning lifecycle | 维护者退役早期已完成scope，随后明确completed scope可保留，测试只要求一个活动pointer | 区分“一个活动scope”和“只能存在一个scope目录” |
-| implementation audit | 对照architecture、design、contracts、runtime与tests完成代码级核查，并修正installed contract图、Wiki链接和adapter注释漂移 | 文档不能把历史模型或不完整部署图继续当作当前实现 |
-| autonomous exact state | 回看Phase 4历史、本地验收与真实Cloud证据后，确认正向样本均使用LF；runtime现严格要求nonce/attestation为exact单个LF | README合同、实现和回归重新一致；无LF、CRLF、多LF及尾随空白均拒绝 |
-| Phase authority activation | 维护者显式确认进入Phase 5文档治理，并创建本overview | 从“仅预占0.5.0系列”切换为真实激活、但范围仍受限的Product Phase |
+<a name="phase-5-planning-history-lifecycle"></a>
 
-后续重要决定或交付先追加到本表或本节的有界子段；普通命令、失败重试和测试数字继续只写活动planning。若一项工作只是版本delta，
-只写CHANGELOG；若涉及exact发布身份或验收，只写provenance/acceptance并从这里链接，不复制证据表。
+## Planning and history lifecycle
 
-<a name="phase-5-ledger-distillation"></a>
+`phase-5.md`始终只保存摘要提纲；详细流水、错误、测试与取舍保存在各活动/已完成planning中。维护者定期决定planning的保留或
+删除，并在删除前审阅其内容：只有维护者认为某个已关闭主题值得长期保留且符合合法history role时，才创建或更新
+`docs/history/phase-5.x-<topic>.md`并登记索引。
 
-## Ledger distillation
-
-当工作账本出现一个已经关闭、可独立理解且值得长期回看的主题时，按以下步骤提炼：
-
-1. 判断它是真实Discovery/decision round，还是对象关闭后的回顾；分别选择`FROZEN_DISCOVERY_RECORD`或
-   `RETROSPECTIVE_CAPSULE`，不创造第三种history role。
-2. 创建一个有语义标题的`docs/history/phase-5.x-<topic>.md`，补入稳定英文anchor，并在history索引登记；`x`按真实对象顺序分配，
-   不按聊天、提交或测试批次编号。
-3. 把值得保存的条件、取舍、停止点和后继继承提炼到history；原始聊天、完整测试输出、当前状态和旧planning不搬入。
-4. 从本文件删除已经被history承接的过程细节，只保留结论、稳定边界和链接，使`phase-5.md`逐步蜕变为摘要提纲。
-5. `phase-5.md`始终保留current Product authority；history只解释“当时怎样决定”，不得反向授权当前实现或Release。
-
-账本变长本身不是唯一准入条件。若内容仍在讨论、没有关闭结论或无法归类到两个合法role，就继续留在活动账本或planning，不提前
-物化history。Phase closeout时必须完成最后一次提炼，并删除已经失去长期价值的临时账目。
+智能体可以在planning中标记可能值得提炼的材料并提出建议，但不得自行把planning提升为history，也不得因为scope完成、内容变长、
+存在Git恢复点或准备删除就自动创建history。维护者没有明确决定时，保持planning原状；history一旦创建，只保存精选过程，不复制
+全部planning，也不成为current Product authority。
 
 <a name="phase-5-version-train-mapping"></a>
 
@@ -101,8 +91,8 @@ hard gating等新的Product方向，必须先按ROADMAP重新Discovery，不能�
 
 ## Closeout and successor inheritance
 
-Phase 5尚未closeout。关闭前至少需要：把活动账本提炼成摘要提纲；将符合条件的过程记录迁入已索引history；确认文档authority、
-代码实现与测试不存在已知漂移；明确哪些治理规则成为后继稳定边界，以及哪些候选方向被拒绝或仍需Discovery。
+Phase 5尚未closeout。关闭前至少需要：更新本摘要提纲；由维护者复核completed planning的保留、history提炼或删除处置；确认
+文档authority、代码实现与测试不存在已知漂移；明确哪些治理规则成为后继稳定边界，以及哪些候选方向被拒绝或仍需Discovery。
 
 后继阶段必须继承“一个问题一个current authority”、活动planning与历史证据分层、文档/代码相互校验、未知权限和Release风险
 fail closed等边界。Phase 5不会预先授权Phase 6 compaction或其后的可选能力。
@@ -113,7 +103,7 @@ fail closed等边界。Phase 5不会预先授权Phase 6 compaction或其后的�
 
 - Current programme、version roles与未来路线：[`ROADMAP`](../../ROADMAP.md)
 - 逐版本delta：[`CHANGELOG`](../../CHANGELOG.md)
-- 活动任务、验证与错误：`.planning/.active_plan`指向的scope
+- 详细任务、验证与错误：`.planning/.active_plan`指向的活动scope及维护者尚未删除的completed scopes
 - 成熟历史对象及其准入：[`Phase history`](../history/README.md)
 - 已发布身份与不可变验收：[`BASELINE_PROVENANCE`](../../BASELINE_PROVENANCE.md)及对应acceptance
 - Phase 4继承边界：[`Product Phase 4 Overview`](phase-4.md#product-phase-4-overview)

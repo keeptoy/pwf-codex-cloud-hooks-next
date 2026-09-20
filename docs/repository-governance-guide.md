@@ -194,8 +194,8 @@ programme authority。CHANGELOG、provenance和其他宏观文档不得建立第
 Product Phase overview的准入、closeout、patch/governance归属与ROADMAP第4节指针轮转只读
 [`ROADMAP`](../ROADMAP.md#product-phase-overview-rotation)。本指南只维护通用history冻结、链接安全与retirement原则，不复制
 仓库专用状态机；未激活Phase不得创建空overview，不能唯一判断归属时必须先请维护者确认。
-活动overview可以暂存精选工作账；一个主题只有在符合上述两种history role后才提炼为`phase-N.x`对象，随后overview回收过程
-细节并收敛为摘要提纲。不能用账本长度、聊天次数、提交数或测试批次代替history准入。
+overview只保存摘要提纲，详细过程保存在planning。维护者决定删除planning前，应先判断其中是否有材料符合上述两种history role；
+只有维护者明确决定后才创建或更新`phase-N.x`对象。不能用planning长度、聊天次数、提交数或测试批次代替history准入。
 
 ## 9. Provenance 的准入标准
 

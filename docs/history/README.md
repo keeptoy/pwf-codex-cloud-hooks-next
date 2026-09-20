@@ -21,8 +21,8 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
   interlude必须明确声明不是原programme的正式Phase，也不产生新授权。
 - `FROZEN_DISCOVERY_RECORD`只在正式Discovery/decision round关闭并有exact source证据后进入；Product Phase可以仍活动，
   但讨论中、施工中、聊天切片或只有临时原型结论的材料不进入这里。
-- 活动Product Phase的重要过程可以先留在对应overview的curated working ledger；只有达到上述两种role的准入条件后才创建
-  `phase-N.x` history object，并把overview收敛为摘要提纲。账本变长不等于自动获得history身份。
+- 活动Product Phase的详细过程保存在planning。维护者决定删除planning前，负责判断是否有材料达到上述两种role的准入条件；
+  只有维护者明确决定后才创建或更新`phase-N.x` history object。planning完成、变长或已有Git恢复点都不自动产生history身份。
 - 跨多个已关闭阶段的回顾性 overview 只负责组织已经证实的历史关系，必须明确不是正式 Phase，并链接而不
   取代各段history objects；不能借 overview 把原型推断成验收、把功能模型推断成当前架构。
 - 同一闭合对象最多一份retrospective capsule；同一Product Phase可以有多份frozen Discovery records，但每份必须对应真实
