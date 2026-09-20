@@ -437,9 +437,6 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.doesNotMatch(currentTrain, /^<a name="v\d+-\d+-\d+(?:-[a-z0-9-]+)?-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain,
     /Product Phase 4 Overview[\s\S]*BASELINE_PROVENANCE[\s\S]*v0\.4\.4 acceptance/);
-  assert.match(currentTrain,
-    /development candidate[\s\S]*README[\s\S]*Wiki\.md[\s\S]*Product Phase 5[\s\S]*文档治理[\s\S]*不授权Product实现/);
-  assert.match(currentTrain, /七个已完成planning scope[\s\S]*current tree删除[\s\S]*新的candidate初始化scope[\s\S]*Git历史/);
   assert.match(currentTrain, /docs\/product-phases\/phase-4\.md#product-phase-4-overview/);
   assert.match(currentTrain, /docs\/product-phases\/phase-5\.md#product-phase-5-overview/);
   assert.match(currentTrain, /candidate \+ accepted role window/);

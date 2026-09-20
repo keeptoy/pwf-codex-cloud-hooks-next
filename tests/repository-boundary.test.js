@@ -81,7 +81,6 @@ test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", ()
   assert.match(currentTrain, /Product Phase 4 Overview/);
   assert.match(currentTrain, /Product Phase 5 Overview/);
   assert.match(currentTrain, /BASELINE_PROVENANCE/);
-  assert.match(currentTrain, /七个已完成planning scope[^\n]*明确授权[^\n]*current tree删除/);
   assert.match(currentTrain, /v0\.4\.4 acceptance/);
   assert.match(currentTrain, /Product Phase 5[\s\S]{0,160}文档治理[\s\S]{0,180}Product实现、Cloud或Release/);
   assert.match(phase5Overview, /^<a name="product-phase-5-overview"><\/a>$/m);
@@ -278,8 +277,6 @@ test("planning lifecycle selects one active scope without forcing completed-scop
   assert.match(activePlan, /^\d{4}-\d{2}-\d{2}-[a-z0-9][a-z0-9.-]*$/);
   assert.equal(validatePlanningScopes(root, activePlan, actual), "legacy");
   assert.equal(validatePlanningScopes(root, activePlan, withRetainedCompletedScope), "legacy");
-  assert.match(roadmap, /七个已完成planning scope[^\n]*维护者[^\n]*授权[^\n]*current tree删除/);
-  assert.match(roadmap, /新的candidate初始化scope[^\n]*`\.planning\/\.active_plan`选择/);
   assert.match(governance,
     /`\.planning\/\.active_plan` 只选择当前唯一活动 scope，不负责自动删除其他目录/);
   assert.match(governance,

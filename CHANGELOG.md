@@ -20,6 +20,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   摘要提纲和长期Product authority；详细流水保存在planning，是否在planning删除前形成`phase-5.x` history由维护者决定。
 - Product Phase overview的内容分层和history维护职责改由overview模板直接明示；治理测试不再冻结Phase 5标题、文案、旧术语或
   `phase-5.x`暂未存在等时态性状态，继续只校验稳定anchor、authority metadata、链接和其他可执行仓库边界。
+- ROADMAP“当前开发列车”收敛为candidate/branch、授权状态、accepted/fallback与authority链接指针；已完成工作和一次性planning
+  退役事实不再在current train重复，由Phase overview、CHANGELOG及对应历史/验收authority承载。
 
 ## v0.4.4
 

@@ -65,19 +65,13 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 本节是current development train指针：只保留exact列车身份、当前授权边界与对应Product Phase overview链接。活动planning、
 未封存Discovery和需要current状态的验收材料可以引用train anchor，但本节不再承载长期Product摘要。
 
-当前exact development candidate为`v0.5.0-dev`，位于本地branch `0.5.0-dev`。该development candidate先完成README中的维护者
-开发/打包内容向Release-excluded `Wiki.md`迁移、旧planning退役与pre-C0身份初始化，随后完成architecture/design/code对账、
-completed planning保留规则修正和autonomous exact LF状态收敛。逐项实际delta只读CHANGELOG。
+当前exact development candidate为`v0.5.0-dev`，位于本地branch `0.5.0-dev`，对应已激活的
+[`Product Phase 5 Overview`](docs/product-phases/phase-5.md#product-phase-5-overview)。当前只授权Phase 5文档治理；
+新的Product实现、Cloud或Release仍未授权。candidate不是C0、Cloud PASS、tag或Release；逐版本实际delta只读[`CHANGELOG`](CHANGELOG.md)。
 
-Product Phase 5现已由维护者显式激活，但当前只授权文档治理：Phase overview维护摘要提纲，详细流水保存在planning，是否在
-planning删除前提炼为history由维护者决定。该授权不授权Product实现、Cloud或Release；candidate仍不是C0、Cloud PASS、tag或Release，
-accepted/fallback角色仍为v0.4.4/v0.4.3。当前Product authority只读
-[`Product Phase 5 Overview`](docs/product-phases/phase-5.md#product-phase-5-overview)。
-
-七个已完成planning scope已由维护者明确授权从current tree删除；新的candidate初始化scope由`.planning/.active_plan`选择，
-旧scope恢复入口改由Git历史、Phase history、acceptance与provenance承担。
-本次退役不重新激活已经关闭的v0.4.4列车，也不删除产品运行时对用户workspace planning的支持。继承的稳定Product baseline只读[`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)，
-exact已发布身份只读[`BASELINE_PROVENANCE`](BASELINE_PROVENANCE.md)，最终双通道、Latest与C2证据只读
+accepted/fallback角色仍为v0.4.4/v0.4.3。继承的稳定Product baseline只读
+[`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)，exact已发布身份只读
+[`BASELINE_PROVENANCE`](BASELINE_PROVENANCE.md)，最终双通道、Latest与C2证据只读
 [`v0.4.4 acceptance`](docs/acceptance/v0.4.4-cloud-hard-acceptance.md#v0-4-4-release-operator-guide)。
 
 <a name="product-phase-route-index"></a>
