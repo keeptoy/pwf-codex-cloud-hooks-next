@@ -643,7 +643,7 @@ test("historical documents have two controlled macro entrances and remain adviso
     /ROADMAP\.md#product-phase-overview-rotation[\s\S]*通用history冻结[\s\S]*不复制[\s\S]*仓库专用状态机/);
   assert.match(governanceGuide,
     /programme在record冻结后插入、拆分或重编号Product Phase时[\s\S]*不得搜索替换历史正文[\s\S]*Post-programme reindex status/);
-  assert.match(historyIndex, /RETROSPECTIVE_CAPSULE[\s\S]*Phase 0～3\.9\.3[\s\S]*Phase 4\.12～4\.17[\s\S]*17/);
+  assert.match(historyIndex, /RETROSPECTIVE_CAPSULE[\s\S]*Phase 0～3\.9\.3[\s\S]*Phase 4\.12～4\.17[\s\S]*Phase 5\.0[\s\S]*18/);
   assert.match(historyIndex, /FROZEN_DISCOVERY_RECORD[\s\S]*Phase 4\.1～4\.11[\s\S]*11/);
   assert.match(historyIndex, /Phase 4\.1～4\.11[\s\S]*不表示[\s\S]*11个独立Product Phase/);
   assert.match(historyIndex,
@@ -890,7 +890,6 @@ test("Phase 4.17 separates immutable Release identity from reducible harness cer
   assert.match(phase4Overview, /Product Phase 5[\s\S]*Discovery输入[\s\S]*不是现行流程变更/);
   assert.match(historyIndex,
     /phase-4\.17-phase-4-harness-retrospective\.md#phase-4-17-historical-position/);
-  assert.match(historyIndex, /Phase 4\.12～4\.17[\s\S]*\| 17 \|/);
   assert.equal(artifact.entries.some(entry => entry.path === relative), false);
   assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
 });
