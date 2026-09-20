@@ -254,7 +254,7 @@ Discovery 还对 Phase 4.1 做了一个必要的微调：当时“token 放在�
 
 这个调整没有改变本里程碑冻结的 hybrid owned-boundary、只读 workspace、versioned opt-in、fail-closed refusal、
 trusted graph 或 Host event set；它只是用更强的物理零读取边界替换了尚未实施的同文件示例。当前协议与授权状态以
-[`Product Phase 4 current authority`](../product-phases/phase-4.md#product-phase-4-overview) 和 Phase 4.4 后继 Discovery 为准。
+[`Product Phase 4 current authority`](../product-phases/phase-4-overview.md#product-phase-4-overview) 和 Phase 4.4 后继 Discovery 为准。
 
 <a name="phase-4-1-post-implementation-opt-in-clarification"></a>
 

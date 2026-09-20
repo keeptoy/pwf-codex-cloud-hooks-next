@@ -66,11 +66,11 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 未封存Discovery和需要current状态的验收材料可以引用train anchor，但本节不再承载长期Product摘要。
 
 当前exact development candidate为`v0.5.0-dev`，位于本地branch `0.5.0-dev`，对应已激活的
-[`Product Phase 5 Overview`](docs/product-phases/phase-5.md#product-phase-5-overview)。当前只授权Phase 5文档治理；
+[`Product Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview)。当前只授权Phase 5文档治理；
 新的Product实现、Cloud或Release仍未授权。candidate不是C0、Cloud PASS、tag或Release；逐版本实际delta只读[`CHANGELOG`](CHANGELOG.md)。
 
 accepted/fallback角色仍为v0.4.4/v0.4.3。继承的稳定Product baseline只读
-[`Product Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview)，exact已发布身份只读
+[`Product Phase 4 Overview`](docs/product-phases/phase-4-overview.md#product-phase-4-overview)，exact已发布身份只读
 [`BASELINE_PROVENANCE`](BASELINE_PROVENANCE.md)，最终双通道、Latest与C2证据只读
 [`v0.4.4 acceptance`](docs/acceptance/v0.4.4-cloud-hard-acceptance.md#v0-4-4-release-operator-guide)。
 
@@ -84,13 +84,13 @@ accepted/fallback角色仍为v0.4.4/v0.4.3。继承的稳定Product baseline只�
 
 长期Product目标、已采纳路线、稳定边界与最终结论由
 [`Product Phase Overview`](docs/product-phases/README.md#product-phase-overview-index)独占。只有真实激活的Phase才创建
-`docs/product-phases/phase-N.md`；TBD路线行不提前物化空overview。Phase history继续保存精选过程账本，不因细节更多而成为
+`docs/product-phases/phase-N-overview.md`；TBD路线行不提前物化空overview。Phase history继续保存精选过程账本，不因细节更多而成为
 第二份Product authority。
 
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 / overview |
 |---|---|---|---|---|
-| 4 | `0.4.0-*`～`0.4.4` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理 | F0～F3C功能/rollback已闭合；后续patch/governance列车不得改变Product行为或激活Phase 5 | Product baseline complete；当前v0.4.4为Release tag教程stable C0 candidate；[`Phase 4 Overview`](docs/product-phases/phase-4.md#product-phase-4-overview) |
-| 5 | `0.5.0-*` | 文档治理：authority分层、文档/代码对账、planning生命周期与overview/history分工；其他Product实现仍TBD | 新Product实现仍需Discovery；退出/Cloud gate、Release路线与对象清单均TBD | Phase 5 active；当前限文档治理，未授权Product实现、Cloud或Release；[`Phase 5 Overview`](docs/product-phases/phase-5.md#product-phase-5-overview) |
+| 4 | `0.4.0-*`～`0.4.4` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理 | F0～F3C功能/rollback已闭合；后续patch/governance列车不得改变Product行为或激活Phase 5 | Product baseline complete；当前v0.4.4为Release tag教程stable C0 candidate；[`Phase 4 Overview`](docs/product-phases/phase-4-overview.md#product-phase-4-overview) |
+| 5 | `0.5.0-*` | 文档治理：authority分层、文档/代码对账、planning生命周期与overview/history分工；其他Product实现仍TBD | 新Product实现仍需Discovery；退出/Cloud gate、Release路线与对象清单均TBD | Phase 5 active；当前限文档治理，未授权Product实现、Cloud或Release；[`Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview) |
 | 6 | `0.6.0-*` | compaction lifecycle | 复核真实Cloud payload，比较现有`SessionStart source=clear\|compact`与PreCompact/PostCompact的时序和恢复能力；现有事件足够时不扩大managed event set，只有真实context/时序缺口才新增Hook | pending |
 | 7 | `0.7.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立gate；必须分别有use case、latency/token budget、噪声预算与Cloud证据 | pending / optional；没有明确收益就逐项或整体`NO_GO`；不是Phase 8前置 |
 | 8 | `0.8.0-*` | 唯一的read-only advisory completion evaluator | bounded、non-recursive、无plan时安静；只advisory，不阻断、不写counter/ledger或其他mutable gate state | pending；可独立于Phase 7进入Discovery |
@@ -108,7 +108,7 @@ Discovery/Release hardening gate。历史standing Phase 9 Release instances保�
 本节是overview指针轮转的唯一权威；仓库治理指南、模板和history只引用本规则，不复制第二份状态机。
 
 1. **Product Phase激活：** ROADMAP和活动task plan先明确Phase、版本系列与授权；随后从模板创建唯一
-   `docs/product-phases/phase-N.md`，第4节exact train anchor指向其`product-phase-N-overview`。
+   `docs/product-phases/phase-N-overview.md`，第4节exact train anchor指向其`product-phase-N-overview`。
 2. **Discovery Round关闭：** 当时的决策记录按`FROZEN_DISCOVERY_RECORD`进入history；需要current Product authority时直接
    链接同一overview，不再经过ROADMAP第4节或等待Phase closeout后批量迁链。
 3. **Product Phase closeout：** 在overview补齐最终交付、稳定边界和后继继承。关闭后只做事实纠错、链接维护或有证据的状态尾注；

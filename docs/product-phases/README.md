@@ -8,7 +8,7 @@
 
 ## Authority 与准入
 
-- 每个真实激活的 Product Phase 最多一份`phase-N.md`；未激活、只在ROADMAP候选表中的Phase不提前创建空文件。
+- 每个真实激活的 Product Phase 最多一份`phase-N-overview.md`；未激活、只在ROADMAP候选表中的Phase不提前创建空文件。
 - Product Phase激活后，ROADMAP第4节把current train指针指向对应overview；活动期间只维护已采纳的Product目标、路线与稳定边界。
 - 详细问题、决定、实施过程、错误和验证写入活动/已完成planning；维护者决定删除planning前，负责判断是否需要创建或更新
   `phase-N.x` history。没有维护者明确决定时，不自动提升、迁移或删除。
@@ -21,7 +21,7 @@
 | 要回答的问题 | 唯一入口 |
 |---|---|
 | 当前列车、版本角色、未来Phase路线和overview指针 | [`ROADMAP`](../../ROADMAP.md) |
-| Product Phase长期目标、已采纳路线、稳定边界和最终结论 | 本目录对应`phase-N.md` |
+| Product Phase长期目标、已采纳路线、稳定边界和最终结论 | 本目录对应`phase-N-overview.md` |
 | 当时怎样探路、为什么作出某个决定、后来怎样回补 | [`Phase历史过程账本`](../history/README.md) |
 | 各版本实际改变了什么 | [`CHANGELOG`](../../CHANGELOG.md) |
 | exact tag、source、ZIP/bootstrap与验收结果 | [`BASELINE_PROVENANCE`](../../BASELINE_PROVENANCE.md)和对应acceptance |
@@ -34,8 +34,8 @@ overview不复制逐Discovery流水、原始测试输出、测试数量、C0/C1/
 
 | Product Phase | 长期authority | 状态说明 |
 |---|---|---|
-| 4 | [`phase-4.md`](phase-4.md#product-phase-4-overview) | Product baseline已闭合；后续同系列patch/governance不自动创建新Product Phase |
-| 5 | [`phase-5.md`](phase-5.md#product-phase-5-overview) | active；当前范围为文档治理，overview保持摘要提纲，详细流水留在planning，history由维护者决定 |
+| 4 | [`phase-4-overview.md`](phase-4-overview.md#product-phase-4-overview) | Product baseline已闭合；后续同系列patch/governance不自动创建新Product Phase |
+| 5 | [`phase-5-overview.md`](phase-5-overview.md#product-phase-5-overview) | active；当前范围为文档治理，overview保持摘要提纲，详细流水留在planning，history由维护者决定 |
 
 新增实例时复制[`Product Phase Overview模板`](../product-phase-overview-template.md)，按真实证据删改提示文字；模板不是machine
 contract，也不要求为模板更新批量改写已经关闭的overview。

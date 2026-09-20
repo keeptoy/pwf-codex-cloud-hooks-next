@@ -62,8 +62,8 @@ test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", ()
   const retiredV043Acceptance = readGit("d7b5345b165e94c18ceab9b591d9a6b6dd251110",
     "docs/acceptance/v0.4.3-cloud-hard-acceptance.md");
   const provenance = read("BASELINE_PROVENANCE.md");
-  const phase4Overview = read("docs/product-phases/phase-4.md");
-  const phase5Overview = read("docs/product-phases/phase-5.md");
+  const phase4Overview = read("docs/product-phases/phase-4-overview.md");
+  const phase5Overview = read("docs/product-phases/phase-5-overview.md");
   const currentTrain = roadmap.slice(
     roadmap.indexOf("## 4. 当前开发列车"),
     roadmap.indexOf("## 5. Product Phase 路线"),
@@ -327,7 +327,7 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   const rootBootstraps = actual.filter(item => /^init-cloud-sandbox-v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\.bash$/.test(item));
   const acceptanceDocs = docs.filter(item =>
     /^docs\/(?:acceptance\/)?v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?-cloud-hard-acceptance\.md$/.test(item));
-  const phaseOverviewDocs = docs.filter(item => /^docs\/product-phases\/phase-\d+\.md$/.test(item));
+  const phaseOverviewDocs = docs.filter(item => /^docs\/product-phases\/phase-\d+-overview\.md$/.test(item));
 
   assert.equal(artifact.excluded_prefixes.includes("docs/"), true);
   for (const relative of docs) {
@@ -343,8 +343,8 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.deepEqual(acceptanceDocs.map(relative => path.basename(relative).replace("-cloud-hard-acceptance.md", "")).sort(),
     expectedAcceptanceDocs.map(relative => path.basename(relative).replace("-cloud-hard-acceptance.md", "")).sort());
   assert.deepEqual(phaseOverviewDocs, [
-    "docs/product-phases/phase-4.md",
-    "docs/product-phases/phase-5.md",
+    "docs/product-phases/phase-4-overview.md",
+    "docs/product-phases/phase-5-overview.md",
   ]);
   assert.equal(docs.includes("docs/product-phase-overview-template.md"), true);
   assert.equal(docs.includes("docs/product-phases/README.md"), true);
@@ -608,8 +608,8 @@ test("historical documents have two controlled macro entrances and remain adviso
   const governanceGuide = read("docs/repository-governance-guide.md");
   const phaseOverviewIndex = read("docs/product-phases/README.md");
   const phaseOverviewTemplate = read("docs/product-phase-overview-template.md");
-  const phase4Overview = read("docs/product-phases/phase-4.md");
-  const phase5Overview = read("docs/product-phases/phase-5.md");
+  const phase4Overview = read("docs/product-phases/phase-4-overview.md");
+  const phase5Overview = read("docs/product-phases/phase-5-overview.md");
   const agents = read("AGENTS.md");
   assert.match(readme, /\]\(docs\/history\/README\.md\)/);
   assert.match(readme,
@@ -655,7 +655,7 @@ test("historical documents have two controlled macro entrances and remain adviso
   assert.match(historyTemplate, /先选择 record role/);
   assert.match(historyTemplate, /RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
   assert.match(historyTemplate,
-    /Product Phase激活后[\s\S]*docs\/product-phases\/phase-N\.md#product-phase-N-overview[\s\S]*Product Phase closeout[\s\S]*不再把history current links从ROADMAP第4节迁到第5节/);
+    /Product Phase激活后[\s\S]*docs\/product-phases\/phase-N-overview\.md#product-phase-N-overview[\s\S]*Product Phase closeout[\s\S]*不再把history current links从ROADMAP第4节迁到第5节/);
   assert.match(phaseOverviewIndex, /^<a name="product-phase-overview-index"><\/a>$/m);
   assert.match(phaseOverviewIndex,
     /真实激活过的 Product Phase 的长期说明书[\s\S]*未激活[\s\S]*不提前创建空文件/);
@@ -785,7 +785,7 @@ test("Phase 4.14 keeps stable Release closeout governance interfaces", () => {
     "../../ROADMAP.md#version-train-two-retirement-reviews",
     "../../ROADMAP.md#github-release-latest-promotion-confirmation",
     "../../ROADMAP.md#product-phase-overview-rotation",
-    "../product-phases/phase-4.md#product-phase-4-overview",
+    "../product-phases/phase-4-overview.md#product-phase-4-overview",
   ]) assert.equal(history.includes(authority), true, 'Phase 4.14 lacks authority link: ' + authority);
 
   assert.match(historyIndex,
@@ -859,7 +859,7 @@ test("Phase 4.16 preserves v0.4.4 exact C0 tag guide governance", () => {
 test("Phase 4.17 separates immutable Release identity from reducible harness ceremony", () => {
   const relative = "docs/history/phase-4.17-phase-4-harness-retrospective.md";
   const historyIndex = read("docs/history/README.md");
-  const phase4Overview = read("docs/product-phases/phase-4.md");
+  const phase4Overview = read("docs/product-phases/phase-4-overview.md");
   const artifact = JSON.parse(read(currentArtifactPath));
   assert.equal(fs.existsSync(path.join(root, relative)), true, relative);
   const history = read(relative);

@@ -33,7 +33,7 @@
 ## Current authority link lifecycle
 
 - Product Phase激活后，已冻结Discovery record或retrospective capsule需要current Product authority时，直接链接唯一
-  `docs/product-phases/phase-N.md#product-phase-N-overview`；普通历史叙述不得把ROADMAP moving train当immutable evidence。
+  `docs/product-phases/phase-N-overview.md#product-phase-N-overview`；普通历史叙述不得把ROADMAP moving train当immutable evidence。
 - Product Phase closeout只补齐同一overview的最终交付和后继继承，不再把history current links从ROADMAP第4节迁到第5节。
 - patch/governance列车没有新Product Phase时，不得虚构overview；按对象性质链接既有Product baseline、版本角色、Release治理或
   immutable evidence，或者移除不再承担current职责的链接。

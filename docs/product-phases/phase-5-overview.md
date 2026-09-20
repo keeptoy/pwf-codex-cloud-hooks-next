@@ -69,7 +69,7 @@ deterministic package与disarm-first rollback继续是继承边界。当前Phase
 
 ## Planning and history lifecycle
 
-`phase-5.md`始终只保存摘要提纲；详细流水、错误、测试与取舍保存在各活动/已完成planning中。维护者定期决定planning的保留或
+`phase-5-overview.md`始终只保存摘要提纲；详细流水、错误、测试与取舍保存在各活动/已完成planning中。维护者定期决定planning的保留或
 删除，并在删除前审阅其内容：只有维护者认为某个已关闭主题值得长期保留且符合合法history role时，才创建或更新
 `docs/history/phase-5.x-<topic>.md`并登记索引。
 
@@ -106,4 +106,4 @@ fail closed等边界。Phase 5不会预先授权Phase 6 compaction或其后的�
 - 详细任务、验证与错误：`.planning/.active_plan`指向的活动scope及维护者尚未删除的completed scopes
 - 成熟历史对象及其准入：[`Phase history`](../history/README.md)
 - 已发布身份与不可变验收：[`BASELINE_PROVENANCE`](../../BASELINE_PROVENANCE.md)及对应acceptance
-- Phase 4继承边界：[`Product Phase 4 Overview`](phase-4.md#product-phase-4-overview)
+- Phase 4继承边界：[`Product Phase 4 Overview`](phase-4-overview.md#product-phase-4-overview)

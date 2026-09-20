@@ -37,7 +37,7 @@ README、ARCHITECTURE、DESIGN、现行 contracts、ROADMAP 与活动 planning �
 - 宏观访问只开放两个入口：README 文档地图只进入本索引；ROADMAP只在programme路线需要历史理由时直达具体
   history record的稳定显式anchor。ROADMAP不得复制本索引或把历史对象提升为current authority，其他宏观文档不得建立第三入口。
 - Product Phase激活后，frozen Discovery record与retrospective capsule需要current Product authority时都直接链接对应
-  `docs/product-phases/phase-N.md#product-phase-N-overview`；不再先指ROADMAP第4节、closeout后再批量迁链。未激活Phase没有
+  `docs/product-phases/phase-N-overview.md#product-phase-N-overview`；不再先指ROADMAP第4节、closeout后再批量迁链。未激活Phase没有
   overview，纯patch/governance列车也不得因此虚构Product Phase。完整指针事务只见
   [`ROADMAP`](../../ROADMAP.md#product-phase-overview-rotation)。
 

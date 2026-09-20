@@ -2,7 +2,7 @@
 
 # Product Phase Overview 模板
 
-本模板只用于创建`docs/product-phases/phase-N.md`长期Product authority。只有ROADMAP与活动task plan已经明确激活真实Product
+本模板只用于创建`docs/product-phases/phase-N-overview.md`长期Product authority。只有ROADMAP与活动task plan已经明确激活真实Product
 Phase时才创建实例；未激活的候选/TBD Phase不得先建空overview。创建后删除所有不适用的提示文字。
 
 ## 写作边界

@@ -13,7 +13,7 @@ Phase 4.16是v0.4.3完成immutable publication、双通道验收、Latest与C2�
 该列车继续归属已闭合Product Phase 4 baseline上的patch/governance范围，不重新打开Product行为，也不激活Product Phase 5。
 当前命令只读根[`README`](../../README.md)，宏观C0/C1/C2与publication顺序只读
 [`ROADMAP` Release流程](../../ROADMAP.md#release-four-step-flow)，长期继承边界读
-[`Product Phase 4 Overview`](../product-phases/phase-4.md#product-phase-4-overview)。
+[`Product Phase 4 Overview`](../product-phases/phase-4-overview.md#product-phase-4-overview)。
 
 <a name="phase-4-16-problem-before"></a>
 

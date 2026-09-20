@@ -185,7 +185,7 @@ package或Release字节，也没有授权`0.4.2`候选封板、Cloud、publicati
 ## Post-governance status — Product Phase overview authority
 
 `v0.4.3-dev`后续文档治理把长期Product authority从ROADMAP第5节大段正文迁入
-[`Product Phase 4 Overview`](../product-phases/phase-4.md#product-phase-4-overview)。ROADMAP第4节只保存current train指针，
+[`Product Phase 4 Overview`](../product-phases/phase-4-overview.md#product-phase-4-overview)。ROADMAP第4节只保存current train指针，
 第5节只保存Phase 4～9路线索引与唯一overview轮转规则；history current links从此直接指向同一overview，不再在Phase closeout时
 从第4节批量迁到第5节。上文旧状态流保持当时语义，本尾注只记录后继authority替换，不改变原治理结论或产生新Product授权。
 
@@ -225,7 +225,7 @@ Source/Candidate。本节保留这次后续精炼的原因；当前执行顺序�
 由于README进入Release allowlist，本轮不是纯Release-excluded治理改动。最终本地zero-hash候选已重新完成双构建/check：
 22 entries、87,386 bytes、SHA-256 `d1547ab50afcc3a275592d41b60daa77ab1062c97c072be3661cfe763467264e`，两份字节一致。
 这只是C0前本地候选快照，不是Source/Candidate PASS、sealed bootstrap或public asset证据；当前列车状态仍只读
-[`Product Phase 4` v0.4.2 closeout](../product-phases/phase-4.md#v0-4-2-release-closeout)，exact执行证据继续由活动planning和版本operator guide承接。
+[`Product Phase 4` v0.4.2 closeout](../product-phases/phase-4-overview.md#v0-4-2-release-closeout)，exact执行证据继续由活动planning和版本operator guide承接。
 
 <a name="phase-4-14-post-governance-status-maintenance-environment-memory"></a>
 

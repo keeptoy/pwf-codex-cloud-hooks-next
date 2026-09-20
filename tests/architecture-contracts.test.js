@@ -51,8 +51,8 @@ test("cross-document fragments use stable explicit anchors", () => {
   assert.deepEqual(
     [...counts.entries()].filter(([, count]) => count > 1),
     [
-      ["ROADMAP.md->phase-5.md#product-phase-5-overview", 2],
-      ["ROADMAP.md->phase-4.md#product-phase-4-overview", 2],
+      ["ROADMAP.md->phase-5-overview.md#product-phase-5-overview", 2],
+      ["ROADMAP.md->phase-4-overview.md#product-phase-4-overview", 2],
     ],
     "only current-train pointers and the Product Phase route index may share authority targets",
   );
@@ -340,8 +340,8 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   const repositoryGovernance = readText("docs/repository-governance-guide.md");
   const phaseOverviewIndex = readText("docs/product-phases/README.md");
   const phaseOverviewTemplate = readText("docs/product-phase-overview-template.md");
-  const phase4Overview = readText("docs/product-phases/phase-4.md");
-  const phase5Overview = readText("docs/product-phases/phase-5.md");
+  const phase4Overview = readText("docs/product-phases/phase-4-overview.md");
+  const phase5Overview = readText("docs/product-phases/phase-5-overview.md");
   const phase41 = readText("docs/history/phase-4.1-managed-v3-discovery.md");
   const phase44 = readText("docs/history/phase-4.4-f2a-smart-activation-discovery.md");
   const currentTrainStart = roadmap.indexOf("## 4. 当前开发列车");
@@ -437,8 +437,8 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.doesNotMatch(currentTrain, /^<a name="v\d+-\d+-\d+(?:-[a-z0-9-]+)?-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain,
     /Product Phase 4 Overview[\s\S]*BASELINE_PROVENANCE[\s\S]*v0\.4\.4 acceptance/);
-  assert.match(currentTrain, /docs\/product-phases\/phase-4\.md#product-phase-4-overview/);
-  assert.match(currentTrain, /docs\/product-phases\/phase-5\.md#product-phase-5-overview/);
+  assert.match(currentTrain, /docs\/product-phases\/phase-4-overview\.md#product-phase-4-overview/);
+  assert.match(currentTrain, /docs\/product-phases\/phase-5-overview\.md#product-phase-5-overview/);
   assert.match(currentTrain, /candidate \+ accepted role window/);
   assert.match(currentTrain, /trusted\/Release zones 继续 exact[\s\S]*docs\/planning zones 按 lifecycle policy/);
   assert.match(currentTrain,
@@ -479,8 +479,8 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(phase4Overview, /RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
   assert.match(phase5Overview,
     /Authority role: `PRODUCT_PHASE_OVERVIEW`[\s\S]*Version series: `0\.5\.0-\*`/);
-  assert.match(phase41, /\]\(\.\.\/product-phases\/phase-4\.md#product-phase-4-overview\)/);
-  assert.match(phase44, /\]\(\.\.\/product-phases\/phase-4\.md#product-phase-4-overview\)/);
+  assert.match(phase41, /\]\(\.\.\/product-phases\/phase-4-overview\.md#product-phase-4-overview\)/);
+  assert.match(phase44, /\]\(\.\.\/product-phases\/phase-4-overview\.md#product-phase-4-overview\)/);
   assert.doesNotMatch(roadmap, /### 5\.4 迁移 transaction 与对象生命周期治理/);
   assert.doesNotMatch(roadmap, /### 5\.5 .*已采纳边界/);
   assert.match(migrationGovernance, /关键迁移可以按照风险、ownership和故障域拆成独立审查、实施、测试和停止点/);
@@ -498,7 +498,7 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
 });
 
 test("Phase 4 separates platform execution permission from plan-local product consent", () => {
-  const phase4Overview = readText("docs/product-phases/phase-4.md");
+  const phase4Overview = readText("docs/product-phases/phase-4-overview.md");
   const history = readText("docs/history/phase-4.1-managed-v3-discovery.md");
 
   for (const term of [

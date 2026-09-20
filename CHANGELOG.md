@@ -16,12 +16,14 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   历史恢复继续由Git、Phase history、acceptance与provenance承担。
 - 收紧autonomous状态准入：nonce与attestation必须以exact单个LF结尾；缺失LF、CRLF、多余LF和尾随空白统一以
   `state_unsafe`拒绝，并新增跨平台字节级回归测试。
-- 维护者显式激活Product Phase 5文档治理，新增[`Phase 5 Overview`](docs/product-phases/phase-5.md#product-phase-5-overview)作为
+- 维护者显式激活Product Phase 5文档治理，新增[`Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview)作为
   摘要提纲和长期Product authority；详细流水保存在planning，是否在planning删除前形成`phase-5.x` history由维护者决定。
 - Product Phase overview的内容分层和history维护职责改由overview模板直接明示；治理测试不再冻结Phase 5标题、文案、旧术语或
   `phase-5.x`暂未存在等时态性状态，继续只校验稳定anchor、authority metadata、链接和其他可执行仓库边界。
 - ROADMAP“当前开发列车”收敛为candidate/branch、授权状态、accepted/fallback与authority链接指针；已完成工作和一次性planning
   退役事实不再在current train重复，由Phase overview、CHANGELOG及对应历史/验收authority承载。
+- Product Phase authority文件统一采用`phase-N-overview.md`命名，Phase 4/5稳定anchor保持不变；current与history链接完成原子迁移，
+  pre-1.0 current tree不保留旧路径redirect。
 
 ## v0.4.4
 

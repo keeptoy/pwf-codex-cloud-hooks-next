@@ -11,7 +11,7 @@ Phase 4.17是在v0.4.4完成exact C0、双通道Cloud、immutable publication、
 发布，以及哪些成本是真正的供应链要求、哪些只是当前acceptance harness尚未压缩的人工编排。
 
 本文不是原programme中的新Product Phase，也不是Product Phase 5 Discovery或实施授权。Phase 4长期Product边界继续只读
-[`Product Phase 4 Overview`](../product-phases/phase-4.md#product-phase-4-overview)，现行Release流程仍只读
+[`Product Phase 4 Overview`](../product-phases/phase-4-overview.md#product-phase-4-overview)，现行Release流程仍只读
 [`ROADMAP`](../../ROADMAP.md#release-four-step-flow)。
 
 <a name="phase-4-17-problem-before"></a>
