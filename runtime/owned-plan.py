@@ -548,7 +548,9 @@ def _normalize_exact_line(content: bytes, pattern: re.Pattern[str], advisory: st
         text = content.decode("utf-8")
     except UnicodeDecodeError:
         raise StateAdmissionFailure("state_unsafe") from None
-    value = text[:-1] if text.endswith("\n") else text
+    if not text.endswith("\n"):
+        raise StateAdmissionFailure(advisory)
+    value = text[:-1]
     if "\n" in value or pattern.fullmatch(value) is None:
         raise StateAdmissionFailure(advisory)
     return value

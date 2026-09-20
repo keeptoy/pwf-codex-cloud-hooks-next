@@ -14,6 +14,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   安装运维、安全不变量和文档地图；Wiki同时提供快速入口、强制活动planning读取和维护者专属远端操作边界。
 - 维护者明确退役current tree中的七个已完成`.planning`记录，同时保留`.planning/`并创建新的candidate初始化scope；旧计划的
   历史恢复继续由Git、Phase history、acceptance与provenance承担。
+- 收紧autonomous状态准入：nonce与attestation必须以exact单个LF结尾；缺失LF、CRLF、多余LF和尾随空白统一以
+  `state_unsafe`拒绝，并新增跨平台字节级回归测试。
 
 ## v0.4.4
 

@@ -168,6 +168,52 @@ print(json.dumps(results))
   ]);
 });
 
+test("autonomous nonce and attestation require exactly one final LF", () => {
+  const source = String.raw`
+import importlib.util, json, re, sys
+spec = importlib.util.spec_from_file_location("owned_plan", sys.argv[1])
+m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+patterns = {"nonce": re.compile(r"^[0-9a-f]{16}$"), "attestation": re.compile(r"^[0-9a-f]{64}$")}
+cases = json.loads(sys.stdin.read()); results = []
+for case in cases:
+    try:
+        results.append(m._normalize_exact_line(case["value"].encode("utf-8"), patterns[case["kind"]], "state_unsafe"))
+    except m.StateAdmissionFailure as error:
+        results.append({"error": error.advisory})
+print(json.dumps(results))
+`;
+  const nonce = "0123456789abcdef";
+  const attestation = "0".repeat(64);
+  const cases = [
+    { kind: "nonce", value: `${nonce}\n` },
+    { kind: "nonce", value: nonce },
+    { kind: "nonce", value: `${nonce}\r\n` },
+    { kind: "nonce", value: `${nonce}\n\n` },
+    { kind: "nonce", value: `${nonce} \n` },
+    { kind: "attestation", value: `${attestation}\n` },
+    { kind: "attestation", value: attestation },
+    { kind: "attestation", value: `${attestation}\r\n` },
+    { kind: "attestation", value: `${attestation}\n\n` },
+    { kind: "attestation", value: `${attestation}\t\n` },
+  ];
+  const result = spawnSync(PYTHON, ["-c", source, RUNTIME], {
+    input: JSON.stringify(cases), encoding: "utf8",
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.deepEqual(JSON.parse(result.stdout), [
+    nonce,
+    { error: "state_unsafe" },
+    { error: "state_unsafe" },
+    { error: "state_unsafe" },
+    { error: "state_unsafe" },
+    attestation,
+    { error: "state_unsafe" },
+    { error: "state_unsafe" },
+    { error: "state_unsafe" },
+    { error: "state_unsafe" },
+  ]);
+});
+
 test("autonomous ledger normalization is exact bounded and prose-free", () => {
   const source = String.raw`
 import importlib.util, json, sys

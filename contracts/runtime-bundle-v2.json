@@ -82,7 +82,7 @@
       "package_path": "runtime/owned-plan.py",
       "installed_path": "hooks/planning-with-files/owned-plan.py",
       "mode": "0755",
-      "sha256": "9ed4396845b3d2fdac284ab4f7d7933d8df968260cb63e47963e53f802c0b135",
+      "sha256": "3b15fc29e9af599678061b123ecf72b1a3f8002d54a5c4d089711113408b21fc",
       "direct_dependencies": [{ "id": "resolve_plan_dir" }, { "id": "inject_plan" }, { "id": "ledger_summary" }]
     }
   ],
