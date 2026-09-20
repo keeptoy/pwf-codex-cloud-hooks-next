@@ -26,6 +26,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   pre-1.0 current tree不保留旧路径redirect。
 - 经维护者决定，将上述已完成的首批`v0.5.0-dev`文档治理内容提炼为Phase 5.0回顾记录；后续测试断言粗筛与正式Discovery明确
   不进入本记录，待对应Round关闭且维护者决定后再考虑Phase 5.1。
+- 创建未冻结、未索引的Phase 5.1文档测试治理Discovery草稿，记录两份治理测试的粗筛规模、断言分类模型、JS测试准入原则、
+  第一轮清单边界和freeze退出条件；Phase 5 overview只增加里程碑提纲，本次不改动既有断言行为。
 
 ## v0.4.4
 
