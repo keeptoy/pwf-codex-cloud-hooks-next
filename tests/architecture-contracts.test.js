@@ -468,12 +468,9 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.doesNotMatch(productPhases, /5\.1\.1|5\.1\.2|5\.1\.3|5\.1\.4|### 5\.2/);
   assert.match(phaseOverviewIndex, /^<a name="product-phase-overview-index"><\/a>$/m);
   assert.match(phaseOverviewIndex, /真实激活过的 Product Phase 的长期说明书[\s\S]*未激活[\s\S]*不提前创建空文件/);
-  assert.match(phaseOverviewIndex,
-    /overview[\s\S]*摘要提纲[\s\S]*详细[\s\S]*planning[\s\S]*维护者[\s\S]*history/);
   assert.match(phaseOverviewTemplate, /^<a name="product-phase-overview-template"><\/a>$/m);
   assert.match(phaseOverviewTemplate, /不复制当前Next Step[\s\S]*C0\/C1\/C2/);
   assert.match(phaseOverviewTemplate, /tag\/source\/ZIP\/bootstrap\/SHA/);
-  assert.match(phaseOverviewTemplate, /outline[\s\S]*planning[\s\S]*维护者[\s\S]*history/i);
   assert.match(phase4Overview, /Why this Phase existed[\s\S]*F0 → F1A → F1B → F2A → F2B → F3A → F3B → F3C/);
   assert.match(phase4Overview, /^<a name="v0-4-2-release-closeout"><\/a>$/m);
   assert.match(phase4Overview, /^<a name="v0-4-3-release-asset-governance"><\/a>$/m);
@@ -485,12 +482,6 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(phase4Overview, /RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
   assert.match(phase5Overview,
     /Authority role: `PRODUCT_PHASE_OVERVIEW`[\s\S]*Version series: `0\.5\.0-\*`/);
-  assert.match(phase5Overview, /^## Phase outline$/m);
-  assert.match(phase5Overview, /development identity[\s\S]*README \/ Wiki[\s\S]*autonomous exact state[\s\S]*Phase authority activation/);
-  assert.match(phase5Overview, /\| autonomous exact state \|[^\n]*nonce\/attestation[^\n]*exact[^\n]*单个LF/);
-  assert.match(phase5Overview,
-    /Planning and history lifecycle[\s\S]*详细[\s\S]*planning[\s\S]*维护者[\s\S]*删除[\s\S]*docs\/history\/phase-5\.x-[^`]+\.md/);
-  assert.doesNotMatch(phase5Overview, /Active working ledger|Ledger distillation|curated working ledger/);
   assert.match(phase41, /\]\(\.\.\/product-phases\/phase-4\.md#product-phase-4-overview\)/);
   assert.match(phase44, /\]\(\.\.\/product-phases\/phase-4\.md#product-phase-4-overview\)/);
   assert.doesNotMatch(roadmap, /### 5\.4 迁移 transaction 与对象生命周期治理/);

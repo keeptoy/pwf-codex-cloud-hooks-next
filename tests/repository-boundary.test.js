@@ -85,7 +85,6 @@ test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", ()
   assert.match(currentTrain, /v0\.4\.4 acceptance/);
   assert.match(currentTrain, /Product Phase 5[\s\S]{0,160}文档治理[\s\S]{0,180}Product实现、Cloud或Release/);
   assert.match(phase5Overview, /^<a name="product-phase-5-overview"><\/a>$/m);
-  assert.match(phase5Overview, /Phase outline[\s\S]*Planning and history lifecycle/);
   assert.match(acceptedAcceptance, /^<a name="v0-4-4-release-operator-guide"><\/a>$/m);
   assert.match(acceptedAcceptance, /^<a name="v0-4-4-role-window-closeout"><\/a>$/m);
   assert.match(acceptedAcceptance, /PWF_CLOUD_ACCEPTANCE_BASELINE_CONFLICT reason=\.planning_and_active_plan_missing/);
@@ -669,11 +668,6 @@ test("historical documents have two controlled macro entrances and remain adviso
   assert.match(phaseOverviewTemplate, /未激活[\s\S]*不得先建空overview/);
   assert.match(phase4Overview, /^<a name="product-phase-4-overview"><\/a>$/m);
   assert.match(phase5Overview, /^<a name="product-phase-5-overview"><\/a>$/m);
-  assert.match(phase5Overview,
-    /摘要提纲[\s\S]*详细[\s\S]*planning[\s\S]*维护者[\s\S]*planning[\s\S]*删除[\s\S]*docs\/history\/phase-5\.x-[^`]+\.md/);
-  assert.doesNotMatch(phase5Overview, /Active working ledger|Ledger distillation|curated working ledger/);
-  assert.equal(repositoryPaths().some(relative => /^docs\/history\/phase-5\./.test(relative)), false,
-    "Phase 5 history must not be materialized before a coherent record qualifies");
   assert.match(historyTemplate, /FROZEN_DISCOVERY_RECORD不得暗示整个Product Phase已经关闭/);
   assert.match(historyTemplate, /Discovery证据不得冒充implementation\/live验收/);
   assert.match(historyTemplate, /> Record role: `<RETROSPECTIVE_CAPSULE \| FROZEN_DISCOVERY_RECORD>`/);

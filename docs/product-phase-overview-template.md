@@ -12,7 +12,8 @@ Phase时才创建实例；未激活的候选/TBD Phase不得先建空overview。
 3. Discovery过程只链接history；tag/source/ZIP/bootstrap/SHA与Cloud验收只链接provenance/acceptance。
 4. 不复制当前Next Step、临时施工状态、逐Round流水、原始测试输出、测试数量、C0/C1/C2步骤、源码或验收教程；详细过程写planning。
 5. 使用稳定英文显式anchor。活动期允许维护已采纳的长期内容；closeout后只做事实纠错、链接维护或有证据的状态尾注。
-6. overview始终是outline；planning删除前是否把精选材料提升为history，只由维护者明确决定。
+6. overview始终是outline；planning的保留或删除由维护者决定。删除planning前，只有维护者可以决定是否把精选材料提炼为
+   `phase-N.x` history，并负责维护该history。
 
 ---
 
