@@ -13,7 +13,7 @@ contract 或测试中的字段级行为。
 | 为什么需要适配层，跨组件数据流、trusted graph 和失败语义 | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | 实现位于哪里，模块之间怎样对应，改动应从哪里开始 | 本 DESIGN |
 | 稳定用户行为、安装和 doctor/repair | [`README.md`](README.md) |
-| 本地开发、测试和打包命令 | [`Wiki.md`](Wiki.md#local-development) |
+| 本地开发、测试和打包命令 | [`Wiki.md`](Wiki.md) |
 | 已发布版本与 Unreleased 已经改变了什么 | [`CHANGELOG.md`](CHANGELOG.md) |
 | 当前 programme、版本列车与 Release/rollback 状态 | [`ROADMAP.md`](ROADMAP.md) |
 | 已激活 Product Phase 的长期目标、已采纳路线、稳定边界与最终结论 | [`docs/product-phases/`](docs/product-phases/README.md#product-phase-overview-index) |
@@ -126,8 +126,8 @@ trusted surface；allowed helper roots、传递闭包和 pristine/managed 等价
 
 ## 6. 验证路由
 
-完整可复制命令只在 [`Wiki.md` 的“构建开发 ZIP”](Wiki.md#build-development-zip) 维护；这里回答应选择哪一类证据，
-不冻结测试数量。
+完整可复制命令分别在 [`Wiki.md` 的“本地开发”](Wiki.md#local-development) 和
+[`Wiki.md` 的“构建开发 ZIP”](Wiki.md#build-development-zip) 维护；这里回答应选择哪一类证据，不冻结测试数量。
 
 1. **单模块修改：** 先跑上表对应的最近边界测试，再跑直接 producer/consumer 的 seam test。
 2. **contract 或跨层修改：** 同时跑 contracts、adapter/runtime、activation 和 repository boundary；若

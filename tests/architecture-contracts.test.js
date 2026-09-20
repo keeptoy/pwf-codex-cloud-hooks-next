@@ -193,6 +193,11 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   assert.match(installer, /timeout = 30/);
 
   assert.equal((bundle.local_files || []).some(item => item.id === "owned_plan"), true);
+  for (const item of bundle.installed_contracts) {
+    const contractName = path.posix.basename(item.installed_path);
+    assert.match(architecture, new RegExp(contractName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+      `ARCHITECTURE deployment tree omits installed contract ${contractName}`);
+  }
   assert.equal(upstream.managed_runtime.schema_version, 3);
   assert.equal(Object.hasOwn(upstream.managed_runtime, "local_files"), false);
   assert.equal(Object.hasOwn(upstream.managed_runtime, "files"), false);
@@ -213,6 +218,8 @@ test("canonical plan-context architecture is exact, plan-first, and adapter-thin
   const adapter = readText("hooks/hook_adapter.py");
   assert.match(adapter, /"plan": "owned-plan\.py"/);
   assert.match(adapter, /def build_plan_context_request\(/);
+  assert.match(adapter, /Build the exact-v2 plan-context request/);
+  assert.doesNotMatch(adapter, /legacy\+smart request/);
   assert.match(adapter, /def _valid_plan_context_result\(/);
   assert.match(adapter, /def invoke_plan_runtime\(/);
   assert.match(adapter, /"allowed_profiles": \["legacy", "smart", "autonomous"\]/);
@@ -270,12 +277,17 @@ test("README owns the document map while DESIGN owns the repository implementati
 test("ARCHITECTURE preserves system reasoning while DESIGN routes implementation changes", () => {
   const architecture = readText("ARCHITECTURE.md");
   const design = readText("DESIGN.md");
+  const verificationStart = design.indexOf("## 6. 验证路由");
+  const verificationEnd = design.indexOf("### 6.1 测试职责反向索引", verificationStart);
+  const verification = design.slice(verificationStart, verificationEnd);
 
   assert.match(architecture, /^<a name="cloud-lifecycle"><\/a>$/m);
   assert.match(architecture, /\[.*DESIGN.*\]\(DESIGN\.md\)/);
 
   assert.match(design, /^<a name="implementation-layout"><\/a>$/m);
   assert.match(design, /^<a name="module-responsibilities"><\/a>$/m);
+  assert.match(verification, /Wiki\.md#local-development/);
+  assert.match(verification, /Wiki\.md#build-development-zip/);
 
   for (const target of [
     "contracts/runtime-bundle-v2.json", "contracts/release-artifact-v2.json",

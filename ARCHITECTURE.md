@@ -116,7 +116,11 @@ $CODEX_HOME/hooks/planning-with-files/
   |-- owned-plan.py
   |-- owned-catchup.py
   |-- upstream/{resolve-plan-dir.sh,inject-plan.sh,ledger-summary.sh,session-catchup.py}
-  |-- contracts/{adapter-plan-context-request-v2,plan-context-result-v2}
+  |-- contracts/
+  |     |-- adapter-runtime-request-v1.schema.json
+  |     |-- runtime-result-v1.schema.json
+  |     |-- adapter-plan-context-request-v2.schema.json
+  |     `-- plan-context-result-v2.schema.json
   |-- THIRD_PARTY_NOTICES.md
   `-- installed-manifest.json
 

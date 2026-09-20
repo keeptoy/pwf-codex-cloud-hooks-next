@@ -52,6 +52,21 @@
 - Focused architecture/repository governance tests passed 27/27.
 - Full regression passed 163 runnable tests with 0 failures and 26 honest Windows/POSIX skips; retained-completed-scope policy remained green alongside all planning, runtime, installer, and Release boundaries.
 
+### Phase 6: Three non-autonomous audit corrections
+
+- **Status:** complete
+- Maintainer authorized the ARCHITECTURE installed-contract tree, DESIGN Wiki route, and adapter docstring corrections, while explicitly deferring autonomous newline semantics.
+- Confirmed the adapter comment is part of bundle-managed runtime bytes; this small source edit requires the normal two-level integrity hash refresh.
+- Added failing-first governance coverage for all three corrections: bundle-derived installed contracts in ARCHITECTURE, both Wiki anchors in DESIGN §6, and profile-neutral adapter seam wording.
+- Failing-first architecture suite produced the expected two failing test blocks: the canonical seam stopped at the first missing catch-up contract name (before reaching the docstring assertion), and DESIGN §6 lacked the local-development anchor. Seven unrelated cases passed.
+- Updated ARCHITECTURE to list all four installed schema files, routed DESIGN §6 to both Wiki sections, and made the adapter request-builder docstring profile-neutral. Calculated the new adapter SHA for the bundle integrity refresh.
+- Updated the adapter record in `runtime-bundle-v2.json`, recalculated the raw bundle hash, and updated only the manifest's runtime-bundle integrity reference.
+- First affected-suite run: 99 pass, 1 fail, 2 platform skips. All implementation, hash, installer, Release, and new finding assertions passed; the sole failure correctly caught a duplicate `DESIGN.md → Wiki.md#local-development` deep-link authority because DESIGN §1 still used the same anchor now owned precisely by §6.
+- Routed DESIGN §1 to the Wiki root and retained both precise anchors in §6; the architecture governance suite then passed 9/9.
+- Static/integrity validation passed: importer healthy, candidate bootstrap unchanged with zero ZIP hash, Python and Node syntax clean, `git diff --check` clean, adapter/bundle hashes equal their authorities, and README/owned-plan/autonomous tests have no diff.
+- Full regression passed 163 runnable tests with 0 failures and 26 honest Windows/POSIX skips after all three corrections and the integrity-chain refresh.
+- Final planning-aware architecture/repository governance rerun passed 27/27.
+
 ## Test Results
 
 | Test | Expected | Actual | Status |
@@ -64,6 +79,12 @@
 | Final architecture/repository governance rerun | Final active planning and documentation boundaries pass | 27 pass, 0 fail | pass |
 | Planning deletion-policy correction | Active scope remains unique while a complete inactive scope is permitted | 27 pass, 0 fail | pass |
 | Full regression after planning-policy test correction | No product/governance regressions; platform-only cases skip honestly | 163 pass, 0 fail, 26 skip | pass |
+| Failing-first three-finding regression | Authorized drifts are detected before implementation | 7 pass, 2 expected fail | diagnostic pass |
+| First affected-suite implementation run | New assertions and integrity chain pass; no duplicate deep-link authority | 99 pass, 1 duplicate-link fail, 2 skip | fixture/document route follow-up |
+| Corrected architecture governance suite | Four contract names, both Wiki routes, neutral adapter seam, and unique deep links pass | 9 pass, 0 fail | pass |
+| Static integrity/autonomous exclusion checks | Hash chain exact; syntax/importer/bootstrap clean; autonomous surfaces unchanged | all checks pass | pass |
+| Full regression after three non-autonomous corrections | No product/governance regressions; platform-only cases skip honestly | 163 pass, 0 fail, 26 skip | pass |
+| Final Phase 6 architecture/repository governance rerun | Final documentation, links, active planning, and retained-scope policy pass | 27 pass, 0 fail | pass |
 
 ## Error Log
 
@@ -75,13 +96,14 @@
 | 2026-09-20 | Sandboxed focused Node suite failed all 11 modules with `spawn EPERM` | 1 | Re-ran outside the sandbox; the test runner executed normally. |
 | 2026-09-20 | Focused suite reported one planning lifecycle failure because the completed prior scope remained next to the new active audit scope | 1 | Confirmed the prior scope was complete and retired its three files under existing maintainer authorization. |
 | 2026-09-20 | A review-only `git diff --no-index` returned its normal exit code 1 for detected differences, causing the wrapper call to be reported as failed | 1 | The diff was produced correctly; ran the final governance tests separately and used ordinary `git diff --check` for pass/fail validation. |
+| 2026-09-20 | DESIGN linked `Wiki.md#local-development` from both its authority table and validation section | 1 | Keep precise local/build anchors in §6 and make the higher-level §1 authority entry point to the Wiki root. |
 
 ## 5-Question Reboot Check
 
 | Question | Answer |
 |---|---|
-| Where am I? | Phase 5, planning lifecycle test correction complete. |
-| Where am I going? | Commit the scoped correction, then await maintainer direction on the remaining audit findings. |
-| What is the goal? | Determine whether the two documents match current implementation and identify any drift. |
-| What have I learned? | One active pointer does not imply one retained scope; the existing helper already encoded the right distinction. |
-| What have I done? | Corrected the over-strong test, added a retained-completed-scope regression, and passed focused plus full validation. |
+| Where am I? | Phase 6 complete; the three authorized non-autonomous findings are corrected and validated. |
+| Where am I going? | Create the scoped local commit, then leave autonomous newline semantics for the next maintainer-directed round. |
+| What is the goal? | Keep DESIGN and ARCHITECTURE aligned with implementation while preserving the deferred semantic boundary. |
+| What have I learned? | Documentation completeness can be derived from machine inventory, and even a docstring-only managed-runtime edit must rotate both integrity hashes. |
+| What have I done? | Added regression coverage, corrected both documents and the docstring, refreshed the integrity chain, and passed focused plus full validation. |

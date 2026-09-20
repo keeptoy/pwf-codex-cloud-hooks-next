@@ -203,7 +203,7 @@ def build_runtime_request(event: str, payload: dict, project: dict) -> dict | No
 
 
 def build_plan_context_request(event: str, payload: dict, root: Path) -> dict | None:
-    """Build the exact-v2 legacy+smart request for the active owned-plan sibling."""
+    """Build the exact-v2 plan-context request for the active owned-plan sibling."""
     root_value = str(root)
     if event not in EVENTS or not root.is_absolute() or not (2 <= len(root_value) <= 4096):
         return None

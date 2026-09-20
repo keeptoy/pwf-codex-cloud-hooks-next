@@ -63,7 +63,7 @@
       "package_path": "hooks/hook_adapter.py",
       "installed_path": "hooks/planning-with-files/hook_adapter.py",
       "mode": "0755",
-      "sha256": "173a82cf5d39c789f09ff0f860badecf3bbb6b8c6537d7f168781e0e884a8966",
+      "sha256": "be58f61301265754b19bbf78c648826171786c4250717685127e9b03749ac9fd",
       "direct_dependencies": [{ "id": "owned_plan" }, { "id": "owned_catchup" }]
     },
     {

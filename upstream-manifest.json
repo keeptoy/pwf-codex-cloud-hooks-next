@@ -15,7 +15,7 @@
     "contracts": {
       "runtime_bundle": {
         "path": "contracts/runtime-bundle-v2.json",
-        "sha256": "541d09816635e4c17236a3888a968bb3ee53ef6b541063ee889d713f226e4981"
+        "sha256": "53ea08cecbc11d57197ea355210547f69c3716f902ec4a66e4a717c8c38583c8"
       },
       "release_artifact": {
         "path": "contracts/release-artifact-v2.json",

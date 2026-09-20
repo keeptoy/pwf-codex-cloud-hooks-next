@@ -73,6 +73,18 @@ No production dataflow, Host ABI, trusted-graph, installer ownership, Release al
 - The correction should delete the exact-current-tree inventory assertion, add a synthetic complete inactive-scope case, and assert the governance language that switching `.active_plan` never grants deletion authority.
 - Implemented correction: the test now validates both the actual repository paths and a synthetic complete inactive scope through the existing helper, while freezing the governance and ROADMAP prohibition on automatic deletion.
 
+## Three authorized non-autonomous corrections
+
+- ARCHITECTURE must show all four installed ABI schema files: catch-up request/result v1 and plan request/result v2.
+- DESIGN's complete-command route must point to both stable explicit Wiki anchors: `#local-development` for the general baseline and `#build-development-zip` for ZIP/Release maintenance.
+- The adapter docstring should describe an exact-v2 plan-context request without enumerating profiles. Although behavior is unchanged, this changes managed runtime bytes and therefore requires refreshing the adapter entry SHA in `runtime-bundle-v2.json`, followed by the runtime-bundle integrity SHA in `upstream-manifest.json`.
+- Autonomous newline admission is out of scope and remains untouched for a separate semantic decision.
+- The nearest architecture test can derive installed schema basenames directly from `bundle.installed_contracts`, so documentation completeness is checked without creating a second hard-coded inventory. The same test can scope both Wiki anchor assertions to DESIGN §6 and freeze a profile-neutral adapter docstring.
+- To preserve the repository's one-deep-link-per-authority-route rule, DESIGN §1 now points to the Wiki root while §6 owns the two precise local-development/build anchors.
+- After the profile-neutral docstring edit, `hooks/hook_adapter.py` SHA-256 is `be58f61301265754b19bbf78c648826171786c4250717685127e9b03749ac9fd`; this is the exact replacement for the adapter record before recalculating the bundle SHA.
+- With that adapter SHA recorded, the updated raw runtime bundle SHA-256 is `53ea08cecbc11d57197ea355210547f69c3716f902ec4a66e4a717c8c38583c8`; the manifest integrity reference now matches it.
+- All three authorized corrections are resolved and regression-protected. The autonomous newline discrepancy remains intentionally open and unchanged for the next round.
+
 ## Issues Encountered
 
 | Issue | Resolution |
