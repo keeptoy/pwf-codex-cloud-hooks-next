@@ -78,3 +78,12 @@ The maintainer explicitly requested that `.planning/` retain only this scope and
 **Cleanup status:** complete. Git history retains the committed contents of the nine tracked completed scopes; the tenth target was an empty directory.
 
 **Execution note:** The first exact-path `git add -u -- .planning CHANGELOG.md` was denied because the sandbox cannot create `.git/index.lock`; it changed no index state. Retry only that command with Git metadata write permission.
+
+## 2026-09-22 maintainer-authorized draft-route refinement
+
+The maintainer clarified that unique document authority predates Phase 5, which only repairs and improves its application, then explicitly asked to add the read-only route review to the Phase 5.1 draft. This authorizes a bounded draft clarification and its planning evidence, not the formal rule/assertion inventory, a test patch, Discovery freeze, or implementation.
+
+- [x] Clarify inherited authority, rule/risk-first grouping, safety-critical operator guidance, and two-way representative examples in the open draft.
+- [x] Run focused documentation-governance and link checks, inspect the exact diff, and create one scoped local commit.
+
+**Next Step:** None. The draft-route refinement is complete; the formal Discovery inventory and implementation still require later maintainer authorization.

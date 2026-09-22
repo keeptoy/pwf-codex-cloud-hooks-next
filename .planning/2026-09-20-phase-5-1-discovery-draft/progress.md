@@ -29,3 +29,11 @@
 - Staged only `.planning/` retirements, the retained scope's cleanup note, and `CHANGELOG.md` after receiving Git metadata write permission.
 - `git diff --cached --check` passed. Focused repository boundary tests passed 18/18. Complete `npm test` passed 190 total: 164 pass, 26 Windows/POSIX skip, zero fail.
 - Post-delete directory inventory confirms only the retained Phase 5.1 scope and `.active_plan` remain. No remote action was taken.
+
+## 2026-09-22 maintainer-authorized draft-route refinement
+
+- Confirmed a clean `0.5.0-dev` worktree and re-read the open Phase 5.1 draft and active task plan.
+- Updated only the open draft and this planning scope: corrected Phase 5's historical positioning, made rule/risk ownership precede assertion grouping, and added a safety-critical operator-guidance guard with paired regression/paraphrase examples.
+- Did not start the formal assertion inventory, alter tests or production, freeze the Discovery record, or perform any remote write.
+- Focused `architecture-contracts.test.js` and `repository-boundary.test.js` checks passed 27/27, including tracked Markdown links and explicit anchors; `git diff --check` passed. No full suite was required for this Release-excluded draft/planning-only edit.
+- First sandboxed Node test launch failed at the runner boundary with `spawn EPERM` before running test cases; the same command passed when rerun with the required process permission. This was an execution-permission limitation, not a product or test failure.

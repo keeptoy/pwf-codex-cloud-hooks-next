@@ -54,3 +54,10 @@
 - Ten sibling directories exist. Nine each contain only tracked `task_plan.md`, `findings.md`, and `progress.md`; `2026-09-20-v0.5.0-candidate-initialization` is empty and not tracked by Git.
 - The 27 tracked planning files remain recoverable from the pre-cleanup commit history; no external exact-scope reference was found outside `.planning/`.
 - The cleanup is scope-retirement only, not history freezing or a Product/Release state transition.
+
+## 2026-09-22 draft-route refinement evidence
+
+- The maintainer clarified that one-authority document governance predates Phase 5; Phase 5 repairs and improves its application. Phase 3.8 already warned against tests preserving duplicate authority or temporary rollout shape, while Phase 5.0 tightened the document/test responsibility split.
+- A read-only sample of `repository-boundary.test.js` showed one documentation-lifecycle case mixes exact Release exclusion and anchors with Cloud/Release operator commands, identity and stop rules, plus more fragile prose checks. Regex syntax alone cannot determine whether a rule is safe to retire.
+- The open draft now proposes a rule/owner/risk-first map before assertion mapping, an explicit safety-critical operator-guidance category, and paired examples: real path/command/identity/stop-rule regressions must fail while equivalent prose edits should pass.
+- This remains a route proposal, not a formal group inventory, final `KEEP / REPLACE / RETIRE / DEFER` decision, selected implementation patch, or Discovery PASS.
