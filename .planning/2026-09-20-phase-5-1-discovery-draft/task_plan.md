@@ -87,3 +87,13 @@ The maintainer clarified that unique document authority predates Phase 5, which 
 - [x] Run focused documentation-governance and link checks, inspect the exact diff, and create one scoped local commit.
 
 **Next Step:** None. The draft-route refinement is complete; the formal Discovery inventory and implementation still require later maintainer authorization.
+
+## 2026-09-23 maintainer-authorized authority-placement refinement
+
+The maintainer accepted the proposed distinction between the Repository Governance Guide's reusable governance method and the domain-specific Markdown/machine authorities, and asked to continue on that basis. This authorizes a bounded clarification to the still-open Phase 5.1 draft and its planning evidence; it does not authorize changing the current Guide/ROADMAP/templates/tests, a formal rule inventory, implementation, or Discovery freeze.
+
+- [x] Add candidate rule-placement criteria and examples to the open draft without making a second current authority map.
+- [x] Run focused documentation-governance/link checks and review the diff.
+- [x] Create one scoped local commit for this verified draft clarification.
+
+**Next Step:** None. The bounded draft clarification is complete; formal inventory and implementation remain unauthorized.

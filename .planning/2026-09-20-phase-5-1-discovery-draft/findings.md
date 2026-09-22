@@ -61,3 +61,10 @@
 - A read-only sample of `repository-boundary.test.js` showed one documentation-lifecycle case mixes exact Release exclusion and anchors with Cloud/Release operator commands, identity and stop rules, plus more fragile prose checks. Regex syntax alone cannot determine whether a rule is safe to retire.
 - The open draft now proposes a rule/owner/risk-first map before assertion mapping, an explicit safety-critical operator-guidance category, and paired examples: real path/command/identity/stop-rule regressions must fail while equivalent prose edits should pass.
 - This remains a route proposal, not a formal group inventory, final `KEEP / REPLACE / RETIRE / DEFER` decision, selected implementation patch, or Discovery PASS.
+
+## 2026-09-23 authority-placement refinement evidence
+
+- README's documentation map is the repository-specific question-to-sole-authority navigation; the Guide describes portable repository governance method rather than receiving every rule removed from JS tests.
+- The Guide owns authority allocation, planning/history lifecycle, link migration and retirement method. It already defers programme Release ordering to ROADMAP and Cloud execution/writing protocol to the corresponding templates.
+- Transfer destination must follow a rule's question and existing owner: programme to ROADMAP, Cloud protocol to its template, architecture rationale to ARCHITECTURE, machine facts to contracts/code. Tests remain verification, not a second prose owner.
+- Any rule without a clear owner, or any Guide passage that may compete with a domain owner, needs explicit classification before migration. This is a candidate routing principle, not the formal inventory or an authorization to edit those authorities.

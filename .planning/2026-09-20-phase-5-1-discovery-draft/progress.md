@@ -37,3 +37,11 @@
 - Did not start the formal assertion inventory, alter tests or production, freeze the Discovery record, or perform any remote write.
 - Focused `architecture-contracts.test.js` and `repository-boundary.test.js` checks passed 27/27, including tracked Markdown links and explicit anchors; `git diff --check` passed. No full suite was required for this Release-excluded draft/planning-only edit.
 - First sandboxed Node test launch failed at the runner boundary with `spawn EPERM` before running test cases; the same command passed when rerun with the required process permission. This was an execution-permission limitation, not a product or test failure.
+
+## 2026-09-23 maintainer-authorized authority-placement refinement
+
+- Recovered the active scope, re-read repository authorities and relevant Guide/draft/template sections, and confirmed a clean `0.5.0-dev` worktree before editing.
+- Added only a candidate authority-placement section to the open Phase 5.1 draft and recorded the bounded authorization in this planning scope; no current authority, test, production, Cloud or Release file was changed.
+- First focused Node test attempt stopped at runner startup with `spawn EPERM` before any test case ran; classify as sandbox process permission and rerun with process execution permission.
+- Focused architecture/repository governance tests passed 27/27 when rerun with the required process permission, including Markdown link/anchor resolution. `git diff --check` passed; all four edited text files retain LF and a final newline.
+- Exact-path staging first failed because the sandbox could not create `.git/index.lock`; no index change occurred. Retry only the same scoped staging operation with Git metadata write permission.

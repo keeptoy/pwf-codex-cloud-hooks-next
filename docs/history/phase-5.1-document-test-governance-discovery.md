@@ -110,13 +110,36 @@ inventory、链接和anchor边界，与中文句式、段落顺序、一次性�
 无法回答这些问题的断言不能自动当作长期合同；但只要可能影响Release、安全、身份、inventory、可恢复性或操作员行为，也不能
 自动删除，应先`DEFER`并补证据。反过来，某条规则位于Markdown正文而不容易解析，也不表示现有脆弱正则就是足够可靠的防线。
 
+<a name="phase-5-1-authority-placement"></a>
+
+## Candidate authority placement for transferred rules
+
+`Repository Governance Guide`可以称为**仓库治理方法的权威**：它解释如何分配authority、划分hot/warm/cold、管理planning与
+history、审查链接和retirement。它不是覆盖所有Markdown内容的“文档治理总宪章”，也不因测试断言移交而自动成为每条规则的
+接收处。本仓库实际的“问题→唯一权威”导航仍以[`README文档地图`](../../README.md#documentation-map)为准；Guide中的通用
+推荐映射不能代替某个领域已有的current authority。
+
+对代表性规则，拟按职责而非原测试文件名路由：
+
+| 规则问的是什么 | 候选owner | 测试应保留的职责 |
+|---|---|---|
+| authority怎样分配、planning/history何时保留或清退、入链怎样迁移 | [`Repository Governance Guide`](../repository-governance-guide.md#repository-governance-guide) | 检查唯一入口、role、链接与retirement关系，不复制整段治理文字 |
+| 当前programme、版本角色、Release四步与C0～C2顺序 | [`ROADMAP`](../../ROADMAP.md#release-four-step-flow)及其相应current章节 | 检查角色/身份关系与必要锚点，不把另一份顺序规范写进JS |
+| Cloud双通道执行、停止条件、evidence schema或一轮guide的写入生命周期 | 对应[`Cloud执行模板`](../cloud-hard-acceptance-template.md#acceptance-document-responsibilities)或[`Operator Guide结构模板`](../cloud-acceptance-operator-guide-template.md) | 验证可执行命令、身份输入和停止防线；等义说明文字可变 |
+| Host ABI、runtime/source inventory、ZIP allowlist等机器事实 | 对应machine contract及producer/consumer；架构理由另见ARCHITECTURE | 维持exact schema/hash/inventory与行为测试，不把机器事实搬进Guide |
+
+这只是Discovery候选路由，不新建第二份权威表。正式inventory对每个规则先记录：问题与失效后果、既有owner及稳定anchor、其他
+文档的必要投影、现有测试覆盖、拟议验证方式。若目前没有明确owner，先列为待决并请维护者选择；不能因为断言写在JS里，就
+把原文原样搬到Guide、ROADMAP或模板。若Guide自身包含某个领域规则的展开投影，也应核对它是必要的方法示例还是与领域owner
+竞争；只有完成该判定，才提出最小链接/措辞收敛，不在本草稿阶段改写现有authority。
+
 <a name="phase-5-1-bounded-round"></a>
 
 ## Bounded first Discovery round
 
 第一轮只做以下工作：
 
-1. 先按治理规则建立小组清单，记录唯一authority、当前/历史语义、失败后果和风险，再映射两份目标测试中的相关test case与断言；
+1. 先按治理规则建立小组清单，记录问题类型、既有owner、必要投影、当前/历史语义、失败后果和风险，再映射两份目标测试中的相关test case与断言；
    对每组标记`KEEP / REPLACE / RETIRE / DEFER`，不把一条正则等同于一条规则；
 2. 找出同一治理规则被README、ROADMAP、模板、history和测试重复冻结的位置，区分正确投影与竞争authority；
 3. 对安全关键操作说明单独核对现有防线与可替代的命令/contract/结构检查；尚无等效防线的项目保留或`DEFER`，不得因正则
