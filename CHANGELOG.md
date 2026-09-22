@@ -28,6 +28,8 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   不进入本记录，待对应Round关闭且维护者决定后再考虑Phase 5.1。
 - 创建未冻结、未索引的Phase 5.1文档测试治理Discovery草稿，记录两份治理测试的粗筛规模、断言分类模型、JS测试准入原则、
   第一轮清单边界和freeze退出条件；Phase 5 overview只增加里程碑提纲，本次不改动既有断言行为。
+- 维护者决定清退`.planning/`中除Phase 5.1活动scope外的十个旧目录；保留`.active_plan`，九个已提交scope仍可从Git历史恢复，
+  不改变Phase history的冻结身份或当前Product/Release状态。
 
 ## v0.4.4
 

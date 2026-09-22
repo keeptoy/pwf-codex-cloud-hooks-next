@@ -16,3 +16,16 @@
 - Baseline checks passed: upstream importer healthy, three Python production files compile, `install.js` syntax is valid, all versioned bootstraps pass `bash -n`, and `git diff --check` is clean.
 - Final review confirms the draft is marked `DRAFT / OPEN`, remains outside the history index/frozen counts, links only to current Product authority and source test files, and contains no assertion-by-assertion decisions or implementation authorization.
 - All modified/new text files use LF only and end with one LF; the worktree contains only this scope's intended documentation and planning paths.
+
+## 2026-09-22 maintainer-authorized cleanup
+
+- Recovered the active planning scope and confirmed branch `0.5.0-dev` with a clean worktree.
+- Inventoried ten sibling directories: nine contain only the three tracked planning files, and one is empty. Confirmed no exact-scope references outside `.planning/`.
+- The maintainer's explicit deletion decision is recorded in the task plan; no Phase 5.1 Discovery work has started.
+- Preflight verified all ten resolved targets stayed inside `.planning/`, contained no reparse points, and did not include the active scope or pointer.
+- Removed those ten exact directories. Post-check shows `.planning/` now contains only `2026-09-20-phase-5-1-discovery-draft/` and `.active_plan`; 27 tracked files are staged for retirement next.
+- Added the completed cleanup delta to the `v0.5.0-dev` changelog without changing Phase history or Product/Release roles.
+- First exact-path staging attempt was blocked by `.git/index.lock` permission; no staging occurred. Will retry with Git metadata write permission.
+- Staged only `.planning/` retirements, the retained scope's cleanup note, and `CHANGELOG.md` after receiving Git metadata write permission.
+- `git diff --cached --check` passed. Focused repository boundary tests passed 18/18. Complete `npm test` passed 190 total: 164 pass, 26 Windows/POSIX skip, zero fail.
+- Post-delete directory inventory confirms only the retained Phase 5.1 scope and `.active_plan` remain. No remote action was taken.

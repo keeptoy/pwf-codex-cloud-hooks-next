@@ -46,3 +46,11 @@
 - Do not add a direct Phase-overview link to the draft; that would create a third macro history entrance. The overview gets only one milestone row summarizing the rough scan and open Discovery.
 - The draft will use `Target record role: FROZEN_DISCOVERY_RECORD` and `Record status: DRAFT / OPEN`, omit final acceptance and immutable-evidence claims, and state the later freeze transaction explicitly.
 - The opening exact source baseline is local commit `8cd0155e5f2b86d293f8036f663355c25237a631`; it is an input baseline, not the future frozen record's final cold evidence.
+
+## 2026-09-22 planning cleanup inventory
+
+- The maintainer expressly chose to remove all completed sibling planning scopes while preserving this Phase 5.1 scope and `.planning/.active_plan`.
+- The starting worktree was clean and the active pointer still names `2026-09-20-phase-5-1-discovery-draft`.
+- Ten sibling directories exist. Nine each contain only tracked `task_plan.md`, `findings.md`, and `progress.md`; `2026-09-20-v0.5.0-candidate-initialization` is empty and not tracked by Git.
+- The 27 tracked planning files remain recoverable from the pre-cleanup commit history; no external exact-scope reference was found outside `.planning/`.
+- The cleanup is scope-retirement only, not history freezing or a Product/Release state transition.

@@ -64,3 +64,17 @@ Complete
 - Stop before classifying individual assertion groups or changing their behavior.
 - Stop if the draft would claim Discovery closure, implementation authorization, Cloud/Release evidence, or a new Product Phase.
 - Stop before any remote write.
+
+## 2026-09-22 maintainer-authorized planning cleanup
+
+The maintainer explicitly requested that `.planning/` retain only this scope and `.active_plan`, and that every other completed plan directory be removed. This is a separate cleanup decision; it does not authorize Phase 5.1 Discovery inventory or implementation.
+
+- [x] Confirm the worktree is clean and `.active_plan` points to this scope.
+- [x] Inventory exact sibling directories, tracked files, extra content, and external references.
+- [x] Verify every deletion target resolves beneath `.planning/` and has no reparse-point traversal.
+- [x] Delete only the ten inventoried sibling directories; leave this scope and `.active_plan` intact.
+- [x] Run proportionate repository checks and create a scoped local commit.
+
+**Cleanup status:** complete. Git history retains the committed contents of the nine tracked completed scopes; the tenth target was an empty directory.
+
+**Execution note:** The first exact-path `git add -u -- .planning CHANGELOG.md` was denied because the sandbox cannot create `.git/index.lock`; it changed no index state. Retry only that command with Git metadata write permission.
