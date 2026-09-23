@@ -30,6 +30,9 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   第一轮清单边界和freeze退出条件；Phase 5 overview只增加里程碑提纲，本次不改动既有断言行为。
 - 维护者决定清退`.planning/`中除Phase 5.1活动scope外的十个旧目录；保留`.active_plan`，九个已提交scope仍可从Git历史恢复，
   不改变Phase history的冻结身份或当前Product/Release状态。
+- 在Release-excluded实验区分别记录Phase 6～9的大白话目标与必要性判断：Phase 6先取得真实compaction证据、Phase 7当前
+  `NO_GO`、Phase 8可进入只读advisory正式Discovery、Phase 9暂缓；仅为Phase 6/8增加有界只读原型，不改变production、Host ABI、
+  managed event set、Cloud PASS或Product Phase激活状态。
 
 ## v0.4.4
 
