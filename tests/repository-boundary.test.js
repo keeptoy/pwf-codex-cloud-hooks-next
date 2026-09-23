@@ -163,6 +163,69 @@ function assertMaintenanceEnvironmentRoutes(profile) {
     "Git Bash must not replace the Linux Cloud route");
 }
 
+function assertCloudTemplateNeutrality(template) {
+  const fences = [...template.matchAll(/^(\x60{3,}|~{3,})([A-Za-z0-9_-]+)[ \t]*\r?\n([\s\S]*?)^\1[ \t]*$/gm)];
+  assert.ok(fences.length > 0, "Cloud template must retain its protocol fences");
+  for (const [, , language, body] of fences) {
+    const protocol = body.split(/\r?\n/)
+      .filter(line => language.toLowerCase() !== "bash" || !/^\s*#/.test(line)).join("\n");
+    assert.doesNotMatch(protocol, new RegExp(versionPattern, "i"),
+      "Cloud template protocol must not pin a version");
+    assert.doesNotMatch(protocol, /\b[a-f0-9]{40,64}\b/i,
+      "Cloud template protocol must not pin a source or asset hash");
+    assert.doesNotMatch(protocol, /Phase 4 marker|Gate ledger|Cloud state|当前状态|R5_PR_IN_PROGRESS/i,
+      "Cloud template protocol must not carry a current gate result");
+    assert.doesNotMatch(protocol,
+      /^\s*(?:readonly\s+)?(?:PUBLICATION_TAG|PACKAGE_VERSION|ZIP_NAME|ZIP_SIZE)\s*=\s*(?!["']?\$\()[^\r\n]+/gm,
+      "Cloud template artifact identity must be machine-derived");
+  }
+  for (const [startAnchor, endAnchor, names] of [
+    ["published-release-setup", "blackbox-post-install-resume",
+      ["BOOTSTRAP_URL", "BOOTSTRAP_SHA256"]],
+    ["published-release-deep-check", "acceptance-evidence-writeback",
+      ["ZIP_URL", "ZIP_SHA256"]],
+  ]) {
+    const start = template.indexOf(`<a name="${startAnchor}"></a>`);
+    const end = template.indexOf(`<a name="${endAnchor}"></a>`, start);
+    assert.ok(start >= 0 && end > start, `${startAnchor} needs a bounded section`);
+    const sectionFences = [...template.slice(start, end)
+      .matchAll(/^(\x60{3,}|~{3,})([A-Za-z0-9_-]+)[ \t]*\r?\n([\s\S]*?)^\1[ \t]*$/gm)];
+    assert.equal(sectionFences.length, 1, `${startAnchor} needs one executable fence`);
+    assert.equal(sectionFences[0][2].toLowerCase(), "bash");
+    const lines = sectionFences[0][3].split(/\r?\n/).map(line => line.trim());
+    for (const name of names) {
+      const assignments = lines.filter(line => new RegExp(`^(?:readonly )?${name}=`).test(line));
+      assert.deepEqual(assignments, [`readonly ${name}="__IMMUTABLE_${name}__"`],
+        `${startAnchor} must use one unresolved ${name} placeholder`);
+    }
+  }
+  const withoutFences = fences.reduce((text, fence) => text.replace(fence[0], ""), template);
+  for (const line of withoutFences.split(/\r?\n/)) {
+    if (/^#{1,6}\s/.test(line)) {
+      assert.doesNotMatch(line, new RegExp(versionPattern, "i"),
+        "Cloud template heading must not pin a version");
+      assert.doesNotMatch(line, /\b[a-f0-9]{40,64}\b/i,
+        "Cloud template heading must not pin a hash");
+    }
+    if (/^#{1,6}\s/.test(line) || /^\|\s*(?:当前状态|Current status|Cloud state|Gate ledger)\s*\|/i.test(line)
+      || /^(?:当前状态|Current status|Cloud state|Gate ledger)\s*[:：]/i.test(line)) {
+      assert.doesNotMatch(line, /当前状态|Current status|Cloud state|Gate ledger|R5_PR_IN_PROGRESS/i,
+        "Cloud template must not acquire a current-state authority slot");
+    }
+  }
+  const responsibilityStart = withoutFences.indexOf('<a name="acceptance-document-responsibilities"></a>');
+  const responsibilityEnd = withoutFences.indexOf('<a name="version-discovery-round-routing"></a>');
+  assert.ok(responsibilityStart >= 0 && responsibilityEnd > responsibilityStart,
+    "Cloud template must retain its responsibility section");
+  const responsibilities = withoutFences.slice(responsibilityStart, responsibilityEnd);
+  for (const row of responsibilities.split(/\r?\n/).filter(line => /^\|/.test(line))) {
+    assert.doesNotMatch(row, new RegExp(versionPattern, "i"),
+      "Cloud template responsibility table must not pin a version");
+    assert.doesNotMatch(row, /\b[a-f0-9]{40,64}\b/i,
+      "Cloud template responsibility table must not pin a hash");
+  }
+}
+
 function assertC0TagOperatorBlock(markdown) {
   const anchor = '<a name="source-candidate-c0-tag-push"></a>';
   assert.equal(markdown.split(anchor).length, 2, "Wiki must have one C0 tag guide anchor");
@@ -878,11 +941,7 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(acceptanceTemplate, /\.\.\/ROADMAP\.md#version-train-two-retirement-reviews/);
   assert.match(acceptanceTemplate, /exact final source[\s\S]{0,220}所有Release输入[^\n]*不变[\s\S]{0,220}Source\/Candidate/);
   assert.match(acceptanceTemplate, /Published Release[^\n]*不能提前复用/);
-  assert.doesNotMatch(acceptanceTemplate, new RegExp(versionPattern, "i"));
-  assert.doesNotMatch(acceptanceTemplate, /\b[a-f0-9]{40,64}\b/i);
-  assert.doesNotMatch(acceptanceTemplate, /Phase 4 marker/i);
-  assert.doesNotMatch(acceptanceTemplate, /Gate ledger|Cloud state|当前状态|R5_PR_IN_PROGRESS/);
-  assert.doesNotMatch(acceptanceTemplate, /readonly (?:PUBLICATION_TAG|PACKAGE_VERSION|ZIP_NAME|ZIP_SIZE)=/);
+  assertCloudTemplateNeutrality(acceptanceTemplate);
   assert.equal(releasePaths.includes("docs/cloud-hard-acceptance-template.md"), false);
   const fixedBootstrapName = /init-cloud-sandbox-v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\.bash/;
   for (const stableDoc of [
@@ -985,6 +1044,31 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   ]) assert.equal(actual.includes(retired), false, retired);
   assert.match(read("docs/repository-governance-guide.md"), /^<a name="repository-governance-guide"><\/a>$/m);
   assert.match(read("MAINTAINER_HANDOFF.md"), /\[[^\]]*仓库治理指南[^\]]*\]\(docs\/repository-governance-guide\.md\)/);
+});
+
+test("Cloud template neutrality rejects active identities but permits explanatory examples", () => {
+  const template = read("docs/cloud-hard-acceptance-template.md");
+  const changeOnce = (before, after) => {
+    assert.ok(template.includes(before), "probe precondition missing: " + before);
+    return template.replace(before, after);
+  };
+  assert.doesNotThrow(() => assertCloudTemplateNeutrality(template));
+  const fixedSha = changeOnce('readonly BOOTSTRAP_SHA256="__IMMUTABLE_BOOTSTRAP_SHA256__"',
+    `readonly BOOTSTRAP_SHA256="${"a".repeat(64)}"`);
+  assert.throws(() => assertCloudTemplateNeutrality(fixedSha), /asset hash|placeholder/);
+  const fixedVersion = changeOnce("set -Eeuo pipefail",
+    'set -Eeuo pipefail\nreadonly PACKAGE_VERSION="v0.4.4"');
+  assert.throws(() => assertCloudTemplateNeutrality(fixedVersion), /pin a version/);
+  const fixedSize = changeOnce("set -Eeuo pipefail",
+    "set -Eeuo pipefail\nreadonly ZIP_SIZE=22");
+  assert.throws(() => assertCloudTemplateNeutrality(fixedSize), /machine-derived/);
+  const currentState = changeOnce("| 本模板 |", "| 当前状态 | v0.5.0-dev |\n| 本模板 |");
+  assert.throws(() => assertCloudTemplateNeutrality(currentState), /current-state authority slot/);
+  const tableIdentity = changeOnce("| 本模板 |", "| 本模板 | v0.4.4 |\n| 本模板 |");
+  assert.throws(() => assertCloudTemplateNeutrality(tableIdentity), /responsibility table must not pin a version/);
+  const explained = template + "\n说明示例：旧版本 v0.4.4、" + "a".repeat(40) +
+    "、Phase 4 marker 以及‘当前状态’这几个词不构成本模板的运行身份。\n";
+  assert.doesNotThrow(() => assertCloudTemplateNeutrality(explained));
 });
 
 test("historical documents have two controlled macro entrances and remain advisory", () => {
