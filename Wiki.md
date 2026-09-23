@@ -148,7 +148,7 @@ exact-hash正式资产，不修改C0。
 
 #### 模板4.1如何在双版本并存时选中正确bootstrap
 
-这里的“模板4.1”是[`Cloud hard acceptance template`](docs/cloud-hard-acceptance-template.md)的Source/Candidate setup。
+这里的“模板4.1”是[`Cloud hard acceptance template`](docs/cloud-hard-acceptance-template.md#source-candidate-setup)的Source/Candidate setup。
 它不会扫描根目录、比较SemVer或猜测哪个文件“看起来更新”，而是按当前Cloud checkout中的machine authority走一条精确选择链：
 
 ```text

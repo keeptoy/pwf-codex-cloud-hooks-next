@@ -116,6 +116,71 @@ function assertC0TagOperatorBlock(markdown) {
   }
 }
 
+function assertSourceCandidateBootstrapSelection(template, wiki) {
+  const anchor = '<a name="source-candidate-setup"></a>';
+  const nextAnchor = '<a name="published-release-setup"></a>';
+  assert.equal(template.split(anchor).length, 2, "Cloud template must have one 4.1 setup anchor");
+  const start = template.indexOf(anchor) + anchor.length;
+  const end = template.indexOf(nextAnchor, start);
+  assert.ok(end > start, "4.1 setup must precede Published Release setup");
+  const section = template.slice(start, end);
+  const fences = [...section.matchAll(/^(\x60{3,}|~{3,})([A-Za-z0-9_-]+)[ \t]*\r?\n([\s\S]*?)^\1[ \t]*$/gm)];
+  assert.equal(fences.length, 1, "4.1 setup must have one executable code fence");
+  assert.equal(fences[0][2].toLowerCase(), "bash");
+  const script = fences[0][3];
+  const lines = script.split(/\r?\n/).map(line => line.trim())
+    .filter(line => line && !line.startsWith("#"));
+  const selectors = [...script.matchAll(/^BOOTSTRAP="\$\(python3 - <<'PY'\r?\n([\s\S]*?)^PY\r?\n\)"$/gm)];
+  assert.equal(selectors.length, 1, "4.1 must have one active Python bootstrap selector");
+  assert.equal(lines.filter(line => /^BOOTSTRAP=/.test(line)).length, 1,
+    "4.1 must not overwrite the selected bootstrap");
+  const selectorLines = selectors[0][1].split(/\r?\n/).map(line => line.trim())
+    .filter(line => line && !line.startsWith("#"));
+  const selectorSteps = [
+    'manifest = json.loads(Path("upstream-manifest.json").read_text(encoding="utf-8"))',
+    'artifact_path = manifest["managed_runtime"]["contracts"]["release_artifact"]["path"]',
+    'artifact = json.loads(Path(artifact_path).read_text(encoding="utf-8"))',
+    'assets = artifact["external_release_assets"]',
+    'assert len(assets) == 1',
+    'print(assets[0])',
+  ];
+  let previous = -1;
+  for (const step of selectorSteps) {
+    const index = selectorLines.indexOf(step, previous + 1);
+    assert.ok(index > previous, "4.1 selector lacks ordered contract step: " + step);
+    previous = index;
+  }
+  assert.deepEqual(selectorLines, ['import json', 'from pathlib import Path', ...selectorSteps],
+    "4.1 selector must not add an executable branch or reassign contract data");
+  assert.deepEqual(selectorLines.filter(line => /^print\(/.test(line)), ['print(assets[0])'],
+    "4.1 must emit only the contract-selected bootstrap");
+
+  const invocation =
+    'HOOKS_URL="file://$ZIP_A" HOOKS_SHA256="$ACTUAL_ZIP_SHA256" bash "$BOOTSTRAP" all';
+  const executionSteps = [
+    'test -f "$BOOTSTRAP"',
+    'bash -n "$BOOTSTRAP"',
+    'python3 tools/build_release.py build --output "$ZIP_A"',
+    'cmp "$ZIP_A" "$ZIP_B"',
+  ];
+  previous = lines.indexOf('BOOTSTRAP="$(python3 - <<\'PY\'');
+  assert.ok(previous >= 0, "4.1 selector assignment is missing");
+  for (const step of executionSteps) {
+    const index = lines.indexOf(step, previous + 1);
+    assert.ok(index > previous, "4.1 lacks ordered validation/build step: " + step);
+    previous = index;
+  }
+  const hashIndex = lines.findIndex((line, i) => i > previous &&
+    line.startsWith('ACTUAL_ZIP_SHA256=') && line.includes('sha256sum "$ZIP_A"'));
+  assert.ok(hashIndex > previous, "4.1 must hash the locally built candidate ZIP");
+  const invokeIndex = lines.indexOf(invocation, hashIndex + 1);
+  assert.ok(invokeIndex > hashIndex, "4.1 must invoke the selected bootstrap with local URL/SHA");
+  assert.deepEqual(lines.filter(line => /\bbash\b.*\ball\b/i.test(line)), [invocation],
+    "4.1 must have only one bootstrap execution");
+  assert.match(wiki, /\]\(docs\/cloud-hard-acceptance-template\.md#source-candidate-setup\)/,
+    "Wiki must route selection details to the executable 4.1 owner");
+}
+
 test("C0 operator guide rejects harmful commands but permits equivalent explanation", () => {
   const wiki = read("Wiki.md");
   const changeOnce = (before, after) => {
@@ -161,6 +226,67 @@ test("C0 operator guide rejects harmful commands but permits equivalent explanat
     'throw "本地tag已存在；停止并核对，禁止移动或覆盖"',
     'throw "同名本地标签已存在，请停止并核对"');
   assert.doesNotThrow(() => assertC0TagOperatorBlock(rephrasedStop));
+});
+
+test("Source/Candidate 4.1 selects the contract bootstrap and tolerates equivalent Wiki prose", () => {
+  const template = read("docs/cloud-hard-acceptance-template.md");
+  const wiki = read("Wiki.md");
+  const changeOnce = (before, after) => {
+    assert.ok(template.includes(before), "probe precondition missing: " + before);
+    return template.replace(before, after);
+  };
+  assert.doesNotThrow(() => assertSourceCandidateBootstrapSelection(template, wiki));
+
+  const wrongSelector = changeOnce('print(assets[0])', 'print("init-cloud-sandbox-old.bash")') +
+    "\nExpected selector: print(assets[0])\n";
+  assert.throws(() => assertSourceCandidateBootstrapSelection(wrongSelector, wiki),
+    /ordered contract step/);
+
+  const invocation =
+    'HOOKS_URL="file://$ZIP_A" HOOKS_SHA256="$ACTUAL_ZIP_SHA256" bash "$BOOTSTRAP" all';
+  const wrongInvocation = changeOnce(invocation,
+    'HOOKS_URL="file://$ZIP_A" HOOKS_SHA256="$ACTUAL_ZIP_SHA256" bash "init-cloud-sandbox-old.bash" all') +
+    "\nExpected invocation: " + invocation + "\n";
+  assert.throws(() => assertSourceCandidateBootstrapSelection(wrongInvocation, wiki),
+    /invoke the selected bootstrap/);
+
+  const missingAdmission = changeOnce('assert len(assets) == 1', 'assert assets');
+  assert.throws(() => assertSourceCandidateBootstrapSelection(missingAdmission, wiki),
+    /ordered contract step/);
+  const reassignedAssets = changeOnce('print(assets[0])',
+    'assets = ["init-cloud-sandbox-old.bash"]\nprint(assets[0])');
+  assert.throws(() => assertSourceCandidateBootstrapSelection(reassignedAssets, wiki),
+    /must not add an executable branch/);
+  const missingValidation = changeOnce('test -f "$BOOTSTRAP"', 'test -f "init-cloud-sandbox-old.bash"');
+  assert.throws(() => assertSourceCandidateBootstrapSelection(missingValidation, wiki),
+    /ordered validation\/build step/);
+  const missingSyntaxCheck = changeOnce('bash -n "$BOOTSTRAP"', 'bash -n "init-cloud-sandbox-old.bash"');
+  assert.throws(() => assertSourceCandidateBootstrapSelection(missingSyntaxCheck, wiki),
+    /ordered validation\/build step/);
+  const missingOverride = changeOnce(invocation,
+    'HOOKS_URL="file://$ZIP_A" bash "$BOOTSTRAP" all');
+  assert.throws(() => assertSourceCandidateBootstrapSelection(missingOverride, wiki),
+    /invoke the selected bootstrap/);
+  const missingLocalUrl = changeOnce(invocation,
+    'HOOKS_SHA256="$ACTUAL_ZIP_SHA256" bash "$BOOTSTRAP" all');
+  assert.throws(() => assertSourceCandidateBootstrapSelection(missingLocalUrl, wiki),
+    /invoke the selected bootstrap/);
+  const overwritten = changeOnce('test -f "$BOOTSTRAP"',
+    'BOOTSTRAP="init-cloud-sandbox-old.bash"\ntest -f "$BOOTSTRAP"');
+  assert.throws(() => assertSourceCandidateBootstrapSelection(overwritten, wiki),
+    /must not overwrite/);
+  const duplicateInvocation = changeOnce(invocation, invocation + '\nbash "init-cloud-sandbox-old.bash" all');
+  assert.throws(() => assertSourceCandidateBootstrapSelection(duplicateInvocation, wiki),
+    /only one bootstrap execution/);
+
+  const before = '它不会扫描根目录、比较SemVer或猜测哪个文件“看起来更新”';
+  assert.ok(wiki.includes(before));
+  const rephrasedWiki = wiki.replace(before,
+    '4.1只按当前checkout的contract选取脚本，不依据文件名猜测版本');
+  assert.doesNotThrow(() => assertSourceCandidateBootstrapSelection(template, rephrasedWiki));
+  const commented = changeOnce('assets = artifact["external_release_assets"]',
+    '# Resolve the current checkout contract, not a filename guess.\nassets = artifact["external_release_assets"]');
+  assert.doesNotThrow(() => assertSourceCandidateBootstrapSelection(commented, wiki));
 });
 
 test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", () => {
@@ -652,12 +778,7 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.match(stableReadme,
     /当前checkout根目录中由Release contract唯一指定的candidate bootstrap[\s\S]{0,520}state=unchanged[\s\S]{0,240}不修改C0/);
   assert.doesNotMatch(stableReadme, /根目录development bootstrap属于C0受测输入/);
-  assert.match(stableReadme,
-    /模板4\.1[\s\S]{0,240}Source\/Candidate setup[\s\S]{0,280}不会扫描根目录、比较SemVer或猜测/);
-  assert.match(stableReadme,
-    /当前Cloud checkout[\s\S]{0,100}upstream-manifest\.json[\s\S]{0,160}Release artifact contract[\s\S]{0,160}external_release_assets（必须恰好一项）/);
-  assert.match(stableReadme,
-    /旧accepted bootstrap和新candidate bootstrap可以同时留在根目录[\s\S]{0,180}只执行当前contract点名的那一个/);
+  assertSourceCandidateBootstrapSelection(read("docs/cloud-hard-acceptance-template.md"), stableReadme);
   assert.match(stableReadme,
     /HOOKS_URL=file:\/\/本轮新构建的候选ZIP[\s\S]{0,120}HOOKS_SHA256=该候选ZIP的实际SHA-256/);
   assert.match(stableReadme,

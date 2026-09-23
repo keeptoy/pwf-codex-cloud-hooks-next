@@ -6,7 +6,7 @@
 > Record status: `DRAFT / OPEN — not frozen, not indexed`
 
 本文件由维护者显式创建，用于提前整理Phase 5.1正式Discovery的边界。它当前不是已关闭的history object，不计入
-`FROZEN_DISCOVERY_RECORD`数量，也不表示批量测试改造已经获批；单独授权的R24小样本见下文。当前Product目标和稳定边界仍只读
+`FROZEN_DISCOVERY_RECORD`数量，也不表示批量测试改造已经获批；单独授权的有界样本见下文。当前Product目标和稳定边界仍只读
 [`Product Phase 5 Overview`](../product-phases/phase-5-overview.md#product-phase-5-overview)；唯一Next Step、实施授权和错误证据仍由
 活动planning控制。
 
@@ -185,6 +185,20 @@ Discovery输入，不是批量删除许可。此前的Wiki C0 tag/push混合case
 本次只收敛R24及直接依赖的C0解释断言。R23、R25其余说明和17组`DEFER`保持原状；本地回归不代表Cloud验收、
 Discovery冻结或整份测试治理完成。最终source、验证结果和残余风险仍以活动planning记录为准。
 
+<a name="phase-5-1-second-sample-evidence"></a>
+
+## Second bounded convergence sample (working evidence)
+
+维护者随后单独授权R23a：仅核对Source/Candidate模板4.1从当前manifest点名的Release contract读取唯一
+`external_release_assets`，先验证被选中的bootstrap，再用本轮本地ZIP的URL与实际SHA override调用同一个脚本。
+测试只静态检查具名4.1代码围栏，不执行教程；contract、bootstrap和资产测试继续独立守住当前版本身份与候选字节。
+Wiki只补到模板4.1的稳定anchor，其候选选择说明仍由Wiki负责，不迁入Guide或测试作为第二份自然语言规范。
+
+内存变异证明：硬编码旧脚本、选中后重赋值、去掉唯一性或文件/语法检查、改坏URL/SHA override或重复执行必须失败；
+Wiki等义说明和选择器中的非语义注释可以通过。当前实现只覆盖该选择链；R23的物化、zero-hash、公开下载身份等
+其余断言仍保留，R23组整体仍是`DEFER`。静态检查不解释任意Bash/Python控制流；非规范代码改写仍需operator owner
+人工审阅，不能把本地回归提升成Cloud PASS。
+
 <a name="phase-5-1-stop-rules"></a>
 
 ## Stop rules and current non-conclusions
@@ -195,7 +209,7 @@ Discovery冻结或整份测试治理完成。最终source、验证结果和残�
 - 不弱化Release allowlist、trusted source、版本角色、链接/anchor、history入口、planning lifecycle或安全失败语义。
 - 不修改runtime、Host ABI、installer、trusted graph、Cloud gate、Release流程或版本角色。
 - 不把一个代表性case的方案自动扩展到两份文件全部断言。
-- 当前已有59组候选清单和单独授权的R24小样本实施，但没有其余组的最终处置、Discovery PASS或批量implementation授权。
+- 当前已有59组候选清单和单独授权的R24、R23a小样本实施，但没有其余组的最终处置、Discovery PASS或批量implementation授权。
 
 <a name="phase-5-1-opening-baseline"></a>
 
