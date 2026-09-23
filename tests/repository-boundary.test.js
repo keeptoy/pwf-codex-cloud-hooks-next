@@ -340,6 +340,21 @@ function assertCurrentPublicationRoutes(provenance, acceptance, roles) {
   assert.equal(titleVersion, accepted, "acceptance title must retain accepted version identity");
 }
 
+function assertChangelogMigrationEvidenceRoute(changelog) {
+  const lines = changelog.split(/\r?\n/);
+  const headingIndex = lines.indexOf("## v0.3.0");
+  assert.ok(headingIndex >= 0, "CHANGELOG needs the v0.3.0 migration delta");
+  const nextHeading = lines.findIndex((line, index) => index > headingIndex && line.startsWith("## "));
+  const section = lines.slice(headingIndex + 1, nextHeading < 0 ? undefined : nextHeading);
+  const firstBullet = section.findIndex(line => line.startsWith("- "));
+  assert.ok(firstBullet >= 0, "v0.3.0 needs a migration claim");
+  const nextBullet = section.findIndex((line, index) => index > firstBullet && line.startsWith("- "));
+  const claim = section.slice(firstBullet, nextBullet < 0 ? undefined : nextBullet).join("\n");
+  const targets = [...claim.matchAll(/\[[^\]\r\n]+\]\(([^)\s]+)\)/g)].map(([, target]) => target);
+  assert.ok(targets.includes("BASELINE_PROVENANCE.md#successor-migration-evidence"),
+    "v0.3.0 migration claim must route to exact provenance evidence");
+}
+
 function assertNoNextStepAuthority(body, label) {
   for (const line of body.split(/\r?\n/)) {
     assert.doesNotMatch(line, /^#{1,6}\s+(?:Current\s+)?Next Step\b/i,
@@ -2178,8 +2193,26 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.doesNotThrow(() => check(`${macroDoc}\nGitHub \`Latest\`:\nsee ROADMAP.\n`));
   }
   assert.match(design, /CHANGELOG\.md/);
-  assert.match(changelog,
-    /\[`BASELINE_PROVENANCE\.md` 的 Successor 迁移不可变证据\]\(BASELINE_PROVENANCE\.md#successor-migration-evidence\)/);
+  const checkMigrationEvidenceRoute = assertChangelogMigrationEvidenceRoute;
+  checkMigrationEvidenceRoute(changelog);
+  const wrongMigrationTarget = changelog.replace(
+    "BASELINE_PROVENANCE.md#successor-migration-evidence",
+    "BASELINE_PROVENANCE.md#published-identity-ledger");
+  assert.notEqual(wrongMigrationTarget, changelog);
+  assert.throws(() => checkMigrationEvidenceRoute(wrongMigrationTarget), /exact provenance evidence/);
+  const equivalentMigrationLabel = changelog.replace(
+    "[`BASELINE_PROVENANCE.md` 的 Successor 迁移不可变证据]",
+    "[Successor 迁移的不可变证据账本]");
+  assert.notEqual(equivalentMigrationLabel, changelog);
+  assert.doesNotThrow(() => checkMigrationEvidenceRoute(equivalentMigrationLabel));
+  const migrationLink = "[`BASELINE_PROVENANCE.md` 的 Successor 迁移不可变证据]"
+    + "(BASELINE_PROVENANCE.md#successor-migration-evidence)";
+  const misplacedMigrationLink = changelog.replace(migrationLink,
+    "BASELINE_PROVENANCE.md 的 Successor 迁移不可变证据")
+    .replace("- 本次迁移没有重新设计", `- [迁移证据]`
+      + `(BASELINE_PROVENANCE.md#successor-migration-evidence)\n- 本次迁移没有重新设计`);
+  assert.notEqual(misplacedMigrationLink, changelog);
+  assert.throws(() => checkMigrationEvidenceRoute(misplacedMigrationLink), /exact provenance evidence/);
   assertNoChangelogHistoryEntrance(changelog);
   assert.throws(() => assertNoChangelogHistoryEntrance(
     `${changelog}\n[Phase evidence](docs/history/phase-5.1-document-test-governance-discovery.md#phase-5-1-exit-conditions)\n`),
