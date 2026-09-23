@@ -12,11 +12,11 @@ Implement the current-state, provable subset of A20's replaceable ROADMAP Phase 
 
 ## Current phase
 
-Completed locally: current-state A20 route/index/pointer subset passes full Windows regression; future-NONE and future-Phase safety semantics remain open.
+Completed locally: current-state A20 route/index/pointer subset passes full Windows regression. The maintainer decided to retain this proven subset, leave the remaining A20 assertions unchanged, and defer their governance to a later discussion. Future-NONE and future-Phase safety semantics remain open; this is not full A20 closure.
 
 ## Next Step
 
-Hand off this bounded subset. Do not call all A20 closed; future-NONE rotation and future-Phase safety wording require a separate, explicitly designed decision before replacement.
+Hand off this bounded subset. Do not change the remaining A20 assertions in this gate or call all A20 closed. Future-NONE rotation and future-Phase safety wording require a separate document-governance discussion and explicit authorization before replacement.
 
 ## Phases
 
