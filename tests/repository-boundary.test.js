@@ -395,6 +395,12 @@ function assertNoRoadmapMigrationLedger(body) {
   }
 }
 
+function assertNoChangelogHistoryEntrance(body) {
+  const withoutInlineCode = body.replace(/(`+)[^\r\n]*?\1/g, "");
+  assert.doesNotMatch(withoutInlineCode, /docs\/history\//,
+    "CHANGELOG must not create a third Phase-history entrance");
+}
+
 function assertMaintenanceEnvironmentRoutes(profile) {
   const section = number => {
     const start = profile.search(new RegExp(`^## ${number}\\. `, "m"));
@@ -1817,8 +1823,11 @@ test("historical documents have two controlled macro entrances and remain adviso
   for (const macroDoc of [
     "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md", "DESIGN.md",
     "MAINTAINER_HANDOFF.md",
-  ]) assert.doesNotMatch(read(macroDoc), /docs\/history\//,
-    `${macroDoc} must not create a third historical-document entrance`);
+  ]) {
+    if (macroDoc === "CHANGELOG.md") assertNoChangelogHistoryEntrance(read(macroDoc));
+    else assert.doesNotMatch(read(macroDoc), /docs\/history\//,
+      `${macroDoc} must not create a third historical-document entrance`);
+  }
   for (const policyDoc of [historyIndex, historyTemplate, governanceGuide, agents]) {
     assert.match(policyDoc, /README[\s\S]*ROADMAP/);
   }
@@ -2099,7 +2108,26 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.match(design, /CHANGELOG\.md/);
   assert.match(changelog,
     /\[`BASELINE_PROVENANCE\.md` 的 Successor 迁移不可变证据\]\(BASELINE_PROVENANCE\.md#successor-migration-evidence\)/);
-  assert.doesNotMatch(changelog, /docs\/history\//);
+  assertNoChangelogHistoryEntrance(changelog);
+  assert.throws(() => assertNoChangelogHistoryEntrance(
+    `${changelog}\n[Phase evidence](docs/history/phase-5.1-document-test-governance-discovery.md#phase-5-1-exit-conditions)\n`),
+    /third Phase-history entrance/);
+  assert.throws(() => assertNoChangelogHistoryEntrance(
+    `${changelog}\n[phase-evidence]: docs/history/phase-5.1-document-test-governance-discovery.md\n`),
+    /third Phase-history entrance/);
+  assert.throws(() => assertNoChangelogHistoryEntrance(
+    `${changelog}\n<a href="docs/history/phase-5.1-document-test-governance-discovery.md">Phase evidence</a>\n`),
+    /third Phase-history entrance/);
+  assert.throws(() => assertNoChangelogHistoryEntrance(
+    `${changelog}\n[\`Phase evidence\`](docs/history/phase-5.1-document-test-governance-discovery.md)\n`),
+    /third Phase-history entrance/);
+  assert.throws(() => assertNoChangelogHistoryEntrance(
+    `${changelog}\nFor details, see docs/history/README.md.\n`),
+    /third Phase-history entrance/);
+  assert.doesNotThrow(() => assertNoChangelogHistoryEntrance(
+    `${changelog}\nThe literal directory name \`docs/history/\` does not create a history link.\n`));
+  assert.doesNotThrow(() => assertNoChangelogHistoryEntrance(
+    `${changelog}\nThe literal path \`\`docs/history/README.md\`\` is not a link.\n`));
   assert.doesNotMatch(changelog, /Successor 迁移来源链/);
 
   for (const [body, label] of [[changelog, "CHANGELOG"], [provenance, "provenance"]]) {
