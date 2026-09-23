@@ -306,6 +306,40 @@ function currentRoleWindow() {
   return { accepted, candidate, developmentTrain, immediateFallback, roadmap };
 }
 
+function assertCurrentPublicationRoutes(provenance, acceptance, roles) {
+  const { accepted, candidate, immediateFallback, roadmap } = roles;
+  const ledgerStart = provenance.indexOf("## 1. 已发布身份账本");
+  const ledgerEnd = provenance.indexOf("## 2. Successor 迁移不可变证据", ledgerStart);
+  assert.ok(ledgerStart >= 0 && ledgerEnd > ledgerStart,
+    "provenance needs a distinct published-identity ledger");
+  const ledger = provenance.slice(ledgerStart, ledgerEnd);
+  const versions = [...ledger.matchAll(/^\| `(v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?)` \|/gm)]
+    .map(([, version]) => version);
+  for (const version of new Set([accepted, immediateFallback])) {
+    assert.equal(versions.filter(value => value === version).length, 1,
+      `published ledger needs one ${version} role row`);
+  }
+  if (candidate !== accepted) {
+    const escapedCandidate = candidate.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const candidateIsPublished = new RegExp(
+      `\`${escapedCandidate}\` published (?:prerelease candidate|Latest closeout)`,
+    ).test(roadmap);
+    assert.equal(versions.filter(value => value === candidate).length,
+      candidateIsPublished ? 1 : 0,
+      "candidate ledger membership must match ROADMAP publication state");
+  }
+
+  const acceptancePath = `docs/acceptance/${accepted}-cloud-hard-acceptance.md`;
+  const acceptanceAnchor = `${accepted.replaceAll(".", "-")}-role-window-closeout`;
+  const acceptedRow = ledger.split(/\r?\n/).find(line => line.startsWith(`| \`${accepted}\` |`));
+  assert.ok(acceptedRow.includes(`](${acceptancePath}#${acceptanceAnchor})`),
+    "accepted provenance row must route to its exact acceptance closeout");
+  assert.match(acceptance, new RegExp(`^<a name="${acceptanceAnchor}"></a>$`, "m"),
+    "accepted acceptance must expose its linked closeout anchor");
+  const titleVersion = acceptance.match(/^# (v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?)(?:\s|$)/m)?.[1];
+  assert.equal(titleVersion, accepted, "acceptance title must retain accepted version identity");
+}
+
 function assertMaintenanceEnvironmentRoutes(profile) {
   const section = number => {
     const start = profile.search(new RegExp(`^## ${number}\\. `, "m"));
@@ -1948,10 +1982,13 @@ test("change history, programme, provenance, and current acceptance keep separat
   const phase9History = read("docs/history/phase-4.12-v0.4.0-release-discovery.md");
   const artifact = JSON.parse(read(currentArtifactPath));
   const runtimeBundle = JSON.parse(read(currentBundlePath));
-  const { accepted, candidate, immediateFallback, roadmap } = currentRoleWindow();
+  const roles = currentRoleWindow();
+  const { accepted, candidate, immediateFallback, roadmap } = roles;
   const acceptancePath = `docs/acceptance/${accepted}-cloud-hard-acceptance.md`;
   const acceptance = read(acceptancePath);
-  const escapedAccepted = accepted.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const checkRoutes = (p = provenance, a = acceptance, r = roles) =>
+    assertCurrentPublicationRoutes(p, a, r);
+  assert.doesNotThrow(() => checkRoutes());
 
   const changelogVersions = [...changelog.matchAll(new RegExp(`^## (${versionPattern})$`, "gm"))]
     .map(match => match[1]);
@@ -1969,22 +2006,6 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotMatch(roadmap, /## 3\. 已完成的仓库迁移|M1 exact mirror|M2 slim transformation/);
   assert.equal((roadmap.match(/^<a name="github-release-latest-promotion-confirmation"><\/a>$/gm) || []).length, 1);
 
-  for (const publishedRoleVersion of new Set([accepted, immediateFallback])) {
-    assert.match(provenance, new RegExp(publishedRoleVersion.replaceAll(".", "\\.")));
-  }
-  if (candidate !== accepted) {
-    const candidateIsPublished = new RegExp(
-      `\`${candidate.replaceAll(".", "\\.")}\` published (?:prerelease candidate|Latest closeout)`,
-    ).test(roadmap);
-    const candidatePattern = new RegExp(candidate.replaceAll(".", "\\."));
-    if (candidateIsPublished) {
-      assert.match(provenance, candidatePattern,
-        "published candidate must enter the role-neutral provenance ledger");
-    } else {
-      assert.doesNotMatch(provenance, candidatePattern,
-        "unpublished candidate must not enter the published provenance ledger");
-    }
-  }
   assert.match(provenance, /^## 1\. 已发布身份账本$/m);
   assert.doesNotMatch(provenance, /^### 1\.[12] /m,
     "published identities must share one role-neutral ledger instead of current/history subsections");
@@ -2004,7 +2025,26 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotMatch(changelog, /docs\/history\//);
   assert.doesNotMatch(changelog, /Successor 迁移来源链/);
 
-  assert.match(acceptance, new RegExp(`^# ${escapedAccepted} Cloud hard acceptance$`, "m"));
+  const acceptedRow = provenance.split(/\r?\n/).find(line => line.startsWith(`| \`${accepted}\` |`));
+  assert.ok(acceptedRow, "accepted row mutation precondition");
+  assert.throws(() => checkRoutes(provenance.replace(acceptedRow, `${acceptedRow}\n${acceptedRow}`)),
+    /one .* role row/);
+  const closeoutTarget = `${acceptancePath}#${accepted.replaceAll(".", "-")}-role-window-closeout`;
+  assert.ok(provenance.includes(closeoutTarget), "acceptance target mutation precondition");
+  assert.throws(() => checkRoutes(provenance.replace(closeoutTarget,
+    `${acceptancePath}#wrong-closeout`)), /exact acceptance closeout/);
+  assert.throws(() => checkRoutes(provenance, acceptance.replace(
+    `# ${accepted} Cloud hard acceptance`, `# ${immediateFallback} Cloud hard acceptance`)),
+  /accepted version identity/);
+  if (candidate !== accepted) {
+    const newCandidateRow = `| \`${candidate}\` | draft candidate (not a Release) | - | - | - |`;
+    assert.throws(() => checkRoutes(provenance.replace(
+      "## 2. Successor 迁移不可变证据", `${newCandidateRow}\n\n## 2. Successor 迁移不可变证据`)),
+    /candidate ledger membership/);
+    assert.doesNotThrow(() => checkRoutes(`${provenance}\nDraft ${candidate} is not a published identity.\n`));
+  }
+  assert.doesNotThrow(() => checkRoutes(provenance, acceptance.replace(
+    `# ${accepted} Cloud hard acceptance`, `# ${accepted} Cloud验收与Release收尾记录`)));
 });
 
 test("stable architecture contracts do not freeze version history", () => {
