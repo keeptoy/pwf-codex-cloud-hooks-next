@@ -1,18 +1,18 @@
 <a name="phase-5-1-discovery-draft"></a>
+<a name="phase-5-1-document-test-governance-decision"></a>
 
-# Phase 5.1（草稿）：文档测试治理 Discovery
+# Phase 5.1：文档测试治理 Discovery 决策
 
-> Target record role: `FROZEN_DISCOVERY_RECORD`
-> Record status: `DRAFT / OPEN — not frozen, not indexed`
+> Record role: `FROZEN_DISCOVERY_RECORD`
 
-本文件由维护者显式创建，用于提前整理Phase 5.1正式Discovery的边界。它当前不是已关闭的history object，不计入
-`FROZEN_DISCOVERY_RECORD`数量，也不表示批量测试改造已经获批；单独授权的有界样本见下文。当前Product目标和稳定边界仍只读
-[`Product Phase 5 Overview`](../product-phases/phase-5-overview.md#product-phase-5-overview)；唯一Next Step、实施授权和错误证据仍由
-活动planning控制。
+本记录封存Product Phase 5文档测试治理这一轮Discovery的证据、方法、`CONDITIONAL_GO`和停止条件；它不是Phase 5
+closeout，也不是两份测试批量改造、Cloud或Release的验收。现行Product目标仍由
+[`Product Phase 5 Overview`](../product-phases/phase-5-overview.md#product-phase-5-overview)负责；当前唯一Next Step和实施授权由
+活动planning负责。
 
 <a name="phase-5-1-draft-purpose"></a>
 
-## Draft purpose
+## Problem before
 
 按职责指定唯一authority、让测试保护安全意图而非临时施工形状，并不是Phase 5新提出的原则；早期
 [`Phase 3.8`](phase-3.8-runtime-inventory-authority-discovery.md#phase-3-8-design-hindsight)已明确分析重复machine authority与
@@ -21,7 +21,7 @@
 不冻结阶段文案。随后进行的只读粗筛表明，这条分工在当前两份文档治理测试中仍未完全实现：真正重要的Release、安全、身份、
 inventory、链接和anchor边界，与中文句式、段落顺序、一次性迁移状态及历史总结措辞混在同一批正则断言里。
 
-因此值得开启一轮小范围Discovery，但不能把“正则很多”直接翻译成“批量删除测试”。本轮应先从治理规则及其唯一owner、
+因此开启一轮有界Discovery，但不能把“正则很多”直接翻译成“批量删除测试”。本轮先从治理规则及其唯一owner、
 失败后果和当前/历史语义出发，再定位保护它的断言：同一规则可能分布于多处断言，同一断言也可能混合结构与文案。只有弄清
 被保护的风险及替代验证方式，才能决定保留、替换、退休或延期。
 
@@ -29,31 +29,20 @@ inventory、链接和anchor边界，与中文句式、段落顺序、一次性�
 
 ## Opening evidence
 
-粗筛时，两份主要测试合计约有：
-
-| 断言形式 | 粗筛快照 | 当前opening baseline |
-|---|---:|---:|
-| `assert.match` | 488 | 487 |
-| `assert.doesNotMatch` | 84 | 84 |
-| 合计 | 572 | 571 |
-
-两组数字并不冲突。Phase 5.0在粗筛后已经删除一条Phase 4.17专属、重复冻结全局history总数的正向断言，所以当前树比原快照少一条。
-这些数字只用于说明盘点规模，不是稳定合同、质量指标或必须下降到某个目标值。
-
-主要表面为：
+粗筛在两份主要测试中看到结构边界、安全操作和文案句式混写；Phase 5.0已经先移除过一条重复冻结history总数的断言，
+说明简单计数既不稳定，也不是本轮质量目标。主要表面为：
 
 - [`tests/architecture-contracts.test.js`](../../tests/architecture-contracts.test.js)：版本无关的架构、文档authority和ROADMAP治理断言；
 - [`tests/repository-boundary.test.js`](../../tests/repository-boundary.test.js)：仓库inventory、文档生命周期、history入口和元测试边界。
 
-只读抽样已看到同一文档生命周期case同时检查`docs/`不进入Release ZIP、稳定anchor，以及Cloud/Release教程中的C0 tag命令、
-验收身份和停止条件；这些风险不能仅凭“断言匹配Markdown文字”归入文案冻结。此处只是说明分类必须按规则和失败后果进行，
-不构成逐组inventory或任何断言的最终处置。
+同一文档生命周期case同时检查`docs/`不进入Release ZIP、稳定anchor，以及Cloud/Release教程中的C0 tag命令、验收身份和停止条件；
+因此不能仅凭“断言匹配Markdown文字”归入文案冻结。后续按规则与失败后果完成分组盘点，而不是按正则语法删除。
 
 <a name="phase-5-1-working-taxonomy"></a>
 
 ## Working taxonomy
 
-第一轮使用下列分类理解断言，不按正则语法或行数机械处置：
+本轮使用下列分类理解断言，不按正则语法或行数机械处置：
 
 | 类型 | 典型对象 | 初始处置方向 |
 |---|---|---|
@@ -74,25 +63,25 @@ inventory、链接和anchor边界，与中文句式、段落顺序、一次性�
 
 <a name="phase-5-1-hotspots"></a>
 
-## Hotspots to inventory
+## Inventory surface
 
-当前四个代表性入口为：
+盘点重点是四个混合入口，而非四个实施批次：
 
-| 入口 | 当前规模 | 为什么需要单独看 |
-|---|---:|---|
-| `architecture-contracts.test.js` 的ROADMAP治理case | 93 | 同时保护稳定anchors、programme关系、Release顺序和大量自然语言表达/顺序 |
-| `repository-boundary.test.js` 的文档生命周期case | 150 | 好的文件集合、Release排除和路径检查，与模板文案、acceptance生命周期句式混合 |
-| `repository-boundary.test.js` 的history治理case | 43 | 受控入口、role和anchor有价值，但部分断言继续冻结history/template叙述 |
-| `repository-boundary.test.js` 的版本历史自检 | 4 | 元测试目的有价值但实现特殊，应判断它是稳定lint还是测试源码对自身的偶然约束 |
+| 入口 | 需要区分的风险 |
+|---|---|
+| `architecture-contracts.test.js` 的ROADMAP治理case | 稳定anchors、programme关系、Release顺序与自然语言表达混写 |
+| `repository-boundary.test.js` 的文档生命周期case | 文件集合、Release排除、路径检查与模板/acceptance措辞混写 |
+| `repository-boundary.test.js` 的history治理case | 受控入口、role和anchor与历史叙述冻结混写 |
+| `repository-boundary.test.js` 的版本历史自检 | 元测试可能防止第二authority，也可能只是偶然的源码自检 |
 
-上述规模是opening baseline，不是四个实施批次，也不意味着每条断言都有问题。正式inventory应按规则/owner分组，而不是为每个
+这四个入口不意味着每条断言都有问题。inventory按规则/owner分组，而不是为每个
 `assert.match`制造一项流程记录。
 
 <a name="phase-5-1-candidate-principle"></a>
 
-## Candidate admission principle
+## Core admission principle
 
-拟验证的准入原则是：
+本轮选定的准入原则是：
 
 > 每条治理规则回到既有的唯一current authority；JS测试优先验证可解析的结构、身份、关系、安全边界和可执行操作合同，
 > 不把一般中文措辞、一次性迁移状态或历史摘要当作长期API。Markdown模板只承担其本来负责的执行/写作协议，不能泛化成
@@ -112,69 +101,50 @@ inventory、链接和anchor边界，与中文句式、段落顺序、一次性�
 
 <a name="phase-5-1-authority-placement"></a>
 
-## Candidate authority placement for transferred rules
+## Authority placement for transferred rules
 
 `Repository Governance Guide`可以称为**仓库治理方法的权威**：它解释如何分配authority、划分hot/warm/cold、管理planning与
 history、审查链接和retirement。它不是覆盖所有Markdown内容的“文档治理总宪章”，也不因测试断言移交而自动成为每条规则的
 接收处。本仓库实际的“问题→唯一权威”导航仍以[`README文档地图`](../../README.md#documentation-map)为准；Guide中的通用
 推荐映射不能代替某个领域已有的current authority。
 
-对代表性规则，拟按职责而非原测试文件名路由：
+对代表性规则，按职责而非原测试文件名路由：
 
-| 规则问的是什么 | 候选owner | 测试应保留的职责 |
+| 规则问的是什么 | 既有owner route | 测试应保留的职责 |
 |---|---|---|
 | authority怎样分配、planning/history何时保留或清退、入链怎样迁移 | [`Repository Governance Guide`](../repository-governance-guide.md#repository-governance-guide) | 检查唯一入口、role、链接与retirement关系，不复制整段治理文字 |
 | 当前programme、版本角色、Release四步与C0～C2顺序 | [`ROADMAP`](../../ROADMAP.md#release-four-step-flow)及其相应current章节 | 检查角色/身份关系与必要锚点，不把另一份顺序规范写进JS |
 | Cloud双通道执行、停止条件、evidence schema或一轮guide的写入生命周期 | 对应[`Cloud执行模板`](../cloud-hard-acceptance-template.md#acceptance-document-responsibilities)或[`Operator Guide结构模板`](../cloud-acceptance-operator-guide-template.md) | 验证可执行命令、身份输入和停止防线；等义说明文字可变 |
 | Host ABI、runtime/source inventory、ZIP allowlist等机器事实 | 对应machine contract及producer/consumer；架构理由另见ARCHITECTURE | 维持exact schema/hash/inventory与行为测试，不把机器事实搬进Guide |
 
-这只是Discovery候选路由，不新建第二份权威表。正式inventory对每个规则先记录：问题与失效后果、既有owner及稳定anchor、其他
-文档的必要投影、现有测试覆盖、拟议验证方式。若目前没有明确owner，先列为待决并请维护者选择；不能因为断言写在JS里，就
-把原文原样搬到Guide、ROADMAP或模板。若Guide自身包含某个领域规则的展开投影，也应核对它是必要的方法示例还是与领域owner
-竞争；只有完成该判定，才提出最小链接/措辞收敛，不在本草稿阶段改写现有authority。
+这不是第二份“问题→权威”表。盘点为每组记录失败后果、既有owner、current/历史语义和验证方式；不能因为断言写在JS里，
+就把原文原样搬到Guide、ROADMAP或模板。若Guide包含领域规则的展开投影，应审查它是必要示例还是竞争authority，
+只做经证据支持的最小链接/措辞收敛。
 
 <a name="phase-5-1-bounded-round"></a>
 
-## Bounded first Discovery round
+## Bounded Discovery evidence
 
-第一轮只做以下工作：
-
-1. 先按治理规则建立小组清单，记录问题类型、既有owner、必要投影、当前/历史语义、失败后果和风险，再映射两份目标测试中的相关test case与断言；
-   对每组标记`KEEP / REPLACE / RETIRE / DEFER`，不把一条正则等同于一条规则；
-2. 找出同一治理规则被README、ROADMAP、模板、history和测试重复冻结的位置，区分正确投影与竞争authority；
-3. 对安全关键操作说明单独核对现有防线与可替代的命令/contract/结构检查；尚无等效防线的项目保留或`DEFER`，不得因正则
-   脆弱或文字可改写就直接退休；
-4. 选择一个同时包含结构边界、操作风险和文案冻结的代表性case，形成before/after收敛设计：改坏关键路径、命令、身份或
-   停止条件时应失败；仅作等义表述调整时不应失败；
-5. 冻结实施范围、focused/full回归路线、停止条件和需要维护者决定的`DEFER`项；无法机器判定的剩余语义明确人工审阅owner与
-   触发时机，不另建第二份machine authority。
-
-Discovery阶段可以写清代表性case的before/after设计，但不批量编辑测试，也不把“建议`RETIRE`”直接当删除授权。
+两份测试按治理规则而非正则行数完成分组；每组核对失败后果、唯一owner、current/历史语义和拟议验证方式。
+跨README、ROADMAP、模板、history和测试的重复陈述被区分为必要投影与竞争authority。安全操作说明先找命令、contract、
+状态与人工审阅防线，没有等效证据时保留原断言。两个混合样本用“关键身份、命令或路径被改坏必须失败；等义说明改写不应失败”
+验证方法。盘点本身不授权批量修改，也不以正则数量下降作为成功标准。
 
 <a name="phase-5-1-exit-conditions"></a>
 
-## Exit conditions before freeze
+## Decision closure and limits
 
-Phase 5.1只有同时满足以下条件，才可由维护者决定是否冻结为正式`FROZEN_DISCOVERY_RECORD`并授权后续实施：
-
-- 两份目标测试涉及的治理规则及断言组都已有唯一owner、当前/历史语义、分类、理由和失败后果，不留未解释的关键组；
-- Release、安全、链接、path/inventory、版本角色和authority入口等机器边界，以及安全关键操作说明，均有明确保留或等效
-  替代方案；不能机器判定的剩余语义有明确人工审阅责任；
-- 重复治理规则已经映射到唯一authority，测试不再被设计成第二份自然语言规范；
-- 至少一个代表性case形成可审查的收敛设计，列出必须继续失败的负向样例和应允许通过的等义改写样例；
-- `DEFER`项单独列出触发条件，不因追求断言数量下降而被静默处理；
-- 实施范围、focused/full回归路线和回滚办法已经清楚；
-- 维护者明确给出freeze与implementation授权。
-
-冻结时再把本草稿改写为当时的证据、决定、conditional-go和stop rules，补齐exact immutable source，并登记history索引。若Discovery
-最终认为不应实施，也应如实冻结no-go或由维护者决定删除草稿；不得保留一个看似已经验收的永久OPEN记录。
+盘点形成59组候选处置：22组`KEEP`现有结构/机器防线，16组`REPLACE`但必须先证明等效验证，4组`RETIRE`附带前置条件，
+17组`DEFER`保留原断言并设单独触发证据。每组的详细owner、理由、失败后果和source映射由本记录末尾的exact source恢复；
+本记录只冻结路线与边界，不复制施工清单。Release、安全、链接、path/inventory、版本角色和authority入口不得因文案治理弱化；
+无法机器判定的操作余义由对应维护者/operator owner在改变该协议时审阅。维护者批准本轮Discovery关闭及B0准入事务，
+未批准B1～B4或`DEFER`的批量实施。
 
 <a name="phase-5-1-first-sample-evidence"></a>
 
-## First bounded convergence sample (working evidence)
+## First bounded convergence sample
 
-正式规则组盘点已在前轮`2026-09-23-phase-5-1-rule-inventory`的`findings.md`记录为59组候选处置；这是待维护者审阅的
-Discovery输入，不是批量删除许可。此前的Wiki C0 tag/push混合case内存探路证明：整文件命令匹配可能被围栏外安全文字蒙混，
+Wiki C0 tag/push混合case的内存探路证明：整文件命令匹配可能被围栏外安全文字蒙混，
 而等义改写的说明会被句式正则误伤。
 
 维护者随后单独授权该组的有界本地实施：`tests/repository-boundary.test.js`现检查`Wiki.md#source-candidate-c0-tag-push`
@@ -182,12 +152,12 @@ Discovery输入，不是批量删除许可。此前的Wiki C0 tag/push混合case
 条件与本地/远端peeled commit。内存变异覆盖错误C1目标、`--tags`广推、缺失预检、错误远端peeled比对、在后续标题下
 藏第二条命令，以及等义说明和停止提示改写。该检查不是通用PowerShell解释器；未覆盖的命令变体仍需人工审阅。
 
-本次只收敛R24及直接依赖的C0解释断言。R23、R25其余说明和17组`DEFER`保持原状；本地回归不代表Cloud验收、
-Discovery冻结或整份测试治理完成。最终source、验证结果和残余风险仍以活动planning记录为准。
+该有界实施只收敛R24及直接依赖的C0解释断言。R23、R25其余说明和17组`DEFER`保持原状；本地回归不代表Cloud验收或
+整份测试治理完成。
 
 <a name="phase-5-1-second-sample-evidence"></a>
 
-## Second bounded convergence sample (working evidence)
+## Second bounded convergence sample
 
 维护者随后单独授权R23a：仅核对Source/Candidate模板4.1从当前manifest点名的Release contract读取唯一
 `external_release_assets`，先验证被选中的bootstrap，再用本轮本地ZIP的URL与实际SHA override调用同一个脚本。
@@ -200,35 +170,52 @@ Wiki等义说明和选择器中的非语义注释可以通过。当前实现只�
 人工审阅，不能把本地回归提升成Cloud PASS。
 
 <a name="phase-5-1-staged-decision-proposal"></a>
+<a name="phase-5-1-conditional-go"></a>
 
-## Staged decision proposal (not frozen)
+## Conditional-go and staged route
 
-在两次有界样本之后，59组盘点可以作为**实施路线图**审议，而不能作为“一次性删改清单”：22组`KEEP`保持现有机器/结构防线；
-16组拟`REPLACE`中R24已有局部实施，另15组按导航与authority、operator/planning文档生命周期、history结构、
-current/cold身份关系四条lane逐批证明后改写；4组拟`RETIRE`仍有前置条件，其中R25继续等待R23其余安全规则的等效防线；
-17组`DEFER`保持现有断言并分别设专项触发证据。R23a只是R23的一个子规则，不改变R23整体分类。具体ID、人工审阅owner、
-负向/等义探针、回归和回滚路线由活动planning保管，不在history草稿复制施工清单。
+三条路线经过比较：直接批量删改最省眼前代码量，却会把Release/Cloud/身份防线一并误删；逐条正则原样保留最稳妥，
+但继续冻结等义文案并积累第二份规范；按owner与失效后果分批收敛，成本是多次小门槛和人工审阅，却能同时保住安全意图与
+文案弹性。因此本轮选择第三条路线，结论为`CONDITIONAL_GO`，不是两份测试的无条件批量GO。
 
-拟议结论是`CONDITIONAL_GO`到**单独的history准入事务**，而非对两份测试的批量GO。该事务须先把本轮完整决策固定为exact
-source，再把Phase 5.1作为`FROZEN_DISCOVERY_RECORD`登记入history索引，并把现有按旧“11份”宽正则匹配的测试改为
-role/index关系检查；一个宽正则偶然变绿不算准入证据。当前决策尚未完成该事务，所以本文继续是`DRAFT / OPEN`，
-不计入已冻结record，也不授权后续Cloud、Release、生产或远端操作。
+| 后继门槛 | 决策边界 |
+|---|---|
+| B0 history准入 | 以exact source封存本决策、登记索引，并把旧固定总数断言改为索引成员/role关系检查；B0不实施其余R28。 |
+| B1 导航/文档边界 | A02、A03、A12、A14、A16、A20、R11、R21；逐组证明解析后的owner链接、section或环境路由等价。 |
+| B2 操作与planning文档生命周期 | A04、A07、R13、R17；保留命令、状态、删除同意与角色边界，operator/maintainer审阅不可机器化的解释。 |
+| B3 history结构与条件退休 | R28其余、R30先建立role/index/anchor/immutable-link关系，之后才能退休R04、R29、R31的历史叙述断言；历史正文不改写。 |
+| B4 current/cold身份 | R36先对齐CHANGELOG、ROADMAP、provenance、acceptance与publication oracle，再替换宽泛的词句禁令。 |
+
+R24已由第一个样本局部替换；R23a仅覆盖R23候选bootstrap选择子规则，R23整体仍`DEFER`。R25虽列为条件`RETIRE`，
+但要等R23其余操作安全及R24相邻停止条件有等效防线才可审议。17组`DEFER`不进入B1～B4：A08/A18须先证明Release两通道和
+C0/C1/C2错误顺序及未知Latest停止；A10/A21须有runtime行为/平台权限与产品opt-in的独立证据；A19须分清Guide方法、
+ROADMAP时点与人工删除同意；R18～R20/R23须有Cloud预检、最终退出/证据状态、双通道contract数据流及候选资产身份的
+负向探针；R02/R06/R35/R38须逐项映射current publication oracle或immutable Git恢复；R08/R26须核对旧路径复发风险；
+R33须有退役前后入链与immutable恢复演练；R37须有能区分正常提及与第二authority的窄lint。上述剩余语义分别由维护者作为
+Release、runtime/trust、planning、Cloud operator、provenance、retirement或test-design owner审阅，不因本轮结论自动放行。
+
+每个后继批次先定位当时的owner与源码断言，再证明有害改动失败、等义改写通过；运行最近边界与producer/consumer测试、
+完整本地回归、链接/anchor和差异检查，并以单一可恢复本地commit收束。Windows上的POSIX跳过不算Linux/Cloud证据；
+若触及ZIP输入、machine contract或可执行操作协议，转入相应平台/专项门槛。失败时保留上一批commit，分类、修复或只回滚
+当前批次；不把失败带进下一批。B1～B4各自仍需活动planning和维护者授权，`DEFER`另行设计，Cloud/Release/远端写入均未授权。
 
 <a name="phase-5-1-stop-rules"></a>
 
-## Stop rules and current non-conclusions
+## Stop rules and non-conclusions
 
-- 不在Discovery inventory完成前大规模删除、合并或重写断言。
+- 不把本轮Discovery关闭误作Phase 5、Cloud、Release或整体测试治理完成。
 - 不以断言总数、正则数量或文件行数作为成功标准。
 - 不因断言匹配自然语言、写法脆弱或存在重复，就在证明等效防线前删除安全关键操作规则。
 - 不弱化Release allowlist、trusted source、版本角色、链接/anchor、history入口、planning lifecycle或安全失败语义。
 - 不修改runtime、Host ABI、installer、trusted graph、Cloud gate、Release流程或版本角色。
 - 不把一个代表性case的方案自动扩展到两份文件全部断言。
-- 当前已有59组候选清单、R24/R23a小样本和分批决策提案；正式冻结与history准入尚未完成，不能把本提案或本地PASS当作批量implementation授权。
+- owner冲突、等效防线不成立、有害变异假绿、等义变异假红或实施路线发生实质变化时，停止当前批次并重新作维护者决策。
 
-<a name="phase-5-1-opening-baseline"></a>
+<a name="phase-5-1-immutable-evidence"></a>
 
-## Opening baseline (not final cold evidence)
+## Cold evidence (not current authority)
 
-本草稿从local exact source `8cd0155e5f2b86d293f8036f663355c25237a631`打开。该commit只固定Phase 5.0完成后的起点；Phase 5.1
-正式关闭时必须重新记录承载完整Discovery结论的exact immutable source，不能把opening baseline冒充final cold evidence。
+- [Immutable decision-source snapshot](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/f7ebbf9dab6984697cfea5c1050daafe336737c3)
+
+该exact commit固定本轮分组决策、B0～B4实施边界、`DEFER`触发器及冻结前草稿；本记录只封存当时决定，不解释后继实施或
+当前programme。当前authority仍按README文档地图、Product Phase 5 overview、ROADMAP和活动planning读取。
