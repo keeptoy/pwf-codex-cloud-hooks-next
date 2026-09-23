@@ -198,6 +198,35 @@ function assertRetrospectiveHistoryRecords(index, histories, artifact) {
   }
 }
 
+function assertPhase412Recovery(index, record, provenance, acceptance) {
+  const rows = index.split(/\r?\n/).filter(line => line.startsWith('| Phase 4.12 |'));
+  assert.equal(rows.length, 1, 'Phase 4.12 needs one canonical history index row');
+  const target = rows[0].match(/\]\((phase-[^/#)]+\.md)#([a-z0-9-]+)\)/);
+  assert.ok(target, 'Phase 4.12 index needs one explicit record target');
+  assert.deepEqual(target.slice(1), [
+    'phase-4.12-v0.4.0-release-discovery.md',
+    'phase-4-12-v0-4-0-release-discovery',
+  ], 'Phase 4.12 index must use the canonical record and entry anchor');
+  assert.ok(record.startsWith(`<a name="${target[2]}"></a>\n`),
+    'Phase 4.12 indexed anchor must open the record');
+  assert.match(record, /^<a name="phase-4-12-renumbering-note"><\/a>\r?\n\r?\n## Renumbering note/m,
+    'Phase 4.12 must retain a distinct renumbering-note anchor');
+  assert.doesNotMatch(record, /^<a name="phase-9-v0-4-0-/m,
+    'retired Phase 9 compatibility anchors must not return');
+
+  const acceptanceAnchor = 'v0-4-0-p9-f-second-retirement-closeout';
+  const immutableTarget = 'https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/'
+    + '6b388518855da9053713a58e5c918c8b727b6dc6/'
+    + `docs/v0.4.0-cloud-hard-acceptance.md#${acceptanceAnchor}`;
+  assert.ok(provenance.includes(`](${immutableTarget})`),
+    'Phase 4.12 cold acceptance must resolve through exact provenance identity');
+  assert.match(acceptance, /^<a name="v0-4-0-p9-f-second-retirement-closeout"><\/a>$/m,
+    'immutable acceptance must contain its linked P9-F anchor');
+  assert.match(acceptance,
+    /P9_F_SECOND_RETIREMENT_PASS \/ V0_4_0_TRAIN_CLOSED \/ NEXT_TRAIN_UNDECIDED/,
+    'immutable acceptance must retain the closed-train conclusion');
+}
+
 function isTrustedSource(relative) {
   return trustedRootPaths.has(relative) || trustedPrefixes.some(prefix => relative.startsWith(prefix));
 }
@@ -855,6 +884,38 @@ test("Phase 4.13–4.17 history structure follows index, role, anchors and cold 
   assert.doesNotThrow(() => check(index, equivalentProse));
 });
 
+test("Phase 4.12 recovery rejects broken history and cold links but allows prose rewrites", () => {
+  const index = read("docs/history/README.md");
+  const record = read("docs/history/phase-4.12-v0.4.0-release-discovery.md");
+  const provenance = read("BASELINE_PROVENANCE.md");
+  const acceptance = readGit("6b388518855da9053713a58e5c918c8b727b6dc6",
+    "docs/v0.4.0-cloud-hard-acceptance.md");
+  const check = (i = index, r = record, p = provenance, a = acceptance) =>
+    assertPhase412Recovery(i, r, p, a);
+  assert.doesNotThrow(() => check());
+  const wrongHistoryTarget = index.replace(
+    'phase-4.12-v0.4.0-release-discovery.md#phase-4-12-v0-4-0-release-discovery',
+    'phase-4.12-v0.4.0-release-discovery.md#phase-4-12-renumbering-note');
+  assert.notEqual(wrongHistoryTarget, index);
+  assert.throws(() => check(wrongHistoryTarget), /canonical record and entry anchor/);
+  const missingRecordAnchor = record.replace(
+    '<a name="phase-4-12-v0-4-0-release-discovery"></a>', '');
+  assert.throws(() => check(index, missingRecordAnchor), /indexed anchor must open/);
+  const wrongColdRef = provenance.replace(
+    'blob/6b388518855da9053713a58e5c918c8b727b6dc6/docs/v0.4.0-cloud-hard-acceptance.md',
+    'blob/main/docs/v0.4.0-cloud-hard-acceptance.md');
+  assert.notEqual(wrongColdRef, provenance);
+  assert.throws(() => check(index, record, wrongColdRef), /exact provenance identity/);
+  const missingAcceptanceAnchor = acceptance.replace(
+    '<a name="v0-4-0-p9-f-second-retirement-closeout"></a>', '');
+  assert.throws(() => check(index, record, provenance, missingAcceptanceAnchor),
+    /linked P9-F anchor/);
+  const historicalExplanation = '原P9-A～P9-F gate名称、执行顺序与结论继续作为历史正文保留';
+  assert.ok(record.includes(historicalExplanation), 'prose probe precondition');
+  assert.doesNotThrow(() => check(index, record.replace(historicalExplanation,
+    '旧P9-A～P9-F的名称、顺序与结果仍留在当时的记录中')));
+});
+
 test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const acceptedAcceptance = read("docs/acceptance/v0.4.4-cloud-hard-acceptance.md");
@@ -920,23 +981,17 @@ test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", ()
   ]) assert.match(provenance, new RegExp(fact.replaceAll(".", "\\.")));
 });
 
-test("Phase 4.12 preserves the renamed v0.4.0 Release discovery and P9 evidence", () => {
+test("Phase 4.12 keeps canonical history recovery and immutable P9-F evidence", () => {
   const phase12 = read("docs/history/phase-4.12-v0.4.0-release-discovery.md");
+  const historyIndex = read("docs/history/README.md");
   const provenance = read("BASELINE_PROVENANCE.md");
+  const acceptance = readGit("6b388518855da9053713a58e5c918c8b727b6dc6",
+    "docs/v0.4.0-cloud-hard-acceptance.md");
   const { roadmap } = currentRoleWindow();
 
   assert.equal(fs.existsSync(path.join(root, "init-cloud-sandbox-v0.4.0.bash")), false);
   assert.equal(fs.existsSync(path.join(root, "docs/v0.4.0-cloud-hard-acceptance.md")), false);
-  assert.match(phase12, /^<a name="phase-4-12-v0-4-0-release-discovery"><\/a>$/m);
-  assert.doesNotMatch(phase12, /<a name="phase-9-v0-4-0-/);
-  assert.match(phase12, /^# Phase 4\.12：v0\.4\.0 Release 收口 Discovery$/m);
-  assert.match(phase12, /^<a name="phase-4-12-renumbering-note"><\/a>$/m);
-  assert.match(phase12, /原名[^\n]*Phase 9[^\n]*回顾性[^\n]*Phase 4\.12/);
-  assert.match(phase12, /P9-A～P9-F[^\n]*历史正文[^\n]*保留/);
-  assert.match(phase12,
-    /P9_F_SECOND_RETIREMENT_PASS \/ V0_4_0_TRAIN_CLOSED \/ NEXT_TRAIN_UNDECIDED/);
-  assert.match(provenance,
-    /blob\/6b388518855da9053713a58e5c918c8b727b6dc6\/docs\/v0\.4\.0-cloud-hard-acceptance\.md#v0-4-0-p9-f-second-retirement-closeout/);
+  assertPhase412Recovery(historyIndex, phase12, provenance, acceptance);
   assert.match(roadmap, /回退证据链[^\n]*`v0\.4\.0`[^\n]*provenance museum/);
 });
 
