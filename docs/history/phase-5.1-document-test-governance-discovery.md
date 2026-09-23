@@ -199,6 +199,21 @@ Wiki等义说明和选择器中的非语义注释可以通过。当前实现只�
 其余断言仍保留，R23组整体仍是`DEFER`。静态检查不解释任意Bash/Python控制流；非规范代码改写仍需operator owner
 人工审阅，不能把本地回归提升成Cloud PASS。
 
+<a name="phase-5-1-staged-decision-proposal"></a>
+
+## Staged decision proposal (not frozen)
+
+在两次有界样本之后，59组盘点可以作为**实施路线图**审议，而不能作为“一次性删改清单”：22组`KEEP`保持现有机器/结构防线；
+16组拟`REPLACE`中R24已有局部实施，另15组按导航与authority、operator/planning文档生命周期、history结构、
+current/cold身份关系四条lane逐批证明后改写；4组拟`RETIRE`仍有前置条件，其中R25继续等待R23其余安全规则的等效防线；
+17组`DEFER`保持现有断言并分别设专项触发证据。R23a只是R23的一个子规则，不改变R23整体分类。具体ID、人工审阅owner、
+负向/等义探针、回归和回滚路线由活动planning保管，不在history草稿复制施工清单。
+
+拟议结论是`CONDITIONAL_GO`到**单独的history准入事务**，而非对两份测试的批量GO。该事务须先把本轮完整决策固定为exact
+source，再把Phase 5.1作为`FROZEN_DISCOVERY_RECORD`登记入history索引，并把现有按旧“11份”宽正则匹配的测试改为
+role/index关系检查；一个宽正则偶然变绿不算准入证据。当前决策尚未完成该事务，所以本文继续是`DRAFT / OPEN`，
+不计入已冻结record，也不授权后续Cloud、Release、生产或远端操作。
+
 <a name="phase-5-1-stop-rules"></a>
 
 ## Stop rules and current non-conclusions
@@ -209,7 +224,7 @@ Wiki等义说明和选择器中的非语义注释可以通过。当前实现只�
 - 不弱化Release allowlist、trusted source、版本角色、链接/anchor、history入口、planning lifecycle或安全失败语义。
 - 不修改runtime、Host ABI、installer、trusted graph、Cloud gate、Release流程或版本角色。
 - 不把一个代表性case的方案自动扩展到两份文件全部断言。
-- 当前已有59组候选清单和单独授权的R24、R23a小样本实施，但没有其余组的最终处置、Discovery PASS或批量implementation授权。
+- 当前已有59组候选清单、R24/R23a小样本和分批决策提案；正式冻结与history准入尚未完成，不能把本提案或本地PASS当作批量implementation授权。
 
 <a name="phase-5-1-opening-baseline"></a>
 
