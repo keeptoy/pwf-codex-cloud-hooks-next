@@ -189,6 +189,66 @@ function assertHandoffNavigation(handoff, readme) {
   rowWith("docs/maintenance-environment-profile.md#maintenance-environment-profile");
 }
 
+function assertHandoffTriageBoundary(handoff) {
+  assert.equal((handoff.match(/^# [^#\r\n]+$/gm) || []).length, 1,
+    "handoff needs one document title");
+  const sections = [...handoff.matchAll(/^## (\d+)\. [^\r\n]+$/gm)].map(([, number]) => Number(number));
+  assert.deepEqual(sections, [1, 2, 3, 4, 5],
+    "handoff must keep quickstart, triage, safety, results and stop roles in order");
+  const results = sectionBetween(handoff, "## 4.", "## 5.");
+  const rows = results.split(/\r?\n/).filter(line => /^\| [^|-]/.test(line))
+    .map(line => line.split(/(?<!\\)\|/).slice(1, -1).map(cell => cell.trim()));
+  assert.ok(rows.every(row => row.length === 4),
+    "handoff result-classification rows must keep four columns");
+  assert.ok(rows.length >= 9 && rows.every(row => row.every(Boolean)),
+    "handoff needs complete result-classification rows");
+  const rowWith = cue => {
+    const matches = rows.filter(row => cue.test(row[0]));
+    assert.equal(matches.length, 1, `handoff result classification lacks ${cue}`);
+    return matches[0];
+  };
+  for (const cue of [
+    /unknown dirty state/i, /importer failure/i, /doctor healthy/i, /doctor repairable/i,
+    /doctor blocker.*unknown drift/i, /tests PASS/i, /test failure/i,
+    /platform limitation.*SKIP/i, /deterministic package.*Cloud gate PASS/i,
+  ]) rowWith(cue);
+  for (const cue of [/unknown dirty state/i, /doctor blocker.*unknown drift/i, /test failure/i]) {
+    assert.match(rowWith(cue)[2], /否|停止|先停/,
+      "unknown or failed state must not be presented as permission to continue");
+  }
+  assert.match(rowWith(/test failure/i)[1], /product defect.*test defect.*fixture drift/,
+    "test failure must retain its diagnostic categories");
+  const stopSection = handoff.slice(handoff.indexOf("## 5."));
+  const stopBullets = stopSection.split(/\r?\n/).filter(line => /^- /.test(line));
+  assert.ok(stopBullets.length >= 4 && stopBullets.some(line => /dirty|unowned|unknown/i.test(line))
+    && stopBullets.some(line => /Host ABI|trusted graph/.test(line))
+    && stopBullets.some(line => /Cloud|Release|rollback/i.test(line)),
+    "handoff must retain stop routes for unknown state, trust and lifecycle gates");
+  const fences = [...handoff.matchAll(/^(\x60{3,}|~{3,})([A-Za-z0-9_-]+)[ \t]*\r?\n([\s\S]*?)^\1[ \t]*$/gm)];
+  const activeCommand = /^\s*(?:(?:[-*]|\d+\.)\s+)?(?:\$\s*)?(?:sudo\b|git\s+(?:push|reset|tag)\b|node\s+install\.js\b|python\d*\s+tools\/build_release\.py\b|bash\s+init-cloud-sandbox\b|sha256sum\b|mktemp\b)/im;
+  for (const [, , language, body] of fences) {
+    assert.doesNotMatch(language, /^(?:bash|sh|shell|console|powershell|ps1|python\d*|javascript|js)$/i,
+      "handoff must not contain an executable command fence");
+    assert.doesNotMatch(body, activeCommand,
+      "handoff example must not hide an active install/Release/rollback command");
+  }
+  const prose = fences.reduce((text, fence) => text.replace(fence[0], ""), handoff);
+  assert.doesNotMatch(prose, activeCommand,
+    "handoff must route commands to their owner instead of executing them inline");
+  assert.doesNotMatch(prose,
+    /(?:当前(?:已接受版本|开发列车|直接回退版本)|GitHub\s*`?Latest`?)\s*(?:为|是|指向|=|：|:)\s*`?v?\d+\.\d+\.\d+/i,
+    "handoff must not declare a current version role");
+  for (const line of prose.split(/\r?\n/)) {
+    if (/^#{1,6}\s/.test(line)) {
+      assert.doesNotMatch(line, /\bv?\d+\.\d+\.\d+(?:[-.][A-Za-z0-9.]+)?\b|\b[a-f0-9]{7,64}\b/i,
+        "handoff headings must not pin a version or hash");
+    }
+    assert.doesNotMatch(line,
+      /^\|\s*(?:当前(?:版本|已接受版本|开发列车|状态)|Latest|Release状态)\s*\|/i,
+      "handoff must not acquire a current-role table");
+  }
+}
+
 function assertReadmeOwnerMap(readme) {
   const map = sectionBetween(readme, '<a name="documentation-map"></a>', "## 许可证");
   const rows = map.split(/\r?\n/).map(line => line.match(/^\|\s*(.*?)\s*\|\s*(.*?)\s*\|$/))
@@ -343,31 +403,33 @@ test("ROADMAP overview route roles reject wrong pointers and permit equivalent p
 test("MAINTAINER_HANDOFF is a triage desk, not another mutable runbook", () => {
   const handoff = readText("MAINTAINER_HANDOFF.md");
   const artifact = readJson(currentArtifactPath);
-
-  for (const heading of [
-    "# 维护者接手导诊",
-    "## 1. 新人五分钟接手",
-    "## 2. 高频情形导诊",
-    "## 3. 常见安全误判",
-    "## 4. 能力与健康检测结果分流",
-    "## 5. 停止条件与接手完成标准",
-  ]) assert.match(handoff, new RegExp(`^${heading.replaceAll(".", "\\.")}$`, "m"));
-
+  assertHandoffTriageBoundary(handoff);
   assertHandoffNavigation(handoff, readText("README.md"));
-
-  for (const signal of [
-    "healthy", "repairable", "blocker", "platform limitation",
-    "product defect", "test defect", "fixture drift",
-  ]) assert.match(handoff, new RegExp(signal, "i"));
-
-  assert.doesNotMatch(handoff, /```/);
-  assert.doesNotMatch(handoff, /\bv?\d+\.\d+\.\d+(?:[-.][A-Za-z0-9.]+)?\b/);
-  assert.doesNotMatch(handoff, /\b[a-f0-9]{7,64}\b/i);
-  assert.doesNotMatch(handoff, /GitHub `Latest`|当前事实|Product Phase \d+/);
-  assert.doesNotMatch(handoff, /\b\d+\s+(?:entries|bytes|tests?|passed|failed|skipped|PASS|FAIL|SKIP)\b/i);
-  assert.doesNotMatch(handoff, /build_release\.py build|sha256sum|mktemp|git reset/);
-  assert.doesNotMatch(handoff, /^## .*?(?:Source\/runtime 更新|Candidate\/Release ZIP|正式 Release|M4 仓库切换|回滚)$/m);
   assert.equal(artifact.entries.some(entry => entry.path === "MAINTAINER_HANDOFF.md"), false);
+});
+
+test("handoff triage rejects an active runbook but permits explanatory examples", () => {
+  const handoff = readText("MAINTAINER_HANDOFF.md");
+  const exampleVersion = `v${readJson("package.json").version}`;
+  assert.doesNotThrow(() => assertHandoffTriageBoundary(handoff));
+  const command = handoff + "\n~~~bash\nnode install.js install --json\n~~~\n";
+  assert.throws(() => assertHandoffTriageBoundary(command), /executable command fence/);
+  const currentRole = handoff.replace("## 3. 常见安全误判",
+    `## 3. 常见安全误判\n\n| 当前已接受版本 | ${exampleVersion} |\n`);
+  assert.throws(() => assertHandoffTriageBoundary(currentRole), /current-role table/);
+  const proseRole = handoff + `\n当前已接受版本为 ${exampleVersion}。\n`;
+  assert.throws(() => assertHandoffTriageBoundary(proseRole), /current version role/);
+  const listedCommand = handoff + `\n1. git tag -a ${exampleVersion} HEAD\n`;
+  assert.throws(() => assertHandoffTriageBoundary(listedCommand), /route commands to their owner/);
+  const missingStop = handoff.replace("否；不得覆盖", "可以继续处理");
+  assert.throws(() => assertHandoffTriageBoundary(missingStop), /permission to continue/);
+  const missingStopSection = handoff.slice(0, handoff.indexOf("## 5.")) +
+    "## 5. 停止条件与接手完成标准\n\n请自行判断。\n";
+  assert.throws(() => assertHandoffTriageBoundary(missingStopSection), /retain stop routes/);
+  const explained = handoff.replace("## 3. 常见安全误判", "## 3. 易混淆的安全边界") +
+    `\n示例版本 ${exampleVersion} 与示例哈希 abcdef0123456789 仅用于说明查证方式。\n` +
+    "~~~text\nhealthy → 阅读 README\n~~~\n";
+  assert.doesNotThrow(() => assertHandoffTriageBoundary(explained));
 });
 
 test("handoff navigation rejects misplaced links and permits equivalent explanation", () => {
