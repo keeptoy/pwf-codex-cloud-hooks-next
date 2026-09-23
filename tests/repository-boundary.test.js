@@ -367,6 +367,23 @@ function assertNoMovingStatusAuthority(body, label, includeRollback = false) {
   }
 }
 
+function assertNoProvenanceCurrentRoleAuthority(body) {
+  const role = "(?:当前源码权威|current lifecycle role)";
+  const heading = new RegExp(`^#{1,6}\\s+(?:\\d+\\.\\s*)?(?:\\*\\*|__)?${role}(?:\\*\\*|__)?(?:\\s|$)`, "i");
+  const row = new RegExp(`^\\|\\s*(?:\\*\\*|__)?${role}(?:\\*\\*|__)?\\s*\\|`, "i");
+  const declaration = new RegExp(`${role}(?:\\*\\*|__)?\\s*(?:[:：=]|(?:is|为|是|指向)\\s+)\\s*(\\S.*)$`, "i");
+  for (const line of body.split(/\r?\n/)) {
+    assert.doesNotMatch(line, heading, "provenance must not add a current-role section");
+    assert.doesNotMatch(line, row, "provenance must not add a current-role status row");
+    const assertedValue = line.match(declaration)?.[1];
+    if (assertedValue) {
+      const pointsToOwner = /^(?:(?:see|consult|refer to)\s+|(?:described|documented|defined|listed|recorded|explained|maintained)\s+in\s+|(?:in|by)\s+|(?:见|参见|请见|详见|由|在)\s*)\[?`?ROADMAP(?:\.md)?(?![A-Za-z0-9_-]|\.[A-Za-z0-9])`?\]?/i
+        .test(assertedValue);
+      assert.ok(pointsToOwner, "provenance must not declare a current source or lifecycle role");
+    }
+  }
+}
+
 function assertMaintenanceEnvironmentRoutes(profile) {
   const section = number => {
     const start = profile.search(new RegExp(`^## ${number}\\. `, "m"));
@@ -2043,9 +2060,10 @@ test("change history, programme, provenance, and current acceptance keep separat
     "published identity entries must not inherit ROADMAP role labels");
   assert.match(provenance, /## 2\. Successor 迁移不可变证据/);
   assert.doesNotMatch(provenance, /## 2\. Successor 迁移来源链/);
-  assert.doesNotMatch(provenance, /当前源码权威|current lifecycle role|\d+ registered/);
+  assert.doesNotMatch(provenance, /\d+ registered/);
   assertNoNextStepAuthority(provenance, "provenance");
   assertNoMovingStatusAuthority(provenance, "provenance");
+  assertNoProvenanceCurrentRoleAuthority(provenance);
 
   // DESIGN current-state declarations are checked by assertDesignOwnerBoundaries.
   for (const macroDoc of [architecture, agents]) {
@@ -2091,6 +2109,33 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotThrow(() => assertNoMovingStatusAuthority(
     `${changelog}\nPast production rollback changes are recorded here; current roles are in ROADMAP.\n`,
     "CHANGELOG", true));
+
+  assert.throws(() => assertNoProvenanceCurrentRoleAuthority(`${provenance}\n## 当前源码权威\n`),
+    /must not add a current-role section/);
+  assert.throws(() => assertNoProvenanceCurrentRoleAuthority(
+    `${provenance}\n| **current lifecycle role** | accepted |\n`),
+    /must not add a current-role status row/);
+  assert.throws(() => assertNoProvenanceCurrentRoleAuthority(
+    `${provenance}\n当前源码权威是 successor main。\n`),
+    /must not declare a current source or lifecycle role/);
+  assert.throws(() => assertNoProvenanceCurrentRoleAuthority(
+    `${provenance}\n当前源码权威是 successor main，见 ROADMAP。\n`),
+    /must not declare a current source or lifecycle role/);
+  assert.throws(() => assertNoProvenanceCurrentRoleAuthority(
+    `${provenance}\n当前源码权威是 feature/foo，见 ROADMAP。\n`),
+    /must not declare a current source or lifecycle role/);
+  assert.throws(() => assertNoProvenanceCurrentRoleAuthority(
+    `${provenance}\nCurrent lifecycle role: see ROADMAP-forged.\n`),
+    /must not declare a current source or lifecycle role/);
+  assert.throws(() => assertNoProvenanceCurrentRoleAuthority(
+    `${provenance}\nCurrent lifecycle role: accepted.\n`),
+    /must not declare a current source or lifecycle role/);
+  assert.doesNotThrow(() => assertNoProvenanceCurrentRoleAuthority(
+    `${provenance}\n关于当前源码权威，请见 ROADMAP。\n`));
+  assert.doesNotThrow(() => assertNoProvenanceCurrentRoleAuthority(
+    `${provenance}\nFor the current lifecycle role, consult ROADMAP.\n`));
+  assert.doesNotThrow(() => assertNoProvenanceCurrentRoleAuthority(
+    `${provenance}\nThe current lifecycle role is described in ROADMAP.\n`));
 
   const acceptedRow = provenance.split(/\r?\n/).find(line => line.startsWith(`| \`${accepted}\` |`));
   assert.ok(acceptedRow, "accepted row mutation precondition");
