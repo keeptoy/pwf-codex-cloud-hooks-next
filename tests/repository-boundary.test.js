@@ -401,6 +401,27 @@ function assertNoChangelogHistoryEntrance(body) {
     "CHANGELOG must not create a third Phase-history entrance");
 }
 
+function assertNoChangelogLegacyMigrationAuthority(body) {
+  for (const line of body.split(/\r?\n/)) {
+    if (!line.includes("Successor 迁移来源链")) continue;
+    for (const declaration of [
+      /^#{1,6}\s+.*Successor 迁移来源链/,
+      /^\|\s*(?:\*\*|__)?Successor 迁移来源链(?:\*\*|__)?\s*\|/,
+      /^\s*[-*]\s+(?:\*\*|__)?Successor 迁移来源链(?:\*\*|__)?\s*[:：]/,
+      /\[[^\]]*Successor 迁移来源链[^\]]*\]\(/,
+      /(?:\*\*|__)Successor 迁移来源链(?:\*\*|__)/,
+      /Successor 迁移来源链[”」]?\s*(?:是|为|作为)\s*(?:迁移|来源|证据|本次)/,
+    ]) assert.doesNotMatch(line, declaration,
+      "CHANGELOG must not restore the retired migration source label");
+  }
+  for (const paragraph of body.split(/\r?\n\s*\r?\n/)) {
+    if (!paragraph.includes("Successor 迁移来源链")) continue;
+    assert.doesNotMatch(paragraph.replace(/\r?\n/g, " "),
+      /(?:由|以|来自|依据)\s*[^。；;]{0,100}?Successor 迁移来源链/,
+      "CHANGELOG must not restore the retired migration source label");
+  }
+}
+
 function assertMaintenanceEnvironmentRoutes(profile) {
   const section = number => {
     const start = profile.search(new RegExp(`^## ${number}\\. `, "m"));
@@ -2128,7 +2149,34 @@ test("change history, programme, provenance, and current acceptance keep separat
     `${changelog}\nThe literal directory name \`docs/history/\` does not create a history link.\n`));
   assert.doesNotThrow(() => assertNoChangelogHistoryEntrance(
     `${changelog}\nThe literal path \`\`docs/history/README.md\`\` is not a link.\n`));
-  assert.doesNotMatch(changelog, /Successor 迁移来源链/);
+  assertNoChangelogLegacyMigrationAuthority(changelog);
+  assert.throws(() => assertNoChangelogLegacyMigrationAuthority(
+    `${changelog}\n## Successor 迁移来源链\n`), /retired migration source label/);
+  assert.throws(() => assertNoChangelogLegacyMigrationAuthority(
+    `${changelog}\n| Successor 迁移来源链 | BASELINE_PROVENANCE.md |\n`),
+    /retired migration source label/);
+  assert.throws(() => assertNoChangelogLegacyMigrationAuthority(
+    `${changelog}\n[Successor 迁移来源链](BASELINE_PROVENANCE.md#successor-migration-evidence)\n`),
+    /retired migration source label/);
+  assert.throws(() => assertNoChangelogLegacyMigrationAuthority(
+    `${changelog}\n由 [\`BASELINE_PROVENANCE.md\`](BASELINE_PROVENANCE.md) 的 **Successor 迁移来源链**从冻结基线出发。\n`),
+    /retired migration source label/);
+  assert.throws(() => assertNoChangelogLegacyMigrationAuthority(
+    `${changelog}\n由 provenance 的 Successor 迁移来源链建立迁移基线。\n`),
+    /retired migration source label/);
+  assert.throws(() => assertNoChangelogLegacyMigrationAuthority(
+    `${changelog}\n由 provenance 的\nSuccessor 迁移来源链建立迁移基线。\n`),
+    /retired migration source label/);
+  assert.throws(() => assertNoChangelogLegacyMigrationAuthority(
+    `${changelog}\n- Successor 迁移来源链：迁移证据见 provenance。\n`),
+    /retired migration source label/);
+  assert.throws(() => assertNoChangelogLegacyMigrationAuthority(
+    `${changelog}\nSuccessor 迁移来源链是迁移证据的当前入口。\n`),
+    /retired migration source label/);
+  assert.doesNotThrow(() => assertNoChangelogLegacyMigrationAuthority(
+    `${changelog}\n“Successor 迁移来源链”是旧称；现在的不可变迁移证据由 BASELINE_PROVENANCE.md 索引。\n`));
+  assert.doesNotThrow(() => assertNoChangelogLegacyMigrationAuthority(
+    `${changelog}\n旧标题“Successor 迁移来源链”已退役，v0.3.0 的迁移证据仍由 provenance 保存。\n`));
 
   for (const [body, label] of [[changelog, "CHANGELOG"], [provenance, "provenance"]]) {
     assert.throws(() => assertNoNextStepAuthority(`${body}\n## Next Step\n`, label),
