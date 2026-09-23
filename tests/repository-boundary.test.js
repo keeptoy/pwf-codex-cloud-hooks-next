@@ -155,6 +155,13 @@ function assertRetrospectiveHistoryRecords(index, histories, artifact) {
       `Phase ${phase} record must start at its indexed explicit anchor`);
     assert.match(history, new RegExp(`^# Phase 4\\.${minor}(?:：|\\b)`, 'm'),
       `Phase ${phase} record title must retain its identity`);
+    const expectedVersion = { 13: 'v0.4.1', 15: 'v0.4.3', 16: 'v0.4.4' }[minor];
+    if (expectedVersion) {
+      const title = history.match(/^# [^\r\n]+$/m)?.[0] || '';
+      const titleVersion = title.match(/^# Phase 4\.\d+：(v\d+\.\d+\.\d+)(?:\s|$)/)?.[1];
+      assert.equal(titleVersion, expectedVersion,
+        `Phase ${phase} title must retain its ${expectedVersion} version identity`);
+    }
     const headings = [...history.matchAll(/^## [^\r\n]+$/gm)].map(([heading]) => heading);
     assert.equal(headings[0], '## Historical position',
       `Phase ${phase} needs a historical-position section`);
@@ -912,6 +919,11 @@ test("Phase 4.13–4.17 history structure follows index, role, anchors and cold 
     `${phase}#phase-4-17-historical-position`, `${phase}#phase-4-17-core-decisions`);
   assert.notEqual(wrongIndexTarget, index);
   assert.throws(() => check(wrongIndexTarget), /historical position/);
+  const wrongVersion = new Map(histories);
+  const versioned = "phase-4.15-v0.4.3-release-asset-materialization.md";
+  wrongVersion.set(versioned, wrongVersion.get(versioned).replace(
+    "# Phase 4.15：v0.4.3", "# Phase 4.15：v0.4.2"));
+  assert.throws(() => check(index, wrongVersion), /version identity/);
   const missingColdSource = new Map(histories);
   missingColdSource.set(phase, missingColdSource.get(phase).replace(
     '/commit/053f66e994ca095e974f69a7fbe8f2bb54697fc3', '/tree/main'));
@@ -922,6 +934,27 @@ test("Phase 4.13–4.17 history structure follows index, role, anchors and cold 
   assert.throws(() => check(index, histories, releasedHistory), /outside the Release artifact/);
 
   const equivalentProse = new Map(histories);
+  for (const [file, oldHeading, newHeading] of [
+    ["phase-4.13-v0.4.1-path-safety-patch-train.md",
+      "# Phase 4.13：v0.4.1 path-safety patch train",
+      "# Phase 4.13：v0.4.1 路径安全维护回顾"],
+    ["phase-4.14-release-closeout-governance.md",
+      "# Phase 4.14：Release closeout 与验收文档治理回顾",
+      "# Phase 4.14：Release 收尾与验收文档治理回顾"],
+    ["phase-4.15-v0.4.3-release-asset-materialization.md",
+      "# Phase 4.15：v0.4.3 Release asset materialization 与验收入口治理",
+      "# Phase 4.15：v0.4.3 Release 资产生成与验收入口治理"],
+    ["phase-4.16-v0.4.4-release-tag-guide.md",
+      "# Phase 4.16：v0.4.4 Release tag 操作教程治理",
+      "# Phase 4.16：v0.4.4 Release 标签教程治理"],
+    ["phase-4.17-phase-4-harness-retrospective.md",
+      "# Phase 4.17：Phase 4 harness 重量与后继精简回顾",
+      "# Phase 4.17：Phase 4 验收支撑成本与后继精简回顾"],
+  ]) {
+    assert.ok(equivalentProse.get(file).includes(oldHeading),
+      `equivalent-heading probe precondition: ${file}`);
+    equivalentProse.set(file, equivalentProse.get(file).replace(oldHeading, newHeading));
+  }
   const oldExplanation = "本结论只形成Phase 5的Discovery输入";
   assert.ok(equivalentProse.get(phase).includes(oldExplanation), "prose probe precondition");
   equivalentProse.set(phase, equivalentProse.get(phase).replace(oldExplanation,
@@ -932,6 +965,18 @@ test("Phase 4.13–4.17 history structure follows index, role, anchors and cold 
     "legacy prose probe precondition");
   equivalentProse.set(legacy, equivalentProse.get(legacy).replace(legacyExplanation,
     "回顾性的path-safety patch-train记录"));
+  const phase414 = "phase-4.14-release-closeout-governance.md";
+  const oldStatusLabel = "post-v0.4.2 residue sweep（Batch A/B）";
+  assert.ok(equivalentProse.get(phase414).includes(oldStatusLabel),
+    "Phase 4.14 status-label probe precondition");
+  equivalentProse.set(phase414, equivalentProse.get(phase414).replace(oldStatusLabel,
+    "v0.4.2 后续遗留项盘点（Batch A/B）"));
+  const phase415 = "phase-4.15-v0.4.3-release-asset-materialization.md";
+  const oldComparison = "Phase 4.14继续只解释Release closeout";
+  assert.ok(equivalentProse.get(phase415).includes(oldComparison),
+    "Phase 4.15 comparison probe precondition");
+  equivalentProse.set(phase415, equivalentProse.get(phase415).replace(oldComparison,
+    "Phase 4.14仍聚焦Release收尾"));
   assert.doesNotThrow(() => check(index, equivalentProse));
 });
 
@@ -1743,9 +1788,6 @@ test("historical documents have two controlled macro entrances and remain adviso
 test("Phase 4.13 preserves the v0.4.1 path-safety patch rationale", () => {
   const relative = "docs/history/phase-4.13-v0.4.1-path-safety-patch-train.md";
   const history = read(relative);
-  assert.match(history, /^# Phase 4\.13：v0\.4\.1 path-safety patch train$/m);
-
-  assert.match(history, /回顾性[^\n]*patch-train标签/);
   assert.match(history, /不是[^\n]*Product Phase/);
   assert.match(history, /Windows junction[^\n]*穿透[^\n]*外部runtime/);
   assert.match(history, /clean install[\s\S]*runtime不存在[\s\S]*linked parent[\s\S]*向外写入/);
@@ -1764,7 +1806,6 @@ test("Phase 4.14 keeps stable Release closeout governance interfaces", () => {
   const historyIndex = read("docs/history/README.md");
   const history = read(relative);
 
-  assert.match(history, /^# Phase 4\.14：Release closeout 与验收文档治理回顾$/m);
   for (const invariant of [
     /Product验收[^\n]*Discovery Round/,
     /Source\/Candidate[\s\S]{0,100}Published Release[\s\S]{0,100}两个独立Release/,
@@ -1781,7 +1822,6 @@ test("Phase 4.14 keeps stable Release closeout governance interfaces", () => {
     /C2[\s\S]*Published Release evidence[\s\S]*第二轮退役检查/,
     /phase-4\.12-v0\.4\.0-release-discovery\.md#phase-4-12-v0-4-0-release-discovery/,
     /phase-4\.13-v0\.4\.1-path-safety-patch-train\.md#phase-4-13-historical-position/,
-    /post-v0\.4\.2 residue sweep（Batch A\/B）/,
     /22-entry Release allowlist[\s\S]{0,80}交集为0/,
   ]) assert.match(history, invariant);
 
@@ -1803,9 +1843,7 @@ test("Phase 4.15 preserves v0.4.3 Release asset materialization governance", () 
   const relative = "docs/history/phase-4.15-v0.4.3-release-asset-materialization.md";
   const history = read(relative);
 
-  assert.match(history, /^# Phase 4\.15：v0\.4\.3 Release asset materialization 与验收入口治理$/m);
   assert.match(history, /Record role: `RETROSPECTIVE_CAPSULE`/);
-  assert.match(history, /Phase 4\.14继续只解释Release closeout[\s\S]{0,180}本文解释维护者如何/);
   assert.match(history, /单一bootstrap source[\s\S]{0,160}tools\/templates\/init-cloud-sandbox\.bash\.in/);
   assert.match(history, /薄materializer[\s\S]{0,240}tools\/materialize_release_assets\.py/);
   assert.match(history, /三个本地对象分角色[\s\S]*candidate\.zip[\s\S]*zero-hash bootstrap[\s\S]*正式双资产/);
@@ -1820,7 +1858,6 @@ test("Phase 4.16 preserves v0.4.4 exact C0 tag guide governance", () => {
   const relative = "docs/history/phase-4.16-v0.4.4-release-tag-guide.md";
   const history = read(relative);
 
-  assert.match(history, /^# Phase 4\.16：v0\.4\.4 Release tag 操作教程治理$/m);
   assert.match(history, /Record role: `RETROSPECTIVE_CAPSULE`/);
   assert.match(history, /README本身是Release ZIP输入[\s\S]*新的`v0\.4\.4-dev` development identity/);
   assert.match(history, /`SOURCE_CANDIDATE_HEAD`[\s\S]*`git tag -a`的commit参数[\s\S]*禁止依赖当前HEAD/);
@@ -1837,9 +1874,7 @@ test("Phase 4.17 separates immutable Release identity from reducible harness cer
   const phase4Overview = read("docs/product-phases/phase-4-overview.md");
   const history = read(relative);
 
-  assert.match(history, /^# Phase 4\.17：Phase 4 harness 重量与后继精简回顾$/m);
   assert.match(history, /Record role: `RETROSPECTIVE_CAPSULE`/);
-  assert.match(history, /窄Product[\s\S]{0,120}trusted supply chain[\s\S]{0,120}harness/);
   assert.match(history, /README属于Release ZIP allowlist[\s\S]*新字节必须有新身份/);
   assert.match(history, /identity与behavior证据/);
   assert.match(history, /快车道必须machine-admitted/);
