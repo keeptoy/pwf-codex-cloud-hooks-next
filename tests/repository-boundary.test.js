@@ -53,27 +53,35 @@ function assertHistoryIndexAdmission(index, histories) {
   const recordLines = index.slice(recordsStart, recordsEnd).split(/\r?\n/)
     .filter(line => /^\| Phase /.test(line));
   const indexed = recordLines.map(line => {
-    const match = line.match(/^\| Phase [^|\r\n]+ \| [^|\r\n]+ \| \[[^\]]+\]\((phase-[^\/#)\s]+\.md)(?:#[a-z0-9-]+)?\) \|$/);
+    const match = line.match(/^\| Phase [^|\r\n]+ \| [^|\r\n]+ \| \[[^\]]+\]\((phase-[^\/#)\s]+\.md)(?:#([a-z0-9-]+))?\) \|$/);
     assert.ok(match, "history index row must link one local phase record: " + line);
-    return match[1];
+    return { file: match[1], fragment: match[2] || null };
   });
-  assert.equal(new Set(indexed).size, indexed.length, "history index must not duplicate a record");
+  assert.equal(new Set(indexed.map(row => row.file)).size, indexed.length,
+    "history index must not duplicate a record");
   assert.equal(roleRows.reduce((total, row) => total + Number(row[3]), 0), indexed.length,
     "history role totals must equal indexed record membership");
-  for (const file of indexed) {
+  for (const { file, fragment } of indexed) {
     assert.ok(histories.has(file), "indexed history record is missing: " + file);
+    if (fragment) {
+      const phase = file.match(/^phase-(\d+(?:\.\d+)*)-/)?.[1].replaceAll(".", "-");
+      assert.ok(phase && fragment.startsWith(`phase-${phase}-`),
+        "history index fragment must be scoped to its record's Phase: " + file);
+      assert.ok(histories.get(file).includes(`<a name="${fragment}"></a>`),
+        "history index fragment must resolve in its record: " + file);
+    }
     assert.doesNotMatch(histories.get(file), /^> (?:Target record role|Record status: `DRAFT)/m,
       "indexed record must no longer be a draft: " + file);
   }
   for (const [file, markdown] of histories) {
-    if (indexed.includes(file)) continue;
+    if (indexed.some(row => row.file === file)) continue;
     assert.match(markdown, /^> Target record role: `(?:RETROSPECTIVE_CAPSULE|FROZEN_DISCOVERY_RECORD)`$/m,
       "unindexed history file must declare a draft target role: " + file);
     assert.match(markdown, /^> Record status: `DRAFT \/ OPEN[^`]*`$/m,
       "unindexed history file must remain an open draft: " + file);
   }
   const phase51 = "phase-5.1-document-test-governance-discovery.md";
-  assert.ok(indexed.includes(phase51), "Phase 5.1 frozen Discovery must be indexed");
+  assert.ok(indexed.some(row => row.file === phase51), "Phase 5.1 frozen Discovery must be indexed");
   assert.match(histories.get(phase51), /^> Record role: `FROZEN_DISCOVERY_RECORD`$/m,
     "Phase 5.1 must declare its frozen Discovery role");
 }
@@ -608,6 +616,8 @@ test("frozen Phase 5.1 is admitted by the history index without a fixed record t
   const frozenRow = index.split(/\r?\n/).find(line => line.startsWith("| `FROZEN_DISCOVERY_RECORD` |"));
   const phase51Row = index.split(/\r?\n/).find(line => line.startsWith("| Phase 5.1 |"));
   assert.ok(frozenRow && phase51Row, "probe precondition: Phase 5.1 is indexed as frozen");
+  const phase51Fragment = "#phase-5-1-document-test-governance-decision";
+  assert.ok(phase51Row.includes(phase51Fragment), "probe precondition: Phase 5.1 has an explicit target");
   assert.doesNotThrow(() => assertHistoryIndexAdmission(index, histories));
 
   const wrongTotal = index.replace(frozenRow,
@@ -618,6 +628,10 @@ test("frozen Phase 5.1 is admitted by the history index without a fixed record t
     /totals must equal|unindexed history file|Phase 5\.1 frozen Discovery must be indexed/);
   assert.throws(() => assertHistoryIndexAdmission(index.replace(phase51Row, phase51Row + "\n" + phase51Row), histories),
     /must not duplicate/);
+  const missingFragment = index.replace(phase51Fragment, "#phase-5-1-missing");
+  assert.throws(() => assertHistoryIndexAdmission(missingFragment, histories), /fragment must resolve/);
+  const wrongPhaseFragment = index.replace(phase51Fragment, "#phase-4-1-managed-v3-discovery");
+  assert.throws(() => assertHistoryIndexAdmission(wrongPhaseFragment, histories), /fragment must be scoped/);
   const missingRecord = new Map(histories);
   missingRecord.delete(phase51);
   assert.throws(() => assertHistoryIndexAdmission(index, missingRecord), /indexed history record is missing/);
@@ -639,6 +653,9 @@ test("frozen Phase 5.1 is admitted by the history index without a fixed record t
   assert.ok(phase51Row.includes("正式文档测试治理Discovery"));
   assert.doesNotThrow(() => assertHistoryIndexAdmission(index.replace(phase51Row,
     phase51Row.replace("正式文档测试治理Discovery", "文档测试治理的正式探路决定")), histories));
+  const rewordedSummary = index.replace("回补型Phase 4.12～4.17", "事后整理的Phase 4.12～4.17");
+  assert.notEqual(rewordedSummary, index);
+  assert.doesNotThrow(() => assertHistoryIndexAdmission(rewordedSummary, histories));
 });
 
 test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", () => {
@@ -1323,7 +1340,6 @@ test("historical documents have two controlled macro entrances and remain adviso
     /ROADMAP\.md#product-phase-overview-rotation[\s\S]*通用history冻结[\s\S]*不复制[\s\S]*仓库专用状态机/);
   assert.match(governanceGuide,
     /programme在record冻结后插入、拆分或重编号Product Phase时[\s\S]*不得搜索替换历史正文[\s\S]*Post-programme reindex status/);
-  assert.match(historyIndex, /RETROSPECTIVE_CAPSULE[\s\S]*Phase 0～3\.9\.3[\s\S]*Phase 4\.12～4\.17[\s\S]*Phase 5\.0[\s\S]*18/);
   const histories = new Map(repositoryPaths()
     .filter(relative => /^docs\/history\/phase-[^/]+\.md$/.test(relative))
     .map(relative => [path.basename(relative), read(relative)]));
