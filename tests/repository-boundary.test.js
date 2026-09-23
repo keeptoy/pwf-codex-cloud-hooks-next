@@ -201,6 +201,108 @@ function assertPlanningDeletionConsent(governance, roadmap) {
     "owner and projection must not grant automatic planning deletion");
 }
 
+function assertAcceptanceRoleProjections(index, cloudTemplate) {
+  const roleAnchor = '<a name="acceptance-role-window"></a>';
+  assert.equal(index.split(roleAnchor).length, 2, "acceptance index needs one role-window entry");
+  const indexLinks = [...index.matchAll(/\]\(([^)]+)\)/g)].map(([, target]) => target);
+  assert.ok(indexLinks.includes("../../ROADMAP.md#release-four-step-flow"),
+    "acceptance index must route programme roles to ROADMAP");
+  assert.ok(indexLinks.includes("../repository-governance-guide.md#acceptance-directory-lifecycle"),
+    "acceptance index must route retirement to the Guide");
+  const indexProse = index.replace(/\s+/g, " ");
+  assert.match(indexProse, /candidate \+ accepted[^。]*(?:不等于|并非|不是)[^。]*(?:最新一份|单份)/,
+    "acceptance window must not collapse to one newest guide");
+  assert.match(indexProse, /(?:已经冻结|冻结后)[^。；]*accepted[^。；]*(?:可以|可)[^。；]*current/,
+    "accepted guide may remain a current copy");
+  assert.match(indexProse, /旧版guide[^。；]*角色退出前[^。；]*(?:可|允许)[^。；]*保留/,
+    "old guide may remain until role exit");
+  assert.match(indexProse, /退出角色窗口后[^。]*immutable refs[^。]*(?:清退|移除)current副本/,
+    "after role exit the current copy routes to immutable refs");
+
+  const responsibilityAnchor = '<a name="acceptance-document-responsibilities"></a>';
+  const routingAnchor = '<a name="version-discovery-round-routing"></a>';
+  const deltaAnchor = '<a name="version-acceptance-delta"></a>';
+  const responsibilitiesStart = cloudTemplate.indexOf(responsibilityAnchor);
+  const routingStart = cloudTemplate.indexOf(routingAnchor, responsibilitiesStart + responsibilityAnchor.length);
+  const routingEnd = cloudTemplate.indexOf(deltaAnchor, routingStart + routingAnchor.length);
+  assert.ok(responsibilitiesStart >= 0 && routingStart > responsibilitiesStart && routingEnd > routingStart,
+    "Cloud template must separate responsibility and Discovery routing roles");
+  const responsibilities = cloudTemplate.slice(responsibilitiesStart, routingStart);
+  const rows = responsibilities.split(/\r?\n/).filter(line => /^\| /.test(line) && !/^\| 位置 \|/.test(line))
+    .map(line => line.split("|").slice(1, -1).map(cell => cell.trim()));
+  const byRole = new Map(rows.map(row => [row[0], row]));
+  assert.equal(rows.length, 5, "Cloud template must not duplicate document responsibilities");
+  assert.equal(byRole.size, 5, "Cloud template must retain five distinct document responsibilities");
+  assert.deepEqual([...byRole.keys()].sort(), [
+    "本模板", "Operator Guide结构模板", "活动 Release task plan", "本轮 operator guide", "ROADMAP",
+  ].sort(), "Cloud template must not assign duties to an unknown owner");
+  assert.ok(rows.every(row => row.length === 3 && row.every(Boolean)),
+    "Cloud template responsibility rows must keep owner, duty and exclusion");
+  const duty = role => byRole.get(role)?.[1] || "";
+  assert.match(duty("本模板"), /Source\/Candidate[\s\S]*Published Release[\s\S]*(?:执行协议|执行流程)/,
+    "Cloud template owns both channel execution protocols");
+  assert.match(duty("Operator Guide结构模板"), /Pre-run[\s\S]*channel checkpoint[\s\S]*final Post-run[\s\S]*freeze/,
+    "Operator Guide template owns the guide write lifecycle");
+  assert.match(duty("活动 Release task plan"), /(?:当前授权|授权)[\s\S]*Next Step/,
+    "active task plan owns authorization and Next Step");
+  assert.match(duty("本轮 operator guide"), /(?:一轮|本轮)[\s\S]*exact身份[\s\S]*final Post-run/,
+    "one operator guide owns exact evidence and final status");
+  assert.match(duty("ROADMAP"), /programme[\s\S]*(?:角色|lifecycle)/,
+    "ROADMAP owns programme roles");
+  assert.match(cloudTemplate, /\]\(cloud-acceptance-operator-guide-template\.md\)/,
+    "Cloud template must route guide structure to its owner");
+  assert.match(responsibilities, /\.\.\/ROADMAP\.md#release-four-step-flow/,
+    "Cloud template must route Release programme to ROADMAP");
+
+  const routing = cloudTemplate.slice(routingStart, routingEnd);
+  const bullets = routing.split(/^\s*- /m);
+  const countRule = bullets.find(bullet => /Discovery Round/.test(bullet) && /gate/.test(bullet));
+  assert.ok(countRule && countRule.split(/[。；;]/).some(clause =>
+    /Discovery Round/.test(clause) && /计数单位|按[^。；]*计数/.test(clause)),
+  "formal Discovery Round, not gate, must count new guides");
+  assert.match(countRule, /gate[^。]*只是[^。]*(?:检查点|执行单元)|gate[^。]*(?:不是|不计入)[^。]*(?:Round|轮)/,
+    "gate must remain inside a Round or Release workflow");
+  assert.match(routing, /single-Discovery[\s\S]*vX\.Y\.Z-cloud-hard-acceptance\.md/,
+    "single-Discovery uses the acceptance filename as an operator guide");
+  assert.match(routing, /每个正式 Discovery Round[\s\S]*vX\.Y\.Z-<round>-operator-guide\.md/,
+    "multi-Discovery uses one guide per formal Round");
+}
+
+function assertAcceptanceWritebackRoles(cloudTemplate, operatorTemplate) {
+  const evidenceAnchor = '<a name="release-channel-checkpoint-routing"></a>';
+  const evidenceFrom = cloudTemplate.indexOf(evidenceAnchor);
+  const evidenceTo = cloudTemplate.indexOf("## 11. ", evidenceFrom + evidenceAnchor.length);
+  assert.ok(evidenceFrom >= 0 && evidenceTo > evidenceFrom,
+    "Cloud template must keep a bounded evidence-writeback section");
+  const evidence = cloudTemplate.slice(evidenceFrom, evidenceTo);
+  const bullets = evidence.split(/^- /m).map(item => item.replace(/\s+/g, " "));
+  const source = bullets.find(item => item.startsWith("Source/Candidate："));
+  const published = bullets.find(item => item.startsWith("Published Release："));
+  assert.ok(source && published, "both Release channels need their own evidence roles");
+  assert.match(source, /完整 commit[^。]*ZIP[^。]*SHA/,
+    "Source/Candidate writeback needs source and candidate ZIP evidence");
+  assert.match(published, /exact tag\/source[^。]*immutable URL[^。]*SHA/,
+    "Published Release writeback needs public identity and asset evidence");
+  assert.match(evidence, /channel checkpoint[^\r\n]*final Post-run/,
+    "writeback must distinguish checkpoint from final result");
+
+  const lifecycleAnchor = '<a name="operator-guide-document-lifecycle"></a>';
+  const positioningAnchor = '<a name="operator-guide-positioning"></a>';
+  const lifecycleFrom = operatorTemplate.indexOf(lifecycleAnchor);
+  const lifecycleTo = operatorTemplate.indexOf(positioningAnchor, lifecycleFrom + lifecycleAnchor.length);
+  assert.ok(lifecycleFrom >= 0 && lifecycleTo > lifecycleFrom,
+    "Operator Guide needs a bounded lifecycle owner section");
+  const lifecycle = operatorTemplate.slice(lifecycleFrom, lifecycleTo);
+  const rules = [...lifecycle.matchAll(/^\d+\.\s+([\s\S]*?)(?=^\d+\.\s+|^普通Release|^生成具体guide)/gm)]
+    .map(([, rule]) => rule.replace(/\s+/g, " "));
+  const retryRule = rules.find(rule => /失败(?:重试|尝试)|首次错误|恢复(?:位置|点)/.test(rule));
+  assert.ok(retryRule, "guide lifecycle needs a failure/retry ownership rule");
+  assert.match(retryRule, /活动 planning|当前规划/,
+    "retry and recovery state must stay in active planning");
+  assert.match(retryRule, /guide[^。]*(?:只保存|仅保存)[^。]*(?:最终结论|最终状态)/,
+    "frozen guide must retain only final outcome and essential deviation");
+}
+
 function assertCloudTemplateNeutrality(template) {
   const fences = [...template.matchAll(/^(\x60{3,}|~{3,})([A-Za-z0-9_-]+)[ \t]*\r?\n([\s\S]*?)^\1[ \t]*$/gm)];
   assert.ok(fences.length > 0, "Cloud template must retain its protocol fences");
@@ -879,14 +981,10 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.equal(docs.some(item => item.startsWith("docs/templates/")), false,
     "frozen accepted guides still bind the stable docs-root template paths");
   const acceptanceIndex = read("docs/acceptance/README.md");
-  assert.match(acceptanceIndex, /^<a name="acceptance-role-window"><\/a>$/m);
-  assert.match(acceptanceIndex, /当前角色[\s\S]*ROADMAP/);
-  assert.match(acceptanceIndex, /已经冻结[\s\S]{0,120}accepted职责/);
-  assert.match(acceptanceIndex, /旧版guide在角色退出前/);
-  assert.match(acceptanceIndex, /清退current副本/);
-  assert.match(acceptanceIndex, /退出角色窗口后[\s\S]{0,160}immutable refs/);
   const acceptanceTemplate = read("docs/cloud-hard-acceptance-template.md");
   const operatorGuideTemplate = read("docs/cloud-acceptance-operator-guide-template.md");
+  assertAcceptanceRoleProjections(acceptanceIndex, acceptanceTemplate);
+  assertAcceptanceWritebackRoles(acceptanceTemplate, operatorGuideTemplate);
   assert.match(acceptanceTemplate, /^<a name="cloud-hard-acceptance-template"><\/a>$/m);
   assert.match(acceptanceTemplate, /^<a name="acceptance-document-responsibilities"><\/a>$/m);
   assert.match(acceptanceTemplate, /^<a name="version-discovery-round-routing"><\/a>$/m);
@@ -901,30 +999,21 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
     /^<a name="operator-guide-source-candidate-closeout-retirement-checkpoint"><\/a>$/m);
   assert.match(operatorGuideTemplate,
     /^<a name="operator-guide-release-exit-retirement-checkpoint"><\/a>$/m);
-  assert.match(acceptanceTemplate, /\| 本模板 \| Source\/Candidate 与 Published Release 的稳定执行协议/);
   assert.match(acceptanceTemplate,
     /Source\/Candidate 验证“当前 C0 源码 \+ 当前 contract 指定的 bootstrap \+ 当前源码构建的 ZIP”/);
   assert.match(acceptanceTemplate,
     /Published Release 才验证正式 bootstrap 的默认 GitHub 下载地址、内嵌exact ZIP SHA和公开 ZIP/);
   assert.match(acceptanceTemplate,
     /HOOKS_URL`\/`HOOKS_SHA256` override[\s\S]{0,180}不代表公开下载链[\s\S]{0,240}不得沿用[\s\S]{0,100}本地override/);
-  assert.match(acceptanceTemplate, /\| 活动 Release task plan \|[^\n]*Next Step/);
-  assert.match(acceptanceTemplate, /\| 本轮 operator guide \|[^\n]*channel checkpoint[^\n]*final Post-run/);
-  assert.match(acceptanceTemplate, /多 Discovery 版本[^\n]*每个正式 Discovery Round/);
-  assert.match(acceptanceTemplate, /single-Discovery 版本专项 acceptance[^\n]*operator guide/);
   assert.doesNotMatch(acceptanceTemplate, /多\s*gate\s*(?:开发)?版本/i);
   assert.match(operatorGuideTemplate, /PRE_RUN_READY \/ LIVE_NOT_RUN/);
   assert.match(operatorGuideTemplate, /POST_RUN_PASS|POST_RUN_FAIL|POST_RUN_INCOMPLETE/);
-  assert.match(operatorGuideTemplate, /Final Post-run status[^\n]*声明范围[^\n]*闭合/);
   assert.match(operatorGuideTemplate, /SOURCE_CANDIDATE_PASS \/ PUBLISHED_RELEASE_NOT_RUN \/ STOP_BEFORE_PUBLICATION/);
-  assert.match(operatorGuideTemplate, /channel checkpoint[^\n]*不会冻结guide/);
-  assert.match(operatorGuideTemplate, /正常等待[^\n]*不是`POST_RUN_INCOMPLETE`/);
   assert.match(operatorGuideTemplate, /SOURCE_CANDIDATE_HEAD[\s\S]*正式tag[\s\S]*实际Cloud PASS/);
   assert.match(operatorGuideTemplate, /第一阶段状态写回commit[^\n]*不替代[^\n]*tag/);
   assert.match(operatorGuideTemplate, /第二阶段状态写回commit[^\n]*final Post-run/);
   assert.match(operatorGuideTemplate, /docs: record <version> source candidate acceptance/);
   assert.match(operatorGuideTemplate, /docs: close <version> published release acceptance/);
-  assert.match(operatorGuideTemplate, /失败重试[\s\S]{0,100}活动 planning/);
   assert.match(acceptanceTemplate, /development identity 收敛为 stable identity/);
   assert.match(acceptanceTemplate, /不得让 dev\/stable\s+两份 single-Discovery acceptance 并存/);
   assert.match(acceptanceTemplate, /### 0\.3 “当前 Discovery Round 验收增量”（可选）/);
@@ -995,7 +1084,6 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   assert.equal((acceptanceTemplate.match(/hash_key = "pristine_sha256" if section == "upstream_files" else "sha256"/g) || []).length, 2);
   assert.doesNotMatch(acceptanceTemplate, /release-artifact-v1|runtime-bundle-v1|bundle\["files"\]/);
   assert.match(acceptanceTemplate, /^<a name="release-channel-checkpoint-routing"><\/a>$/m);
-  assert.match(acceptanceTemplate, /operator guide 的channel checkpoint与final Post-run status应保存以下原始证据/);
   assert.match(acceptanceTemplate, /candidate admission preflight/);
   assert.match(acceptanceTemplate, /source-candidate closeout retirement checkpoint/);
   assert.match(acceptanceTemplate, /role-window closeout retirement checkpoint/);
@@ -1110,6 +1198,61 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   ]) assert.equal(actual.includes(retired), false, retired);
   assert.match(read("docs/repository-governance-guide.md"), /^<a name="repository-governance-guide"><\/a>$/m);
   assert.match(read("MAINTAINER_HANDOFF.md"), /\[[^\]]*仓库治理指南[^\]]*\]\(docs\/repository-governance-guide\.md\)/);
+});
+
+test("acceptance role projections reject wrong owners and permit equivalent prose", () => {
+  const index = read("docs/acceptance/README.md");
+  const cloud = read("docs/cloud-hard-acceptance-template.md");
+  const operator = read("docs/cloud-acceptance-operator-guide-template.md");
+  assertAcceptanceRoleProjections(index, cloud);
+  assertAcceptanceWritebackRoles(cloud, operator);
+  const wrongProgramme = index.replace("(../../ROADMAP.md#release-four-step-flow)",
+    "(../repository-governance-guide.md#release-four-step-flow)");
+  assert.notEqual(wrongProgramme, index);
+  assert.throws(() => assertAcceptanceRoleProjections(wrongProgramme, cloud), /route programme roles/);
+  const prematureEviction = index.replace("旧版guide在角色退出前也可保留原路径",
+    "旧版guide在角色退出前必须删除原路径");
+  assert.notEqual(prematureEviction, index);
+  assert.throws(() => assertAcceptanceRoleProjections(prematureEviction, cloud), /until role exit/);
+  const wrongProtocolOwner = cloud.replace(
+    "Source/Candidate 与 Published Release 的稳定执行协议、停止条件和 evidence schema",
+    "当前授权、Next Step和版本结果");
+  assert.notEqual(wrongProtocolOwner, cloud);
+  assert.throws(() => assertAcceptanceRoleProjections(index, wrongProtocolOwner), /both channel execution protocols/);
+  const wrongCount = cloud.replace("Discovery Round是新增risk/behavior claim和验收教程的计数单位",
+    "gate是新增risk/behavior claim和验收教程的计数单位");
+  assert.notEqual(wrongCount, cloud);
+  assert.throws(() => assertAcceptanceRoleProjections(index, wrongCount), /formal Discovery Round/);
+  const wrongGuideUnit = cloud.replace("每个正式 Discovery Round使用一份",
+    "每个gate使用一份");
+  assert.notEqual(wrongGuideUnit, cloud);
+  assert.throws(() => assertAcceptanceRoleProjections(index, wrongGuideUnit), /one guide per formal Round/);
+  const wrongWriteback = cloud.replace("完整 commit、branch transport、测试 runner 原始摘要",
+    "只记一行PASS、branch transport、测试 runner 原始摘要");
+  assert.notEqual(wrongWriteback, cloud);
+  assert.throws(() => assertAcceptanceWritebackRoles(wrongWriteback, operator), /source and candidate ZIP evidence/);
+  const wrongRetryOwner = operator.replace("继续写活动 planning", "直接写入guide");
+  assert.notEqual(wrongRetryOwner, operator);
+  assert.throws(() => assertAcceptanceWritebackRoles(cloud, wrongRetryOwner), /stay in active planning/);
+  const equivalentIndex = index
+    .replace("不等于“只留最新一份”", "并非“只留最新一份”")
+    .replace("已经冻结且仍承担accepted职责的guide可以继续作为current副本",
+      "冻结后仍承担accepted职责的guide可继续保留为current副本")
+    .replace("旧版guide在角色退出前也可保留原路径", "旧版guide在角色退出前允许保留原路径")
+    .replace("清退current副本", "移除current副本");
+  const equivalentCloud = cloud
+    .replace("Source/Candidate 与 Published Release 的稳定执行协议、停止条件和 evidence schema",
+      "Source/Candidate 和 Published Release 两个通道的稳定执行协议、停止条件与 evidence schema")
+    .replace("每个正式 Discovery Round使用一份", "每个正式 Discovery Round编写一份")
+    .replace("operator guide 的channel checkpoint与final Post-run status应保存以下原始证据",
+      "operator guide 的channel checkpoint及final Post-run status应记录下列原始证据");
+  const equivalentOperator = operator.replace("失败重试、第一次错误、恢复位置和Next Step\n   继续写活动 planning",
+    "失败尝试、首次错误、恢复点和Next Step仍放在活动 planning");
+  assert.notEqual(equivalentIndex, index);
+  assert.notEqual(equivalentCloud, cloud);
+  assert.notEqual(equivalentOperator, operator);
+  assert.doesNotThrow(() => assertAcceptanceRoleProjections(equivalentIndex, equivalentCloud));
+  assert.doesNotThrow(() => assertAcceptanceWritebackRoles(equivalentCloud, equivalentOperator));
 });
 
 test("Cloud template neutrality rejects active identities but permits explanatory examples", () => {
