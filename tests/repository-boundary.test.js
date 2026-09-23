@@ -2030,7 +2030,8 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotMatch(provenance, /当前源码权威|current lifecycle role|GitHub `Latest`|\d+ registered/);
   assertNoNextStepAuthority(provenance, "provenance");
 
-  for (const macroDoc of [architecture, design, agents]) {
+  // DESIGN current-state declarations are checked by assertDesignOwnerBoundaries.
+  for (const macroDoc of [architecture, agents]) {
     assert.doesNotMatch(macroDoc, /当前生产回滚|当前回退层级|GitHub `Latest`|production rollback/);
   }
   assert.match(design, /CHANGELOG\.md/);

@@ -375,13 +375,13 @@ function assertDesignOwnerBoundaries(design) {
 
   const outsidePositioning = design.replace(positioning, "");
   assert.doesNotMatch(outsidePositioning,
-    /^#{2,3}\s+(?:\d+\.\s*)?(?:当前(?:版本|Release|rollback|生产回滚|开发列车)|架构理由|信任边界原理)/m,
+    /^#{2,3}\s+(?:\d+\.\s*)?(?:当前(?:版本|Release|rollback|生产回滚|回退层级|开发列车)|GitHub `Latest`|production rollback|架构理由|信任边界原理)/im,
     "DESIGN must not add a competing architecture or current-state section");
   assert.doesNotMatch(outsidePositioning,
-    /^\|\s*当前(?:开发列车|生产回滚|Release状态|已接受版本)\s*\|/m,
+    /^\|\s*(?:当前(?:开发列车|生产回滚|回退层级|Release状态|已接受版本)|GitHub `Latest`|production rollback)\s*\|/im,
     "DESIGN must not add a current-role status table");
   assert.doesNotMatch(outsidePositioning,
-    /(?:当前生产回滚|GitHub `Latest`)\s*(?:版本)?\s*(?:为|是|指向|=|：|:)/,
+    /(?:当前生产回滚|当前回退层级|GitHub `Latest`|production rollback)\s*(?:版本)?\s*(?:为|是|指向|=|：|:)/i,
     "DESIGN must not assert moving rollback or Latest state");
   assert.doesNotMatch(outsidePositioning,
     /\b[A-Z][A-Z0-9_]{5,}\s*=\s*\d+(?:\.\d+)?\b|\b(?:max_\w+|timeout_\w+)\s*[:=]\s*\d+\b/i,
@@ -698,7 +698,7 @@ test("README owns the document map while DESIGN owns the repository implementati
     "install.js", "hooks/hook_adapter.py", "runtime/owned-plan.py", "runtime/owned-catchup.py",
     "tools/import_upstream_runtime.py", "tools/build_release.py",
   ]) assert.match(design, new RegExp(implementationPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.doesNotMatch(design, /当前生产回滚|GitHub `Latest`|Product Phase 4.*未授权/);
+  assert.doesNotMatch(design, /Product Phase 4.*未授权/);
   assert.equal(artifact.entries.some(entry => entry.path === "DESIGN.md"), false);
 
   assert.doesNotMatch(roadmap, /\| 当前允许做什么、唯一 Next Step 是什么 \|/);
@@ -780,12 +780,20 @@ test("DESIGN ownership rejects second authorities while allowing safe cross-refe
     /current-role status table/);
   assert.throws(() => assertDesignOwnerBoundaries(design + "\n当前生产回滚是 accepted。\n"),
     /moving rollback or Latest state/);
+  assert.throws(() => assertDesignOwnerBoundaries(design + "\n## GitHub `Latest`\n\n这里另列当前版本。\n"),
+    /competing architecture or current-state section/);
+  assert.throws(() => assertDesignOwnerBoundaries(design + "\n| 当前回退层级 | accepted |\n"),
+    /current-role status table/);
+  assert.throws(() => assertDesignOwnerBoundaries(design + "\nproduction rollback: accepted\n"),
+    /moving rollback or Latest state/);
   assert.throws(() => assertDesignOwnerBoundaries(design + "\nADAPTER_DEADLINE_SECONDS = 27\n"),
     /machine-constant authority/);
   assert.throws(() => assertDesignOwnerBoundaries(design + "\n输出预算为20,000。\n"),
     /mutable runtime budgets/);
   assertDesignOwnerBoundaries(design + "\nGitHub `Latest` 的当前状态看 ROADMAP；"
     + "`ADAPTER_DEADLINE_SECONDS` 的值看源码，不在此冻结。\n");
+  assertDesignOwnerBoundaries(design + "\n当前生产回滚与当前回退层级见 ROADMAP；"
+    + "for production rollback and GitHub `Latest`, consult ROADMAP.\n");
 });
 
 test("DESIGN maps every test module back to the capability and boundary it protects", () => {
