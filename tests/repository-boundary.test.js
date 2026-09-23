@@ -352,6 +352,21 @@ function assertNoNextStepAuthority(body, label) {
   }
 }
 
+function assertNoMovingStatusAuthority(body, label, includeRollback = false) {
+  const statusTerm = includeRollback ? "(?:GitHub `Latest`|production rollback)" : "GitHub `Latest`";
+  const heading = new RegExp(`^#{1,6}\\s+(?:Current\\s+|当前\\s*)${statusTerm}(?:\\s|$)`, "i");
+  const row = new RegExp(`^\\|\\s*(?:Current\\s+|当前\\s*)?${statusTerm}\\s*\\|`, "i");
+  const declaration = new RegExp(
+    `${statusTerm}(?:\\*\\*|__)?\\s*(?:版本)?\\s*(?:[:：=]|(?:is|为|是|指向|points?\\s+to)\\s+)`
+      + `\\s*(?:now\\s+|currently\\s+|当前\\s*)?`
+      + `(?:\\x60?v\\d+\\.\\d+\\.\\d+(?:-[\\w.]+)?\\x60?|accepted\\b|candidate\\b|(?:immediate\\s+)?fallback\\b|none\\b)`, "i");
+  for (const line of body.split(/\r?\n/)) {
+    assert.doesNotMatch(line, heading, `${label} must not add a current-status section`);
+    assert.doesNotMatch(line, row, `${label} must not add a moving-status row`);
+    assert.doesNotMatch(line, declaration, `${label} must not declare moving status`);
+  }
+}
+
 function assertMaintenanceEnvironmentRoutes(profile) {
   const section = number => {
     const start = profile.search(new RegExp(`^## ${number}\\. `, "m"));
@@ -2011,8 +2026,9 @@ test("change history, programme, provenance, and current acceptance keep separat
   for (const target of ["ROADMAP.md", "BASELINE_PROVENANCE.md", acceptancePath]) {
     assert.match(changelog, new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
-  assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|GitHub `Latest`|production rollback|\d+ registered/);
+  assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|\d+ registered/);
   assertNoNextStepAuthority(changelog, "CHANGELOG");
+  assertNoMovingStatusAuthority(changelog, "CHANGELOG", true);
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 
   assert.match(roadmap, new RegExp("## 3\\. 已接受基线 `" + accepted.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "`"));
@@ -2027,8 +2043,9 @@ test("change history, programme, provenance, and current acceptance keep separat
     "published identity entries must not inherit ROADMAP role labels");
   assert.match(provenance, /## 2\. Successor 迁移不可变证据/);
   assert.doesNotMatch(provenance, /## 2\. Successor 迁移来源链/);
-  assert.doesNotMatch(provenance, /当前源码权威|current lifecycle role|GitHub `Latest`|\d+ registered/);
+  assert.doesNotMatch(provenance, /当前源码权威|current lifecycle role|\d+ registered/);
   assertNoNextStepAuthority(provenance, "provenance");
+  assertNoMovingStatusAuthority(provenance, "provenance");
 
   // DESIGN current-state declarations are checked by assertDesignOwnerBoundaries.
   for (const macroDoc of [architecture, agents]) {
@@ -2052,6 +2069,28 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.doesNotThrow(() => assertNoNextStepAuthority(
       `${body}\nThe term Next Step points readers to active planning.\n`, label));
   }
+
+  for (const [body, label, includeRollback] of [
+    [changelog, "CHANGELOG", true], [provenance, "provenance", false],
+  ]) {
+    const check = candidate => assertNoMovingStatusAuthority(candidate, label, includeRollback);
+    assert.throws(() => check(`${body}\n## Current GitHub \`Latest\`\n`),
+      /must not add a current-status section/);
+    assert.throws(() => check(`${body}\n| GitHub \`Latest\` | v0.4.3 |\n`),
+      /must not add a moving-status row/);
+    assert.throws(() => check(`${body}\n- **GitHub \`Latest\`**: v0.4.3\n`),
+      /must not declare moving status/);
+    assert.throws(() => check(`${body}\nCurrently, GitHub \`Latest\` is v0.4.3.\n`),
+      /must not declare moving status/);
+    assert.doesNotThrow(() => check(`${body}\nThe earlier GitHub \`Latest\` promotion is historical.\n`));
+    assert.doesNotThrow(() => check(`${body}\nFor current GitHub \`Latest\` status, consult ROADMAP.\n`));
+    assert.doesNotThrow(() => check(`${body}\nGitHub \`Latest\`: see ROADMAP.\n`));
+  }
+  assert.throws(() => assertNoMovingStatusAuthority(`${changelog}\nproduction rollback: v0.4.3\n`,
+    "CHANGELOG", true), /must not declare moving status/);
+  assert.doesNotThrow(() => assertNoMovingStatusAuthority(
+    `${changelog}\nPast production rollback changes are recorded here; current roles are in ROADMAP.\n`,
+    "CHANGELOG", true));
 
   const acceptedRow = provenance.split(/\r?\n/).find(line => line.startsWith(`| \`${accepted}\` |`));
   assert.ok(acceptedRow, "accepted row mutation precondition");
