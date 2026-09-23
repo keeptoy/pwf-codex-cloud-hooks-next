@@ -99,6 +99,70 @@ function currentRoleWindow() {
   return { accepted, candidate, developmentTrain, immediateFallback, roadmap };
 }
 
+function assertMaintenanceEnvironmentRoutes(profile) {
+  const section = number => {
+    const start = profile.search(new RegExp(`^## ${number}\\. `, "m"));
+    const end = profile.search(new RegExp(`^## ${number + 1}\\. `, "m"));
+    assert.ok(start >= 0 && end > start, `environment profile lacks section ${number}`);
+    return profile.slice(start, end);
+  };
+  const table = (body, label, width) => {
+    const lines = body.split(/\r?\n/);
+    const first = lines.findIndex(line => line.startsWith("|"));
+    assert.ok(first >= 0 && /^\|[\s:|-]+\|$/.test(lines[first + 1] || ""),
+      `${label} must contain a Markdown table`);
+    const parse = line => line.split("|").slice(1, -1).map(cell => cell.trim());
+    const rows = [];
+    for (let i = first + 2; i < lines.length && lines[i].startsWith("|"); i++) {
+      const cells = parse(lines[i]);
+      assert.equal(cells.length, width, `${label} has a malformed row`);
+      assert.ok(cells.every(Boolean), `${label} has an empty field`);
+      rows.push(cells);
+    }
+    assert.equal(new Set(rows.map(row => row[0])).size, rows.length,
+      `${label} has a duplicate environment/route`);
+    return rows;
+  };
+  const localSection = section(2);
+  const cloudSection = section(3);
+  const routeSection = section(4);
+  for (const [body, label] of [[localSection, "local"], [cloudSection, "Cloud"]]) {
+    const date = body.match(/(?:核对|复核)日期：\*\*(\d{4}-\d{2}-\d{2})\*\*/);
+    assert.ok(date && !Number.isNaN(Date.parse(`${date[1]}T00:00:00Z`)),
+      `${label} facts need a valid dated scope`);
+  }
+  const local = new Map(table(localSection, "local facts", 5).map(row => [row[0], row]));
+  const cloud = new Map(table(cloudSection, "Cloud facts", 5).map(row => [row[0], row]));
+  for (const key of ["本地操作系统", "WSL", "本地容器", "Git Bash / MSYS"]) {
+    assert.ok(local.has(key), `local environment fact is missing: ${key}`);
+  }
+  for (const key of ["Source/Candidate Linux Cloud", "Cloud Host路径/默认值", "Cloud task工具inventory"]) {
+    assert.ok(cloud.has(key), `Cloud environment fact is missing: ${key}`);
+  }
+  for (const [key, status] of [
+    ["本地操作系统", "CONFIRMED"], ["WSL", "CONFIRMED"],
+    ["本地容器", "CONFIRMED"], ["Git Bash / MSYS", "CONFIRMED_BOUNDARY"],
+  ]) assert.equal(local.get(key)[1], `\`${status}\``, `${key} status changed`);
+  for (const [key, status] of [
+    ["Source/Candidate Linux Cloud", "CONFIRMED_ROUTE"],
+    ["Cloud Host路径/默认值", "CONFIRMED_BOUNDARY"],
+    ["Cloud task工具inventory", "CONFIRMED_VARIABILITY"],
+  ]) assert.equal(cloud.get(key)[1], `\`${status}\``, `${key} status changed`);
+  assert.match(cloud.get("Source/Candidate Linux Cloud")[2], /Linux Cloud[\s\S]*portable Linux suite/,
+    "Cloud route must retain its dated Linux-suite evidence");
+  assert.match(cloud.get("Cloud task工具inventory")[4], /exact-path只读Shell preflight[\s\S]*apply_patch/,
+    "tool variability needs a bounded read fallback and separate write path");
+  const routes = table(routeSection, "default evidence routes", 3);
+  const linuxRoute = routes.find(row => /Linux零skip|POSIX权限|FIFO\/device/.test(row[0]));
+  assert.ok(linuxRoute, "Linux-only evidence needs an explicit default route");
+  assert.match(linuxRoute[1], /Windows[\s\S]*SKIP/i,
+    "Windows must not claim Linux-only evidence");
+  assert.match(linuxRoute[2], /Source\/Candidate Cloud[\s\S]*Linux gate/,
+    "Linux-only evidence must route to a real Cloud Linux gate");
+  assert.match(local.get("Git Bash / MSYS")[4], /Linux Cloud/,
+    "Git Bash must not replace the Linux Cloud route");
+}
+
 function assertC0TagOperatorBlock(markdown) {
   const anchor = '<a name="source-candidate-c0-tag-push"></a>';
   assert.equal(markdown.split(anchor).length, 2, "Wiki must have one C0 tag guide anchor");
@@ -550,15 +614,9 @@ test("maintenance environment constraints survive planning retirement", () => {
 
   assert.match(profile, /^<a name="maintenance-environment-profile"><\/a>$/m);
   assert.match(profile, /本地维护机与远程\/Cloud执行面[\s\S]{0,200}物理\/工具限制[\s\S]{0,120}默认对策/);
-  assert.match(profile, /2026-08-22[\s\S]{0,500}`wsl\.exe`[\s\S]{0,300}没有已安装发行版/);
-  assert.match(profile, /Docker[\s\S]{0,200}Podman[\s\S]{0,200}nerdctl[\s\S]{0,200}不存在/);
+  assertMaintenanceEnvironmentRoutes(profile);
   assert.match(profile, /Git Bash[\s\S]{0,300}不能[\s\S]{0,200}Linux\/POSIX证据/);
-  assert.match(profile, /Linux零skip[\s\S]{0,200}FIFO\/device[\s\S]{0,200}filesystem/);
-  assert.match(profile, /Source\/Candidate Cloud教程[\s\S]{0,200}真实Linux gate/);
-  assert.match(profile, /2026-08-25[\s\S]*`CONFIRMED_ROUTE`[\s\S]*disposable Linux Cloud[\s\S]*portable Linux suite/);
   assert.match(profile, /`CONFIRMED_BOUNDARY`[\s\S]*`\/opt\/codex`[\s\S]*不是永久常量/);
-  assert.match(profile,
-    /`CONFIRMED_VARIABILITY`[\s\S]*只有Shell型读取与apply_patch[\s\S]*exact-path只读Shell preflight/);
   assert.match(profile, /不是[\s\S]{0,160}验收[\s\S]{0,160}永久[\s\S]{0,160}平台承诺/);
   assert.match(profile, /跨阶段执行路由[\s\S]{0,120}不得只记录在planning/);
   assert.match(profile, /重验触发器[\s\S]{0,400}维护者[\s\S]{0,200}环境已经改变/);
@@ -578,6 +636,29 @@ test("maintenance environment constraints survive planning retirement", () => {
     /\]\(maintenance-environment-profile\.md#maintenance-environment-profile\)/);
   assert.equal(artifact.entries.some(entry => entry.path === profilePath), false);
   assert.equal(artifact.excluded_prefixes.includes("docs/"), true);
+});
+
+test("environment-profile route guard rejects false Linux evidence and accepts equivalent facts", () => {
+  const profile = read("docs/maintenance-environment-profile.md");
+  const changeOnce = (before, after) => {
+    assert.ok(profile.includes(before), "probe precondition missing: " + before);
+    return profile.replace(before, after);
+  };
+  assert.doesNotThrow(() => assertMaintenanceEnvironmentRoutes(profile));
+  const wrongRoute = changeOnce(
+    "在版本Source/Candidate Cloud教程中编排真实Linux gate",
+    "在本地Git Bash中完成Linux gate");
+  assert.throws(() => assertMaintenanceEnvironmentRoutes(wrongRoute), /real Cloud Linux gate/);
+  const wrongStatus = changeOnce(
+    "| Source/Candidate Linux Cloud | `CONFIRMED_ROUTE` |",
+    "| Source/Candidate Linux Cloud | `CONFIRMED_BOUNDARY` |");
+  assert.throws(() => assertMaintenanceEnvironmentRoutes(wrongStatus), /status changed/);
+  const wrongFallback = changeOnce("exact-path只读Shell preflight，写入仍只用apply_patch",
+    "任意Shell读写均可");
+  assert.throws(() => assertMaintenanceEnvironmentRoutes(wrongFallback), /bounded read fallback/);
+  const rephrased = changeOnce("没有已安装发行版", "尚无可用的Linux发行版")
+    .replace("2026-08-22", "2026-09-23");
+  assert.doesNotThrow(() => assertMaintenanceEnvironmentRoutes(rephrased));
 });
 
 test("planning lifecycle selects one active scope without forcing completed-scope deletion", () => {
