@@ -340,6 +340,18 @@ function assertCurrentPublicationRoutes(provenance, acceptance, roles) {
   assert.equal(titleVersion, accepted, "acceptance title must retain accepted version identity");
 }
 
+function assertNoNextStepAuthority(body, label) {
+  for (const line of body.split(/\r?\n/)) {
+    assert.doesNotMatch(line, /^#{1,6}\s+(?:Current\s+)?Next Step\b/i,
+      `${label} must not add a Next Step section`);
+    assert.doesNotMatch(line,
+      /^\s*(?:(?:[-*]|\d+[.)])\s*)?(?:\*\*|__)?(?:Current\s+)?Next Step(?:\*\*|__)?\s*(?:[:：=]|(?:is|为|是)\s+)/i,
+      `${label} must not declare an active Next Step`);
+    assert.doesNotMatch(line, /^\|\s*(?:Current\s+)?Next Step\s*\|/i,
+      `${label} must not add a Next Step status row`);
+  }
+}
+
 function assertMaintenanceEnvironmentRoutes(profile) {
   const section = number => {
     const start = profile.search(new RegExp(`^## ${number}\\. `, "m"));
@@ -1999,7 +2011,8 @@ test("change history, programme, provenance, and current acceptance keep separat
   for (const target of ["ROADMAP.md", "BASELINE_PROVENANCE.md", acceptancePath]) {
     assert.match(changelog, new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
-  assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|Next Step|GitHub `Latest`|production rollback|\d+ registered/);
+  assert.doesNotMatch(changelog, /\b[a-f0-9]{64}\b|GitHub `Latest`|production rollback|\d+ registered/);
+  assertNoNextStepAuthority(changelog, "CHANGELOG");
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 
   assert.match(roadmap, new RegExp("## 3\\. 已接受基线 `" + accepted.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "`"));
@@ -2014,7 +2027,8 @@ test("change history, programme, provenance, and current acceptance keep separat
     "published identity entries must not inherit ROADMAP role labels");
   assert.match(provenance, /## 2\. Successor 迁移不可变证据/);
   assert.doesNotMatch(provenance, /## 2\. Successor 迁移来源链/);
-  assert.doesNotMatch(provenance, /当前源码权威|current lifecycle role|GitHub `Latest`|Next Step|\d+ registered/);
+  assert.doesNotMatch(provenance, /当前源码权威|current lifecycle role|GitHub `Latest`|\d+ registered/);
+  assertNoNextStepAuthority(provenance, "provenance");
 
   for (const macroDoc of [architecture, design, agents]) {
     assert.doesNotMatch(macroDoc, /当前生产回滚|当前回退层级|GitHub `Latest`|production rollback/);
@@ -2024,6 +2038,19 @@ test("change history, programme, provenance, and current acceptance keep separat
     /\[`BASELINE_PROVENANCE\.md` 的 Successor 迁移不可变证据\]\(BASELINE_PROVENANCE\.md#successor-migration-evidence\)/);
   assert.doesNotMatch(changelog, /docs\/history\//);
   assert.doesNotMatch(changelog, /Successor 迁移来源链/);
+
+  for (const [body, label] of [[changelog, "CHANGELOG"], [provenance, "provenance"]]) {
+    assert.throws(() => assertNoNextStepAuthority(`${body}\n## Next Step\n`, label),
+      /must not add a Next Step section/);
+    assert.throws(() => assertNoNextStepAuthority(`${body}\n- Next Step: publish\n`, label),
+      /must not declare an active Next Step/);
+    assert.throws(() => assertNoNextStepAuthority(`${body}\n1. **Next Step**: publish\n`, label),
+      /must not declare an active Next Step/);
+    assert.throws(() => assertNoNextStepAuthority(`${body}\n| Next Step | publish |\n`, label),
+      /must not add a Next Step status row/);
+    assert.doesNotThrow(() => assertNoNextStepAuthority(
+      `${body}\nThe term Next Step points readers to active planning.\n`, label));
+  }
 
   const acceptedRow = provenance.split(/\r?\n/).find(line => line.startsWith(`| \`${accepted}\` |`));
   assert.ok(acceptedRow, "accepted row mutation precondition");
