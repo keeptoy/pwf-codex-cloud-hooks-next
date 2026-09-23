@@ -384,6 +384,17 @@ function assertNoProvenanceCurrentRoleAuthority(body) {
   }
 }
 
+function assertNoRoadmapMigrationLedger(body) {
+  for (const line of body.split(/\r?\n/)) {
+    assert.doesNotMatch(line,
+      /^#{1,6}\s+(?:\d+(?:\.\d+)*[.)]?\s+)?(?:已完成的仓库迁移|M1 exact mirror|M2 slim transformation)(?:\s|$)/,
+      "ROADMAP must not restore a retired migration ledger section");
+    assert.doesNotMatch(line,
+      /^\|\s*(?:\*\*|__)?(?:M1 exact mirror|M2 slim transformation)(?:\*\*|__)?\s*\|/,
+      "ROADMAP must not restore a retired migration result row");
+  }
+}
+
 function assertMaintenanceEnvironmentRoutes(profile) {
   const section = number => {
     const start = profile.search(new RegExp(`^## ${number}\\. `, "m"));
@@ -2049,7 +2060,23 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.equal(artifact.entries.some(entry => entry.path === "CHANGELOG.md"), false);
 
   assert.match(roadmap, new RegExp("## 3\\. 已接受基线 `" + accepted.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "`"));
-  assert.doesNotMatch(roadmap, /## 3\. 已完成的仓库迁移|M1 exact mirror|M2 slim transformation/);
+  assertNoRoadmapMigrationLedger(roadmap);
+  assert.throws(() => assertNoRoadmapMigrationLedger(`${roadmap}\n## 3. 已完成的仓库迁移\n`),
+    /retired migration ledger section/);
+  assert.throws(() => assertNoRoadmapMigrationLedger(`${roadmap}\n## 7. 已完成的仓库迁移\n`),
+    /retired migration ledger section/);
+  assert.throws(() => assertNoRoadmapMigrationLedger(`${roadmap}\n### M1 exact mirror\n`),
+    /retired migration ledger section/);
+  assert.throws(() => assertNoRoadmapMigrationLedger(`${roadmap}\n### M2 slim transformation\n`),
+    /retired migration ledger section/);
+  assert.throws(() => assertNoRoadmapMigrationLedger(
+    `${roadmap}\n| Gate | 冻结结果 | 状态 |\n|---|---|---|\n| M1 exact mirror | mirror | complete |\n`),
+    /retired migration result row/);
+  assert.throws(() => assertNoRoadmapMigrationLedger(
+    `${roadmap}\n| M2 slim transformation | slim root | complete |\n`),
+    /retired migration result row/);
+  assert.doesNotThrow(() => assertNoRoadmapMigrationLedger(
+    `${roadmap}\nM1 exact mirror 与 M2 slim transformation 的不可变证据见 BASELINE_PROVENANCE.md。\n`));
   assert.equal((roadmap.match(/^<a name="github-release-latest-promotion-confirmation"><\/a>$/gm) || []).length, 1);
 
   assert.match(provenance, /^## 1\. 已发布身份账本$/m);
