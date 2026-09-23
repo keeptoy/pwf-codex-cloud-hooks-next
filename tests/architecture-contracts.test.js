@@ -166,6 +166,53 @@ function assertReadmeOwnerMap(readme) {
     "README development delegation must not become a second build runbook");
 }
 
+function assertDesignOwnerBoundaries(design) {
+  const positioning = sectionBetween(design, "## 1. 文档定位", "## 2. 仓库地图");
+  const rows = positioning.split(/\r?\n/).map(line => line.match(/^\|\s*(.*?)\s*\|\s*(.*?)\s*\|$/))
+    .filter(Boolean).map(([, question, owner]) => ({ question, owner }));
+  const ownerFor = cue => {
+    const matches = rows.filter(row => cue.test(row.question));
+    assert.equal(matches.length, 1, `DESIGN positioning must have one route for ${cue}`);
+    return markdownLinks(matches[0].owner);
+  };
+  assert.deepEqual(ownerFor(/为什么需要适配层|trusted graph/), ["ARCHITECTURE.md"],
+    "DESIGN must route architecture rationale to ARCHITECTURE");
+  assert.deepEqual(ownerFor(/当前 programme/), ["ROADMAP.md"],
+    "DESIGN must route current programme and rollback state to ROADMAP");
+  assert.deepEqual(ownerFor(/已发布版本与 Unreleased/), ["CHANGELOG.md"],
+    "DESIGN must route version deltas to CHANGELOG");
+
+  const outsidePositioning = design.replace(positioning, "");
+  assert.doesNotMatch(outsidePositioning,
+    /^#{2,3}\s+(?:\d+\.\s*)?(?:当前(?:版本|Release|rollback|生产回滚|开发列车)|架构理由|信任边界原理)/m,
+    "DESIGN must not add a competing architecture or current-state section");
+  assert.doesNotMatch(outsidePositioning,
+    /^\|\s*当前(?:开发列车|生产回滚|Release状态|已接受版本)\s*\|/m,
+    "DESIGN must not add a current-role status table");
+  assert.doesNotMatch(outsidePositioning,
+    /(?:当前生产回滚|GitHub `Latest`)\s*(?:版本)?\s*(?:为|是|指向|=|：|:)/,
+    "DESIGN must not assert moving rollback or Latest state");
+  assert.doesNotMatch(outsidePositioning,
+    /\b[A-Z][A-Z0-9_]{5,}\s*=\s*\d+(?:\.\d+)?\b|\b(?:max_\w+|timeout_\w+)\s*[:=]\s*\d+\b/i,
+    "DESIGN must not become a second machine-constant authority");
+  assert.doesNotMatch(outsidePositioning,
+    /(?:输出预算|context预算|plan\/progress行数|adapter超时)\s*(?:为|是|=|：|:)\s*[\d,]+(?:\s*\/\s*\d+)?/i,
+    "DESIGN must not state mutable runtime budgets");
+}
+
+function assertDesignReverseIndexShape(reverseIndex) {
+  const rows = reverseIndex.split(/\r?\n/)
+    .filter(line => /^\| \[`[^`]+\.test\.js`\]\(tests\//.test(line));
+  assert.ok(rows.length > 0, "DESIGN reverse index must contain test-module rows");
+  for (const row of rows) {
+    const cells = row.split("|").slice(1, -1).map(cell => cell.trim());
+    assert.equal(cells.length, 4, "each DESIGN test-module row must keep four role columns");
+    assert.ok(cells.every(Boolean), "each DESIGN test-module role column must be nonempty");
+    assert.doesNotMatch(row, /\b\d+\s+(?:tests?|cases?|passed|failed|skipped)\b/i,
+      "DESIGN reverse-index rows must not freeze runner results");
+  }
+}
+
 test("cross-document fragments use stable explicit anchors", () => {
   const authorityDocs = [
     "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md",
@@ -502,7 +549,31 @@ test("ARCHITECTURE preserves system reasoning while DESIGN routes implementation
     "tests/published-release-oracles.test.js",
   ]) assert.match(design, new RegExp(target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 
-  assert.doesNotMatch(design, /ADAPTER_DEADLINE_SECONDS|20,000|50 \/ 20|当前生产回滚|GitHub `Latest`/);
+  assertDesignOwnerBoundaries(design);
+});
+
+test("DESIGN ownership rejects second authorities while allowing safe cross-references", () => {
+  const design = readText("DESIGN.md");
+  assertDesignOwnerBoundaries(design);
+  const wrongArchitecture = design.replace(/(\| 为什么需要适配层[^\r\n]*\]\()ARCHITECTURE\.md(\) \|)/,
+    "$1DESIGN.md$2") + "\n[architecture](ARCHITECTURE.md)\n";
+  assert.notEqual(wrongArchitecture, design + "\n[architecture](ARCHITECTURE.md)\n");
+  assert.throws(() => assertDesignOwnerBoundaries(wrongArchitecture), /architecture rationale/);
+  const wrongProgramme = design.replace(/(\| 当前 programme[^\r\n]*\]\()ROADMAP\.md(\) \|)/,
+    "$1CHANGELOG.md$2") + "\n[programme](ROADMAP.md)\n";
+  assert.throws(() => assertDesignOwnerBoundaries(wrongProgramme), /current programme/);
+  assert.throws(() => assertDesignOwnerBoundaries(design.replace("## 7. 继续阅读",
+    "## 当前生产回滚\n\n此处另列当前角色。\n\n## 7. 继续阅读")), /competing architecture or current-state section/);
+  assert.throws(() => assertDesignOwnerBoundaries(design + "\n| 当前开发列车 | moving candidate |\n"),
+    /current-role status table/);
+  assert.throws(() => assertDesignOwnerBoundaries(design + "\n当前生产回滚是 accepted。\n"),
+    /moving rollback or Latest state/);
+  assert.throws(() => assertDesignOwnerBoundaries(design + "\nADAPTER_DEADLINE_SECONDS = 27\n"),
+    /machine-constant authority/);
+  assert.throws(() => assertDesignOwnerBoundaries(design + "\n输出预算为20,000。\n"),
+    /mutable runtime budgets/);
+  assertDesignOwnerBoundaries(design + "\nGitHub `Latest` 的当前状态看 ROADMAP；"
+    + "`ADAPTER_DEADLINE_SECONDS` 的值看源码，不在此冻结。\n");
 });
 
 test("DESIGN maps every test module back to the capability and boundary it protects", () => {
@@ -530,8 +601,23 @@ test("DESIGN maps every test module back to the capability and boundary it prote
     assert.equal(reverseIndex.split(link).length - 1, 1, `${module}: expected one reverse-index row`);
   }
 
-  assert.match(reverseIndex, /test title.*assertion/is);
-  assert.doesNotMatch(reverseIndex, /\b\d+\s+(?:tests?|cases?|passed|failed|skipped)\b/i);
+  assertDesignReverseIndexShape(reverseIndex);
+});
+
+test("DESIGN reverse index rejects result snapshots but allows explanation rewrites", () => {
+  const design = readText("DESIGN.md");
+  const index = sectionBetween(design, "### 6.1 测试职责反向索引", "## 7. 继续阅读");
+  assertDesignReverseIndexShape(index);
+  const frozenResult = index.replace("| 跨平台静态治理 |",
+    "| 跨平台静态治理；27 tests passed | ");
+  assert.notEqual(frozenResult, index);
+  assert.throws(() => assertDesignReverseIndexShape(frozenResult), /runner results/);
+  const missingRole = index.replace("| 跨平台静态治理 |", "|  | ");
+  assert.throws(() => assertDesignReverseIndexShape(missingRole), /nonempty/);
+  const equivalent = index.replace("具体 case\n语义以测试源码中的 test title 与 assertion 为准",
+    "单个 case 的实际行为请回到测试源码核对");
+  assert.notEqual(equivalent, index);
+  assertDesignReverseIndexShape(equivalent);
 });
 
 test("ROADMAP keeps stable Discovery, migration, and Release governance anchors", () => {
