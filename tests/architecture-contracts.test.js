@@ -249,6 +249,67 @@ function assertHandoffTriageBoundary(handoff) {
   }
 }
 
+function assertOperatorGuideLifecycle(template) {
+  const roles = [
+    "operator-guide-document-lifecycle", "operator-guide-positioning",
+    "operator-guide-exact-inputs", "operator-guide-execution-tutorial",
+    "operator-guide-evidence-and-stops", "operator-guide-pre-run-status",
+    "operator-guide-channel-checkpoints", "operator-guide-final-post-run-status",
+  ];
+  const sections = new Map();
+  for (let i = 0; i < roles.length; i++) {
+    const anchor = `<a name="${roles[i]}"></a>`;
+    assert.equal(template.split(anchor).length, 2, `operator guide needs one ${roles[i]} role`);
+    const next = roles[i + 1] && `<a name="${roles[i + 1]}"></a>`;
+    const body = next ? sectionBetween(template, anchor, next) : template.slice(template.indexOf(anchor));
+    assert.match(body.slice(anchor.length), /^\s*## [^#\r\n]+\r?\n/,
+      `operator guide ${roles[i]} must introduce a section`);
+    sections.set(roles[i], body);
+  }
+  const lifecycle = sections.get(roles[0]);
+  const positioning = sections.get(roles[1]);
+  const channel = sections.get(roles[6]);
+  const final = sections.get(roles[7]);
+  const rules = [...lifecycle.matchAll(/^\d+\.\s+([\s\S]*?)(?=^\d+\.\s+|^普通Release|^生成具体guide)/gm)]
+    .map(([, rule]) => rule);
+  assert.ok(rules.some(rule => rule.split(/[。；;]/).some(clause =>
+    /Discovery Round/.test(clause) && /Product/.test(clause) && /计数|一轮|一份/.test(clause))
+    && /\bGate\b|\bgate\b/.test(rule) && /不是|不按|不计|不算|而非/.test(rule)),
+  "Product guide count must follow formal Discovery Rounds, not gates");
+  assert.ok(rules.some(rule => /operator guide/i.test(rule) && /多个 gate/.test(rule)
+    && /可以|可|允许|能够/.test(rule)),
+  "one operator guide must be able to cover multiple gates");
+  assert.ok(rules.some(rule => /aggregate/i.test(rule) && /不新建|无需新建|不会新建/.test(rule)),
+  "aggregate-only closeout must not create another guide");
+  assert.match(positioning, /single-Discovery[\s\S]*vX\.Y\.Z-cloud-hard-acceptance\.md/);
+  assert.match(positioning, /multi-Discovery[\s\S]*vX\.Y\.Z-<round>-operator-guide\.md/);
+
+  const flow = lifecycle.match(/```text\r?\n([\s\S]*?)```/)?.[1];
+  assert.ok(flow, "operator guide needs its lifecycle sequence");
+  const stages = flow.split(/\r?\n/).filter(line => /^\s*->/.test(line));
+  const stageIndex = cue => stages.findIndex(line => cue.test(line));
+  const pre = stageIndex(/Pre-run status/);
+  const checkpoint = stageIndex(/channel checkpoint/);
+  const post = stageIndex(/Final Post-run status/);
+  const freeze = stageIndex(/(?:freeze|冻结|immutable).*guide|guide.*(?:freeze|冻结|immutable)/i);
+  assert.ok(pre >= 0 && pre < checkpoint && checkpoint < post && post < freeze,
+    "guide must progress from Pre-run through channel checkpoint and Final Post-run before freeze");
+  assert.match(stages[checkpoint], /\bstop\b|停止/i,
+    "channel checkpoint must stop before the next channel");
+  assert.match(stages[post], /same file|同一份|同一文件/i,
+    "Final Post-run must close the same guide");
+  assert.match(lifecycle, /Final Post-run status[^\r\n]*(?:全部|所有)[^\r\n]*(?:最终状态|最终结论)/,
+    "Final Post-run requires every declared scope to reach a final state");
+  assert.match(channel, /(?:不会|不|尚未)冻结guide|guide[^\r\n]*保持开放/,
+    "channel checkpoint must leave the guide open");
+  assert.doesNotMatch(channel, /(?<!不)(?:会|可以|立即)冻结guide/,
+    "channel checkpoint must leave the guide open");
+  assert.match(final, /Final Post-run status[^\r\n]*guide冻结|Final Post-run status[^\r\n]*guide[^\r\n]*不可变/,
+    "the guide freezes only after Final Post-run");
+  assert.match(channel, /正常等待[^\r\n]*(?:不是|不属于|不应记为)`POST_RUN_INCOMPLETE`/,
+    "waiting for the next channel is not an incomplete current-channel result");
+}
+
 function assertReadmeOwnerMap(readme) {
   const map = sectionBetween(readme, '<a name="documentation-map"></a>', "## 许可证");
   const rows = map.split(/\r?\n/).map(line => line.match(/^\|\s*(.*?)\s*\|\s*(.*?)\s*\|$/))
@@ -461,25 +522,9 @@ test("acceptance documents are counted by Discovery Round and share one operator
   const artifact = readJson(currentArtifactPath);
 
   assert.match(operatorTemplate, /^<a name="cloud-acceptance-operator-guide-template"><\/a>$/m);
-  assert.match(operatorTemplate, /^<a name="operator-guide-document-lifecycle"><\/a>$/m);
-  for (const heading of [
-    "## 1. 定位与 Discovery claim",
-    "## 2. Exact inputs 与前置条件",
-    "## 3. 执行教程",
-    "## 4. 证据与停止条件",
-    "## 5. Pre-run status",
-    "## 6. Channel checkpoints（多通道 guide）",
-    "## 7. Final Post-run status",
-  ]) assert.match(operatorTemplate, new RegExp(`^${heading.replaceAll(".", "\\.")}$`, "m"));
-  assert.match(operatorTemplate, /single-Discovery[\s\S]*vX\.Y\.Z-cloud-hard-acceptance\.md/);
-  assert.match(operatorTemplate, /multi-Discovery[\s\S]*vX\.Y\.Z-<round>-operator-guide\.md/);
-  assert.match(operatorTemplate, /Pre-run[\s\S]*Post-run[\s\S]*冻结/);
-  assert.match(operatorTemplate, /一个 operator guide 可以编排多个 gate、Cloud task 或 stage/);
-  assert.match(operatorTemplate, /纯 aggregate[^\n]*不新建/);
+  assertOperatorGuideLifecycle(operatorTemplate);
   assert.match(operatorTemplate,
     /SOURCE_CANDIDATE_PASS \/ PUBLISHED_RELEASE_NOT_RUN \/ STOP_BEFORE_PUBLICATION/);
-  assert.match(operatorTemplate, /正常等待[^\n]*不是`POST_RUN_INCOMPLETE`/);
-  assert.match(operatorTemplate, /channel checkpoint[\s\S]*不会?冻结[\s\S]*Final Post-run[\s\S]*冻结/);
   assert.match(operatorTemplate,
     /^<a name="operator-guide-candidate-admission-preflight"><\/a>$/m);
   assert.match(operatorTemplate,
@@ -519,6 +564,41 @@ test("acceptance documents are counted by Discovery Round and share one operator
   assert.doesNotMatch(roadmap,
     /随后该版本列车进入自己的 standing Phase 9|每条未来列车都要重新进入的 standing gate/);
   assert.equal(artifact.entries.some(entry => entry.path === "docs/cloud-acceptance-operator-guide-template.md"), false);
+});
+
+test("operator-guide lifecycle rejects wrong count or freeze while permitting equivalent prose", () => {
+  const template = readText("docs/cloud-acceptance-operator-guide-template.md");
+  assertOperatorGuideLifecycle(template);
+  const wrongCount = template.replace("正式Discovery Round才是新增Product验收文档的计数单位",
+    "每个Gate才是新增Product验收文档的计数单位");
+  assert.notEqual(wrongCount, template);
+  assert.throws(() => assertOperatorGuideLifecycle(wrongCount), /Product guide count/);
+  const splitGuide = template.replace("一个 operator guide 可以编排多个 gate、Cloud task 或 stage",
+    "每个 gate 必须分别新建 operator guide");
+  assert.notEqual(splitGuide, template);
+  assert.throws(() => assertOperatorGuideLifecycle(splitGuide), /one operator guide/);
+  const prematureFreeze = template.replaceAll("不会冻结guide", "会冻结guide");
+  assert.notEqual(prematureFreeze, template);
+  assert.throws(() => assertOperatorGuideLifecycle(prematureFreeze), /checkpoint must leave the guide open/);
+  const reordered = template.replace(/(  -> append exact Final Post-run status to the same file\r?\n)(  -> freeze the guide)/,
+    "$2\n$1");
+  assert.notEqual(reordered, template);
+  assert.throws(() => assertOperatorGuideLifecycle(reordered), /before freeze/);
+  const equivalent = template
+    .replace("## 1. 定位与 Discovery claim", "## 1. 本轮定位与 Discovery claim")
+    .replace("一个 operator guide 可以编排多个 gate、Cloud task 或 stage",
+      "一个 operator guide 可覆盖多个 gate、Cloud task 或 stage")
+    .replace("纯 aggregate、evidence closure或retirement closeout若只汇总已经冻结的证据，不新建operator guide",
+      "纯 aggregate、evidence closure或retirement closeout若仅汇总已冻结证据，无需新建operator guide")
+    .replaceAll("不会冻结guide", "guide仍保持开放")
+    .replace("Final Post-run status只在guide声明范围全部取得明确最终状态后追加。",
+      "Final Post-run status须待guide覆盖的全部事项取得明确最终结论后追加。")
+    .replace("Final Post-run status追加并通过本地治理验证后，该guide冻结。",
+      "Final Post-run status追加并通过本地治理验证后，该guide成为不可变记录。")
+    .replace("正常等待维护者完成publication或建立后序通道identity不是`POST_RUN_INCOMPLETE`",
+      "正常等待维护者完成publication或建立后序通道identity不属于`POST_RUN_INCOMPLETE`");
+  assert.notEqual(equivalent, template);
+  assert.doesNotThrow(() => assertOperatorGuideLifecycle(equivalent));
 });
 
 test("canonical plan-context architecture is exact, plan-first, and adapter-thin", () => {
