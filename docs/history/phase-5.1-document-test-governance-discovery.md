@@ -6,7 +6,7 @@
 > Record status: `DRAFT / OPEN — not frozen, not indexed`
 
 本文件由维护者显式创建，用于提前整理Phase 5.1正式Discovery的边界。它当前不是已关闭的history object，不计入
-`FROZEN_DISCOVERY_RECORD`数量，也不表示任何测试改造已经获批。当前Product目标和稳定边界仍只读
+`FROZEN_DISCOVERY_RECORD`数量，也不表示批量测试改造已经获批；单独授权的R24小样本见下文。当前Product目标和稳定边界仍只读
 [`Product Phase 5 Overview`](../product-phases/phase-5-overview.md#product-phase-5-overview)；唯一Next Step、实施授权和错误证据仍由
 活动planning控制。
 
@@ -169,6 +169,22 @@ Phase 5.1只有同时满足以下条件，才可由维护者决定是否冻结�
 冻结时再把本草稿改写为当时的证据、决定、conditional-go和stop rules，补齐exact immutable source，并登记history索引。若Discovery
 最终认为不应实施，也应如实冻结no-go或由维护者决定删除草稿；不得保留一个看似已经验收的永久OPEN记录。
 
+<a name="phase-5-1-first-sample-evidence"></a>
+
+## First bounded convergence sample (working evidence)
+
+正式规则组盘点已在前轮`2026-09-23-phase-5-1-rule-inventory`的`findings.md`记录为59组候选处置；这是待维护者审阅的
+Discovery输入，不是批量删除许可。此前的Wiki C0 tag/push混合case内存探路证明：整文件命令匹配可能被围栏外安全文字蒙混，
+而等义改写的说明会被句式正则误伤。
+
+维护者随后单独授权该组的有界本地实施：`tests/repository-boundary.test.js`现检查`Wiki.md#source-candidate-c0-tag-push`
+之后的实际PowerShell命令块，要求tag精确指向Source/Candidate C0、push仅含一个tag ref，并核对C0解析、同名tag停止
+条件与本地/远端peeled commit。内存变异覆盖错误C1目标、`--tags`广推、缺失预检、错误远端peeled比对、在后续标题下
+藏第二条命令，以及等义说明和停止提示改写。该检查不是通用PowerShell解释器；未覆盖的命令变体仍需人工审阅。
+
+本次只收敛R24及直接依赖的C0解释断言。R23、R25其余说明和17组`DEFER`保持原状；本地回归不代表Cloud验收、
+Discovery冻结或整份测试治理完成。最终source、验证结果和残余风险仍以活动planning记录为准。
+
 <a name="phase-5-1-stop-rules"></a>
 
 ## Stop rules and current non-conclusions
@@ -179,7 +195,7 @@ Phase 5.1只有同时满足以下条件，才可由维护者决定是否冻结�
 - 不弱化Release allowlist、trusted source、版本角色、链接/anchor、history入口、planning lifecycle或安全失败语义。
 - 不修改runtime、Host ABI、installer、trusted graph、Cloud gate、Release流程或版本角色。
 - 不把一个代表性case的方案自动扩展到两份文件全部断言。
-- 当前没有`KEEP / REPLACE / RETIRE / DEFER`的逐组最终清单，没有选定实施patch，也没有Discovery PASS或implementation授权。
+- 当前已有59组候选清单和单独授权的R24小样本实施，但没有其余组的最终处置、Discovery PASS或批量implementation授权。
 
 <a name="phase-5-1-opening-baseline"></a>
 

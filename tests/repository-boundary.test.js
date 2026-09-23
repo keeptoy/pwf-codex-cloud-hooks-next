@@ -56,6 +56,113 @@ function currentRoleWindow() {
   return { accepted, candidate, developmentTrain, immediateFallback, roadmap };
 }
 
+function assertC0TagOperatorBlock(markdown) {
+  const anchor = '<a name="source-candidate-c0-tag-push"></a>';
+  assert.equal(markdown.split(anchor).length, 2, "Wiki must have one C0 tag guide anchor");
+  const tail = markdown.slice(markdown.indexOf(anchor) + anchor.length);
+  const fences = [...tail.matchAll(/^(\x60{3}|~{3})([A-Za-z0-9_-]+)[ \t]*\r?\n([\s\S]*?)^\1[ \t]*$/gm)];
+  const gitFences = fences.filter(([, , , body]) => /\bgit\s+(?:tag|push)\b/i.test(body));
+  assert.equal(gitFences.length, 1, "C0 guide must have one executable tag/push block");
+  assert.equal(gitFences[0][2].toLowerCase(), "powershell");
+  const body = gitFences[0][3];
+  const lines = body.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+  const tag = "git tag -a $RELEASE_VERSION $SOURCE_CANDIDATE_HEAD " + String.fromCharCode(96);
+  const release = "$" + "{RELEASE_VERSION}";
+  const push = 'git push origin "refs/tags/' + release + ':refs/tags/' + release + '"';
+  assert.deepEqual(lines.filter(line => /^git (?:tag|push)\b/i.test(line)), [tag, push],
+    "active tag/push commands must target C0 and only one exact tag ref");
+  assert.equal([...body.matchAll(/\bgit\s+(?:tag|push)\b/gi)].length, 2,
+    "C0 block must not hide another tag/push action");
+
+  const stop = condition => ({ condition });
+  const required = [
+    '$resolvedCandidate = (git rev-parse --verify "$SOURCE_CANDIDATE_HEAD^{commit}").Trim()',
+    'if ($LASTEXITCODE -ne 0 -or $resolvedCandidate -ne $SOURCE_CANDIDATE_HEAD) {',
+    'git show-ref --verify --quiet "refs/tags/$RELEASE_VERSION"',
+    stop('if ($LASTEXITCODE -eq 0)'),
+    stop('if ($LASTEXITCODE -ne 1)'),
+    '$remoteTag = git ls-remote --exit-code --tags origin "refs/tags/$RELEASE_VERSION"',
+    stop('if ($LASTEXITCODE -eq 0)'),
+    stop('if ($LASTEXITCODE -ne 2)'),
+    tag,
+    '$localTagCommit = (git rev-parse --verify "$RELEASE_VERSION^{commit}").Trim()',
+    'if ($LASTEXITCODE -ne 0 -or $localTagCommit -ne $SOURCE_CANDIDATE_HEAD) {',
+    push,
+    '$remoteRefs = @(git ls-remote --tags origin ' + String.fromCharCode(96),
+    '"refs/tags/$RELEASE_VERSION" ' + String.fromCharCode(96),
+    '"refs/tags/$RELEASE_VERSION^{}")',
+    "$peeledLine = @($remoteRefs | Where-Object { $_ -match '\\^\\{\\}$' })",
+    stop('if ($peeledLine.Count -ne 1)'),
+    "$remoteTagCommit = ($peeledLine[0] -split '\\s+')[0]",
+    'if ($remoteTagCommit -ne $SOURCE_CANDIDATE_HEAD) {',
+  ];
+  let previous = -1;
+  for (const step of required) {
+    const index = lines.findIndex((line, i) => i > previous && (typeof step === "string"
+      ? line === step
+      : line.startsWith(step.condition + " { throw ") && line.endsWith(" }")));
+    assert.ok(index > previous, "C0 operator block lacks ordered safety step: " +
+      (typeof step === "string" ? step : step.condition));
+    previous = index;
+  }
+  for (const guard of [
+    'if ($LASTEXITCODE -ne 0 -or $resolvedCandidate -ne $SOURCE_CANDIDATE_HEAD) {',
+    'if ($LASTEXITCODE -ne 0 -or $localTagCommit -ne $SOURCE_CANDIDATE_HEAD) {',
+    'if ($remoteTagCommit -ne $SOURCE_CANDIDATE_HEAD) {',
+  ]) {
+    const index = lines.indexOf(guard);
+    assert.match(lines[index + 1] || "", /^throw\s+\S/, "C0 guard must stop: " + guard);
+    assert.equal(lines[index + 2], "}", "C0 guard must close after throw: " + guard);
+  }
+}
+
+test("C0 operator guide rejects harmful commands but permits equivalent explanation", () => {
+  const wiki = read("Wiki.md");
+  const changeOnce = (before, after) => {
+    assert.ok(wiki.includes(before), "probe precondition missing: " + before);
+    return wiki.replace(before, after);
+  };
+  assert.doesNotThrow(() => assertC0TagOperatorBlock(wiki));
+
+  const wrongTag = changeOnce("\ngit tag -a $RELEASE_VERSION $SOURCE_CANDIDATE_HEAD ",
+    "\ngit tag -a $RELEASE_VERSION $SOURCE_CANDIDATE_CHECKPOINT_HEAD ") +
+    "\nExpected example: git tag -a $RELEASE_VERSION $SOURCE_CANDIDATE_HEAD";
+  assert.throws(() => assertC0TagOperatorBlock(wrongTag), /active tag\/push commands/);
+
+  const release = "$" + "{RELEASE_VERSION}";
+  const safePush = 'git push origin "refs/tags/' + release + ':refs/tags/' + release + '"';
+  const wrongPush = changeOnce(safePush, "git push origin --tags") +
+    "\nExpected example: " + safePush;
+  assert.throws(() => assertC0TagOperatorBlock(wrongPush), /active tag\/push commands/);
+
+  const missingPreflight = changeOnce(
+    'if ($LASTEXITCODE -ne 0 -or $resolvedCandidate -ne $SOURCE_CANDIDATE_HEAD) {',
+    'if ($LASTEXITCODE -ne 0) {');
+  assert.throws(() => assertC0TagOperatorBlock(missingPreflight), /ordered safety step/);
+
+  const wrongRemotePeel = changeOnce(
+    'if ($remoteTagCommit -ne $SOURCE_CANDIDATE_HEAD) {',
+    'if ($remoteTagCommit -ne $SOURCE_CANDIDATE_CHECKPOINT_HEAD) {');
+  assert.throws(() => assertC0TagOperatorBlock(wrongRemotePeel), /ordered safety step/);
+
+  const fence = String.fromCharCode(96).repeat(3);
+  const hiddenBroadPush = wiki + "\n### Additional command\n\n" + fence +
+    "powershell\nGIT PUSH origin --tags\n" + fence + "\n";
+  assert.throws(() => assertC0TagOperatorBlock(hiddenBroadPush), /one executable tag\/push block/);
+  const tildeBroadPush = wiki + "\n~~~powershell\nGIT PUSH origin --tags\n~~~\n";
+  assert.throws(() => assertC0TagOperatorBlock(tildeBroadPush), /one executable tag\/push block/);
+
+  const rephrased = changeOnce(
+    '不能指向C1、C2或碰巧存在的当前HEAD',
+    '必须仍固定在Cloud验收通过的C0，不能因后续治理提交而改变');
+  assert.doesNotThrow(() => assertC0TagOperatorBlock(rephrased));
+
+  const rephrasedStop = changeOnce(
+    'throw "本地tag已存在；停止并核对，禁止移动或覆盖"',
+    'throw "同名本地标签已存在，请停止并核对"');
+  assert.doesNotThrow(() => assertC0TagOperatorBlock(rephrasedStop));
+});
+
 test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const acceptedAcceptance = read("docs/acceptance/v0.4.4-cloud-hard-acceptance.md");
@@ -574,14 +681,7 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   const releaseMaterializeStart = stableReadme.indexOf("维护者只替换下面命令中的`vX.Y.Z`");
   assert.ok(tagGuideStart !== -1 && tagGuideStart < releaseMaterializeStart,
     "exact C0 tag guide must precede formal asset materialization");
-  assert.match(stableReadme,
-    /C1 checkout直接运行不带commit参数的`git tag -a`[\s\S]{0,240}不能指向C1、C2或碰巧存在的当前HEAD/);
-  assert.match(stableReadme, /git tag -a \$RELEASE_VERSION \$SOURCE_CANDIDATE_HEAD/);
-  assert.match(stableReadme,
-    /git push origin "refs\/tags\/\$\{RELEASE_VERSION\}:refs\/tags\/\$\{RELEASE_VERSION\}"/);
-  assert.match(stableReadme,
-    /annotated tag自身有一个tag-object SHA[\s\S]{0,160}带`\^\{\}`的peeled commit[\s\S]{0,100}必须等于C0/);
-  assert.match(stableReadme, /不能用`-f`、删除重建或移动tag修补/);
+  assertC0TagOperatorBlock(stableReadme);
   assert.match(stableReadme,
     /不是“复制旧ZIP并改名”[\s\S]{0,500}重新build\/check[\s\S]{0,240}Source\/Candidate Cloud SHA/);
   assert.match(stableReadme,
