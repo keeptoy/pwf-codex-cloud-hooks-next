@@ -367,6 +367,32 @@ function assertNoMovingStatusAuthority(body, label, includeRollback = false) {
   }
 }
 
+function assertNoMacroMovingStatusAuthority(body, label) {
+  const statusTerm = "(?:当前生产回滚|当前回退层级|GitHub `Latest`|production rollback)";
+  const heading = new RegExp(
+    `^#{1,6}\\s+(?:\\d+(?:\\.\\d+)*[.)]?\\s+)?(?:Current\\s+)?${statusTerm}`
+      + `(?:\\s*(?:状态|版本|status|version))?\\s*$`, "i");
+  const row = new RegExp(
+    `^\\|\\s*(?:\\*\\*|__)?(?:Current\\s+)?${statusTerm}(?:\\*\\*|__)?\\s*\\|`, "i");
+  const declaration = new RegExp(
+    `${statusTerm}(?:\\*\\*|__)?\\s*(?:版本|状态|version|status)?\\s*`
+      + `(?:[:：=]|(?:is|为|是|指向|points?\\s+to)\\s+)\\s*(\\S.*)$`, "i");
+  const wrappedDeclaration = new RegExp(
+    `${statusTerm}(?:\\*\\*|__)?\\s*(?:版本|状态|version|status)?\\s*`
+      + `(?:[:：=]|is|为|是|指向|points?\\s+to)\\s*$`, "i");
+  const ownerPointer = /^(?:(?:see|consult|refer to|documented in|described in|listed in)\s+|(?:见|参见|请见|详见|由|在)\s*)(?:ROADMAP(?:\.md)?(?:#[a-z0-9-]+)?|\[ROADMAP(?:\.md)?\]\(ROADMAP\.md(?:#[a-z0-9-]+)?\))[。.;；]?$/i;
+  const lines = body.split(/\r?\n/);
+  for (let index = 0; index < lines.length; index++) {
+    const line = lines[index];
+    assert.doesNotMatch(line, heading, `${label} must not add a current-status section`);
+    assert.doesNotMatch(line, row, `${label} must not add a current-status row`);
+    const value = line.match(declaration)?.[1]
+      || (wrappedDeclaration.test(line) && lines[index + 1]?.trim());
+    if (value) assert.ok(ownerPointer.test(value.trim()),
+      `${label} must not declare current rollback or Latest status`);
+  }
+}
+
 function assertNoProvenanceCurrentRoleAuthority(body) {
   const role = "(?:当前源码权威|current lifecycle role)";
   const heading = new RegExp(`^#{1,6}\\s+(?:\\d+\\.\\s*)?(?:\\*\\*|__)?${role}(?:\\*\\*|__)?(?:\\s|$)`, "i");
@@ -2123,8 +2149,33 @@ test("change history, programme, provenance, and current acceptance keep separat
   assertNoProvenanceCurrentRoleAuthority(provenance);
 
   // DESIGN current-state declarations are checked by assertDesignOwnerBoundaries.
-  for (const macroDoc of [architecture, agents]) {
-    assert.doesNotMatch(macroDoc, /当前生产回滚|当前回退层级|GitHub `Latest`|production rollback/);
+  for (const [macroDoc, label] of [[architecture, "ARCHITECTURE"], [agents, "AGENTS"]]) {
+    const check = candidate => assertNoMacroMovingStatusAuthority(candidate, label);
+    check(macroDoc);
+    assert.throws(() => check(`${macroDoc}\n## 当前生产回滚\n`), /must not add a current-status section/);
+    assert.throws(() => check(`${macroDoc}\n| 当前回退层级 | accepted |\n`),
+      /must not add a current-status row/);
+    assert.throws(() => check(`${macroDoc}\nGitHub \`Latest\`: v0.4.3\n`),
+      /must not declare current rollback/);
+    assert.throws(() => check(`${macroDoc}\nproduction rollback is accepted\n`),
+      /must not declare current rollback/);
+    assert.doesNotThrow(() => check(`${macroDoc}\n当前生产回滚与当前回退层级见 ROADMAP；`
+      + `for production rollback and GitHub \`Latest\`, consult ROADMAP.\n`));
+    assert.doesNotThrow(() => check(`${macroDoc}\nGitHub \`Latest\`: see ROADMAP.\n`));
+    assert.doesNotThrow(() => check(`${macroDoc}\nGitHub \`Latest\`: see `
+      + `[ROADMAP](ROADMAP.md#github-release-latest-promotion-confirmation).\n`));
+    assert.doesNotThrow(() => check(`${macroDoc}\n当前回退层级：见 ROADMAP。\n`));
+    assert.throws(() => check(`${macroDoc}\nGitHub \`Latest\`: see ROADMAP and v0.4.3\n`),
+      /must not declare current rollback/);
+    assert.throws(() => check(`${macroDoc}\nGitHub \`Latest\`: see ROADMAP-forged\n`),
+      /must not declare current rollback/);
+    assert.throws(() => check(`${macroDoc}\nGitHub \`Latest\`: see [ROADMAP](DESIGN.md)\n`),
+      /must not declare current rollback/);
+    assert.throws(() => check(`${macroDoc}\nGitHub \`Latest\`:\nv0.4.3\n`),
+      /must not declare current rollback/);
+    assert.throws(() => check(`${macroDoc}\nproduction rollback is\naccepted\n`),
+      /must not declare current rollback/);
+    assert.doesNotThrow(() => check(`${macroDoc}\nGitHub \`Latest\`:\nsee ROADMAP.\n`));
   }
   assert.match(design, /CHANGELOG\.md/);
   assert.match(changelog,
