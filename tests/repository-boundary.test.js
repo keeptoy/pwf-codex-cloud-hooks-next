@@ -163,6 +163,44 @@ function assertMaintenanceEnvironmentRoutes(profile) {
     "Git Bash must not replace the Linux Cloud route");
 }
 
+function assertPlanningDeletionConsent(governance, roadmap) {
+  const guideStart = '<a name="planning-lifecycle"></a>';
+  const guideEnd = '<a name="history-record-roles"></a>';
+  const guideFrom = governance.indexOf(guideStart);
+  const guideTo = governance.indexOf(guideEnd, guideFrom + guideStart.length);
+  assert.ok(guideFrom >= 0 && guideTo > guideFrom, "Guide must own the planning lifecycle section");
+  const guideBody = governance.slice(guideFrom, guideTo);
+  const guide = guideBody.replace(/\s+/g, " ");
+  const closeout = [...guideBody.matchAll(/^\d+\.\s+([\s\S]*?)(?=^\d+\.\s+|^活动 planning)/gm)]
+    .map(([, item]) => item.replace(/\s+/g, " "))
+    .find(item => /completed scope/.test(item) && /`\.active_plan`/.test(item));
+  assert.ok(closeout, "Guide must retain completed-scope closeout guidance");
+  assert.match(guide, /`\.planning\/\.active_plan`[^。]*(?:只|仅)[^。]*(?:选择|指向)[^。]*(?:不负责|不会|不能|不得)[^。]*(?:自动)?(?:删除|移除)/,
+    "active pointer selects one scope; it does not delete others");
+  assert.match(closeout, /completed scope[^。]*维护者[^。]*(?:评审|审查)[^。]*(?:决定|批准)/,
+    "maintainer must decide completed-scope removal in a separate review");
+  assert.match(closeout, /(?:不从|不得从|不能由)[^。]*指针切换[^。]*(?:删除|移除)|指针切换[^。]*(?:不会|不能|不产生)[^。]*(?:删除|移除)/,
+    "pointer switch must not imply deletion authority");
+
+  const roadmapStart = '<a name="version-train-two-retirement-reviews"></a>';
+  const roadmapEnd = '<a name="pre-1-compatibility-admission"></a>';
+  const releaseFrom = roadmap.indexOf(roadmapStart);
+  const releaseTo = roadmap.indexOf(roadmapEnd, releaseFrom + roadmapStart.length);
+  assert.ok(releaseFrom >= 0 && releaseTo > releaseFrom, "ROADMAP needs its Release retirement section");
+  const release = roadmap.slice(releaseFrom, releaseTo).replace(/\s+/g, " ");
+  assert.match(release, /\]\(docs\/repository-governance-guide\.md#planning-lifecycle\)/,
+    "Release checkpoint must route planning deletion to the Guide owner");
+  assert.match(release, /维护者[^。]*(?:决定|批准)[^。]*(?:移除|删除)|(?:移除|删除)[^。]*维护者[^。]*(?:决定|批准)/,
+    "Release review must ask for maintainer deletion consent");
+  const noAutoDelete = release.split("。").find(sentence => /C0\/C2/.test(sentence)
+    && /\.active_plan/.test(sentence) && /planning/.test(sentence));
+  assert.ok(noAutoDelete, "Release lifecycle must name non-authorizing checkpoint and pointer events");
+  assert.match(noAutoDelete, /(?:不得|不能|不可|不应)[^。]*(?:自动删除|移除|删除)planning/,
+    "C0/C2 and pointer movement must not authorize planning deletion");
+  assert.doesNotMatch(`${guide} ${release}`, /(?<!不)(?:可|允许|应|直接)自动(?:删除|移除)(?:其他目录|completed scope|planning)/,
+    "owner and projection must not grant automatic planning deletion");
+}
+
 function assertCloudTemplateNeutrality(template) {
   const fences = [...template.matchAll(/^(\x60{3,}|~{3,})([A-Za-z0-9_-]+)[ \t]*\r?\n([\s\S]*?)^\1[ \t]*$/gm)];
   assert.ok(fences.length > 0, "Cloud template must retain its protocol fences");
@@ -739,11 +777,39 @@ test("planning lifecycle selects one active scope without forcing completed-scop
   assert.match(activePlan, /^\d{4}-\d{2}-\d{2}-[a-z0-9][a-z0-9.-]*$/);
   assert.equal(validatePlanningScopes(root, activePlan, actual), "legacy");
   assert.equal(validatePlanningScopes(root, activePlan, withRetainedCompletedScope), "legacy");
-  assert.match(governance,
-    /`\.planning\/\.active_plan` 只选择当前唯一活动 scope，不负责自动删除其他目录/);
-  assert.match(governance,
-    /completed scope 何时从 current tree 移除，由维护者在单独评审中\s*明确决定，不从指针切换自动推导删除授权/);
-  assert.match(roadmap, /切换`\.active_plan`[^\n]*不得自动删除planning/);
+  assertPlanningDeletionConsent(governance, roadmap);
+});
+
+test("planning deletion consent rejects automatic removal but allows equivalent explanation", () => {
+  const governance = read("docs/repository-governance-guide.md");
+  const roadmap = read("ROADMAP.md");
+  assertPlanningDeletionConsent(governance, roadmap);
+  const wrongOwner = roadmap.replace("(docs/repository-governance-guide.md#planning-lifecycle)",
+    "(docs/repository-governance-guide.md#history-record-roles)");
+  assert.notEqual(wrongOwner, roadmap);
+  assert.throws(() => assertPlanningDeletionConsent(governance, wrongOwner), /route planning deletion/);
+  const wrongGuide = governance.replace("不从指针切换自动推导删除授权",
+    "指针切换后可自动删除completed scope");
+  assert.notEqual(wrongGuide, governance);
+  assert.throws(() => assertPlanningDeletionConsent(wrongGuide, roadmap), /pointer switch/);
+  const missingConsent = governance.replace(/由维护者在单独评审中\s*明确决定/,
+    "由脚本自动处理");
+  assert.notEqual(missingConsent, governance);
+  assert.throws(() => assertPlanningDeletionConsent(missingConsent, roadmap), /maintainer must decide/);
+  const wrongRoadmap = roadmap.replace("都不得自动删除planning", "均可自动删除planning");
+  assert.notEqual(wrongRoadmap, roadmap);
+  assert.throws(() => assertPlanningDeletionConsent(governance, wrongRoadmap), /must not authorize planning deletion/);
+  const rephrasedGuide = governance
+    .replace("只选择当前唯一活动 scope，不负责自动删除其他目录",
+      "仅指向当前唯一活动 scope，不会自动移除其他目录")
+    .replace(/由维护者在单独评审中\s*明确决定，不从指针切换自动推导删除授权/,
+      "由维护者通过单独评审作出决定；指针切换本身不会产生删除授权");
+  const rephrasedRoadmap = roadmap.replace(
+    "仅仅到达C0/C2、切换`.active_plan`、满足retirement DoD或已有Git恢复点，都不得自动删除planning",
+    "到达C0/C2、切换`.active_plan`、满足retirement DoD或已有Git恢复点，都不能据此移除planning");
+  assert.notEqual(rephrasedGuide, governance);
+  assert.notEqual(rephrasedRoadmap, roadmap);
+  assert.doesNotThrow(() => assertPlanningDeletionConsent(rephrasedGuide, rephrasedRoadmap));
 });
 
 test("tracked Markdown local links resolve to existing paths and explicit anchors", () => {
