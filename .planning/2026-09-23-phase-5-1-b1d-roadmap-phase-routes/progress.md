@@ -1,0 +1,12 @@
+# Progress: Phase 5.1 B1d ROADMAP Phase routes
+
+## 2026-09-23
+
+- Read planning-with-files skill, ran session catch-up with no unsynced report and confirmed clean worktree.
+- Recovered repository reading route, B1c handoff and frozen A20 inventory. Inspected ROADMAP §4–§5 and the mixed architecture test seam. Created independent A20 scope; no test or document content has changed yet.
+- Inspected Product overview index/Phase 4/Phase 5 owners and repository-boundary overlap. Classified A17 current identity, A18 Release order and A19 planning/migration safety as untouched; identified A20 §4 summary wording, §5 row prose and older Phase narrative literals as replacement candidates. Will extend B1a's existing relationship checker with materialized-index and status parsing, not duplicate the route authority.
+- Added current-state A20 route/index/file/status relationship guard and replaced the fixed Phase-row and selected Phase 4 historical-example sentence checks. Initial focused architecture/repository run passed 35/35. Added in-memory negative/benign probes; focused run passed 36/36.
+- Re-reviewed rotation semantics and retained the existing `NONE` safety assertion: no current repository instance fixes whether §4 retains an accepted-baseline overview link after a train becomes `NONE`. Marked future-NONE as a separate A20 residual instead of guessing or treating the current-state pass as complete A20 closure.
+- Diff review found that Phase 6–9 row phrases and Phase 4 overview Release/history claims are safety-adjacent, not merely narrative. Restored their original checks; the new route/status guard does not replace those semantics. This gate remains an A20 current-route subset, with unresolved future and cross-owner content explicit.
+- Final focused architecture/repository run after restoring safety assertions: 36/36 pass. Active-Phase scope and §4 candidate-window descriptions can be rephrased without changing parsed route relationships; no ROADMAP/overview content needed repair.
+- Tightened the §4 accepted-version evidence link from a loose version prefix to its exact acceptance document convention; a same-version wrong file negative probe fails. Final full Windows `npm test`: 199 total, 173 pass, 26 POSIX/Linux-only skips, 0 fail. `node --check tests/architecture-contracts.test.js` and `git diff --check` passed. Skips do not constitute Linux/Cloud evidence.

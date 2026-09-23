@@ -61,6 +61,76 @@ function assertOverviewRouteRelationship(roadmap) {
     assert.ok(activeTargets.includes(target) && routeTargets.has(target),
       "a repeated overview must pair current train and route index roles");
   }
+  return { current, routes, trainPhase: Number(trainRole[1]) };
+}
+
+function assertRoadmapPhaseRoutes(roadmap, overviewIndex) {
+  const { current, routes, trainPhase } = assertOverviewRouteRelationship(roadmap);
+  const phaseRows = new Map();
+  const statusOf = cell => {
+    const states = [
+      /\bactive\b|已激活/i.test(cell) && "active",
+      /\bcomplete\b|已闭合|已完成/i.test(cell) && "complete",
+      /\bpending\b|待定|未激活/i.test(cell) && "pending",
+    ].filter(Boolean);
+    assert.equal(states.length, 1, "Phase row must have one parseable lifecycle state");
+    return states[0];
+  };
+  for (const line of routes.split(/\r?\n/).filter(line => /^\| \d+ \|/.test(line))) {
+    const cells = line.split(/(?<!\\)\|/).slice(1, -1).map(cell => cell.trim());
+    assert.equal(cells.length, 5, "Phase route row must retain five columns");
+    const phase = Number(cells[0]);
+    assert.equal(phaseRows.has(phase), false, "Phase route index must have one row per Phase");
+    const targets = markdownLinks(cells[4]).filter(target => /phase-\d+-overview\.md#/.test(target));
+    assert.ok(targets.length <= 1, "Phase status cell must have at most one overview");
+    const status = statusOf(cells[4]);
+    assert.equal(targets.length, status === "pending" ? 0 : 1,
+      "only active or complete Phase rows may have materialized overviews");
+    if (status === "active") {
+      assert.equal(phase, trainPhase, "active Phase row must match current train");
+      const series = cells[1].match(/`([^`]+-\*)`/)?.[1];
+      assert.ok(series && readJson("package.json").version.startsWith(series.slice(0, -1)),
+        "active Phase series must admit the current package candidate");
+    }
+    phaseRows.set(phase, { status, target: targets[0] || null });
+  }
+  assert.equal([...phaseRows.values()].filter(row => row.status === "active").length, 1,
+    "one active train must have exactly one active Phase route");
+
+  const indexRows = new Map();
+  for (const line of overviewIndex.split(/\r?\n/).filter(line => /^\| \d+ \|/.test(line))) {
+    const cells = line.split(/(?<!\\)\|/).slice(1, -1).map(cell => cell.trim());
+    assert.equal(cells.length, 3, "materialized overview index row must retain three columns");
+    const phase = Number(cells[0]);
+    assert.equal(indexRows.has(phase), false, "overview index must have one row per materialized Phase");
+    const links = markdownLinks(cells[1]);
+    assert.deepEqual(links, [`phase-${phase}-overview.md#product-phase-${phase}-overview`],
+      "overview index row must link its own Phase");
+    indexRows.set(phase, { status: statusOf(cells[2]),
+      target: `docs/product-phases/${links[0]}` });
+  }
+  const materialized = [...phaseRows.entries()].filter(([, row]) => row.target).map(([phase]) => phase).sort((a, b) => a - b);
+  assert.deepEqual([...indexRows.keys()].sort((a, b) => a - b), materialized,
+    "overview index must equal the materialized ROADMAP Phase routes");
+  const overviewFiles = fs.readdirSync(path.join(root, "docs/product-phases"))
+    .filter(file => /^phase-\d+-overview\.md$/.test(file))
+    .map(file => Number(file.match(/^phase-(\d+)-overview\.md$/)[1])).sort((a, b) => a - b);
+  assert.deepEqual(overviewFiles, materialized,
+    "materialized Phase overview files must equal the ROADMAP/index routes");
+  for (const phase of materialized) {
+    assert.deepEqual(indexRows.get(phase), phaseRows.get(phase),
+      "overview index and ROADMAP must agree on target and lifecycle state");
+  }
+  const accepted = roadmap.match(/^\| 当前已接受版本 \| `(v\d+\.\d+\.\d+)`/m)?.[1];
+  assert.ok(accepted, "ROADMAP must declare its accepted role");
+  assert.ok(markdownLinks(current).includes("BASELINE_PROVENANCE.md"),
+    "current train must delegate immutable identity to provenance");
+  assert.ok(markdownLinks(current).some(target => target.startsWith(
+    `docs/acceptance/${accepted}-cloud-hard-acceptance.md#`)),
+    "current train must point to accepted-version evidence");
+  const currentBody = current.replace(/^## 4\. 当前开发列车\r?\n/, "");
+  assert.doesNotMatch(currentBody, /\]\(docs\/history\/|^#{2,6} /m,
+    "current train pointer must not become a history route or a nested runbook");
 }
 
 function assertDuplicateAuthorityRoutes(discovered, roadmap) {
@@ -654,6 +724,7 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.notEqual(longTermStart, -1);
   const currentTrain = roadmap.slice(currentTrainStart, productPhaseStart);
   const productPhases = roadmap.slice(productPhaseStart, versioningStart);
+  assertRoadmapPhaseRoutes(roadmap, phaseOverviewIndex);
   const migrationGovernance = roadmap.slice(migrationStart, releaseStart);
   const compatibilityGovernance = roadmap.slice(compatibilityStart, rollbackStart);
   const developmentTrain = roadmap.match(/^\| 当前开发列车 \| `(NONE|v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?)`/m)?.[1];
@@ -724,40 +795,25 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(currentTrain,
     /当前exact development candidate为`v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?`[^\n]*branch `\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?`/);
   assert.doesNotMatch(currentTrain, /^<a name="v\d+-\d+-\d+(?:-[a-z0-9-]+)?-release-tag-guide-train"><\/a>$/m);
-  assert.match(currentTrain,
-    /Product Phase 4 Overview[\s\S]*BASELINE_PROVENANCE[\s\S]*v0\.4\.4 acceptance/);
-  assert.match(currentTrain, /docs\/product-phases\/phase-4-overview\.md#product-phase-4-overview/);
-  assert.match(currentTrain, /docs\/product-phases\/phase-5-overview\.md#product-phase-5-overview/);
-  assert.match(currentTrain, /candidate \+ accepted role window/);
   assert.match(currentTrain, /trusted\/Release zones 继续 exact[\s\S]*docs\/planning zones 按 lifecycle policy/);
-  assert.match(currentTrain,
-    /current development train指针[\s\S]*exact列车身份[\s\S]*Product Phase overview链接[\s\S]*不再承载长期Product摘要/);
-  assert.doesNotMatch(currentTrain, /v0-4-2-release-closeout|### 4\.1|documentation governance/);
-  assert.doesNotMatch(currentTrain, /F3B2 closeout|回退 smart-only|unreachable code/);
-  assert.doesNotMatch(currentTrain,
-    /Phase 4 已采纳 gate 路线|F2 activation\/disarm 前置协议|F2B Discovery 交接|P9-A pre-seal|P9-F second retirement|流水账文件/);
   assert.match(productPhases, /^<a name="product-phase-overview-rotation"><\/a>$/m);
   assert.match(productPhases, /本节只保存未来Product Phase路线[\s\S]*不自动授权下一Phase/);
   assert.match(productPhases,
     /当前维护默认一条版本列车只承载一个Product Phase[\s\S]*维护者[\s\S]*明确授权/);
-  assert.match(productPhases, /TBD路线行不提前物化空overview/);
   assert.match(productPhases, /patch\/governance归属[\s\S]*没有新Product Phase时[\s\S]*不创建overview/);
   assert.match(productPhases,
     /所修补Product baseline[\s\S]*ROADMAP声明的版本系列[\s\S]*不能唯一判断时先由维护者确认/);
-  assert.match(productPhases, /\| 4 \| `0\.4\.0-\*`～`[^`]+`[\s\S]*patch\/governance[\s\S]*Phase 4 Overview/);
-  assert.match(productPhases,
-    /\| 5 \| `0\.5\.0-\*` \| 文档治理[\s\S]*Product实现[\s\S]*仍需Discovery[\s\S]*Phase 5 active[\s\S]*Phase 5 Overview/);
   assert.match(productPhases, /\| 6 \| `0\.6\.0-\*`[\s\S]*PreCompact\/PostCompact/);
   assert.match(productPhases, /\| 7 \| `0\.7\.0-\*`[\s\S]*噪声[\s\S]*`NO_GO`[\s\S]*不是Phase 8前置/);
   assert.match(productPhases, /\| 8 \| `0\.8\.0-\*`[\s\S]*唯一[\s\S]*read-only[\s\S]*Phase 7/);
   assert.match(productPhases, /\| 9 \| `0\.9\.0-\*`[\s\S]*复用Phase 8 evaluator[\s\S]*best-effort shell lock[\s\S]*managed authority/);
   assert.doesNotMatch(productPhases, /5\.1\.1|5\.1\.2|5\.1\.3|5\.1\.4|### 5\.2/);
   assert.match(phaseOverviewIndex, /^<a name="product-phase-overview-index"><\/a>$/m);
-  assert.match(phaseOverviewIndex, /真实激活过的 Product Phase 的长期说明书[\s\S]*未激活[\s\S]*不提前创建空文件/);
   assert.match(phaseOverviewTemplate, /^<a name="product-phase-overview-template"><\/a>$/m);
   assert.match(phaseOverviewTemplate, /不复制当前Next Step[\s\S]*C0\/C1\/C2/);
   assert.match(phaseOverviewTemplate, /tag\/source\/ZIP\/bootstrap\/SHA/);
-  assert.match(phase4Overview, /Why this Phase existed[\s\S]*F0 → F1A → F1B → F2A → F2B → F3A → F3B → F3C/);
+  assert.match(phase4Overview, /^> Authority role: `PRODUCT_PHASE_OVERVIEW`$/m);
+  assert.match(phase4Overview, /^## Why this Phase existed$/m);
   assert.match(phase4Overview, /^<a name="v0-4-2-release-closeout"><\/a>$/m);
   assert.match(phase4Overview, /^<a name="v0-4-3-release-asset-governance"><\/a>$/m);
   assert.match(phase4Overview,
@@ -784,6 +840,47 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(compatibilityGovernance, /进入`1\.0\.0`稳定线[\s\S]*public documentation surface[\s\S]*长期兼容面治理/);
   assert.doesNotMatch(roadmap, /### 4\.6 流水账/);
   assert.match(readme, /ROADMAP\.md#pre-1-compatibility-admission/);
+});
+
+test("ROADMAP Phase routes reject wrong materialization and permit summary rewrites", () => {
+  const roadmap = readText("ROADMAP.md");
+  const overviewIndex = readText("docs/product-phases/README.md");
+  assertRoadmapPhaseRoutes(roadmap, overviewIndex);
+  const routeRows = roadmap.split(/\r?\n/).filter(line => /^\| \d+ \|/.test(line));
+  const active = routeRows.find(line => /\bactive\b/.test(line));
+  const pending = routeRows.find(line => /\bpending\b/.test(line));
+  assert.ok(active && pending, "probe requires an active and a pending Phase row");
+  assert.throws(() => assertRoadmapPhaseRoutes(roadmap.replace(active,
+    active.replace(/\bactive\b/, "pending")), overviewIndex),
+  /only active or complete Phase rows|one active train/);
+  const pendingPhase = pending.match(/^\| (\d+) \|/)[1];
+  const premature = pending.replace(/\bpending\b/,
+    `pending；[overview](docs/product-phases/phase-${pendingPhase}-overview.md#product-phase-${pendingPhase}-overview)`);
+  assert.throws(() => assertRoadmapPhaseRoutes(roadmap.replace(pending, premature), overviewIndex),
+    /only active or complete Phase rows/);
+  const indexRow = overviewIndex.split(/\r?\n/).find(line => /^\| \d+ \|/.test(line));
+  assert.ok(indexRow, "probe requires a materialized overview index row");
+  assert.throws(() => assertRoadmapPhaseRoutes(roadmap, overviewIndex.replace(indexRow, "")),
+    /overview index must equal/);
+  const wrongIndex = indexRow.replace(/phase-(\d+)-overview\.md#product-phase-\d+-overview/,
+    "phase-999-overview.md#product-phase-999-overview");
+  assert.throws(() => assertRoadmapPhaseRoutes(roadmap, overviewIndex.replace(indexRow, wrongIndex)),
+    /overview index row must link its own Phase/);
+  const current = sectionBetween(roadmap, "## 4. 当前开发列车", '<a name="product-phase-route-index"></a>');
+  const accepted = roadmap.match(/^\| 当前已接受版本 \| `(v\d+\.\d+\.\d+)`/m)[1];
+  const wrongEvidence = current.replace(/\]\(docs\/acceptance\/v[^)]+\.md#[^)]+\)/,
+    `](docs/acceptance/${accepted}-wrong.md#wrong)`);
+  assert.notEqual(wrongEvidence, current);
+  assert.throws(() => assertRoadmapPhaseRoutes(roadmap.replace(current, wrongEvidence), overviewIndex),
+    /accepted-version evidence/);
+  assert.throws(() => assertRoadmapPhaseRoutes(roadmap.replace(current,
+    current + "\n### copied historical runbook\n"), overviewIndex),
+  /nested runbook/);
+  const equivalent = roadmap.replace(active, active.replace("文档治理：authority分层", "文档权威治理：分层职责"))
+    .replace("candidate + accepted role window", "候选与已接受角色窗口");
+  assert.match(equivalent, /文档权威治理：分层职责/);
+  assert.match(equivalent, /候选与已接受角色窗口/);
+  assertRoadmapPhaseRoutes(equivalent, overviewIndex);
 });
 
 test("Phase 4 separates platform execution permission from plan-local product consent", () => {
