@@ -11,6 +11,113 @@ const readText = relative => fs.readFileSync(path.join(root, relative), "utf8");
 const currentManifest = readJson("upstream-manifest.json");
 const currentArtifactPath = currentManifest.managed_runtime.contracts.release_artifact.path;
 const currentBundlePath = currentManifest.managed_runtime.contracts.runtime_bundle.path;
+const markdownLinks = markdown => [...markdown.matchAll(/\[[^\]]+\]\(([^)]+)\)/g)]
+  .map(([, target]) => target);
+
+function sectionBetween(markdown, start, end) {
+  const first = markdown.indexOf(start);
+  const last = markdown.indexOf(end, first + start.length);
+  assert.ok(first >= 0 && last > first, `missing section boundary ${start} -> ${end}`);
+  return markdown.slice(first, last);
+}
+
+function assertOverviewRouteRelationship(roadmap) {
+  const trainRole = roadmap.match(/^\| 当前开发列车 \|[^\r\n]*Product Phase (\d+)/m);
+  assert.ok(trainRole, "ROADMAP must declare its current Product Phase");
+  const current = sectionBetween(roadmap, "## 4. 当前开发列车", '<a name="product-phase-route-index"></a>');
+  const routes = sectionBetween(roadmap, '<a name="product-phase-route-index"></a>',
+    '<a name="product-phase-overview-rotation"></a>');
+  const overviewPattern = /^docs\/product-phases\/phase-(\d+)-overview\.md#product-phase-(\d+)-overview$/;
+  const overviewLinks = text => markdownLinks(text).filter(target => target.startsWith("docs/product-phases/phase-"));
+  const activeTargets = overviewLinks(current);
+  assert.ok(activeTargets.length > 0, "current train must link its materialized Phase overview");
+  assert.ok(activeTargets.includes(`docs/product-phases/phase-${trainRole[1]}-overview.md#product-phase-${trainRole[1]}-overview`),
+    "current Product Phase must have a matching train pointer");
+  assert.equal(new Set(activeTargets).size, activeTargets.length,
+    "current train must not repeat an overview pointer");
+  const routeTargets = new Map();
+  for (const line of routes.split(/\r?\n/).filter(line => /^\| \d+ \|/.test(line))) {
+    const targets = overviewLinks(line);
+    assert.ok(targets.length <= 1, "one Phase route row must not name multiple overviews");
+    if (!targets.length) continue;
+    const phase = Number(line.match(/^\| (\d+) \|/)[1]);
+    const match = targets[0].match(overviewPattern);
+    assert.ok(match && Number(match[1]) === phase && match[1] === match[2],
+      "Phase route row must point to its own overview");
+    assert.equal(routeTargets.has(targets[0]), false, "Phase route index must not duplicate an overview");
+    routeTargets.set(targets[0], phase);
+  }
+  for (const target of activeTargets) {
+    const match = target.match(overviewPattern);
+    assert.ok(match && match[1] === match[2], "current train must use a canonical Phase overview anchor");
+    assert.equal(routeTargets.get(target), Number(match[1]),
+      "current train pointer must match its Phase route index row");
+  }
+  const counts = new Map();
+  for (const target of overviewLinks(roadmap)) counts.set(target, (counts.get(target) || 0) + 1);
+  for (const [target, count] of counts) {
+    if (count <= 1) continue;
+    assert.equal(count, 2, "an overview may appear only once per current/route role");
+    assert.ok(activeTargets.includes(target) && routeTargets.has(target),
+      "a repeated overview must pair current train and route index roles");
+  }
+}
+
+function assertDuplicateAuthorityRoutes(discovered, roadmap) {
+  const counts = new Map();
+  for (const link of discovered) counts.set(link, (counts.get(link) || 0) + 1);
+  for (const [link, count] of counts) {
+    if (count <= 1) continue;
+    assert.match(link, /^ROADMAP\.md->phase-\d+-overview\.md#product-phase-\d+-overview$/,
+      "only ROADMAP Phase overviews may have repeated authority links");
+    assert.equal(count, 2, "a ROADMAP overview may have only two distinct role links");
+  }
+  assertOverviewRouteRelationship(roadmap);
+}
+
+function assertHandoffNavigation(handoff, readme) {
+  const ownerMap = sectionBetween(readme, '<a name="documentation-map"></a>', "## 许可证");
+  const ownerFiles = new Set(markdownLinks(ownerMap).map(target => target.split("#")[0]));
+  const navigation = handoff.slice(0, handoff.indexOf("## 3."));
+  for (const target of markdownLinks(navigation)) {
+    const file = target.split("#")[0];
+    if (file !== "README.md" && file.endsWith(".md")) {
+      assert.ok(ownerFiles.has(file), "README owner map lacks handoff destination: " + file);
+    }
+  }
+  const introduction = handoff.slice(0, handoff.indexOf("## 1."));
+  assert.ok(markdownLinks(introduction).includes("README.md#documentation-map"),
+    "handoff introduction must route to README's owner map");
+  const quickstart = sectionBetween(handoff, "## 1.", "## 2.");
+  const starts = [...quickstart.matchAll(/^\d+\. \*\*/gm)].map(match => match.index);
+  assert.ok(starts.length > 0, "handoff must expose numbered quickstart steps");
+  const steps = starts.map((start, i) => quickstart.slice(start, starts[i + 1] ?? quickstart.length));
+  const stepTargets = steps.map(markdownLinks);
+  const stepWith = target => {
+    const matches = stepTargets.filter(targets => targets.includes(target));
+    assert.equal(matches.length, 1, "handoff quickstart must have one step for " + target);
+    return matches[0];
+  };
+  stepWith(".planning/.active_plan");
+  stepWith("Wiki.md#local-development");
+  assert.ok(stepWith("DESIGN.md#module-responsibilities").includes("ARCHITECTURE.md"),
+    "handoff implementation step must pair DESIGN with ARCHITECTURE");
+
+  const triage = sectionBetween(handoff, "## 2.", "## 3.");
+  const rowTargets = triage.split(/\r?\n/).filter(line => /^\| [^|-]/.test(line))
+    .map(markdownLinks);
+  const rowWith = target => {
+    const matches = rowTargets.filter(targets => targets.includes(target));
+    assert.equal(matches.length, 1, "handoff triage must have one row for " + target);
+    return matches[0];
+  };
+  rowWith("README.md");
+  const versionRow = rowWith("ROADMAP.md");
+  assert.ok(versionRow.includes("CHANGELOG.md") && versionRow.includes("BASELINE_PROVENANCE.md"),
+    "version triage must join programme, delta and immutable identity owners");
+  rowWith("docs/");
+  rowWith("docs/maintenance-environment-profile.md#maintenance-environment-profile");
+}
 
 test("cross-document fragments use stable explicit anchors", () => {
   const authorityDocs = [
@@ -46,16 +153,27 @@ test("cross-document fragments use stable explicit anchors", () => {
   }
 
   assert.ok(discovered.length > 0, "expected at least one cross-document authority fragment");
-  const counts = new Map();
-  for (const link of discovered) counts.set(link, (counts.get(link) || 0) + 1);
-  assert.deepEqual(
-    [...counts.entries()].filter(([, count]) => count > 1),
-    [
-      ["ROADMAP.md->phase-5-overview.md#product-phase-5-overview", 2],
-      ["ROADMAP.md->phase-4-overview.md#product-phase-4-overview", 2],
-    ],
-    "only current-train pointers and the Product Phase route index may share authority targets",
-  );
+  assertDuplicateAuthorityRoutes(discovered, readText("ROADMAP.md"));
+});
+
+test("ROADMAP overview route roles reject wrong pointers and permit equivalent prose", () => {
+  const roadmap = readText("ROADMAP.md");
+  const phase5 = "docs/product-phases/phase-5-overview.md#product-phase-5-overview";
+  const phase4 = "docs/product-phases/phase-4-overview.md#product-phase-4-overview";
+  assertOverviewRouteRelationship(roadmap);
+  assert.throws(() => assertOverviewRouteRelationship(roadmap.replace(phase5, phase4)),
+    /current Product Phase|current train/);
+  const wrongRoute = roadmap.replace(/^(\| 5 \|[^\r\n]*)$/m,
+    line => line.replace(phase5, phase4));
+  assert.notEqual(wrongRoute, roadmap);
+  assert.throws(() => assertOverviewRouteRelationship(wrongRoute), /Phase route row/);
+  const strayDuplicate = roadmap.replace('<a name="product-phase-overview-rotation"></a>',
+    `[also](${phase5})\n<a name="product-phase-overview-rotation"></a>`);
+  assert.throws(() => assertOverviewRouteRelationship(strayDuplicate), /once per current\/route role/);
+  assert.throws(() => assertDuplicateAuthorityRoutes(["README.md->ROADMAP.md#some-anchor",
+    "README.md->ROADMAP.md#some-anchor"], roadmap), /only ROADMAP Phase overviews/);
+  assertOverviewRouteRelationship(roadmap.replace("当前只授权Phase 5文档治理",
+    "目前仅授权第五阶段的文档治理"));
 });
 
 test("MAINTAINER_HANDOFF is a triage desk, not another mutable runbook", () => {
@@ -71,12 +189,7 @@ test("MAINTAINER_HANDOFF is a triage desk, not another mutable runbook", () => {
     "## 5. 停止条件与接手完成标准",
   ]) assert.match(handoff, new RegExp(`^${heading.replaceAll(".", "\\.")}$`, "m"));
 
-  for (const target of [
-    "README.md#documentation-map", "Wiki.md#local-development",
-    "DESIGN.md#module-responsibilities", "ARCHITECTURE.md", "ROADMAP.md", "CHANGELOG.md",
-    "BASELINE_PROVENANCE.md", ".planning/.active_plan",
-    "docs/maintenance-environment-profile.md#maintenance-environment-profile", "docs/",
-  ]) assert.match(handoff, new RegExp(target.replaceAll(".", "\\.")));
+  assertHandoffNavigation(handoff, readText("README.md"));
 
   for (const signal of [
     "healthy", "repairable", "blocker", "platform limitation",
@@ -91,6 +204,26 @@ test("MAINTAINER_HANDOFF is a triage desk, not another mutable runbook", () => {
   assert.doesNotMatch(handoff, /build_release\.py build|sha256sum|mktemp|git reset/);
   assert.doesNotMatch(handoff, /^## .*?(?:Source\/runtime 更新|Candidate\/Release ZIP|正式 Release|M4 仓库切换|回滚)$/m);
   assert.equal(artifact.entries.some(entry => entry.path === "MAINTAINER_HANDOFF.md"), false);
+});
+
+test("handoff navigation rejects misplaced links and permits equivalent explanation", () => {
+  const handoff = readText("MAINTAINER_HANDOFF.md");
+  const readme = readText("README.md");
+  assertHandoffNavigation(handoff, readme);
+  assert.throws(() => assertHandoffNavigation(handoff.replace("(README.md#documentation-map)",
+    "(ROADMAP.md#documentation-map)") + "\n[map](README.md#documentation-map)\n", readme),
+  /introduction must route/);
+  assert.throws(() => assertHandoffNavigation(handoff.replace("(DESIGN.md#module-responsibilities)",
+    "(ROADMAP.md#module-responsibilities)") + "\n[design](DESIGN.md#module-responsibilities)\n", readme),
+  /quickstart must have one step/);
+  assert.throws(() => assertHandoffNavigation(handoff.replace("[CHANGELOG](CHANGELOG.md)",
+    "[CHANGELOG](Wiki.md)") + "\n[delta](CHANGELOG.md)\n", readme),
+  /version triage/);
+  assert.throws(() => assertHandoffNavigation(handoff.replace("(.planning/.active_plan)",
+    "(README.md)") + "\n[plan](.planning/.active_plan)\n", readme),
+  /quickstart must have one step/);
+  assertHandoffNavigation(handoff.replace("[Wiki 的本地开发入口]", "[开发与验证指南]")
+    .replace("绿色结果只是证据，不会自动扩大授权。", "通过检查只构成证据，并不授予下一步权限。"), readme);
 });
 
 test("acceptance documents are counted by Discovery Round and share one operator-guide lifecycle", () => {
