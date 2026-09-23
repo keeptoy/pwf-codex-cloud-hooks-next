@@ -86,6 +86,49 @@ function assertHistoryIndexAdmission(index, histories) {
     "Phase 5.1 must declare its frozen Discovery role");
 }
 
+function assertHistoryAuthorityRoutes(index, template, guide, overviewIndex, roadmap) {
+  const section = (document, start, end, label) => {
+    const from = document.indexOf(start);
+    const to = document.indexOf(end, from + start.length);
+    assert.ok(from >= 0 && to > from, `${label} must have its own section`);
+    return document.slice(from, to);
+  };
+  const indexIntroduction = section(index, '<a name="phase-history-index"></a>',
+    '## 收录边界', 'history index introduction');
+  const indexBoundary = section(index, '## 收录边界',
+    '## Current role classification', 'history index boundary');
+  const templateLifecycle = section(template, '## Current authority link lifecycle',
+    '## 可选 append-only status note', 'history template lifecycle');
+  const guideHistory = section(guide, '<a name="history-record-roles"></a>',
+    '## 9. Provenance', 'Guide history roles');
+  assert.match(overviewIndex, /^<a name="product-phase-overview-index"><\/a>$/m,
+    'Product overview index must retain its stable target');
+  assert.match(roadmap, /^<a name="product-phase-overview-rotation"><\/a>$/m,
+    'ROADMAP must retain its overview-rotation target');
+  assert.ok(indexIntroduction.includes('](../product-phases/README.md)'),
+    'history index must route long-term Product conclusions to the overview index');
+  assert.match(indexIntroduction, /不保存原始聊天、逐命令日志/,
+    'history index must remain a curated record, not a raw log');
+  assert.match(indexIntroduction, /现行programme只读ROADMAP/,
+    'history index must not claim current programme authority');
+  assert.match(guideHistory, /不复制[\s\S]*仓库专用状态机/,
+    'Guide must not duplicate ROADMAP programme rules');
+  for (const [body, label] of [
+    [indexBoundary, 'history index'], [templateLifecycle, 'history template'],
+  ]) {
+    assert.ok(body.includes('docs/product-phases/phase-N-overview.md#product-phase-N-overview'),
+      `${label} must point current Product authority to the matching Phase overview`);
+  }
+  for (const [body, target, label] of [
+    [indexBoundary, '../../ROADMAP.md#product-phase-overview-rotation', 'history index'],
+    [templateLifecycle, '../ROADMAP.md#product-phase-overview-rotation', 'history template'],
+    [guideHistory, '../ROADMAP.md#product-phase-overview-rotation', 'Guide history roles'],
+  ]) {
+    assert.ok(body.includes(`](${target})`),
+      `${label} must route overview lifecycle rules to ROADMAP`);
+  }
+}
+
 function isTrustedSource(relative) {
   return trustedRootPaths.has(relative) || trustedPrefixes.some(prefix => relative.startsWith(prefix));
 }
@@ -656,6 +699,41 @@ test("frozen Phase 5.1 is admitted by the history index without a fixed record t
   const rewordedSummary = index.replace("回补型Phase 4.12～4.17", "事后整理的Phase 4.12～4.17");
   assert.notEqual(rewordedSummary, index);
   assert.doesNotThrow(() => assertHistoryIndexAdmission(rewordedSummary, histories));
+});
+
+test("history authority routes reject wrong owners but allow equivalent explanation", () => {
+  const index = read("docs/history/README.md");
+  const template = read("docs/phase-history-template.md");
+  const guide = read("docs/repository-governance-guide.md");
+  const overviewIndex = read("docs/product-phases/README.md");
+  const roadmap = read("ROADMAP.md");
+  const check = (i = index, t = template, g = guide) =>
+    assertHistoryAuthorityRoutes(i, t, g, overviewIndex, roadmap);
+  assert.doesNotThrow(() => check());
+
+  const wrongProductOwner = index.replace('](../product-phases/README.md)', '](../../ROADMAP.md)');
+  assert.notEqual(wrongProductOwner, index);
+  assert.throws(() => check(wrongProductOwner), /long-term Product conclusions/);
+  const wrongCurrentProduct = template.replace(
+    'docs/product-phases/phase-N-overview.md#product-phase-N-overview',
+    'ROADMAP.md#product-phase-overview-rotation');
+  assert.notEqual(wrongCurrentProduct, template);
+  assert.throws(() => check(index, wrongCurrentProduct), /matching Phase overview/);
+  const wrongProgrammeOwner = guide.replace(
+    '](../ROADMAP.md#product-phase-overview-rotation)',
+    '](../product-phases/README.md#product-phase-overview-index)');
+  assert.notEqual(wrongProgrammeOwner, guide);
+  assert.throws(() => check(index, template, wrongProgrammeOwner), /Guide history roles must route/);
+
+  const introExplanation = '精选过的历史过程账本';
+  const templateExplanation = '不再把history current links从ROADMAP第4节迁到第5节';
+  const guideExplanation = '本指南只维护通用history冻结、链接安全与retirement原则';
+  assert.ok(index.includes(introExplanation) && template.includes(templateExplanation)
+    && guide.includes(guideExplanation), 'equivalent-prose probe preconditions');
+  assert.doesNotThrow(() => check(
+    index.replace(introExplanation, '按证据选入的历史记录'),
+    template.replace(templateExplanation, '历史链接无需在closeout时迁移到另一节'),
+    guide.replace(guideExplanation, '本指南负责历史记录的通用冻结与链接边界')));
 });
 
 test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", () => {
@@ -1337,23 +1415,19 @@ test("historical documents have two controlled macro entrances and remain adviso
   assert.match(governanceGuide,
     /RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD[\s\S]*一个Product Phase可以有多份/);
   assert.match(governanceGuide,
-    /ROADMAP\.md#product-phase-overview-rotation[\s\S]*通用history冻结[\s\S]*不复制[\s\S]*仓库专用状态机/);
-  assert.match(governanceGuide,
     /programme在record冻结后插入、拆分或重编号Product Phase时[\s\S]*不得搜索替换历史正文[\s\S]*Post-programme reindex status/);
   const histories = new Map(repositoryPaths()
     .filter(relative => /^docs\/history\/phase-[^/]+\.md$/.test(relative))
     .map(relative => [path.basename(relative), read(relative)]));
   assertHistoryIndexAdmission(historyIndex, histories);
-  assert.match(historyIndex,
-    /精选过的历史过程账本[\s\S]*不保存原始聊天、逐命令日志[\s\S]*长期Product结论读对应[\s\S]*Product Phase Overview[\s\S]*现行programme只读ROADMAP/);
+  assertHistoryAuthorityRoutes(historyIndex, historyTemplate, governanceGuide,
+    phaseOverviewIndex, roadmap);
   assert.match(historyIndex,
     /过程账本只有两种record role[\s\S]*回顾型`RETROSPECTIVE_CAPSULE`[\s\S]*探路\/决策型`FROZEN_DISCOVERY_RECORD`[\s\S]*不再扩展第三种身份/);
   assert.match(historyIndex,
     /Post-programme reindex status[\s\S]*Phase 5\/6\/7\/8[\s\S]*Phase 6\/7\/8\/9[\s\S]*`0\.9\.0-\*`/);
   assert.match(historyTemplate, /先选择 record role/);
   assert.match(historyTemplate, /RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
-  assert.match(historyTemplate,
-    /Product Phase激活后[\s\S]*docs\/product-phases\/phase-N-overview\.md#product-phase-N-overview[\s\S]*Product Phase closeout[\s\S]*不再把history current links从ROADMAP第4节迁到第5节/);
   assert.match(phaseOverviewIndex, /^<a name="product-phase-overview-index"><\/a>$/m);
   assert.match(phaseOverviewIndex,
     /真实激活过的 Product Phase 的长期说明书[\s\S]*未激活[\s\S]*不提前创建空文件/);
