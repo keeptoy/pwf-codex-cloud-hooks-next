@@ -227,6 +227,57 @@ function assertPhase412Recovery(index, record, provenance, acceptance) {
     'immutable acceptance must retain the closed-train conclusion');
 }
 
+function assertReindexStatusRoutes(index, histories, roadmap) {
+  // Phase 4.8 stays on its original assertions until its missing Cold evidence is resolved.
+  const records = [
+    ['3.9.3', 'phase-3.9.3-machine-field-lifecycle-and-origin.md'],
+    ['4.1', 'phase-4.1-managed-v3-discovery.md'],
+    ['4.2', 'phase-4.2-programme-route-review.md'],
+    ['4.4', 'phase-4.4-f2a-smart-activation-discovery.md'],
+    ['4.5', 'phase-4.5-f2b-autonomous-activation-discovery.md'],
+    ['4.6', 'phase-4.6-f3-cloud-lifecycle-discovery.md'],
+  ];
+  assert.match(roadmap, /^<a name="product-phase-route-index"><\/a>$/m,
+    'current programme route must retain its explicit ROADMAP anchor');
+  for (const [phase, file] of records) {
+    const rows = index.split(/\r?\n/).filter(line => line.startsWith(`| Phase ${phase} |`));
+    assert.equal(rows.length, 1, `Phase ${phase} needs one history index row`);
+    assert.ok(rows[0].includes(`](${file})`),
+      `Phase ${phase} index must point to its own record`);
+    const history = histories.get(file);
+    assert.ok(history, `Phase ${phase} indexed record must exist`);
+    const scope = `phase-${phase.replaceAll('.', '-')}`;
+    const anchor = `<a name="${scope}-post-programme-reindex-status"></a>`;
+    assert.equal(history.split(anchor).length, 2,
+      `Phase ${phase} needs one stable reindex-status anchor`);
+    const statusStart = history.indexOf(anchor);
+    const status = history.slice(statusStart);
+    assert.match(status, /^<a name="[^"\r\n]+"><\/a>\r?\n\r?\n## Post-programme reindex status/,
+      `Phase ${phase} reindex anchor must introduce the status section`);
+    assert.ok(status.includes('](../../ROADMAP.md#product-phase-route-index)'),
+      `Phase ${phase} status must route current programme to ROADMAP`);
+    const beforeStatus = history.slice(0, statusStart);
+    if (phase === '4.5') {
+      const evidence = 'https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/'
+        + '6b388518855da9053713a58e5c918c8b727b6dc6/'
+        + 'docs/v0.4.0-cloud-hard-acceptance.md#v0-4-0-dev-f2b-source-candidate-evidence';
+      assert.ok(beforeStatus.includes(`](${evidence})`),
+        'Phase 4.5 must retain its exact immutable F2B acceptance');
+    } else {
+      const coldStart = beforeStatus.indexOf('## Cold evidence (not current authority)');
+      assert.ok(coldStart >= 0, `Phase ${phase} must retain cold evidence`);
+      const cold = beforeStatus.slice(coldStart);
+      if (phase !== '4.6') { // Legacy 4.6 has a cold source link but no section anchor.
+        assert.ok(beforeStatus.includes(`<a name="${scope}-immutable-evidence"></a>`),
+          `Phase ${phase} must retain its cold-evidence anchor`);
+      }
+      assert.match(cold,
+        /\]\(https:\/\/github\.com\/keeptoy\/pwf-codex-cloud-hooks-next\/commit\/[a-f0-9]{7,40}\)/,
+        `Phase ${phase} must retain an immutable source commit link`);
+    }
+  }
+}
+
 function isTrustedSource(relative) {
   return trustedRootPaths.has(relative) || trustedPrefixes.some(prefix => relative.startsWith(prefix));
 }
@@ -916,6 +967,59 @@ test("Phase 4.12 recovery rejects broken history and cold links but allows prose
     '旧P9-A～P9-F的名称、顺序与结果仍留在当时的记录中')));
 });
 
+test("six reindex status records keep owner and evidence routes without wording pins", () => {
+  const index = read("docs/history/README.md");
+  const roadmap = read("ROADMAP.md");
+  const histories = new Map(repositoryPaths()
+    .filter(relative => /^docs\/history\/phase-[^/]+\.md$/.test(relative))
+    .map(relative => [path.basename(relative), read(relative)]));
+  const check = (i = index, h = histories, r = roadmap) =>
+    assertReindexStatusRoutes(i, h, r);
+  assert.doesNotThrow(() => check());
+  const f2bAcceptance = readGit("6b388518855da9053713a58e5c918c8b727b6dc6",
+    "docs/v0.4.0-cloud-hard-acceptance.md");
+  assert.match(f2bAcceptance,
+    /^<a name="v0-4-0-dev-f2b-source-candidate-evidence"><\/a>$/m,
+    "Phase 4.5 immutable acceptance fragment must resolve");
+
+  const wrongIndex = index.replace('](phase-4.1-managed-v3-discovery.md)',
+    '](phase-4.2-programme-route-review.md)');
+  assert.notEqual(wrongIndex, index);
+  assert.throws(() => check(wrongIndex), /index must point to its own record/);
+
+  const wrongRoadmap = roadmap.replace('<a name="product-phase-route-index"></a>',
+    '<a name="obsolete-phase-route"></a>');
+  assert.throws(() => check(index, histories, wrongRoadmap), /explicit ROADMAP anchor/);
+  const source = "phase-4.2-programme-route-review.md";
+  const wrongSource = new Map(histories);
+  wrongSource.set(source, wrongSource.get(source).replace(
+    '/commit/f9e35a21b1a30ff445677b86393cc5c8999d228e', '/tree/main'));
+  assert.throws(() => check(index, wrongSource), /immutable source commit link/);
+  const f2b = "phase-4.5-f2b-autonomous-activation-discovery.md";
+  const wrongAcceptance = new Map(histories);
+  wrongAcceptance.set(f2b, wrongAcceptance.get(f2b).replace(
+    'blob/6b388518855da9053713a58e5c918c8b727b6dc6/', 'blob/main/'));
+  assert.throws(() => check(index, wrongAcceptance), /exact immutable F2B acceptance/);
+  const f2a = "phase-4.4-f2a-smart-activation-discovery.md";
+  const wrongRoute = new Map(histories);
+  wrongRoute.set(f2a, wrongRoute.get(f2a).replace(
+    '../../ROADMAP.md#product-phase-route-index',
+    '../../ROADMAP.md#release-four-step-flow'));
+  assert.throws(() => check(index, wrongRoute), /route current programme to ROADMAP/);
+  const missingAnchor = new Map(histories);
+  missingAnchor.set(f2a, missingAnchor.get(f2a).replace(
+    '<a name="phase-4-4-post-programme-reindex-status"></a>', ''));
+  assert.throws(() => check(index, missingAnchor), /stable reindex-status anchor/);
+
+  const f1 = "phase-4.1-managed-v3-discovery.md";
+  const oldExplanation = "旧Phase 5/6/7/8现分别对应Phase 6/7/8/9";
+  assert.ok(histories.get(f1).includes(oldExplanation), 'equivalent-prose probe precondition');
+  const equivalentProse = new Map(histories);
+  equivalentProse.set(f1, equivalentProse.get(f1).replace(oldExplanation,
+    "当时的Phase 5/6/7/8如今依次对应Phase 6/7/8/9"));
+  assert.doesNotThrow(() => check(index, equivalentProse));
+});
+
 test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const acceptedAcceptance = read("docs/acceptance/v0.4.4-cloud-hard-acceptance.md");
@@ -1594,6 +1698,7 @@ test("historical documents have two controlled macro entrances and remain adviso
     .filter(relative => /^docs\/history\/phase-[^/]+\.md$/.test(relative))
     .map(relative => [path.basename(relative), read(relative)]));
   assertHistoryIndexAdmission(historyIndex, histories);
+  assertReindexStatusRoutes(historyIndex, histories, roadmap);
   assertHistoryAuthorityRoutes(historyIndex, historyTemplate, governanceGuide,
     phaseOverviewIndex, roadmap);
   assert.match(historyIndex,
@@ -1621,23 +1726,12 @@ test("historical documents have two controlled macro entrances and remain adviso
   assert.match(historyTemplate, /Post-programme reindex status/);
   assert.match(historyTemplate, /不得预填[^\n]*PASS|不预填[^\n]*PASS/);
   assert.match(historyTemplate, /本地[^\n]*不得[^\n]*替代[^\n]*(Cloud|live)/i);
-  const reindexedHistory = [
-    ["phase-3.9.3-machine-field-lifecycle-and-origin.md", "phase-3-9-3"],
-    ["phase-4.1-managed-v3-discovery.md", "phase-4-1"],
-    ["phase-4.2-programme-route-review.md", "phase-4-2"],
-    ["phase-4.4-f2a-smart-activation-discovery.md", "phase-4-4"],
-    ["phase-4.5-f2b-autonomous-activation-discovery.md", "phase-4-5"],
-    ["phase-4.6-f3-cloud-lifecycle-discovery.md", "phase-4-6"],
-    ["phase-4.8-f3b3-autonomous-live-discovery.md", "phase-4-8"],
-  ];
-  for (const [file, phase] of reindexedHistory) {
-    const history = read(`docs/history/${file}`);
-    assert.match(history, new RegExp(`<a name="${phase}-post-programme-reindex-status"></a>`));
-    assert.match(history,
-      /Post-programme reindex status[\s\S]*旧Phase 5\/6\/7\/8[\s\S]*Phase 6\/7\/8\/9[\s\S]*`0\.9\.0-\*`/);
-    assert.match(history, /当前Phase 5只预占`0\.5\.0-\*`[\s\S]*不产生development train激活、实施或Release授权/);
-    assert.match(history, /ROADMAP\.md#product-phase-route-index/);
-  }
+  const phase48 = read("docs/history/phase-4.8-f3b3-autonomous-live-discovery.md");
+  assert.match(phase48, /<a name="phase-4-8-post-programme-reindex-status"><\/a>/);
+  assert.match(phase48,
+    /Post-programme reindex status[\s\S]*旧Phase 5\/6\/7\/8[\s\S]*Phase 6\/7\/8\/9[\s\S]*`0\.9\.0-\*`/);
+  assert.match(phase48, /当前Phase 5只预占`0\.5\.0-\*`[\s\S]*不产生development train激活、实施或Release授权/);
+  assert.match(phase48, /ROADMAP\.md#product-phase-route-index/);
   const phaseHistory = repositoryPaths()
     .filter(relative => /^docs\/history\/[^/]+\.md$/.test(relative))
     .map(read)
