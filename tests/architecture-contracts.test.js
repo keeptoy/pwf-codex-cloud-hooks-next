@@ -119,6 +119,53 @@ function assertHandoffNavigation(handoff, readme) {
   rowWith("docs/maintenance-environment-profile.md#maintenance-environment-profile");
 }
 
+function assertReadmeOwnerMap(readme) {
+  const map = sectionBetween(readme, '<a name="documentation-map"></a>', "## 许可证");
+  const rows = map.split(/\r?\n/).map(line => line.match(/^\|\s*(.*?)\s*\|\s*(.*?)\s*\|$/))
+    .filter(Boolean).map(([, question, owner]) => ({ question, owner }))
+    .filter(({ question }) => !/^-+$/.test(question));
+  assert.ok(rows.length > 1, "README document map must have question-to-owner rows");
+  for (const { owner } of rows.slice(1)) {
+    assert.ok(markdownLinks(owner).length > 0 || owner === "本 README" || owner.includes("`.planning/.active_plan`"),
+      "every README owner-map row must have a navigable destination");
+  }
+  const ownerFor = cue => {
+    const matches = rows.filter(row => cue.test(row.question));
+    assert.equal(matches.length, 1, `README map must have one row for ${cue}`);
+    return matches[0].owner;
+  };
+  for (const [cue, target] of [
+    [/信任边界/, "ARCHITECTURE.md"],
+    [/源码\/build\/install\/runtime|实现落在/, "DESIGN.md"],
+    [/Unreleased|已经改变/, "CHANGELOG.md"],
+    [/programme/, "ROADMAP.md"],
+    [/不可变资产|迁移 refs/, "BASELINE_PROVENANCE.md"],
+    [/新项目/, "docs/repository-governance-guide.md"],
+    [/接手/, "MAINTAINER_HANDOFF.md"],
+  ]) assert.deepEqual(markdownLinks(ownerFor(cue)), [target],
+    `README map must route ${cue} to ${target}`);
+  assert.deepEqual(markdownLinks(ownerFor(/本地开发、运行检查/)),
+    ["Wiki.md#local-development", "Wiki.md#build-development-zip"],
+    "README map must route local development and Release preparation to Wiki");
+  const activePlanOwner = ownerFor(/Next Step/);
+  assert.match(activePlanOwner, /`\.planning\/\.active_plan`/,
+    "README map must route current authorization to active planning");
+  assert.deepEqual(markdownLinks(activePlanOwner), [],
+    "README map must not add a competing current-authorization owner");
+
+  const outsideMap = readme.replace(map, "");
+  assert.doesNotMatch(outsideMap,
+    /^\|\s*(?:当前源码\/package 身份|当前已接受的 rollback|previous fallback|当前开发列车)\s*\|/m,
+    "README must not add a second current-role table");
+  assert.doesNotMatch(readme, /^## 仓库地图$/m,
+    "README must not add a second repository implementation map");
+  const development = sectionBetween(readme, "## 开发与 Release 维护", "## 安全与 Release 不变量");
+  assert.ok(markdownLinks(development).includes("Wiki.md"),
+    "README must delegate local build and Release instructions to Wiki");
+  assert.doesNotMatch(development, /```/,
+    "README development delegation must not become a second build runbook");
+}
+
 test("cross-document fragments use stable explicit anchors", () => {
   const authorityDocs = [
     "AGENTS.md", "ARCHITECTURE.md", "BASELINE_PROVENANCE.md", "CHANGELOG.md",
@@ -383,14 +430,7 @@ test("README owns the document map while DESIGN owns the repository implementati
   const ownedPlan = readText("runtime/owned-plan.py");
   const adapter = readText("hooks/hook_adapter.py");
 
-  assert.match(readme, /## 开发状态与文档地图/);
-  for (const authority of [
-    "ARCHITECTURE.md", "DESIGN.md", "CHANGELOG.md", "ROADMAP.md", "BASELINE_PROVENANCE.md",
-    "MAINTAINER_HANDOFF.md", "docs/repository-governance-guide.md",
-  ]) assert.match(readme, new RegExp(authority.replace(".", "\\.")));
-  assert.doesNotMatch(readme, /当前源码\/package 身份|当前已接受的 rollback|previous fallback/);
-  assert.doesNotMatch(readme, /## 仓库地图/);
-  assert.doesNotMatch(readme, /构建当前 .*候选 ZIP|当前 ZIP 必须包含精确 \d+ entries/);
+  assertReadmeOwnerMap(readme);
 
   assert.match(design, /^# 仓库实现设计/m);
   assert.match(design, /## 1\. 文档定位/);
@@ -408,6 +448,36 @@ test("README owns the document map while DESIGN owns the repository implementati
   assert.match(agents, /DESIGN\.md/);
   assert.doesNotMatch(ownedPlan, /Inactive managed plan-context runtime|Phase 3 Round 4/);
   assert.doesNotMatch(adapter, /inactive exact-v1 owned-plan request/);
+});
+
+test("README owner map rejects wrong destinations but allows equivalent explanation", () => {
+  const readme = readText("README.md");
+  assertReadmeOwnerMap(readme);
+  const wrongProgramme = readme.replace(/(\| 当前 programme[^\r\n]*\]\()ROADMAP\.md(\) \|)/,
+    "$1CHANGELOG.md$2") + "\n[programme](ROADMAP.md)\n";
+  assert.notEqual(wrongProgramme, readme + "\n[programme](ROADMAP.md)\n");
+  assert.throws(() => assertReadmeOwnerMap(wrongProgramme), /route \/programme\/ to ROADMAP/);
+  const wrongImplementation = readme.replace(/(\| 实现落在[^\r\n]*\]\()DESIGN\.md(\) \|)/,
+    "$1ARCHITECTURE.md$2") + "\n[design](DESIGN.md)\n";
+  assert.throws(() => assertReadmeOwnerMap(wrongImplementation), /route .* to DESIGN/);
+  const unlinkedOverview = readme.replace("[`Product Phase Overview`](docs/product-phases/README.md)",
+    "docs/product-phases/README.md");
+  assert.throws(() => assertReadmeOwnerMap(unlinkedOverview), /navigable destination/);
+  const competingPlan = readme.replace("`.planning/.active_plan` 指向的活动 `task_plan.md`",
+    "`.planning/.active_plan` 指向的活动 `task_plan.md` 或 [README](README.md)");
+  assert.throws(() => assertReadmeOwnerMap(competingPlan), /competing current-authorization owner/);
+  assert.throws(() => assertReadmeOwnerMap(readme + "\n| 当前开发列车 | moving candidate |\n"),
+    /second current-role table/);
+  const duplicateRunbook = readme.replace("本地开发、Git mode/LF 检查",
+    "```bash\npython tools/build_release.py build\n```\n本地开发、Git mode/LF 检查");
+  assert.throws(() => assertReadmeOwnerMap(duplicateRunbook), /second build runbook/);
+  const equivalent = readme.replace("当前 programme、版本列车、Cloud/Release/rollback 状态",
+    "当前 programme 的路线与阶段进展")
+    .replace(/(\| 当前 programme[^\r\n]*\| )\[`ROADMAP\.md`\]\(ROADMAP\.md\)/,
+      "$1[路线权威](ROADMAP.md)")
+    + "\n当前已接受的 rollback 应由 ROADMAP 判断；这里仅是提醒。\n";
+  assert.match(equivalent, /\| 当前 programme 的路线与阶段进展 \| \[路线权威\]\(ROADMAP\.md\) \|/);
+  assertReadmeOwnerMap(equivalent);
 });
 
 test("ARCHITECTURE preserves system reasoning while DESIGN routes implementation changes", () => {
