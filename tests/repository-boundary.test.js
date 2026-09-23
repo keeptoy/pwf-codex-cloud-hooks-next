@@ -129,6 +129,75 @@ function assertHistoryAuthorityRoutes(index, template, guide, overviewIndex, roa
   }
 }
 
+function assertRetrospectiveHistoryRecords(index, histories, artifact) {
+  const requiredSections = [
+    'problem-before', 'core-decisions', 'completed-delivery', 'acceptance-conclusion',
+    'explicit-non-goals', 'successor-inheritance', 'immutable-evidence',
+  ];
+  for (let minor = 13; minor <= 17; minor++) {
+    const phase = `4.${minor}`;
+    const scope = `phase-4-${minor}`;
+    const rows = index.split(/\r?\n/).filter(line => line.startsWith(`| Phase ${phase} |`));
+    assert.equal(rows.length, 1, `Phase ${phase} needs one history index row`);
+    const target = rows[0].match(/\]\((phase-[^/#)]+\.md)#([a-z0-9-]+)\) \|$/);
+    assert.ok(target, `Phase ${phase} index row needs one explicit record target`);
+    const [, file, fragment] = target;
+    assert.ok(file.startsWith(`phase-${phase}-`),
+      `Phase ${phase} index target must match its Phase`);
+    const history = histories.get(file);
+    assert.ok(history, `Phase ${phase} indexed record is missing: ${file}`);
+    const relative = `docs/history/${file}`;
+    assert.ok(!artifact.entries.some(entry => entry.path === relative),
+      `Phase ${phase} history must stay outside the Release artifact`);
+    assert.equal(fragment, `${scope}-historical-position`,
+      `Phase ${phase} index must target the record's historical position`);
+    assert.ok(history.startsWith(`<a name="${fragment}"></a>\n`),
+      `Phase ${phase} record must start at its indexed explicit anchor`);
+    assert.match(history, new RegExp(`^# Phase 4\\.${minor}(?:：|\\b)`, 'm'),
+      `Phase ${phase} record title must retain its identity`);
+    const headings = [...history.matchAll(/^## [^\r\n]+$/gm)].map(([heading]) => heading);
+    assert.equal(headings[0], '## Historical position',
+      `Phase ${phase} needs a historical-position section`);
+    const anchoredSections = [...history.matchAll(/^<a name="([^"]+)"><\/a>\r?\n\r?\n(## [^\r\n]+)$/gm)];
+    assert.equal(anchoredSections.length, headings.length - 1,
+      `Phase ${phase} sections after Historical position need explicit anchors`);
+    const anchors = [...history.matchAll(/^<a name="([^"]+)"><\/a>$/gm)]
+      .map(([, anchor]) => anchor);
+    assert.equal(anchors.length, anchoredSections.length + 1,
+      `Phase ${phase} must not have unattached or malformed anchors`);
+    assert.equal(new Set(anchors).size, anchors.length,
+      `Phase ${phase} must not duplicate anchors`);
+    assert.ok(anchors.every(anchor => anchor.startsWith(`${scope}-`)),
+      `Phase ${phase} anchors must stay Phase-scoped`);
+    for (const suffix of requiredSections) {
+      assert.ok(anchors.includes(`${scope}-${suffix}`),
+        `Phase ${phase} is missing a core section: ${suffix}`);
+    }
+    assert.equal(anchoredSections.at(-1)[1], `${scope}-immutable-evidence`,
+      `Phase ${phase} cold evidence must be the last section`);
+    assert.equal(anchoredSections.at(-1)[2], '## Cold evidence (not current authority)',
+      `Phase ${phase} cold evidence must remain advisory`);
+
+    const declaredRoles = [...history.matchAll(/^> Record role: `([^`]+)`$/gm)];
+    if (minor <= 14 && declaredRoles.length === 0) {
+      assert.match(rows[0], /\| 回顾性/,
+        `legacy Phase ${phase} index must classify it as retrospective`);
+      const introduction = history.slice(0, history.indexOf('## Problem before'));
+      assert.match(introduction, /回顾性/,
+        `legacy Phase ${phase} record must identify its retrospective role`);
+    } else {
+      assert.deepEqual(declaredRoles.map(([, role]) => role), ['RETROSPECTIVE_CAPSULE'],
+        `Phase ${phase} must declare one retrospective role`);
+    }
+    const coldEvidence = history.slice(history.indexOf('## Cold evidence (not current authority)'));
+    const sourceLinks = [...history.matchAll(/\]\(https:\/\/github\.com\/keeptoy\/pwf-codex-cloud-hooks-next\/commit\/[a-f0-9]{40}\)/g)];
+    assert.equal(sourceLinks.length, 1,
+      `Phase ${phase} needs one exact immutable source snapshot`);
+    assert.ok(coldEvidence.includes(sourceLinks[0][0]),
+      `Phase ${phase} immutable source must be in cold evidence`);
+  }
+}
+
 function isTrustedSource(relative) {
   return trustedRootPaths.has(relative) || trustedPrefixes.some(prefix => relative.startsWith(prefix));
 }
@@ -734,6 +803,56 @@ test("history authority routes reject wrong owners but allow equivalent explanat
     index.replace(introExplanation, '按证据选入的历史记录'),
     template.replace(templateExplanation, '历史链接无需在closeout时迁移到另一节'),
     guide.replace(guideExplanation, '本指南负责历史记录的通用冻结与链接边界')));
+});
+
+test("Phase 4.13–4.17 history structure follows index, role, anchors and cold source", () => {
+  const index = read("docs/history/README.md");
+  const histories = new Map(repositoryPaths()
+    .filter(relative => /^docs\/history\/phase-4\.1[3-7]-[^/]+\.md$/.test(relative))
+    .map(relative => [path.basename(relative), read(relative)]));
+  const artifact = JSON.parse(read(currentArtifactPath));
+  const check = (i = index, h = histories, a = artifact) =>
+    assertRetrospectiveHistoryRecords(i, h, a);
+  assert.doesNotThrow(() => check());
+
+  const phase = "phase-4.17-phase-4-harness-retrospective.md";
+  const wrongRole = new Map(histories);
+  wrongRole.set(phase, wrongRole.get(phase).replace(
+    "Record role: `RETROSPECTIVE_CAPSULE`", "Record role: `FROZEN_DISCOVERY_RECORD`"));
+  assert.throws(() => check(index, wrongRole), /one retrospective role/);
+  const legacyRow = index.split(/\r?\n/).find(line => line.startsWith('| Phase 4.13 |'));
+  assert.ok(legacyRow && legacyRow.includes('回顾性'), 'legacy role probe precondition');
+  const wrongLegacyRole = index.replace(legacyRow, legacyRow.replace('回顾性', '探路型'));
+  assert.throws(() => check(wrongLegacyRole), /classify it as retrospective/);
+  const missingSectionAnchor = new Map(histories);
+  missingSectionAnchor.set(phase, missingSectionAnchor.get(phase).replace(
+    '<a name="phase-4-17-core-decisions"></a>', ''));
+  assert.throws(() => check(index, missingSectionAnchor), /explicit anchors|core section/);
+  const wrongIndexTarget = index.replace(
+    `${phase}#phase-4-17-historical-position`, `${phase}#phase-4-17-core-decisions`);
+  assert.notEqual(wrongIndexTarget, index);
+  assert.throws(() => check(wrongIndexTarget), /historical position/);
+  const missingColdSource = new Map(histories);
+  missingColdSource.set(phase, missingColdSource.get(phase).replace(
+    '/commit/053f66e994ca095e974f69a7fbe8f2bb54697fc3', '/tree/main'));
+  assert.throws(() => check(index, missingColdSource), /immutable source snapshot/);
+  const releasedHistory = { ...artifact, entries: [
+    ...artifact.entries, { path: `docs/history/${phase}` },
+  ] };
+  assert.throws(() => check(index, histories, releasedHistory), /outside the Release artifact/);
+
+  const equivalentProse = new Map(histories);
+  const oldExplanation = "本结论只形成Phase 5的Discovery输入";
+  assert.ok(equivalentProse.get(phase).includes(oldExplanation), "prose probe precondition");
+  equivalentProse.set(phase, equivalentProse.get(phase).replace(oldExplanation,
+    "本结论仅为Phase 5后续Discovery提供材料"));
+  const legacy = "phase-4.13-v0.4.1-path-safety-patch-train.md";
+  const legacyExplanation = "回顾性path-safety patch-train标签";
+  assert.ok(equivalentProse.get(legacy).includes(legacyExplanation),
+    "legacy prose probe precondition");
+  equivalentProse.set(legacy, equivalentProse.get(legacy).replace(legacyExplanation,
+    "回顾性的path-safety patch-train记录"));
+  assert.doesNotThrow(() => check(index, equivalentProse));
 });
 
 test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", () => {
@@ -1474,17 +1593,7 @@ test("historical documents have two controlled macro entrances and remain adviso
 
 test("Phase 4.13 preserves the v0.4.1 path-safety patch rationale", () => {
   const relative = "docs/history/phase-4.13-v0.4.1-path-safety-patch-train.md";
-  const historyIndex = read("docs/history/README.md");
-  const artifact = JSON.parse(read(currentArtifactPath));
-  assert.equal(fs.existsSync(path.join(root, relative)), true, relative);
   const history = read(relative);
-
-  for (const anchor of [
-    "phase-4-13-historical-position", "phase-4-13-problem-before",
-    "phase-4-13-core-decisions", "phase-4-13-completed-delivery",
-    "phase-4-13-acceptance-conclusion", "phase-4-13-explicit-non-goals",
-    "phase-4-13-successor-inheritance", "phase-4-13-immutable-evidence",
-  ]) assert.match(history, new RegExp(`<a name="${anchor}"></a>`));
   assert.match(history, /^# Phase 4\.13：v0\.4\.1 path-safety patch train$/m);
 
   assert.match(history, /回顾性[^\n]*patch-train标签/);
@@ -1498,38 +1607,13 @@ test("Phase 4.13 preserves the v0.4.1 path-safety patch rationale", () => {
   assert.match(history, /`BLOCKED_UNSAFE_RUNTIME_PATH`/);
   assert.match(history, /Linux\/POSIX[^\n]*零skip/);
   assert.match(history, /99885b854bd9621c3340e99f031bf83ceb58414d/);
-  assert.match(historyIndex,
-    /phase-4\.13-v0\.4\.1-path-safety-patch-train\.md#phase-4-13-historical-position/);
-  assert.equal(artifact.entries.some(entry => entry.path === relative), false);
   assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
 });
 
 test("Phase 4.14 keeps stable Release closeout governance interfaces", () => {
   const relative = "docs/history/phase-4.14-release-closeout-governance.md";
   const historyIndex = read("docs/history/README.md");
-  const artifact = JSON.parse(read(currentArtifactPath));
-  assert.equal(fs.existsSync(path.join(root, relative)), true, relative);
   const history = read(relative);
-
-  for (const anchor of [
-    "phase-4-14-historical-position", "phase-4-14-problem-before",
-    "phase-4-14-historical-p9-calibration", "phase-4-14-core-decisions", "phase-4-14-c0-c1-c2",
-    "phase-4-14-completed-delivery", "phase-4-14-acceptance-conclusion",
-    "phase-4-14-explicit-non-goals", "phase-4-14-successor-inheritance",
-    "phase-4-14-post-implementation-status-stage-guide-retirement",
-    "phase-4-14-post-governance-status-history-role-rotation",
-    "phase-4-14-post-governance-status-product-phase-overview-authority",
-    "phase-4-14-post-governance-status-post-pass-retirement-ordering",
-    "phase-4-14-post-governance-status-readme-release-handoff",
-    "phase-4-14-post-governance-status-maintenance-environment-memory",
-    "phase-4-14-post-governance-status-acceptance-directory-migration",
-    "phase-4-14-post-governance-status-canonical-baseline-tool-capability",
-    "phase-4-14-post-governance-status-published-guide-completion",
-    "phase-4-14-post-governance-status-latest-promotion-confirmation",
-    "phase-4-14-post-governance-status-role-window-closeout",
-    "phase-4-14-post-governance-status-post-v0-4-2-residue-sweep",
-    "phase-4-14-immutable-evidence",
-  ]) assert.match(history, new RegExp('<a name="' + anchor + '"></a>'));
 
   assert.match(history, /^# Phase 4\.14：Release closeout 与验收文档治理回顾$/m);
   for (const invariant of [
@@ -1560,28 +1644,15 @@ test("Phase 4.14 keeps stable Release closeout governance interfaces", () => {
     "../product-phases/phase-4-overview.md#product-phase-4-overview",
   ]) assert.equal(history.includes(authority), true, 'Phase 4.14 lacks authority link: ' + authority);
 
-  assert.match(historyIndex,
-    /phase-4\.14-release-closeout-governance\.md#phase-4-14-historical-position/);
   assert.doesNotMatch(history,
     /phase-4-14-post-governance-status-release-asset-materialization|Post-governance status — Release asset materialization/);
   assert.doesNotMatch(historyIndex, /standing Phase 9 是例外的重复 Release gate/);
-  assert.equal(artifact.entries.some(entry => entry.path === relative), false);
   assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
 });
 
 test("Phase 4.15 preserves v0.4.3 Release asset materialization governance", () => {
   const relative = "docs/history/phase-4.15-v0.4.3-release-asset-materialization.md";
-  const historyIndex = read("docs/history/README.md");
-  const artifact = JSON.parse(read(currentArtifactPath));
-  assert.equal(fs.existsSync(path.join(root, relative)), true, relative);
   const history = read(relative);
-
-  for (const anchor of [
-    "phase-4-15-historical-position", "phase-4-15-problem-before",
-    "phase-4-15-core-decisions", "phase-4-15-completed-delivery",
-    "phase-4-15-acceptance-conclusion", "phase-4-15-explicit-non-goals",
-    "phase-4-15-successor-inheritance", "phase-4-15-immutable-evidence",
-  ]) assert.match(history, new RegExp('<a name="' + anchor + '"></a>'));
 
   assert.match(history, /^# Phase 4\.15：v0\.4\.3 Release asset materialization 与验收入口治理$/m);
   assert.match(history, /Record role: `RETROSPECTIVE_CAPSULE`/);
@@ -1593,25 +1664,12 @@ test("Phase 4.15 preserves v0.4.3 Release asset materialization governance", () 
   assert.match(history, /zero或non-zero默认值[\s\S]*不override `HOOKS_VERSION`[\s\S]*canonical zero-hash字节/);
   assert.match(history, /Source\/Candidate证明当前C0[\s\S]*Published[\s\S]*不带本地override/);
   assert.match(history, /add5f8c98b81c3019f4f095f566a80913d02df95/);
-  assert.match(historyIndex,
-    /phase-4\.15-v0\.4\.3-release-asset-materialization\.md#phase-4-15-historical-position/);
-  assert.equal(artifact.entries.some(entry => entry.path === relative), false);
   assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
 });
 
 test("Phase 4.16 preserves v0.4.4 exact C0 tag guide governance", () => {
   const relative = "docs/history/phase-4.16-v0.4.4-release-tag-guide.md";
-  const historyIndex = read("docs/history/README.md");
-  const artifact = JSON.parse(read(currentArtifactPath));
-  assert.equal(fs.existsSync(path.join(root, relative)), true, relative);
   const history = read(relative);
-
-  for (const anchor of [
-    "phase-4-16-historical-position", "phase-4-16-problem-before",
-    "phase-4-16-core-decisions", "phase-4-16-completed-delivery",
-    "phase-4-16-acceptance-conclusion", "phase-4-16-explicit-non-goals",
-    "phase-4-16-successor-inheritance", "phase-4-16-immutable-evidence",
-  ]) assert.match(history, new RegExp('<a name="' + anchor + '"></a>'));
 
   assert.match(history, /^# Phase 4\.16：v0\.4\.4 Release tag 操作教程治理$/m);
   assert.match(history, /Record role: `RETROSPECTIVE_CAPSULE`/);
@@ -1622,27 +1680,13 @@ test("Phase 4.16 preserves v0.4.4 exact C0 tag guide governance", () => {
   assert.match(history, /annotated tag按peeled commit核对[\s\S]*`\^\{\}` peeled commit[\s\S]*精确等于`SOURCE_CANDIDATE_HEAD`/);
   assert.match(history, /accepted v0\.4\.3作为exact installed predecessor/);
   assert.match(history, /aea21aea851e17ee9cc9cbc462a031afa5cad8c8/);
-  assert.match(historyIndex,
-    /phase-4\.16-v0\.4\.4-release-tag-guide\.md#phase-4-16-historical-position/);
-  assert.equal(artifact.entries.some(entry => entry.path === relative), false);
   assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
 });
 
 test("Phase 4.17 separates immutable Release identity from reducible harness ceremony", () => {
   const relative = "docs/history/phase-4.17-phase-4-harness-retrospective.md";
-  const historyIndex = read("docs/history/README.md");
   const phase4Overview = read("docs/product-phases/phase-4-overview.md");
-  const artifact = JSON.parse(read(currentArtifactPath));
-  assert.equal(fs.existsSync(path.join(root, relative)), true, relative);
   const history = read(relative);
-
-  for (const anchor of [
-    "phase-4-17-historical-position", "phase-4-17-problem-before",
-    "phase-4-17-core-decisions", "phase-4-17-harness-cost-model",
-    "phase-4-17-successor-options", "phase-4-17-completed-delivery",
-    "phase-4-17-acceptance-conclusion", "phase-4-17-explicit-non-goals",
-    "phase-4-17-successor-inheritance", "phase-4-17-immutable-evidence",
-  ]) assert.match(history, new RegExp('<a name="' + anchor + '"></a>'));
 
   assert.match(history, /^# Phase 4\.17：Phase 4 harness 重量与后继精简回顾$/m);
   assert.match(history, /Record role: `RETROSPECTIVE_CAPSULE`/);
@@ -1660,9 +1704,6 @@ test("Phase 4.17 separates immutable Release identity from reducible harness cer
   assert.match(phase4Overview, /^<a name="phase-4-harness-closeout-lessons"><\/a>$/m);
   assert.match(phase4Overview, /machine classifier[\s\S]*critical fingerprints[\s\S]*`FULL`/);
   assert.match(phase4Overview, /Product Phase 5[\s\S]*Discovery输入[\s\S]*不是现行流程变更/);
-  assert.match(historyIndex,
-    /phase-4\.17-phase-4-harness-retrospective\.md#phase-4-17-historical-position/);
-  assert.equal(artifact.entries.some(entry => entry.path === relative), false);
   assert.doesNotMatch(history, /\b\d+\s+(?:tests?|pass|fail|skipped)\b/i);
 });
 
