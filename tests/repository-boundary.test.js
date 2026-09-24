@@ -425,6 +425,32 @@ function assertNoProvenanceCurrentRoleAuthority(body) {
   }
 }
 
+function assertPublishedLedgerRoleNeutrality(ledger) {
+  const role = /\b(?:candidate|accepted)\b|immediate\s+fallback/i;
+  const roleName = "(?:candidate|accepted|immediate\\s+fallback)";
+  const assignment = new RegExp(
+    `^(?:[-*]\\s*)?(?:The\\s+)?(?:(?:current|currently|当前)\\s+)?${roleName}`
+      + `(?:\\s+(?:version|baseline|release|role|版本|基线))?\\s*(?:[:：=]|is\\s+|为\\s*|是\\s*)(.*)$`, "i");
+  const versionRole = new RegExp(
+    `^(?:[-*]\\s*)?\\x60?v\\d+\\.\\d+\\.\\d+(?:-[\\w.]+)?\\x60?\\s*`
+      + `(?:is\\s+|remains\\s+|[:：=]|为\\s*|是\\s*)(?:the\\s+)?(?:current\\s+)?${roleName}\\b`, "i");
+  const ownerPointer = /^(?:(?:see|consult|refer to|defined in|documented in)\s+|(?:见|参见|请见|详见)\s*)(?:ROADMAP(?:\.md)?(?:#[a-z0-9-]+)?|\[ROADMAP(?:\.md)?\]\(ROADMAP\.md(?:#[a-z0-9-]+)?\))[。.;；]?$/i;
+  const lines = ledger.split(/\r?\n/);
+  for (let index = 0; index < lines.length; index++) {
+    const line = lines[index].trim();
+    if (!role.test(line)) continue;
+    assert.equal(/^#{1,6}\s|^\|/.test(line), false,
+      "published identity ledger must not structure entries by moving roles");
+    assert.equal(versionRole.test(line), false,
+      "published identity ledger must not assign versions to moving roles");
+    const assigned = line.match(assignment);
+    if (!assigned) continue;
+    const value = assigned[1].trim() || lines[index + 1]?.trim() || "";
+    assert.ok(/^(?:not\b|不是|非\b)/i.test(value) || ownerPointer.test(value),
+      "published identity ledger must not declare a moving role");
+  }
+}
+
 function assertNoRoadmapMigrationLedger(body) {
   for (const line of body.split(/\r?\n/)) {
     assert.doesNotMatch(line,
@@ -2154,8 +2180,40 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.doesNotMatch(provenance, /^### 1\.[12] /m,
     "published identities must share one role-neutral ledger instead of current/history subsections");
   const publishedLedger = provenance.slice(0, provenance.indexOf("## 2. Successor 迁移不可变证据"));
-  assert.doesNotMatch(publishedLedger, /\b(?:candidate|accepted)\b|immediate fallback/,
-    "published identity entries must not inherit ROADMAP role labels");
+  const checkLedgerRoleNeutrality = assertPublishedLedgerRoleNeutrality;
+  checkLedgerRoleNeutrality(publishedLedger);
+  for (const claim of [
+    "## Current accepted identities",
+    "| status | accepted |",
+    `${accepted} is accepted.`,
+    `accepted: ${accepted}.`,
+    `The current accepted version is ${accepted}.`,
+    `The accepted release is ${accepted}.`,
+    `${accepted} remains accepted.`,
+    `currently accepted: ${accepted}.`,
+    `当前 accepted 版本是 ${accepted}。`,
+    `accepted:\n${accepted}`,
+    `accepted: see ROADMAP and ${accepted}.`,
+    "accepted: see ROADMAP-forged.",
+    "accepted: see [ROADMAP](DESIGN.md).",
+  ]) assert.throws(() => checkLedgerRoleNeutrality(`${publishedLedger}\n${claim}\n`));
+  const ledgerAcceptedRow = publishedLedger.split(/\r?\n/)
+    .find(line => line.startsWith(`| \`${accepted}\` |`));
+  assert.ok(ledgerAcceptedRow, "accepted ledger row mutation precondition");
+  assert.throws(() => checkLedgerRoleNeutrality(publishedLedger.replace(
+    ledgerAcceptedRow, `${ledgerAcceptedRow} accepted`)));
+  assert.doesNotThrow(() => checkLedgerRoleNeutrality(
+    `${publishedLedger}\nA draft candidate is not a published identity.\n`));
+  assert.doesNotThrow(() => checkLedgerRoleNeutrality(
+    `${publishedLedger}\nCurrent accepted and immediate fallback roles are defined in ROADMAP.\n`));
+  assert.doesNotThrow(() => checkLedgerRoleNeutrality(
+    `${publishedLedger}\naccepted: see ROADMAP.\n`));
+  assert.doesNotThrow(() => checkLedgerRoleNeutrality(
+    `${publishedLedger}\naccepted:\nsee ROADMAP.\n`));
+  assert.doesNotThrow(() => checkLedgerRoleNeutrality(
+    `${publishedLedger}\naccepted: see [ROADMAP](ROADMAP.md#github-release-latest-promotion-confirmation).\n`));
+  assert.doesNotThrow(() => checkLedgerRoleNeutrality(
+    `${publishedLedger}\naccepted role is defined in ROADMAP.\n`));
   assert.match(provenance, /## 2\. Successor 迁移不可变证据/);
   assert.doesNotMatch(provenance, /## 2\. Successor 迁移来源链/);
   assert.doesNotMatch(provenance, /\d+ registered/);
