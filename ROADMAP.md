@@ -114,7 +114,11 @@ Discovery/Release hardening gate。历史standing Phase 9 Release instances保�
 3. **Product Phase closeout：** 在overview补齐最终交付、稳定边界和后继继承。关闭后只做事实纠错、链接维护或有证据的状态尾注；
    ROADMAP第5节仍只保留路线索引。
 4. **版本列车轮转：** 旧列车完成Release closeout后，第4节切换到已获批下一列车及其overview；下一列车未授权时写`NONE`并
-   不保留旧exact train anchor。overview本身保持长期canonical，不随列车指针移动。
+   不保留旧exact train anchor。`NONE`表示当前无获批开发列车，不是从package版本或branch推断的下一列车；第4节不再直链
+   Product Phase overview或复述旧列车/版本角色身份，第5节与overview索引保留已完成Phase的长期入口，且没有active Phase行。
+   accepted/fallback角色继续由第2节陈述，第4节仅保留provenance与已接受版本验收证据入口。overview本身保持长期canonical，
+   不随列车指针移动；Release closeout也不自动激活或关闭Product Phase。若旧Phase仍active，须先独立确认其closeout，
+   不能只凭Release closeout就把列车写成`NONE`。
 5. **patch/governance归属：** 先按活动task plan、所修补Product baseline与ROADMAP声明的版本系列判断；没有新Product Phase时
    不创建overview。不能唯一判断时先由维护者确认。
 

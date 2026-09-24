@@ -22,17 +22,28 @@ function sectionBetween(markdown, start, end) {
 }
 
 function assertOverviewRouteRelationship(roadmap) {
-  const trainRole = roadmap.match(/^\| 当前开发列车 \|[^\r\n]*Product Phase (\d+)/m);
-  assert.ok(trainRole, "ROADMAP must declare its current Product Phase");
+  const trainRole = roadmap.match(/^\| 当前开发列车 \| `(NONE|v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?)`([^\r\n]*)/m);
+  assert.ok(trainRole, "ROADMAP must declare a parseable development train state");
+  const noTrain = trainRole[1] === "NONE";
+  const trainPhase = trainRole[2].match(/Product Phase (\d+)/)?.[1];
+  assert.equal(Boolean(trainPhase), !noTrain,
+    "an active train must declare its Product Phase; NONE must not name one");
   const current = sectionBetween(roadmap, "## 4. 当前开发列车", '<a name="product-phase-route-index"></a>');
   const routes = sectionBetween(roadmap, '<a name="product-phase-route-index"></a>',
     '<a name="product-phase-overview-rotation"></a>');
   const overviewPattern = /^docs\/product-phases\/phase-(\d+)-overview\.md#product-phase-(\d+)-overview$/;
   const overviewLinks = text => markdownLinks(text).filter(target => target.startsWith("docs/product-phases/phase-"));
   const activeTargets = overviewLinks(current);
-  assert.ok(activeTargets.length > 0, "current train must link its materialized Phase overview");
-  assert.ok(activeTargets.includes(`docs/product-phases/phase-${trainRole[1]}-overview.md#product-phase-${trainRole[1]}-overview`),
-    "current Product Phase must have a matching train pointer");
+  if (noTrain) {
+    assert.equal(activeTargets.length, 0, "NONE must not retain a current Phase overview pointer");
+    const currentProse = current.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
+    assert.doesNotMatch(currentProse, /\b[vV]?\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\b/,
+      "NONE must not retain an exact train or version-role identity in section 4");
+  } else {
+    assert.ok(activeTargets.length > 0, "current train must link its materialized Phase overview");
+    assert.ok(activeTargets.includes(`docs/product-phases/phase-${trainPhase}-overview.md#product-phase-${trainPhase}-overview`),
+      "current Product Phase must have a matching train pointer");
+  }
   assert.equal(new Set(activeTargets).size, activeTargets.length,
     "current train must not repeat an overview pointer");
   const routeTargets = new Map();
@@ -61,11 +72,11 @@ function assertOverviewRouteRelationship(roadmap) {
     assert.ok(activeTargets.includes(target) && routeTargets.has(target),
       "a repeated overview must pair current train and route index roles");
   }
-  return { current, routes, trainPhase: Number(trainRole[1]) };
+  return { current, routes, trainPhase: trainPhase ? Number(trainPhase) : null, noTrain };
 }
 
 function assertRoadmapPhaseRoutes(roadmap, overviewIndex) {
-  const { current, routes, trainPhase } = assertOverviewRouteRelationship(roadmap);
+  const { current, routes, trainPhase, noTrain } = assertOverviewRouteRelationship(roadmap);
   const phaseRows = new Map();
   const statusOf = cell => {
     const states = [
@@ -94,8 +105,8 @@ function assertRoadmapPhaseRoutes(roadmap, overviewIndex) {
     }
     phaseRows.set(phase, { status, target: targets[0] || null });
   }
-  assert.equal([...phaseRows.values()].filter(row => row.status === "active").length, 1,
-    "one active train must have exactly one active Phase route");
+  assert.equal([...phaseRows.values()].filter(row => row.status === "active").length, noTrain ? 0 : 1,
+    "Phase route activity must match the approved development train state");
 
   const indexRows = new Map();
   for (const line of overviewIndex.split(/\r?\n/).filter(line => /^\| \d+ \|/.test(line))) {
@@ -880,7 +891,7 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   const developmentTrain = roadmap.match(/^\| 当前开发列车 \| `(NONE|v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?)`/m)?.[1];
   assert.ok(developmentTrain, "ROADMAP lacks a parseable current development train state");
   const packageVersion = JSON.parse(readText("package.json")).version;
-  assert.equal(developmentTrain, `v${packageVersion}`);
+  if (developmentTrain !== "NONE") assert.equal(developmentTrain, `v${packageVersion}`);
   assert.match(roadmap, /^<a name="version-train-two-retirement-reviews"><\/a>$/m);
   assert.match(roadmap, /^<a name="product-phase-route-index"><\/a>$/m);
   assert.match(roadmap, /^<a name="product-phase-overview-rotation"><\/a>$/m);
@@ -1031,6 +1042,68 @@ test("ROADMAP Phase routes reject wrong materialization and permit summary rewri
   assert.match(equivalent, /文档权威治理：分层职责/);
   assert.match(equivalent, /候选与已接受角色窗口/);
   assertRoadmapPhaseRoutes(equivalent, overviewIndex);
+});
+
+test("ROADMAP NONE state removes current pointers but retains completed Phase routes", () => {
+  const roadmap = readText("ROADMAP.md");
+  const overviewIndex = readText("docs/product-phases/README.md");
+  const developmentState = roadmap.match(/^\| 当前开发列车 \| `(NONE|v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?)`/m)?.[1];
+  const accepted = roadmap.match(/^\| 当前已接受版本 \| `(v\d+\.\d+\.\d+)`/m)?.[1];
+  assert.ok(developmentState && accepted, "NONE probe requires development and accepted roles");
+  const staleVersion = developmentState === "NONE" ? `v${readJson("package.json").version}` : developmentState;
+  const current = sectionBetween(roadmap, "## 4. 当前开发列车", '<a name="product-phase-route-index"></a>');
+  const acceptanceTarget = markdownLinks(current).find(target => target.startsWith(
+    `docs/acceptance/${accepted}-cloud-hard-acceptance.md#`));
+  assert.ok(acceptanceTarget, "NONE probe requires the current accepted evidence route");
+  const routeRows = roadmap.split(/\r?\n/).filter(line => /^\| \d+ \|/.test(line));
+  const activeRow = routeRows.find(line => /\bactive\b/.test(line));
+  const completedRow = routeRows.find(line => /\bcomplete\b/.test(line));
+  const pendingRow = routeRows.find(line => /\bpending\b/.test(line));
+  const routeRow = activeRow || completedRow;
+  const materializedPhase = routeRow?.match(/^\| (\d+) \|/)?.[1];
+  const pendingPhase = pendingRow?.match(/^\| (\d+) \|/)?.[1];
+  const indexRow = overviewIndex.split(/\r?\n/).find(line => line.startsWith(`| ${materializedPhase} |`));
+  assert.ok(routeRow && pendingRow && indexRow, "NONE probe requires materialized and pending Phase routes");
+  const noneCurrent = `## 4. 当前开发列车
+
+当前没有获批开发列车；长期Product结论请查第5节路线索引。
+精确来源见[provenance](BASELINE_PROVENANCE.md)，已接受验收见
+[acceptance](${acceptanceTarget})。
+
+`;
+  let none = roadmap.replace(/^\| 当前开发列车 \|[^\r\n]*/m,
+    "| 当前开发列车 | `NONE`；尚未授权下一列车 |")
+    .replace(current, noneCurrent);
+  if (activeRow) none = none.replace(activeRow, activeRow.replace(/\bactive\b/, "complete"));
+  const completeIndex = activeRow
+    ? overviewIndex.replace(indexRow, indexRow.replace(/\bactive\b/, "complete"))
+    : overviewIndex;
+  const completeRouteRow = activeRow ? activeRow.replace(/\bactive\b/, "complete") : completedRow;
+  const completeIndexRow = activeRow ? indexRow.replace(/\bactive\b/, "complete") : indexRow;
+  assertRoadmapPhaseRoutes(none, completeIndex);
+
+  assert.throws(() => assertRoadmapPhaseRoutes(none.replace(noneCurrent,
+    noneCurrent.replace("当前没有获批开发列车", `旧列车 ${staleVersion} 仍是当前候选`)), completeIndex),
+  /exact train or version-role identity/);
+  assert.throws(() => assertRoadmapPhaseRoutes(none.replace(noneCurrent,
+    noneCurrent.replace("长期Product结论", `[旧Phase指针](docs/product-phases/phase-${materializedPhase}-overview.md#product-phase-${materializedPhase}-overview)；长期Product结论`)), completeIndex),
+  /NONE must not retain a current Phase overview pointer/);
+  assert.throws(() => assertRoadmapPhaseRoutes(none.replace(completeRouteRow,
+    completeRouteRow.replace(/\bcomplete\b/, "active")),
+    completeIndex), /active Phase row must match current train/);
+  assert.throws(() => assertRoadmapPhaseRoutes(none.replace(pendingRow, pendingRow.replace(/\bpending\b/,
+    `pending；[premature overview](docs/product-phases/phase-${pendingPhase}-overview.md#product-phase-${pendingPhase}-overview)`)),
+  completeIndex), /only active or complete Phase rows/);
+  assert.throws(() => assertRoadmapPhaseRoutes(none, completeIndex.replace(completeIndexRow,
+    completeIndexRow.replace(/\bcomplete\b/, "active"))),
+    /overview index and ROADMAP must agree/);
+  assert.throws(() => assertRoadmapPhaseRoutes(none.replace(noneCurrent,
+    noneCurrent.replace(`${accepted}-cloud-hard-acceptance.md`, `${accepted}-wrong.md`)), completeIndex),
+  /accepted-version evidence/);
+
+  const equivalent = none.replace("当前没有获批开发列车；长期Product结论请查第5节路线索引。",
+    "下一开发列车尚未获批；已完成Phase的长期说明仍可从第5节查阅。");
+  assertRoadmapPhaseRoutes(equivalent, completeIndex);
 });
 
 test("Phase 4 separates platform execution permission from plan-local product consent", () => {
