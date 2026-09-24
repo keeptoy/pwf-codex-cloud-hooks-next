@@ -65,13 +65,55 @@ Published Release或Product Phase 5验收完成。
 
 ## Explicit non-goals and retained work
 
-- 维护者决定**暂时保留**未移交的断言。A20中未来Phase路线、Phase 4 Release/history及Product范围的跨领域声明仍由原
-  `KEEP`守卫保护，需要时再单独设计；`NONE`以外的无Product Phase列车也没有被本批次定义。
-- R23仅有bootstrap选择子规则获得新守卫，其余materialization、zero-hash与公开下载身份仍`DEFER`；R25的措辞退休
-  仍取决于相邻操作安全覆盖。B3索引中的重编号总述断言及部分短治理守卫未批量移除。
-- R38的旧来源、Release/path-safety混合断言仍需逐项区分current guard与cold恢复；其余Cloud/Release操作、
-  runtime/permission、旧路径复发、链接退役和测试源码lint的`DEFER`组均未凭本地对账自动关闭。
-- 未改production、Host ABI、trusted graph或Release合同；未创建C0、tag、Cloud任务、Release，也未发布或移动远端引用。
+以下是**本批次收束时**的保留快照，供完成态planning日后清退时追溯“什么没移交、为什么不能删”。`KEEP`表示
+原断言继续生效；`DEFER`表示该断言的改写或退休尚无等效证明，**不是**待自动执行的任务或新授权。维护者选择暂时
+保持这些断言原样。下表的17项是Phase 5.1原始盘点的决策时分类，不是实施后重新计数；各项重审均须由对应owner
+确认“改坏关键关系必须失败、等义说明改写应通过”，并明确不能自动判定时的人工审阅责任。
+
+### 原始17项`DEFER`：保护目标与重审证据
+
+| 组 | 保留断言保护的具体失效 | 如要改写／退休，至少先证明 |
+|---|---|---|
+| A08 | Product Round数量、两个Release Cloud通道及C0/C1/C2角色不被混作同一gate。 | ROADMAP顺序与模板停止态有分角色关系检查；错误通道或过早晋级必须失败。 |
+| A10 | adapter dispatch顺序、时间预算、激活准入和禁止并行plan reader不被文字清理顺带放宽。 | adapter／owned runtime附近的行为或AST/seam测试等效覆盖，含违反信任边界的反例。 |
+| A18 | Release四步及C0→C1→C2、Latest确认、结果未知时停止不被误改成可跳步发布。 | 按ROADMAP owner验证命令／身份／序列，错误tag、资产或未知结果有失败探针。 |
+| A19 | planning删除须获同意、retirement checkpoint、migration原子性、Pre-1兼容边界不被合并成一句空泛治理话。 | 分别找到ROADMAP时序与Guide方法的owner，并给出关系检查或具名人工复核。 |
+| A21 | plan-local autonomous opt-in不等于平台／系统执行权限，历史说明也不能变成授权。 | code／contract、激活seam与操作者说明各自守住权限边界；错误授权推论会失败。 |
+| R02 | 旧v0.4.4 acceptance措辞、资产size/hash及Phase摘要的历史与当前角色不被误当作一个可丢弃的文字包。 | 每个固定身份分别对上published oracle、provenance或immutable acceptance；不能重建第二份当前资产账。 |
+| R06 | 旧acceptance句子、validation-ref数量和SHA字面量退役后仍可恢复。 | cold来源逐条可查，并与当前发布身份oracle分离；不能误删rollback／published证据。 |
+| R08 | 被点名的旧prototype路径不会悄然复发。 | 逐个判断复发风险，确认trusted inventory、链接或专门负例是否已覆盖；不能因不在Release里就直接删墓碑。 |
+| R18 | Cloud baseline预检禁止不安全shell写入、伪冲突和提前激活。 | 对实际操作块、权限与反例设检查或明确人工复核；错误预检必须触发停止。 |
+| R19 | markerless baseline、process/session轮询、最终exit code及不得虚构证据。 | 验证真实marker和进程结果关系；缺失最终退出码或凭空补证据应失败。 |
+| R20 | 两个deep-check通道都从manifest／bundle／schema／hash权威派生事实。 | 按通道限定并由machine contract派生的检查通过；单通道漏检或硬编码身份应失败。 |
+| R23 | candidate bootstrap选择、URL/SHA override、精确candidate身份和资产物化命令。 | Wiki实际围栏命令与Release contract／materializer相符；错脚本、错版本、错SHA、zero-hash或公开下载身份错误应失败。已替换的R23a仅覆盖模板4.1选择子规则，**不关闭R23**。 |
+| R26 | 两个旧beta migration文件的名称墓碑仍防止不当复活。 | 逐个证明inventory、链接或其他守卫足以拦截实际复发；否则保留。 |
+| R33 | Guide的retirement三阶段与链接替换／恢复步骤不会因同义改写测试而丢失。 | 删除前后链接清单、冷来源恢复与失链反例或具名人工审阅能守住程序。 |
+| R35 | provenance中的七个旧commit字面量不是仅“出现过”，而有正确身份与可恢复来源。 | 逐个映射到当前必须保留的角色或cold审计；单纯字符串存在不算恢复证明。 |
+| R37 | 测试源码自身不会把版本acceptance、hash或条目数固化成第二权威。 | 先定义窄范围AST／源码lint，再证明无害版本提及应通过、真正冻结身份应失败。 |
+| R38 | Phase 4.13～4.17中旧来源、Release和path-safety混合声明不被当作纯历史措辞一起删除。 | 逐项区分当前安全guard与immutable Git恢复，并做有害／等义反例。R30只查每份record唯一完整commit链接的**形状**，不核对特定来源身份；Phase 4.14未新增固定hash断言。 |
+
+### A20与其他未移交边界
+
+ROADMAP当前Phase行、overview索引／文件、§4指针与accepted-evidence关系，以及开发列车`NONE`的**合成**状态模型已在
+本地验证；这既非真实`NONE`轮转，也不替代以下A20跨owner断言。其原守卫均`KEEP`，仅可能的改写`DEFER`：
+
+| 仍保留的A20声明 | 为什么不能由当前路线解析代替；何时重审 |
+|---|---|
+| Phase 6 compaction与Phase 7可选tool／permission hooks | 路线状态不能证明“先尝试现有事件”、单独gate、预算、`NO_GO`与非前置条件；仅在获授权路线变化时，用行内错误／等义探针重审。 |
+| Phase 8只读evaluator与Phase 9可选hard gate | 尚无实现或Cloud证据替代advisory-only／不得写可变状态，以及新writer、锁、Resume、rollback评审；需各Phase owner单独决定。 |
+| Phase 4 overview的v0.4.3资产、bootstrap选择及Source/Candidate／Published双通道 | 当前合同和资产测试不证明旧overview的历史发布结果；需对应immutable acceptance/source及错选资产／错通道反例。 |
+| Phase 4 overview的“不重开Phase 4、不激活Phase 5、不改Product／runtime行为” | 这是已完成patch/governance列车的范围声明；须有历史纠错证据或独立的Product/trust守卫才能改写。 |
+| Phase 4 overview中的两类history record role结论 | index/template已守合法角色与准入，但删除旧结论前仍须证明overview自己的历史含义不丢。 |
+
+此外，A17当前列车／package身份、精确overview链接、Release顺序和权限边界仍是独立`KEEP`守卫；无Product Phase的
+未来patch/governance列车另需状态决定，不能从`NONE`分支推导。R25的Wiki说明措辞仍是**有条件退休**，须先证明
+R23／R24相邻命令、身份及停止条件的等效覆盖。B3历史索引中的重编号总述、短篇curated-history／当前programme
+断言并未随R29／R31一并退休。B4仍保留CHANGELOG精确SHA与`N registered`禁令、provenance的计数／段落解析、
+唯一published ledger与acceptance路由、ROADMAP accepted标题与Latest稳定anchor，以及独立published-release oracle；
+这些是身份、结构或防止第二权威的守卫，不属于可批量放松的叙述文字。
+
+本批次未改production、Host ABI、trusted graph或Release合同；未创建C0、tag、Cloud任务、Release，也未发布或移动
+远端引用。上述保留项日后只能按各自owner重新立证，不能以Phase 5.2回顾或本地测试通过视作关闭。
 
 <a name="phase-5-2-successor-inheritance"></a>
 
