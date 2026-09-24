@@ -64,7 +64,7 @@ deterministic package与disarm-first rollback继续是继承边界。当前Phase
 | implementation audit | architecture、design、contracts、源码和测试已完成一次代码级对账，已知文档漂移得到修正 |
 | autonomous exact state | nonce/attestation现与README合同一致，严格要求exact单个LF，其他换行或尾随形式拒绝 |
 | Phase authority activation | Phase 5已显式激活为文档治理阶段，但新的Product实现、Cloud和Release仍未授权 |
-| document-test governance Discovery | 粗筛发现两份治理测试仍混合机器边界与文案/时态断言；Phase 5.1已打开小范围Discovery草稿，先做`KEEP / REPLACE / RETIRE / DEFER`分组、authority去重和代表性方案，不授权批量删改 |
+| document-test governance Discovery | Phase 5.1已冻结`CONDITIONAL_GO`决策，B0～B4有界本地治理已对账；测试转向owner/关系及有害／等义反例，安全与身份相关`KEEP / DEFER`仍保留。本结论不表示Phase 5 closeout、Cloud或Release验收 |
 
 <a name="phase-5-planning-history-lifecycle"></a>
 
