@@ -344,3 +344,12 @@ production probe、doctor、backup、zero residue与最终 exit code均已验证
 F3C从路线设计、分段实考、汇总对账到封账/两轮退役的新人版总览，只在
 [Phase 4.11“一眼看懂 F3C”](phase-4.11-f3c4-aggregate-closure-discovery.md#phase-4-11-f3c-at-a-glance)维护；本文件不复制
 第二份可漂移的路线说明。
+
+<a name="phase-4-10-immutable-evidence"></a>
+
+## Cold evidence (not current authority)
+
+- [Immutable source snapshot](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/6b388518855da9053713a58e5c918c8b727b6dc6)
+  保留已清退的完整F3C rollback operator guide：该提交中的
+  `docs/v0.4.0-dev-f3c-rollback-operator-guide.md`，包括显式锚点`f3c2-smart-post-run-status`与
+  `f3c3-autonomous-post-run-status`。它只用于恢复当时教程字节，不恢复current root copy或替代现行验收。

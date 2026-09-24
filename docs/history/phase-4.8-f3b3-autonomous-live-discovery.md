@@ -307,3 +307,12 @@ F3B aggregate PASS、ref cleanup、F3C rollback 或 Release 写成已授权。
 旧Phase 5/6/7/8现分别对应Phase 6/7/8/9，候选版本系列相应为`0.6.0-*`/`0.7.0-*`/`0.8.0-*`/`0.9.0-*`。
 当前Phase 5只预占`0.5.0-*`，其scope、预期产物、gate与Release路线均为TBD；现行programme只读
 [`ROADMAP`](../../ROADMAP.md#product-phase-route-index)。本尾注只消除编号歧义，不产生development train激活、实施或Release授权。
+
+<a name="phase-4-8-immutable-evidence"></a>
+
+## Cold evidence (not current authority)
+
+- [Immutable source snapshot](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/commit/6b388518855da9053713a58e5c918c8b727b6dc6)
+  保留已清退的完整F3B3 operator guide：该提交中的
+  `docs/v0.4.0-dev-f3b3-autonomous-live-operator-guide.md`，包括显式锚点`f3b3-operator-positioning`与
+  `f3b3-post-run-status`。它只用于恢复当时教程字节，不恢复current root copy或产生新的Cloud结论。
