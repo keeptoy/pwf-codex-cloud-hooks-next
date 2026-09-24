@@ -11,6 +11,33 @@ Discovery Round或Phase 5 closeout。它回答：此前[`Phase 5.1决策`](phase
 选择的有条件路线，后来实际做了什么、遇到什么偏差、又留下什么边界。当前Product目标和长期结论仍只读
 [`Product Phase 5 Overview`](../product-phases/phase-5-overview.md#product-phase-5-overview)。
 
+<a name="phase-5-2-newcomer-handoff"></a>
+
+## 新人先看：这轮到底改了什么
+
+**一句话：主要改的是“测试怎样检查文档”，不是改产品功能或放松发布规则。**
+过去[`architecture-contracts.test.js`](../../tests/architecture-contracts.test.js)与
+[`repository-boundary.test.js`](../../tests/repository-boundary.test.js)中的部分检查要求文档出现某句中文，却未必检查真正会执行的
+命令；于是正确的等义改写可能报错，错误命令却可能被旁边一段安全说明掩盖。这轮把能够明确判断的部分改成检查实际命令、
+正确链接、所在章节、文档角色和唯一事实来源。
+
+| 你想知道 | 这轮结束时的答案 |
+|---|---|
+| 已经改了什么？ | 两份治理测试中的一部分文字匹配，改为检查实际命令、链接、身份、角色及其唯一来源；另补齐少量历史证据和当前路线说明。具体批次见下表。 |
+| 哪些没改，为什么？ | 未证明等效防线的Cloud／Release操作、资产身份、runtime权限、历史来源和旧路径防复发断言原样保留。它们可能写得生硬，但直接删掉会有漏检风险；下文逐项列出。 |
+| 哪些以后要重新判断？ | 并非自动排队全部修改。只有规则、命令或实际状态要变，或出现更可靠的验证方案时，才由对应负责人逐项重审；证明不足就继续保留。 |
+| 这轮完成到哪？ | B0～B4这一批**本地**治理和对账完成；Phase 5本身、Linux／Cloud验收、C0和Release均未因此完成或获授权。 |
+
+举个例子：Wiki的C0 tag/push测试过去可能被正文中的安全提示蒙混，现在核对真正的PowerShell命令块；错tag或广推
+必须失败，旁边的等义说明可以改写。历史记录则先查索引、角色、锚点和可恢复来源，再放开部分旧总结句的措辞。
+相反，R23候选资产操作、R38旧来源混合声明和A20未来Phase等尚未整体移交，不能因为这个例子成功就照搬删除。
+
+读法：先读上表和下文“Completed delivery”，了解改动结果；要查某条保留断言再看“Explicit non-goals and retained work”；
+要理解当初为什么选择分批路线，读[`Phase 5.1决策`](phase-5.1-document-test-governance-discovery.md#phase-5-1-conditional-go)。
+`A`／`R`编号分别是两份测试中的盘点组（architecture／repository），不是新任务编号；`KEEP`是保留原检查，
+`DEFER`是保留原检查且暂不决定怎么改；“owner”是某项规则的唯一负责文档／领域，“冷来源”是可从旧Git提交恢复的
+原始证据。B0～B4只是本地执行批次，不代表Product或Release关卡。
+
 <a name="phase-5-2-problem-before"></a>
 
 ## Problem before
@@ -36,11 +63,11 @@ Discovery Round或Phase 5 closeout。它回答：此前[`Phase 5.1决策`](phase
 
 | 执行范围 | 已形成的结果 |
 |---|---|
-| 两个先导样本与B0 | C0 tag/push检查落到Wiki具名PowerShell块，Source/Candidate bootstrap选择落到Cloud模板4.1的contract派生执行链；随后冻结Phase 5.1决策，以索引成员和record role关系替换历史固定总数。样本都只覆盖各自子规则。 |
-| B1 导航与文档边界 | README文档地图、handoff、DESIGN、ROADMAP当前Phase/overview、环境档案与Cloud模板，改为按所在section、owner链接、角色或状态检查。后续补齐开发列车为`NONE`时的合成指针模型；并未执行真实列车轮转。 |
-| B2 操作与planning生命周期 | Handoff保持分流入口，Operator Guide按角色与冻结时序验证，planning删除仍需维护者同意，acceptance/template按各自职责核对；相邻Cloud/Release命令与停止条件继续受原安全断言保护。 |
-| B3 history结构与条件退休 | 先建立索引准入、角色、Phase-scoped anchor、record结构和immutable来源关系，再有条件退休Phase 4.12、七份重编号记录及Phase 4.13～4.17的纯叙述措辞断言。Phase 4.8的缺失来源先被修复，才完成其重编号断言移交；冻结历史正文没有为测试批量改写。 |
-| B4 current/cold身份 | 对齐CHANGELOG、DESIGN、ROADMAP、provenance、acceptance与published oracle的职责，逐批收窄宽泛禁词；保留精确hash、published角色、parser边界与其他仍有安全后果的守卫。最后形成有界的本地身份对账结论。 |
+| 两个先导样本与B0 | 先试验“检查真正会执行的东西”：Wiki C0 tag/push看实际PowerShell块，Cloud模板4.1看是否从Release合同选对bootstrap并传入本轮URL/SHA；两例只解决各自一小部分。随后冻结Phase 5.1决定，并让history测试按索引成员和记录角色判断，不再卡住历史记录的固定总数。 |
+| B1 导航与文档边界 | 检查README等文档是否把读者带到正确负责人／文件、链接是否落在正确小节，避免用某句中文当作导航正确的证明。另用合成案例验证“开发列车为`NONE`”时应移除旧当前指针、保留已完成历史；真实轮转没有发生。 |
+| B2 操作与planning生命周期 | 检查handoff仍是分流页、Operator Guide的角色和冻结时序正确、planning删除仍需维护者同意；Cloud／Release的真正命令和停止条件没有被当作普通说明文字删掉。 |
+| B3 history结构与条件退休 | 先确认历史记录能从索引找到、有合法角色和稳定锚点、旧证据还能恢复，再去掉部分仅要求旧总结句原样出现的断言。Phase 4.8／4.10缺少的冷来源入口先补齐；没有为了测试绿灯批量重写冻结正文。 |
+| B4 当前与历史身份 | 分清CHANGELOG写版本变化、ROADMAP写当前路线、provenance和acceptance保留精确来源／发布证据；收窄“一出现某个词就失败”的粗检查，同时保留hash、发布角色和解析边界等精确守卫。 |
 
 <a name="phase-5-2-execution-issues"></a>
 
@@ -119,10 +146,17 @@ R23／R24相邻命令、身份及停止条件的等效覆盖。B3历史索引中
 
 ## Successor inheritance
 
-后续文档治理沿用“唯一owner → 实际关系/命令 → 有害失败与等义通过 → 保留不可自动判定的人工审阅”的准入方法。
-若要动某条保留断言，先由其Release、Cloud、runtime、历史来源或test-design owner提出单独证据门槛；不为关掉库存数字
-而批量退休。Phase 5的closeout、planning保留/提炼/删除、Linux/Cloud和Release路径仍分别由其既有authority及维护者
-另行决定。
+后来接手时，先按[`README文档地图`](../../README.md#documentation-map)找到现行负责文档，按活动planning确认当次授权；
+不要把这份历史回顾当作当前任务清单。不同变更按下面的风险区别处理：
+
+| 如果以后要做的是 | 从本批次继承的判断方法 |
+|---|---|
+| 只把一般说明改成等义说法 | 已移交的结构／关系测试应允许这种改写；若报错，先查是措辞误报，还是实际改坏链接、身份或规则。 |
+| 改Cloud／Release命令、资产身份、runtime权限或某条`DEFER`断言 | 先找到它的owner与旧检查防住的错误，再设计“错误必败、等义改写可过”的替代检查；自动检查不到的操作含义由对应负责人审阅。证据不足时保持原断言，不因凑库存数字批量删除。 |
+| 删除旧planning、旧路径或精确历史身份 | 先确认链接迁移、维护者同意及immutable来源仍可恢复；当前有测试守卫不等于旧版本历史已经被完整证明。 |
+| 真正关闭开发列车、进入`NONE`或出现无新Product Phase的patch/governance列车 | 由ROADMAP和当次授权决定实际状态；本批次只证明了合成`NONE`测试模型，没有替真实状态轮转作决定。 |
+
+Phase 5 closeout、Linux/Cloud和Release各有自己的验收门槛；Phase 5.2既不替它们签字，也不授权清退任何planning。
 
 <a name="phase-5-2-immutable-evidence"></a>
 
