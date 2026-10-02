@@ -1,0 +1,8 @@
+# Findings: completed planning retirement
+
+- At entry, branch `0.5.0-dev` had a clean worktree at `8756cd57c43a74235343421feacb11a89a78a370`.
+- `.planning` contained exactly 45 old scope directories, each with only `task_plan.md`, `findings.md`, `progress.md`; all 136 planning paths (45×3 plus `.active_plan`) were tracked in Git. A scan found no unchecked phase markers or in-progress status in the old task plans.
+- No current repository file outside `.planning` links a specific old scope path. Phase 5.1/5.2 history preserves the bounded result and retained/deferred boundary; Git HEAD contains complete old bytes for later recovery.
+- The current repository/test contract requires `.planning/.active_plan` to select an existing scope with three records. Therefore deleting all of `.planning` would be invalid; keep only this new minimal active scope after the old scopes are removed.
+- Deletion validated every old scope's resolved absolute path stayed under the planning root, rejected reparse points and unexpected/untracked entries, and removed the three verified files followed by each empty scope directory. Current tree has one scope and a matching active pointer; 135 tracked old files show as deleted. `git diff --check` passed.
+- After staging the new active scope (required because lifecycle validation uses the Git-tracked path list), focused architecture/repository tests passed 47/47, including active-scope, Markdown link and history checks. Full Windows `npm test` exited 0 with 184 pass, 26 POSIX/Linux-only skips and 0 failures; npm printed an unrelated update notice after the summary.
