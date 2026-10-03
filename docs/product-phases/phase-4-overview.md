@@ -152,7 +152,7 @@ programme accepted，`v0.4.2`成为immediate fallback。逐资产与运行证据
 stable package/contract/zero-hash bootstrap身份承载这项Release输入变化。它不改变runtime、Host ABI、managed events、trusted
 graph或Product行为；exact C0、双通道Cloud、immutable publication、GitHub Latest、第二轮role-window closeout与C2现已全部闭合。
 `v0.4.4`成为programme accepted，`v0.4.3`成为immediate fallback；最终证据只读
-[`v0.4.4 acceptance`](../acceptance/v0.4.4-cloud-hard-acceptance.md#v0-4-4-role-window-closeout)。
+[immutable v0.4.4 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/053f66e994ca095e974f69a7fbe8f2bb54697fc3/docs/acceptance/v0.4.4-cloud-hard-acceptance.md#v0-4-4-role-window-closeout)。
 
 <a name="phase-4-harness-closeout-lessons"></a>
 
@@ -190,4 +190,4 @@ current pointer与轮转只按[`ROADMAP规则`](../../ROADMAP.md#product-phase-o
 - 逐版本delta：[`CHANGELOG`](../../CHANGELOG.md)
 - 历史Discovery与closeout过程：[`Phase history`](../history/README.md)
 - 已发布身份和迁移来源：[`BASELINE_PROVENANCE`](../../BASELINE_PROVENANCE.md)
-- Phase 4最终已接受公开包证据：[`v0.4.4 Cloud hard acceptance`](../acceptance/v0.4.4-cloud-hard-acceptance.md#v0-4-4-role-window-closeout)
+- Phase 4最终已接受公开包证据：[immutable `v0.4.4` Cloud hard acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/053f66e994ca095e974f69a7fbe8f2bb54697fc3/docs/acceptance/v0.4.4-cloud-hard-acceptance.md#v0-4-4-role-window-closeout)

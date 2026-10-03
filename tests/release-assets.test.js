@@ -47,12 +47,14 @@ test("canonical bootstrap template renders the tracked lifecycle role without mo
   const tracked = fs.readFileSync(path.join(root, bootstrapName), "utf8");
   const embedded = tracked.match(/HOOKS_SHA256="\$\{HOOKS_SHA256:-([a-f0-9]{64})\}"/);
   assert.ok(embedded, "tracked bootstrap lacks a pinned ZIP SHA-256");
-  const isCandidate = developmentTrain === version;
+  const isAccepted = acceptedVersion === version;
+  const isCandidate = developmentTrain === version && !isAccepted;
   if (isCandidate) {
     assert.equal(embedded[1], zeroSha256);
   } else {
-    assert.equal(developmentTrain, "NONE");
-    assert.equal(acceptedVersion, version);
+    assert.equal(isAccepted, true);
+    assert.ok(developmentTrain === "NONE" || developmentTrain === version,
+      "accepted bootstrap may retain only NONE or the same active-Phase train pointer");
     assert.notEqual(embedded[1], zeroSha256, "accepted bootstrap must pin the public ZIP SHA-256");
   }
 

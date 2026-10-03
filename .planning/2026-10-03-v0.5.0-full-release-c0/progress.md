@@ -133,3 +133,38 @@
 - Focused governance rerun passed 47/47 with 0 fail/skip. The Published checkpoint is locally complete and remains
   explicitly non-final: Release is still Pre-release, accepted/fallback roles remain v0.4.4/v0.4.3, and no second
   retirement or C2 conclusion has been created.
+- Maintainer now reports the instructed GitHub Release promotion is complete. Accept this as normal-path Latest
+  confirmation: exact v0.5.0 is Latest and no longer Pre-release. Per ROADMAP, no redundant asset download/SHA
+  postflight is required; Phase 7 may enter the second role-window retirement review and C2 writeback.
+- After context recovery, re-read the repository authority entry points and the full active planning triplet before
+  resuming C2. The recovered scope is unchanged: local-only role rotation/retirement/Post-run with no remote writes,
+  no Product Phase 5 closure, and no invented successor train.
+- Re-read README and ARCHITECTURE in UTF-8 after recovery. Their stable boundaries remain unchanged: published
+  tag/assets/URLs/SHAs are immutable, the tracked bootstrap is outside the ZIP, and current lifecycle authority
+  belongs to ROADMAP plus the active plan rather than to package/version text alone.
+- Re-read DESIGN and ROADMAP. C2 remains a Release-excluded governance transition except for freezing the tracked
+  external bootstrap to the already-published exact ZIP SHA; it must rotate the dynamic two-seat publication oracle,
+  preserve immutable remote evidence, and keep Product Phase 5 active because G4/G5 are still deferred.
+- Completed the previously truncated ROADMAP slice and re-read Wiki. The exact closeout order remains Latest
+  confirmation -> role-window retirement review -> C2; the formal tag stays fixed to C0, while the current-tree
+  accepted bootstrap may now be frozen to the already-verified public ZIP identity.
+- Applied the C2 role rotation and second review: v0.5.0 accepted, v0.4.4 immediate fallback, v0.4.3 deeper fallback;
+  all seven planning scopes kept; old v0.4.4 current guide/bootstrap retired with immutable recovery; v0.5.0 tracked
+  bootstrap frozen to the public ZIP SHA; Phase 5 remains active with G4/G5 deferred.
+- The first focused run could not spawn test workers inside the sandbox. Its approved outside-sandbox rerun passed
+  58/63; all five failures were stale governance fixtures for the newly valid multi-Discovery accepted guide and
+  same-identity active-Phase/accepted state, not product or Release-byte failures.
+- Generalized only the affected lifecycle fixtures: both accepted-guide naming families, same-version accepted
+  precedence over candidate zero-hash semantics, dynamic NONE-state evidence mutation, and immediate-fallback
+  predecessor admission. Focused governance/contract/bootstrap/package rerun passed 63/63 with zero fail/skip.
+- Two-seat publication oracle passed 9/9: v0.5.0 accepted and v0.4.4 immediate fallback retain exact tag/source and
+  asset identities; drift rejection, direct-downgrade refusal, predecessor forward migration, tamper rejection and
+  owned uninstall/clean-install recovery all passed.
+- C2 full local regression passed: 222 tests, 196 pass, 26 honest Windows/POSIX skips and 0 fail. The skip profile is
+  unchanged; already-completed Linux/Cloud Release evidence is not replaced by this Windows run.
+- Final integrity checks passed: importer healthy; Python runtime compile and `node --check` clean; deterministic
+  22-entry ZIP remains 84,516 bytes at exact SHA `7f4fcdee...0ba40`; tracked bootstrap matches the formal asset
+  byte-for-byte at SHA `92761156...efab2`; `bash -n` and `git diff --check` pass; temporary verification ZIP removed.
+- Final diff/route audit found no stale current-state claim. Remaining v0.4.4 acceptance paths are either immutable
+  `053f66e...` recovery links or explicit negative/recovery test fixtures. Phase 7 is ready for the single local C2
+  commit; after that, only the maintainer branch push remains.

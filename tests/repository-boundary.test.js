@@ -331,6 +331,16 @@ function currentRoleWindow() {
   return { accepted, candidate, developmentTrain, immediateFallback, roadmap };
 }
 
+function acceptedEvidencePath(version) {
+  const candidates = [
+    `docs/acceptance/${version}-cloud-hard-acceptance.md`,
+    `docs/acceptance/${version}-release-operator-guide.md`,
+  ];
+  const existing = candidates.filter(relative => fs.existsSync(path.join(root, relative)));
+  assert.equal(existing.length, 1, `accepted ${version} must have exactly one current evidence path`);
+  return existing[0];
+}
+
 function assertCurrentPublicationRoutes(provenance, acceptance, roles) {
   const { accepted, candidate, immediateFallback, roadmap } = roles;
   const ledgerStart = provenance.indexOf("## 1. 已发布身份账本");
@@ -354,7 +364,7 @@ function assertCurrentPublicationRoutes(provenance, acceptance, roles) {
       "candidate ledger membership must match ROADMAP publication state");
   }
 
-  const acceptancePath = `docs/acceptance/${accepted}-cloud-hard-acceptance.md`;
+  const acceptancePath = acceptedEvidencePath(accepted);
   const acceptanceAnchor = `${accepted.replaceAll(".", "-")}-role-window-closeout`;
   const acceptedRow = ledger.split(/\r?\n/).find(line => line.startsWith(`| \`${accepted}\` |`));
   assert.ok(acceptedRow.includes(`](${acceptancePath}#${acceptanceAnchor})`),
@@ -1318,12 +1328,11 @@ test("seven reindex status records keep owner and evidence routes without wordin
   assert.doesNotThrow(() => check(index, equivalentProse));
 });
 
-test("v0.5.0 has both Cloud channels PASS while v0.4.4 and v0.4.3 keep their release roles", () => {
+test("v0.5.0 closes C2 while Phase 5 remains active and v0.4.4 becomes immediate fallback", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
-  const acceptedAcceptance = read("docs/acceptance/v0.4.4-cloud-hard-acceptance.md");
-  const candidateGuide = read("docs/acceptance/v0.5.0-release-operator-guide.md");
-  const retiredV043Acceptance = readGit("d7b5345b165e94c18ceab9b591d9a6b6dd251110",
-    "docs/acceptance/v0.4.3-cloud-hard-acceptance.md");
+  const acceptedGuide = read("docs/acceptance/v0.5.0-release-operator-guide.md");
+  const retiredV044Acceptance = readGit("053f66e994ca095e974f69a7fbe8f2bb54697fc3",
+    "docs/acceptance/v0.4.4-cloud-hard-acceptance.md");
   const provenance = read("BASELINE_PROVENANCE.md");
   const phase4Overview = read("docs/product-phases/phase-4-overview.md");
   const phase5Overview = read("docs/product-phases/phase-5-overview.md");
@@ -1334,35 +1343,36 @@ test("v0.5.0 has both Cloud channels PASS while v0.4.4 and v0.4.3 keep their rel
 
   assert.equal(developmentTrain, "v0.5.0");
   assert.equal(candidate, "v0.5.0");
-  assert.equal(accepted, "v0.4.4");
-  assert.equal(immediateFallback, "v0.4.3");
-  assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.4`/);
+  assert.equal(accepted, "v0.5.0");
+  assert.equal(immediateFallback, "v0.4.4");
+  assert.match(roadmap, /## 3\. 已接受基线 `v0\.5\.0`/);
   assert.match(roadmap,
-    /当前 programme 边界[^\n]*v0\.4\.4[^\n]*均已关闭[^\n]*exact C0[^\n]*Source\/Candidate[^\n]*tag精确指向C0[^\n]*Published Release第二通道PASS[^\n]*Latest[^\n]*第二轮retirement[^\n]*C2[^\n]*`v0\.5\.0` replacement C0[^\n]*6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d[^\n]*双通道PASS[^\n]*annotated object[^\n]*Latest[^\n]*C2仍未完成/);
-  assert.match(currentTrain, /当前exact stable candidate为`v0\.5\.0`[^\n]*branch `0\.5\.0`[\s\S]{0,160}replacement C0[\s\S]{0,160}6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d[\s\S]{0,160}双通道PASS/);
+    /当前 programme 边界[^\n]*v0\.5\.0 replacement C0[^\n]*6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d[^\n]*双通道PASS[^\n]*annotated tag object[^\n]*Latest[^\n]*第二轮retirement[^\n]*C2/);
+  assert.match(currentTrain,
+    /当前exact development pointer为`v0\.5\.0`[^\n]*branch `0\.5\.0`[\s\S]{0,260}Release train已经完成[\s\S]{0,260}C2/);
   assert.doesNotMatch(currentTrain, /^<a name="v0-4-4-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain, /Product Phase 4 Overview/);
   assert.match(currentTrain, /Product Phase 5 Overview/);
   assert.match(currentTrain, /BASELINE_PROVENANCE/);
-  assert.match(currentTrain, /v0\.4\.4 acceptance/);
-  assert.match(currentTrain, /下一步是维护者把同一Release取消Pre-release并设为Latest/);
-  assert.match(currentTrain, /第二轮retirement、accepted\/fallback轮转与C2/);
+  assert.match(currentTrain, /v0\.5\.0 Release operator guide/);
+  assert.match(currentTrain, /G4\/G5、Phase closeout、后继版本号和下一Release train均未获授权/);
   assert.match(phase5Overview, /^<a name="product-phase-5-overview"><\/a>$/m);
-  assert.match(acceptedAcceptance, /^<a name="v0-4-4-release-operator-guide"><\/a>$/m);
-  assert.match(candidateGuide, /^<a name="v0-5-0-release-operator-guide"><\/a>$/m);
-  assert.match(candidateGuide,
+  assert.match(acceptedGuide, /^<a name="v0-5-0-release-operator-guide"><\/a>$/m);
+  assert.match(acceptedGuide,
     /V0_5_0_RELEASE_PRE_RUN_READY \/ SOURCE_CANDIDATE_NOT_RUN \/ PUBLISHED_RELEASE_NOT_RUN \/ STOP_BEFORE_MAINTAINER_PUSH/);
-  assert.match(candidateGuide, /SOURCE_CANDIDATE_RESULT=PASS/);
-  assert.match(candidateGuide, /SOURCE_CANDIDATE_HEAD=6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d/);
-  assert.match(candidateGuide, /PUBLISHED_RELEASE_RESULT=PASS/);
-  assert.match(candidateGuide, /PWF_PUBLIC_POST_RESUME=PASS/);
-  assert.match(candidateGuide, /TAG_REPAIR=PASS/);
-  assert.match(candidateGuide, /LATEST_NOT_CONFIRMED/);
-  assert.match(candidateGuide, /PUBLISHED_RELEASE_NOT_RUN/);
-  assert.doesNotMatch(candidateGuide, /PWF_PUBLIC_RELEASE_SETUP=PASS[^`|]/);
-  assert.match(acceptedAcceptance, /^<a name="v0-4-4-role-window-closeout"><\/a>$/m);
-  assert.match(acceptedAcceptance, /PWF_CLOUD_ACCEPTANCE_BASELINE_CONFLICT reason=\.planning_and_active_plan_missing/);
-  assert.match(acceptedAcceptance, /空仓库中`\.planning`与active pointer同时缺失属于正常首次创建/);
+  assert.match(acceptedGuide, /SOURCE_CANDIDATE_RESULT=PASS/);
+  assert.match(acceptedGuide, /SOURCE_CANDIDATE_HEAD=6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d/);
+  assert.match(acceptedGuide, /PUBLISHED_RELEASE_RESULT=PASS/);
+  assert.match(acceptedGuide, /PWF_PUBLIC_POST_RESUME=PASS/);
+  assert.match(acceptedGuide, /TAG_REPAIR=PASS/);
+  assert.match(acceptedGuide, /^<a name="v0-5-0-role-window-closeout"><\/a>$/m);
+  assert.match(acceptedGuide,
+    /LATEST_PROMOTION_CONFIRMED \/ ROLE_WINDOW_CLOSEOUT_PASS \/ C2_COMPLETE \/ PHASE_5_ACTIVE \/ NEXT_RELEASE_TRAIN_UNAUTHORIZED/);
+  assert.match(acceptedGuide, /七个planning scope[\s\S]{0,80}`KEEP`/);
+  assert.match(acceptedGuide, /v0\.4\.4 current guide\/bootstrap[\s\S]{0,80}`RETIRE`/);
+  assert.match(acceptedGuide, /publication oracle[\s\S]{0,80}`MIGRATE`/);
+  assert.match(acceptedGuide, /Phase 5 overview\/history与G4\/G5[\s\S]{0,80}`KEEP \/ DEFER`/);
+  assert.doesNotMatch(acceptedGuide, /PWF_PUBLIC_RELEASE_SETUP=PASS[^`|]/);
 
   assert.match(phase4Overview, /v0\.4\.4 Release tag操作教程治理/);
   assert.match(phase4Overview,
@@ -1372,28 +1382,20 @@ test("v0.5.0 has both Cloud channels PASS while v0.4.4 and v0.4.3 keep their rel
   assert.match(phase4Overview,
     /显式`SOURCE_CANDIDATE_HEAD`创建annotated tag[\s\S]{0,220}`\^\{\}` peeled commit等于C0/);
 
-  for (const fact of [
-    "f7032fd0efad3df9e4b6052e8cd766d27cd2a844",
-    "4a179aad3ca0ce17270ee7a63c2644e8db2aa321cc48ed6056dbe6b4e70571e4",
-    "972af180babd9235788ca2d31e83a9630220b3d5cdfdef1f8d3938858ec0d701",
-    "PUBLISHED_RELEASE_PASS",
-    "LATEST_PROMOTION_CONFIRMED",
-    "ROLE_WINDOW_CLOSEOUT_PASS / C2_COMPLETE / NEXT_TRAIN_UNAUTHORIZED",
-  ]) assert.match(acceptedAcceptance, new RegExp(fact.replaceAll(".", "\\.")));
-  assert.match(acceptedAcceptance, /六个planning scope[\s\S]{0,80}`KEEP`/);
-  assert.match(acceptedAcceptance, /v0\.4\.3 current guide\/bootstrap[\s\S]{0,80}`RETIRE`/);
-  assert.match(acceptedAcceptance, /publication oracle[\s\S]{0,80}`MIGRATE`/);
-
-  assert.match(retiredV043Acceptance, /ROLE_WINDOW_CLOSEOUT_PASS \/ C2_COMPLETE \/ NEXT_TRAIN_UNAUTHORIZED/);
-  assert.equal(fs.existsSync(path.join(root, "docs/acceptance/v0.4.3-cloud-hard-acceptance.md")), false);
-  assert.equal(fs.existsSync(path.join(root, "init-cloud-sandbox-v0.4.3.bash")), false);
+  assert.match(retiredV044Acceptance, /ROLE_WINDOW_CLOSEOUT_PASS \/ C2_COMPLETE \/ NEXT_TRAIN_UNAUTHORIZED/);
+  assert.equal(fs.existsSync(path.join(root, "docs/acceptance/v0.4.4-cloud-hard-acceptance.md")), false);
+  assert.equal(fs.existsSync(path.join(root, "init-cloud-sandbox-v0.4.4.bash")), false);
   assert.match(provenance,
-    /blob\/d7b5345b165e94c18ceab9b591d9a6b6dd251110\/docs\/acceptance\/v0\.4\.3-cloud-hard-acceptance\.md#v0-4-3-role-window-closeout/);
+    /`v0\.5\.0`[^\n]*docs\/acceptance\/v0\.5\.0-release-operator-guide\.md#v0-5-0-role-window-closeout/);
+  assert.match(provenance,
+    /`v0\.4\.4`[^\n]*053f66e994ca095e974f69a7fbe8f2bb54697fc3/);
   for (const fact of [
-    "v0.4.4", "91,369 bytes", "21,565 bytes",
-    "4a179aad3ca0ce17270ee7a63c2644e8db2aa321cc48ed6056dbe6b4e70571e4",
-    "972af180babd9235788ca2d31e83a9630220b3d5cdfdef1f8d3938858ec0d701",
+    "v0.5.0", "84,516 bytes", "21,565 bytes",
+    "7f4fcdee036b71c9093c044af1c015218d5a5533779d719d0f4f01bc79d0ba40",
+    "927611564d949ed5b7e04a1fc5b9f1ccfe6d8a638273eb56e25e2e0161cefab2",
   ]) assert.match(provenance, new RegExp(fact.replaceAll(".", "\\.")));
+  assert.match(phase5Overview, /Phase 5\.3 Release harness risk-lane Discovery[\s\S]{0,500}G4真实低风险shadow[\s\S]{0,120}G5 enablement decision[\s\S]{0,120}`KEEP \/ DEFER`/);
+  assert.match(phase5Overview, /Phase 5尚未closeout/);
 });
 
 test("Phase 4.12 keeps canonical history recovery and immutable P9-F evidence", () => {
@@ -1468,7 +1470,7 @@ test("trusted source zones are exact while repository governance paths remain li
     "MAINTAINER_HANDOFF.md", "README.md", "ROADMAP.md", "Wiki.md", "docs/cloud-hard-acceptance-template.md",
     "docs/cloud-acceptance-operator-guide-template.md",
     "docs/acceptance/README.md",
-    "docs/acceptance/v0.4.4-cloud-hard-acceptance.md",
+    "docs/acceptance/v0.5.0-release-operator-guide.md",
     "docs/maintenance-environment-profile.md",
     "docs/repository-governance-guide.md",
   ]) {
@@ -1649,7 +1651,7 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
     assert.equal(releasePaths.includes(relative), false, relative);
   }
   assert.deepEqual(rootBootstraps, roleVersions.map(version => `init-cloud-sandbox-${version}.bash`));
-  const expectedAcceptanceDocs = [`docs/acceptance/${accepted}-cloud-hard-acceptance.md`];
+  const expectedAcceptanceDocs = [acceptedEvidencePath(accepted)];
   const candidateEntrypoints = [
     `docs/acceptance/${candidate}-cloud-hard-acceptance.md`,
     `docs/acceptance/${candidate}-release-operator-guide.md`,
@@ -2227,7 +2229,7 @@ test("change history, programme, provenance, and current acceptance keep separat
   const runtimeBundle = JSON.parse(read(currentBundlePath));
   const roles = currentRoleWindow();
   const { accepted, candidate, immediateFallback, roadmap } = roles;
-  const acceptancePath = `docs/acceptance/${accepted}-cloud-hard-acceptance.md`;
+  const acceptancePath = acceptedEvidencePath(accepted);
   const acceptance = read(acceptancePath);
   const checkRoutes = (p = provenance, a = acceptance, r = roles) =>
     assertCurrentPublicationRoutes(p, a, r);
@@ -2481,9 +2483,10 @@ test("change history, programme, provenance, and current acceptance keep separat
   assert.ok(provenance.includes(closeoutTarget), "acceptance target mutation precondition");
   assert.throws(() => checkRoutes(provenance.replace(closeoutTarget,
     `${acceptancePath}#wrong-closeout`)), /exact acceptance closeout/);
+  const acceptanceTitle = acceptance.match(/^# .+$/m)?.[0];
+  assert.ok(acceptanceTitle, "accepted evidence title mutation precondition");
   assert.throws(() => checkRoutes(provenance, acceptance.replace(
-    `# ${accepted} Cloud hard acceptance`, `# ${immediateFallback} Cloud hard acceptance`)),
-  /accepted version identity/);
+    acceptanceTitle, `# ${immediateFallback} Release evidence`)), /accepted version identity/);
   if (candidate !== accepted) {
     const newCandidateRow = `| \`${candidate}\` | draft candidate (not a Release) | - | - | - |`;
     assert.throws(() => checkRoutes(provenance.replace(
@@ -2492,7 +2495,7 @@ test("change history, programme, provenance, and current acceptance keep separat
     assert.doesNotThrow(() => checkRoutes(`${provenance}\nDraft ${candidate} is not a published identity.\n`));
   }
   assert.doesNotThrow(() => checkRoutes(provenance, acceptance.replace(
-    `# ${accepted} Cloud hard acceptance`, `# ${accepted} Cloud验收与Release收尾记录`)));
+    acceptanceTitle, `# ${accepted} Cloud验收与Release收尾记录`)));
 });
 
 test("stable architecture contracts do not freeze version history", () => {

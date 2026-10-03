@@ -120,3 +120,48 @@
   exact C0 `6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d`.
 - This repair changes tag metadata only. It does not alter candidate source, ZIP/bootstrap bytes, public filenames,
   public URLs or the already accepted Published Release behavior evidence. Latest remains intentionally pending.
+
+## Latest confirmation and C2 retirement model
+
+- Maintainer explicitly confirms normal-path Latest promotion. Per ROADMAP this closes the metadata gate without a
+  redundant asset/SHA postflight and authorizes the second role-window review.
+- The v0.4.4 C2 precedent retired the previous accepted version's current-tree guide/bootstrap while preserving
+  recovery through its immutable Release/C2 commit, migrated the two-seat publication oracle, froze the new
+  accepted version's tracked bootstrap to the public exact ZIP SHA, updated provenance/CHANGELOG/ROADMAP and kept
+  all unapproved planning deletion as `KEEP`.
+- The analogous v0.5.0 role rotation is accepted `v0.5.0`, immediate fallback `v0.4.4`, deeper fallback `v0.4.3`.
+  It must not delete remote tags/Releases/assets or stable contracts/runtime/templates/history.
+- Unlike the v0.4.4 precedent, Product Phase 5 is still explicitly active because Phase 5.3 G4/G5 remain
+  `KEEP / DEFER`. Release closeout therefore cannot silently close Phase 5 or assign an unauthorized successor
+  train. The C2 representation must preserve that active Product authority while making clear the v0.5.0 Release
+  train itself is closed.
+- Because the current phase cannot be closed and no successor train is authorized, the least expansive C2 state is
+  to keep the repository/package development identity at `v0.5.0` while marking its Release train closed and its
+  accepted role established. This avoids inventing `v0.5.1`, falsely setting Product Phase 5 complete, or violating
+  the existing `NONE` rule that disallows an active Phase without a matching train pointer.
+- The v0.5.0 accepted evidence uses the already-governed multi-Discovery filename
+  `docs/acceptance/v0.5.0-release-operator-guide.md`, whereas earlier accepted releases used
+  `vX.Y.Z-cloud-hard-acceptance.md`. C2 tests/routes must admit both stable naming families rather than rename the
+  live guide or create a duplicate acceptance.
+- `docs/`, `tests/`, planning, ROADMAP, provenance and CHANGELOG are Release-excluded; the tracked v0.5.0 bootstrap
+  is an external asset and should be frozen from zero hash to the exact public ZIP hash at C2, matching the prior
+  accepted-version pattern without changing the already immutable C0 tag or public assets.
+- Recovery confirmed exactly seven planning scopes remain in `.planning/`; the second review keeps all seven because
+  the maintainer authorized C2 but did not authorize planning deletion. The worktree contains only this plan's C2
+  evidence edits, and local HEAD is the published-checkpoint commit `a385ca2`, one commit ahead of the tracked branch.
+- The tracked and formal v0.5.0 bootstraps differ by exactly one line: the tracked candidate has the 64-zero ZIP SHA
+  and the formal asset has `7f4fcdee...0ba40`. Freezing that exact line at C2 makes the current-tree bootstrap match
+  the already-published 21,565-byte asset; no template, ZIP input or public byte changes.
+- Current Phase 5 overview and tests still encode the pre-C2 window. The C2 patch must update both lifecycle prose
+  and dynamic route helpers together: accepted evidence may use either `cloud-hard-acceptance` or
+  `release-operator-guide`, and installed transition admission must track the immediate fallback (`v0.4.4`) after
+  accepted rotates to the current package (`v0.5.0`).
+- Repository-boundary C2 assertions should follow the v0.4.4 precedent without hardcoding the old accepted guide:
+  read v0.5.0 as the live accepted guide, recover the retired v0.4.4 guide from `053f66e...`, require both v0.4.4
+  current-tree files absent, and assert Phase 5 stays active with G4/G5 deferred and no successor train authorized.
+- `release-assets.test.js` currently equates `developmentTrain === package version` with a zero-hash candidate. C2
+  intentionally has the same `v0.5.0` identity in both the active Phase pointer and accepted role, so accepted status
+  must take precedence: require a non-zero exact bootstrap and skip candidate-bootstrap materialization in that case.
+- Retiring the v0.4.4 current guide leaves four documentary inbound links. Convert provenance, CHANGELOG and both
+  Phase 4 overview references to the immutable `053f66e...` blob before validation; test-only recovery paths remain
+  intentionally literal and must not be rewritten.

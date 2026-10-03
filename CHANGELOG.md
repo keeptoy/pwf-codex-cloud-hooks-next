@@ -8,6 +8,11 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 
 ### Changed
 
+- 完成`v0.5.0` FULL Release closeout：Source/Candidate与Published Release双通道、annotated tag修复、Latest
+  confirmation、第二轮role-window retirement与C2全部闭合；`v0.5.0`轮转为accepted，`v0.4.4`成为immediate
+  fallback，旧v0.4.4 current guide/bootstrap按immutable恢复链退役。Product Phase 5仍active，G4/G5继续defer，未授权
+  后继Release train。最终证据见[`v0.5.0 Release operator guide`](docs/acceptance/v0.5.0-release-operator-guide.md#v0-5-0-role-window-closeout)，
+  精确资产见[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，当前角色只见[`ROADMAP.md`](ROADMAP.md)。
 - 维护者显式授权`v0.5.0`按现有FULL路线进入Release第1步；新增multi-Discovery列车专用Release operator guide与
   非破坏性candidate admission preflight，完成stable zero-hash本地C0并等待Source/Candidate交接，不预写Cloud PASS，也不授权
   non-zero seal、C1、tag、publication、Published Release、Latest或C2。
@@ -54,7 +59,7 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   单独push exact tag ref，并按peeled commit核对远端tag仍指向C0；同名tag存在或身份不符时fail closed，禁止force/move/delete-recreate。
 - 双通道Cloud与Latest完成后闭合第二轮role-window review和C2：v0.4.4轮转为accepted，v0.4.3成为immediate fallback；
   current v0.4.3 guide/bootstrap迁入immutable恢复链，六个planning scope继续保留；最终证据见
-  [`v0.4.4 acceptance`](docs/acceptance/v0.4.4-cloud-hard-acceptance.md#v0-4-4-role-window-closeout)。
+  [immutable v0.4.4 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/053f66e994ca095e974f69a7fbe8f2bb54697fc3/docs/acceptance/v0.4.4-cloud-hard-acceptance.md#v0-4-4-role-window-closeout)。
 
 ## v0.4.3
 

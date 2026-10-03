@@ -140,8 +140,9 @@ function assertRoadmapPhaseRoutes(roadmap, overviewIndex) {
   assert.ok(accepted, "ROADMAP must declare its accepted role");
   assert.ok(markdownLinks(current).includes("BASELINE_PROVENANCE.md"),
     "current train must delegate immutable identity to provenance");
-  assert.ok(markdownLinks(current).some(target => target.startsWith(
-    `docs/acceptance/${accepted}-cloud-hard-acceptance.md#`)),
+  assert.ok(markdownLinks(current).some(target => new RegExp(
+    `^docs/acceptance/${accepted}-(?:cloud-hard-acceptance|release-operator-guide)\\.md#`,
+  ).test(target)),
     "current train must point to accepted-version evidence");
   const currentBody = current.replace(/^## 4\. 当前开发列车\r?\n/, "");
   assert.doesNotMatch(currentBody, /\]\(docs\/history\/|^#{2,6} /m,
@@ -958,7 +959,7 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.doesNotMatch(roadmap, /<a name="phase-9-v0-4-0-instance"><\/a>/);
   assert.doesNotMatch(currentTrain, /^<a name="v\d+-\d+-\d+(?:-[a-z0-9-]+)?-phase-history-governance-train"><\/a>$/m);
   assert.match(currentTrain,
-    /当前exact (?:development|stable) candidate为`v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?`[^\n]*branch `\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?`/);
+    /当前exact (?:development|stable) (?:candidate|pointer)为`v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?`[^\n]*branch `\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?`/);
   assert.doesNotMatch(currentTrain, /^<a name="v\d+-\d+-\d+(?:-[a-z0-9-]+)?-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain, /trusted\/Release zones 继续 exact[\s\S]*docs\/planning zones 按 lifecycle policy/);
   assert.match(productPhases, /^<a name="product-phase-overview-rotation"><\/a>$/m);
@@ -1033,7 +1034,7 @@ test("ROADMAP Phase routes reject wrong materialization and permit summary rewri
     /overview index row must link its own Phase/);
   const current = sectionBetween(roadmap, "## 4. 当前开发列车", '<a name="product-phase-route-index"></a>');
   const accepted = roadmap.match(/^\| 当前已接受版本 \| `(v\d+\.\d+\.\d+)`/m)[1];
-  const acceptedEvidence = new RegExp(`\\]\\(docs/acceptance/${accepted.replaceAll(".", "\\.")}-cloud-hard-acceptance\\.md#[^)]+\\)`);
+  const acceptedEvidence = new RegExp(`\\]\\(docs/acceptance/${accepted.replaceAll(".", "\\.")}-(?:cloud-hard-acceptance|release-operator-guide)\\.md#[^)]+\\)`);
   const wrongEvidence = current.replace(acceptedEvidence,
     `](docs/acceptance/${accepted}-wrong.md#wrong)`);
   assert.notEqual(wrongEvidence, current);
@@ -1057,8 +1058,9 @@ test("ROADMAP NONE state removes current pointers but retains completed Phase ro
   assert.ok(developmentState && accepted, "NONE probe requires development and accepted roles");
   const staleVersion = developmentState === "NONE" ? `v${readJson("package.json").version}` : developmentState;
   const current = sectionBetween(roadmap, "## 4. 当前开发列车", '<a name="product-phase-route-index"></a>');
-  const acceptanceTarget = markdownLinks(current).find(target => target.startsWith(
-    `docs/acceptance/${accepted}-cloud-hard-acceptance.md#`));
+  const acceptanceTarget = markdownLinks(current).find(target => new RegExp(
+    `^docs/acceptance/${accepted}-(?:cloud-hard-acceptance|release-operator-guide)\\.md#`,
+  ).test(target));
   assert.ok(acceptanceTarget, "NONE probe requires the current accepted evidence route");
   const routeRows = roadmap.split(/\r?\n/).filter(line => /^\| \d+ \|/.test(line));
   const activeRow = routeRows.find(line => /\bactive\b/.test(line));
@@ -1103,7 +1105,7 @@ test("ROADMAP NONE state removes current pointers but retains completed Phase ro
     completeIndexRow.replace(/\bcomplete\b/, "active"))),
     /overview index and ROADMAP must agree/);
   assert.throws(() => assertRoadmapPhaseRoutes(none.replace(noneCurrent,
-    noneCurrent.replace(`${accepted}-cloud-hard-acceptance.md`, `${accepted}-wrong.md`)), completeIndex),
+    noneCurrent.replace(acceptanceTarget, `docs/acceptance/${accepted}-wrong.md#wrong`)), completeIndex),
   /accepted-version evidence/);
 
   const equivalent = none.replace("当前没有获批开发列车；长期Product结论请查第5节路线索引。",

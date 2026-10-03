@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.5.0`；Product Phase 5；replacement C0 `6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d`已完成Source/Candidate与Published Release双通道PASS；annotated tag object `e96f5b8855c5f637fa546fa99fd0c93c4cdfaf0f`精确peel到C0，公开双资产保持exact；当前Release仍为Pre-release，等待Latest confirmation、第二轮retirement与C2 |
-| 当前已接受版本 | `v0.4.4`；programme accepted |
-| 当前直接回退版本 | immutable `v0.4.3` immediate fallback |
-| 回退证据链 | immutable `v0.4.2` deeper fallback；`v0.4.1`、`v0.4.0`、`v0.3.5`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | v0.4.4及其前序功能、patch与治理列车均已关闭；v0.4.4 exact C0 `f7032fd0efad3df9e4b6052e8cd766d27cd2a844`完成Source/Candidate，tag精确指向C0，immutable Release双资产与Published Release第二通道PASS，维护者确认Latest后完成第二轮retirement与C2角色轮转。`v0.5.0` replacement C0 `6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d`现已完成双通道PASS、第一轮retirement、C1与immutable publication；tag metadata已修复为精确peel到C0的annotated object，新的Product实现以及Latest、第二轮retirement、accepted/fallback轮转与C2仍未完成 |
+| 当前开发列车 | `v0.5.0`；Product Phase 5仍active；本版本Release train已完成双通道、annotated-tag修复、Latest confirmation、第二轮retirement与C2，当前指针只因Phase 5.3 G4/G5继续`DEFER`而保留；没有获批后继Release train或新的Product实现 |
+| 当前已接受版本 | `v0.5.0`；programme accepted |
+| 当前直接回退版本 | immutable `v0.4.4` immediate fallback |
+| 回退证据链 | immutable `v0.4.3` deeper fallback；`v0.4.2`、`v0.4.1`、`v0.4.0`、`v0.3.5`与更早发布里程碑见 provenance museum |
+| 当前 programme 边界 | v0.5.0 replacement C0 `6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d`完成Source/Candidate与Published Release双通道PASS；annotated tag object `e96f5b8855c5f637fa546fa99fd0c93c4cdfaf0f`精确peel到C0，公开双资产保持exact；维护者确认Latest后已完成第二轮retirement、accepted/fallback轮转与C2。Release closeout不自动关闭Product Phase 5，G4/G5仍需后续独立授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -35,12 +35,11 @@ deeper fallback，现已退出accepted + immediate-fallback窗口并进入proven
 [`CHANGELOG.md`](CHANGELOG.md)，精确source/资产/SHA见[`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，完整Cloud、
 晋级与第二轮退役证据见[immutable v0.4.0 acceptance](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/6b388518855da9053713a58e5c918c8b727b6dc6/docs/v0.4.0-cloud-hard-acceptance.md#v0-4-0-p9-f-second-retirement-closeout)。
 
-## 3. 已接受基线 `v0.4.4`
+## 3. 已接受基线 `v0.5.0`
 
-`v0.4.4`是当前已接受的Release-documentation基线。它完整继承`v0.4.3`的确定性资产物化、`v0.4.2`的文档治理、`v0.4.1`的
-路径安全修复与`v0.4.0`已经闭合的Product Phase 4功能和Release合同；本版把Source/Candidate PASS后的exact C0 annotated tag、
-single-ref push与remote peeled commit核对整理成新人可复制教程，不改变Host ABI、adapter-only policy、pristine upstream、owned runtime
-信任边界或legacy默认行为。
+`v0.5.0`是当前已接受基线。它完整继承`v0.4.4`的exact-C0 tag教程与此前已闭合的Product、安全、供应链和Release合同；本版交付
+Phase 5文档authority治理、Release risk-lane G1～G3 advisory基础，并把autonomous nonce/attestation准入收紧为exact单个LF。
+它不改变Host ABI、adapter-only policy、pristine upstream或legacy默认行为；G4真实低风险shadow与G5 enablement仍未授权。
 精确delta见CHANGELOG，底层功能收口仍由下表概括：
 
 | 问题域 | 已完成结果 |
@@ -54,7 +53,7 @@ single-ref push与remote peeled commit核对整理成新人可复制教程，不
 
 该基线的实际版本delta见[`CHANGELOG.md`](CHANGELOG.md)，精确source/资产身份与predecessor迁移链见
 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，完整双通道、晋级、第二轮退役与C2证据见
-[`docs/acceptance/v0.4.4-cloud-hard-acceptance.md`](docs/acceptance/v0.4.4-cloud-hard-acceptance.md#v0-4-4-role-window-closeout)。
+[`v0.5.0 Release operator guide`](docs/acceptance/v0.5.0-release-operator-guide.md#v0-5-0-role-window-closeout)。
 
 ## 4. 当前开发列车
 
@@ -65,19 +64,16 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 本节是current development train指针：只保留exact列车身份、当前授权边界与对应Product Phase overview链接。活动planning、
 未封存Discovery和需要current状态的验收材料可以引用train anchor，但本节不再承载长期Product摘要。
 
-当前exact stable candidate为`v0.5.0`，位于本地branch `0.5.0`；replacement C0
-`6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d`已经完成Source/Candidate与Published Release双通道PASS，第一轮retirement全部KEEP，
-C1与immutable publication已完成；annotated tag现精确peel到C0，公开双资产未漂移。该列车对应已激活的
-[`Product Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview)。维护者授权的FULL路线已完成本地C0、
-双通道Cloud与第一轮retirement；具体教程见
-[`v0.5.0 Release operator guide`](docs/acceptance/v0.5.0-release-operator-guide.md#v0-5-0-source-candidate-channel-checkpoint)。
-下一步是维护者把同一Release取消Pre-release并设为Latest，返回或刷新详情页确认exact `v0.5.0`显示为Latest且不再是Pre-release；
-之后才执行第二轮retirement、accepted/fallback轮转与C2，也不授权新的Product实现。逐版本实际delta只读[`CHANGELOG`](CHANGELOG.md)。
+当前exact development pointer为`v0.5.0`，位于本地branch `0.5.0`，对应仍active的
+[`Product Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview)。同身份Release train已经完成replacement
+C0、双通道Cloud、immutable publication、annotated-tag修复、Latest confirmation、两轮retirement与C2；完整证据见
+[`v0.5.0 Release operator guide`](docs/acceptance/v0.5.0-release-operator-guide.md#v0-5-0-release-operator-guide)。当前指针不表示新的候选
+或重复发布授权，只保持active Phase与版本系列的对应；G4/G5、Phase closeout、后继版本号和下一Release train均未获授权。
 
-accepted/fallback角色仍为v0.4.4/v0.4.3。继承的稳定Product baseline只读
+accepted/fallback角色现为v0.5.0/v0.4.4。继承的Phase 4 Product baseline只读
 [`Product Phase 4 Overview`](docs/product-phases/phase-4-overview.md#product-phase-4-overview)，exact已发布身份只读
-[`BASELINE_PROVENANCE`](BASELINE_PROVENANCE.md)，最终双通道、Latest与C2证据只读
-[`v0.4.4 acceptance`](docs/acceptance/v0.4.4-cloud-hard-acceptance.md#v0-4-4-release-operator-guide)。
+[`BASELINE_PROVENANCE`](BASELINE_PROVENANCE.md)，当前accepted完整证据只读上述v0.5.0 guide。逐版本实际delta只读
+[`CHANGELOG`](CHANGELOG.md)。
 
 <a name="product-phase-route-index"></a>
 
@@ -95,7 +91,7 @@ accepted/fallback角色仍为v0.4.4/v0.4.3。继承的稳定Product baseline只�
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 / overview |
 |---|---|---|---|---|
 | 4 | `0.4.0-*`～`0.4.4` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理 | F0～F3C功能/rollback已闭合；后续patch/governance列车不得改变Product行为或激活Phase 5 | Product baseline complete；当前v0.4.4为Release tag教程stable C0 candidate；[`Phase 4 Overview`](docs/product-phases/phase-4-overview.md#product-phase-4-overview) |
-| 5 | `0.5.0` | 文档治理：authority分层、文档/代码对账、planning生命周期与overview/history分工；其他Product实现仍TBD | 新Product实现仍需Discovery；当前FULL Release已完成双通道与immutable publication，等待Latest/第二轮retirement/C2 | Phase 5 active；v0.5.0 Published Release PASS，Latest尚待确认；[`Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview) |
+| 5 | `0.5.0` | 文档治理：authority分层、文档/代码对账、planning生命周期与overview/history分工；其他Product实现仍TBD | 新Product实现仍需Discovery；v0.5.0 FULL Release已完成C2，G4真实shadow与G5 enablement继续defer | Phase 5 active；Release train已关闭，无后继列车授权；[`Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview) |
 | 6 | `0.6.0-*` | compaction lifecycle | 复核真实Cloud payload，比较现有`SessionStart source=clear\|compact`与PreCompact/PostCompact的时序和恢复能力；现有事件足够时不扩大managed event set，只有真实context/时序缺口才新增Hook | pending |
 | 7 | `0.7.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立gate；必须分别有use case、latency/token budget、噪声预算与Cloud证据 | pending / optional；没有明确收益就逐项或整体`NO_GO`；不是Phase 8前置 |
 | 8 | `0.8.0-*` | 唯一的read-only advisory completion evaluator | bounded、non-recursive、无plan时安静；只advisory，不阻断、不写counter/ledger或其他mutable gate state | pending；可独立于Phase 7进入Discovery |

@@ -58,14 +58,14 @@ deterministic package与disarm-first rollback继续是继承边界。当前Phase
 
 | 主题 | 摘要 |
 |---|---|
-| candidate identity | development identity已按维护者决定从`v0.5.0-dev`收敛为stable `v0.5.0`，本地branch同步为`0.5.0`；FULL Release双通道与immutable publication已完成，annotated tag精确peel到已验收C0且双资产保持exact；Latest、第二轮retirement、C2与Product实现授权仍未完成 |
+| candidate identity | development identity已按维护者决定从`v0.5.0-dev`收敛为stable `v0.5.0`，本地branch同步为`0.5.0`；FULL Release双通道、immutable publication、annotated-tag修复、Latest、第二轮retirement与C2均已完成，v0.5.0现为accepted、v0.4.4为immediate fallback；没有后继Release train或新Product实现授权 |
 | README / Wiki分层 | README保持稳定产品入口，本地开发与构建/Release教程由Release-excluded `Wiki.md`维护 |
 | planning lifecycle | `.active_plan`只选择一个活动scope；completed scope的保留、历史提炼和删除均由维护者决定 |
 | implementation audit | architecture、design、contracts、源码和测试已完成一次代码级对账，已知文档漂移得到修正 |
 | autonomous exact state | nonce/attestation现与README合同一致，严格要求exact单个LF，其他换行或尾随形式拒绝 |
-| Phase authority activation | Phase 5已显式激活为文档治理阶段；Phase激活本身不授权新的Product实现、Cloud或Release，维护者另行授权的FULL Release现已完成双通道与publication，后续Latest/角色轮转仍逐gate闭合 |
+| Phase authority activation | Phase 5已显式激活为文档治理阶段；维护者另行授权的v0.5.0 FULL Release已完成C2，但Release closeout不自动关闭本Phase，也不授权新的Product实现或下一版本列车 |
 | document-test governance Discovery | Phase 5.1已冻结`CONDITIONAL_GO`决策，B0～B4有界本地治理已对账；测试转向owner/关系及有害／等义反例，安全与身份相关`KEEP / DEFER`仍保留。本结论不表示Phase 5 closeout、Cloud或Release验收 |
-| Phase 5.3 Release harness risk-lane Discovery | 冻结G1～G5五个串行gate；G1 advisory classifier、G2 identity closure/replay与G3 machine evidence projection已完成，仍不改变现有C0/C1/C2或双通道流程。G4真实低风险shadow与G5 enablement decision尚未开始；当前v0.5累积Product变化要求FULL，reduced lane仍未启用。维护者另行授权的FULL Release已完成Source/Candidate并进入本地C1，publication及后继gate保持未完成 |
+| Phase 5.3 Release harness risk-lane Discovery | 冻结G1～G5五个串行gate；G1 advisory classifier、G2 identity closure/replay与G3 machine evidence projection已完成，未改变本次FULL的C0/C1/C2或双通道流程。v0.5.0 FULL Release现已完成C2；G4真实低风险shadow与G5 enablement decision仍`KEEP / DEFER`，reduced lane尚未启用 |
 
 <a name="phase-5-planning-history-lifecycle"></a>
 
@@ -83,9 +83,10 @@ deterministic package与disarm-first rollback继续是继承边界。当前Phase
 
 ## Version-train mapping
 
-Phase 5从`v0.5.0-dev`development identity收敛到当前stable `v0.5.0`。维护者另行授权的FULL Release已经在replacement C0
-完成双通道PASS、第一轮retirement、C1与immutable publication；Latest、第二轮retirement、C2和accepted/fallback轮转仍未完成。
-逐版本实际变化只读[`CHANGELOG`](../../CHANGELOG.md)，当前角色和后续授权只读ROADMAP。
+Phase 5从`v0.5.0-dev`development identity收敛到stable `v0.5.0`。维护者另行授权的FULL Release已经在replacement C0
+完成双通道PASS、immutable publication、Latest、两轮retirement与C2；programme角色现为v0.5.0 accepted、v0.4.4 immediate
+fallback。由于本Phase仍active且G4/G5未获施工授权，ROADMAP继续保留同一`v0.5.0`train pointer，但这不表示重复发布、
+`v0.5.1`或下一Release train已经授权。逐版本实际变化只读[`CHANGELOG`](../../CHANGELOG.md)，当前角色和后续授权只读ROADMAP。
 
 未来若`0.5.x`继续承载同一文档治理目标，可以保留在本Phase；若提出runtime、Host event、permission、completion evaluator或
 hard gating等新的Product方向，必须先按ROADMAP重新Discovery，不能仅因版本号相邻而自动并入本Phase。

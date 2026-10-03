@@ -32,16 +32,14 @@ the maintainer's immutable publication gate.
 
 ## Current phase
 
-Phase 7 Published Release checkpoint complete at this commit: the maintainer-confirmed public-channel PASS and
-repaired annotated-tag identity are recorded. Role-window retirement and C2 remain held until GitHub Release Latest
-promotion is explicitly confirmed.
+Phase 7 complete locally: Latest confirmation, second role-window retirement review, accepted/fallback rotation,
+final Post-run, C2 validation and the local governance commit are closed. Product Phase 5 remains active; G4/G5 and
+any successor Release train remain unauthorized.
 
 ## Next Step
 
-Maintainer pushes this Release-excluded Published checkpoint, then uses the normal metadata-only path to cancel
-Pre-release and set the same v0.5.0 Release as Latest. After returning to or refreshing the Release detail page,
-explicitly confirm it shows exact v0.5.0 as Latest and no longer Pre-release. Only then perform the second retirement
-review, accepted/fallback rotation and final C2 writeback.
+Maintainer pushes the local C2 commit on branch `0.5.0`. No additional remote mutation, Product Phase 5 gate,
+successor version identity or Release train is authorized by this closeout.
 
 ## Phases
 
@@ -52,7 +50,7 @@ review, accepted/fallback rotation and final C2 writeback.
 5. [x] Create and verify the exact local C0 commit, then hand off maintainer push and Source/Candidate Cloud steps.
 5R. [x] Repair the Cloud-exposed mode fixture, revalidate, and create a replacement exact local C0.
 6. [x] After maintainer returns raw first-channel evidence, verify exact C0/asset identity and write C1 only on PASS.
-7. [ ] After separately authorized immutable publication and second-channel evidence, close Latest/retirement/C2.
+7. [x] After separately authorized immutable publication and second-channel evidence, close Latest/retirement/C2.
 
 ## C0 exit conditions
 
@@ -96,3 +94,5 @@ review, accepted/fallback rotation and final C2 writeback.
 | Initial active-plan recovery command passed three positional arguments to this PowerShell version's `Join-Path`. | The active slug was recovered successfully, but the three file reads failed. Use one interpolated `.planning/$active/<file>` path per read instead of repeating the unsupported positional form. |
 | The browser connector returned no usable result for the GitHub Release page/search and then reported the Release API URL inaccessible. | Do not repeat the same browser route. Use one bounded local read-only GitHub CLI/API query if available; if metadata still cannot be established, retain Latest/C2 as pending rather than infer promotion from Published Cloud PASS. |
 | First Published-checkpoint governance run passed 44/47; three architecture cases parsed both `active` and English `pending` from the Phase 5 status cell. | Preserve the single Phase lifecycle state `active` and reword only the Release sub-gate as Chinese `Latest尚待确认`, then rerun the same focused suite. |
+| A targeted PowerShell test-source view failed before reading files because its double-quoted `rg` pattern was not terminated. | No repository data changed; split the search from the line-range read and use literal single-quoted patterns. |
+| First C2 focused run was blocked in the restricted sandbox by Node test-runner `spawn EPERM`; the approved outside-sandbox rerun passed 58/63. | Classified the five real failures as pre-C2 naming/route fixtures: duplicate exact guide anchor, `candidate`-only pointer wording, two hardcoded accepted evidence filenames, and accepted-doc inventory. Generalize only those lifecycle assertions and rerun. |
