@@ -19,13 +19,13 @@ identity, public-download validation, rollback evidence or the repository trust 
 
 ## Current phase
 
-Completed locally: historical replay, classifier/evidence design and option comparison closed with a bounded
-`CONDITIONAL_GO`; current Release behavior remains unchanged and all local governance/full regression passed.
+Completed locally: the maintainer-approved Phase 5.3 `FROZEN_DISCOVERY_RECORD` is self-contained, indexed and
+validated with an exact five-gate successor topology; no implementation gate is authorized.
 
 ## Next Step
 
-Hand off the Discovery decision. The next gate requires explicit maintainer authorization to implement a
-read-only advisory classifier and identity-closure checker; it must not enable reduced lanes or change Release.
+Hand off the frozen Phase 5.3 record. Starting G1 still requires a new explicit authorization and a fresh active
+implementation plan; G2～G5, reduced lanes, Cloud and Release remain unauthorized.
 
 ## Phases
 
@@ -36,6 +36,8 @@ read-only advisory classifier and identity-closure checker; it must not enable r
    `GO`, `CONDITIONAL_GO` or `NO_GO` recommendation.
 5. [x] Reconcile the Discovery conclusion into the proper Product Phase/history authority, run governance
    validation and create a scoped local commit.
+6. [x] Promote the maintainer-approved frozen Discovery to Phase 5.3 history, update its index/current summary,
+   validate the history transaction and create a scoped local commit.
 
 ## Invariants
 

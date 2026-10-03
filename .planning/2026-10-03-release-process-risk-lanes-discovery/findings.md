@@ -209,9 +209,15 @@ files touched by C1/C2, classifier escalation rate, and false-fast-lane count (r
 gate. `NO_GO` for changing the current Release workflow, skipping C1, reducing the present v0.5.0-dev full lane,
 or adopting external attestations in this Discovery.
 
-The stable conclusion is summarized in the Phase 5 overview and CHANGELOG. Detailed replay and design evidence
-remain in this active planning scope. No Phase 5.x history record is created because the maintainer has not made
-the separate planning-retirement/history-promotion decision required by Phase 5 governance.
+The stable conclusion is summarized in the Phase 5 overview and CHANGELOG. The maintainer subsequently made the
+separate history-promotion decision required by Phase 5 governance: create Phase 5.3 as a
+`FROZEN_DISCOVERY_RECORD`. Its successor implementation topology is exactly five gates: advisory classifier,
+identity-closure checker/replay, evidence projection, shadow execution, and a final enablement decision. History
+promotion does not authorize any of those gates.
+
+The self-contained history record is `docs/history/phase-5.3-release-risk-lane-discovery.md`. It uses full decision
+source commit `94ea8a53624de28f6348f29c9f638c99a638fa19` as cold evidence, increments the frozen-record index from 12 to 13, and keeps detailed
+implementation errors/outputs in future gate planning rather than copying the completed working log.
 
 ## Questions to resolve
 
