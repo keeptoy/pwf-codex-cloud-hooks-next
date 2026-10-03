@@ -6,4 +6,8 @@
 - Confirmed the Guide, ROADMAP and planning-lifecycle test require one valid active scope; created this minimal scope for the cleanup transaction before removing old scopes.
 - Removed 45 old completed scopes (135 tracked files) after exact-path, type and Git-tracking validation; `.active_plan` now points to the sole new scope. Old bytes remain recoverable at `8756cd5`. Next: local verification and scoped commit.
 - Staged the planning-only transaction so Git-backed lifecycle checks see the new scope. Focused suite passed 47/47; full Windows suite passed 184 with 26 POSIX-only skips and 0 failures. Next: staged scope audit, then local commit.
-- Marked the bounded cleanup locally complete after verification; final staged scope audit and local commit remain.
+- Marked the bounded cleanup locally complete after verification and committed it as `eb13518` (`chore(planning): retire completed Phase 5 governance scopes`).
+
+## 2026-10-03
+
+- Reconciled the active task plan and progress record with the already-created cleanup commit; no production, test, contract, history, Product, Cloud, Release or remote state changed.

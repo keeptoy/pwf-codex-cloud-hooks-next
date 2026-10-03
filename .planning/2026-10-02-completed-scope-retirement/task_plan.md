@@ -12,11 +12,11 @@ Remove the 45 completed planning scopes that the maintainer explicitly authorize
 
 ## Current phase
 
-Completed locally: the 45 old scopes are removed, one valid active scope remains, and focused/full Windows regression passed. This planning-only transaction is ready for a bounded local commit.
+Completed locally and committed: the 45 old scopes are removed, one valid active scope remains, focused/full Windows regression passed, and commit `eb13518` records the bounded planning-only transaction.
 
 ## Next Step
 
-Hand off the cleanup after its local commit. Old planning bytes remain recoverable from the pre-retirement Git commit; the new active scope is only the current-task pointer, not a replacement archive.
+Hand off the completed cleanup. Old planning bytes remain recoverable from the pre-retirement Git commit; the new active scope is only the current-task pointer, not a replacement archive.
 
 ## Phases
 
