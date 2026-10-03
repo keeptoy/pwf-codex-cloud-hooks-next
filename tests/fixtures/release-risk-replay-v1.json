@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "fixture_id": "PWF_RELEASE_RISK_REPLAY_V1",
+  "samples": [
+    {
+      "id": "source-only-planning-retirement",
+      "base_commit": "8756cd57c43a74235343421feacb11a89a78a370",
+      "head_commit": "eb13518b55bcf526f9f136e9f68165427ddced8e",
+      "expected_lane": "SOURCE_ONLY_GOVERNANCE"
+    },
+    {
+      "id": "v0.4.1",
+      "base_commit": "6b388518855da9053713a58e5c918c8b727b6dc6",
+      "head_commit": "99885b854bd9621c3340e99f031bf83ceb58414d",
+      "expected_lane": "PRODUCT_OR_SECURITY"
+    },
+    {
+      "id": "v0.4.2",
+      "base_commit": "3903326d7bbea344a8b03de1d9e1e7205eed57b1",
+      "head_commit": "d51f291566b5599cb21a9fc5c3f30fd1a1bbc74a",
+      "expected_lane": "RELEASE_MECHANICS"
+    },
+    {
+      "id": "v0.4.3",
+      "base_commit": "33deb5870015c94df329fe233e306363ba43232b",
+      "head_commit": "6204de36cd8b2cbc614a4bb53b8481a5a1ba234d",
+      "expected_lane": "RELEASE_MECHANICS"
+    },
+    {
+      "id": "v0.4.4",
+      "base_commit": "d7b5345b165e94c18ceab9b591d9a6b6dd251110",
+      "head_commit": "f7032fd0efad3df9e4b6052e8cd766d27cd2a844",
+      "expected_lane": "PACKAGE_DOC_ONLY"
+    },
+    {
+      "id": "current-v0.5",
+      "base_commit": "053f66e994ca095e974f69a7fbe8f2bb54697fc3",
+      "head_commit": "d2f9acce31b6051d6eb6255d59d21a0340fee42e",
+      "expected_lane": "PRODUCT_OR_SECURITY"
+    }
+  ]
+}

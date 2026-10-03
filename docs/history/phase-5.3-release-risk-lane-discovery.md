@@ -183,6 +183,26 @@ identity closure、`NO_RELEASE_REQUIRED`、required-gate选择或evidence投影�
 contracts与现行Release workflow `KEEP`且字节/职责不变。G2若获单独授权，只能消费G1 advisory结果并增加exact identity closure，
 不能把本地G1 PASS解释成reduced lane已经启用。
 
+<a name="phase-5-3-post-implementation-status-g2"></a>
+
+## Post-implementation status — G2
+
+维护者随后单独授权G2。classifier升级为`PWF_RELEASE_RISK_ADVISORY_V2`：继续保留完整raw Git delta，同时增加原子的
+`identity_closure`与`residual_changes`。它从exact accepted base重建installed predecessor，逐项复核runtime inventory与实际Git
+blob hash；candidate bootstrap优先按exact head template渲染，pre-template v0.4.2则只允许从accepted sealed bootstrap精确替换唯一
+version和ZIP hash。package、Release contract与manifest只有在identity替换后完整字节可解释时才从residual移除；predecessor或
+candidate任一字节、mode/type、path或integrity reference不符时，整组closure不归一化并fail closed到`PRODUCT_OR_SECURITY`。
+
+exact replay ledger固定六个40位commit endpoint。回放结果依次为source-only `SOURCE_ONLY_GOVERNANCE`、v0.4.1
+`PRODUCT_OR_SECURITY`、v0.4.2/v0.4.3 `RELEASE_MECHANICS`、v0.4.4 `PACKAGE_DOC_ONLY`和current v0.5
+`PRODUCT_OR_SECURITY`，false-fast为0。v0.4.1的历史head已是non-zero sealed bootstrap，不能冒充zero-hash candidate，因而按设计
+保守保留FULL；规范identity-only disposable fixture得到`NO_RELEASE_REQUIRED`，tampered fixture则验证原子FULL回退。
+
+G2只修改Release-excluded classifier、owner policy、测试/fixture与本历史状态；package、manifest、runtime/Release contracts、
+bootstrap与现行C0/C1/C2字节/职责均未改变。完整Windows回归为193 pass、26个已记录POSIX/Linux-only skip、0 fail；本地结果没有
+提升为Linux/Cloud或reduced-lane证据。G3～G5仍未授权，`required_gates`/evidence projection仍不存在，当前v0.5候选继续使用
+`PRODUCT_OR_SECURITY`和现行FULL workflow。
+
 <a name="phase-5-3-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

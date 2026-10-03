@@ -34,12 +34,14 @@
       "id": "release_mechanics",
       "lane": "RELEASE_MECHANICS",
       "exact_paths": [
-        "BASELINE_PROVENANCE.md",
-        "ROADMAP.md",
         "Wiki.md",
         "contracts/release-artifact-v2.json",
         "docs/cloud-acceptance-operator-guide-template.md",
         "docs/cloud-hard-acceptance-template.md",
+        "docs/v0.4.0-dev-f3-cloud-lifecycle-runbook.md",
+        "docs/v0.4.0-dev-f3b2-smart-live-operator-guide.md",
+        "docs/v0.4.0-dev-f3b3-autonomous-live-operator-guide.md",
+        "docs/v0.4.0-dev-f3c-rollback-operator-guide.md",
         "tools/build_release.py",
         "tools/materialize_release_assets.py",
         "tools/templates/init-cloud-sandbox.bash.in"
@@ -53,9 +55,15 @@
         ".gitignore",
         "AGENTS.md",
         "ARCHITECTURE.md",
+        "BASELINE_PROVENANCE.md",
         "CHANGELOG.md",
         "DESIGN.md",
-        "MAINTAINER_HANDOFF.md"
+        "MAINTAINER_HANDOFF.md",
+        "ROADMAP.md",
+        "docs/maintenance-environment-profile.md",
+        "docs/phase-history-template.md",
+        "docs/product-phase-overview-template.md",
+        "docs/repository-governance-guide.md"
       ],
       "prefixes": [
         ".planning/",
