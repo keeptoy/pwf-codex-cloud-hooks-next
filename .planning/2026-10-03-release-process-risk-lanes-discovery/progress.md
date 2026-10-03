@@ -33,5 +33,6 @@
   identical escalated read-only command passed all 47 architecture/repository governance tests.
 - Full Windows `npm test` passed with 184 pass, 26 honest POSIX/Linux-only skips and 0 failures. Discovery is
   locally complete; no production, contract, version, Cloud, Release or remote state changed.
-- Initial scoped staging was blocked because the sandbox could not create `.git/index.lock`; the worktree remains
-  unstaged and intact. Next: repeat the same exact-path staging with repository-local escalation, audit, commit.
+- Initial scoped staging was blocked because the sandbox could not create `.git/index.lock`; exact-path escalated
+  staging then succeeded, and commit `94ea8a5` (`docs(discovery): classify release risk lanes`) records the
+  replay-backed decision and authority summary without production or Release changes.
