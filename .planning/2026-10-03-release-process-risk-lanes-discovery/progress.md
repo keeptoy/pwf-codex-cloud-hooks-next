@@ -43,5 +43,6 @@
   Phase 5 outline plus CHANGELOG. The record freezes G1～G5 scope, dependencies, exit and stop conditions while
   leaving every implementation/Cloud/Release gate unauthorized.
 - Phase 5.3 history validation passed: focused architecture/repository governance 47/47, full Windows suite
-  184 pass with 26 honest POSIX/Linux-only skips and 0 failures, plus `git diff --check` PASS. Ready for a scoped
-  local history-promotion commit.
+  184 pass with 26 honest POSIX/Linux-only skips and 0 failures, plus `git diff --check` PASS. Commit `8e6a894`
+  (`docs(history): freeze phase 5.3 release risk lanes`) records the scoped history promotion; no successor gate
+  was started.
