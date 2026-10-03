@@ -98,3 +98,25 @@
 - First retirement review should keep all seven planning scopes, the accepted v0.4.4 recovery pair, sealed C0
   inputs, the open v0.5.0 guide/templates/tests, and the ignored exact `dist/` assets. No object is safe or authorized
   for RETIRE/MIGRATE before publication and the second role-window review.
+
+## Published Release PASS and remaining closeout boundary
+
+- The maintainer explicitly reports the independent v0.5.0 Published Release Cloud channel as PASS with final exit
+  code `0`. The supplied immutable URL and re-download SHA equal the sealed candidate ZIP identity
+  `7f4fcdee036b71c9093c044af1c015218d5a5533779d719d0f4f01bc79d0ba40`.
+- Supplied markers close the public-package identity, post-resume doctor, authoritative bundle inventory,
+  adapter-only policy, ZIP-boundary importer, zero-leftover and post-resume gates. Repository policy requires this
+  explicit maintainer conclusion to be accepted without reclassification or rerun.
+- Published Release PASS does not itself prove GitHub Release Latest promotion. ROADMAP keeps Latest as a separate
+  maintainer metadata confirmation after the public channel; C2 and the second role-window retirement checkpoint
+  must wait unless the maintainer also confirms the Release detail page shows exact v0.5.0 as Latest and not
+  Pre-release.
+- A bounded browser attempt could not access the GitHub Release API/page, so it yielded no metadata evidence. This
+  is a tool-access limitation, not a Release failure; do not weaken the Latest condition or reinterpret the explicit
+  Published PASS.
+- The initial public tag was a lightweight ref directly targeting C0. The maintainer accepted this as a low-risk
+  publication-metadata defect and performed a guarded atomic replacement rather than deleting the Release or
+  assets. The resulting annotated tag object is `e96f5b8855c5f637fa546fa99fd0c93c4cdfaf0f`; its peeled commit remains
+  exact C0 `6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d`.
+- This repair changes tag metadata only. It does not alter candidate source, ZIP/bootstrap bytes, public filenames,
+  public URLs or the already accepted Published Release behavior evidence. Latest remains intentionally pending.

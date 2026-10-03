@@ -99,3 +99,37 @@
   contains its development zero hash. The ignored formal assets remain 84,516/21,565 bytes with exact recorded SHA.
 - Phase 6 is complete for the local checkpoint. No remote push, tag, Release edit/upload, Published Release Cloud,
   Latest action, second retirement review or C2 was performed.
+- Maintainer explicitly reports the v0.5.0 Published Release Cloud hard acceptance as PASS. Supplied §9.2 summary
+  binds the run to immutable ZIP URL `https://github.com/keeptoy/pwf-codex-cloud-hooks-next/releases/download/v0.5.0/pwf-codex-cloud-hooks-v0.5.0.zip`, exact SHA-256
+  `7f4fcdee036b71c9093c044af1c015218d5a5533779d719d0f4f01bc79d0ba40` and final exit code `0`.
+- Supplied public-channel markers include package identity `0.5.0`, post-resume doctor PASS, authoritative installed
+  inventory, adapter-only policy, exact public re-download SHA, boundary importer PASS, zero snapshot leftovers and
+  `PWF_PUBLIC_POST_RESUME=PASS`. Accept this maintainer conclusion directly; Latest promotion remains a distinct
+  metadata confirmation unless the current authority establishes it from separate maintainer evidence.
+- Local branch and `origin/0.5.0` both resolve to C1 `54172b1`; the local clone has not fetched a v0.5.0 tag, which
+  is not treated as evidence against the maintainer's public Release report. Current tracked dirt consists only of
+  this turn's planning evidence.
+- The stable guide/template lifecycle permits the Published result to be recorded, but forbids final Post-run,
+  second retirement and `PUBLISHED_RELEASE_CLOSEOUT_HEAD` until Latest confirmation and role-window closeout are
+  also complete. The supplied summary includes the public ZIP identity but not an explicit statement that the
+  Release detail page now shows Latest and no longer Pre-release.
+- Read-only GitHub checks found the published Release non-draft and still Pre-release, with exact ZIP/bootstrap
+  assets, but found `v0.5.0` was initially a lightweight tag pointing directly to C0. This left Published Cloud PASS
+  intact while blocking Latest/C2 under the annotated-tag publication contract.
+- Maintainer ran the guarded repair and returned `TAG_REPAIR=PASS`: remote tag object
+  `e96f5b8855c5f637fa546fa99fd0c93c4cdfaf0f` is annotated and peels to the same accepted C0
+  `6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d`. The Release remains at the same URL; Latest was deliberately not
+  changed.
+- Independent read-only post-repair verification matched the maintainer output: `ls-remote` returned tag object
+  `e96f5b8...` plus peeled C0 `6633b1b...`; GitHub ref API reports `type=tag`, the tag-object API reports its target
+  `type=commit` at exact C0, and the non-draft Pre-release still exposes the exact 84,516-byte ZIP and 21,565-byte
+  bootstrap with unchanged SHA-256 digests.
+- Added an open Published Release channel checkpoint to the v0.5.0 guide and synchronized ROADMAP/Phase overview to
+  `Published PASS / Latest pending`. No final Post-run, role rotation, second retirement decision or C2 claim was
+  written.
+- The first focused governance run passed 44/47. All three failures were the same lifecycle-parser ambiguity from
+  placing English `pending` beside the sole Phase state `active`; changed only that sub-gate wording to
+  `Latest尚待确认` and retained every substantive boundary.
+- Focused governance rerun passed 47/47 with 0 fail/skip. The Published checkpoint is locally complete and remains
+  explicitly non-final: Release is still Pre-release, accepted/fallback roles remain v0.4.4/v0.4.3, and no second
+  retirement or C2 conclusion has been created.

@@ -32,14 +32,16 @@ the maintainer's immutable publication gate.
 
 ## Current phase
 
-Phase 6 complete at this commit: real Source/Candidate PASS, first retirement review, exact formal assets and local
-C1 evidence are closed without changing sealed Release inputs.
+Phase 7 Published Release checkpoint complete at this commit: the maintainer-confirmed public-channel PASS and
+repaired annotated-tag identity are recorded. Role-window retirement and C2 remain held until GitHub Release Latest
+promotion is explicitly confirmed.
 
 ## Next Step
 
-Maintainer pushes branch `0.5.0` through C1, creates annotated tag `v0.5.0` exactly at replacement C0
-`6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d`, verifies the peeled tag target, creates the immutable Pre-release and
-uploads the exact local ZIP/bootstrap pair. Stop before Published Release Cloud until those remote steps complete.
+Maintainer pushes this Release-excluded Published checkpoint, then uses the normal metadata-only path to cancel
+Pre-release and set the same v0.5.0 Release as Latest. After returning to or refreshing the Release detail page,
+explicitly confirm it shows exact v0.5.0 as Latest and no longer Pre-release. Only then perform the second retirement
+review, accepted/fallback rotation and final C2 writeback.
 
 ## Phases
 
@@ -91,3 +93,6 @@ uploads the exact local ZIP/bootstrap pair. Stop before Published Release Cloud 
 | First formal asset-materialization attempt failed with Windows `[WinError 5]` on its system temporary directory inside the restricted sandbox. | No partial `dist/` assets were created. Reran the same canonical command outside the sandbox under the approved materializer prefix; first run created both exact assets and the second returned `unchanged`. |
 | Initial C1 focused governance run failed five assertions after the lifecycle writeback. | Four failures came from omitting the parseable `Product Phase 5` marker in the current-train table; one assertion did not allow the intentional line wrap. Restored the marker, bounded the multiline assertion and reran 51/51 PASS. |
 | First formal-bootstrap syntax command used the nonexistent `C:` Git Bash path. | Resolved the installed executable with `Get-Command bash` (`D:\Program Files\Git\bin\bash.exe`) and reran `bash -n` successfully. |
+| Initial active-plan recovery command passed three positional arguments to this PowerShell version's `Join-Path`. | The active slug was recovered successfully, but the three file reads failed. Use one interpolated `.planning/$active/<file>` path per read instead of repeating the unsupported positional form. |
+| The browser connector returned no usable result for the GitHub Release page/search and then reported the Release API URL inaccessible. | Do not repeat the same browser route. Use one bounded local read-only GitHub CLI/API query if available; if metadata still cannot be established, retain Latest/C2 as pending rather than infer promotion from Published Cloud PASS. |
+| First Published-checkpoint governance run passed 44/47; three architecture cases parsed both `active` and English `pending` from the Phase 5 status cell. | Preserve the single Phase lifecycle state `active` and reword only the Release sub-gate as Chinese `Latest尚待确认`, then rerun the same focused suite. |
