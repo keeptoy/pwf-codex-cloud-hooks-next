@@ -36,7 +36,7 @@ Discovery decision
   -> Release only: complete GitHub Release Latest promotion confirmation and role-window closeout retirement checkpoint
   -> append exact Final Post-run status to the same file
   -> freeze the guide
-  -> retire it to immutable history after its role window closes
+  -> after role exit: keep original guide bytes/path and register frozen history in the acceptance index
 ```
 
 适用规则：
@@ -59,6 +59,10 @@ Discovery decision
 10. 若执行前后product bytes、协议、risk claim、exact source或停止条件发生实质变化，当前guide失效；回到
    Discovery判断是新Round还是同Round的新候选，不能直接改写预期后继续记PASS。
 11. Operator guide、版本acceptance和本模板必须被Release、installed inventory与trusted execution graph排除。
+12. guide退出current角色后默认保留原路径、原始内容和证据，并按
+    [冻结guide保留规则](repository-governance-guide.md#acceptance-directory-lifecycle)在Acceptance README登记为历史记录；
+    source固定到最终冻结commit，文件SHA按原始Git blob计算。历史教程的重放与相对链接校验使用该源码快照及当时模板。
+    冻结但仍承担accepted职责的guide不提前归档；已经清退的旧文件不自动恢复。
 
 普通Release按上述ROADMAP入口进入版本无关closeout，不要求另建standing Phase 9或把历史P9-A～F复制为六轮任务。
 本模板中的candidate admission preflight与两个post-PASS retirement章节只承接同一流程的对象治理，不是额外Cloud通道、
@@ -231,7 +235,8 @@ Final Post-run status只在guide声明范围全部闭合后追加；Pre-run guid
 Release guide只有在Published Release Cloud PASS、维护者完成同一Release的
 [`GitHub Release Latest promotion confirmation`](../ROADMAP.md#github-release-latest-promotion-confirmation)后，才执行
 第二轮`RETIRE/MIGRATE/KEEP`审查。它确认新accepted与immediate fallback可恢复，并治理退出candidate/accepted窗口的
-本地版本材料、oracles与compatibility transition；不得删除、移动、重建或重传sealed tag和资产。该审查必须先于C2，
+本地版本材料、oracles与compatibility transition；版本级guide默认`KEEP / FROZEN_HISTORY`并更新Acceptance README导航，
+bootstrap、oracles、compatibility transition与planning仍按各自规则审查。不得删除、移动、重建或重传sealed tag和资产。该审查必须先于C2，
 使最终状态commit能够保存真实检查点结论。
 
 成功条件、正常路径是否另设独立postflight以及异常停止/诊断边界只读上述ROADMAP anchor。本模板不复制判断规则；具体guide

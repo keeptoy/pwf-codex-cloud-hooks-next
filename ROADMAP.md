@@ -55,6 +55,8 @@ Phase 5文档authority治理、Release risk-lane G1～G3 advisory基础，并把
 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md)，完整双通道、晋级、第二轮退役与C2证据见
 [`v0.5.0 Release operator guide`](docs/acceptance/v0.5.0-release-operator-guide.md#v0-5-0-role-window-closeout)。
 
+<a name="current-development-train"></a>
+
 ## 4. 当前开发列车
 
 仓库生命周期治理保持一个active planning，并继续用candidate + accepted role window区分开发工作流、已接受版本与回退资产。
@@ -405,7 +407,9 @@ Product Phase收官已经是正式生命周期边界，但只形成候选功能�
 其closeout结论可以输入candidate admission preflight，但第一轮真实review必须等待Source/Candidate PASS。若PASS后的拟退役动作会改变
 package、contract、runtime、bootstrap、ZIP allowlist或其他C0 Release输入，必须fail closed：不得沿用原PASS，必须形成新C0并
 重新运行Source/Candidate。只有Release-excluded planning、临时教程和脚手架适合在第一轮提出清退，且planning删除仍需维护者明确决定。
-第二轮review是Release workflow的退出条件，只处理必须等公开身份、Latest confirmation和版本角色确定后才能判断的对象，且不得改写sealed
+第二轮review是Release workflow的退出条件，只处理必须等公开身份、Latest confirmation和版本角色确定后才能判断的对象；退出current角色的
+验收guide按[冻结guide保留规则](docs/repository-governance-guide.md#acceptance-directory-lifecycle)记录`KEEP / FROZEN_HISTORY`并更新目录导航，
+不因版本轮转删除原件。其他对象仍按各自规则处置，且不得改写sealed
 tag、ZIP、bootstrap、URL或SHA。
 
 不进入独立Product Phase的小型patch/governance列车仍要在candidate baseline closeout完成等价第一轮审查，但不因此虚构Product

@@ -1,6 +1,7 @@
 "use strict";
 
 const assert = require("node:assert/strict");
+const crypto = require("node:crypto");
 const fs = require("node:fs");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
@@ -341,6 +342,86 @@ function acceptedEvidencePath(version) {
   return existing[0];
 }
 
+function frozenGuideRegistry(index, currentVersions, readFile, readSnapshot) {
+  const begin = "<!-- BEGIN PWF_FROZEN_GUIDE_REGISTRY_V1 -->";
+  const end = "<!-- END PWF_FROZEN_GUIDE_REGISTRY_V1 -->";
+  assert.equal(index.split(begin).length, 2, "one frozen-guide registry beginning is required");
+  assert.equal(index.split(end).length, 2, "one frozen-guide registry ending is required");
+  const start = index.indexOf(begin) + begin.length;
+  const stop = index.indexOf(end);
+  assert.ok(stop >= start, "frozen-guide registry markers are reversed");
+  const lines = index.slice(start, stop).trim().split(/\r?\n/);
+  assert.deepEqual(lines.slice(0, 2), [
+    "| 文档（原路径） | 冻结源码 | 文件 SHA-256 |",
+    "|---|---|---|",
+  ], "frozen-guide registry needs its three metadata columns");
+  const entries = [];
+  const seen = new Set();
+  for (const line of lines.slice(2)) {
+    const row = line.match(/^\| \[([^\]]+)\]\(([^)]+)\) \| \[source `([a-f0-9]{40})`\]\((https:\/\/github\.com\/keeptoy\/pwf-codex-cloud-hooks-next\/blob\/[a-f0-9]{40}\/[^)]+)\) \| `([a-f0-9]{64})` \|$/);
+    assert.ok(row, "invalid frozen-guide registry row: " + line);
+    const [, label, local, commit, url, digest] = row;
+    const relative = path.posix.normalize(path.posix.join("docs/acceptance", local));
+    const version = relative.match(/^docs\/(?:acceptance\/)?(v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?)-(?:cloud-hard-acceptance|release-operator-guide)\.md$/)?.[1];
+    assert.ok(version && !local.includes("\\") && label === path.posix.basename(relative),
+      "frozen guide must retain its original versioned path and filename");
+    assert.equal(url, `https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/${commit}/${relative}`,
+      "frozen source URL must bind the same commit and original path");
+    assert.ok(!currentVersions.includes(version), "current role guide cannot be marked historical");
+    assert.ok(!seen.has(relative), "duplicate frozen-guide path");
+    const bytes = readFile(relative);
+    const snapshot = readSnapshot(commit, relative);
+    assert.ok(Buffer.isBuffer(bytes) && Buffer.isBuffer(snapshot), "frozen guides require raw bytes");
+    assert.equal(crypto.createHash("sha256").update(bytes).digest("hex"), digest,
+      "frozen guide SHA-256 mismatch");
+    assert.deepEqual(bytes, snapshot, "frozen guide differs from its immutable snapshot");
+    const markdown = bytes.toString("utf8");
+    assert.equal(markdown.match(/^# (v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?)(?:\s|$)/m)?.[1], version,
+      "frozen guide title must match its version");
+    assert.match(markdown, /\b(?:POST_RUN_(?:PASS|FAIL|INCOMPLETE)|C2_COMPLETE)\b/,
+      "historical guide needs final evidence, not just Pre-run");
+    entries.push({ path: relative, commit, sha256: digest });
+    seen.add(relative);
+  }
+  return entries;
+}
+
+function repositoryFrozenGuides() {
+  const { accepted, candidate } = currentRoleWindow();
+  return frozenGuideRegistry(read("docs/acceptance/README.md"), [accepted, candidate],
+    relative => {
+      const target = path.join(root, relative);
+      assert.ok(fs.lstatSync(target).isFile() && !fs.lstatSync(target).isSymbolicLink(),
+        "frozen guide must be a regular file");
+      return fs.readFileSync(target);
+    }, (commit, relative) => {
+      const result = spawnSync("git", ["cat-file", "blob", `${commit}:${relative}`], { cwd: root });
+      assert.equal(result.status, 0, "frozen guide snapshot is unavailable: " + result.stderr);
+      return result.stdout;
+    });
+}
+
+function assertFrozenGuideLinks(source, markdown, commit, snapshotEntry) {
+  for (const [, target] of markdown.matchAll(/\]\(([^)]+)\)/g)) {
+    if (/^[a-z][a-z0-9+.-]*:/i.test(target) || target.startsWith("__") || target === "exact-commit-url") continue;
+    const [local, fragment] = target.split("#", 2);
+    const relative = local ? path.posix.normalize(path.posix.join(path.posix.dirname(source), decodeURIComponent(local))) : source;
+    assert.ok(!relative.startsWith("../") && !path.posix.isAbsolute(relative) && !local.includes("\\"),
+      "historical link escapes its frozen repository");
+    const entry = snapshotEntry(commit, relative);
+    assert.ok(entry, "historical link target is absent from its frozen snapshot: " + relative);
+    if (fragment) assert.ok(entry.includes(`<a name="${fragment}"></a>`),
+      "historical link lacks its frozen explicit anchor: " + target);
+  }
+}
+
+function assertGuideInventory(actual, current, historical) {
+  const expected = [...current, ...historical.map(entry => entry.path)];
+  assert.equal(new Set(expected).size, expected.length, "guide cannot be both current and historical");
+  assert.deepEqual([...actual].sort(), expected.sort(),
+    "guide inventory must contain exactly current entrypoints plus registered frozen history");
+}
+
 function assertCurrentPublicationRoutes(provenance, acceptance, roles) {
   const { accepted, candidate, immediateFallback, roadmap } = roles;
   const ledgerStart = provenance.indexOf("## 1. 已发布身份账本");
@@ -641,8 +722,12 @@ function assertAcceptanceRoleProjections(index, cloudTemplate) {
     "accepted guide may remain a current copy");
   assert.match(indexProse, /旧版guide[^。；]*角色退出前[^。；]*(?:可|允许)[^。；]*保留/,
     "old guide may remain until role exit");
-  assert.match(indexProse, /退出角色窗口后[^。]*immutable refs[^。]*(?:清退|移除)current副本/,
-    "after role exit the current copy routes to immutable refs");
+  assert.match(indexProse, /退出角色窗口后[^。]*保留原路径、原始内容和[^。]*验收证据[^。]*immutable refs/,
+    "after role exit the guide stays at its original path with frozen evidence");
+  assert.match(indexProse, /旧guide[^。]*不再作为当前[^。]*执行入口/,
+    "historical guides must not become current execution entrypoints");
+  assert.match(indexProse, /重放时[^。]*冻结源码快照[^。]*不能[^。]*旧教程[^。]*今天的模板/,
+    "historical replay must use frozen source and templates");
 
   const responsibilityAnchor = '<a name="acceptance-document-responsibilities"></a>';
   const routingAnchor = '<a name="version-discovery-round-routing"></a>';
@@ -1600,14 +1685,76 @@ test("planning deletion consent rejects automatic removal but allows equivalent 
   assert.doesNotThrow(() => assertPlanningDeletionConsent(rephrasedGuide, rephrasedRoadmap));
 });
 
+test("frozen guide registry keeps historical bytes while current roles remain separate", () => {
+  assert.doesNotThrow(() => repositoryFrozenGuides());
+  const file = "docs/acceptance/v0.4.99-cloud-hard-acceptance.md";
+  const commit = "a".repeat(40);
+  const bytes = Buffer.from('# v0.4.99 Cloud acceptance\n\n`POST_RUN_PASS`\n');
+  const sha = crypto.createHash("sha256").update(bytes).digest("hex");
+  const row = `| [${path.posix.basename(file)}](${path.posix.basename(file)}) | [source \`${commit}\`](https://github.com/keeptoy/pwf-codex-cloud-hooks-next/blob/${commit}/${file}) | \`${sha}\` |`;
+  const index = ["<!-- BEGIN PWF_FROZEN_GUIDE_REGISTRY_V1 -->",
+    "| 文档（原路径） | 冻结源码 | 文件 SHA-256 |", "|---|---|---|", row,
+    "<!-- END PWF_FROZEN_GUIDE_REGISTRY_V1 -->"].join("\n");
+  const files = new Map([[file, bytes]]);
+  const check = (document = index, roles = ["v0.5.0"], source = () => bytes) =>
+    frozenGuideRegistry(document, roles, relative => files.get(relative), source);
+  assert.deepEqual(check(), [{ path: file, commit, sha256: sha }]);
+  assert.throws(() => check(index, ["v0.4.99"]), /current role guide/);
+  assert.throws(() => check(index.replace(row, `${row}\n${row}`)), /duplicate/);
+  assert.throws(() => check(index.replace(sha, "0".repeat(64))), /SHA-256 mismatch/);
+  assert.throws(() => check(index.replace(`source \`${commit}\``, "source `main`")), /invalid frozen-guide/);
+  assert.throws(() => check(index.replace(`/${commit}/${file}`, `/${"b".repeat(40)}/${file}`)), /same commit/);
+  assert.throws(() => check(index, undefined, () => Buffer.from("changed snapshot")), /immutable snapshot/);
+  assert.throws(() => check(index, undefined, () => undefined), /raw bytes/);
+  files.set(file, Buffer.concat([bytes, Buffer.from("changed guide\n")]));
+  assert.throws(() => check(), /SHA-256 mismatch/);
+  files.delete(file);
+  assert.throws(() => check(), /raw bytes/);
+  files.set(file, bytes);
+  const preRun = Buffer.from('# v0.4.99 Cloud acceptance\n\n`PRE_RUN_READY`\n');
+  const preRunSha = crypto.createHash("sha256").update(preRun).digest("hex");
+  files.set(file, preRun);
+  assert.throws(() => check(index.replace(sha, preRunSha), undefined, () => preRun), /final evidence/);
+
+  const current = "docs/acceptance/v0.5.0-release-operator-guide.md";
+  const history = [{ path: file, commit, sha256: sha }];
+  assert.doesNotThrow(() => assertGuideInventory([current, file], [current], history));
+  assert.throws(() => assertGuideInventory([current, file], [current], []), /registered frozen history/);
+  assert.throws(() => assertGuideInventory([file], [current], history), /registered frozen history/);
+  assert.throws(() => assertGuideInventory([current], [current], [{ path: current }]), /both current and historical/);
+});
+
+test("historical guide links resolve against frozen source rather than today's templates", () => {
+  const source = "docs/acceptance/v0.4.99-cloud-hard-acceptance.md";
+  const markdown = "[old protocol](../old-template.md#old-protocol)\n";
+  const commit = "a".repeat(40);
+  const snapshot = new Map([["docs/old-template.md", '<a name="old-protocol"></a>\n']]);
+  const readSnapshot = (ref, relative) => {
+    assert.equal(ref, commit);
+    return snapshot.get(relative);
+  };
+  assert.doesNotThrow(() => assertFrozenGuideLinks(source, markdown, commit, readSnapshot));
+  assert.throws(() => assertFrozenGuideLinks(source, markdown, commit, () => null), /absent/);
+  assert.throws(() => assertFrozenGuideLinks(source, markdown, commit, () => "current template"), /explicit anchor/);
+  assert.throws(() => assertFrozenGuideLinks(source, "[escape](../../../secret.md)", commit, readSnapshot), /escapes/);
+});
+
 test("tracked Markdown local links resolve to existing paths and explicit anchors", () => {
   const placeholders = new Set(["exact-commit-url"]);
   const markdownPaths = repositoryPaths().filter(relative =>
     relative.endsWith(".md")
     && !relative.startsWith(".planning/")
     && !relative.startsWith("tests/fixtures/"));
+  const archived = new Map(repositoryFrozenGuides().map(entry => [entry.path, entry]));
 
   for (const source of markdownPaths) {
+    if (archived.has(source)) {
+      assertFrozenGuideLinks(source, read(source), archived.get(source).commit, (commit, relative) => {
+        const result = spawnSync("git", ["show", `${commit}:${relative}`], { cwd: root, encoding: "utf8" });
+        return result.status === 0 ? result.stdout : null;
+      });
+      continue;
+    }
     const sourcePath = path.join(root, source);
     for (const match of read(source).matchAll(/\]\(([^)]+)\)/g)) {
       let target = match[1].trim();
@@ -1668,10 +1815,15 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
       /pre-C0 candidate[^。]*不会[^。]*Release尚未授权[^。]*自动创建acceptance/,
       "the acceptance index must explain why a stable pre-C0 source identity has no guide yet");
   }
-  assert.deepEqual(acceptanceDocs, expectedAcceptanceDocs.sort());
-  const releaseVersion = relative => path.basename(relative)
-    .replace(/-(?:cloud-hard-acceptance|release-operator-guide)\.md$/, "");
-  assert.deepEqual(acceptanceDocs.map(releaseVersion).sort(), expectedAcceptanceDocs.map(releaseVersion).sort());
+  assertGuideInventory(acceptanceDocs, expectedAcceptanceDocs, repositoryFrozenGuides());
+  const indexText = read("docs/acceptance/README.md");
+  const currentStart = indexText.indexOf('<a name="acceptance-current-guides"></a>');
+  const historyStart = indexText.indexOf('<a name="acceptance-frozen-history"></a>');
+  assert.ok(currentStart >= 0 && historyStart > currentStart, "index must separate current and historical navigation");
+  const currentLinks = [...indexText.slice(currentStart, historyStart).matchAll(/\]\(([^)]+)\)/g)]
+    .map(([, local]) => path.posix.normalize(path.posix.join("docs/acceptance", local)))
+    .filter(relative => /^docs\/(?:acceptance\/)?v.*-(?:cloud-hard-acceptance|release-operator-guide)\.md$/.test(relative));
+  assert.deepEqual(currentLinks.sort(), expectedAcceptanceDocs.sort(), "index must navigate exactly the current guide entrypoints");
   assert.deepEqual(phaseOverviewDocs, [
     "docs/product-phases/phase-4-overview.md",
     "docs/product-phases/phase-5-overview.md",
@@ -1914,6 +2066,12 @@ test("acceptance role projections reject wrong owners and permit equivalent pros
     "旧版guide在角色退出前必须删除原路径");
   assert.notEqual(prematureEviction, index);
   assert.throws(() => assertAcceptanceRoleProjections(prematureEviction, cloud), /until role exit/);
+  const roleExitDeletion = index.replace("保留原路径、原始内容和\n验收证据", "删除原路径、原始内容和\n验收证据");
+  assert.notEqual(roleExitDeletion, index);
+  assert.throws(() => assertAcceptanceRoleProjections(roleExitDeletion, cloud), /frozen evidence/);
+  const unsafeReplay = index.replace("不能将旧教程与今天的模板", "允许将旧教程与今天的模板");
+  assert.notEqual(unsafeReplay, index);
+  assert.throws(() => assertAcceptanceRoleProjections(unsafeReplay, cloud), /frozen source and templates/);
   const wrongProtocolOwner = cloud.replace(
     "Source/Candidate 与 Published Release 的稳定执行协议、停止条件和 evidence schema",
     "当前授权、Next Step和版本结果");
@@ -1939,7 +2097,7 @@ test("acceptance role projections reject wrong owners and permit equivalent pros
     .replace("已经冻结且仍承担accepted职责的guide可以继续作为current副本",
       "冻结后仍承担accepted职责的guide可继续保留为current副本")
     .replace("旧版guide在角色退出前也可保留原路径", "旧版guide在角色退出前允许保留原路径")
-    .replace("清退current副本", "移除current副本");
+    .replace("旧guide用于查阅、审计和恢复", "旧guide供查阅和恢复");
   const equivalentCloud = cloud
     .replace("Source/Candidate 与 Published Release 的稳定执行协议、停止条件和 evidence schema",
       "Source/Candidate 和 Published Release 两个通道的稳定执行协议、停止条件与 evidence schema")
@@ -2183,8 +2341,11 @@ test("portable repository governance keeps stable retirement anchors", () => {
   assert.match(guide, /允许保留的历史文字命中必须明确只是时间语义，不得仍被解析为current\s+link、required path或可执行教程/);
   assert.match(guide, /^<a name="acceptance-directory-lifecycle"><\/a>$/m);
   assert.match(guide, /新建或尚未冻结的acceptance[\s\S]{0,100}docs\/acceptance\//);
-  assert.match(guide, /已经发布并冻结[\s\S]{0,160}角色退出前保留原路径/);
-  assert.match(guide, /角色退出后[\s\S]{0,180}exact immutable ref/);
+  assert.match(guide, /已经发布并冻结[\s\S]{0,160}应保留原路径/);
+  const guideLifecycle = guide.slice(guide.indexOf('### 11.1 Acceptance目录与冻结路径'),
+    guide.indexOf('### 11.2 Cloud protocol'));
+  assert.match(guideLifecycle, /角色退出后[\s\S]*exact immutable ref/);
+  assert.match(guide, /KEEP \/ FROZEN_HISTORY[\s\S]{0,120}默认保留原路径、原始内容和验收证据/);
   assert.match(guide, /template路径[\s\S]*冻结guide[\s\S]*不得[\s\S]*双authority/);
 });
 

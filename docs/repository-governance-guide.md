@@ -23,7 +23,7 @@ Release，它仍可从原始 ref 恢复。治理的目标是保持 HEAD 可维�
 |---|---|---|
 | Hot | 当前 canonical source、candidate、accepted baseline、活动 planning | 当前 branch/HEAD |
 | Warm | 紧凑变更摘要、精选来源索引、当前运维/回滚入口 | 根级 authority docs |
-| Cold | 完整旧字节、逐次验收、旧 planning、退役原型 | Git commits、tags、Releases |
+| Cold | 完整旧字节、逐次验收、旧 planning、退役原型 | Git commits、tags、Releases；已登记冻结guide可保留原路径供查阅 |
 
 Hot 层追求单一权威和快速理解；Cold 层追求精确恢复。不要用不断扩张的 HEAD 同时承担两者。
 
@@ -69,9 +69,10 @@ source baseline
 | development candidate | 保留当前源码、bootstrap/入口和待完成证据 |
 | accepted baseline | 保留当前运维和 rollback 所需入口 |
 | immediate previous fallback | 默认使用 immutable 链接；只有明确离线需求才临时保留本地副本 |
-| older history | 只在 commit/tag/Release 中保留 |
+| older history | 执行材料由commit/tag/Release恢复；已登记的冻结验收guide保留原路径作为只读历史 |
 
-当 candidate 晋级为 accepted baseline 时，执行一次角色旋转，而不是继续追加新版本文件。
+当candidate晋级为accepted baseline时，执行一次角色旋转，当前执行材料不按版本无限追加；只读冻结guide按11.1登记保留，
+不占用当前执行入口或publication oracle席位。
 
 ## 6. 当前树分区
 
@@ -255,8 +256,15 @@ Release notes；不要提前创建大量按版本 archive 文件。
 
 新建或尚未冻结的acceptance/operator guide可以统一进入`docs/acceptance/`，但目录位置不产生新的programme authority；
 当前candidate、accepted与fallback角色仍只读ROADMAP。已经发布并冻结、且仍承担当前角色的guide若包含相对链接或字面
-执行路径，应在角色退出前保留原路径，不得为目录整齐原位改写证据。角色退出后，再在同一个retirement transaction中把
-current入口迁到exact immutable ref并清退旧副本。
+执行路径，应保留原路径，不得为目录整齐原位改写证据。角色退出后，在同一个retirement transaction中将其导航分类从current
+入口改为`KEEP / FROZEN_HISTORY`，默认保留原路径、原始内容和验收证据。冻结不等于退出角色：仍承担accepted职责的guide
+继续属于current入口；角色变化只由ROADMAP决定。
+
+`docs/acceptance/README.md`是文档导航与版本级冻结历史登记入口：每条历史记录登记原路径、包含最终字节的exact immutable ref
+和Git blob原始SHA-256。current入口与已登记historical副本分别验证，不再用candidate + accepted文件数量限制历史保留；未登记、
+重复、缺失、改写或仍承担current职责的历史条目必须拒绝。登记只绑定已有证据，不复制版本角色或PASS状态。
+历史guide的相对链接在其冻结源码快照中校验和重放，不能静默改用当前template；原件不因链接目标日后退出当前树而回写。
+旧规则下已经清退的guide不自动恢复；若确需删除保留的guide，仍按第11节执行恢复证据、入链inventory和原子引用迁移。
 
 template路径也可能被冻结guide当作执行输入。若移动template会要求回写冻结guide，不得复制旧template作为兼容副本或保留
 两个可执行版本形成双authority；应保持template原路径，直到有独立迁移设计和明确退出条件。目录README只能解释上述
@@ -330,7 +338,7 @@ candidate admission preflight，以便失败时保留planning、恢复材料和�
 2. 更新唯一 lifecycle authority；
 3. 冻结 immutable assets 和验收链接；
 4. 将旧 accepted 降为 previous/older；
-5. 移除超出角色窗口的本地 bootstrap、acceptance 和旧 planning；
+5. 移除超出角色窗口的本地bootstrap；退出窗口的验收guide默认冻结保留并更新导航分类，旧planning按维护者决定处置；
 6. 更新 provenance/CHANGELOG 和交叉链接；
 7. 旋转历史 oracle；
 8. 运行完整 repository、package 和目标平台 gate；
@@ -344,16 +352,18 @@ candidate admission preflight，以便失败时保留planning、恢复材料和�
 
 旧角色只有同时满足以下条件才算退出当前树：
 
-1. 当前树的版本化bootstrap精确覆盖source candidate + accepted角色窗口；acceptance和运维入口精确覆盖已经进入
-   Release guide生命周期的candidate + accepted窗口。pre-C0稳定源码身份在Release尚未授权时不得凭版本字符串自动生成guide；
+1. 当前树的版本化bootstrap精确覆盖source candidate + accepted角色窗口；当前acceptance执行入口精确覆盖已经进入
+   Release guide生命周期的candidate + accepted窗口，额外的版本级guide必须登记为`KEEP / FROZEN_HISTORY`并校验原路径、
+   冻结commit与原始SHA-256。pre-C0稳定源码身份在Release尚未授权时不得凭版本字符串自动生成guide；
 2. immediate fallback 默认只由 immutable source、tag、Release、acceptance 和 oracle 恢复；确有离线需求时，
-   本地副本必须有 owner、预算和退出条件；
+   本地执行副本必须有owner、预算和退出条件；冻结验收guide可以按11.1保留为只读历史记录，不成为fallback执行入口；
 3. README、AGENTS 和可迁移治理指南中的常用命令使用版本无关的发现方式或占位符，不按发布轮次累积
    固定版本文件名；machine contract、bootstrap、provenance 和 acceptance 仍应精确固定其身份；
 4. 旧版测试承载的长期安全不变量已经迁入当前版本或版本无关测试，删除旧用例不会删除安全边界；
 5. publication oracle 已旋转为 accepted + immediate fallback 两个席位，更早版本退出默认 suite，转由
    provenance、immutable Release 和周期性外部审计保存；
-6. 带时间语义的 CHANGELOG、验收和迁移证据保持原义，当前文档只通过 immutable link 引用退役全文；
+6. 带时间语义的CHANGELOG、验收和迁移证据保持原义；保留的guide由目录导航注明历史并绑定immutable source，已经删除的
+   全文继续通过immutable link恢复；历史相对链接的验证与重放只使用冻结快照；
 7. repository、package、publication 和目标平台 gate 全部通过，且当前树不再存在未分类的旧版本引用；
 8. 如果 eviction 已改变 Release input，而下一 machine identity 尚未建立，HEAD 必须显式标记为
    unsealed transition；不得用旧版本 bootstrap checksum 安装从该 HEAD 临时重建的 ZIP。
