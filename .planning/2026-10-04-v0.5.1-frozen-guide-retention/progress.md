@@ -36,3 +36,11 @@
   75c9eda81b6cc192df15346a5fb9bf60d2970e47ed53f3481887169778ac0a72; candidate-bootstrap recheck returned unchanged.
 - Promoted recurring Node/Bash sandbox execution limits into the environment profile before this scope closes,
   as required by the repository's environment-memory rule. No WSL/container re-probe or Cloud run was performed.
+- Final documentation/governance suite passed 49/49 after the profile/planning writeback. Scoped diff confirmed
+  protected runtime, classifier/policy/projector, current frozen guide/bootstrap and canonical template unchanged.
+- Saved the validated candidate preparation as d3f88b4dc108a281fd4aa55f71c7856cfd63113c. Exact V3 classification
+  against accepted C2 d4dd150dea205951090b2b5c56fe140a80bebc91 returned RELEASE_MECHANICS, complete identity closure,
+  seven passed checks and zero unknowns. Closed local implementation at G4 admission, before live execution.
+- Projected the V3 evidence plan into this task plan with the unchanged G3 tool. First write created one bounded
+  block; the second write reported changed=false with identical bytes, and --check passed. Metrics remain five
+  generated checklist fields, zero manual evidence fields and zero duplicated authority bodies.

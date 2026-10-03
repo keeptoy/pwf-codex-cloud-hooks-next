@@ -20,15 +20,18 @@ records. Prepare a canonical v0.5.1 candidate and verify its risk classification
 
 ## Current phase
 
-Local implementation and canonical candidate preparation pass validation on branch 0.5.1. Current accepted is
-v0.5.0; no guide has yet left that role under the new rule. Exact advisory classification awaits the local candidate
-commit; no v0.5.1 Release guide is created before Release entry approval.
+Local implementation complete on branch 0.5.1. Candidate preparation commit
+d3f88b4dc108a281fd4aa55f71c7856cfd63113c classifies RELEASE_MECHANICS against accepted closeout
+d4dd150dea205951090b2b5c56fe140a80bebc91: all seven identity checks pass, closure is complete and unknowns are empty.
+Current accepted remains v0.5.0; no guide has left that role under the new rule. This is G4 admission evidence only,
+not G4 execution or a C0/Release acceptance result.
 
 ## Next Step
 
-Implement and verify the retention rule and bounded historical-guide registry, then prepare the canonical v0.5.1
-candidate and obtain an exact V3 classification against accepted closeout d4dd150dea205951090b2b5c56fe140a80bebc91.
-Stop after a validated local implementation handoff before any Cloud/Release/G4 execution.
+Stop at the validated implementation handoff. The maintainer may now separately authorize G4 shadow together with
+the unchanged FULL Release workflow for this eligible v0.5.1 candidate. On that authorization, create the execution
+scope/operator guide, freeze an exact C0, and hand off maintainer-only push/Cloud/publication steps. Do not skip FULL
+gates or create Cloud/Release evidence from this local result.
 
 ## Phases
 
@@ -36,8 +39,8 @@ Stop after a validated local implementation handoff before any Cloud/Release/G4 
 2. [x] Define current-entrypoint versus frozen-history discovery, original-path preservation and immutable replay.
 3. [x] Add meaningful positive/negative retention tests and implement governance/template/index changes.
 4. [x] Prepare v0.5.1 identity closure with exact accepted predecessor and zero-hash candidate bootstrap.
-5. [ ] Run focused/full local checks, deterministic ZIP/bootstrap checks and risk advisory.
-6. [ ] Commit scoped results and report G4 admission, limits and maintainer handoff.
+5. [x] Run focused/full local checks, deterministic ZIP/bootstrap checks and risk advisory.
+6. [x] Commit scoped results and report G4 admission, limits and maintainer handoff.
 
 ## Exit conditions
 
@@ -71,3 +74,22 @@ Stop after a validated local implementation handoff before any Cloud/Release/G4 
 | First governance regression passed 48/49; a legacy proximity regex assumed freeze-ref prose stayed within 180 characters of role exit. | Scope the check to the owning lifecycle section while preserving the immutable-reference requirement. |
 | First full regression passed 195 with 26 Windows skips and 3 governance failures. | Add bounded 0.5.x series admission to the Phase-route validator; use the existing exact CHANGELOG heading format and explain Unreleased in the section body. |
 | Bash syntax probes hit the sandbox's Win32 signal-pipe error 5. | Rerun the same two syntax-only probes outside the sandbox; both returned exit 0. |
+
+<!-- BEGIN PWF RELEASE EVIDENCE PLAN V1 -->
+### Generated Release evidence plan (advisory only)
+
+- Classification: `PWF_RELEASE_RISK_ADVISORY_V3` / `RELEASE_MECHANICS` / `SHADOW_ONLY_NOT_EXECUTION_AUTHORITY`.
+- Exact range: `d4dd150dea205951090b2b5c56fe140a80bebc91` → `d3f88b4dc108a281fd4aa55f71c7856cfd63113c`.
+- Owner fingerprints: `RELEASE_ARTIFACT_AUTHORITY:contracts/release-artifact-v2.json@15c2084db70429fb507e18c17433a9cfe23ec18698bdad6006128fc44d34b9ff`, `RELEASE_RISK_POLICY:tools/release-risk-policy-v1.json@2f745461afd21495b78206fd1cb920afd32a96d5d8eb877c098e31681beae8fd`.
+- Local evidence: `FULL_REPOSITORY_REGRESSION`, `CHANGED_MECHANIC_NEGATIVES`, `DETERMINISTIC_RELEASE_ASSETS`, `REESTABLISH_INVALIDATED_LOCAL_EVIDENCE`.
+- Linux evidence: `PORTABLE_LINUX_SUITE`, `CHANGED_MECHANIC_LINUX_BOUNDARY`.
+- Source/Candidate evidence: `EXACT_BUILD_MATERIALIZATION_BOUNDARY`, `OVERRIDE_INSTALL`, `DOCTOR_AND_INVENTORY`, `CHANGED_MECHANIC_TARGETED_CHECKS`.
+- Published Release evidence: `PUBLIC_BOOTSTRAP_AND_ZIP_CHECKSUM`, `DEFAULT_DOWNLOAD_AND_INSTALL`, `DOCTOR_AND_DEEP_INVENTORY`, `FRESH_RESUME_IF_INSTALLATION_OR_RUNTIME_OBSERVABLE_CHANGED`.
+- Retirement/checkpoint evidence: `CANDIDATE_ADMISSION_PREFLIGHT`, `SOURCE_CANDIDATE_CLOSEOUT_REVIEW_AND_C1`, `LATEST_CONFIRMATION_ROLE_WINDOW_REVIEW_AND_C2`.
+- Lifecycle objects: `C0=REQUIRED`, `SOURCE_CANDIDATE=REQUIRED`, `SOURCE_CANDIDATE_CLOSEOUT_RETIREMENT=REQUIRED`, `C1=REQUIRED`, `IMMUTABLE_PUBLICATION=REQUIRED`, `PUBLISHED_RELEASE=REQUIRED`, `LATEST_PROMOTION_CONFIRMATION=REQUIRED`, `ROLE_WINDOW_CLOSEOUT_RETIREMENT=REQUIRED`, `C2=REQUIRED`.
+- Evidence invalidated: `LOCAL_TEST_BASELINE`.
+- Unknowns: _none_.
+- Escalation: `INSTALLATION_OR_RUNTIME_OBSERVABLE_CHANGE_REQUIRES_PRODUCT_OR_SECURITY`, `ANY_UNKNOWN_OR_UNEXPLAINED_EVIDENCE_RESTARTS_AT_PRODUCT_OR_SECURITY`, `HOST_PROFILE_OR_IDENTITY_MISMATCH_STOPS_AND_RESTARTS_FROM_THE_STRICTER_FRESH_GATE`.
+- Existing authorities only: `ROADMAP.md#release-four-step-flow`, `ROADMAP.md#version-train-two-retirement-reviews`, `docs/cloud-hard-acceptance-template.md#cloud-hard-acceptance-template`, `docs/cloud-acceptance-operator-guide-template.md#operator-guide-document-lifecycle`.
+- Operative workflow: `ROADMAP_CURRENT_FULL_UNTIL_G5`; this generated block records no PASS, executes no gate and grants no authorization.
+<!-- END PWF RELEASE EVIDENCE PLAN V1 -->

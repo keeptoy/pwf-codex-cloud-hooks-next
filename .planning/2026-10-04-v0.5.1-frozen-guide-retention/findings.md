@@ -35,3 +35,17 @@
   bootstrap to exact C2 so published oracles do not depend on current candidate package identity.
 - Repeated Node/Bash sandbox restrictions were promoted to the environment profile as required by repository
   policy; this does not re-probe or claim new WSL/Cloud capabilities.
+
+## Exact risk admission
+
+- V3 advisory compared accepted closeout d4dd150dea205951090b2b5c56fe140a80bebc91 with candidate preparation
+  d3f88b4dc108a281fd4aa55f71c7856cfd63113c and selected RELEASE_MECHANICS, with no unknowns.
+- Canonical closure passed package identity, Release identity, delta shape, candidate absence in base, accepted
+  predecessor snapshot, manifest integrity references and candidate-bootstrap rendering. All five identity paths
+  are explained atomically; remaining semantic delta is the retention template plus source-only governance/tests.
+- Read-only scoped diff confirmed no change to runtime/adapter/installer, runtime bundle, classifier/policy/projector,
+  canonical bootstrap template, v0.5.0 frozen guide or v0.5.0 sealed bootstrap.
+- The evidence plan retains C0, both identity channels, both retirement checkpoints, C1/C2, immutable publication
+  and Latest confirmation. Its status is SHADOW_ONLY_NOT_EXECUTION_AUTHORITY and current FULL remains operative.
+- This satisfies the missing candidate condition at G4 admission; execution/Release authorization remains the next
+  maintainer decision. No published identity, Cloud PASS or reduced-lane enablement is inferred.
