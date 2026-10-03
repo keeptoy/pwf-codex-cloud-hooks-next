@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "policy_id": "PWF_RELEASE_RISK_POLICY_V1",
+  "classifier_paths": [
+    "tools/classify_release_risk.py",
+    "tools/release-risk-policy-v1.json"
+  ],
+  "package_document_paths": [
+    "LICENSE",
+    "README.md",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "rules": [
+    {
+      "id": "product_runtime_security",
+      "lane": "PRODUCT_OR_SECURITY",
+      "exact_paths": [
+        "contracts/adapter-plan-context-request-v2.schema.json",
+        "contracts/adapter-runtime-request-v1.schema.json",
+        "contracts/installed-state-transition-v1.json",
+        "contracts/plan-context-result-v2.schema.json",
+        "contracts/runtime-bundle-v2.json",
+        "contracts/runtime-result-v1.schema.json",
+        "install.js",
+        "package.json",
+        "upstream-manifest.json"
+      ],
+      "prefixes": [
+        "hooks/",
+        "runtime/"
+      ]
+    },
+    {
+      "id": "release_mechanics",
+      "lane": "RELEASE_MECHANICS",
+      "exact_paths": [
+        "BASELINE_PROVENANCE.md",
+        "ROADMAP.md",
+        "Wiki.md",
+        "contracts/release-artifact-v2.json",
+        "docs/cloud-acceptance-operator-guide-template.md",
+        "docs/cloud-hard-acceptance-template.md",
+        "tools/build_release.py",
+        "tools/materialize_release_assets.py",
+        "tools/templates/init-cloud-sandbox.bash.in"
+      ],
+      "prefixes": []
+    },
+    {
+      "id": "source_governance",
+      "lane": "SOURCE_ONLY_GOVERNANCE",
+      "exact_paths": [
+        ".gitignore",
+        "AGENTS.md",
+        "ARCHITECTURE.md",
+        "CHANGELOG.md",
+        "DESIGN.md",
+        "MAINTAINER_HANDOFF.md"
+      ],
+      "prefixes": [
+        ".planning/",
+        "docs/acceptance/",
+        "docs/history/",
+        "docs/product-phases/",
+        "tests/"
+      ]
+    }
+  ]
+}

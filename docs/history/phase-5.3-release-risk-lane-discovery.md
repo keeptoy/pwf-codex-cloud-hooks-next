@@ -164,6 +164,25 @@ planning；只有实际实施或live证据形成且具有长期解释价值时�
 若未来新平台提供durable attestation，或维护者仍希望删除C1，应另开Discovery比较权限、retention、verification、rollback与中断恢复，
 不能把Phase 5.3的“generated minimal C1/C2”解释成“C1已经无用”。
 
+<a name="phase-5-3-post-implementation-status-g1"></a>
+
+## Post-implementation status — G1
+
+维护者随后单独授权G1。实际交付与原设计一致：新增source-only只读classifier和repository-owned owner policy，要求显式base/head，
+保留add/delete/rename、old/new mode与object type证据，从exact head读取现有Release artifact authority，并输出versioned
+`PWF_RELEASE_RISK_ADVISORY_V1` JSON。unknown path、symlink/gitlink、证据错误及classifier/policy自修改均fail closed到
+`PRODUCT_OR_SECURITY`；工具不写workspace或远端。
+
+planning → implementation没有改变trusted graph、Host ABI、runtime bundle、Release allowlist或C0/C1/C2。G1实现刻意没有canonical
+identity closure、`NO_RELEASE_REQUIRED`、required-gate选择或evidence投影；这些仍分别属于G2/G3，且G4/G5仍未授权。当前
+`v0.4.4..v0.5.0-dev`回放保持`PRODUCT_OR_SECURITY`，一个已完成source-only治理范围得到
+`SOURCE_ONLY_GOVERNANCE`且无unknown。disposable Git边界测试和完整Windows回归已通过；POSIX/Linux-only skip与任何Cloud/live
+结论均未被本地结果替代。
+
+对象生命周期账保持简单：classifier、policy及其边界测试`KEEP`为Release-excluded source-only维护输入；既有Release/runtime
+contracts与现行Release workflow `KEEP`且字节/职责不变。G2若获单独授权，只能消费G1 advisory结果并增加exact identity closure，
+不能把本地G1 PASS解释成reduced lane已经启用。
+
 <a name="phase-5-3-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

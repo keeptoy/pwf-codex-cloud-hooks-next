@@ -44,6 +44,20 @@ git diff --check
 
 Windows 中 POSIX/Linux-only case 必须诚实 SKIP；最终安全边界仍需 Linux/Cloud gate 全绿。
 
+### Phase 5.3 G1只读风险建议
+
+需要比较两个已经人工确认的Git端点时，可以运行source-only advisory classifier；必须显式提供accepted/base与candidate/head，
+不能让工具从branch或`Latest`猜测：
+
+```powershell
+python tools/classify_release_risk.py --base <accepted-closeout-commit> --head <candidate-commit>
+```
+
+输出是`PWF_RELEASE_RISK_ADVISORY_V1` JSON，保存exact commit、add/delete/rename、mode/type、Release交集、owner命中、
+unknown和建议lane。unknown path、symlink/gitlink、classifier/policy自修改或证据不完整统一建议
+`PRODUCT_OR_SECURITY`。该工具不写workspace，不解释canonical version/hash identity closure，也不输出或授权精简后的Cloud/Release
+步骤；在Phase 5.3 G5明确启用前，现行FULL流程仍是唯一执行authority。
+
 ### Git mode 与 LF 快速检查
 
 源码仓库中的四个 `runtime/upstream/*` 文件必须且仅它们保持 Git `100755`。Windows 能读取脚本，

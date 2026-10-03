@@ -17,7 +17,9 @@ const readGit = (ref, relative) => {
 const trustedPrefixes = ["contracts/", "hooks/", "patches/", "runtime/", "tools/"];
 const trustedRootPaths = new Set(["install.js", "package.json", "upstream-manifest.json"]);
 const sourceOnlyTrustedPaths = new Set([
+  "tools/classify_release_risk.py",
   "tools/materialize_release_assets.py",
+  "tools/release-risk-policy-v1.json",
   "tools/templates/init-cloud-sandbox.bash.in",
 ]);
 const versionPattern = "v\\d+\\.\\d+\\.\\d+(?:-[A-Za-z0-9.]+)?";

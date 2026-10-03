@@ -35,6 +35,9 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   Cloud、Release及外部attestation均未获授权。
 - 维护者将上述已关闭Discovery提升为Phase 5.3冻结记录，明确后继施工为G1 advisory classifier、G2 identity closure/replay、
   G3 evidence projection、G4真实低风险shadow、G5 enablement decision五个串行gate；history准入不自动授权其中任何gate。
+- 完成Phase 5.3 G1 source-only只读Release风险classifier：显式base/head、add/delete/rename与mode/type证据、现有Release authority交集、
+  四级owner policy和versioned advisory JSON已落地；unknown、unsafe与classifier/policy自修改统一FULL，未启用identity closure、
+  reduced lane或任何Cloud/Release步骤。
 
 ## v0.4.4
 
