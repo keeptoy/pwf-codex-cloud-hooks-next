@@ -19,6 +19,7 @@ const trustedRootPaths = new Set(["install.js", "package.json", "upstream-manife
 const sourceOnlyTrustedPaths = new Set([
   "tools/classify_release_risk.py",
   "tools/materialize_release_assets.py",
+  "tools/project_release_evidence.py",
   "tools/release-risk-policy-v1.json",
   "tools/templates/init-cloud-sandbox.bash.in",
 ]);

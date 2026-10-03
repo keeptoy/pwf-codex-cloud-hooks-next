@@ -11,6 +11,7 @@ const test = require("node:test");
 const root = path.resolve(__dirname, "..");
 const python = process.env.PYTHON || (process.platform === "win32" ? "python" : "python3");
 const toolRelative = "tools/classify_release_risk.py";
+const projectorRelative = "tools/project_release_evidence.py";
 const policyRelative = "tools/release-risk-policy-v1.json";
 const replayRelative = "tests/fixtures/release-risk-replay-v1.json";
 
@@ -52,7 +53,7 @@ function commitStaged(repository, message) {
 function fixture() {
   const repository = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-release-risk-"));
   git(repository, "init", "-q");
-  for (const relative of [toolRelative, policyRelative]) {
+  for (const relative of [toolRelative, projectorRelative, policyRelative]) {
     write(repository, relative, fs.readFileSync(path.join(root, relative)));
   }
   const artifact = {
@@ -150,7 +151,7 @@ function releaseContract(version) {
 function identityFixture({ tamperBootstrap = false } = {}) {
   const repository = fs.mkdtempSync(path.join(os.tmpdir(), "pwf-release-risk-identity-"));
   git(repository, "init", "-q");
-  for (const relative of [toolRelative, policyRelative]) {
+  for (const relative of [toolRelative, projectorRelative, policyRelative]) {
     write(repository, relative, fs.readFileSync(path.join(root, relative)));
   }
 
@@ -262,6 +263,13 @@ function runClassifier(repository, base, head, extra = []) {
   });
 }
 
+function runProjector(repository, ...args) {
+  return spawnSync(python, [path.join(repository, projectorRelative), ...args], {
+    cwd: repository,
+    encoding: "utf8",
+  });
+}
+
 function classifySingle(relative, mutate) {
   const layout = fixture();
   try {
@@ -275,7 +283,7 @@ function classifySingle(relative, mutate) {
   }
 }
 
-test("G2 classifier preserves deterministic read-only source-governance advice", () => {
+test("G3 classifier preserves deterministic read-only advice and emits an explicit evidence plan", () => {
   const layout = fixture();
   try {
     write(layout.repository, "docs/history/note.md", "updated history\n");
@@ -291,17 +299,30 @@ test("G2 classifier preserves deterministic read-only source-governance advice",
     const result = JSON.parse(first.stdout);
     assert.deepEqual(Object.keys(result).sort(), [
       "advisory_only", "base_commit", "changes", "evidence_invalidated", "head_commit", "identity_closure",
-      "lane", "policy", "reasons", "release_authority", "residual_changes", "result_type",
-      "schema_version", "unknowns",
+      "lane", "owner_fingerprints", "policy", "reasons", "release_authority", "required_gates",
+      "residual_changes", "result_type", "schema_version", "unknowns",
     ]);
-    assert.equal(result.schema_version, 2);
-    assert.equal(result.result_type, "PWF_RELEASE_RISK_ADVISORY_V2");
+    assert.equal(result.schema_version, 3);
+    assert.equal(result.result_type, "PWF_RELEASE_RISK_ADVISORY_V3");
     assert.equal(result.advisory_only, true);
     assert.equal(result.base_commit, layout.base);
     assert.equal(result.head_commit, head);
     assert.equal(result.lane, "SOURCE_ONLY_GOVERNANCE");
     assert.deepEqual(result.unknowns, []);
-    assert.equal(Object.hasOwn(result, "required_gates"), false);
+    assert.equal(result.required_gates.status, "SHADOW_ONLY_NOT_EXECUTION_AUTHORITY");
+    assert.equal(result.required_gates.operative_workflow, "ROADMAP_CURRENT_FULL_UNTIL_G5");
+    assert.deepEqual(result.required_gates.local, [
+      "AFFECTED_GOVERNANCE_LINK_TESTS", "RELEVANT_REPOSITORY_SUITE", "GIT_DIFF_CHECK",
+    ]);
+    assert.deepEqual(result.required_gates.linux, []);
+    assert.deepEqual(result.required_gates.cloud.source_candidate, []);
+    assert.deepEqual(result.required_gates.cloud.published_release, []);
+    assert.deepEqual(result.required_gates.retirement, []);
+    assert.equal(result.required_gates.lifecycle.find(item => item.id === "C1").required, false);
+    assert.equal(result.required_gates.lifecycle.find(item => item.id === "C2").required, false);
+    assert.deepEqual(result.owner_fingerprints.map(item => item.id), [
+      "RELEASE_ARTIFACT_AUTHORITY", "RELEASE_RISK_POLICY",
+    ]);
     assert.equal(result.identity_closure.state, "not_applicable");
     assert.equal(result.identity_closure.complete, false);
     assert.deepEqual(result.identity_closure.explained_paths, []);
@@ -315,7 +336,7 @@ test("G2 classifier preserves deterministic read-only source-governance advice",
   }
 });
 
-test("G2 classifier preserves strict G1 owner precedence across the four advisory lanes", () => {
+test("G3 evidence plans cover every release lane while preserving both channels and C1/C2", () => {
   const samples = [
     ["docs/history/note.md", "SOURCE_ONLY_GOVERNANCE"],
     ["README.md", "PACKAGE_DOC_ONLY"],
@@ -326,6 +347,21 @@ test("G2 classifier preserves strict G1 owner precedence across the four advisor
     const result = classifySingle(relative, (repository, target) => write(repository, target, `changed ${target}\n`));
     assert.equal(result.lane, lane, relative);
     assert.equal(result.changes[0].lane, lane, relative);
+    assert.equal(result.required_gates.lane, lane, relative);
+    if (lane !== "SOURCE_ONLY_GOVERNANCE") {
+      assert.ok(result.required_gates.cloud.source_candidate.length > 0, relative);
+      assert.ok(result.required_gates.cloud.published_release.length > 0, relative);
+      assert.deepEqual(result.required_gates.lifecycle.filter(item => item.required).map(item => item.id), [
+        "C0", "SOURCE_CANDIDATE", "SOURCE_CANDIDATE_CLOSEOUT_RETIREMENT", "C1",
+        "IMMUTABLE_PUBLICATION", "PUBLISHED_RELEASE", "LATEST_PROMOTION_CONFIRMATION",
+        "ROLE_WINDOW_CLOSEOUT_RETIREMENT", "C2",
+      ]);
+      assert.deepEqual(result.required_gates.retirement, [
+        "CANDIDATE_ADMISSION_PREFLIGHT",
+        "SOURCE_CANDIDATE_CLOSEOUT_REVIEW_AND_C1",
+        "LATEST_CONFIRMATION_ROLE_WINDOW_REVIEW_AND_C2",
+      ]);
+    }
   }
 
   const layout = fixture();
@@ -369,13 +405,18 @@ test("G2 classifier preserves add delete rename and executable-mode evidence", (
   }
 });
 
-test("G2 classifier fails closed for unknown paths unsafe types and self-change", () => {
+test("G3 classifier fails closed for unknown paths unsafe types and every planner self-change", () => {
   let result = classifySingle("unknown.bin", (repository, relative) => write(repository, relative, "unknown\n"));
   assert.equal(result.lane, "PRODUCT_OR_SECURITY");
   assert.ok(result.unknowns.some(value => value.includes("unknown.bin")));
 
   result = classifySingle(policyRelative,
     (repository, relative) => fs.appendFileSync(path.join(repository, relative), " \n"));
+  assert.equal(result.lane, "PRODUCT_OR_SECURITY");
+  assert.ok(result.reasons.includes("classifier_self_change"));
+
+  result = classifySingle(projectorRelative,
+    (repository, relative) => fs.appendFileSync(path.join(repository, relative), "\n# changed\n"));
   assert.equal(result.lane, "PRODUCT_OR_SECURITY");
   assert.ok(result.reasons.includes("classifier_self_change"));
 
@@ -421,8 +462,8 @@ test("G2 classifier rejects unresolved endpoints and never guesses a moving base
     assert.equal(run.status, 1);
     assert.equal(run.stdout, "");
     const error = JSON.parse(run.stderr);
-    assert.equal(error.schema_version, 2);
-    assert.equal(error.result_type, "PWF_RELEASE_RISK_ADVISORY_ERROR_V2");
+    assert.equal(error.schema_version, 3);
+    assert.equal(error.result_type, "PWF_RELEASE_RISK_ADVISORY_ERROR_V3");
     assert.equal(error.healthy, false);
     assert.equal(error.error_code, "INVALID_ENDPOINT");
   } finally {
@@ -452,6 +493,12 @@ test("G2 canonical identity-only closure returns NO_RELEASE_REQUIRED", () => {
       "upstream-manifest.json",
     ]);
     assert.ok(result.changes.every(change => change.identity_explained));
+    assert.deepEqual(result.required_gates.cloud.source_candidate, []);
+    assert.deepEqual(result.required_gates.cloud.published_release, []);
+    assert.deepEqual(result.required_gates.retirement, []);
+    assert.ok(result.required_gates.escalation.includes(
+      "IDENTITY_ONLY_PUBLICATION_REQUIRES_RELEASE_MECHANICS_AND_SEPARATE_AUTHORIZATION"));
+    assert.ok(result.required_gates.lifecycle.every(item => item.required === false));
   } finally {
     fs.rmSync(layout.repository, { recursive: true, force: true });
   }
@@ -493,4 +540,128 @@ test("G2 exact historical replay ledger matches every frozen lane with zero fals
     assert.equal(result.lane, sample.expected_lane, sample.id);
   }
   assert.deepEqual(observed, ledger.samples.map(sample => [sample.id, sample.expected_lane]));
+});
+
+test("G3 projector appends one bounded task-plan block and reruns byte-for-byte idempotently", () => {
+  const layout = fixture();
+  try {
+    write(layout.repository, "README.md", "package documentation changed\n");
+    const head = commit(layout.repository, "package document candidate");
+    const target = ".planning/release/task_plan.md";
+    const humanPrefix = "# Human task plan\n\nKeep this text exactly.\n";
+    write(layout.repository, target, humanPrefix);
+
+    const beforeCheck = runProjector(layout.repository, "project", "--base", layout.base, "--head", head,
+      "--target", target, "--document-kind", "task-plan", "--check");
+    assert.equal(beforeCheck.status, 1);
+    assert.equal(JSON.parse(beforeCheck.stderr).error_code, "PROJECTION_DRIFT");
+    assert.equal(fs.readFileSync(path.join(layout.repository, target), "utf8"), humanPrefix);
+
+    const first = runProjector(layout.repository, "project", "--base", layout.base, "--head", head,
+      "--target", target, "--document-kind", "task-plan", "--write");
+    assert.equal(first.status, 0, first.stderr);
+    const firstStatus = JSON.parse(first.stdout);
+    assert.equal(firstStatus.changed, true);
+    assert.deepEqual(firstStatus.metrics, {
+      authority_bodies_duplicated: 0,
+      generated_checklist_fields: 5,
+      generated_blocks: 1,
+      manual_evidence_fields: 0,
+    });
+    const firstBytes = fs.readFileSync(path.join(layout.repository, target));
+    const firstText = firstBytes.toString("utf8");
+    assert.ok(firstText.startsWith(humanPrefix));
+    assert.equal((firstText.match(/BEGIN PWF RELEASE EVIDENCE PLAN V1/g) || []).length, 1);
+    assert.equal((firstText.match(/END PWF RELEASE EVIDENCE PLAN V1/g) || []).length, 1);
+    assert.match(firstText, /SHADOW_ONLY_NOT_EXECUTION_AUTHORITY/);
+    assert.match(firstText, /Source\/Candidate/);
+    assert.match(firstText, /Published Release/);
+    assert.match(firstText, /C1/);
+    assert.match(firstText, /C2/);
+    assert.match(firstText, /ROADMAP\.md#release-four-step-flow/);
+
+    const second = runProjector(layout.repository, "project", "--base", layout.base, "--head", head,
+      "--target", target, "--document-kind", "task-plan", "--write");
+    assert.equal(second.status, 0, second.stderr);
+    assert.equal(JSON.parse(second.stdout).changed, false);
+    assert.deepEqual(fs.readFileSync(path.join(layout.repository, target)), firstBytes);
+
+    const cleanCheck = runProjector(layout.repository, "project", "--base", layout.base, "--head", head,
+      "--target", target, "--document-kind", "task-plan", "--check");
+    assert.equal(cleanCheck.status, 0, cleanCheck.stderr);
+    assert.equal(JSON.parse(cleanCheck.stdout).changed, false);
+  } finally {
+    fs.rmSync(layout.repository, { recursive: true, force: true });
+  }
+});
+
+test("G3 projector replaces only its block and supports the existing operator-guide family", () => {
+  const layout = fixture();
+  try {
+    write(layout.repository, "tools/build_release.py", "changed builder\n");
+    const head = commit(layout.repository, "release mechanic candidate");
+    const target = "docs/candidate-operator-guide.md";
+    write(layout.repository, target, "# Human guide\n");
+    let run = runProjector(layout.repository, "project", "--base", layout.base, "--head", head,
+      "--target", target, "--document-kind", "operator-guide", "--write");
+    assert.equal(run.status, 0, run.stderr);
+    const generated = fs.readFileSync(path.join(layout.repository, target), "utf8");
+    const withTail = `${generated}\nHuman tail remains.\n`;
+    fs.writeFileSync(path.join(layout.repository, target), withTail);
+
+    run = runProjector(layout.repository, "project", "--base", layout.base, "--head", head,
+      "--target", target, "--document-kind", "operator-guide", "--write");
+    assert.equal(run.status, 0, run.stderr);
+    const rerendered = fs.readFileSync(path.join(layout.repository, target), "utf8");
+    assert.ok(rerendered.startsWith("# Human guide\n"));
+    assert.ok(rerendered.endsWith("\nHuman tail remains.\n"));
+    assert.equal((rerendered.match(/BEGIN PWF RELEASE EVIDENCE PLAN V1/g) || []).length, 1);
+    assert.equal((rerendered.match(/END PWF RELEASE EVIDENCE PLAN V1/g) || []).length, 1);
+  } finally {
+    fs.rmSync(layout.repository, { recursive: true, force: true });
+  }
+});
+
+test("G3 projector rejects malformed markers and kind/path conflicts without partial writes", () => {
+  const layout = fixture();
+  try {
+    write(layout.repository, "docs/history/note.md", "changed history\n");
+    const head = commit(layout.repository, "source-only candidate");
+    const malformed = ".planning/release/task_plan.md";
+    const malformedBytes = Buffer.from("human\n<!-- BEGIN PWF RELEASE EVIDENCE PLAN V1 -->\nbroken\n");
+    write(layout.repository, malformed, malformedBytes);
+    let run = runProjector(layout.repository, "project", "--base", layout.base, "--head", head,
+      "--target", malformed, "--document-kind", "task-plan", "--write");
+    assert.equal(run.status, 1);
+    assert.equal(JSON.parse(run.stderr).error_code, "MALFORMED_MARKERS");
+    assert.deepEqual(fs.readFileSync(path.join(layout.repository, malformed)), malformedBytes);
+
+    const wrongKind = "docs/not-a-task-plan.md";
+    write(layout.repository, wrongKind, "human\n");
+    const wrongBytes = fs.readFileSync(path.join(layout.repository, wrongKind));
+    run = runProjector(layout.repository, "project", "--base", layout.base, "--head", head,
+      "--target", wrongKind, "--document-kind", "task-plan", "--write");
+    assert.equal(run.status, 1);
+    assert.equal(JSON.parse(run.stderr).error_code, "INVALID_TARGET");
+    assert.deepEqual(fs.readFileSync(path.join(layout.repository, wrongKind)), wrongBytes);
+
+    const wrongGuide = "docs/history/note.md";
+    const wrongGuideBytes = fs.readFileSync(path.join(layout.repository, wrongGuide));
+    run = runProjector(layout.repository, "project", "--base", layout.base, "--head", head,
+      "--target", wrongGuide, "--document-kind", "operator-guide", "--write");
+    assert.equal(run.status, 1);
+    assert.equal(JSON.parse(run.stderr).error_code, "INVALID_TARGET");
+    assert.deepEqual(fs.readFileSync(path.join(layout.repository, wrongGuide)), wrongGuideBytes);
+
+    const template = "docs/cloud-acceptance-operator-guide-template.md";
+    write(layout.repository, template, "template\n");
+    const templateBytes = fs.readFileSync(path.join(layout.repository, template));
+    run = runProjector(layout.repository, "project", "--base", layout.base, "--head", head,
+      "--target", template, "--document-kind", "operator-guide", "--write");
+    assert.equal(run.status, 1);
+    assert.equal(JSON.parse(run.stderr).error_code, "INVALID_TARGET");
+    assert.deepEqual(fs.readFileSync(path.join(layout.repository, template)), templateBytes);
+  } finally {
+    fs.rmSync(layout.repository, { recursive: true, force: true });
+  }
 });

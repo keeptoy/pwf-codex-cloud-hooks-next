@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Emit a read-only Phase 5.3 G2 Release-risk advisory for two explicit commits."""
+"""Emit a read-only Phase 5.3 G3 Release-risk and evidence-plan advisory."""
 
 from __future__ import annotations
 
@@ -21,14 +21,108 @@ INSTALLED_TRANSITION = "contracts/installed-state-transition-v1.json"
 UPSTREAM_MANIFEST = "upstream-manifest.json"
 BOOTSTRAP_TEMPLATE = "tools/templates/init-cloud-sandbox.bash.in"
 ZERO_SHA256 = "0" * 64
-RESULT_TYPE = "PWF_RELEASE_RISK_ADVISORY_V2"
-ERROR_TYPE = "PWF_RELEASE_RISK_ADVISORY_ERROR_V2"
+RESULT_TYPE = "PWF_RELEASE_RISK_ADVISORY_V3"
+ERROR_TYPE = "PWF_RELEASE_RISK_ADVISORY_ERROR_V3"
 LANE_PRIORITY = {
     "NO_RELEASE_REQUIRED": 0,
     "SOURCE_ONLY_GOVERNANCE": 1,
     "PACKAGE_DOC_ONLY": 2,
     "RELEASE_MECHANICS": 3,
     "PRODUCT_OR_SECURITY": 4,
+}
+LIFECYCLE_IDS = [
+    "C0",
+    "SOURCE_CANDIDATE",
+    "SOURCE_CANDIDATE_CLOSEOUT_RETIREMENT",
+    "C1",
+    "IMMUTABLE_PUBLICATION",
+    "PUBLISHED_RELEASE",
+    "LATEST_PROMOTION_CONFIRMATION",
+    "ROLE_WINDOW_CLOSEOUT_RETIREMENT",
+    "C2",
+]
+RELEASE_LANES = {"PACKAGE_DOC_ONLY", "RELEASE_MECHANICS", "PRODUCT_OR_SECURITY"}
+COMMON_RETIREMENT = [
+    "CANDIDATE_ADMISSION_PREFLIGHT",
+    "SOURCE_CANDIDATE_CLOSEOUT_REVIEW_AND_C1",
+    "LATEST_CONFIRMATION_ROLE_WINDOW_REVIEW_AND_C2",
+]
+EVIDENCE_PLANS = {
+    "NO_RELEASE_REQUIRED": {
+        "local": ["CANONICAL_IDENTITY_CLOSURE_REVIEW", "GIT_DIFF_CHECK"],
+        "linux": [],
+        "source_candidate": [],
+        "published_release": [],
+        "retirement": [],
+        "escalation": [
+            "IDENTITY_ONLY_PUBLICATION_REQUIRES_RELEASE_MECHANICS_AND_SEPARATE_AUTHORIZATION",
+        ],
+    },
+    "SOURCE_ONLY_GOVERNANCE": {
+        "local": ["AFFECTED_GOVERNANCE_LINK_TESTS", "RELEVANT_REPOSITORY_SUITE", "GIT_DIFF_CHECK"],
+        "linux": [],
+        "source_candidate": [],
+        "published_release": [],
+        "retirement": [],
+        "escalation": [],
+    },
+    "PACKAGE_DOC_ONLY": {
+        "local": ["FULL_REPOSITORY_REGRESSION", "DETERMINISTIC_ZIP_BUILD_CHECK", "PACKAGE_DOC_DIFF_ORACLE"],
+        "linux": ["PORTABLE_LINUX_SUITE"],
+        "source_candidate": [
+            "EXACT_CHECKOUT",
+            "DOUBLE_BUILD_CHECK",
+            "ARCHIVE_DOCUMENT_ORACLE",
+            "OVERRIDE_INSTALL_AND_DOCTOR",
+        ],
+        "published_release": [
+            "PUBLIC_CHECKSUM_AND_DEFAULT_DOWNLOAD",
+            "PUBLIC_INSTALL_AND_DOCTOR",
+            "PACKAGED_DOCUMENT_ORACLE",
+        ],
+        "retirement": COMMON_RETIREMENT,
+        "escalation": [],
+    },
+    "RELEASE_MECHANICS": {
+        "local": [
+            "FULL_REPOSITORY_REGRESSION",
+            "CHANGED_MECHANIC_NEGATIVES",
+            "DETERMINISTIC_RELEASE_ASSETS",
+        ],
+        "linux": ["PORTABLE_LINUX_SUITE", "CHANGED_MECHANIC_LINUX_BOUNDARY"],
+        "source_candidate": [
+            "EXACT_BUILD_MATERIALIZATION_BOUNDARY",
+            "OVERRIDE_INSTALL",
+            "DOCTOR_AND_INVENTORY",
+            "CHANGED_MECHANIC_TARGETED_CHECKS",
+        ],
+        "published_release": [
+            "PUBLIC_BOOTSTRAP_AND_ZIP_CHECKSUM",
+            "DEFAULT_DOWNLOAD_AND_INSTALL",
+            "DOCTOR_AND_DEEP_INVENTORY",
+            "FRESH_RESUME_IF_INSTALLATION_OR_RUNTIME_OBSERVABLE_CHANGED",
+        ],
+        "retirement": COMMON_RETIREMENT,
+        "escalation": ["INSTALLATION_OR_RUNTIME_OBSERVABLE_CHANGE_REQUIRES_PRODUCT_OR_SECURITY"],
+    },
+    "PRODUCT_OR_SECURITY": {
+        "local": [
+            "CURRENT_FULL_LOCAL_REGRESSION",
+            "SECURITY_MIGRATION_NEGATIVES_AS_APPLICABLE",
+            "DETERMINISTIC_RELEASE_ASSETS",
+        ],
+        "linux": ["CURRENT_FULL_LINUX_ZERO_SKIP", "SECURITY_MIGRATION_GATES_AS_APPLICABLE"],
+        "source_candidate": ["CURRENT_FULL_SOURCE_CANDIDATE_LIFECYCLE_AND_NEGATIVES"],
+        "published_release": [
+            "PUBLIC_FRESH",
+            "PUBLIC_USER_PROMPT",
+            "PUBLIC_REAL_RESUME",
+            "PUBLIC_DOCTOR_AND_DEEP_CHECK",
+            "ROLLBACK_MIGRATION_EVIDENCE_AS_APPLICABLE",
+        ],
+        "retirement": COMMON_RETIREMENT,
+        "escalation": [],
+    },
 }
 SAFE_MODES = {"000000": "absent", "100644": "regular", "100755": "regular"}
 KNOWN_MODES = {**SAFE_MODES, "120000": "symlink", "160000": "gitlink"}
@@ -103,7 +197,9 @@ def load_policy() -> tuple[dict, bytes]:
     if policy.get("schema_version") != 1 or policy.get("policy_id") != "PWF_RELEASE_RISK_POLICY_V1":
         raise AdvisoryError("INVALID_POLICY", "unsupported Release-risk policy identity")
     classifier_paths = validate_string_list(policy.get("classifier_paths"), "classifier_paths")
-    if classifier_paths != ["tools/classify_release_risk.py", POLICY_RELATIVE]:
+    if classifier_paths != [
+        "tools/classify_release_risk.py", "tools/project_release_evidence.py", POLICY_RELATIVE,
+    ]:
         raise AdvisoryError("INVALID_POLICY", "classifier self-protection paths are not exact")
     package_documents = validate_string_list(policy.get("package_document_paths"), "package_document_paths")
     rules = policy.get("rules")
@@ -641,6 +737,65 @@ def classify_change(change: dict, policy: dict, release_paths: set[str], externa
     return result
 
 
+def build_required_gates(lane: str, evidence_invalidated: list[str]) -> dict:
+    if lane not in EVIDENCE_PLANS:
+        raise AdvisoryError("INVALID_EVIDENCE_PLAN", f"unsupported evidence-plan lane: {lane!r}")
+    source = EVIDENCE_PLANS[lane]
+    release_required = lane in RELEASE_LANES
+    local = list(source["local"])
+    if evidence_invalidated:
+        local.append("REESTABLISH_INVALIDATED_LOCAL_EVIDENCE")
+    escalation = list(source["escalation"])
+    escalation.extend([
+        "ANY_UNKNOWN_OR_UNEXPLAINED_EVIDENCE_RESTARTS_AT_PRODUCT_OR_SECURITY",
+        "HOST_PROFILE_OR_IDENTITY_MISMATCH_STOPS_AND_RESTARTS_FROM_THE_STRICTER_FRESH_GATE",
+    ])
+    return {
+        "authority_references": [
+            {
+                "anchor": "release-four-step-flow",
+                "id": "CURRENT_RELEASE_WORKFLOW",
+                "path": "ROADMAP.md",
+            },
+            {
+                "anchor": "version-train-two-retirement-reviews",
+                "id": "RETIREMENT_TIMES",
+                "path": "ROADMAP.md",
+            },
+            {
+                "anchor": "cloud-hard-acceptance-template",
+                "id": "CLOUD_EVIDENCE_PROTOCOL",
+                "path": "docs/cloud-hard-acceptance-template.md",
+            },
+            {
+                "anchor": "operator-guide-document-lifecycle",
+                "id": "GUIDE_LIFECYCLE",
+                "path": "docs/cloud-acceptance-operator-guide-template.md",
+            },
+        ],
+        "cloud": {
+            "published_release": list(source["published_release"]),
+            "source_candidate": list(source["source_candidate"]),
+        },
+        "escalation": escalation,
+        "lane": lane,
+        "lifecycle": [
+            {
+                "disposition": "REQUIRED_BY_CURRENT_WORKFLOW" if release_required else "NOT_APPLICABLE_NO_RELEASE",
+                "id": identifier,
+                "required": release_required,
+            }
+            for identifier in LIFECYCLE_IDS
+        ],
+        "linux": list(source["linux"]),
+        "local": local,
+        "operative_workflow": "ROADMAP_CURRENT_FULL_UNTIL_G5",
+        "plan_schema_version": 1,
+        "retirement": list(source["retirement"]),
+        "status": "SHADOW_ONLY_NOT_EXECUTION_AUTHORITY",
+    }
+
+
 def classify(base_value: str, head_value: str) -> dict:
     repository = git_bytes(["rev-parse", "--show-toplevel"]).decode("utf-8", errors="strict").strip()
     if Path(repository).resolve() != ROOT.resolve():
@@ -683,6 +838,17 @@ def classify(base_value: str, head_value: str) -> dict:
         (change["old_path"] or "").startswith("tests/") or (change["new_path"] or "").startswith("tests/")
         for change in changes
     ) else []
+    policy_fingerprint = {
+        "id": "RELEASE_RISK_POLICY",
+        "path": POLICY_RELATIVE,
+        "sha256": sha256_bytes(policy_raw),
+    }
+    release_fingerprint = {
+        "commit": head,
+        "id": "RELEASE_ARTIFACT_AUTHORITY",
+        "path": RELEASE_AUTHORITY,
+        "sha256": sha256_bytes(authority_raw),
+    }
     return {
         "advisory_only": True,
         "base_commit": base,
@@ -691,6 +857,7 @@ def classify(base_value: str, head_value: str) -> dict:
         "head_commit": head,
         "identity_closure": identity_closure,
         "lane": lane,
+        "owner_fingerprints": [release_fingerprint, policy_fingerprint],
         "policy": {
             "id": policy["policy_id"],
             "path": POLICY_RELATIVE,
@@ -703,9 +870,10 @@ def classify(base_value: str, head_value: str) -> dict:
             "path": RELEASE_AUTHORITY,
             "sha256": sha256_bytes(authority_raw),
         },
+        "required_gates": build_required_gates(lane, invalidated),
         "residual_changes": residual,
         "result_type": RESULT_TYPE,
-        "schema_version": 2,
+        "schema_version": 3,
         "unknowns": unknowns,
     }
 
@@ -724,7 +892,7 @@ def fail(error: Exception) -> NoReturn:
         "error_code": code,
         "healthy": False,
         "result_type": ERROR_TYPE,
-        "schema_version": 2,
+        "schema_version": 3,
     }
     print(json.dumps(result, ensure_ascii=False, sort_keys=True, separators=(",", ":")), file=sys.stderr)
     raise SystemExit(1)

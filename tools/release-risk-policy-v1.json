@@ -3,6 +3,7 @@
   "policy_id": "PWF_RELEASE_RISK_POLICY_V1",
   "classifier_paths": [
     "tools/classify_release_risk.py",
+    "tools/project_release_evidence.py",
     "tools/release-risk-policy-v1.json"
   ],
   "package_document_paths": [

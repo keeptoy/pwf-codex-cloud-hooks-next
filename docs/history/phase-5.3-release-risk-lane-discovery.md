@@ -203,6 +203,33 @@ bootstrap与现行C0/C1/C2字节/职责均未改变。完整Windows回归为193 
 提升为Linux/Cloud或reduced-lane证据。G3～G5仍未授权，`required_gates`/evidence projection仍不存在，当前v0.5候选继续使用
 `PRODUCT_OR_SECURITY`和现行FULL workflow。
 
+<a name="phase-5-3-post-implementation-status-g3"></a>
+
+## Post-implementation status — G3
+
+维护者随后单独授权G3。classifier升级为`PWF_RELEASE_RISK_ADVISORY_V3`，完整保留G2 raw delta、atomic identity closure、
+residual changes、lane、reasons与unknowns，同时把Release authority和owner policy提升为显式`owner_fingerprints`，并为每个lane
+生成local、Linux、Source/Candidate、Published Release与retirement五类`required_gates`。测试变化会显式要求重建失效local
+baseline；unknown、unsafe、identity无法解释和classifier/policy/projector self-change继续选择`PRODUCT_OR_SECURITY`，不会产生
+更快建议。
+
+新增Release-excluded source-only `project_release_evidence.py`，只接受显式base/head和已经存在的
+`.planning/**/task_plan.md`或既有operator-guide/acceptance文件族。首次写入只在EOF追加一对exact marker；后继写入只替换该区间，
+人工prefix/suffix保持原字节。`--check`只读检查drift，`--write`使用同目录temporary与replace，并在替换前复核target身份/内容；
+marker缺半、重复/倒序、非UTF-8、linked/错误family或写前漂移全部在partial write前停止。输出计数固定显示5个generated checklist
+field、0个manual evidence field、1个generated block和0份authority正文复制，第二次相同投影字节不变。
+
+三个可发布lane的plan都显式保留C0、Source/Candidate、第一次retirement、C1、immutable publication、Published Release、Latest、
+第二次retirement与C2；no-release结果也保留这些对象名并标为not applicable，而不是删除它们。所有plan均标记
+`SHADOW_ONLY_NOT_EXECUTION_AUTHORITY`并引用现有ROADMAP/Cloud template；它们不记录PASS、不执行gate、不改变当前FULL流程。
+`NO_RELEASE_REQUIRED`若被人工改成identity-only publication，仍要求另行授权并至少按`RELEASE_MECHANICS`重新规划。
+
+实现只修改classifier/policy/projector、Release-excluded tests/docs/planning；package、manifest、runtime/Release contracts、ZIP allowlist、
+bootstrap/template及ROADMAP现行流程未变。六个exact replay样本仍全部匹配，false-fast为0；projector的两种文档family、check/write、
+第二次幂等、human-byte保持及无partial-write负向均通过。完整Windows回归为196 pass、26个已记录POSIX/Linux-only skip、0 fail，
+runtime import check与语法/diff检查健康；这些本地结果不构成Linux/Cloud/live或lane enablement证据。G4仍需未来真实合格低风险列车和
+维护者单独授权，当前G3在此停止。
+
 <a name="phase-5-3-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

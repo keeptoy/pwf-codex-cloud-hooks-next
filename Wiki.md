@@ -44,7 +44,7 @@ git diff --check
 
 Windows 中 POSIX/Linux-only case 必须诚实 SKIP；最终安全边界仍需 Linux/Cloud gate 全绿。
 
-### Phase 5.3 G1只读风险建议
+### Phase 5.3 G3只读风险与证据计划
 
 需要比较两个已经人工确认的Git端点时，可以运行source-only advisory classifier；必须显式提供accepted/base与candidate/head，
 不能让工具从branch或`Latest`猜测：
@@ -53,10 +53,24 @@ Windows 中 POSIX/Linux-only case 必须诚实 SKIP；最终安全边界仍需 L
 python tools/classify_release_risk.py --base <accepted-closeout-commit> --head <candidate-commit>
 ```
 
-输出是`PWF_RELEASE_RISK_ADVISORY_V1` JSON，保存exact commit、add/delete/rename、mode/type、Release交集、owner命中、
-unknown和建议lane。unknown path、symlink/gitlink、classifier/policy自修改或证据不完整统一建议
-`PRODUCT_OR_SECURITY`。该工具不写workspace，不解释canonical version/hash identity closure，也不输出或授权精简后的Cloud/Release
-步骤；在Phase 5.3 G5明确启用前，现行FULL流程仍是唯一执行authority。
+输出是`PWF_RELEASE_RISK_ADVISORY_V3` JSON：除exact commit、完整Git delta、Release交集与owner命中外，还原子验证
+canonical version/hash identity closure，列出owner fingerprints、失效证据、unknown、建议lane，以及local/Linux、
+Source/Candidate、Published Release和retirement五类`required_gates`。`NO_RELEASE_REQUIRED`只适用于没有semantic delta的规范
+identity closure；若仍要发布，必须另行授权并至少按`RELEASE_MECHANICS`重新规划。unknown path、symlink/gitlink、
+classifier/policy/projector自修改、无法解释的identity或证据不完整统一fail closed到`PRODUCT_OR_SECURITY`。
+
+需要把同一份计划投影到一个**已经存在**的活动task plan或具体operator guide时，先检查，再显式写入：
+
+```powershell
+python tools/project_release_evidence.py project --base <accepted-closeout-commit> --head <candidate-commit> --target .planning/<slug>/task_plan.md --document-kind task-plan --check
+python tools/project_release_evidence.py project --base <accepted-closeout-commit> --head <candidate-commit> --target .planning/<slug>/task_plan.md --document-kind task-plan --write
+python tools/project_release_evidence.py project --base <accepted-closeout-commit> --head <candidate-commit> --target docs/<version>-operator-guide.md --document-kind operator-guide --write
+```
+
+首次`--write`只在EOF追加一个带显式marker的generated block；后续只替换该block，人工字节保持不变，第二次相同写入不会改变
+文件。marker缺失一半、重复/倒序、target类型不符或文件在写入前漂移都会在替换前停止。`--check`不会写文件，block缺失或过期时
+返回失败。生成内容只引用ROADMAP与Cloud模板等既有authority，不复制其正文、不记录PASS、不执行gate，也不授权C0、Cloud、
+publication、C1或C2；在Phase 5.3 G5明确启用前，现行FULL流程仍是唯一执行authority。
 
 ### Git mode 与 LF 快速检查
 
