@@ -82,3 +82,19 @@
   calls the existing `commitStaged()` helper so no later restage can erase the mode.
 - `core.filemode` must not be disabled. The replacement changes only Release-excluded test/planning files, but the
   failed channel cannot be promoted: a new exact C0 and Fresh Source/Candidate A--F run are required.
+
+## Source/Candidate PASS and C1 admission
+
+- The maintainer explicitly reports the replacement-C0 Source/Candidate A--F channel as all PASS. Per repository
+  interaction policy, that final conclusion is accepted directly; the guide records the supplied exact evidence
+  without inventing unpasted raw dialogue or asking for a rerun.
+- Supplied 9.1 evidence binds the run to HEAD `6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d`, planning-only worktree dirt,
+  healthy managed doctor, installer `0.5.0`, manifest schema 4, Release schema 2, bundle schema 2, 22 Release
+  entries, 12 installed runtime files, four pristine upstream files, authoritative bundle inventory,
+  adapter-only policy, zero snapshot leftovers and `PWF_SC_POST_RESUME=PASS`.
+- The all-PASS A--F conclusion includes the template 4.1 deterministic ZIP gate; the candidate identity remains
+  the locally reproduced 22-entry, 84,516-byte ZIP with SHA-256
+  `7f4fcdee036b71c9093c044af1c015218d5a5533779d719d0f4f01bc79d0ba40`.
+- First retirement review should keep all seven planning scopes, the accepted v0.4.4 recovery pair, sealed C0
+  inputs, the open v0.5.0 guide/templates/tests, and the ignored exact `dist/` assets. No object is safe or authorized
+  for RETIRE/MIGRATE before publication and the second role-window review.

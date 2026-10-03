@@ -2,9 +2,9 @@
 
 ## Goal
 
-Enter the existing FULL Release workflow for `v0.5.0`, freeze an exact local C0 Source/Candidate checkout with its
-operator guide and deterministic zero-hash candidate assets, and hand the immutable source identity to the
-maintainer for push and the first Cloud channel.
+Enter the existing FULL Release workflow for `v0.5.0`, freeze an exact local C0 Source/Candidate checkout, close the
+first Cloud channel on maintainer-supplied PASS evidence, and prepare the C1 checkpoint plus exact formal assets for
+the maintainer's immutable publication gate.
 
 ## Authorization and scope
 
@@ -25,15 +25,21 @@ maintainer for push and the first Cloud channel.
   test-fixture defect: change only the Git mode construction in `tests/release-risk-classifier.test.js`, update
   planning evidence, rerun proportionate/full validation, and create a new local C0. Production/classifier changes
   and all post-Source/Candidate gates remain out of scope.
+- The maintainer has now explicitly reported the replacement C0 Source/Candidate A--F channel as all PASS and
+  supplied exact 9.1 deep-check evidence bound to HEAD `6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d`.
+  This authorizes the planned first retirement review, Source/Candidate checkpoint writeback, exact asset
+  materialization and local C1; remote push/tag/publication and the second channel remain maintainer/later gates.
 
 ## Current phase
 
-Phase 5R complete at this commit: the portable Git-mode fixture is repaired and the replacement local C0 is frozen.
+Phase 6 complete at this commit: real Source/Candidate PASS, first retirement review, exact formal assets and local
+C1 evidence are closed without changing sealed Release inputs.
 
 ## Next Step
 
-Maintainer fast-forwards branch `0.5.0` to the replacement `SOURCE_CANDIDATE_HEAD`, verifies remote equality, then
-runs a Fresh Source/Candidate A--F channel and returns complete raw evidence plus final exit codes.
+Maintainer pushes branch `0.5.0` through C1, creates annotated tag `v0.5.0` exactly at replacement C0
+`6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d`, verifies the peeled tag target, creates the immutable Pre-release and
+uploads the exact local ZIP/bootstrap pair. Stop before Published Release Cloud until those remote steps complete.
 
 ## Phases
 
@@ -43,7 +49,7 @@ runs a Fresh Source/Candidate A--F channel and returns complete raw evidence plu
 4. [x] Run FULL local regression, deterministic ZIP double-build and candidate-bootstrap checks.
 5. [x] Create and verify the exact local C0 commit, then hand off maintainer push and Source/Candidate Cloud steps.
 5R. [x] Repair the Cloud-exposed mode fixture, revalidate, and create a replacement exact local C0.
-6. [ ] After maintainer returns raw first-channel evidence, verify exact C0/asset identity and write C1 only on PASS.
+6. [x] After maintainer returns raw first-channel evidence, verify exact C0/asset identity and write C1 only on PASS.
 7. [ ] After separately authorized immutable publication and second-channel evidence, close Latest/retirement/C2.
 
 ## C0 exit conditions
@@ -82,3 +88,6 @@ runs a Fresh Source/Candidate A--F channel and returns complete raw evidence plu
 |---|---|
 | Focused architecture suite initially reported 3 failures because the Phase 5 status cell contained both `active` and `PENDING`. | Classified as a documentation fixture ambiguity; retain the single Phase lifecycle state `active` and express the Release gate as “approved, not yet executed”, then rerun the focused suite. |
 | First Source/Candidate Cloud attempt observed only `A/D/R`, not the expected `A/D/M/R`, in the G2 delta-shape fixture. | Classified as a test-fixture defect: `update-index --chmod=+x` ran before helper `commit()` called `git add -A`, so Linux `core.filemode=true` restored the worktree's `0644`. Do not write C1; stage A/D/R first, set the index mode second, assert `100755`, and commit the already-staged index. |
+| First formal asset-materialization attempt failed with Windows `[WinError 5]` on its system temporary directory inside the restricted sandbox. | No partial `dist/` assets were created. Reran the same canonical command outside the sandbox under the approved materializer prefix; first run created both exact assets and the second returned `unchanged`. |
+| Initial C1 focused governance run failed five assertions after the lifecycle writeback. | Four failures came from omitting the parseable `Product Phase 5` marker in the current-train table; one assertion did not allow the intentional line wrap. Restored the marker, bounded the multiline assertion and reran 51/51 PASS. |
+| First formal-bootstrap syntax command used the nonexistent `C:` Git Bash path. | Resolved the installed executable with `Get-Command bash` (`D:\Program Files\Git\bin\bash.exe`) and reran `bash -n` successfully. |

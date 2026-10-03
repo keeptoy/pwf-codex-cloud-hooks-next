@@ -1318,7 +1318,7 @@ test("seven reindex status records keep owner and evidence routes without wordin
   assert.doesNotThrow(() => check(index, equivalentProse));
 });
 
-test("v0.5.0 is the local FULL C0 candidate while v0.4.4 and v0.4.3 keep their release roles", () => {
+test("v0.5.0 has Source/Candidate PASS while v0.4.4 and v0.4.3 keep their release roles", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const acceptedAcceptance = read("docs/acceptance/v0.4.4-cloud-hard-acceptance.md");
   const candidateGuide = read("docs/acceptance/v0.5.0-release-operator-guide.md");
@@ -1338,21 +1338,24 @@ test("v0.5.0 is the local FULL C0 candidate while v0.4.4 and v0.4.3 keep their r
   assert.equal(immediateFallback, "v0.4.3");
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.4`/);
   assert.match(roadmap,
-    /当前 programme 边界[^\n]*v0\.4\.4[^\n]*均已关闭[^\n]*exact C0[^\n]*Source\/Candidate[^\n]*tag精确指向C0[^\n]*Published Release第二通道PASS[^\n]*Latest[^\n]*第二轮retirement[^\n]*C2[^\n]*`v0\.5\.0` stable zero-hash C0[^\n]*本地冻结[^\n]*Source\/Candidate仍为PENDING[^\n]*C1[^\n]*仍未授权/);
-  assert.match(currentTrain, /当前exact stable candidate为`v0\.5\.0`[^\n]*branch `0\.5\.0`[^\n]*zero-hash C0[^\n]*本地冻结/);
+    /当前 programme 边界[^\n]*v0\.4\.4[^\n]*均已关闭[^\n]*exact C0[^\n]*Source\/Candidate[^\n]*tag精确指向C0[^\n]*Published Release第二通道PASS[^\n]*Latest[^\n]*第二轮retirement[^\n]*C2[^\n]*`v0\.5\.0` replacement C0[^\n]*6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d[^\n]*Source\/Candidate PASS[^\n]*第一轮retirement[^\n]*本地C1[^\n]*正式双资产/);
+  assert.match(currentTrain, /当前exact stable candidate为`v0\.5\.0`[^\n]*branch `0\.5\.0`[\s\S]{0,160}replacement C0[\s\S]{0,160}6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d[\s\S]{0,160}Source\/Candidate PASS/);
   assert.doesNotMatch(currentTrain, /^<a name="v0-4-4-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain, /Product Phase 4 Overview/);
   assert.match(currentTrain, /Product Phase 5 Overview/);
   assert.match(currentTrain, /BASELINE_PROVENANCE/);
   assert.match(currentTrain, /v0\.4\.4 acceptance/);
-  assert.match(currentTrain, /FULL路线[\s\S]{0,100}本地C0[\s\S]{0,100}Source\/Candidate Cloud/);
-  assert.match(currentTrain, /C1、seal、tag、publication、Published Release、Latest与C2仍未授权/);
+  assert.match(currentTrain, /下一步是维护者push C1[^\n]*annotated tag[^\n]*replacement C0[^\n]*immutable Pre-release/);
+  assert.match(currentTrain, /Published Release、Latest、[\s\S]{0,40}C2仍未完成/);
   assert.match(phase5Overview, /^<a name="product-phase-5-overview"><\/a>$/m);
   assert.match(acceptedAcceptance, /^<a name="v0-4-4-release-operator-guide"><\/a>$/m);
   assert.match(candidateGuide, /^<a name="v0-5-0-release-operator-guide"><\/a>$/m);
   assert.match(candidateGuide,
     /V0_5_0_RELEASE_PRE_RUN_READY \/ SOURCE_CANDIDATE_NOT_RUN \/ PUBLISHED_RELEASE_NOT_RUN \/ STOP_BEFORE_MAINTAINER_PUSH/);
-  assert.doesNotMatch(candidateGuide, /SOURCE_CANDIDATE_RESULT=PASS|PWF_PUBLIC_RELEASE_SETUP=PASS[^`|]/);
+  assert.match(candidateGuide, /SOURCE_CANDIDATE_RESULT=PASS/);
+  assert.match(candidateGuide, /SOURCE_CANDIDATE_HEAD=6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d/);
+  assert.match(candidateGuide, /PUBLISHED_RELEASE_NOT_RUN/);
+  assert.doesNotMatch(candidateGuide, /PWF_PUBLIC_RELEASE_SETUP=PASS[^`|]/);
   assert.match(acceptedAcceptance, /^<a name="v0-4-4-role-window-closeout"><\/a>$/m);
   assert.match(acceptedAcceptance, /PWF_CLOUD_ACCEPTANCE_BASELINE_CONFLICT reason=\.planning_and_active_plan_missing/);
   assert.match(acceptedAcceptance, /空仓库中`\.planning`与active pointer同时缺失属于正常首次创建/);

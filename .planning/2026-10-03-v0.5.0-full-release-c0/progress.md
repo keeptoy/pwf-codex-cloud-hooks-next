@@ -79,3 +79,23 @@
   temporary artifacts were removed and no formal seal was run.
 - Both tracked v0.4.4/v0.5.0 bootstrap scripts passed `bash -n` outside the restricted Windows sandbox. Final diff
   audit contains only the authorized test fixture plus this activity's planning evidence; no Release input changed.
+- Maintainer explicitly reported the Fresh replacement-C0 Source/Candidate A--F channel as all PASS. Supplied 9.1
+  output confirms exact HEAD `6633b1bc2b5c5fb1e9452ac3dfa85c1137d7637d`, planning-only dirt, healthy managed
+  doctor, installer `0.5.0`, schemas 4/2/2, 22 Release entries, 12 installed files, four pristine upstream files,
+  authoritative inventory, adapter-only policy, zero leftovers and `PWF_SC_POST_RESUME=PASS`.
+- Entered Phase 6. No C1, tag or publication has yet been created; first retirement writeback and exact local asset
+  materialization are now allowed, while all remote actions and Published Release remain stopped.
+- First materializer attempt inside the restricted Windows sandbox failed with `[WinError 5]` on its system temp
+  directory and created no partial assets. The approved outside-sandbox run created the exact pair; the immediate
+  second run reported both unchanged. ZIP is 84,516 bytes / SHA `7f4fcdee036b71c9093c044af1c015218d5a5533779d719d0f4f01bc79d0ba40`;
+  bootstrap is 21,565 bytes / SHA `927611564d949ed5b7e04a1fc5b9f1ccfe6d8a638273eb56e25e2e0161cefab2`.
+- Appended the real Source/Candidate checkpoint, supplied 9.1 evidence, all-KEEP first retirement review and formal
+  asset table to the open operator guide; synchronized ROADMAP to the post-first-channel/pre-publication boundary.
+- Synchronized the Product Phase 5 overview and lifecycle relationship test to the same boundary. The first focused
+  run exposed four missing phase-marker assertions and one line-wrap assertion; after the bounded fixture correction,
+  the focused governance/asset suite passed 51/51.
+- C1 full local regression passed: 222 tests, 196 pass, 26 honest Windows/POSIX skips and 0 fail. Importer check is
+  healthy, formal bootstrap `bash -n` passes, `git diff --check` passes, and the tracked candidate bootstrap still
+  contains its development zero hash. The ignored formal assets remain 84,516/21,565 bytes with exact recorded SHA.
+- Phase 6 is complete for the local checkpoint. No remote push, tag, Release edit/upload, Published Release Cloud,
+  Latest action, second retirement review or C2 was performed.
