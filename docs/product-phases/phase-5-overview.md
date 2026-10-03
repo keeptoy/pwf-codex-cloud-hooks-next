@@ -65,6 +65,7 @@ deterministic package与disarm-first rollback继续是继承边界。当前Phase
 | autonomous exact state | nonce/attestation现与README合同一致，严格要求exact单个LF，其他换行或尾随形式拒绝 |
 | Phase authority activation | Phase 5已显式激活为文档治理阶段，但新的Product实现、Cloud和Release仍未授权 |
 | document-test governance Discovery | Phase 5.1已冻结`CONDITIONAL_GO`决策，B0～B4有界本地治理已对账；测试转向owner/关系及有害／等义反例，安全与身份相关`KEEP / DEFER`仍保留。本结论不表示Phase 5 closeout、Cloud或Release验收 |
+| Release harness risk-lane Discovery | v0.4.1～v0.4.4与source-only/current v0.5样本回放支持后继只读classifier、canonical identity closure检查和现有authority内的machine evidence投影，结论为`CONDITIONAL_GO`；当前C0/C1/C2、双通道与v0.5 FULL验证保持不变，C1删除、reduced lane启用、外部attestation、Cloud和Release均未授权 |
 
 <a name="phase-5-planning-history-lifecycle"></a>
 

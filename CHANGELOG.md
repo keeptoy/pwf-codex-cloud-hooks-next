@@ -30,6 +30,9 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
   第一轮清单边界和freeze退出条件；Phase 5 overview只增加里程碑提纲，本次不改动既有断言行为。
 - 维护者决定清退`.planning/`中除Phase 5.1活动scope外的十个旧目录；保留`.active_plan`，九个已提交scope仍可从Git历史恢复，
   不改变Phase history的冻结身份或当前Product/Release状态。
+- 完成Release harness风险车道Discovery：历史回放支持后继先实现只读classifier、canonical identity closure检查与现有authority内的
+  machine evidence投影；当前C0/C1/C2和双通道仍是唯一流程，v0.5.0-dev因owned-plan行为变化继续归入FULL，reduced lane、C1删除、
+  Cloud、Release及外部attestation均未获授权。
 
 ## v0.4.4
 
