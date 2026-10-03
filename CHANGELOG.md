@@ -4,6 +4,17 @@
 [`ROADMAP.md`](ROADMAP.md)；当前唯一行动与授权边界见活动 `task_plan.md`；精确 source、资产、大小和
 SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 acceptance。
 
+## v0.5.1
+
+本节记录尚未发布的candidate变更；本地版本身份不表示公开Release已经成立。
+
+### Changed
+
+- 版本级验收guide退出当前角色后默认冻结保留原路径、原始内容与证据；Acceptance README分列当前执行入口和带immutable
+  commit/SHA的历史记录，旧教程的链接校验与重放使用冻结源码快照。两次retirement review和其他对象的轮转规则不变。
+- 准备stable `0.5.1`本地候选身份、exact `0.5.0` predecessor快照与zero-hash bootstrap；runtime、installer、Host ABI、
+  classifier/policy与ZIP inventory不变。本地准备不表示Cloud、G4 shadow或Release已经执行。
+
 ## v0.5.0
 
 ### Changed

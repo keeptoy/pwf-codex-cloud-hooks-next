@@ -1413,14 +1413,21 @@ test("seven reindex status records keep owner and evidence routes without wordin
   assert.doesNotThrow(() => check(index, equivalentProse));
 });
 
-test("v0.5.0 closes C2 while Phase 5 remains active and v0.4.4 becomes immediate fallback", () => {
-  const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
+test("v0.5.0 immutable C2 evidence survives successor development", () => {
+  const closeout = "d4dd150dea205951090b2b5c56fe140a80bebc91";
+  const roadmap = readGit(closeout, "ROADMAP.md");
+  const developmentTrain = roadmap.match(/^\| 当前开发列车 \| `(v[^`]+)`/m)?.[1];
+  const accepted = roadmap.match(/^\| 当前已接受版本 \| `(v[^`]+)`/m)?.[1];
+  const immediateFallback = roadmap.match(/^\| 当前直接回退版本 \| immutable `(v[^`]+)`/m)?.[1];
+  const candidate = `v${JSON.parse(readGit(closeout, "package.json")).version}`;
   const acceptedGuide = read("docs/acceptance/v0.5.0-release-operator-guide.md");
+  assert.equal(acceptedGuide, readGit(closeout, "docs/acceptance/v0.5.0-release-operator-guide.md"),
+    "successor work must not rewrite the frozen v0.5.0 guide");
   const retiredV044Acceptance = readGit("053f66e994ca095e974f69a7fbe8f2bb54697fc3",
     "docs/acceptance/v0.4.4-cloud-hard-acceptance.md");
   const provenance = read("BASELINE_PROVENANCE.md");
   const phase4Overview = read("docs/product-phases/phase-4-overview.md");
-  const phase5Overview = read("docs/product-phases/phase-5-overview.md");
+  const phase5Overview = readGit(closeout, "docs/product-phases/phase-5-overview.md");
   const currentTrain = roadmap.slice(
     roadmap.indexOf("## 4. 当前开发列车"),
     roadmap.indexOf("## 5. Product Phase 路线"),

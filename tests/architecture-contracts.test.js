@@ -101,7 +101,9 @@ function assertRoadmapPhaseRoutes(roadmap, overviewIndex) {
       assert.equal(phase, trainPhase, "active Phase row must match current train");
       const series = cells[1].match(/`([^`]+)`/)?.[1];
       const candidate = readJson("package.json").version;
-      const admitted = series?.endsWith("-*")
+      const patchSeries = series?.match(/^(\d+\.\d+)\.x$/)?.[1];
+      const admitted = patchSeries ? candidate.split(".").slice(0, 2).join(".") === patchSeries
+        : series?.endsWith("-*")
         ? candidate.startsWith(series.slice(0, -1))
         : candidate === series;
       assert.ok(series && admitted,
@@ -989,7 +991,7 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(phase4Overview, /没有重新打开Phase 4、激活Phase 5或改变Product\/runtime行为/);
   assert.match(phase4Overview, /RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
   assert.match(phase5Overview,
-    /Authority role: `PRODUCT_PHASE_OVERVIEW`[\s\S]*Version series: `0\.5\.0`/);
+    /Authority role: `PRODUCT_PHASE_OVERVIEW`[\s\S]*Version series: `0\.5\.(?:\d+|x)`/);
   assert.match(phase41, /\]\(\.\.\/product-phases\/phase-4-overview\.md#product-phase-4-overview\)/);
   assert.match(phase44, /\]\(\.\.\/product-phases\/phase-4-overview\.md#product-phase-4-overview\)/);
   assert.doesNotMatch(roadmap, /### 5\.4 迁移 transaction 与对象生命周期治理/);
@@ -1016,6 +1018,10 @@ test("ROADMAP Phase routes reject wrong materialization and permit summary rewri
   const active = routeRows.find(line => /\bactive\b/.test(line));
   const pending = routeRows.find(line => /\bpending\b/.test(line));
   assert.ok(active && pending, "probe requires an active and a pending Phase row");
+  const wrongSeries = active.replace(/`[^`]+`/, "`999.999.x`");
+  assert.notEqual(wrongSeries, active);
+  assert.throws(() => assertRoadmapPhaseRoutes(roadmap.replace(active, wrongSeries), overviewIndex),
+    /active Phase series must admit/);
   assert.throws(() => assertRoadmapPhaseRoutes(roadmap.replace(active,
     active.replace(/\bactive\b/, "pending")), overviewIndex),
   /only active or complete Phase rows|one active train/);

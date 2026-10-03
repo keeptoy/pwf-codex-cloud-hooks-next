@@ -82,15 +82,19 @@ test("Release v2 entries own exact ZIP inventory and mode", () => {
   assert.equal(fs.existsSync(path.join(root, "contracts/release-artifact-v1.json")), false);
 });
 
-test("installed transition admits exactly the immediate-fallback predecessor state shape", () => {
+test("installed transition admits exactly the role-selected predecessor state shape", () => {
   const transition = readJson("contracts/installed-state-transition-v1.json");
   assert.deepEqual(Object.keys(transition).sort(), ["contract_id", "predecessor", "schema_version"]);
   assert.equal(transition.schema_version, 1);
   assert.equal(transition.contract_id, "PWF_INSTALLED_STATE_TRANSITION_V1");
   const roadmap = fs.readFileSync(path.join(root, "ROADMAP.md"), "utf8");
   const fallback = roadmap.match(/^\| 当前直接回退版本 \| immutable `(v[^`]+)` immediate fallback/m);
+  const accepted = roadmap.match(/^\| 当前已接受版本 \| `(v[^`]+)`/m);
   assert.ok(fallback, "ROADMAP lacks a parseable immediate fallback version");
-  assert.equal(transition.predecessor.package_version, fallback[1].slice(1));
+  assert.ok(accepted, "ROADMAP lacks a parseable accepted version");
+  const candidate = readJson("package.json").version;
+  const predecessor = candidate === accepted[1].slice(1) ? fallback[1] : accepted[1];
+  assert.equal(transition.predecessor.package_version, predecessor.slice(1));
   assert.equal(transition.predecessor.installed_manifest_schema, 3);
   assert.equal(transition.predecessor.owner, "pwf-codex-cloud-hooks");
   assert.equal(transition.predecessor.runtime_files.length, 12);

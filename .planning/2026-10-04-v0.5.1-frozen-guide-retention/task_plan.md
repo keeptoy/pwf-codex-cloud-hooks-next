@@ -20,8 +20,9 @@ records. Prepare a canonical v0.5.1 candidate and verify its risk classification
 
 ## Current phase
 
-Implementation preparation. The worktree started clean on branch 0.5.0. Current accepted is v0.5.0; no guide has yet
-left that role under the new rule, and no v0.5.1 Release guide should be fabricated before Release entry approval.
+Local implementation and canonical candidate preparation pass validation on branch 0.5.1. Current accepted is
+v0.5.0; no guide has yet left that role under the new rule. Exact advisory classification awaits the local candidate
+commit; no v0.5.1 Release guide is created before Release entry approval.
 
 ## Next Step
 
@@ -34,7 +35,7 @@ Stop after a validated local implementation handoff before any Cloud/Release/G4 
 1. [x] Recover relevant authorities, current guide evidence, identity closure and test dependencies.
 2. [x] Define current-entrypoint versus frozen-history discovery, original-path preservation and immutable replay.
 3. [x] Add meaningful positive/negative retention tests and implement governance/template/index changes.
-4. [ ] Prepare v0.5.1 identity closure with exact accepted predecessor and zero-hash candidate bootstrap.
+4. [x] Prepare v0.5.1 identity closure with exact accepted predecessor and zero-hash candidate bootstrap.
 5. [ ] Run focused/full local checks, deterministic ZIP/bootstrap checks and risk advisory.
 6. [ ] Commit scoped results and report G4 admission, limits and maintainer handoff.
 
@@ -68,3 +69,5 @@ Stop after a validated local implementation handoff before any Cloud/Release/G4 
 | Normal Node runner could not spawn inside the Windows sandbox (EPERM). | Use the bounded approved outside-sandbox test command, as recorded by the environment profile. |
 | One multi-file patch used a partial ROADMAP line and failed context verification. | The patch made no changes; reapply with exact full context and stable current-train anchor. |
 | First governance regression passed 48/49; a legacy proximity regex assumed freeze-ref prose stayed within 180 characters of role exit. | Scope the check to the owning lifecycle section while preserving the immutable-reference requirement. |
+| First full regression passed 195 with 26 Windows skips and 3 governance failures. | Add bounded 0.5.x series admission to the Phase-route validator; use the existing exact CHANGELOG heading format and explain Unreleased in the section body. |
+| Bash syntax probes hit the sandbox's Win32 signal-pipe error 5. | Rerun the same two syntax-only probes outside the sandbox; both returned exit 0. |

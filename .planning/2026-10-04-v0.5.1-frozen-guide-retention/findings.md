@@ -21,3 +21,17 @@
   and validate historical relative links inside that frozen snapshot. Current document links still use the worktree.
 - Runtime/installer/classifier/policy/projector remain unchanged. The operator template updates retention only;
   neither Cloud channel nor retirement checkpoint moves.
+
+## Local verification and candidate identity
+
+- Complete Windows suite: 224 tests, 198 pass, 26 platform-specific skips, zero failures. Frozen guide bytes,
+  current entrypoint uniqueness, historical registry/link negatives and accepted/fallback recovery passed.
+- Deterministic local ZIP prechecks each contain 22 entries, size 84,518 bytes and SHA-256
+  75c9eda81b6cc192df15346a5fb9bf60d2970e47ed53f3481887169778ac0a72. These are local development checks, not Cloud
+  evidence or sealed/public assets.
+- Canonical predecessor is accepted v0.5.0, not the v0.4.4 fallback. Both predecessor and Release contract raw SHA
+  match the manifest; the zero-hash candidate bootstrap is stable on its second read-only check.
+- The v0.5.0 guide and sealed bootstrap remain unchanged. Provenance now binds the already-existing sealed
+  bootstrap to exact C2 so published oracles do not depend on current candidate package identity.
+- Repeated Node/Bash sandbox restrictions were promoted to the environment profile as required by repository
+  policy; this does not re-probe or claim new WSL/Cloud capabilities.

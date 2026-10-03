@@ -28,6 +28,16 @@ template管理。
 | 本地容器 | `CONFIRMED` | Docker、Podman和nerdctl均不存在 | 当前没有受支持的本地Linux容器执行面 | 不反复搜索或自行安装；把Linux gate写入Cloud验收教程 |
 | Git Bash / MSYS | `CONFIRMED_BOUNDARY` | 即使Git Bash可执行shell语法，它也不能替代真实Linux/POSIX证据 | 不得用它证明POSIX权限、FIFO/device、进程组或真实Linux filesystem语义 | 只用于相称的Bash语法检查；平台语义交给Linux Cloud |
 
+### 2.1 Windows受限工具沙箱
+
+以下限制在**2026-10-04**本地验证中再次确认；它们属于命令工具的沙箱边界，不表示主机缺少Node或Git Bash，也不更新上表
+未重新探测的WSL/容器事实。
+
+| 环境面 | 状态 | 影响与默认对策 | 重验条件 |
+|---|---|---|---|
+| Node test runner子进程 | `CONFIRMED_SANDBOX_LIMITATION` | 受限沙箱内可出现`spawn EPERM`；同一有界测试命令在获准的沙箱外执行后可正常完成。默认使用已批准的测试执行入口，错误不能记为产品失败或测试PASS | 工具沙箱/权限配置改变，或原命令在沙箱内已正常运行 |
+| Git Bash语法检查 | `CONFIRMED_SANDBOX_LIMITATION` | 受限沙箱内可出现signal-pipe Win32 error 5；同一`bash -n`在获准的沙箱外返回0。默认沿用语法检查路线，仍不能替代真实Linux证据 | 工具沙箱/权限配置改变，或同一语法检查在沙箱内已正常运行 |
+
 ## 3. 当前已确认的远程 / Cloud执行面事实
 
 远程事实最近复核日期：**2026-08-25**。下表以真实
