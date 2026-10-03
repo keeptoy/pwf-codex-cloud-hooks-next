@@ -21,15 +21,19 @@ maintainer for push and the first Cloud channel.
 - Not allowed before first-channel PASS is returned: non-zero bootstrap sealing, C1, tag/publication, Published
   Release Cloud, Latest confirmation, role rotation or C2.
 - G4/G5 reduced-lane work remains separate; this release uses the current FULL workflow regardless of those gates.
+- The maintainer explicitly authorized the bounded replacement-C0 repair after the first Cloud attempt exposed a
+  test-fixture defect: change only the Git mode construction in `tests/release-risk-classifier.test.js`, update
+  planning evidence, rerun proportionate/full validation, and create a new local C0. Production/classifier changes
+  and all post-Source/Candidate gates remain out of scope.
 
 ## Current phase
 
-Phase 5 complete at this commit: the exact local C0 is frozen and must stop before maintainer push/Cloud execution.
+Phase 5R complete at this commit: the portable Git-mode fixture is repaired and the replacement local C0 is frozen.
 
 ## Next Step
 
-Maintainer pushes branch `0.5.0`, verifies remote HEAD equals the handed-off `SOURCE_CANDIDATE_HEAD`, then runs the
-guide's Source/Candidate channel in disposable Cloud and returns the complete raw A--F evidence plus final codes.
+Maintainer fast-forwards branch `0.5.0` to the replacement `SOURCE_CANDIDATE_HEAD`, verifies remote equality, then
+runs a Fresh Source/Candidate A--F channel and returns complete raw evidence plus final exit codes.
 
 ## Phases
 
@@ -38,6 +42,7 @@ guide's Source/Candidate channel in disposable Cloud and returns the complete ra
 3. [x] Run focused/failing-first checks and reconcile any lifecycle test expectations.
 4. [x] Run FULL local regression, deterministic ZIP double-build and candidate-bootstrap checks.
 5. [x] Create and verify the exact local C0 commit, then hand off maintainer push and Source/Candidate Cloud steps.
+5R. [x] Repair the Cloud-exposed mode fixture, revalidate, and create a replacement exact local C0.
 6. [ ] After maintainer returns raw first-channel evidence, verify exact C0/asset identity and write C1 only on PASS.
 7. [ ] After separately authorized immutable publication and second-channel evidence, close Latest/retirement/C2.
 
@@ -76,3 +81,4 @@ guide's Source/Candidate channel in disposable Cloud and returns the complete ra
 | Error | Resolution |
 |---|---|
 | Focused architecture suite initially reported 3 failures because the Phase 5 status cell contained both `active` and `PENDING`. | Classified as a documentation fixture ambiguity; retain the single Phase lifecycle state `active` and express the Release gate as “approved, not yet executed”, then rerun the focused suite. |
+| First Source/Candidate Cloud attempt observed only `A/D/R`, not the expected `A/D/M/R`, in the G2 delta-shape fixture. | Classified as a test-fixture defect: `update-index --chmod=+x` ran before helper `commit()` called `git add -A`, so Linux `core.filemode=true` restored the worktree's `0644`. Do not write C1; stage A/D/R first, set the index mode second, assert `100755`, and commit the already-staged index. |

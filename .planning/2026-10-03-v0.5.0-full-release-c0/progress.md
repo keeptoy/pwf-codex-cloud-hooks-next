@@ -63,3 +63,19 @@
 - The classifier correctly invalidated `LOCAL_TEST_BASELINE` because tests changed relative to accepted v0.4.4.
   Re-established it on the final C0 content with another FULL run: 222 tests, 196 pass, 26 honest Windows/POSIX
   skips, 0 fail. The local gate is complete; next action belongs to the maintainer push and Cloud channel.
+- Maintainer reported that the first Source/Candidate Cloud test run stopped because the G2 delta-shape fixture
+  produced `A/D/R` instead of `A/D/M/R`. No Source/Candidate PASS or C1 is recorded.
+- Cross-checked the proposed POSIX `chmodSync` alternative against Node/Git semantics and a temporary Windows Git
+  repository. `chmodSync(0o755)` produced no Git mode delta on Windows; stage-first plus
+  `update-index --chmod=+x` produced exact raw `100644 -> 100755 M`. Maintainer authorized that portable patch.
+- Applied the bounded fixture repair exactly as authorized: `git add -A`, index `--chmod=+x`, an explicit staged
+  `100755` assertion, then `commitStaged()`. The focused Release classifier/projector suite passed 12/12.
+- Replacement-C0 FULL local suite passed: 222 tests, 196 pass, 26 honest Windows/POSIX skips, 0 fail. The repaired
+  A/D/M/R test passes inside the same complete run; Linux zero-skip and lifecycle evidence still require a Fresh
+  Source/Candidate Cloud rerun against the replacement commit.
+- Replacement integrity checks passed: importer healthy, candidate bootstrap unchanged with zero ZIP hash, Python
+  compile, Node syntax and `git diff --check` passed. Two independent 22-entry ZIPs were byte-identical at 84,516
+  bytes and SHA-256 `7f4fcdee036b71c9093c044af1c015218d5a5533779d719d0f4f01bc79d0ba40`, exactly matching the original C0;
+  temporary artifacts were removed and no formal seal was run.
+- Both tracked v0.4.4/v0.5.0 bootstrap scripts passed `bash -n` outside the restricted Windows sandbox. Final diff
+  audit contains only the authorized test fixture plus this activity's planning evidence; no Release input changed.

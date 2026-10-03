@@ -384,8 +384,13 @@ test("G2 classifier preserves add delete rename and executable-mode evidence", (
       path.join(layout.repository, "docs/history/renamed.md"));
     fs.rmSync(path.join(layout.repository, "docs/history/delete.md"));
     write(layout.repository, "docs/history/added.md", "added\n");
+    git(layout.repository, "add", "-A");
     git(layout.repository, "update-index", "--chmod=+x", "docs/history/mode.md");
-    const head = commit(layout.repository, "delta shapes");
+    assert.match(
+      git(layout.repository, "ls-files", "--stage", "--", "docs/history/mode.md"),
+      /^100755 /,
+    );
+    const head = commitStaged(layout.repository, "delta shapes");
     const run = runClassifier(layout.repository, layout.base, head);
     assert.equal(run.status, 0, run.stderr);
     const result = JSON.parse(run.stdout);

@@ -68,3 +68,17 @@
 - The actual candidate delta is not identity-only: `runtime/owned-plan.py` tightens nonce/attestation normalization
   to require the final LF, and the runtime bundle hashes change accordingly. Together with classifier/projector
   self-change, that independently keeps the lane at `PRODUCT_OR_SECURITY` / FULL.
+
+## Source/Candidate fixture correction
+
+- The first Cloud attempt did not expose a classifier or production defect. In the delta-shape test,
+  `update-index --chmod=+x` changed the index to `100755`, then helper `commit()` ran `git add -A`; on Linux with
+  `core.filemode=true`, Git reread the unchanged `0644` worktree and removed the staged mode delta.
+- `fs.chmodSync(..., 0o755)` would work on POSIX, but Node documents that Windows only supports changing the write
+  permission through chmod. A local Windows experiment confirmed it left Git at `100644` with no staged diff,
+  while `git add -A` followed by `update-index --chmod=+x` produced raw `100644 -> 100755 M` and index `100755`.
+- The test validates commit raw-diff evidence, not operating-system chmod semantics. The portable fixture therefore
+  stages all A/D/R worktree changes first, changes the Git index mode second, asserts the exact stage mode, and
+  calls the existing `commitStaged()` helper so no later restage can erase the mode.
+- `core.filemode` must not be disabled. The replacement changes only Release-excluded test/planning files, but the
+  failed channel cannot be promoted: a new exact C0 and Fresh Source/Candidate A--F run are required.
