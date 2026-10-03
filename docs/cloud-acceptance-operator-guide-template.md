@@ -15,7 +15,8 @@ channel checkpoint与final Post-run写入格式，不建立第二份宏观流程
 `operator guide`是统一的内容职责：它既是维护者执行教程，也是执行完成后不可变证据的容器。
 `acceptance`不是第二种文档；single-Discovery版本可以沿用更短、容易发现的
 `vX.Y.Z-cloud-hard-acceptance.md`文件名。multi-Discovery版本则让每个正式Discovery Round拥有一份
-`vX.Y.Z-<round>-operator-guide.md`。
+`vX.Y.Z-<round>-operator-guide.md`。当multi-Discovery列车进入不新增Product Discovery Round的版本级Release closeout时，
+使用一份`vX.Y.Z-release-operator-guide.md`编排两个Release通道；它只承接版本级Release证据，不汇总或替代各Round guide。
 
 本模板只适用于未来新建或仍在施工的文档。已经发布或关闭的acceptance、runbook与operator guide保留
 原文件名和时间语义，不批量重命名、重排章节或回写新模板。
@@ -91,7 +92,8 @@ Discovery Round或guide。preflight只读盘点，不是第三轮retirement revi
 
 single-Discovery版本专项acceptance使用相同结构，只把文件命名为
 `vX.Y.Z-cloud-hard-acceptance.md`；multi-Discovery版本的每个正式Round使用
-`vX.Y.Z-<round>-operator-guide.md`。不要再建立一份把所有Round全文重新拼接起来的巨型version acceptance。
+`vX.Y.Z-<round>-operator-guide.md`。multi-Discovery列车若另行进入版本级Release closeout，则使用
+`vX.Y.Z-release-operator-guide.md`；它不是新Round，也不得把所有Round全文重新拼成巨型version acceptance。
 
 <a name="operator-guide-exact-inputs"></a>
 

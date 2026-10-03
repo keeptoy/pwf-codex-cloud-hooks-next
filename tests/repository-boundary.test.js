@@ -681,6 +681,8 @@ function assertAcceptanceRoleProjections(index, cloudTemplate) {
     "single-Discovery uses the acceptance filename as an operator guide");
   assert.match(routing, /每个正式 Discovery Round[\s\S]*vX\.Y\.Z-<round>-operator-guide\.md/,
     "multi-Discovery uses one guide per formal Round");
+  assert.match(routing, /multi-Discovery[\s\S]*vX\.Y\.Z-release-operator-guide\.md[\s\S]*(?:不新增|不自动增加)[^。]*Product Discovery Round/,
+    "multi-Discovery Release closeout uses one version-level guide without inventing a Product Round");
 }
 
 function assertAcceptanceWritebackRoles(cloudTemplate, operatorTemplate) {
@@ -1316,9 +1318,10 @@ test("seven reindex status records keep owner and evidence routes without wordin
   assert.doesNotThrow(() => check(index, equivalentProse));
 });
 
-test("v0.5.0 is the active pre-C0 candidate while v0.4.4 and v0.4.3 keep their release roles", () => {
+test("v0.5.0 is the local FULL C0 candidate while v0.4.4 and v0.4.3 keep their release roles", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const acceptedAcceptance = read("docs/acceptance/v0.4.4-cloud-hard-acceptance.md");
+  const candidateGuide = read("docs/acceptance/v0.5.0-release-operator-guide.md");
   const retiredV043Acceptance = readGit("d7b5345b165e94c18ceab9b591d9a6b6dd251110",
     "docs/acceptance/v0.4.3-cloud-hard-acceptance.md");
   const provenance = read("BASELINE_PROVENANCE.md");
@@ -1335,16 +1338,21 @@ test("v0.5.0 is the active pre-C0 candidate while v0.4.4 and v0.4.3 keep their r
   assert.equal(immediateFallback, "v0.4.3");
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.4`/);
   assert.match(roadmap,
-    /当前 programme 边界[^\n]*v0\.4\.4[^\n]*均已关闭[^\n]*exact C0[^\n]*Source\/Candidate[^\n]*tag精确指向C0[^\n]*Published Release第二通道PASS[^\n]*Latest[^\n]*第二轮retirement[^\n]*C2[^\n]*`v0\.5\.0`[^\n]*Product Phase 5[^\n]*文档治理[^\n]*Product实现[^\n]*仍未授权/);
-  assert.match(currentTrain, /当前exact stable candidate为`v0\.5\.0`[^\n]*branch `0\.5\.0`/);
+    /当前 programme 边界[^\n]*v0\.4\.4[^\n]*均已关闭[^\n]*exact C0[^\n]*Source\/Candidate[^\n]*tag精确指向C0[^\n]*Published Release第二通道PASS[^\n]*Latest[^\n]*第二轮retirement[^\n]*C2[^\n]*`v0\.5\.0` stable zero-hash C0[^\n]*本地冻结[^\n]*Source\/Candidate仍为PENDING[^\n]*C1[^\n]*仍未授权/);
+  assert.match(currentTrain, /当前exact stable candidate为`v0\.5\.0`[^\n]*branch `0\.5\.0`[^\n]*zero-hash C0[^\n]*本地冻结/);
   assert.doesNotMatch(currentTrain, /^<a name="v0-4-4-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain, /Product Phase 4 Overview/);
   assert.match(currentTrain, /Product Phase 5 Overview/);
   assert.match(currentTrain, /BASELINE_PROVENANCE/);
   assert.match(currentTrain, /v0\.4\.4 acceptance/);
-  assert.match(currentTrain, /Product Phase 5[\s\S]{0,160}文档治理[\s\S]{0,180}Product实现、Cloud或Release/);
+  assert.match(currentTrain, /FULL路线[\s\S]{0,100}本地C0[\s\S]{0,100}Source\/Candidate Cloud/);
+  assert.match(currentTrain, /C1、seal、tag、publication、Published Release、Latest与C2仍未授权/);
   assert.match(phase5Overview, /^<a name="product-phase-5-overview"><\/a>$/m);
   assert.match(acceptedAcceptance, /^<a name="v0-4-4-release-operator-guide"><\/a>$/m);
+  assert.match(candidateGuide, /^<a name="v0-5-0-release-operator-guide"><\/a>$/m);
+  assert.match(candidateGuide,
+    /V0_5_0_RELEASE_PRE_RUN_READY \/ SOURCE_CANDIDATE_NOT_RUN \/ PUBLISHED_RELEASE_NOT_RUN \/ STOP_BEFORE_MAINTAINER_PUSH/);
+  assert.doesNotMatch(candidateGuide, /SOURCE_CANDIDATE_RESULT=PASS|PWF_PUBLIC_RELEASE_SETUP=PASS[^`|]/);
   assert.match(acceptedAcceptance, /^<a name="v0-4-4-role-window-closeout"><\/a>$/m);
   assert.match(acceptedAcceptance, /PWF_CLOUD_ACCEPTANCE_BASELINE_CONFLICT reason=\.planning_and_active_plan_missing/);
   assert.match(acceptedAcceptance, /空仓库中`\.planning`与active pointer同时缺失属于正常首次创建/);
@@ -1625,7 +1633,7 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   const roleVersions = [...new Set([accepted, candidate])].sort();
   const rootBootstraps = actual.filter(item => /^init-cloud-sandbox-v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\.bash$/.test(item));
   const acceptanceDocs = docs.filter(item =>
-    /^docs\/(?:acceptance\/)?v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?-cloud-hard-acceptance\.md$/.test(item));
+    /^docs\/(?:acceptance\/)?v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?-(?:cloud-hard-acceptance|release-operator-guide)\.md$/.test(item));
   const phaseOverviewDocs = docs.filter(item => /^docs\/product-phases\/phase-\d+-overview\.md$/.test(item));
 
   assert.equal(artifact.excluded_prefixes.includes("docs/"), true);
@@ -1635,9 +1643,14 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   }
   assert.deepEqual(rootBootstraps, roleVersions.map(version => `init-cloud-sandbox-${version}.bash`));
   const expectedAcceptanceDocs = [`docs/acceptance/${accepted}-cloud-hard-acceptance.md`];
-  const candidateAcceptance = `docs/acceptance/${candidate}-cloud-hard-acceptance.md`;
-  if (candidate !== accepted && !candidate.endsWith("-dev") && actual.includes(candidateAcceptance)) {
-    expectedAcceptanceDocs.push(candidateAcceptance);
+  const candidateEntrypoints = [
+    `docs/acceptance/${candidate}-cloud-hard-acceptance.md`,
+    `docs/acceptance/${candidate}-release-operator-guide.md`,
+  ].filter(relative => actual.includes(relative));
+  assert.ok(candidate === accepted || candidate.endsWith("-dev") || candidateEntrypoints.length <= 1,
+    "a candidate may have only one version-level Release entrypoint");
+  if (candidate !== accepted && !candidate.endsWith("-dev") && candidateEntrypoints.length === 1) {
+    expectedAcceptanceDocs.push(candidateEntrypoints[0]);
   } else if (candidate !== accepted && !candidate.endsWith("-dev")) {
     assert.match(roleRoadmap,
       new RegExp(`当前开发列车[^\n]*\`${candidate.replaceAll(".", "\\.")}\`[^\n]*尚未形成C0[^\n]*Release`),
@@ -1647,8 +1660,9 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
       "the acceptance index must explain why a stable pre-C0 source identity has no guide yet");
   }
   assert.deepEqual(acceptanceDocs, expectedAcceptanceDocs.sort());
-  assert.deepEqual(acceptanceDocs.map(relative => path.basename(relative).replace("-cloud-hard-acceptance.md", "")).sort(),
-    expectedAcceptanceDocs.map(relative => path.basename(relative).replace("-cloud-hard-acceptance.md", "")).sort());
+  const releaseVersion = relative => path.basename(relative)
+    .replace(/-(?:cloud-hard-acceptance|release-operator-guide)\.md$/, "");
+  assert.deepEqual(acceptanceDocs.map(releaseVersion).sort(), expectedAcceptanceDocs.map(releaseVersion).sort());
   assert.deepEqual(phaseOverviewDocs, [
     "docs/product-phases/phase-4-overview.md",
     "docs/product-phases/phase-5-overview.md",

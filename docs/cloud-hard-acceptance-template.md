@@ -52,6 +52,8 @@ Operator guide的结构与状态语义只见上述结构模板。本文件继续
 - 多 Discovery 版本不维护一个累积所有gate的巨型状态表；每个正式 Discovery Round使用一份
   `vX.Y.Z-<round>-operator-guide.md`。当前Round与未授权边界由活动planning控制，Phase关闭后的宏观索引由
   ROADMAP/Phase capsule承担。
+- multi-Discovery列车进入不新增Product Discovery Round的版本级Release closeout时，使用一份
+  `vX.Y.Z-release-operator-guide.md`编排两个Release通道；它只承接版本级Release证据，不汇总或替代各Round guide。
 - 一个Round可以有多个gate、Cloud task或stage；纯aggregate/evidence closure只汇总已冻结证据时不新建guide、
   不重复黑盒。
 - Release Source/Candidate与Published Release仍按本模板的两个通道执行。它们证明final source与public bytes，

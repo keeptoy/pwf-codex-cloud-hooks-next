@@ -22,11 +22,11 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.5.0`；本地 candidate branch 为`0.5.0`，Product Phase 5文档治理已显式激活；尚未形成C0、Cloud PASS、tag或Release，也不授权新的Product实现 |
+| 当前开发列车 | `v0.5.0`；本地candidate branch为`0.5.0`，Product Phase 5文档治理已显式激活；FULL Release第1步的stable zero-hash C0已完成本地冻结，等待维护者push并运行Source/Candidate；尚无Cloud PASS、tag或Release，也不授权新的Product实现或后继Release gate |
 | 当前已接受版本 | `v0.4.4`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.3` immediate fallback |
 | 回退证据链 | immutable `v0.4.2` deeper fallback；`v0.4.1`、`v0.4.0`、`v0.3.5`与更早发布里程碑见 provenance museum |
-| 当前 programme 边界 | v0.4.4及其前序功能、patch与治理列车均已关闭；v0.4.4 exact C0 `f7032fd0efad3df9e4b6052e8cd766d27cd2a844`完成Source/Candidate，tag精确指向C0，immutable Release双资产与Published Release第二通道PASS，维护者确认Latest后完成第二轮retirement与C2角色轮转。`v0.5.0`现已形成pre-C0 stable candidate身份并继续承载Product Phase 5文档治理；新的Product实现、Cloud和Release仍未授权 |
+| 当前 programme 边界 | v0.4.4及其前序功能、patch与治理列车均已关闭；v0.4.4 exact C0 `f7032fd0efad3df9e4b6052e8cd766d27cd2a844`完成Source/Candidate，tag精确指向C0，immutable Release双资产与Published Release第二通道PASS，维护者确认Latest后完成第二轮retirement与C2角色轮转。`v0.5.0` stable zero-hash C0现已完成本地冻结，Source/Candidate仍为PENDING；新的Product实现以及C1、seal、tag、publication、第二通道、Latest与C2仍未授权 |
 | 长期支持范围 | 只正式支持 `OthmanAdi/planning-with-files v3.8.2` |
 
 `v0.4.0` 已完成 immutable publication、公开下载/安装、Fresh/Resume与 pointer-only promotion；P9-E postflight当时确认它为
@@ -65,9 +65,12 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 本节是current development train指针：只保留exact列车身份、当前授权边界与对应Product Phase overview链接。活动planning、
 未封存Discovery和需要current状态的验收材料可以引用train anchor，但本节不再承载长期Product摘要。
 
-当前exact stable candidate为`v0.5.0`，位于本地branch `0.5.0`，对应已激活的
-[`Product Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview)。当前只授权Phase 5文档治理；
-新的Product实现、Cloud或Release仍未授权。candidate不是C0、Cloud PASS、tag或Release；逐版本实际delta只读[`CHANGELOG`](CHANGELOG.md)。
+当前exact stable candidate为`v0.5.0`，位于本地branch `0.5.0`，已作为zero-hash C0完成本地冻结，对应已激活的
+[`Product Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview)。维护者已授权按FULL路线完成Release第1步的
+本地C0准备并交接Source/Candidate Cloud；具体教程见
+[`v0.5.0 Release operator guide`](docs/acceptance/v0.5.0-release-operator-guide.md#v0-5-0-release-operator-guide)。
+新的Product实现以及C1、seal、tag、publication、Published Release、Latest与C2仍未授权。本地C0不是Cloud PASS、tag或Release；
+逐版本实际delta只读[`CHANGELOG`](CHANGELOG.md)。
 
 accepted/fallback角色仍为v0.4.4/v0.4.3。继承的稳定Product baseline只读
 [`Product Phase 4 Overview`](docs/product-phases/phase-4-overview.md#product-phase-4-overview)，exact已发布身份只读
@@ -90,7 +93,7 @@ accepted/fallback角色仍为v0.4.4/v0.4.3。继承的稳定Product baseline只�
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 / overview |
 |---|---|---|---|---|
 | 4 | `0.4.0-*`～`0.4.4` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理 | F0～F3C功能/rollback已闭合；后续patch/governance列车不得改变Product行为或激活Phase 5 | Product baseline complete；当前v0.4.4为Release tag教程stable C0 candidate；[`Phase 4 Overview`](docs/product-phases/phase-4-overview.md#product-phase-4-overview) |
-| 5 | `0.5.0` | 文档治理：authority分层、文档/代码对账、planning生命周期与overview/history分工；其他Product实现仍TBD | 新Product实现仍需Discovery；退出/Cloud gate、Release路线与对象清单均TBD | Phase 5 active；当前为pre-C0 stable candidate，未授权Product实现、Cloud或Release；[`Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview) |
+| 5 | `0.5.0` | 文档治理：authority分层、文档/代码对账、planning生命周期与overview/history分工；其他Product实现仍TBD | 新Product实现仍需Discovery；当前FULL Release只进入本地C0与Source/Candidate交接，后继gate逐项授权 | Phase 5 active；stable zero-hash C0已本地冻结，Source/Candidate待维护者执行；[`Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview) |
 | 6 | `0.6.0-*` | compaction lifecycle | 复核真实Cloud payload，比较现有`SessionStart source=clear\|compact`与PreCompact/PostCompact的时序和恢复能力；现有事件足够时不扩大managed event set，只有真实context/时序缺口才新增Hook | pending |
 | 7 | `0.7.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立gate；必须分别有use case、latency/token budget、噪声预算与Cloud证据 | pending / optional；没有明确收益就逐项或整体`NO_GO`；不是Phase 8前置 |
 | 8 | `0.8.0-*` | 唯一的read-only advisory completion evaluator | bounded、non-recursive、无plan时安静；只advisory，不阻断、不写counter/ledger或其他mutable gate state | pending；可独立于Phase 7进入Discovery |

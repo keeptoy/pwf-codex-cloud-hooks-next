@@ -286,6 +286,8 @@ Release四步与C0/C1/C2身份顺序只读
 - single-Discovery版本使用`vX.Y.Z-cloud-hard-acceptance.md`，它就是简化命名的operator guide；多 Discovery 版本
   为每个正式Discovery Round建立一份`vX.Y.Z-<round>-operator-guide.md`，不维护一个累积所有Round全文的巨型
   version acceptance；
+- multi-Discovery列车进入不新增Product Discovery Round的版本级Release closeout时，使用一份
+  `vX.Y.Z-release-operator-guide.md`承接双通道与C0/C1/C2证据；它不替代各Round guide，也不把Release gate计成新Round；
 - 纯aggregate、evidence closure或retirement closeout只汇总已经冻结的exact records时，不新建guide、不重跑黑盒；
 - 同一guide执行前保存Pre-run status；多通道guide的前序通道PASS后可追加channel checkpoint，但它不冻结guide、
   不冒充最终PASS或授权下一gate；声明范围全部闭合后才追加final Post-run并冻结。失败重试、恢复位置和Next Step

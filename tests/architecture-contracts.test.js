@@ -1033,7 +1033,8 @@ test("ROADMAP Phase routes reject wrong materialization and permit summary rewri
     /overview index row must link its own Phase/);
   const current = sectionBetween(roadmap, "## 4. 当前开发列车", '<a name="product-phase-route-index"></a>');
   const accepted = roadmap.match(/^\| 当前已接受版本 \| `(v\d+\.\d+\.\d+)`/m)[1];
-  const wrongEvidence = current.replace(/\]\(docs\/acceptance\/v[^)]+\.md#[^)]+\)/,
+  const acceptedEvidence = new RegExp(`\\]\\(docs/acceptance/${accepted.replaceAll(".", "\\.")}-cloud-hard-acceptance\\.md#[^)]+\\)`);
+  const wrongEvidence = current.replace(acceptedEvidence,
     `](docs/acceptance/${accepted}-wrong.md#wrong)`);
   assert.notEqual(wrongEvidence, current);
   assert.throws(() => assertRoadmapPhaseRoutes(roadmap.replace(current, wrongEvidence), overviewIndex),

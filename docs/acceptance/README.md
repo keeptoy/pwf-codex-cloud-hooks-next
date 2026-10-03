@@ -10,6 +10,8 @@
 source/package身份收敛为不带`-dev`的pre-C0 candidate，并不会在Release尚未授权时凭版本字符串自动创建acceptance；只有
 正式Release入口获批并物化Pre-run guide后，candidate槽位才进入本目录。已经冻结且仍承担accepted职责的guide可以继续作为
 current副本；旧版guide在角色退出前也可保留原路径，避免改写其时间语义、相对链接或字面执行指令。
+single-Discovery列车的candidate槽位使用`vX.Y.Z-cloud-hard-acceptance.md`；已有多个Discovery Round的列车在版本级Release
+closeout使用`vX.Y.Z-release-operator-guide.md`。两者都只允许一个当前candidate Release入口，后者不汇总或替代各Round guide。
 退出角色窗口后，再按[`仓库治理指南`](../repository-governance-guide.md#acceptance-directory-lifecycle)迁往exact immutable refs并
 清退current副本；因此当前目录不保证为每个历史版本保留本地副本。
 

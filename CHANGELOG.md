@@ -8,6 +8,9 @@ SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 accepta
 
 ### Changed
 
+- 维护者显式授权`v0.5.0`按现有FULL路线进入Release第1步；新增multi-Discovery列车专用Release operator guide与
+  非破坏性candidate admission preflight，完成stable zero-hash本地C0并等待Source/Candidate交接，不预写Cloud PASS，也不授权
+  non-zero seal、C1、tag、publication、Published Release、Latest或C2。
 - 按维护者决定将source/package、本地branch、Release contract与tracked bootstrap统一切换为stable
   `v0.5.0`候选身份；bootstrap仍保持64位zero hash并fail closed，本次不形成C0、tag、Release或Cloud PASS。
 - 本地 development branch 切换为`0.5.0-dev`，package、Release contract、accepted-predecessor contract和zero-hash bootstrap共同
