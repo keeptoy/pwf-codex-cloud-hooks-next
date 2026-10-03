@@ -40,3 +40,7 @@
   The status records delivery parity, lifecycle KEEP decisions, local-only evidence and the explicit G2～G5 stop.
 - Post-document governance/link regression passed 47/47. G1 is locally complete and ready for scoped commits;
   no production, contract, package version, Release asset, Cloud or remote state changed.
+- Commit `347e457` (`feat(tooling): add advisory release risk classifier`) records the scoped G1 delivery. A
+  post-commit replay from prior HEAD `708432b` to exact G1 commit `347e4577818e5c658635b1688753d7c654c16ee3`
+  returns `PRODUCT_OR_SECURITY`, `advisory_only=true` and `classifier_self_change=true`, confirming the committed
+  tool/policy cannot classify their own introduction into a fast lane.
