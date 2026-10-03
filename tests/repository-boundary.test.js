@@ -1316,7 +1316,7 @@ test("seven reindex status records keep owner and evidence routes without wordin
   assert.doesNotThrow(() => check(index, equivalentProse));
 });
 
-test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", () => {
+test("v0.5.0 is the active pre-C0 candidate while v0.4.4 and v0.4.3 keep their release roles", () => {
   const { accepted, candidate, developmentTrain, immediateFallback, roadmap } = currentRoleWindow();
   const acceptedAcceptance = read("docs/acceptance/v0.4.4-cloud-hard-acceptance.md");
   const retiredV043Acceptance = readGit("d7b5345b165e94c18ceab9b591d9a6b6dd251110",
@@ -1329,14 +1329,14 @@ test("v0.5.0-dev is active while v0.4.4 and v0.4.3 keep their release roles", ()
     roadmap.indexOf("## 5. Product Phase 路线"),
   );
 
-  assert.equal(developmentTrain, "v0.5.0-dev");
-  assert.equal(candidate, "v0.5.0-dev");
+  assert.equal(developmentTrain, "v0.5.0");
+  assert.equal(candidate, "v0.5.0");
   assert.equal(accepted, "v0.4.4");
   assert.equal(immediateFallback, "v0.4.3");
   assert.match(roadmap, /## 3\. 已接受基线 `v0\.4\.4`/);
   assert.match(roadmap,
-    /当前 programme 边界[^\n]*v0\.4\.4[^\n]*均已关闭[^\n]*exact C0[^\n]*Source\/Candidate[^\n]*tag精确指向C0[^\n]*Published Release第二通道PASS[^\n]*Latest[^\n]*第二轮retirement[^\n]*C2[^\n]*`v0\.5\.0-dev`[^\n]*Product Phase 5[^\n]*文档治理[^\n]*Product实现[^\n]*仍未授权/);
-  assert.match(currentTrain, /当前exact development candidate为`v0\.5\.0-dev`[^\n]*branch `0\.5\.0-dev`/);
+    /当前 programme 边界[^\n]*v0\.4\.4[^\n]*均已关闭[^\n]*exact C0[^\n]*Source\/Candidate[^\n]*tag精确指向C0[^\n]*Published Release第二通道PASS[^\n]*Latest[^\n]*第二轮retirement[^\n]*C2[^\n]*`v0\.5\.0`[^\n]*Product Phase 5[^\n]*文档治理[^\n]*Product实现[^\n]*仍未授权/);
+  assert.match(currentTrain, /当前exact stable candidate为`v0\.5\.0`[^\n]*branch `0\.5\.0`/);
   assert.doesNotMatch(currentTrain, /^<a name="v0-4-4-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain, /Product Phase 4 Overview/);
   assert.match(currentTrain, /Product Phase 5 Overview/);
@@ -1621,7 +1621,7 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   const artifact = JSON.parse(read(currentArtifactPath));
   const releasePaths = artifact.entries.map(item => item.path);
   const docs = actual.filter(item => item.startsWith("docs/"));
-  const { accepted, candidate } = currentRoleWindow();
+  const { accepted, candidate, roadmap: roleRoadmap } = currentRoleWindow();
   const roleVersions = [...new Set([accepted, candidate])].sort();
   const rootBootstraps = actual.filter(item => /^init-cloud-sandbox-v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?\.bash$/.test(item));
   const acceptanceDocs = docs.filter(item =>
@@ -1635,8 +1635,16 @@ test("documentation lifecycle paths stay portable and outside the Release artifa
   }
   assert.deepEqual(rootBootstraps, roleVersions.map(version => `init-cloud-sandbox-${version}.bash`));
   const expectedAcceptanceDocs = [`docs/acceptance/${accepted}-cloud-hard-acceptance.md`];
-  if (candidate !== accepted && !candidate.endsWith("-dev")) {
-    expectedAcceptanceDocs.push(`docs/acceptance/${candidate}-cloud-hard-acceptance.md`);
+  const candidateAcceptance = `docs/acceptance/${candidate}-cloud-hard-acceptance.md`;
+  if (candidate !== accepted && !candidate.endsWith("-dev") && actual.includes(candidateAcceptance)) {
+    expectedAcceptanceDocs.push(candidateAcceptance);
+  } else if (candidate !== accepted && !candidate.endsWith("-dev")) {
+    assert.match(roleRoadmap,
+      new RegExp(`当前开发列车[^\n]*\`${candidate.replaceAll(".", "\\.")}\`[^\n]*尚未形成C0[^\n]*Release`),
+      "a stable source identity without a candidate guide must remain explicitly pre-C0 and unreleased");
+    assert.match(read("docs/acceptance/README.md"),
+      /pre-C0 candidate[^。]*不会[^。]*Release尚未授权[^。]*自动创建acceptance/,
+      "the acceptance index must explain why a stable pre-C0 source identity has no guide yet");
   }
   assert.deepEqual(acceptanceDocs, expectedAcceptanceDocs.sort());
   assert.deepEqual(acceptanceDocs.map(relative => path.basename(relative).replace("-cloud-hard-acceptance.md", "")).sort(),

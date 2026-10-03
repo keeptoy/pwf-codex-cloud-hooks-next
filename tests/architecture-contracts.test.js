@@ -99,8 +99,12 @@ function assertRoadmapPhaseRoutes(roadmap, overviewIndex) {
       "only active or complete Phase rows may have materialized overviews");
     if (status === "active") {
       assert.equal(phase, trainPhase, "active Phase row must match current train");
-      const series = cells[1].match(/`([^`]+-\*)`/)?.[1];
-      assert.ok(series && readJson("package.json").version.startsWith(series.slice(0, -1)),
+      const series = cells[1].match(/`([^`]+)`/)?.[1];
+      const candidate = readJson("package.json").version;
+      const admitted = series?.endsWith("-*")
+        ? candidate.startsWith(series.slice(0, -1))
+        : candidate === series;
+      assert.ok(series && admitted,
         "active Phase series must admit the current package candidate");
     }
     phaseRows.set(phase, { status, target: targets[0] || null });
@@ -954,7 +958,7 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.doesNotMatch(roadmap, /<a name="phase-9-v0-4-0-instance"><\/a>/);
   assert.doesNotMatch(currentTrain, /^<a name="v\d+-\d+-\d+(?:-[a-z0-9-]+)?-phase-history-governance-train"><\/a>$/m);
   assert.match(currentTrain,
-    /当前exact development candidate为`v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?`[^\n]*branch `\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?`/);
+    /当前exact (?:development|stable) candidate为`v\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?`[^\n]*branch `\d+\.\d+\.\d+(?:-[A-Za-z0-9.]+)?`/);
   assert.doesNotMatch(currentTrain, /^<a name="v\d+-\d+-\d+(?:-[a-z0-9-]+)?-release-tag-guide-train"><\/a>$/m);
   assert.match(currentTrain, /trusted\/Release zones 继续 exact[\s\S]*docs\/planning zones 按 lifecycle policy/);
   assert.match(productPhases, /^<a name="product-phase-overview-rotation"><\/a>$/m);
@@ -984,7 +988,7 @@ test("ROADMAP keeps stable Discovery, migration, and Release governance anchors"
   assert.match(phase4Overview, /没有重新打开Phase 4、激活Phase 5或改变Product\/runtime行为/);
   assert.match(phase4Overview, /RETROSPECTIVE_CAPSULE[\s\S]*FROZEN_DISCOVERY_RECORD/);
   assert.match(phase5Overview,
-    /Authority role: `PRODUCT_PHASE_OVERVIEW`[\s\S]*Version series: `0\.5\.0-\*`/);
+    /Authority role: `PRODUCT_PHASE_OVERVIEW`[\s\S]*Version series: `0\.5\.0`/);
   assert.match(phase41, /\]\(\.\.\/product-phases\/phase-4-overview\.md#product-phase-4-overview\)/);
   assert.match(phase44, /\]\(\.\.\/product-phases\/phase-4-overview\.md#product-phase-4-overview\)/);
   assert.doesNotMatch(roadmap, /### 5\.4 迁移 transaction 与对象生命周期治理/);

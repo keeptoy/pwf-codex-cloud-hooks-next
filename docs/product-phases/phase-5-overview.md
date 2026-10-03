@@ -3,7 +3,7 @@
 # Product Phase 5 Overview
 
 > Authority role: `PRODUCT_PHASE_OVERVIEW`
-> Version series: `0.5.0-*`
+> Version series: `0.5.0`
 > Current programme and train pointer: [`ROADMAP`](../../ROADMAP.md)
 
 <a name="phase-5-long-term-position"></a>
@@ -58,14 +58,14 @@ deterministic package与disarm-first rollback继续是继承边界。当前Phase
 
 | 主题 | 摘要 |
 |---|---|
-| development identity | `v0.5.0-dev`已建立统一package/candidate身份，本地branch同步为`0.5.0-dev`；candidate身份本身不产生Release或Product实现授权 |
+| candidate identity | development identity已按维护者决定从`v0.5.0-dev`收敛为stable `v0.5.0`，本地branch同步为`0.5.0`；该身份仍处于pre-C0，本身不产生Release或Product实现授权 |
 | README / Wiki分层 | README保持稳定产品入口，本地开发与构建/Release教程由Release-excluded `Wiki.md`维护 |
 | planning lifecycle | `.active_plan`只选择一个活动scope；completed scope的保留、历史提炼和删除均由维护者决定 |
 | implementation audit | architecture、design、contracts、源码和测试已完成一次代码级对账，已知文档漂移得到修正 |
 | autonomous exact state | nonce/attestation现与README合同一致，严格要求exact单个LF，其他换行或尾随形式拒绝 |
 | Phase authority activation | Phase 5已显式激活为文档治理阶段，但新的Product实现、Cloud和Release仍未授权 |
 | document-test governance Discovery | Phase 5.1已冻结`CONDITIONAL_GO`决策，B0～B4有界本地治理已对账；测试转向owner/关系及有害／等义反例，安全与身份相关`KEEP / DEFER`仍保留。本结论不表示Phase 5 closeout、Cloud或Release验收 |
-| Phase 5.3 Release harness risk-lane Discovery | 冻结G1～G5五个串行gate；G1已实现source-only只读classifier/policy，显式比较base/head并对unknown、unsafe与self-change fail closed，但只输出advisory JSON。G2 identity closure/replay及G3～G5仍未授权；当前C0/C1/C2、双通道与v0.5 FULL验证保持不变，C1删除、reduced lane、Cloud和Release均未授权 |
+| Phase 5.3 Release harness risk-lane Discovery | 冻结G1～G5五个串行gate；G1 advisory classifier、G2 identity closure/replay与G3 machine evidence projection已完成，仍不改变现有C0/C1/C2或双通道流程。G4真实低风险shadow与G5 enablement decision尚未开始；当前v0.5累积Product变化继续要求FULL，C1删除、reduced lane、Cloud和Release均未授权 |
 
 <a name="phase-5-planning-history-lifecycle"></a>
 
@@ -83,7 +83,7 @@ deterministic package与disarm-first rollback继续是继承边界。当前Phase
 
 ## Version-train mapping
 
-Phase 5当前映射到`0.5.0-*`。`v0.5.0-dev`只是pre-C0 development candidate；Phase激活不产生C0、Cloud PASS、tag、Release或
+Phase 5从`v0.5.0-dev`development identity收敛到当前stable `v0.5.0`，后者仍只是pre-C0 candidate；Phase激活或去掉版本后缀都不产生C0、Cloud PASS、tag、Release或
 accepted/fallback轮转。逐版本实际变化只读[`CHANGELOG`](../../CHANGELOG.md)，当前角色和后续授权只读ROADMAP。
 
 未来若`0.5.x`继续承载同一文档治理目标，可以保留在本Phase；若提出runtime、Host event、permission、completion evaluator或

@@ -4,10 +4,12 @@
 [`ROADMAP.md`](ROADMAP.md)；当前唯一行动与授权边界见活动 `task_plan.md`；精确 source、资产、大小和
 SHA-256 见 [`BASELINE_PROVENANCE.md`](BASELINE_PROVENANCE.md) 与对应 acceptance。
 
-## v0.5.0-dev
+## v0.5.0
 
 ### Changed
 
+- 按维护者决定将source/package、本地branch、Release contract与tracked bootstrap统一切换为stable
+  `v0.5.0`候选身份；bootstrap仍保持64位zero hash并fail closed，本次不形成C0、tag、Release或Cloud PASS。
 - 本地 development branch 切换为`0.5.0-dev`，package、Release contract、accepted-predecessor contract和zero-hash bootstrap共同
   初始化为pre-C0 `v0.5.0-dev` candidate；accepted/fallback仍为v0.4.4/v0.4.3，也不自动激活Product Phase 5。
 - 将README中的“本地开发”和“构建开发 ZIP”迁移到Release-excluded根级[`Wiki.md`](Wiki.md)，README继续只保留稳定产品行为、

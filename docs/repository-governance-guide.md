@@ -342,7 +342,8 @@ candidate admission preflight，以便失败时保留planning、恢复材料和�
 
 旧角色只有同时满足以下条件才算退出当前树：
 
-1. 当前树的版本化 bootstrap、acceptance 和运维入口重新精确等于 candidate + accepted 角色窗口；
+1. 当前树的版本化bootstrap精确覆盖source candidate + accepted角色窗口；acceptance和运维入口精确覆盖已经进入
+   Release guide生命周期的candidate + accepted窗口。pre-C0稳定源码身份在Release尚未授权时不得凭版本字符串自动生成guide；
 2. immediate fallback 默认只由 immutable source、tag、Release、acceptance 和 oracle 恢复；确有离线需求时，
    本地副本必须有 owner、预算和退出条件；
 3. README、AGENTS 和可迁移治理指南中的常用命令使用版本无关的发现方式或占位符，不按发布轮次累积
