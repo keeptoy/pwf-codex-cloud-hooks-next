@@ -54,3 +54,26 @@ PWF_SOURCE_CANDIDATE_SETUP=PASS
   Next execution is the new-task B-SC post-install Resume, then C--F; keep remote checkout on C0.
 - Stage-evidence writeback validation passed: focused architecture/repository 49/49, zero fail/skip; unchanged
   exact-C0 projection --check and git diff --check passed. Only the three active planning files changed.
+
+### Source/Candidate final result and maintainer direction
+
+- Maintainer reported all stages passed and supplied F final exit 0, healthy/non-repairable doctor, adapter-only
+  policy, authoritative 12-file inventory, four pristine upstream files, zero snapshots and manifest/contract routing.
+- Actual F HEAD c88db288fe2cb99292ca61d7bf4fd0ecbb7c40e2 differs from A/C0. A proposed read-only check returned
+  /workspace/unit-test and a planning-only commit; the supplied name-status output contained exactly the three
+  active planning files, with no production/runtime/installer/Release input changes.
+- Agent initially proposed a Fresh rerun. Maintainer declined as low risk, then explicitly reaffirmed "C0 passed"
+  and continuation. Accept the final channel conclusion and document the bounded deviation rather than requiring
+  rerun, changing general protocol or silently reporting an unchanged HEAD.
+- Opened first-review/C1 and local asset preparation. No Cloud planning commit is merged, no remote action is
+  executed, and original 5c50774 C0 remains the only future formal tag target.
+- First formal asset invocation was blocked before materialization by sandbox temporary-directory WinError 5;
+  classified as local execution permission, not a product failure. Use the approved bounded outside-sandbox route.
+- Approved materializer invocation succeeded: created exact ZIP and sealed bootstrap in ignored dist; repeat
+  returned unchanged for both. ZIP check healthy (84,518 bytes, 22 entries, accepted Cloud SHA); bootstrap
+  21,565 bytes, SHA 17d823754981f846f2a7cbc5951a216662e00a9da99e134cabab2158b378eb2d; Bash syntax passed.
+- Completed first-review inventory: ten planning scopes and current assets/oracles kept, G5/cleanup deferred;
+  nothing deleted or moved. Appended first-channel checkpoint including actual c88 HEAD, supplied doctor/routing
+  output and the maintainer's explicit one-train deviation acceptance. Original C0 remains the tag target.
+- Focused architecture/repository writeback checks passed 49/49, zero fail/skip. Prepared C1 handoff; no current
+  accepted/fallback promotion, public identity claim, Cloud rerun or agent remote write occurred.

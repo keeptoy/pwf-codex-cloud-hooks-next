@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.5.1`；Product Phase 5仍active；冻结guide保留已实现，exact分类为RELEASE_MECHANICS且identity closure完整、unknown为0；G4 shadow已授权，FULL Source/Candidate C0已本地冻结并待维护者push/Cloud，尚无live结论；publication、Latest与G5尚未授权 |
+| 当前开发列车 | `v0.5.1`；Product Phase 5仍active；G4 shadow使用RELEASE_MECHANICS候选；维护者已确认FULL Source/Candidate PASS并接受本轮planning-only HEAD偏差，第一review/C1收口及本地双资产已准备；待维护者immutable publication，Published Release、G4最终结论、Latest与G5尚未完成 |
 | 当前已接受版本 | `v0.5.0`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.4` immediate fallback |
 | 回退证据链 | immutable `v0.4.3` deeper fallback；`v0.4.2`、`v0.4.1`、`v0.4.0`、`v0.3.5`与更早发布里程碑见 provenance museum |
@@ -69,8 +69,9 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 当前exact development pointer为`v0.5.1`，位于本地branch `0.5.1`，对应仍active的
 [`Product Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview)。维护者已授权本地实现旧验收guide冻结保留、
 Acceptance README导航分层及canonical candidate identity，并在确认push后单独授权G4 shadow。候选已通过exact base/head的
-`RELEASE_MECHANICS`准入；C0已本地冻结，[v0.5.1 G4 Release guide](docs/acceptance/v0.5.1-release-operator-guide.md#v0-5-1-release-operator-guide)已准备，
-实际第一通道继续完整FULL，由维护者手动执行Cloud；公开发布、Latest、G5与Phase closeout仍待后续明确指示。已关闭的v0.5.0 FULL Release完整证据见
+`RELEASE_MECHANICS`准入；FULL Source/Candidate已由维护者明确确认PASS并接受本次planning-only HEAD偏差，第一review和本地资产
+已准备，C1交接见[v0.5.1 channel checkpoint](docs/acceptance/v0.5.1-release-operator-guide.md#v0-5-1-source-candidate-channel-checkpoint)。
+下一步交接维护者immutable publication，然后执行独立Published Release；Latest、G4最终结论、G5与Phase closeout不由第一通道PASS推导。已关闭的v0.5.0 FULL Release完整证据见
 [`v0.5.0 Release operator guide`](docs/acceptance/v0.5.0-release-operator-guide.md#v0-5-0-release-operator-guide)。
 
 accepted/fallback角色现为v0.5.0/v0.4.4。继承的Phase 4 Product baseline只读

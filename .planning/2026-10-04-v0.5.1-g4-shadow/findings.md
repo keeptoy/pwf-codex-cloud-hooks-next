@@ -50,3 +50,33 @@
 - The summary provides Node and installed runtime root but not full doctor JSON, Python version, every Host path,
   stage timestamps or operator measurements. Preserve those as NOT_PROVIDED/NOT_MEASURED for later G4 reconciliation;
   do not downgrade the maintainer's explicit A PASS or invent a zero-duration run.
+
+## Source/Candidate final acceptance and bounded deviation
+
+- Maintainer explicitly reported all stages passed and F final exit 0, then confirmed C0 passed and continuation
+  after declining a proposed rerun. That final conclusion authorizes direct channel-checkpoint/C1 writeback.
+- F actual HEAD is c88db288fe2cb99292ca61d7bf4fd0ecbb7c40e2. Supplied read-only Cloud output identifies
+  /workspace/unit-test and commit message "docs: record successful G4 candidate setup rerun". Exact C0-to-F diff
+  contains only findings.md, progress.md and task_plan.md under this active scope (25 insertions, 13 deletions).
+- This is a confirmed planning-only commit during acceptance, not a wrong-directory hypothesis. Record it as
+  MAINTAINER_ACCEPTED_DEVIATION for this channel; the stable no-commit/no-PR rules are unchanged. PR metadata was
+  not supplied and is not asserted as independently verified. Do not merge or adopt the Cloud planning commit.
+- Original C0 remains the sole future tag target. Actual F HEAD must stay visible in evidence; c88 is neither a
+  replacement C0 nor the local C1. Release inputs remain unchanged locally and the official materializer must
+  reproduce the Cloud ZIP SHA before writing final local assets.
+- G4 comparison remains open: profile/elapsed/operator gaps and the protocol deviation are disclosed, not
+  synthesized into a clean zero-false-fast or reduced-lane enablement conclusion. They do not reopen the
+  maintainer-accepted Source/Candidate channel.
+
+## First review and local publication assets
+
+- All ten existing planning directories remain KEEP; accepted guide/bootstrap, fallback oracles, C0 inputs and
+  stable templates/tools remain KEEP. No deletion, archive registration or accepted/fallback rotation occurred.
+- Official local materialization reproduced the Cloud ZIP SHA exactly; second invocation returned unchanged for
+  both assets. ZIP is 84,518 bytes / 22 entries / SHA
+  75c9eda81b6cc192df15346a5fb9bf60d2970e47ed53f3481887169778ac0a72. Bootstrap is 21,565 bytes / SHA
+  17d823754981f846f2a7cbc5951a216662e00a9da99e134cabab2158b378eb2d. ZIP check and Bash syntax passed.
+- Tracked root candidate remained the unchanged zero-hash canonical render. Only ignored dist contains the sealed
+  local assets; they are upload handoff bytes, not proof of publication or public-channel acceptance.
+- Focused governance 49/49 passed after channel/deviation writeback. General Cloud permission protocol and runtime/
+  Release inputs are unchanged; the C1 checkpoint records explicit maintainer acceptance instead of hiding drift.

@@ -18,30 +18,35 @@ enabling a reduced lane.
   reduced-step execution, G5 enablement or planning deletion is authorized for the agent.
 - Preserve accepted v0.5.0, fallback v0.4.4 and all published identities. Runtime, installer, classifier/policy/
   projector, runtime bundle, bootstrap template and ZIP inputs remain unchanged from the admitted implementation.
+- On 2026-10-04 the maintainer confirmed all Source/Candidate stages passed, explicitly declined a rerun after
+  reviewing the planning-only Cloud commit, then reaffirmed C0 passed and directed continuation. Accept that final
+  conclusion for this train, record the actual HEAD deviation, complete the first review/C1 and prepare exact local
+  assets. This is a one-train maintainer-accepted deviation, not a change to the stable permission/identity rules.
 
 ## Current phase
 
-G4 authorized; C0 5c50774e7d7c340942851ff146a993316e7471bc was pushed and observed in Cloud. On 2026-10-04 the
-maintainer reported Source/Candidate A setup PASS with final exit 0, portable Linux 215/215 pass, zero fail/skip,
-and exact 22-entry / 84,518-byte ZIP SHA matching the local precheck. Actual Node is 22.22.2 and configured major
-is 22. Accepted base remains d4dd150dea205951090b2b5c56fe140a80bebc91. B--F, complete Source/Candidate,
-Published Release and G4 final result remain pending. Preparation/stage-evidence commits are not C1.
+Source/Candidate PASS by the maintainer's explicit final acceptance. Original C0/tag target remains
+5c50774e7d7c340942851ff146a993316e7471bc. Actual F HEAD was c88db288fe2cb99292ca61d7bf4fd0ecbb7c40e2;
+the supplied Cloud diff changed only this scope's three planning files, not production or Release inputs. The
+maintainer accepted this deviation without rerun. First review is complete (all KEEP/DEFER); exact local assets
+are materialized and idempotent. C1 saves this checkpoint and hands off the maintainer's publication operations.
+Published Release and G4 final result remain pending; timing/profile gaps are not invented or used to reopen the
+accepted Source/Candidate conclusion.
 
 ## Next Step
 
-Continue from the accepted A result: in the installed Source/Candidate Cloud environment create the new task
-specified by template 5.1, prepend the acceptance-permission text, and run B post-install Resume without tools.
-After B, run C/D/E1, UI Resume the same task for E2, then F with the exact C0's template 9.1. Keep C0 unchanged,
-PWF_ACCEPTANCE_NODE_MAJOR=22, raw evidence and G4 profile/timing/operator records. Do not rerun setup solely for
-this successful result. Hold newer local governance commits until the complete-channel C1 handoff; no publication,
-first retirement review or C1 before B--F pass. All remote writes remain maintainer-only.
+Maintainer pushes C1 on 0.5.1, creates a new annotated v0.5.1 tag pointing exactly to
+5c50774e7d7c340942851ff146a993316e7471bc (never C1/c88), then creates the Pre-release and uploads only
+dist/pwf-codex-cloud-hooks-v0.5.1.zip and dist/init-cloud-sandbox-v0.5.1.bash. Follow Wiki's existing-tag stop checks;
+do not force, move a tag or overwrite public assets. Return the publication confirmation for exact public
+identity/download audit and independent Published Release setup. No agent remote writes, Latest or G5.
 
 ## Gates
 
 1. [x] Recover G4 exit rules, active authorities, eligible implementation and maintainer authorization.
 2. [x] Materialize one guide, non-destructive admission inventory, comparison mapping and measurement rules.
 3. [x] Validate local full suite/assets, freeze C0, regenerate and check the advisory projection, hand off.
-4. [ ] Maintainer executes FULL Source/Candidate; A setup PASS, B--F pending; then first review/C1.
+4. [x] Source/Candidate accepted PASS; first review/C1 writeback and exact local asset handoff complete.
 5. [ ] Separately directed immutable publication and FULL Published Release in an independent Fresh environment.
 6. [ ] Reconcile all five evidence dimensions, Host/profile/asset keys, false-fast, elapsed/operator metrics and
        role-window closeout. G4 completion and G5 decision remain distinct.
@@ -75,6 +80,8 @@ first retirement review or C1 before B--F pass. All remote writes remain maintai
   never join partial PASS from different identities or repaired runs.
 - Stop before publication until explicit direction and actual Source/Candidate PASS/C1 exist. Stop before Latest
   until public PASS and explicit direction. Stop before G5, Phase closeout, remote writes or planning deletion.
+- For this completed first channel only, the explicit maintainer acceptance above controls disposition of the
+  planning-only Cloud commit; do not silently claim unchanged HEAD or generalize the exception to future runs.
 
 ## Errors
 
@@ -83,6 +90,7 @@ first retirement review or C1 before B--F pass. All remote writes remain maintai
 | Read-only git ls-remote inside the Windows sandbox hit signal-pipe Win32 error 5. | The approved outside-sandbox query succeeded and bound remote 0.5.1 to d4b4c66; not a product error. |
 | rg with a PowerShell directory wildcard reported invalid filename syntax. | Use the explicit existing planning directory; no file change or lost evidence. |
 | One identity-writeback patch used partial-line context and failed verification. | No changes were applied; reapply with the complete source line. |
+| Formal asset materializer could not create its temporary directory inside the Windows tool sandbox (WinError 5). | Use an approved bounded outside-sandbox invocation; no product/asset failure or Cloud rerun inferred. |
 
 <!-- BEGIN PWF RELEASE EVIDENCE PLAN V1 -->
 ### Generated Release evidence plan (advisory only)
