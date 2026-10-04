@@ -28,3 +28,29 @@
 - Final focused architecture/repository regression returned exit 0, 49 pass / 0 fail / 0 skip. Handoff pushes only
   exact C0 to remote 0.5.1 and holds later local preparation governance until the post-PASS C1 push, avoiding an
   accidental Cloud checkout of a newer branch HEAD. No remote write was executed by the agent.
+
+### Source/Candidate A setup — maintainer-reported PASS
+
+Maintainer brought back the Cloud setup result on 2026-10-04. Actual command was
+`bash /tmp/pwf-source-candidate-setup.sh`, with reported final exit code 0. Supplied output:
+
+```text
+PWF_SC_RUNBOOK_HEAD=5c50774e7d7c340942851ff146a993316e7471bc
+PWF_SC_LINUX_SUITE=PASS tests=215 pass=215 fail=0 skipped=0
+PWF_SC_ZIP_ENTRIES=22
+PWF_SC_ZIP_SIZE=84518
+PWF_SC_ZIP_SHA256=75c9eda81b6cc192df15346a5fb9bf60d2970e47ed53f3481887169778ac0a72
+PWF_SOURCE_CANDIDATE_SETUP=PASS
+```
+
+- Actual Node 22.22.2 matched configured major 22. Manifest/bundle authority, both ZIP build/checks and byte
+  comparison, extracted archive/importer checks, dry-run/install/doctor, managed requirements/Hook feature and
+  SessionStart/UserPromptSubmit direct probes were explicitly reported passed.
+- Installed runtime root: /opt/codex/hooks/planning-with-files. Final Cloud worktree was clean (`## work`); no
+  source/governance edits, commit, PR, push, tag, Release, upload or Latest operation was reported.
+- Accepted A PASS exactly as reported; bound it to C0 and matching candidate ZIP. B--F are still pending, no
+  full-channel checkpoint, first retirement review, C1, public asset materialization or G4 PASS is created.
+- A elapsed/operator records and remaining Host-profile fields were not supplied; left NOT_MEASURED/NOT_PROVIDED.
+  Next execution is the new-task B-SC post-install Resume, then C--F; keep remote checkout on C0.
+- Stage-evidence writeback validation passed: focused architecture/repository 49/49, zero fail/skip; unchanged
+  exact-C0 projection --check and git diff --check passed. Only the three active planning files changed.

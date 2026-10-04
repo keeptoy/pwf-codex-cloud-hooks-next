@@ -21,25 +21,27 @@ enabling a reduced lane.
 
 ## Current phase
 
-G4 authorized; C0 locally frozen as 5c50774e7d7c340942851ff146a993316e7471bc, not yet pushed. Accepted base is
-d4dd150dea205951090b2b5c56fe140a80bebc91. Exact C0 V3 classification remains RELEASE_MECHANICS, with all seven
-identity checks passed, complete closure and zero unknowns. Local FULL regression is 198 pass / 26 Windows skips /
-0 fail. Preparation governance after C0 changes no Release input and is not C1. Cloud and G4 outcomes are NOT_RUN.
+G4 authorized; C0 5c50774e7d7c340942851ff146a993316e7471bc was pushed and observed in Cloud. On 2026-10-04 the
+maintainer reported Source/Candidate A setup PASS with final exit 0, portable Linux 215/215 pass, zero fail/skip,
+and exact 22-entry / 84,518-byte ZIP SHA matching the local precheck. Actual Node is 22.22.2 and configured major
+is 22. Accepted base remains d4dd150dea205951090b2b5c56fe140a80bebc91. B--F, complete Source/Candidate,
+Published Release and G4 final result remain pending. Preparation/stage-evidence commits are not C1.
 
 ## Next Step
 
-Maintainer pushes only C0 5c50774e7d7c340942851ff146a993316e7471bc to remote 0.5.1 for the first Cloud checkout;
-hold the later local preparation-governance commit until the channel checkpoint handoff, so branch selection does
-not accidentally select the later HEAD. Configure the selected Cloud Node major via
-PWF_ACCEPTANCE_NODE_MAJOR. Run the guide's FULL A--F, preserve raw outputs plus G4 profile/timing/operator records,
-and bring them back. Stop before C1/publication until actual evidence is reconciled. No remote/Cloud writes by agent.
+Continue from the accepted A result: in the installed Source/Candidate Cloud environment create the new task
+specified by template 5.1, prepend the acceptance-permission text, and run B post-install Resume without tools.
+After B, run C/D/E1, UI Resume the same task for E2, then F with the exact C0's template 9.1. Keep C0 unchanged,
+PWF_ACCEPTANCE_NODE_MAJOR=22, raw evidence and G4 profile/timing/operator records. Do not rerun setup solely for
+this successful result. Hold newer local governance commits until the complete-channel C1 handoff; no publication,
+first retirement review or C1 before B--F pass. All remote writes remain maintainer-only.
 
 ## Gates
 
 1. [x] Recover G4 exit rules, active authorities, eligible implementation and maintainer authorization.
 2. [x] Materialize one guide, non-destructive admission inventory, comparison mapping and measurement rules.
 3. [x] Validate local full suite/assets, freeze C0, regenerate and check the advisory projection, hand off.
-4. [ ] Maintainer executes FULL Source/Candidate; reconcile raw evidence and complete first review/C1.
+4. [ ] Maintainer executes FULL Source/Candidate; A setup PASS, B--F pending; then first review/C1.
 5. [ ] Separately directed immutable publication and FULL Published Release in an independent Fresh environment.
 6. [ ] Reconcile all five evidence dimensions, Host/profile/asset keys, false-fast, elapsed/operator metrics and
        role-window closeout. G4 completion and G5 decision remain distinct.

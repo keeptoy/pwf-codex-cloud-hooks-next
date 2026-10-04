@@ -36,3 +36,17 @@
 - Frozen C0: 5c50774e7d7c340942851ff146a993316e7471bc. Exact accepted-base/C0 classification remained
   RELEASE_MECHANICS, all seven closure checks passed, unknowns empty. The prior implementation-to-C0 diff contains
   only Release-excluded governance; source/ZIP/bootstrap inputs and their precheck hashes are unchanged.
+
+## Source/Candidate A evidence reconciliation — 2026-10-04
+
+- Maintainer explicitly reported complete setup PASS and final exit 0. The observed Cloud HEAD equals frozen C0;
+  ZIP SHA, size and entry count equal the candidate's deterministic local prechecks. No identity drift is present.
+- Cloud Node 22.22.2 matches configured PWF_ACCEPTANCE_NODE_MAJOR=22. This is the actual major for the G4 profile
+  comparison, not the local Node 24 or an inferred permanent Cloud default.
+- Portable Linux suite is 215/215 pass, zero fail/skip; publication-only suite remains separately routed. Its
+  count is not the local full-suite count and does not claim publication or Host B--F acceptance.
+- Reported authority, extracted importer/archive, override installation, doctor and adapter probes passed; the
+  workspace remained clean, with no model commit/PR or remote mutation. Probes do not replace automatic lifecycle.
+- The summary provides Node and installed runtime root but not full doctor JSON, Python version, every Host path,
+  stage timestamps or operator measurements. Preserve those as NOT_PROVIDED/NOT_MEASURED for later G4 reconciliation;
+  do not downgrade the maintainer's explicit A PASS or invent a zero-duration run.
