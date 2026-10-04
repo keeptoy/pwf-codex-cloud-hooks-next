@@ -230,6 +230,28 @@ bootstrap/template及ROADMAP现行流程未变。六个exact replay样本仍全�
 runtime import check与语法/diff检查健康；这些本地结果不构成Linux/Cloud/live或lane enablement证据。G4仍需未来真实合格低风险列车和
 维护者单独授权，当前G3在此停止。
 
+<a name="phase-5-3-post-live-status-g4-partial"></a>
+
+## Post-live status — G4 partial evidence（2026-10-04）
+
+维护者随后单独授权真实低风险列车的G4 shadow。样本不再是当时含runtime变化的v0.5.0，而是交付冻结验收guide保留改进的
+v0.5.1；未修改的V3 classifier将其canonical identity closure后的semantic delta归为`RELEASE_MECHANICS`。本地基础、真实Linux
+回归、候选双构建、override安装与doctor取得证据，维护者最终确认FULL Source/Candidate通过。Cloud后段发生planning-only
+提交，实际HEAD偏差已经披露并获本轮接受；原C0不被该治理提交替代，也不据此扩大未来验收权限。
+
+维护者随后报告版本已发布，同时明确Published Release验收未运行，并接受本轮未验证公开包的风险。发布报告不能冒充公开
+下载、默认安装链或Cloud测试通过。原G4要求的两个FULL identity通道及完整profile、遗漏、耗时和人工成本对照未全部形成，
+因此本次只取得**部分真实验证证据，不是完整G4 PASS**。历史回放的零false-fast不能代替live完整覆盖，未计时不能推导节省。
+本尾注不要求补跑、不否定已接受的Source/Candidate，也不倒改原退出条件；详细版本结果仍由对应acceptance保存。
+
+实际维护反馈还揭示：FULL shadow属于建立精简制度的一次性实验，在reduced lane尚未启用时，本轮不会自然减少操作。G4/G5
+不是每个后继版本重复建设的节点。讨论因此明确后续目标为**Windows开发预检 → 一次Linux Cloud源码检查 → 发布 → 一次独立
+公开包短冒烟**：集中脚本与证据交接，机器确认低风险时才裁剪无关的B～E对话、长尾和UI Resume，而不省Linux验证、变更
+专项检查、checksum或双identity通道。Windows可以预检确定性构建，但不能以POSIX skip或Git Bash替代真实Linux执行面。
+
+该方向仍是待后续决策的方案，不是本次已启用的流程。G1～G3已经交付，G4的上述证据边界保留，G5没有启用；更改G4退出条件
+或启用任何精简lane仍需单独决策和授权。原五gate拓扑、FULL兜底、C0/C1/C2恢复点与两次retirement时点均未被本尾注改变。
+
 <a name="phase-5-3-immutable-evidence"></a>
 
 ## Cold evidence (not current authority)

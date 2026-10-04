@@ -22,6 +22,10 @@ enabling a reduced lane.
   reviewing the planning-only Cloud commit, then reaffirmed C0 passed and directed continuation. Accept that final
   conclusion for this train, record the actual HEAD deviation, complete the first review/C1 and prepare exact local
   assets. This is a one-train maintainer-accepted deviation, not a change to the stable permission/identity rules.
+- The maintainer subsequently reported v0.5.1 published and explicitly stated Published Release acceptance was
+  not run. On 2026-10-04 they authorized documentation updates reflecting that fact and the discussed low-risk
+  proposal. This authorizes only Release-excluded documentation and a verified local commit; no acceptance rerun,
+  G4 PASS, G5 enablement, workflow implementation, Latest/role rotation, C2 or public-identity audit is inferred.
 
 ## Current phase
 
@@ -29,17 +33,20 @@ Source/Candidate PASS by the maintainer's explicit final acceptance. Original C0
 5c50774e7d7c340942851ff146a993316e7471bc. Actual F HEAD was c88db288fe2cb99292ca61d7bf4fd0ecbb7c40e2;
 the supplied Cloud diff changed only this scope's three planning files, not production or Release inputs. The
 maintainer accepted this deviation without rerun. First review is complete (all KEEP/DEFER); exact local assets
-are materialized and idempotent. C1 saves this checkpoint and hands off the maintainer's publication operations.
-Published Release and G4 final result remain pending; timing/profile gaps are not invented or used to reopen the
-accepted Source/Candidate conclusion.
+are materialized and idempotent. C1 d55810df5cf10d94a613fe76d8384d8c67432eb8 saves this checkpoint.
+Publication is MAINTAINER_REPORTED_COMPLETE; Published Release acceptance is NOT_RUN, not PASS. The maintainer
+accepts this release's untested public-channel risk; no rerun is requested by this scope. Exact public tag/asset
+audit and Latest confirmation have not been supplied or independently checked. G4 has PARTIAL_EVIDENCE, not a
+complete shadow PASS: public-channel evidence and profile/omission/timing/operator reconciliation remain incomplete.
+G5 is NOT_ENABLED. Timing/profile gaps do not reopen the accepted Source/Candidate conclusion.
 
 ## Next Step
 
-Maintainer pushes C1 on 0.5.1, creates a new annotated v0.5.1 tag pointing exactly to
-5c50774e7d7c340942851ff146a993316e7471bc (never C1/c88), then creates the Pre-release and uploads only
-dist/pwf-codex-cloud-hooks-v0.5.1.zip and dist/init-cloud-sandbox-v0.5.1.bash. Follow Wiki's existing-tag stop checks;
-do not force, move a tag or overwrite public assets. Return the publication confirmation for exact public
-identity/download audit and independent Published Release setup. No agent remote writes, Latest or G5.
+Documentation writeback and focused validation are complete and saved with this scoped local commit. Stop for the
+maintainer's separate direction on G4's incomplete disposition and a possible future reduced-lane decision/design.
+Do not treat this documentation update as permission
+to bypass G4 and enable G5. Do not repeat publication, demand a public-channel rerun, change acceptance to PASS,
+rotate roles or alter immutable assets. The low-risk proposal is recorded in findings, not operative instructions.
 
 ## Gates
 
@@ -47,9 +54,11 @@ identity/download audit and independent Published Release setup. No agent remote
 2. [x] Materialize one guide, non-destructive admission inventory, comparison mapping and measurement rules.
 3. [x] Validate local full suite/assets, freeze C0, regenerate and check the advisory projection, hand off.
 4. [x] Source/Candidate accepted PASS; first review/C1 writeback and exact local asset handoff complete.
-5. [ ] Separately directed immutable publication and FULL Published Release in an independent Fresh environment.
+5. [x] Publication reported complete by the maintainer; record this report without inventing an asset audit.
+   [ ] FULL Published Release in an independent Fresh environment: NOT_RUN; no rerun requested here.
 6. [ ] Reconcile all five evidence dimensions, Host/profile/asset keys, false-fast, elapsed/operator metrics and
        role-window closeout. G4 completion and G5 decision remain distinct.
+7. [x] Authorized documentation-only progress/low-risk-proposal writeback and verified local commit.
 
 ## Shadow evaluation
 
@@ -82,6 +91,9 @@ identity/download audit and independent Published Release setup. No agent remote
   until public PASS and explicit direction. Stop before G5, Phase closeout, remote writes or planning deletion.
 - For this completed first channel only, the explicit maintainer acceptance above controls disposition of the
   planning-only Cloud commit; do not silently claim unchanged HEAD or generalize the exception to future runs.
+- For the later publication report, preserve Published Release NOT_RUN and the accepted untested risk. This does
+  not satisfy the original G4 exit conditions, waive them for future trains, enable a reduced lane or establish C2.
+  Any change to G4's frozen completion conditions requires a separately authorized decision, not a status rewrite.
 
 ## Errors
 
@@ -91,6 +103,7 @@ identity/download audit and independent Published Release setup. No agent remote
 | rg with a PowerShell directory wildcard reported invalid filename syntax. | Use the explicit existing planning directory; no file change or lost evidence. |
 | One identity-writeback patch used partial-line context and failed verification. | No changes were applied; reapply with the complete source line. |
 | Formal asset materializer could not create its temporary directory inside the Windows tool sandbox (WinError 5). | Use an approved bounded outside-sandbox invocation; no product/asset failure or Cloud rerun inferred. |
+| A recovery read guessed docs/templates/phase-history-template.md, which does not exist. | Read the canonical docs/phase-history-template.md via the history index; no file was changed. |
 
 <!-- BEGIN PWF RELEASE EVIDENCE PLAN V1 -->
 ### Generated Release evidence plan (advisory only)

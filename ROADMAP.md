@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.5.1`；Product Phase 5仍active；G4 shadow使用RELEASE_MECHANICS候选；维护者已确认FULL Source/Candidate PASS并接受本轮planning-only HEAD偏差，第一review/C1收口及本地双资产已准备；待维护者immutable publication，Published Release、G4最终结论、Latest与G5尚未完成 |
+| 当前开发列车 | `v0.5.1`；Product Phase 5仍active；G4 shadow使用RELEASE_MECHANICS列车；FULL Source/Candidate已接受PASS并完成第一review/C1；维护者报告已发布且接受本轮公开包未验风险，Published Release验收为NOT_RUN，公开身份audit与Latest未确认；G4只有部分证据，G5未启用 |
 | 当前已接受版本 | `v0.5.0`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.4` immediate fallback |
 | 回退证据链 | immutable `v0.4.3` deeper fallback；`v0.4.2`、`v0.4.1`、`v0.4.0`、`v0.3.5`与更早发布里程碑见 provenance museum |
@@ -71,7 +71,10 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 Acceptance README导航分层及canonical candidate identity，并在确认push后单独授权G4 shadow。候选已通过exact base/head的
 `RELEASE_MECHANICS`准入；FULL Source/Candidate已由维护者明确确认PASS并接受本次planning-only HEAD偏差，第一review和本地资产
 已准备，C1交接见[v0.5.1 channel checkpoint](docs/acceptance/v0.5.1-release-operator-guide.md#v0-5-1-source-candidate-channel-checkpoint)。
-下一步交接维护者immutable publication，然后执行独立Published Release；Latest、G4最终结论、G5与Phase closeout不由第一通道PASS推导。已关闭的v0.5.0 FULL Release完整证据见
+维护者随后报告发布完成，但明确未运行Published Release验收并接受本轮风险；事实与证据边界见同一guide的
+[publication status](docs/acceptance/v0.5.1-release-operator-guide.md#v0-5-1-publication-status)。本轮不要求补跑，也不把发布成功记成
+Cloud PASS。G4原定双通道及profile/遗漏/耗时/人工对照尚未闭合，G5未启用；Latest、角色轮转、C2与Phase closeout均不由发布报告
+推导。具体后续方向只读活动task plan。已关闭的v0.5.0 FULL Release完整证据见
 [`v0.5.0 Release operator guide`](docs/acceptance/v0.5.0-release-operator-guide.md#v0-5-0-release-operator-guide)。
 
 accepted/fallback角色现为v0.5.0/v0.4.4。继承的Phase 4 Product baseline只读
@@ -95,7 +98,7 @@ accepted/fallback角色现为v0.5.0/v0.4.4。继承的Phase 4 Product baseline�
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 / overview |
 |---|---|---|---|---|
 | 4 | `0.4.0-*`～`0.4.4` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理 | F0～F3C功能/rollback已闭合；后续patch/governance列车不得改变Product行为或激活Phase 5 | Product baseline complete；当前v0.4.4为Release tag教程stable C0 candidate；[`Phase 4 Overview`](docs/product-phases/phase-4-overview.md#product-phase-4-overview) |
-| 5 | `0.5.x` | 文档治理：authority分层、文档/代码对账、planning生命周期与overview/history分工；v0.5.1已实现冻结guide保留 | 新Product实现仍需Discovery；v0.5.0 FULL Release已完成C2，v0.5.1 G4已授权并按FULL准备第一通道，G5继续defer | Phase 5 active；G4 shadow尚无live结论；[`Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview) |
+| 5 | `0.5.x` | 文档治理：authority分层、文档/代码对账、planning生命周期与overview/history分工；v0.5.1已实现冻结guide保留 | 新Product实现仍需Discovery；v0.5.0 FULL Release已完成C2；v0.5.1 Source/Candidate已接受PASS、发布已报告，Published Release验收NOT_RUN | Phase 5 active；G4只有部分live证据，G5继续defer；[`Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview) |
 | 6 | `0.6.0-*` | compaction lifecycle | 复核真实Cloud payload，比较现有`SessionStart source=clear\|compact`与PreCompact/PostCompact的时序和恢复能力；现有事件足够时不扩大managed event set，只有真实context/时序缺口才新增Hook | pending |
 | 7 | `0.7.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立gate；必须分别有use case、latency/token budget、噪声预算与Cloud证据 | pending / optional；没有明确收益就逐项或整体`NO_GO`；不是Phase 8前置 |
 | 8 | `0.8.0-*` | 唯一的read-only advisory completion evaluator | bounded、non-recursive、无plan时安静；只advisory，不阻断、不写counter/ledger或其他mutable gate state | pending；可独立于Phase 7进入Discovery |
@@ -283,6 +286,11 @@ Release通道。只有偏差本身具有长期解释价值时，才按Phase历�
 `Completed delivery`与`Acceptance conclusion`。
 
 ## 9. Release 授权与封板顺序
+
+Phase 5.3的G1～G5是风险车道制度的一次性建设/验证/启用节点，不是每个版本重复施工的五轮Release。G1～G3已交付advisory，
+G4尚未完整通过，G5未启用，因此下述FULL流程仍是现行authority。讨论中的低风险目标是Windows开发预检、一次Linux Cloud源码
+检查、发布及一次独立公开包短冒烟；省无关重复行为验证和人工往返，不省Linux或公开资产验证。它目前只是后续决策输入，
+没有改变本节、Cloud模板或machine policy的执行要求，也不以本轮未运行公开验收的例外建立未来豁免。
 
 只有 ROADMAP 把目标版本标为获批 Release candidate，且活动 task plan 明确授权具体 Release gate，
 才允许封板。稳定构建/验证命令由 [`Wiki.md`](Wiki.md) 管理，精确版本步骤和资产证据由相应版本

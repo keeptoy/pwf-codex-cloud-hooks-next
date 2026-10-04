@@ -80,3 +80,60 @@
   local assets; they are upload handoff bytes, not proof of publication or public-channel acceptance.
 - Focused governance 49/49 passed after channel/deviation writeback. General Cloud permission protocol and runtime/
   Release inputs are unchanged; the C1 checkpoint records explicit maintainer acceptance instead of hiding drift.
+
+## Publication report and G4 evidence boundary — 2026-10-04
+
+- Maintainer reported v0.5.1 published, while explicitly confirming Published Release acceptance was not executed.
+  Record MAINTAINER_REPORTED_COMPLETE separately from Published Release NOT_RUN. The maintainer accepts the untested
+  public-channel risk for this release; neither actual Cloud PASS nor downloaded-byte verification follows from it.
+- G4 admitted a real RELEASE_MECHANICS train and obtained accepted Source/Candidate evidence. It is no longer
+  WAITING_FOR_ELIGIBLE_TRAIN, but remains PARTIAL_EVIDENCE: both FULL identity channels, profile/omission reconciliation
+  and elapsed/operator comparison were original exit conditions. They are not all satisfied. Historical zero
+  false-fast does not establish live zero false-fast; no speedup is measured. Do not reopen Source/Candidate PASS.
+- G1--G3 are complete; G4 is not a complete shadow PASS; G5 is NOT_ENABLED. G4/G5 are one-time establishment and
+  enablement gates, not gates to reconstruct for every later low-risk version. Future versions would use the
+  approved lane checks, and reopen design only when eligibility, owner policy or safety assumptions change.
+- Publication was not independently audited in this documentation scope. No public tag object, downloaded asset
+  SHA, Release metadata or Latest result is fabricated. Accepted/fallback remain ROADMAP's existing roles; no C2.
+- The history record may receive a dated partial-live status note without changing its original decision. Detailed
+  proposal and current work belong here; programme belongs in ROADMAP, version results in the existing guide.
+
+<a name="v0-5-1-proposed-low-risk-flow"></a>
+
+## Proposed low-risk workflow — NOT_ENABLED / future decision input
+
+The target discussed with the maintainer is:
+
+**Windows development precheck → one Linux Cloud source check → publication → one independent public-package short smoke.**
+
+This is a proposal, not an instruction to skip the current FULL protocol or bypass incomplete G4. A future separately
+authorized decision must freeze the exact lanes, scripts/evidence contract, escalation and rollback before enabling it.
+
+| Stage | Proposed responsibility and evidence | Not a substitute for |
+|---|---|---|
+| Windows development precheck | Affected boundary negatives, regression with honest POSIX skips, explicit base/head classification, canonical identity/owner checks and optional deterministic ZIP precheck | Linux filesystem/permission/process/runtime proof or public download proof |
+| One Linux Cloud source script | Bind exact C0, approved classifier result and Host profile; run tagless portable regression with zero skips, targeted mechanic/doc checks, two build/checks plus byte comparison, extracted importer/archive checks, candidate override install, doctor and inventory/policy checks; preserve raw output and final exit code | An immutable public tag, public asset checksum or default download chain |
+| Publication | Retain exact C0/tag, deterministic Cloud ZIP SHA and external checksum-bound bootstrap; materialize/audit assets under existing rules; maintainer performs remote writes | Public-package acceptance merely because upload succeeded |
+| Independent public short smoke | In a separate clean Linux environment, redownload/check bootstrap and ZIP against immutable URL/size/SHA, install through bootstrap's default download chain without local override, then use checksum-verified ZIP tools for doctor, inventory/policy and the relevant packaged-doc/mechanic oracle | Source/Candidate install, checkout tools, moving branch or a copied local ZIP |
+
+- The source script should consolidate existing checks, not create a second source inventory or competing Release
+  authority. If classifier computation needs Git ancestry, explicitly supply actual required objects; a tagless
+  Cloud checkout must not invent refs or silently omit classification. Carry the exact base/head/owner key with evidence.
+- Double builds are not inherently Linux-only: this project's builder uses contract-defined ZIP modes. Windows can
+  precheck reproducibility; formal Linux regression and actual POSIX installation/runtime checks still belong in Cloud.
+  This train's matching Windows/Cloud ZIP SHA supports only its exact inputs, not universal cross-platform equality.
+- Eligibility must be machine-admitted PACKAGE_DOC_ONLY or RELEASE_MECHANICS after complete identity closure, with
+  unchanged runtime, installer, Host ABI, trusted graph and security behavior. Classifier/policy/projector self-change,
+  unknown delta, unexplained identities, incompatible Host profiles or changed installation/runtime observables
+  disqualify simplification and return to FULL/PRODUCT_OR_SECURITY.
+- Only unrelated repeated B--E dialogue, long-tail fixtures and UI Resume may be omitted under an approved low-risk
+  contract. Changed-mechanic/doc negatives, Linux evidence and the independent public identity channel remain required.
+  A genuine lifecycle or installation behavior claim remains FULL; a direct adapter probe is not a real Resume.
+- Preserve C0/C1/C2 and the two retirement review moments. They are repository recovery/evidence checkpoints, not
+  extra Cloud runs; automate evidence projection where possible. Existing G3 generates a checklist, not actual PASS
+  collection or fully automated closeout. Planning deletion remains explicitly maintainer-controlled.
+- SOURCE_ONLY_GOVERNANCE needs no release train; a version-only request does not justify invented semantic work.
+  Reduced-lane failure stops the run and restarts at the stricter required Fresh boundary; never combine partial
+  PASS across identities or repaired runs. Disabling the future lane restores FULL without changing published bytes.
+- Expected benefit is fewer manual handoffs and less unrelated behavior replay. No measured speedup or operating
+  cost reduction is claimed. Exact script implementation, formal G4 disposition and G5 decision are not authorized here.

@@ -77,3 +77,25 @@ PWF_SOURCE_CANDIDATE_SETUP=PASS
   output and the maintainer's explicit one-train deviation acceptance. Original C0 remains the tag target.
 - Focused architecture/repository writeback checks passed 49/49, zero fail/skip. Prepared C1 handoff; no current
   accepted/fallback promotion, public identity claim, Cloud rerun or agent remote write occurred.
+
+### Publication report and authorized documentation refinement
+
+- Maintainer reported version published without running Published Release acceptance. Later discussion clarified
+  Windows prechecks versus formal Linux verification and proposed two short independent checks for eligible low-risk
+  trains. Maintainer then authorized documentation refinement, not workflow implementation or G5 enablement.
+- Recovered active authorities and Phase 5.3's original G4 exit conditions. Worktree clean on 0.5.1. G4 has real
+  Source/Candidate evidence but incomplete public/profile/omission/timing/operator comparison; retain PARTIAL_EVIDENCE.
+- A recovery read used a nonexistent docs/templates/phase-history-template.md path; followed the history index to
+  docs/phase-history-template.md. No data was changed by the failed read; recorded in task plan Errors.
+- Updated active planning to distinguish publication report, Published Release NOT_RUN and future low-risk proposal.
+  Do not request a rerun, invent public checks/Latest, change accepted/fallback, or declare G4/G5 complete.
+- Appended a dated partial-live G4 note to Phase 5.3 without altering the original Discovery decision or G1--G3
+  notes. Added a publication/evidence-boundary note to the version guide; synchronized ROADMAP and the Phase 5
+  outline. Detailed low-risk steps remain a NOT_ENABLED proposal in findings, not a competing execution protocol.
+- Focused architecture/repository tests returned exit 0: 49 pass, zero fail/skip. Both unchanged exact-C0 projector
+  --check invocations passed. git diff --check passed. Contract-derived changed-path intersection with Release
+  inputs was empty; protected production/tools/tests/bootstrap and accepted-guide diff against C0 was empty.
+  Removing only the new history note reproduced the original Discovery text; both generated blocks were unchanged.
+- No full runtime suite, Cloud task, asset rebuild, remote audit/write, role rotation or cleanup was executed for
+  this Release-excluded documentation-only change. Save the verified writeback as a scoped local documentation
+  commit; it is neither a new C0/C1 identity nor final C2/G4/G5 closeout. Stop for separate maintainer direction.
