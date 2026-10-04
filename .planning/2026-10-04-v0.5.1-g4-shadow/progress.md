@@ -18,3 +18,13 @@
   Importer, production Python/Node syntax, accepted/candidate Bash syntax and git diff check all passed.
 - Preserved raw bundle/Release/policy/transition SHA and Git production fingerprints for the shadow key. Actual
   Cloud profile, stage timing, operator effort and all live outcomes remain NOT_RUN/NOT_MEASURED.
+- Created local C0 5c50774e7d7c340942851ff146a993316e7471bc after full validation. Reclassified this exact commit
+  against accepted C2: RELEASE_MECHANICS, seven passed closure checks, no unknowns. Began Release-excluded identity
+  handoff/projection writeback; this preparation record is not the post-PASS C1 checkpoint.
+- A partial-line identity patch failed verification without changes; reapplied using the exact complete line.
+- Projected exact accepted-base/C0 V3 evidence into both task plan and guide using the unchanged G3 projector;
+  repeated guide write returned changed=false, both --check invocations passed. Generated metrics remained five
+  checklist fields, zero manual evidence fields and zero authority bodies duplicated.
+- Final focused architecture/repository regression returned exit 0, 49 pass / 0 fail / 0 skip. Handoff pushes only
+  exact C0 to remote 0.5.1 and holds later local preparation governance until the post-PASS C1 push, avoiding an
+  accidental Cloud checkout of a newer branch HEAD. No remote write was executed by the agent.

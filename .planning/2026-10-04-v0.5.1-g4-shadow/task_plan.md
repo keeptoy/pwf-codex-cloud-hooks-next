@@ -21,22 +21,24 @@ enabling a reduced lane.
 
 ## Current phase
 
-G4 authorized; local protocol preparation in progress. The pushed implementation identity is
-d4b4c66da4c135670a7af324a4a4fe3701137d57, equal to the remote 0.5.1 branch in a successful read-only query.
-Accepted base is d4dd150dea205951090b2b5c56fe140a80bebc91. V3 admitted RELEASE_MECHANICS with complete identity
-closure and zero unknowns. No G4 Cloud evidence exists and no G4 PASS is recorded.
+G4 authorized; C0 locally frozen as 5c50774e7d7c340942851ff146a993316e7471bc, not yet pushed. Accepted base is
+d4dd150dea205951090b2b5c56fe140a80bebc91. Exact C0 V3 classification remains RELEASE_MECHANICS, with all seven
+identity checks passed, complete closure and zero unknowns. Local FULL regression is 198 pass / 26 Windows skips /
+0 fail. Preparation governance after C0 changes no Release input and is not C1. Cloud and G4 outcomes are NOT_RUN.
 
 ## Next Step
 
-Materialize the FULL two-channel guide and shadow measurement protocol, validate locally, commit a C0 and pin the
-exact handoff identities in Release-excluded governance. Then stop for maintainer push and Source/Candidate A--F
-execution. Obtain raw outputs before C1 or any publication handoff.
+Maintainer pushes only C0 5c50774e7d7c340942851ff146a993316e7471bc to remote 0.5.1 for the first Cloud checkout;
+hold the later local preparation-governance commit until the channel checkpoint handoff, so branch selection does
+not accidentally select the later HEAD. Configure the selected Cloud Node major via
+PWF_ACCEPTANCE_NODE_MAJOR. Run the guide's FULL A--F, preserve raw outputs plus G4 profile/timing/operator records,
+and bring them back. Stop before C1/publication until actual evidence is reconciled. No remote/Cloud writes by agent.
 
 ## Gates
 
 1. [x] Recover G4 exit rules, active authorities, eligible implementation and maintainer authorization.
 2. [x] Materialize one guide, non-destructive admission inventory, comparison mapping and measurement rules.
-3. [ ] Validate local full suite/assets, freeze C0, regenerate and check the advisory projection, hand off.
+3. [x] Validate local full suite/assets, freeze C0, regenerate and check the advisory projection, hand off.
 4. [ ] Maintainer executes FULL Source/Candidate; reconcile raw evidence and complete first review/C1.
 5. [ ] Separately directed immutable publication and FULL Published Release in an independent Fresh environment.
 6. [ ] Reconcile all five evidence dimensions, Host/profile/asset keys, false-fast, elapsed/operator metrics and
@@ -78,3 +80,23 @@ execution. Obtain raw outputs before C1 or any publication handoff.
 |---|---|
 | Read-only git ls-remote inside the Windows sandbox hit signal-pipe Win32 error 5. | The approved outside-sandbox query succeeded and bound remote 0.5.1 to d4b4c66; not a product error. |
 | rg with a PowerShell directory wildcard reported invalid filename syntax. | Use the explicit existing planning directory; no file change or lost evidence. |
+| One identity-writeback patch used partial-line context and failed verification. | No changes were applied; reapply with the complete source line. |
+
+<!-- BEGIN PWF RELEASE EVIDENCE PLAN V1 -->
+### Generated Release evidence plan (advisory only)
+
+- Classification: `PWF_RELEASE_RISK_ADVISORY_V3` / `RELEASE_MECHANICS` / `SHADOW_ONLY_NOT_EXECUTION_AUTHORITY`.
+- Exact range: `d4dd150dea205951090b2b5c56fe140a80bebc91` → `5c50774e7d7c340942851ff146a993316e7471bc`.
+- Owner fingerprints: `RELEASE_ARTIFACT_AUTHORITY:contracts/release-artifact-v2.json@15c2084db70429fb507e18c17433a9cfe23ec18698bdad6006128fc44d34b9ff`, `RELEASE_RISK_POLICY:tools/release-risk-policy-v1.json@2f745461afd21495b78206fd1cb920afd32a96d5d8eb877c098e31681beae8fd`.
+- Local evidence: `FULL_REPOSITORY_REGRESSION`, `CHANGED_MECHANIC_NEGATIVES`, `DETERMINISTIC_RELEASE_ASSETS`, `REESTABLISH_INVALIDATED_LOCAL_EVIDENCE`.
+- Linux evidence: `PORTABLE_LINUX_SUITE`, `CHANGED_MECHANIC_LINUX_BOUNDARY`.
+- Source/Candidate evidence: `EXACT_BUILD_MATERIALIZATION_BOUNDARY`, `OVERRIDE_INSTALL`, `DOCTOR_AND_INVENTORY`, `CHANGED_MECHANIC_TARGETED_CHECKS`.
+- Published Release evidence: `PUBLIC_BOOTSTRAP_AND_ZIP_CHECKSUM`, `DEFAULT_DOWNLOAD_AND_INSTALL`, `DOCTOR_AND_DEEP_INVENTORY`, `FRESH_RESUME_IF_INSTALLATION_OR_RUNTIME_OBSERVABLE_CHANGED`.
+- Retirement/checkpoint evidence: `CANDIDATE_ADMISSION_PREFLIGHT`, `SOURCE_CANDIDATE_CLOSEOUT_REVIEW_AND_C1`, `LATEST_CONFIRMATION_ROLE_WINDOW_REVIEW_AND_C2`.
+- Lifecycle objects: `C0=REQUIRED`, `SOURCE_CANDIDATE=REQUIRED`, `SOURCE_CANDIDATE_CLOSEOUT_RETIREMENT=REQUIRED`, `C1=REQUIRED`, `IMMUTABLE_PUBLICATION=REQUIRED`, `PUBLISHED_RELEASE=REQUIRED`, `LATEST_PROMOTION_CONFIRMATION=REQUIRED`, `ROLE_WINDOW_CLOSEOUT_RETIREMENT=REQUIRED`, `C2=REQUIRED`.
+- Evidence invalidated: `LOCAL_TEST_BASELINE`.
+- Unknowns: _none_.
+- Escalation: `INSTALLATION_OR_RUNTIME_OBSERVABLE_CHANGE_REQUIRES_PRODUCT_OR_SECURITY`, `ANY_UNKNOWN_OR_UNEXPLAINED_EVIDENCE_RESTARTS_AT_PRODUCT_OR_SECURITY`, `HOST_PROFILE_OR_IDENTITY_MISMATCH_STOPS_AND_RESTARTS_FROM_THE_STRICTER_FRESH_GATE`.
+- Existing authorities only: `ROADMAP.md#release-four-step-flow`, `ROADMAP.md#version-train-two-retirement-reviews`, `docs/cloud-hard-acceptance-template.md#cloud-hard-acceptance-template`, `docs/cloud-acceptance-operator-guide-template.md#operator-guide-document-lifecycle`.
+- Operative workflow: `ROADMAP_CURRENT_FULL_UNTIL_G5`; this generated block records no PASS, executes no gate and grants no authorization.
+<!-- END PWF RELEASE EVIDENCE PLAN V1 -->
