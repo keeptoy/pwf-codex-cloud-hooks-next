@@ -24,6 +24,7 @@ closeout使用`vX.Y.Z-release-operator-guide.md`。两者都只允许一个当�
 当前入口。当前应执行哪份教程由[`ROADMAP当前开发列车`](../../ROADMAP.md#current-development-train)与活动task plan选择；
 此处只提供文件导航，不复制accepted/fallback角色表或PASS/PENDING状态。
 
+- [v0.5.1 Release Operator Guide — G4 shadow](v0.5.1-release-operator-guide.md)
 - [v0.5.0 Release Operator Guide](v0.5.0-release-operator-guide.md)
 
 尚未授权Release的pre-C0 candidate没有对应guide，也不预建教程或填写尚未取得的验收结果。

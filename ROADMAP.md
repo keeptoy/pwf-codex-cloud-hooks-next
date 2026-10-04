@@ -22,7 +22,7 @@ task plan 为准；只有 programme、Cloud、Release 或 rollback 状态真正�
 | 项目 | 当前事实 |
 |---|---|
 | 源码维护权威 | successor `main` |
-| 当前开发列车 | `v0.5.1`；Product Phase 5仍active；旧验收guide冻结保留的本地实现与candidate准备已通过验证，exact分类为RELEASE_MECHANICS且identity closure完整、unknown为0；尚未形成C0，Release尚未授权，G4 shadow待独立执行授权 |
+| 当前开发列车 | `v0.5.1`；Product Phase 5仍active；冻结guide保留已实现，exact分类为RELEASE_MECHANICS且identity closure完整、unknown为0；维护者已授权G4 shadow及其FULL Source/Candidate准备，C0待本地冻结；publication、Latest与G5尚未授权 |
 | 当前已接受版本 | `v0.5.0`；programme accepted |
 | 当前直接回退版本 | immutable `v0.4.4` immediate fallback |
 | 回退证据链 | immutable `v0.4.3` deeper fallback；`v0.4.2`、`v0.4.1`、`v0.4.0`、`v0.3.5`与更早发布里程碑见 provenance museum |
@@ -68,9 +68,9 @@ trusted/Release zones 继续 exact，docs/planning zones 按 lifecycle policy �
 
 当前exact development pointer为`v0.5.1`，位于本地branch `0.5.1`，对应仍active的
 [`Product Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview)。维护者已授权本地实现旧验收guide冻结保留、
-Acceptance README导航分层及canonical candidate identity；尚未形成C0，Release尚未授权，故不预建v0.5.1 operator guide。
-本次候选已通过exact base/head的`RELEASE_MECHANICS`准入复核；G4 shadow执行、Cloud、C0、publication、G5 enablement与Phase closeout
-仍需各自授权。已关闭的v0.5.0 FULL Release完整证据见
+Acceptance README导航分层及canonical candidate identity，并在确认push后单独授权G4 shadow。候选已通过exact base/head的
+`RELEASE_MECHANICS`准入；本地正在冻结C0并物化[v0.5.1 G4 Release guide](docs/acceptance/v0.5.1-release-operator-guide.md#v0-5-1-release-operator-guide)，
+实际第一通道继续完整FULL，由维护者手动执行Cloud；公开发布、Latest、G5与Phase closeout仍待后续明确指示。已关闭的v0.5.0 FULL Release完整证据见
 [`v0.5.0 Release operator guide`](docs/acceptance/v0.5.0-release-operator-guide.md#v0-5-0-release-operator-guide)。
 
 accepted/fallback角色现为v0.5.0/v0.4.4。继承的Phase 4 Product baseline只读
@@ -94,7 +94,7 @@ accepted/fallback角色现为v0.5.0/v0.4.4。继承的Phase 4 Product baseline�
 | Phase | 候选版本列车 | 候选范围 | 最低退出/Cloud 门槛 | 状态 / overview |
 |---|---|---|---|---|
 | 4 | `0.4.0-*`～`0.4.4` | owned v3 state foundation、显式smart/autonomous opt-in及后续path-safety/文档治理 | F0～F3C功能/rollback已闭合；后续patch/governance列车不得改变Product行为或激活Phase 5 | Product baseline complete；当前v0.4.4为Release tag教程stable C0 candidate；[`Phase 4 Overview`](docs/product-phases/phase-4-overview.md#product-phase-4-overview) |
-| 5 | `0.5.x` | 文档治理：authority分层、文档/代码对账、planning生命周期与overview/history分工；v0.5.1已实现冻结guide保留 | 新Product实现仍需Discovery；v0.5.0 FULL Release已完成C2，v0.5.1已满足低风险candidate准入，G4 shadow仍需独立授权，G5继续defer | Phase 5 active；v0.5.1本地实施通过验证，Release尚未授权；[`Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview) |
+| 5 | `0.5.x` | 文档治理：authority分层、文档/代码对账、planning生命周期与overview/history分工；v0.5.1已实现冻结guide保留 | 新Product实现仍需Discovery；v0.5.0 FULL Release已完成C2，v0.5.1 G4已授权并按FULL准备第一通道，G5继续defer | Phase 5 active；G4 shadow尚无live结论；[`Phase 5 Overview`](docs/product-phases/phase-5-overview.md#product-phase-5-overview) |
 | 6 | `0.6.0-*` | compaction lifecycle | 复核真实Cloud payload，比较现有`SessionStart source=clear\|compact`与PreCompact/PostCompact的时序和恢复能力；现有事件足够时不扩大managed event set，只有真实context/时序缺口才新增Hook | pending |
 | 7 | `0.7.0-*` | optional selective tool/permission hooks | PreToolUse、PostToolUse、PermissionRequest各自独立gate；必须分别有use case、latency/token budget、噪声预算与Cloud证据 | pending / optional；没有明确收益就逐项或整体`NO_GO`；不是Phase 8前置 |
 | 8 | `0.8.0-*` | 唯一的read-only advisory completion evaluator | bounded、non-recursive、无plan时安静；只advisory，不阻断、不写counter/ledger或其他mutable gate state | pending；可独立于Phase 7进入Discovery |

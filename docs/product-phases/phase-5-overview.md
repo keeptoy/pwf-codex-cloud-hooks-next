@@ -58,14 +58,14 @@ deterministic package与disarm-first rollback继续是继承边界。当前Phase
 
 | 主题 | 摘要 |
 |---|---|
-| candidate identity | v0.5.0 FULL Release已完成C2；维护者随后授权v0.5.1冻结guide保留的本地实施与canonical candidate准备，Release与G4 shadow执行尚待授权；当前角色只读ROADMAP |
+| candidate identity | v0.5.0 FULL Release已完成C2；v0.5.1冻结guide保留已实现，维护者随后单独授权G4 shadow并按FULL准备第一通道；公开发布与G5未授权，当前角色只读ROADMAP |
 | README / Wiki分层 | README保持稳定产品入口，本地开发与构建/Release教程由Release-excluded `Wiki.md`维护 |
 | planning lifecycle | `.active_plan`只选择一个活动scope；completed scope的保留、历史提炼和删除均由维护者决定 |
 | implementation audit | architecture、design、contracts、源码和测试已完成一次代码级对账，已知文档漂移得到修正 |
 | autonomous exact state | nonce/attestation现与README合同一致，严格要求exact单个LF，其他换行或尾随形式拒绝 |
 | Phase authority activation | Phase 5已显式激活为文档治理阶段；维护者另行授权的v0.5.0 FULL Release已完成C2，但Release closeout不自动关闭本Phase，也不授权新的Product实现或下一版本列车 |
 | document-test governance Discovery | Phase 5.1已冻结`CONDITIONAL_GO`决策，B0～B4有界本地治理已对账；测试转向owner/关系及有害／等义反例，安全与身份相关`KEEP / DEFER`仍保留。本结论不表示Phase 5 closeout、Cloud或Release验收 |
-| Phase 5.3 Release harness risk-lane Discovery | 冻结G1～G5五个串行gate；G1 advisory classifier、G2 identity closure/replay与G3 machine evidence projection已完成，未改变本次FULL的C0/C1/C2或双通道流程。v0.5.0 FULL Release现已完成C2；G4真实低风险shadow与G5 enablement decision仍`KEEP / DEFER`，reduced lane尚未启用 |
+| Phase 5.3 Release harness risk-lane Discovery | 冻结G1～G5五个串行gate；G1～G3已完成，未改变FULL的C0/C1/C2或双通道流程。v0.5.1 G4真实低风险shadow已单独授权，尚无live结论；G5仍DEFER，reduced lane尚未启用 |
 | frozen guide retention | 退出当前角色的版本级guide保留原路径、冻结字节与证据；Acceptance README分列当前入口和带immutable commit/SHA的历史记录。历史重放使用冻结源码与模板，两次retirement review及其他对象的轮转规则继续有效 |
 
 <a name="phase-5-planning-history-lifecycle"></a>
